@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>learningthree.js boiler plate for three.js</title>
+		<title>Yet to be named</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		
@@ -11,19 +11,8 @@
 		<!-- https://github.com/mrdoob/stats.js -->
 		<script src="vendor/three.js/Stats.js"></script>
 
-		<script src="vendor/threex/THREEx.FullScreen.js"></script>
 		<script src="vendor/threex/THREEx.WindowResize.js"></script>
 		<script type="text/javascript" src="coffee-script.js"></script>
-
-		<script src="vendor/three.js/ShaderExtras.js"></script>
-
-		<script src="vendor/three.js/postprocessing/EffectComposer.js"></script>
-		<script src="vendor/three.js/postprocessing/RenderPass.js"></script>
-		<script src="vendor/three.js/postprocessing/ShaderPass.js"></script>
-		<script src="vendor/three.js/postprocessing/MaskPass.js"></script>
-		<script src="vendor/three.js/postprocessing/SavePass.js"></script>
-
-
 
 		<link  href="css/main.css" rel="stylesheet"/>
 				<link rel="stylesheet" href="codemirror.css">
@@ -51,21 +40,7 @@
 
 
 
-<div name="divAtTheLeft" id="divAtTheLeft" style="height:10px;width:10px;background-color:blue">
-</div>
-<div name="divAtTheTop" id="divAtTheTop" style="height:10px;background-color:green">
-</div>
 		<form autocapitalize="off" autocorrect="off" wrap="off"><textarea id="code" name="code" autocapitalize="off" autocorrect="off" wrap="off" ></textarea></form>
-	<div name="mustBeVisibleDiv" id="mustBeVisibleDiv" style='font-size: 1em;width:100%; height:0.55em;background-color:red'>
-	</div>
-	<div name="mustBeVisibleDiv2" id="mustBeVisibleDiv2" style='font-size: 1em;width:100%; height:1px;background-color:yellow'>
-	</div>
-	<div name="mustBeInvisibleDiv" id="mustBeInvisibleDiv" style='font-size: 1em;width:100%; height:10px;background-color:green'>
-	</div>
-	<div name="neutralDiv" id="neutralDiv" style='font-size: 1em;width:100%; height:4em;background-color:brown'>
-	</div>
-	<div name="timeToGrowDiv" id="timeToGrowDiv" style='font-size: 1px;width:100%; height:10px;background-color:red'>
-	</div>
 
       </div>
 
@@ -281,7 +256,15 @@ function runCode() {
     
 
       try {
-        var verbatimSource = editor.getValue();
+        var editorContent = "\t"+editor.getValue().replace(
+// Replace out the new line character.
+new RegExp( "\\n", "g" ),
+ 
+// Put in ... so we can see a visual representation of where
+// the new line characters were replaced out.
+"\n\t"
+);
+        var verbatimSource = "draw = ->\n"+editorContent;
         
         // little trick. This is mangled up in the translation from coffeescript
         // (1).times ->
@@ -293,12 +276,12 @@ function runCode() {
         // You can tell a method declaration because the line below is indented
         // so you should check that.
         var elaboratedSource = verbatimSource;
-        elaboratedSource =  elaboratedSource.replace(/^([a-z]+[a-zA-Z1-9]+)\s*$/gm, "$1 = ->" );
+        //elaboratedSource =  elaboratedSource.replace(/^([a-z]+[a-zA-Z1-9]+)\s*$/gm, "$1 = ->" );
         elaboratedSource =  elaboratedSource.replace(/(\d+)\s+times/g, "( $1 + 0).times ->" );
-        elaboratedSource =  elaboratedSource.replace(/^(\s*[a-z]+[a-zA-Z1-9]+)[ ]*$/gm, "$1()" );
+        elaboratedSource =  elaboratedSource.replace(/^([\s*[a-z]+[a-zA-Z1-9]+)[ ]*$/gm, "$1()" );
         elaboratedSource =  elaboratedSource.replace(/\/\//g, "#" );
         
-        alert(elaboratedSource);
+        //alert(elaboratedSource);
       
         out = CoffeeScript.compile(elaboratedSource, {
           bare: "on"
@@ -306,7 +289,7 @@ function runCode() {
         //$("#coffee2js .error").hide();
         //return output.getSession().setValue(out);
       } catch (e) {
-        alert("" + e);
+        //alert("" + e);
         return;
       }
 
@@ -566,50 +549,40 @@ Number.prototype.times = function(func, scope){
 
 /*
 
-draw = ->
-  
-  rotate(0.1,0.1,frameCount/100);
-  
-  for num in [1..30]
-    translate(1.1*Math.sin(frameCount/15),0.1*Math.sin(frameCount/15),0.1*Math.sin(frameCount/15));
-    rotate(0.2,0.2,0.3);
-    scale(0.7,1,0.7);
-    box(1,5,1);
+rotate(0.1,0.1,frameCount/100);
+
+for num in [1..30]
+	translate(1.1*Math.sin(frameCount/15),0.1*Math.sin(frameCount/15),0.1*Math.sin(frameCount/15));
+	rotate(0.2,0.2,0.3);
+	scale(0.7,1,0.7);
+	box(1,5,1);
 
 ////////////////////////
 
 
-draw = ->
-  
-  translate 0,-1,0
-  rotate(0.1,0.1,frameCount/1000);
-  
-  for num in [1..30]
-    rotate(2.5,2.2,frameCount/1000);    translate(1.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005));
-    scale(0.9,1.1,0.9);
-    box(1,5,1);
+translate 0,-1,0
+rotate(0.1,0.1,frameCount/1000);
 
-
+for num in [1..30]
+	rotate(2.5,2.2,frameCount/1000);    translate(1.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005));
+	scale(0.9,1.1,0.9);
+	box(1,5,1);
 
 ////////////////////////
 
-
-draw = ->
+rotate(0.1,0.1,frameCount/8000);
+translate 0,0,0
   
-  rotate(0.1,0.1,frameCount/8000);
-  translate 0,0,0
-  
-  for num in [1..10]
-    rotate(2.5,2.2,frameCount/1000);    translate(1.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005));
-    scale(0.9,1.1,0.9);
-    box(1,1,1);
+for num in [1..10]
+	rotate(2.5,2.2,frameCount/1000);    translate(1.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005));
+	scale(0.9,1.1,0.9);
+	box(1,1,1);
 
 ///////////////////////////
 
-draw = ->  
-  for num in [1..10]
-    rotate(3.14,2,frameCount/1000);
-    box();
+for num in [1..10]
+	rotate(3.14,2,frameCount/1000);
+	box();
 
 
 ////////////////////////////
@@ -617,41 +590,37 @@ draw = ->
 // magical language substitutions
 // allow this:
 
-draw
-  15 times
-     rotate 0, 1, frameCount/1000 
-     box
+15 times
+ rotate 0, 1, frameCount/1000 
+ box
     
 ///////////////////////////
-draw
-	10 times
-		rotate frameCount/5000,frameCount/2000,frameCount/5124
-		box 1,1,0.1
+
+10 times
+	rotate frameCount/5000,frameCount/2000,frameCount/5124
+	box 1,1,0.1
 		
 ///////////////////////////
 
-draw
-	scale 2.1
-	5 times
-		rotate 0,1,frameCount/500
-		box 0.1,1.5,0.1
-		translate 0,0.1,0.1
-		30 times
-			rotate 0,1,1
-			box 0.01,0.01,1
+scale 2.1
+5 times
+	rotate 0,1,frameCount/500
+	box 0.1,1.5,0.1
+	translate 0,0.1,0.1
+	30 times
+		rotate 0,1,1
+		box 0.01,0.01,1
 
 ///////////////////////////
 
-draw
-	70 times
-		rotate frameCount/101,1,frameCount/1000
-		box
-
-///////////////////////////
-draw
-	background 255,255,0,0.01
-	rotate 0,frameCount/20,frameCount/20
+70 times
+	rotate frameCount/101,1,frameCount/1000
 	box
+
+///////////////////////////
+background 255,255,0,0.01
+rotate 0,frameCount/20,frameCount/20
+box
 	
 //
 
@@ -659,160 +628,101 @@ To set the flash security settings:
 http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html
 
 /////////////////////////
-draw
+
+rotate 0,1,frameCount/100
+box
+if frameCount % 20 == 0
+	soundManager.play('s12')
+
+/////////////////////////
+
+scale 0.1
+10 times
 	rotate 0,1,frameCount/100
+	translate 1,1,1
 	box
-	if frameCount % 20 == 0
-		soundManager.play('s12')
+if frameCount % 20 == 0
+	soundManager.play('s12')
 
 /////////////////////////
 
-draw
-	scale 0.1
+scale 0.1
+3 times
+	rotate 0,1,1
 	10 times
 		rotate 0,1,frameCount/100
+		scale 0.9
 		translate 1,1,1
 		box
-	if frameCount % 20 == 0
-		soundManager.play('s12')
-
-/////////////////////////
-
-draw
-	scale 0.1
-	3 times
-		rotate 0,1,1
-		10 times
-			rotate 0,1,frameCount/100
-			scale 0.9
-			translate 1,1,1
-			box
-	if frameCount % 70 == 0
-		soundManager.play('s12')
+if frameCount % 70 == 0
+	soundManager.play('s12')
 
 //////////////////////////
 
-draw
-	scale 0.1
-	10 times
-		rotate 0,1,frameCount/100
-		translate 1,1,1
-		box
-	//if (frameCount+10) % 50 == 0
-		//soundManager.play('glass0')
-	if (frameCount+0) % 20 == 0
-		soundManager.play('glass2')
-
-////////////////////////
-draw
-	scale 0.1
-	10 times
-		rotate 0,1,frameCount/100
-		translate 1,1,1
-		box
-	if (frameCount+15) % 60 == 0
-		soundManager.play('glass1')
-	if (frameCount+0) % 30 == 0
-		soundManager.play('glass5')
-
-/////////////////////////
-
-draw
-	scale 0.1
-	10 times
-		rotate 0,1,frameCount/100
-		translate 1,1,1
-		box
-	if (frameCount+15) % 30 == 0
-		soundManager.play('glass1')
-	if (frameCount+0) % 30 == 0
-		soundManager.play('glass5')
-
-//////////////////////////
-
-draw
-	bpm 440
-	addSound 's12' ,'xzzzzzzzzzzzzzzz'
-	addSound 's1'  ,'zzxzzzzzxzzzzzzx'
-	addSound 's2'  ,'xzzxzzxzzxxxxxxx'
-	addSound 's3'  ,'zzzxzzzxzzzxzzxz'
-	addSound 's5'  ,'xxzxxzxxzxxzxxxx'
-	rotate 0,1,frameCount/50
+scale 0.1
+10 times
+	rotate 0,1,frameCount/100
+	translate 1,1,1
 	box
-		
+if (frameCount+15) % 30 == 0
+	soundManager.play('glass1')
+if (frameCount+0) % 30 == 0
+	soundManager.play('glass5')
+
 //////////////////////////
 
-draw
-	bpm 440
-	addSound 's12','xzzzzzzzzzzzzzzz'
-	addSound 's1'  ,'zzxzzzzzxzzzzzzx'
-	addSound 's2'  ,'xzzxzzxzzxxxxxxx'
-	addSound 's3'  ,'zzzxzzzxzzzxzzxz'
-	addSound 's5'  ,'xxzxxzxxzxxzxxxx'
-	rotate 0,1,frameCount/50
+bpm 440
+addSound 's12','xzzzzzzzzzzzzzzz'
+addSound 's1'  ,'zzxzzzzzxzzzzzzx'
+addSound 's2'  ,'xzzxzzxzzxxxxxxx'
+addSound 's3'  ,'zzzxzzzxzzzxzzxz'
+addSound 's5'  ,'xxzxxzxxzxxzxxxx'
+rotate 0,1,frameCount/50
+box
+
+//////////////////////////
+
+bpm 200
+//addSound 's12','zzzzzzzzzzzzzzzx'
+addSound 's1'  ,'zzxzzzzzxzzzzzzx'
+addSound 's2'  ,'zxzxzzxzzxxxxxxx'
+addSound 's3'  ,'xzzxzzzxzzzxzzxz'
+addSound 's5'  ,'xxxxxxxxzxxzxxxx'
+scale 1+Math.sin(frameCount/33)
+5 times
+	rotate frameCount/10,frameCount/250,frameCount/50
 	box
-
-//////////////////////////
-
-draw
-	bpm 200
-	//addSound 's12','zzzzzzzzzzzzzzzx'
-	addSound 's1'  ,'zzxzzzzzxzzzzzzx'
-	addSound 's2'  ,'zxzxzzxzzxxxxxxx'
-	addSound 's3'  ,'xzzxzzzxzzzxzzxz'
-	addSound 's5'  ,'xxxxxxxxzxxzxxxx'
-	scale 1+Math.sin(frameCount/33)
-	55 times
-		rotate frameCount/10,frameCount/250,frameCount/50
-		box
-
-///////////////////////////
-
-draw
-	bpm 200
-	//addSound 's12','zzzzzzzzzzzzzzzx'
-	addSound 's1'  ,'zzxzzzzzxzzzzzzx'
-	addSound 's2'  ,'zxzxzzxzzxxxxxxx'
-	addSound 's3'  ,'xzzxzzzxzzzxzzxz'
-	addSound 's5'  ,'xxxxxxxxzxxzxxxx'
-	scale 1+Math.sin(frameCount/33)
-	55 times
-		rotate frameCount/10,frameCount/250,frameCount/50
-		box
 		
 ////////////////////////////
 
-draw
-	bpm 400
-	//addSound 's12','zzzzzzzzzzzzzzzx'
-	//addSound 'additional13'  ,'zzx z zzzzxzzzzzzx'
-	//addSound 'additional9'  ,'zxzx z zxzzxxxxxxx'
-	addSound 'additional7'  ,'zzxz z zzzxzzzzzzx'
-	addSound 'additional1'  ,'zzxz z zzzzzzzzzzx'
-	addSound 'additional8'  ,'xzzx z zzxzzzxzzxz'
-	addSound 'additional6' ,'xzxz x zxzxxxzxxxx'
-	addSound 'additional4' ,'zxzxzzzxxzzzzzxx'
-	scale 1+Math.sin(frameCount/33)
-	5 times
-		rotate frameCount/10,frameCount/250,frameCount/50
-		box
+bpm 400
+//addSound 's12','zzzzzzzzzzzzzzzx'
+//addSound 'additional13'  ,'zzx z zzzzxzzzzzzx'
+//addSound 'additional9'  ,'zxzx z zxzzxxxxxxx'
+addSound 'additional7'  ,'zzxz z zzzxzzzzzzx'
+addSound 'additional1'  ,'zzxz z zzzzzzzzzzx'
+addSound 'additional8'  ,'xzzx z zzxzzzxzzxz'
+addSound 'additional6' ,'xzxz x zxzxxxzxxxx'
+addSound 'additional4' ,'zxzxzzzxxzzzzzxx'
+scale 1+Math.sin(frameCount/33)
+5 times
+	rotate frameCount/10,frameCount/250,frameCount/50
+	box
 
 /////////////////////////////
 
-draw
-	bpm 350
-	//addSound 's12','zzzzzzzzzzzzzzzx'
-	addSound 'additional13'  ,'zzx z zzzzxzzzzzzx'
-	addSound 'additional9'  ,'zxzx z zxzzxxxxxxx'
-	addSound 'additional7'  ,'zzxz z zzzxzzzzzzx'
-	addSound 'additional1'  ,'zzxz z zzzzzzzzzzx'
-	addSound 'additional8'  ,'xzzx z zzxzzzxzzxz'
-	addSound 'additional6' ,'xxzz x zxzxzxxxxxx'
-	addSound 'additional4' ,'zxzxzzzxzxxzzzxx'
-	scale 2*Math.sin(frameCount/33)
-	5 times
-		rotate frameCount/10,frameCount/250,frameCount/50
-		box
+bpm 350
+//addSound 's12','zzzzzzzzzzzzzzzx'
+addSound 'additional13'  ,'zzx z zzzzxzzzzzzx'
+addSound 'additional9'  ,'zxzx z zxzzxxxxxxx'
+addSound 'additional7'  ,'zzxz z zzzxzzzzzzx'
+addSound 'additional1'  ,'zzxz z zzzzzzzzzzx'
+addSound 'additional8'  ,'xzzx z zzxzzzxzzxz'
+addSound 'additional6' ,'xxzz x zxzxzxxxxxx'
+addSound 'additional4' ,'zxzxzzzxzxxzzzxx'
+scale 2*Math.sin(frameCount/33)
+rotate frameCount/10,frameCount/250,frameCount/50
+box
 
 //////////////////////////////
 
@@ -839,164 +749,8 @@ draw
     editor.setOption("theme", theme);
   }
 
-function redLayerVisible() {
-        return $(window).height() > $(mustBeVisibleDiv).offset().top - 0;
-
-			          //return checkIfLayerIsVisible("mustBeVisibleDiv");
-}
-
-function yellowLayerVisible() {
-        return $(window).height() > $(mustBeVisibleDiv2).offset().top - 0;
-}
-
-function timeToGrowLayerVisible() {
-        return $(window).height() > $(timeToGrowDiv).offset().top - 0;
-}
-
-
-/*
-function checkIfLayerIsVisible(whichLayer) {
-			          var message = "";        
-						$("div:in-viewport").each(function() {
-						  message = message + $(this).attr("id");
-						});
-						if (message.indexOf(whichLayer) !== -1) {
-						  return true;
-						}
-						return false;
-}
-*/
-
-var expanding = false;
-var shrinking = false;
-
-function growABit(){
-		 expanding = true;
-		  $(miao).animate({
-		  fontSize:"50em"
-		},
-		{
-		  duration: 1000,
-			specialEasing: {
-				  width: 'linear',
-				  height: 'linear'
-				},
-		  step: function(now, fx) {
-			  
-					  editor.refresh();
-						if (!timeToGrowLayerVisible()) {
-					      editor.refresh();
-						  expanding = false;
-						  $(miao).stop();
-						}
-
-
-		  }
-});
-}
-
-
-function makeSureItsAllVisible(){
-
-		setTimeout('makeSureItsAllVisible();',100);
-		if (expanding) return;
-		if (shrinking) return;
-
-		/*if (!checkIfLayerIsVisible("divAtTheTop") || !checkIfLayerIsVisible("divAtTheLeft")){
-		   scroll(0,0);
-		}
-		*/
-
-		//if (!checkIfLayerIsVisible("divAtTheLeft")){
-		if (!changesHappened) return;
-		changesHappened = false;
-		
-		if (timeToGrowLayerVisible()) {
-		   // grow a bit!
-		   growABit();
-		}
-
-		//}
-
-		/*
-		if (editor.getCursor().line == editor.lineCount()-1) {
-			if (editor.getCursor().line !=0){
-				editor.setCursor(editor.lineCount()-2,editor.getCursor().ch);
-			}
-		}
-		*/
-		
-		scroll(0,0);
-		
-		if (yellowLayerVisible()) return;
-		//alert('maybe shrinking unless other anims are ongoing')
-		
-		//alert('shrinking')
-		shrinking = true;
-
-		  $(miao).animate({
-		  fontSize:"0.5em"
-		},
-		{
-		  duration: 1000,
-			specialEasing: {
-				  width: 'linear',
-				  height: 'linear'
-				},
-		  step: function(now, fx) {
-			  
-					  editor.refresh();
-						if (yellowLayerVisible()) {
-						  //alert('shrinking anim should stop')
-						  shrinking = false;
-					      //editor.refresh();
-						  $(miao).stop();
-						}
-
-
-		  }
-		});
-}
-
-drawLoopTimer=setTimeout('makeSureItsAllVisible();',100);
-  
-  initialAnimation = function(){
-
-  //alert('animating');
-  //alert($(miao).css('height'))
-
-		 expanding = true;
-		  $(miao).animate({
-		  fontSize:"50em"
-		},
-		{
-		  duration: 1000,
-			specialEasing: {
-				  width: 'linear',
-				  height: 'easeOutBounce'
-				},
-		  step: function(now, fx) {
-			  
-					  editor.refresh();
-			          var message = "";        
-						$("div:in-viewport").each(function() {
-						  message = message + $(this).attr("id");
-						});
-						if (message.indexOf("mustBeInvisibleDiv") === -1) {
-					      //editor.refresh();
-						  expanding = false;
-						  $(miao).stop();
-						}
-
-
-		  }
-		});
-  
-  }
-
 $(document).ready(function(){
 	editor.focus();
-	initialAnimation();
 });
 
 

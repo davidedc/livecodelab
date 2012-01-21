@@ -100,7 +100,7 @@ soundManager.onready(function() {
     soundManager.createSound({id:'glass'+i, multiShot: true, url:'audio/'+glassesURLs[i]+'.mp3'});
   }
 
-  var additionalURLs = '8938__patchen__piano-hits-hand-03,9569__thanvannispen__industrial-low-flash04,9570__thanvannispen__industrial-low-flash07,24004__laya__dance-kick3.mp3,33325__laya__trance-kick01,33960__krlox__pudricion-4,49255__keinzweiter__bonobob-funk,100708__steveygos93__bleep_a,100708__steveygos93__bleep_b,100708__steveygos93__bleep_c,100708__steveygos93__bleep_d,116508_Beep,116508_Hello,132389__blackie666__alienbleep'.split(',');
+  var additionalURLs = '8938__patchen__piano-hits-hand-03,9569__thanvannispen__industrial-low-flash04,9570__thanvannispen__industrial-low-flash07,24004__laya__dance-kick3,33325__laya__trance-kick01,33960__krlox__pudricion-4,49255__keinzweiter__bonobob-funk,100708__steveygos93__bleep_a,100708__steveygos93__bleep_b,100708__steveygos93__bleep_c,100708__steveygos93__bleep_d,116508_Beep,116508_Hello,132389__blackie666__alienbleep'.split(',');
   for (var i=0; i < additionalURLs.length; i++) {
     soundManager.createSound({id:'additional'+i, multiShot: true, url:'audio/'+additionalURLs[i]+'.mp3'});
   }
