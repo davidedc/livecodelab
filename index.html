@@ -1,3 +1,11 @@
+<div>
+        <textarea id="source" rows="25" spellcheck="false"></textarea>
+<button onclick="runCode();">
+          runthecode
+        </button>
+      </div>
+      
+        
 <canvas id="canvas" width="300" height="300"></canvas>
 
 <script>
@@ -10,5 +18,15 @@ ctx.beginPath();
 ctx.arc(75, 75, 10, 0, Math.PI*2, true); 
 ctx.closePath();
 ctx.fill();
+
+
+function runCode() {
+    document.getElementsByTagName("canvas")[0].getContext("2d").clearRect(0,0,
+      document.getElementsByTagName("canvas")[0].width,
+      document.getElementsByTagName("canvas")[0].height);
+
+    eval(document.getElementById('source').value);
+
+}
 
 </script>
