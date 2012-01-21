@@ -1,3 +1,5 @@
+<script type="text/javascript" src="coffee-script.js"></script>
+
 <div style="position: absolute; top: 0px; left: 0px; width: 240px; background-color: azure;">        
 <canvas id="canvas" width="300" height="300"></canvas>
 </div>
@@ -26,19 +28,44 @@ function runCode() {
       document.getElementsByTagName("canvas")[0].width,
       document.getElementsByTagName("canvas")[0].height);
 
-    eval(document.getElementById('source').value);
+    
 
+
+      try {
+        out = CoffeeScript.compile(document.getElementById('source').value, {
+          bare: "on"
+        });
+        //$("#coffee2js .error").hide();
+        //return output.getSession().setValue(out);
+      } catch (e) {
+        alert("" + e);
+        return;
+      }
+
+    // this is so that the global variables are kept, see:
+    // http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context
+    window.eval.call(window,out);
+
+      
 }
 
 	var lastkey = 0
 	 document.onkeydown = function(e){
+		// CTRL-K compiles and runs
 		if(lastkey == 17 && e.which==75){
-			// console.log(e.which);
 			runCode();
 			return false;
-		}else{
+		}
+		else {
 			lastkey = e.which;
 		}
+		// also up or down arrow compile and run
+		if(e.which==38 || e.which==40){
+			runCode();
+			return true;
+		}
+		
+		
 	};
 	document.onkeyup = function(e){
 		
