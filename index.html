@@ -24,6 +24,7 @@
 		<script src="vendor/three.js/postprocessing/SavePass.js"></script>
 
 
+
 		<link  href="css/main.css" rel="stylesheet"/>
 				<link rel="stylesheet" href="codemirror.css">
 				<script src="codemirror.js"></script>
@@ -104,12 +105,16 @@ var finalscene;
 var finalsceneContext;
 var backgroundScene;
 var backgroundSceneContext;
+var tinyGradientCanvas;
+var tinyGradientCanvasContext;
+var potentiallyUseWebGL = false;
+var useRequestAnimationFrame = false;
+var wantedFramesPerSecond = 30;
 
 
 		// init the scene
 		function init(){
 
-			var potentiallyUseWebGL = true;
 			if( Detector.webgl && potentiallyUseWebGL ){
 
 				midgroundScene = document.createElement('canvas');
@@ -196,37 +201,54 @@ var backgroundSceneContext;
 
 			// transparently support window resize
 			THREEx.WindowResize.bind(renderer, camera);
+			
+				tinyGradientCanvas = document.createElement('canvas');
+				tinyGradientCanvas.width = 100;
+				tinyGradientCanvas.height = 100;
+				tinyGradientCanvasContext = tinyGradientCanvas.getContext('2d');
+
 
 }
 
 		
 
 		// render the scene
+		var gradientDrawn = false;
 		function render() {
 
-			backgroundSceneContext.clearRect(0,0,window.innerWidth,window.innerHeight);
 		
-			var diagonal = Math.sqrt(Math.pow(window.innerWidth/2,2)+ Math.pow( window.innerHeight/2,2));
-			var radgrad = backgroundSceneContext.createRadialGradient(window.innerWidth/2, window.innerHeight/2, 0,window.innerWidth/2, window.innerHeight/2, diagonal);  
+			if (!gradientDrawn) {
+			var diagonal = Math.sqrt(Math.pow(50,2)+ Math.pow( 50,2));
+			var radgrad = tinyGradientCanvasContext.createRadialGradient(50, 50, 0,50, 50, diagonal);  
 			radgrad.addColorStop(0, '#FF5F98');  
 			radgrad.addColorStop(0.75, '#FF0188');  
 			radgrad.addColorStop(1, 'rgba(255,1,136,0)');    
 			
-			backgroundSceneContext.globalAlpha = 1.0;
-			backgroundSceneContext.fillStyle = radgrad;
-			backgroundSceneContext.beginPath();
-			backgroundSceneContext.rect(0,0,window.innerWidth,window.innerHeight);
-			backgroundSceneContext.closePath();
-			backgroundSceneContext.fill();
+			tinyGradientCanvasContext.globalAlpha = 1.0;
+			tinyGradientCanvasContext.fillStyle = radgrad;
+			tinyGradientCanvasContext.beginPath();
+			tinyGradientCanvasContext.rect(0,0,100,100);
+			tinyGradientCanvasContext.closePath();
+			tinyGradientCanvasContext.fill();
 			
-			backgroundSceneContext.globalAlpha = 0.8;
-			gradObj = backgroundSceneContext.createLinearGradient(window.innerWidth/2,0,window.innerWidth/2,window.innerHeight/2);
+			var gradObj = tinyGradientCanvasContext.createLinearGradient(50,0,50,50);
 			gradObj.addColorStop(0.0, "#ff0000");
 			gradObj.addColorStop(1.0, "#aa0000");
-			backgroundSceneContext.fillStyle = gradObj;
-			backgroundSceneContext.rect(10,10,300,220);
-			backgroundSceneContext.fill();
 
+			tinyGradientCanvasContext.globalAlpha = 0.3;
+			tinyGradientCanvasContext.fillStyle = gradObj;
+			tinyGradientCanvasContext.beginPath();
+			tinyGradientCanvasContext.rect(0,0,100,100);
+			tinyGradientCanvasContext.closePath();
+			tinyGradientCanvasContext.fill();
+			
+			
+			backgroundSceneContext.clearRect(0,0,window.innerWidth,window.innerHeight);
+			backgroundSceneContext.drawImage(tinyGradientCanvas,0,0,window.innerWidth,window.innerHeight);
+			
+			gradientDrawn = true;
+			}
+			////////////////////////
 
 			if (!isWebGLUsed){
 			  midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight);
@@ -310,17 +332,25 @@ function background(red, green, blue) {
 // animation loop
     	function animate() {
 
+			// loop on request animation loop
+			// - it has to be at the begining of the function
+			// - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+			// requestAnimationFrame seems to only do 60 fps, which in my case is too much,
+			// I rather prefer to have a slower framerate but steadier.
+			
+			if (useRequestAnimationFrame) {
+				requestAnimationFrame( animate );
+			}
+			else {
+				setTimeout( 'animate();', 1000 / wantedFramesPerSecond );
+			}
+
 			clearDisplayList();
 			worldMatrix.identity();
 
 			//rootObject = new THREE.Object3D();
 			//scene.add(rootObject);
 			//parentObject = rootObject;
-
-			// loop on request animation loop
-			// - it has to be at the begining of the function
-			// - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
-			requestAnimationFrame( animate );
 
 			if (typeof(draw) != "undefined") { 
 			  draw();
@@ -560,6 +590,83 @@ draw
 	background 255,255,0,0.01
 	rotate 0,frameCount/20,frameCount/20
 	box
+	
+//
+
+To set the flash security settings:
+http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html
+
+/////////////////////////
+draw
+	rotate 0,1,frameCount/100
+	box
+	if frameCount % 20 == 0
+		soundManager.play('s12')
+
+/////////////////////////
+
+draw
+	scale 0.1
+	10 times
+		rotate 0,1,frameCount/100
+		translate 1,1,1
+		box
+	if frameCount % 20 == 0
+		soundManager.play('s12')
+
+/////////////////////////
+
+draw
+	scale 0.1
+	3 times
+		rotate 0,1,1
+		10 times
+			rotate 0,1,frameCount/100
+			scale 0.9
+			translate 1,1,1
+			box
+	if frameCount % 70 == 0
+		soundManager.play('s12')
+
+//////////////////////////
+
+draw
+	scale 0.1
+	10 times
+		rotate 0,1,frameCount/100
+		translate 1,1,1
+		box
+	//if (frameCount+10) % 50 == 0
+		//soundManager.play('glass0')
+	if (frameCount+0) % 20 == 0
+		soundManager.play('glass2')
+
+////////////////////////
+draw
+	scale 0.1
+	10 times
+		rotate 0,1,frameCount/100
+		translate 1,1,1
+		box
+	if (frameCount+15) % 60 == 0
+		soundManager.play('glass1')
+	if (frameCount+0) % 30 == 0
+		soundManager.play('glass5')
+
+/////////////////////////
+
+draw
+	scale 0.1
+	10 times
+		rotate 0,1,frameCount/100
+		translate 1,1,1
+		box
+	if (frameCount+15) % 30 == 0
+		soundManager.play('glass1')
+	if (frameCount+0) % 30 == 0
+		soundManager.play('glass5')
+
+//////////////////////////
 
 */
 
@@ -745,6 +852,14 @@ $(document).ready(function(){
 });
 
 </script>
+
+
+
+
+<script type="text/javascript" src="./script/soundmanager2.js"></script>
+<script type="text/javascript" src="./script/mpc.js"></script>
+
+
 
 </body>
 </html>
