@@ -93,10 +93,12 @@
   // loads identity matrix
   var worldMatrix = new THREE.Matrix4();
 
-var newScene;
-var newSceneContext;
+var midgroundScene;
+var midgroundSceneContext;
 var finalscene;
-var previousScene;
+var finalsceneContext;
+var backgroundScene;
+var backgroundSceneContext;
 
 
 		// init the scene
@@ -110,7 +112,7 @@ var previousScene;
 			   //renderer.autoClearColor = false;
 			   //renderer.autoClear = false;
 			   isWebGLUsed = true;
-			   
+
 			   // this is really a bad hack, but chrome goes twice
 			   // as fast with this, while safari doesn't work,
 			   // and firefox is the fastest no matter what
@@ -125,28 +127,30 @@ var previousScene;
 			
 			
 			 // we always draw the 3d scene off-screen
-				newScene = document.createElement('canvas');
-				newSceneContext = newScene.getContext('2d');
+				midgroundScene = document.createElement('canvas');
+				midgroundSceneContext = midgroundScene.getContext('2d');
 				renderer	= new THREE.CanvasRenderer({
-					canvas: newScene,
+					canvas: midgroundScene,
 					antialias		: true,	// to get smoother output					
 					preserveDrawingBuffer	: false	// to allow screenshot
 				});
 			   	
-			   	//renderer.autoClear = false;
+			   	//renderer.autoClear = true;
+			   	//renderer.setClearColorHex( 0x000000, 0 );
+
 
 				finalscene = document.createElement('canvas');
 				finalscene.width = window.innerWidth;
 				finalscene.height = window.innerHeight;
 				finalsceneContext = finalscene.getContext('2d');
 		
-				previousScene = document.createElement('canvas');
-				previousScene.width = window.innerWidth;
-				previousScene.height = window.innerHeight;
-				previousSceneContext = previousScene.getContext('2d');
-
+				backgroundScene = document.createElement('canvas');
+				backgroundScene.width = window.innerWidth;
+				backgroundScene.height = window.innerHeight;
+				backgroundSceneContext = backgroundScene.getContext('2d');
+				
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				document.getElementById('container').appendChild(finalscene);
+				document.getElementById('container').appendChild(backgroundScene);
 			}
 
 
@@ -208,24 +212,60 @@ var previousScene;
 				composer.render( );
 			}
 			else {
-				// the renderer draws into an offscreen canvas called newScene
+				// the renderer draws into an offscreen canvas called midgroundScene
 				renderer.render( scene, camera );
+				}
+
+
+backgroundSceneContext.globalAlpha = 1.0;
+backgroundSceneContext.fillStyle = "#FFFFFF";
+backgroundSceneContext.beginPath();
+backgroundSceneContext.rect(0,0,window.innerWidth,window.innerHeight);
+backgroundSceneContext.closePath();
+backgroundSceneContext.fill();
+
+
+backgroundSceneContext.fillStyle = "#00A308";
+backgroundSceneContext.beginPath();
+backgroundSceneContext.arc(220, 220, 50, 50, Math.PI*2, true);
+backgroundSceneContext.closePath();
+backgroundSceneContext.fill();
+ 
+backgroundSceneContext.fillStyle = "#FF1C0A";
+backgroundSceneContext.beginPath();
+backgroundSceneContext.arc(100, 100, 100, 0, Math.PI*2, true);
+backgroundSceneContext.closePath();
+backgroundSceneContext.fill();
+ 
+//the rectangle is half transparent
+backgroundSceneContext.fillStyle = "rgba(255, 255, 0, .5)"
+backgroundSceneContext.beginPath();
+backgroundSceneContext.rect(15, 150, 1000, 120);
+backgroundSceneContext.closePath();
+backgroundSceneContext.fill();
+
+
+				backgroundSceneContext.drawImage(midgroundScene, 0, 0);
 				
 				// draw in the final context a blend of the previous content and the new one
-				finalsceneContext.globalAlpha = 0.2;
+				backgroundSceneContext.globalAlpha = 0.5;
+				
+			   	
 				
 				
 				// we want the old pre-existing render to be below the
 				// new scene we are about to paint over it
 				// so there is a canvas trick for that:
-				// globalCompositeOperation = 'destination-over';
+				finalsceneContext.globalCompositeOperation = 'destination-over';				
+				backgroundSceneContext.drawImage(finalscene, 0, 0);
+
 				
-				finalsceneContext.drawImage(newScene, 0, 0);
-				//finalsceneContext.drawImage(previousSceneContext, 0, 0);
+				//finalsceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
+				finalsceneContext.globalCompositeOperation = 'copy';
+				finalsceneContext.drawImage(backgroundScene, 0, 0);
 				
-				
-				//previousSceneContext.drawImage(finalsceneContext,0,0);
-			}
+				// clear the renderer's canvas to transparent black
+				midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
 
 		}
 		
