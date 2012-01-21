@@ -106,13 +106,18 @@ var backgroundSceneContext;
 
 			var potentiallyUseWebGL = true;
 			if( Detector.webgl && potentiallyUseWebGL ){
+
+				midgroundScene = document.createElement('canvas');
+				
 				renderer = new THREE.WebGLRenderer({
+					canvas: midgroundScene,
+					preserveDrawingBuffer	: true	// to allow screenshot
 				});
 			   
 			   //renderer.autoClearColor = false;
 			   //renderer.autoClear = false;
 			   isWebGLUsed = true;
-
+			   
 			   // this is really a bad hack, but chrome goes twice
 			   // as fast with this, while safari doesn't work,
 			   // and firefox is the fastest no matter what
@@ -120,8 +125,18 @@ var backgroundSceneContext;
 			   	renderer.autoClear = false;
 			   }
 			   
+				finalscene = document.createElement('canvas');
+				finalscene.width = window.innerWidth;
+				finalscene.height = window.innerHeight;
+				finalsceneContext = finalscene.getContext('2d');
+		
+				backgroundScene = document.createElement('canvas');
+				backgroundScene.width = window.innerWidth;
+				backgroundScene.height = window.innerHeight;
+				backgroundSceneContext = backgroundScene.getContext('2d');
+				
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				document.getElementById('container').appendChild(renderer.domElement);
+				document.getElementById('container').appendChild(backgroundScene);
 
 			}else{
 			
@@ -175,47 +190,12 @@ var backgroundSceneContext;
 			// transparently support window resize
 			THREEx.WindowResize.bind(renderer, camera);
 
-
-			if (isWebGLUsed) {
-				renderTargetParameters = { format: THREE.RGBFormat, stencilBufer: false };
-				renderTarget = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters );
-	
-				effectSave = new THREE.SavePass( new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters ) );
-				effectBlend = new THREE.ShaderPass( THREE.ShaderExtras[ "blend" ], "tDiffuse1" );
-	
-				effectVignette = new THREE.ShaderPass( THREE.ShaderExtras[ "screen" ] );
-	
-	
-				// motion blur
-				effectBlend.uniforms[ 'tDiffuse2' ].texture = effectSave.renderTarget;
-				effectBlend.uniforms[ 'mixRatio' ].value = 0.65;
-	
-				var renderModel = new THREE.RenderPass( scene, camera );
-	
-				effectVignette.renderToScreen = true;
-	
-				composer = new THREE.EffectComposer( renderer, renderTarget );
-	
-				composer.addPass( renderModel );
-				composer.addPass( effectBlend );
-				composer.addPass( effectSave );
-				composer.addPass( effectVignette );
-			}
-
 }
 
 		
 
 		// render the scene
 		function render() {
-			if (isWebGLUsed) {
-				composer.render( );
-			}
-			else {
-				// the renderer draws into an offscreen canvas called midgroundScene
-				renderer.render( scene, camera );
-				}
-
 
 backgroundSceneContext.globalAlpha = 1.0;
 backgroundSceneContext.fillStyle = "#FFFFFF";
@@ -244,14 +224,21 @@ backgroundSceneContext.rect(15, 150, 1000, 120);
 backgroundSceneContext.closePath();
 backgroundSceneContext.fill();
 
+				// the renderer draws into an offscreen canvas called midgroundScene
+				renderer.render( scene, camera );
 
+
+
+				// var texels = renderer.getContext().getImageData(0,0, window.innerWidth,window.innerHeight);
+				// backgroundSceneContext.ptImageData(texels, window.innerWidth,window.innerHeight);
+
+				// this doesn't work in chrome unfortunately
 				backgroundSceneContext.drawImage(midgroundScene, 0, 0);
+
+				// this part takes care of the motion blur
 				
 				// draw in the final context a blend of the previous content and the new one
 				backgroundSceneContext.globalAlpha = 0.5;
-				
-			   	
-				
 				
 				// we want the old pre-existing render to be below the
 				// new scene we are about to paint over it
@@ -260,12 +247,14 @@ backgroundSceneContext.fill();
 				backgroundSceneContext.drawImage(finalscene, 0, 0);
 
 				
-				//finalsceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
+				finalsceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
 				finalsceneContext.globalCompositeOperation = 'copy';
 				finalsceneContext.drawImage(backgroundScene, 0, 0);
 				
+				if (!isWebGLUsed){
 				// clear the renderer's canvas to transparent black
-				midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
+				midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight);
+				}
 
 		}
 		
