@@ -49,7 +49,7 @@
 </div>
 <div name="divAtTheTop" id="divAtTheTop" style="height:10px;background-color:green">
 </div>
-		<form><textarea id="code" name="code" ></textarea></form>
+		<form autocapitalize="off" autocorrect="off" wrap="off"><textarea id="code" name="code" autocapitalize="off" autocorrect="off" wrap="off" ></textarea></form>
 	<div name="mustBeVisibleDiv" id="mustBeVisibleDiv" style='font-size: 1em;width:100%; height:0.55em;background-color:red'>
 	</div>
 	<div name="mustBeVisibleDiv2" id="mustBeVisibleDiv2" style='font-size: 1em;width:100%; height:1px;background-color:yellow'>
@@ -93,6 +93,11 @@
   // loads identity matrix
   var worldMatrix = new THREE.Matrix4();
 
+var newScene;
+var newSceneContext;
+var finalscene;
+var previousScene;
+
 
 		// init the scene
 		function init(){
@@ -112,17 +117,41 @@
 			   if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
 			   	renderer.autoClear = false;
 			   }
+			   
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.getElementById('container').appendChild(renderer.domElement);
 
 			}else{
+			
+			
+			 // we always draw the 3d scene off-screen
+				newScene = document.createElement('canvas');
+				newSceneContext = newScene.getContext('2d');
 				renderer	= new THREE.CanvasRenderer({
+					canvas: newScene,
 					antialias		: true,	// to get smoother output					
-					preserveDrawingBuffer	: true	// to allow screenshot
+					preserveDrawingBuffer	: false	// to allow screenshot
 				});
+			   	
+			   	//renderer.autoClear = false;
+
+				finalscene = document.createElement('canvas');
+				finalscene.width = window.innerWidth;
+				finalscene.height = window.innerHeight;
+				finalsceneContext = finalscene.getContext('2d');
+		
+				previousScene = document.createElement('canvas');
+				previousScene.width = window.innerWidth;
+				previousScene.height = window.innerHeight;
+				previousSceneContext = previousScene.getContext('2d');
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.getElementById('container').appendChild(finalscene);
 			}
 
-			renderer.setSize( window.innerWidth, window.innerHeight );
 
-			document.getElementById('container').appendChild(renderer.domElement);
+
+
 
 			// add Stats.js - https://github.com/mrdoob/stats.js
 			stats = new Stats();
@@ -143,30 +172,31 @@
 			THREEx.WindowResize.bind(renderer, camera);
 
 
-
-			renderTargetParameters = { format: THREE.RGBFormat, stencilBufer: false };
-			renderTarget = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters );
-
-			effectSave = new THREE.SavePass( new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters ) );
-			effectBlend = new THREE.ShaderPass( THREE.ShaderExtras[ "blend" ], "tDiffuse1" );
-
-			effectVignette = new THREE.ShaderPass( THREE.ShaderExtras[ "screen" ] );
-
-
-			// motion blur
-			effectBlend.uniforms[ 'tDiffuse2' ].texture = effectSave.renderTarget;
-			effectBlend.uniforms[ 'mixRatio' ].value = 0.65;
-
-			var renderModel = new THREE.RenderPass( scene, camera );
-
-			effectVignette.renderToScreen = true;
-
-			composer = new THREE.EffectComposer( renderer, renderTarget );
-
-			composer.addPass( renderModel );
-			composer.addPass( effectBlend );
-			composer.addPass( effectSave );
-			composer.addPass( effectVignette );
+			if (isWebGLUsed) {
+				renderTargetParameters = { format: THREE.RGBFormat, stencilBufer: false };
+				renderTarget = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters );
+	
+				effectSave = new THREE.SavePass( new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters ) );
+				effectBlend = new THREE.ShaderPass( THREE.ShaderExtras[ "blend" ], "tDiffuse1" );
+	
+				effectVignette = new THREE.ShaderPass( THREE.ShaderExtras[ "screen" ] );
+	
+	
+				// motion blur
+				effectBlend.uniforms[ 'tDiffuse2' ].texture = effectSave.renderTarget;
+				effectBlend.uniforms[ 'mixRatio' ].value = 0.65;
+	
+				var renderModel = new THREE.RenderPass( scene, camera );
+	
+				effectVignette.renderToScreen = true;
+	
+				composer = new THREE.EffectComposer( renderer, renderTarget );
+	
+				composer.addPass( renderModel );
+				composer.addPass( effectBlend );
+				composer.addPass( effectSave );
+				composer.addPass( effectVignette );
+			}
 
 }
 
@@ -174,8 +204,28 @@
 
 		// render the scene
 		function render() {
-
-			composer.render( );
+			if (isWebGLUsed) {
+				composer.render( );
+			}
+			else {
+				// the renderer draws into an offscreen canvas called newScene
+				renderer.render( scene, camera );
+				
+				// draw in the final context a blend of the previous content and the new one
+				finalsceneContext.globalAlpha = 0.2;
+				
+				
+				// we want the old pre-existing render to be below the
+				// new scene we are about to paint over it
+				// so there is a canvas trick for that:
+				// globalCompositeOperation = 'destination-over';
+				
+				finalsceneContext.drawImage(newScene, 0, 0);
+				//finalsceneContext.drawImage(previousSceneContext, 0, 0);
+				
+				
+				//previousSceneContext.drawImage(finalsceneContext,0,0);
+			}
 
 		}
 		
@@ -187,12 +237,9 @@ var frameCount = 0;
 if( !init() )	animate();
 
 function clearDisplayList() {
-    for(var i in scene.objects){
-  		scene.remove( scene.objects[i]);
+	for(var i in scene.objects){
+		scene.remove( scene.objects[i]);
 	}
-	//delete(geometry);
-	//delete(material);
-	//delete(mesh);
 }
 
 function runCode() {
@@ -239,29 +286,14 @@ function runCode() {
 }
 
 
-function background(red, green, blue, alpha) {
-	if (alpha === 0) {
-			clearDisplayList();
-	}
-	
-			if( isWebGLUsed ){
-			/*
-					cameraFilter.position.set(0, 0, 4);
-    			    scene.add(cameraFilter);
-    			    */
-				theColor = new THREE.Color();
-				theColor.setRGB(red, green,blue);
-				renderer.setClearColor(theColor,alpha);
-				//renderer.clear();
+function background(red, green, blue) {
 
-			}else{
-			    // canvas renderer
-				theColor = new THREE.Color();
-				theColor.setRGB(red, green,blue);
-				renderer.setClearColor(theColor,alpha);
-				renderer.clear();
-				render();
-			}
+			clearDisplayList();
+
+			// canvas renderer
+			theColor = new THREE.Color();
+			theColor.setRGB(red, green,blue);
+			renderer.setClearColor(theColor,1);
 
 
 

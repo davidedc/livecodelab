@@ -1,6 +1,7 @@
 .CodeMirror {
-  line-height: 1em;
-  font-family: monospace;
+  line-height: 1.3em;
+  /*font-family: "Lucida Sans Unicode", "Lucida Grande", "Mukti Narrow";*/
+  font-family: Helvetica, Arial, FreeSans;
 }
 
 
