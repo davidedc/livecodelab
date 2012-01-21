@@ -204,77 +204,37 @@ var backgroundSceneContext;
 		// render the scene
 		function render() {
 
-backgroundSceneContext.globalAlpha = 1.0;
-backgroundSceneContext.fillStyle = "#FFFFFF";
-backgroundSceneContext.beginPath();
-backgroundSceneContext.rect(0,0,window.innerWidth,window.innerHeight);
-backgroundSceneContext.closePath();
-backgroundSceneContext.fill();
+			backgroundSceneContext.clearRect(0,0,window.innerWidth,window.innerHeight);
+		
+			var diagonal = Math.sqrt(Math.pow(window.innerWidth/2,2)+ Math.pow( window.innerHeight/2,2));
+			var radgrad = backgroundSceneContext.createRadialGradient(window.innerWidth/2, window.innerHeight/2, 0,window.innerWidth/2, window.innerHeight/2, diagonal);  
+			radgrad.addColorStop(0, '#FF5F98');  
+			radgrad.addColorStop(0.75, '#FF0188');  
+			radgrad.addColorStop(1, 'rgba(255,1,136,0)');    
+			
+			backgroundSceneContext.globalAlpha = 1.0;
+			backgroundSceneContext.fillStyle = radgrad;
+			backgroundSceneContext.beginPath();
+			backgroundSceneContext.rect(0,0,window.innerWidth,window.innerHeight);
+			backgroundSceneContext.closePath();
+			backgroundSceneContext.fill();
+			
+			backgroundSceneContext.globalAlpha = 0.8;
+			gradObj = backgroundSceneContext.createLinearGradient(window.innerWidth/2,0,window.innerWidth/2,window.innerHeight/2);
+			gradObj.addColorStop(0.0, "#ff0000");
+			gradObj.addColorStop(1.0, "#aa0000");
+			backgroundSceneContext.fillStyle = gradObj;
+			backgroundSceneContext.rect(10,10,300,220);
+			backgroundSceneContext.fill();
 
 
-backgroundSceneContext.fillStyle = "#00A308";
-backgroundSceneContext.beginPath();
-backgroundSceneContext.arc(220, 220, 50, 50, Math.PI*2, true);
-backgroundSceneContext.closePath();
-backgroundSceneContext.fill();
- 
-backgroundSceneContext.fillStyle = "#FF1C0A";
-backgroundSceneContext.beginPath();
-backgroundSceneContext.arc(100, 100, 100, 0, Math.PI*2, true);
-backgroundSceneContext.closePath();
-backgroundSceneContext.fill();
- 
-//the rectangle is half transparent
-backgroundSceneContext.fillStyle = "rgba(255, 255, 0, .5)"
-backgroundSceneContext.beginPath();
-backgroundSceneContext.rect(15, 150, 1000, 120);
-backgroundSceneContext.closePath();
-backgroundSceneContext.fill();
+			if (!isWebGLUsed){
+			  midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight);
+			}
 
-var radgrad = backgroundSceneContext.createRadialGradient(45,45,10,52,50,30);  
-  radgrad.addColorStop(0, '#A7D30C');  
-  radgrad.addColorStop(0.9, '#019F62');  
-  radgrad.addColorStop(1, 'rgba(1,159,98,0)');  
-    
-  var radgrad2 = backgroundSceneContext.createRadialGradient(105,105,20,112,120,50);  
-  radgrad2.addColorStop(0, '#FF5F98');  
-  radgrad2.addColorStop(0.75, '#FF0188');  
-  radgrad2.addColorStop(1, 'rgba(255,1,136,0)');  
-  
-  var radgrad3 = backgroundSceneContext.createRadialGradient(95,15,15,102,20,40);  
-  radgrad3.addColorStop(0, '#00C9FF');  
-  radgrad3.addColorStop(0.8, '#00B5E2');  
-  radgrad3.addColorStop(1, 'rgba(0,201,255,0)');  
-  
-  var radgrad4 = backgroundSceneContext.createRadialGradient(0,150,50,0,140,90);  
-  radgrad4.addColorStop(0, '#F4F201');  
-  radgrad4.addColorStop(0.8, '#E4C700');  
-  radgrad4.addColorStop(1, 'rgba(228,199,0,0)');  
-    
-  // draw shapes  
-  backgroundSceneContext.fillStyle = radgrad4;  
-  backgroundSceneContext.fillRect(0,0,150,150);  
-  backgroundSceneContext.fillStyle = radgrad3;  
-  backgroundSceneContext.fillRect(0,0,150,150);  
-  backgroundSceneContext.fillStyle = radgrad2;  
-  backgroundSceneContext.fillRect(0,0,150,150);  
-  backgroundSceneContext.fillStyle = radgrad;  
-  backgroundSceneContext.fillRect(0,0,150,150); 
-  
-  
-
-				if (!isWebGLUsed){
-				  midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight);
-				}
-
-				// the renderer draws into an offscreen canvas called midgroundScene
-				renderer.render( scene, camera );
+			// the renderer draws into an offscreen canvas called midgroundScene
+			renderer.render( scene, camera );
 				
-
-
-
-
-
 		}
 		
 		
