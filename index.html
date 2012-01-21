@@ -107,14 +107,18 @@ var backgroundScene;
 var backgroundSceneContext;
 var backgroundScene;
 var backgroundSceneContext;
-var potentiallyUseWebGL = false;
+var potentiallyUseWebGL = true;
 var useRequestAnimationFrame = false;
-var wantedFramesPerSecond = 60;
+var wantedFramesPerSecond = 30;
 var backGroundFraction = 15;
 var scaledBackgroundWidth;
 var scaledBackgroundHeight;
 var repaintBackroundEveryFrame = true;
 var fullScreenifyBackground = true;
+
+var soundLoops = [];
+soundLoops.soundIDs = [];
+soundLoops.beatStrings = [];
 
 
 		// init the scene
@@ -306,7 +310,6 @@ function runCode() {
         return;
       }
 
-
     // this is so that the global variables are kept, see:
     // http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context
     window.eval.call(window,out);
@@ -348,6 +351,14 @@ function background(red, green, blue) {
 
 			clearDisplayList();
 			worldMatrix.identity();
+
+			// the sound list needs to be cleaned
+			// and the beatsPerMinute set to zero
+			// so that the user program can create its own from scratch
+			beatsPerMinute = 0;
+			soundLoops.soundIDs = [];
+			soundLoops.beatStrings = [];
+
 
 			//rootObject = new THREE.Object3D();
 			//scene.add(rootObject);
@@ -409,6 +420,56 @@ var parentObject, rootObject, rotate, translate;
 parentObject = 0;
 rootObject = 0;
 var currentObject;
+var beatsPerMinute = 0;
+var oldBeatsPerMinute = 0;
+var soundLoopTimer;
+var beatNumber = 0;
+
+bpm = function(a) {
+
+	beatsPerMinute = a;
+	if (oldBeatsPerMinute !== a){
+		//alert('changing beats per minute old ' + oldBeatsPerMinute + ' new: ' + a);
+		clearTimeout(soundLoopTimer);
+		
+		if (beatsPerMinute !== 0) {
+				soundLoopTimer = setTimeout('soundLoop();',(1000*60)/beatsPerMinute);
+		}
+    	oldBeatsPerMinute = beatsPerMinute;
+    }
+	//alert('AFTER old ' + oldBeatsPerMinute + ' new: ' + a);
+
+}
+
+soundLoop = function() {
+			clearTimeout(soundLoopTimer);
+			//alert('soundLoop');
+			
+			if (beatsPerMinute !== 0) {
+					soundLoopTimer = setTimeout('soundLoop();',(1000*60)/beatsPerMinute);
+			}
+			
+			beatNumber++;
+			beatNumber = beatNumber % 16;
+
+			//alert(' '+soundLoops.soundIDs.length);
+			for(var i in soundLoops.soundIDs){
+				var playOrNoPlay;
+				playOrNoPlay = soundLoops.beatStrings[i].charAt(beatNumber);
+				//alert('soundID: ' + soundLoops.soundIDs[i]);
+				if (playOrNoPlay === 'x') {
+					soundManager.play(soundLoops.soundIDs[i])
+				}
+			}
+}
+
+
+addSound = function(soundID,beatString) {
+
+    		soundLoops.soundIDs[soundLoops.soundIDs.length] = soundID;
+    		soundLoops.beatStrings[soundLoops.beatStrings.length] = beatString;
+
+}
 
 translate = function(a, b, c) {
   /*
@@ -668,6 +729,58 @@ draw
 		soundManager.play('glass5')
 
 //////////////////////////
+
+draw
+	bpm 440
+	addSound 's12' ,'xzzzzzzzzzzzzzzz'
+	addSound 's1'  ,'zzxzzzzzxzzzzzzx'
+	addSound 's2'  ,'xzzxzzxzzxxxxxxx'
+	addSound 's3'  ,'zzzxzzzxzzzxzzxz'
+	addSound 's5'  ,'xxzxxzxxzxxzxxxx'
+	rotate 0,1,frameCount/50
+	box
+		
+//////////////////////////
+
+draw
+	bpm 440
+	addSound 's12','xzzzzzzzzzzzzzzz'
+	addSound 's1'  ,'zzxzzzzzxzzzzzzx'
+	addSound 's2'  ,'xzzxzzxzzxxxxxxx'
+	addSound 's3'  ,'zzzxzzzxzzzxzzxz'
+	addSound 's5'  ,'xxzxxzxxzxxzxxxx'
+	rotate 0,1,frameCount/50
+	box
+
+//////////////////////////
+
+draw
+	bpm 200
+	//addSound 's12','zzzzzzzzzzzzzzzx'
+	addSound 's1'  ,'zzxzzzzzxzzzzzzx'
+	addSound 's2'  ,'zxzxzzxzzxxxxxxx'
+	addSound 's3'  ,'xzzxzzzxzzzxzzxz'
+	addSound 's5'  ,'xxxxxxxxzxxzxxxx'
+	scale 1+Math.sin(frameCount/33)
+	55 times
+		rotate frameCount/10,frameCount/250,frameCount/50
+		box
+
+///////////////////////////
+
+draw
+	bpm 200
+	//addSound 's12','zzzzzzzzzzzzzzzx'
+	addSound 's1'  ,'zzxzzzzzxzzzzzzx'
+	addSound 's2'  ,'zxzxzzxzzxxxxxxx'
+	addSound 's3'  ,'xzzxzzzxzzzxzzxz'
+	addSound 's5'  ,'xxxxxxxxzxxzxxxx'
+	scale 1+Math.sin(frameCount/33)
+	55 times
+		rotate frameCount/10,frameCount/250,frameCount/50
+		box
+		
+////////////////////////////
 
 */
 
