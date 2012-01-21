@@ -110,6 +110,13 @@
 				//--><!]]></script>
 		<!-- end of navigation menu-->
 
+		<!-- start boxy stuff-->
+			<script type="text/javascript" src="./boxy_files/project.js"></script>
+			<script type="text/javascript" src="./boxy_files/jquery-1.2.3.min.js"></script>
+			<link rel="stylesheet" href="./boxy_files/boxy.css" type="text/css">
+			<script type="text/javascript" src="./boxy_files/jquery.boxy.js"></script>
+		<!-- end boxy stuff-->
+
 	</head>
 <body>
 
@@ -118,48 +125,7 @@
 
 	<li><a href="#">Help</a>
 		<ul>
-			<li><a href="#">Remoras</a>
-				<ul>
-					<li><a href="#">Echeneis</a></li>
-					<li><a href="#">Phtheirichthys</a></li>
-					<li><a href="#">Remora</a></li>
-					<li><a href="#">Remorina</a></li>
-					<li><a href="#">Rhombochirus</a></li>
-				</ul>
-			</li>
-			<li><a href="#">Tilefishes</a>
-				<ul>
-					<li><a href="#">Caulolatilus</a></li>
-					<li><a href="#">Lopholatilus</a></li>
-					<li><a href="#">Malacanthus</a></li>
-				</ul>
-			</li>
-			<li><a href="#">Bluefishes</a>
-				<ul>
-					<li><a href="#">Pomatomus</a></li>
-					<li><a href="#">Scombrops</a></li>
-					<li><a href="#">Sphyraenops</a></li>
-				</ul>
-			</li>
-			<li><a href="#">Tigerfishes</a>
-				<ul>
-					<li><a href="#">Amniataba</a></li>
-					<li><a href="#">Bidyanus</a></li>
-					<li><a href="#">Hannia</a></li>
-					<li><a href="#">Hephaestus</a></li>
-					<li><a href="#">Lagusia</a></li>
-					<li><a href="#">Leiopotherapon</a></li>
-					<li><a href="#">Mesopristes</a></li>
-					<li><a href="#">Pelates</a></li>
-					<li><a href="#">Pelsartia</a></li>
-					<li><a href="#">Pingalla</a></li>
-					<li><a href="#">Rhyncopelates</a></li>
-					<li><a href="#">Scortum</a></li>
-					<li><a href="#">Syncomistes</a></li>
-					<li><a href="#">Terapon</a></li>
-				</ul>
-			</li>
-
+			<li><a href="#" onclick='Boxy.alert("This is a livecoding environment:<br><br>you type a program and it is immediately executed for you.<br><br>Try copying this and pasting it in the main window:<br><br><pre>rotate 0,1,frameCount/100\nbox</pre>");' >What is this?</a></li>
 		</ul>
 	</li>
 
@@ -855,6 +821,7 @@ function loadExample(whichExample) {
   }
 
 $(document).ready(function(){
+	boot();
 	editor.focus();
 });
 
