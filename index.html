@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Yet to be named</title>
+		<title>learningthree.js boiler plate for three.js</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		
@@ -11,153 +11,60 @@
 		<!-- https://github.com/mrdoob/stats.js -->
 		<script src="vendor/three.js/Stats.js"></script>
 
+		<script src="vendor/threex/THREEx.FullScreen.js"></script>
 		<script src="vendor/threex/THREEx.WindowResize.js"></script>
 		<script type="text/javascript" src="coffee-script.js"></script>
 
+		<script src="vendor/three.js/ShaderExtras.js"></script>
+
+		<script src="vendor/three.js/postprocessing/EffectComposer.js"></script>
+		<script src="vendor/three.js/postprocessing/RenderPass.js"></script>
+		<script src="vendor/three.js/postprocessing/ShaderPass.js"></script>
+		<script src="vendor/three.js/postprocessing/MaskPass.js"></script>
+		<script src="vendor/three.js/postprocessing/SavePass.js"></script>
+
 
 		<link  href="css/main.css" rel="stylesheet"/>
-		<link rel="stylesheet" href="codemirror.css">
-		<script src="codemirror.js"></script>
-		<link rel="stylesheet" href="night.css">
-		<script src="coffeescriptModified.js"></script>
-		<script src="jquery.min.js"></script>
-		<script src="jquery.viewport.js"></script>
-	
-		<style type="text/css">
-		  .CodeMirror {border: none; }
-		</style>
-
-		<!-- start of navigation menu-->
+				<link rel="stylesheet" href="codemirror.css">
+				<script src="codemirror.js"></script>
+				<link rel="stylesheet" href="night.css">
+				<script src="coffeescriptModified.js"></script>
+				<script src="jquery.min.js"></script>
+				<script src="jquery.viewport.js"></script>
+			
 				<style type="text/css">
-				
-				body {
-					font-family: arial, helvetica, serif;
-					background-color:#00ff00;
-				}
-				
-
-				#nav {
-					position: absolute;
-					top: 5px;
-					left: 5px;
-					margin-top:10px;
-					height:25px;
-					width:100%;
-					z-index:1;
-					background-color:#00ff00;
-				}
-
-				#nav, #nav ul { /* all lists */
-					padding: 0;
-					margin: 0;
-					list-style: none;
-					line-height: 1;
-				}
-				
-				#nav a {
-					display: block;
-					width: 10em;
-					text-decoration:none;
-					vertical-align:middle;
-				}
-				
-				#nav li { /* all list items */
-					float: left;
-					width: 10em; /* width needed or else Opera goes nuts */
-				}
-				
-				#nav li ul { /* second-level lists */
-					position: absolute;
-					background: #00ff00;
-					width: 10em;
-					left: -999em; /* using left instead of display to hide menus because display: none isn't read by screen readers */
-				}
-				
-				#nav li ul ul { /* third-and-above-level lists */
-					margin: -1em 0 0 10em;
-				}
-				
-				#nav li:hover ul ul, #nav li.sfhover ul ul {
-					left: -999em;
-				}
-				
-				#nav li:hover ul, #nav li li:hover ul, #nav li.sfhover ul, #nav li li.sfhover ul { /* lists nested under hovered list items */
-					left: auto;
-				}
-				
-				#content {
-					clear: left;
-					color: #ccc;
-				}
-				
+				  .CodeMirror {border: none; }
 				</style>
-				
-				<script type="text/javascript"><!--//--><![CDATA[//><!--
-				
-				sfHover = function() {
-					var sfEls = document.getElementById("nav").getElementsByTagName("LI");
-					for (var i=0; i<sfEls.length; i++) {
-						sfEls[i].onmouseover=function() {
-							this.className+=" sfhover";
-						}
-						sfEls[i].onmouseout=function() {
-							this.className=this.className.replace(new RegExp(" sfhover\\b"), "");
-						}
-					}
-				}
-				if (window.attachEvent) window.attachEvent("onload", sfHover);
-				
-				//--><!]]></script>
-		<!-- end of navigation menu-->
-
-		<!-- start boxy stuff-->
-			<script type="text/javascript" src="./boxy_files/project.js"></script>
-			<script type="text/javascript" src="./boxy_files/jquery-1.2.3.min.js"></script>
-			<link rel="stylesheet" href="./boxy_files/boxy.css" type="text/css">
-			<script type="text/javascript" src="./boxy_files/jquery.boxy.js"></script>
-		<!-- end boxy stuff-->
 
 	</head>
 <body>
 
 
-<ul id="nav">
-
-	<li><a href="#">Help</a>
-		<ul>
-			<li><a href="#" onclick='Boxy.alert("This is a livecoding environment:<br><br>you type a program and it is immediately executed for you.<br><br>Try copying this and pasting it in the main window:<br><br><pre>rotate 0,1,frameCount/100\nbox</pre>");' >What is this?</a></li>
-		</ul>
-	</li>
-
-	<li><a href="#">Examples</a>
-		<ul>
-		
-			<li><a href="#" onclick="loadExample('simpleCubeExample');">Simple cube</a></li>
-			<li><a href="#" onclick="loadExample('twoCubesExample');">Two cubes</a></li>
-			<li><a href="#" onclick="loadExample('cubesAndSpikes');">Cubes and spikes</a></li>
-			<li><a href="#" onclick="loadExample('turbineExample');">Turbine</a></li>
-			<li><a href="#" onclick="loadExample('yellowBackgroundExample');">Yellow background</a></li>
-			<li><a href="#" onclick="loadExample('littleSpiralOfCubes');">Little spiral</a></li>
-			<li><a href="#" onclick="loadExample('tentacleExample');">Tentacle</a></li>
-			<li><a href="#" onclick="loadExample('simpleSoundExample');">Simple sound</a></li>
-			<li><a href="#" onclick="loadExample('simpleRhythmExample');">Simple rhythm</a></li>
-			<li><a href="#" onclick="loadExample('industrialMusicExample');">Industrial music</a></li>
-		</ul>
-	</li>
-
-</ul>
 
 
 
 
+<div name="miao" id="miao" style="position: absolute; top: 0px; left: 0px; width: 100%;">
 
-<div name="miao" id="miao" style="position: absolute; top: 30px; left: 0px; width: 100%;">
-
-<canvas id="backGroundCanvas" style="position: absolute; top: 0px; left: 0px; z-index:-1;" width="100" height="100"></canvas> 
-
+<canvas id="backGroundCanvas" style="position: absolute; top: 0px; left: 0px; z-index:-1;" width="1500" height="800"></canvas> 
 
 
+
+<div name="divAtTheLeft" id="divAtTheLeft" style="height:10px;width:10px;background-color:blue">
+</div>
+<div name="divAtTheTop" id="divAtTheTop" style="height:10px;background-color:green">
+</div>
 		<form autocapitalize="off" autocorrect="off" wrap="off"><textarea id="code" name="code" autocapitalize="off" autocorrect="off" wrap="off" ></textarea></form>
+	<div name="mustBeVisibleDiv" id="mustBeVisibleDiv" style='font-size: 1em;width:100%; height:0.55em;background-color:red'>
+	</div>
+	<div name="mustBeVisibleDiv2" id="mustBeVisibleDiv2" style='font-size: 1em;width:100%; height:1px;background-color:yellow'>
+	</div>
+	<div name="mustBeInvisibleDiv" id="mustBeInvisibleDiv" style='font-size: 1em;width:100%; height:10px;background-color:green'>
+	</div>
+	<div name="neutralDiv" id="neutralDiv" style='font-size: 1em;width:100%; height:4em;background-color:brown'>
+	</div>
+	<div name="timeToGrowDiv" id="timeToGrowDiv" style='font-size: 1px;width:100%; height:10px;background-color:red'>
+	</div>
 
       </div>
 
@@ -197,28 +104,12 @@ var finalscene;
 var finalsceneContext;
 var backgroundScene;
 var backgroundSceneContext;
-var backgroundScene;
-var backgroundSceneContext;
-var potentiallyUseWebGL = true;
-var useRequestAnimationFrame = false;
-var wantedFramesPerSecond = 30;
-var backGroundFraction = 15;
-var scaledBackgroundWidth;
-var scaledBackgroundHeight;
-var repaintBackroundEveryFrame = true;
-var fullScreenifyBackground = true;
-
-var soundLoops = [];
-soundLoops.soundIDs = [];
-soundLoops.beatStrings = [];
 
 
 		// init the scene
 		function init(){
 
-			scaledBackgroundWidth = Math.floor(window.innerWidth / backGroundFraction);
-			scaledBackgroundHeight = Math.floor(window.innerHeight / backGroundFraction);
-
+			var potentiallyUseWebGL = true;
 			if( Detector.webgl && potentiallyUseWebGL ){
 
 				midgroundScene = document.createElement('canvas');
@@ -246,8 +137,8 @@ soundLoops.beatStrings = [];
 				finalsceneContext = finalscene.getContext('2d');
 		
 				backgroundScene = document.getElementById('backGroundCanvas');  
-				backgroundScene.width = scaledBackgroundWidth;
-				backgroundScene.height = scaledBackgroundHeight;
+				backgroundScene.width = window.innerWidth;
+				backgroundScene.height = window.innerHeight;
 				backgroundSceneContext = backgroundScene.getContext('2d');
 				
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -276,8 +167,8 @@ soundLoops.beatStrings = [];
 				finalsceneContext = finalscene.getContext('2d');
 		
 				backgroundScene = document.getElementById('backGroundCanvas');  
-				backgroundScene.width = scaledBackgroundWidth;
-				backgroundScene.height = scaledBackgroundHeight;
+				backgroundScene.width = window.innerWidth;
+				backgroundScene.height = window.innerHeight;
 				backgroundSceneContext = backgroundScene.getContext('2d');
 				
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -305,55 +196,85 @@ soundLoops.beatStrings = [];
 
 			// transparently support window resize
 			THREEx.WindowResize.bind(renderer, camera);
-			
-
 
 }
 
 		
 
 		// render the scene
-		var gradientDrawn = false;
 		function render() {
 
-		
-			if (repaintBackroundEveryFrame || (!gradientDrawn)) {
-			var diagonal = Math.sqrt(Math.pow(scaledBackgroundWidth/2,2)+ Math.pow( scaledBackgroundHeight/2,2));
-			var radgrad = backgroundSceneContext.createRadialGradient(scaledBackgroundWidth/2, scaledBackgroundHeight/2, 0,scaledBackgroundWidth/2, scaledBackgroundHeight/2, diagonal);  
-			radgrad.addColorStop(0, '#FF5F98');  
-			radgrad.addColorStop(0.75, '#FF0188');  
-			radgrad.addColorStop(1, 'rgba(255,1,136,0)');    
-			
-			backgroundSceneContext.globalAlpha = 1.0;
-			backgroundSceneContext.fillStyle = radgrad;
-			backgroundSceneContext.beginPath();
-			backgroundSceneContext.rect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
-			backgroundSceneContext.closePath();
-			backgroundSceneContext.fill();
-			
-			var gradObj = backgroundSceneContext.createLinearGradient(scaledBackgroundWidth/2,0,scaledBackgroundWidth/2,scaledBackgroundHeight/2);
-			gradObj.addColorStop(0.0, "#ff0000");
-			gradObj.addColorStop(1.0, "#aa0000");
+backgroundSceneContext.globalAlpha = 1.0;
+backgroundSceneContext.fillStyle = "#FFFFFF";
+backgroundSceneContext.beginPath();
+backgroundSceneContext.rect(0,0,window.innerWidth,window.innerHeight);
+backgroundSceneContext.closePath();
+backgroundSceneContext.fill();
 
-			backgroundSceneContext.globalAlpha = 0.3;
-			backgroundSceneContext.fillStyle = gradObj;
-			backgroundSceneContext.beginPath();
-			backgroundSceneContext.rect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
-			backgroundSceneContext.closePath();
-			backgroundSceneContext.fill();
-			
-			
-			gradientDrawn = true;
-			}
-			////////////////////////
 
-			if (!isWebGLUsed){
-			  midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight);
-			}
+backgroundSceneContext.fillStyle = "#00A308";
+backgroundSceneContext.beginPath();
+backgroundSceneContext.arc(220, 220, 50, 50, Math.PI*2, true);
+backgroundSceneContext.closePath();
+backgroundSceneContext.fill();
+ 
+backgroundSceneContext.fillStyle = "#FF1C0A";
+backgroundSceneContext.beginPath();
+backgroundSceneContext.arc(100, 100, 100, 0, Math.PI*2, true);
+backgroundSceneContext.closePath();
+backgroundSceneContext.fill();
+ 
+//the rectangle is half transparent
+backgroundSceneContext.fillStyle = "rgba(255, 255, 0, .5)"
+backgroundSceneContext.beginPath();
+backgroundSceneContext.rect(15, 150, 1000, 120);
+backgroundSceneContext.closePath();
+backgroundSceneContext.fill();
 
-			// the renderer draws into an offscreen canvas called midgroundScene
-			renderer.render( scene, camera );
+var radgrad = backgroundSceneContext.createRadialGradient(45,45,10,52,50,30);  
+  radgrad.addColorStop(0, '#A7D30C');  
+  radgrad.addColorStop(0.9, '#019F62');  
+  radgrad.addColorStop(1, 'rgba(1,159,98,0)');  
+    
+  var radgrad2 = backgroundSceneContext.createRadialGradient(105,105,20,112,120,50);  
+  radgrad2.addColorStop(0, '#FF5F98');  
+  radgrad2.addColorStop(0.75, '#FF0188');  
+  radgrad2.addColorStop(1, 'rgba(255,1,136,0)');  
+  
+  var radgrad3 = backgroundSceneContext.createRadialGradient(95,15,15,102,20,40);  
+  radgrad3.addColorStop(0, '#00C9FF');  
+  radgrad3.addColorStop(0.8, '#00B5E2');  
+  radgrad3.addColorStop(1, 'rgba(0,201,255,0)');  
+  
+  var radgrad4 = backgroundSceneContext.createRadialGradient(0,150,50,0,140,90);  
+  radgrad4.addColorStop(0, '#F4F201');  
+  radgrad4.addColorStop(0.8, '#E4C700');  
+  radgrad4.addColorStop(1, 'rgba(228,199,0,0)');  
+    
+  // draw shapes  
+  backgroundSceneContext.fillStyle = radgrad4;  
+  backgroundSceneContext.fillRect(0,0,150,150);  
+  backgroundSceneContext.fillStyle = radgrad3;  
+  backgroundSceneContext.fillRect(0,0,150,150);  
+  backgroundSceneContext.fillStyle = radgrad2;  
+  backgroundSceneContext.fillRect(0,0,150,150);  
+  backgroundSceneContext.fillStyle = radgrad;  
+  backgroundSceneContext.fillRect(0,0,150,150); 
+  
+  
+
+				if (!isWebGLUsed){
+				  midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight);
+				}
+
+				// the renderer draws into an offscreen canvas called midgroundScene
+				renderer.render( scene, camera );
 				
+
+
+
+
+
 		}
 		
 		
@@ -373,15 +294,7 @@ function runCode() {
     
 
       try {
-        var editorContent = "\t"+editor.getValue().replace(
-// Replace out the new line character.
-new RegExp( "\\n", "g" ),
- 
-// Put in ... so we can see a visual representation of where
-// the new line characters were replaced out.
-"\n\t"
-);
-        var verbatimSource = "draw = ->\n"+editorContent;
+        var verbatimSource = editor.getValue();
         
         // little trick. This is mangled up in the translation from coffeescript
         // (1).times ->
@@ -393,12 +306,12 @@ new RegExp( "\\n", "g" ),
         // You can tell a method declaration because the line below is indented
         // so you should check that.
         var elaboratedSource = verbatimSource;
-        //elaboratedSource =  elaboratedSource.replace(/^([a-z]+[a-zA-Z1-9]+)\s*$/gm, "$1 = ->" );
+        elaboratedSource =  elaboratedSource.replace(/^([a-z]+[a-zA-Z1-9]+)\s*$/gm, "$1 = ->" );
         elaboratedSource =  elaboratedSource.replace(/(\d+)\s+times/g, "( $1 + 0).times ->" );
-        elaboratedSource =  elaboratedSource.replace(/^([\s*[a-z]+[a-zA-Z1-9]+)[ ]*$/gm, "$1()" );
+        elaboratedSource =  elaboratedSource.replace(/^(\s*[a-z]+[a-zA-Z1-9]+)[ ]*$/gm, "$1()" );
         elaboratedSource =  elaboratedSource.replace(/\/\//g, "#" );
         
-        //alert(elaboratedSource);
+        alert(elaboratedSource);
       
         out = CoffeeScript.compile(elaboratedSource, {
           bare: "on"
@@ -406,9 +319,10 @@ new RegExp( "\\n", "g" ),
         //$("#coffee2js .error").hide();
         //return output.getSession().setValue(out);
       } catch (e) {
-        //alert("" + e);
+        alert("" + e);
         return;
       }
+
 
     // this is so that the global variables are kept, see:
     // http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context
@@ -436,33 +350,17 @@ function background(red, green, blue) {
 // animation loop
     	function animate() {
 
-			// loop on request animation loop
-			// - it has to be at the begining of the function
-			// - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
-			// requestAnimationFrame seems to only do 60 fps, which in my case is too much,
-			// I rather prefer to have a slower framerate but steadier.
-			
-			if (useRequestAnimationFrame) {
-				requestAnimationFrame( animate );
-			}
-			else {
-				setTimeout( 'animate();', 1000 / wantedFramesPerSecond );
-			}
-
 			clearDisplayList();
 			worldMatrix.identity();
-
-			// the sound list needs to be cleaned
-			// and the beatsPerMinute set to zero
-			// so that the user program can create its own from scratch
-			beatsPerMinute = 0;
-			soundLoops.soundIDs = [];
-			soundLoops.beatStrings = [];
-
 
 			//rootObject = new THREE.Object3D();
 			//scene.add(rootObject);
 			//parentObject = rootObject;
+
+			// loop on request animation loop
+			// - it has to be at the begining of the function
+			// - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+			requestAnimationFrame( animate );
 
 			if (typeof(draw) != "undefined") { 
 			  draw();
@@ -520,56 +418,6 @@ var parentObject, rootObject, rotate, translate;
 parentObject = 0;
 rootObject = 0;
 var currentObject;
-var beatsPerMinute = 0;
-var oldBeatsPerMinute = 0;
-var soundLoopTimer;
-var beatNumber = 0;
-
-bpm = function(a) {
-
-	beatsPerMinute = a;
-	if (oldBeatsPerMinute !== a){
-		//alert('changing beats per minute old ' + oldBeatsPerMinute + ' new: ' + a);
-		clearTimeout(soundLoopTimer);
-		
-		if (beatsPerMinute !== 0) {
-				soundLoopTimer = setTimeout('soundLoop();',(1000*60)/beatsPerMinute);
-		}
-    	oldBeatsPerMinute = beatsPerMinute;
-    }
-	//alert('AFTER old ' + oldBeatsPerMinute + ' new: ' + a);
-
-}
-
-soundLoop = function() {
-			clearTimeout(soundLoopTimer);
-			//alert('soundLoop');
-			
-			if (beatsPerMinute !== 0) {
-					soundLoopTimer = setTimeout('soundLoop();',(1000*60)/beatsPerMinute);
-			}
-			
-			beatNumber++;
-			beatNumber = beatNumber % 16;
-
-			//alert(' '+soundLoops.soundIDs.length);
-			for(var i in soundLoops.soundIDs){
-				var playOrNoPlay;
-				playOrNoPlay = soundLoops.beatStrings[i].charAt(beatNumber);
-				//alert('soundID: ' + soundLoops.soundIDs[i]);
-				if (playOrNoPlay === 'x') {
-					soundManager.play(soundLoops.soundIDs[i])
-				}
-			}
-}
-
-
-addSound = function(soundID,beatString) {
-
-    		soundLoops.soundIDs[soundLoops.soundIDs.length] = soundID;
-    		soundLoops.beatStrings[soundLoops.beatStrings.length] = beatString;
-
-}
 
 translate = function(a, b, c) {
   /*
@@ -666,138 +514,94 @@ Number.prototype.times = function(func, scope){
 
 /*
 
+draw = ->
+  
+  rotate(0.1,0.1,frameCount/100);
+  
+  for num in [1..30]
+    translate(1.1*Math.sin(frameCount/15),0.1*Math.sin(frameCount/15),0.1*Math.sin(frameCount/15));
+    rotate(0.2,0.2,0.3);
+    scale(0.7,1,0.7);
+    box(1,5,1);
 
-To set the flash security settings:
-http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html
+////////////////////////
 
-/////////////////////////////
 
-bpm 350
-//addSound 's12','zzzzzzzzzzzzzzzx'
-addSound 'additional13'  ,'zzx z zzzzxzzzzzzx'
-addSound 'additional9'  ,'zxzx z zxzzxxxxxxx'
-addSound 'additional7'  ,'zzxz z zzzxzzzzzzx'
-addSound 'additional1'  ,'zzxz z zzzzzzzzzzx'
-addSound 'additional8'  ,'xzzx z zzxzzzxzzxz'
-addSound 'additional6' ,'xxzz x zxzxzxxxxxx'
-addSound 'additional4' ,'zxzxzzzxzxxzzzxx'
-scale 2*Math.sin(frameCount/33)
-rotate frameCount/10,frameCount/250,frameCount/50
-box
+draw = ->
+  
+  translate 0,-1,0
+  rotate(0.1,0.1,frameCount/1000);
+  
+  for num in [1..30]
+    rotate(2.5,2.2,frameCount/1000);    translate(1.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005));
+    scale(0.9,1.1,0.9);
+    box(1,5,1);
 
-//////////////////////////////
+
+
+////////////////////////
+
+
+draw = ->
+  
+  rotate(0.1,0.1,frameCount/8000);
+  translate 0,0,0
+  
+  for num in [1..10]
+    rotate(2.5,2.2,frameCount/1000);    translate(1.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005));
+    scale(0.9,1.1,0.9);
+    box(1,1,1);
+
+///////////////////////////
+
+draw = ->  
+  for num in [1..10]
+    rotate(3.14,2,frameCount/1000);
+    box();
+
+
+////////////////////////////
+
+// magical language substitutions
+// allow this:
+
+draw
+  15 times
+     rotate 0, 1, frameCount/1000 
+     box
+    
+///////////////////////////
+draw
+	10 times
+		rotate frameCount/5000,frameCount/2000,frameCount/5124
+		box 1,1,0.1
+		
+///////////////////////////
+
+draw
+	scale 2.1
+	5 times
+		rotate 0,1,frameCount/500
+		box 0.1,1.5,0.1
+		translate 0,0.1,0.1
+		30 times
+			rotate 0,1,1
+			box 0.01,0.01,1
+
+///////////////////////////
+
+draw
+	70 times
+		rotate frameCount/101,1,frameCount/1000
+		box
+
+///////////////////////////
+draw
+	background 255,255,0,0.01
+	rotate 0,frameCount/20,frameCount/20
+	box
 
 */
-
-var simpleCubeExample = ""+
-	"rotate 0, 1, frameCount/100\n"+
-	"box\n";
-
-var twoCubesExample = ""+
-""+		"2 times\n"+
-"\t"+		"rotate 0, 1, frameCount/200\n"+
-"\t"+		"box\n";
-
-var cubesAndSpikes = ""+
-""+		"scale 2.1\n"+
-""+		"5 times\n"+
-"\t"+			"rotate 0,1,frameCount/500\n"+
-"\t"+			"box 0.1,0.1,0.1\n"+
-"\t"+			"translate 0,0.1,0.1\n"+
-"\t"+			"3 times\n"+
-"\t\t"+				"rotate 0,1,1\n"+
-"\t\t"+				"box 0.01,0.01,1\n";
-
-var turbineExample = ""+
-""+		"70 times\n"+
-"\t"+		"rotate frameCount/101,1,frameCount/1000\n"+
-"\t"+		"box\n";
-
-var yellowBackgroundExample = ""+
-""+		"background 255,255,0\n"+
-""+		"rotate 0,frameCount/20,frameCount/20\n"+
-""+		"box\n";
-
-var simpleSoundExample = ""+
-""+		"rotate 0,1,frameCount/100\n"+
-""+		"box\n"+
-""+		"if frameCount % 20 == 0\n"+
-"\t"+		"soundManager.play('s12')\n";
-
-var littleSpiralOfCubes = ""+
-""+		"scale 0.1\n"+
-""+		"10 times\n"+
-"\t"+		"rotate 0,1,frameCount/100\n"+
-"\t"+		"translate 1,1,1\n"+
-"\t"+		"box\n";
-
-var tentacleExample = ""+
-""+		"scale 0.1\n"+
-""+		"3 times\n"+
-"\t"+		"rotate 0,1,1\n"+
-"\t"+		"10 times\n"+
-"\t\t"+		"rotate 0,1,frameCount/100\n"+
-"\t\t"+		"scale 0.9\n"+
-"\t\t"+		"translate 1,1,1\n"+
-"\t\t"+		"box\n";
-
-var simpleRhythmExample = ""+
-""+		"bpm 240\n"+
-""+		"addSound 's12','xzzzzzzzzzzzzzzz'\n"+
-""+		"addSound 's1'  ,'zzxzzzzzxzzzzzzx'\n"+
-""+		"addSound 's2'  ,'xzzxzzxzzxxxxxxx'\n"+
-""+		"addSound 's3'  ,'zzzxzzzxzzzxzzxz'\n"+
-""+		"addSound 's5'  ,'xxzxxzxxzxxzxxxx'\n"+
-""+		"rotate 0,1,frameCount/50\n"+
-""+		"box\n";
-
-var industrialMusicExample = ""+
-""+		"bpm 350\n"+
-""+		"addSound 'additional13'  ,'zzx z zzzzxzzzzzzx'\n"+
-""+		"addSound 'additional9'  ,'zxzx z zxzzxxxxxxx'\n"+
-""+		"addSound 'additional7'  ,'zzxz z zzzxzzzzzzx'\n"+
-""+		"addSound 'additional1'  ,'zzxz z zzzzzzzzzzx'\n"+
-""+		"addSound 'additional8'  ,'xzzx z zzxzzzxzzxz'\n"+
-""+		"addSound 'additional6' ,'xzxz x zxzxxxzxxxx'\n"+
-""+		"addSound 'additional4' ,'zxzxzzzxxzzzzzxx'\n";
-
-
-function loadExample(whichExample) {
-
-	switch(whichExample) {
-		case 'simpleCubeExample':
-			editor.setValue(simpleCubeExample);
-			break;
-		case 'twoCubesExample':
-			editor.setValue(twoCubesExample);
-			break;
-		case 'cubesAndSpikes':
-			editor.setValue(cubesAndSpikes);
-			break;
-		case 'turbineExample':
-			editor.setValue(turbineExample);
-			break;
-		case 'yellowBackgroundExample':
-			editor.setValue(yellowBackgroundExample);
-			break;
-		case 'simpleSoundExample':
-			editor.setValue(simpleSoundExample);
-			break;
-		case 'littleSpiralOfCubes':
-			editor.setValue(littleSpiralOfCubes);
-			break;
-		case 'tentacleExample':
-			editor.setValue(tentacleExample);
-			break;
-		case 'simpleRhythmExample':
-			editor.setValue(simpleRhythmExample);
-			break;
-		case 'industrialMusicExample':
-			editor.setValue(industrialMusicExample);
-			break;
-	}
-	runCode();
-}
 
 	</script>
 	
@@ -820,61 +624,167 @@ function loadExample(whichExample) {
     editor.setOption("theme", theme);
   }
 
-$(document).ready(function(){
-	boot();
-	editor.focus();
-});
+function redLayerVisible() {
+        return $(window).height() > $(mustBeVisibleDiv).offset().top - 0;
 
-
-///////////////////////////////////////////////
-
-window.addEventListener(
-    'load',
-    function () {
-        //alert('resizing canvas');
-        var canvas = document.getElementById('backGroundCanvas');
-
-        if (fullScreenifyBackground) {
-        	fullscreenify(canvas);
-        }
-    },
-    false
-);
-
-function fullscreenify(canvas) {
-    var style = canvas.getAttribute('style') || '';
-    //alert('style: ' +  style);
-    
-    window.addEventListener('resize', function () {resize(canvas);}, false);
-
-    resize(canvas);
-
-    function resize(canvas) {
-        var scale = {x: 1, y: 1};
-        scale.x = (window.innerWidth + 40) / canvas.width;
-        scale.y = (window.innerHeight + 40) / canvas.height;
-        
-        if (scale.x < 1 || scale.y < 1) {
-            scale = '1, 1';
-        } else if (scale.x < scale.y) {
-            scale = scale.x + ', ' + scale.x;
-        } else {
-            scale = scale.y + ', ' + scale.y;
-        }
-        
-        canvas.setAttribute('style', style + ' ' + '-ms-transform-origin: left top; -webkit-transform-origin: left top; -moz-transform-origin: left top; -o-transform-origin: left top; transform-origin: left top; -ms-transform: scale(' + scale + '); -webkit-transform: scale3d(' + scale + ', 1); -moz-transform: scale(' + scale + '); -o-transform: scale(' + scale + '); transform: scale(' + scale + ');');
-    }
+			          //return checkIfLayerIsVisible("mustBeVisibleDiv");
 }
 
+function yellowLayerVisible() {
+        return $(window).height() > $(mustBeVisibleDiv2).offset().top - 0;
+}
+
+function timeToGrowLayerVisible() {
+        return $(window).height() > $(timeToGrowDiv).offset().top - 0;
+}
+
+
+/*
+function checkIfLayerIsVisible(whichLayer) {
+			          var message = "";        
+						$("div:in-viewport").each(function() {
+						  message = message + $(this).attr("id");
+						});
+						if (message.indexOf(whichLayer) !== -1) {
+						  return true;
+						}
+						return false;
+}
+*/
+
+var expanding = false;
+var shrinking = false;
+
+function growABit(){
+		 expanding = true;
+		  $(miao).animate({
+		  fontSize:"50em"
+		},
+		{
+		  duration: 1000,
+			specialEasing: {
+				  width: 'linear',
+				  height: 'linear'
+				},
+		  step: function(now, fx) {
+			  
+					  editor.refresh();
+						if (!timeToGrowLayerVisible()) {
+					      editor.refresh();
+						  expanding = false;
+						  $(miao).stop();
+						}
+
+
+		  }
+});
+}
+
+
+function makeSureItsAllVisible(){
+
+		setTimeout('makeSureItsAllVisible();',100);
+		if (expanding) return;
+		if (shrinking) return;
+
+		/*if (!checkIfLayerIsVisible("divAtTheTop") || !checkIfLayerIsVisible("divAtTheLeft")){
+		   scroll(0,0);
+		}
+		*/
+
+		//if (!checkIfLayerIsVisible("divAtTheLeft")){
+		if (!changesHappened) return;
+		changesHappened = false;
+		
+		if (timeToGrowLayerVisible()) {
+		   // grow a bit!
+		   growABit();
+		}
+
+		//}
+
+		/*
+		if (editor.getCursor().line == editor.lineCount()-1) {
+			if (editor.getCursor().line !=0){
+				editor.setCursor(editor.lineCount()-2,editor.getCursor().ch);
+			}
+		}
+		*/
+		
+		scroll(0,0);
+		
+		if (yellowLayerVisible()) return;
+		//alert('maybe shrinking unless other anims are ongoing')
+		
+		//alert('shrinking')
+		shrinking = true;
+
+		  $(miao).animate({
+		  fontSize:"0.5em"
+		},
+		{
+		  duration: 1000,
+			specialEasing: {
+				  width: 'linear',
+				  height: 'linear'
+				},
+		  step: function(now, fx) {
+			  
+					  editor.refresh();
+						if (yellowLayerVisible()) {
+						  //alert('shrinking anim should stop')
+						  shrinking = false;
+					      //editor.refresh();
+						  $(miao).stop();
+						}
+
+
+		  }
+		});
+}
+
+drawLoopTimer=setTimeout('makeSureItsAllVisible();',100);
+  
+  initialAnimation = function(){
+
+  //alert('animating');
+  //alert($(miao).css('height'))
+
+		 expanding = true;
+		  $(miao).animate({
+		  fontSize:"50em"
+		},
+		{
+		  duration: 1000,
+			specialEasing: {
+				  width: 'linear',
+				  height: 'easeOutBounce'
+				},
+		  step: function(now, fx) {
+			  
+					  editor.refresh();
+			          var message = "";        
+						$("div:in-viewport").each(function() {
+						  message = message + $(this).attr("id");
+						});
+						if (message.indexOf("mustBeInvisibleDiv") === -1) {
+					      //editor.refresh();
+						  expanding = false;
+						  $(miao).stop();
+						}
+
+
+		  }
+		});
+  
+  }
+
+$(document).ready(function(){
+	editor.focus();
+	initialAnimation();
+});
+
 </script>
-
-
-
-
-<script type="text/javascript" src="./script/soundmanager2.js"></script>
-<script type="text/javascript" src="./script/mpc.js"></script>
-
-
 
 </body>
 </html>
