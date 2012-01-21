@@ -14,27 +14,178 @@
 		<script src="vendor/threex/THREEx.WindowResize.js"></script>
 		<script type="text/javascript" src="coffee-script.js"></script>
 
+
 		<link  href="css/main.css" rel="stylesheet"/>
-				<link rel="stylesheet" href="codemirror.css">
-				<script src="codemirror.js"></script>
-				<link rel="stylesheet" href="night.css">
-				<script src="coffeescriptModified.js"></script>
-				<script src="jquery.min.js"></script>
-				<script src="jquery.viewport.js"></script>
-			
+		<link rel="stylesheet" href="codemirror.css">
+		<script src="codemirror.js"></script>
+		<link rel="stylesheet" href="night.css">
+		<script src="coffeescriptModified.js"></script>
+		<script src="jquery.min.js"></script>
+		<script src="jquery.viewport.js"></script>
+	
+		<style type="text/css">
+		  .CodeMirror {border: none; }
+		</style>
+
+		<!-- start of navigation menu-->
 				<style type="text/css">
-				  .CodeMirror {border: none; }
+				
+				body {
+					font-family: arial, helvetica, serif;
+					background-color:#00ff00;
+				}
+				
+
+				#nav {
+					position: absolute;
+					top: 5px;
+					left: 5px;
+					margin-top:10px;
+					height:25px;
+					width:100%;
+					z-index:1;
+					background-color:#00ff00;
+				}
+
+				#nav, #nav ul { /* all lists */
+					padding: 0;
+					margin: 0;
+					list-style: none;
+					line-height: 1;
+				}
+				
+				#nav a {
+					display: block;
+					width: 10em;
+					text-decoration:none;
+					vertical-align:middle;
+				}
+				
+				#nav li { /* all list items */
+					float: left;
+					width: 10em; /* width needed or else Opera goes nuts */
+				}
+				
+				#nav li ul { /* second-level lists */
+					position: absolute;
+					background: #00ff00;
+					width: 10em;
+					left: -999em; /* using left instead of display to hide menus because display: none isn't read by screen readers */
+				}
+				
+				#nav li ul ul { /* third-and-above-level lists */
+					margin: -1em 0 0 10em;
+				}
+				
+				#nav li:hover ul ul, #nav li.sfhover ul ul {
+					left: -999em;
+				}
+				
+				#nav li:hover ul, #nav li li:hover ul, #nav li.sfhover ul, #nav li li.sfhover ul { /* lists nested under hovered list items */
+					left: auto;
+				}
+				
+				#content {
+					clear: left;
+					color: #ccc;
+				}
+				
 				</style>
+				
+				<script type="text/javascript"><!--//--><![CDATA[//><!--
+				
+				sfHover = function() {
+					var sfEls = document.getElementById("nav").getElementsByTagName("LI");
+					for (var i=0; i<sfEls.length; i++) {
+						sfEls[i].onmouseover=function() {
+							this.className+=" sfhover";
+						}
+						sfEls[i].onmouseout=function() {
+							this.className=this.className.replace(new RegExp(" sfhover\\b"), "");
+						}
+					}
+				}
+				if (window.attachEvent) window.attachEvent("onload", sfHover);
+				
+				//--><!]]></script>
+		<!-- end of navigation menu-->
 
 	</head>
 <body>
 
 
+<ul id="nav">
+
+	<li><a href="#">Help</a>
+		<ul>
+			<li><a href="#">Remoras</a>
+				<ul>
+					<li><a href="#">Echeneis</a></li>
+					<li><a href="#">Phtheirichthys</a></li>
+					<li><a href="#">Remora</a></li>
+					<li><a href="#">Remorina</a></li>
+					<li><a href="#">Rhombochirus</a></li>
+				</ul>
+			</li>
+			<li><a href="#">Tilefishes</a>
+				<ul>
+					<li><a href="#">Caulolatilus</a></li>
+					<li><a href="#">Lopholatilus</a></li>
+					<li><a href="#">Malacanthus</a></li>
+				</ul>
+			</li>
+			<li><a href="#">Bluefishes</a>
+				<ul>
+					<li><a href="#">Pomatomus</a></li>
+					<li><a href="#">Scombrops</a></li>
+					<li><a href="#">Sphyraenops</a></li>
+				</ul>
+			</li>
+			<li><a href="#">Tigerfishes</a>
+				<ul>
+					<li><a href="#">Amniataba</a></li>
+					<li><a href="#">Bidyanus</a></li>
+					<li><a href="#">Hannia</a></li>
+					<li><a href="#">Hephaestus</a></li>
+					<li><a href="#">Lagusia</a></li>
+					<li><a href="#">Leiopotherapon</a></li>
+					<li><a href="#">Mesopristes</a></li>
+					<li><a href="#">Pelates</a></li>
+					<li><a href="#">Pelsartia</a></li>
+					<li><a href="#">Pingalla</a></li>
+					<li><a href="#">Rhyncopelates</a></li>
+					<li><a href="#">Scortum</a></li>
+					<li><a href="#">Syncomistes</a></li>
+					<li><a href="#">Terapon</a></li>
+				</ul>
+			</li>
+
+		</ul>
+	</li>
+
+	<li><a href="#">Examples</a>
+		<ul>
+		
+			<li><a href="#" onclick="loadExample('simpleCubeExample');">Simple cube</a></li>
+			<li><a href="#" onclick="loadExample('twoCubesExample');">Two cubes</a></li>
+			<li><a href="#" onclick="loadExample('cubesAndSpikes');">Cubes and spikes</a></li>
+			<li><a href="#" onclick="loadExample('turbineExample');">Turbine</a></li>
+			<li><a href="#" onclick="loadExample('yellowBackgroundExample');">Yellow background</a></li>
+			<li><a href="#" onclick="loadExample('littleSpiralOfCubes');">Little spiral</a></li>
+			<li><a href="#" onclick="loadExample('tentacleExample');">Tentacle</a></li>
+			<li><a href="#" onclick="loadExample('simpleSoundExample');">Simple sound</a></li>
+			<li><a href="#" onclick="loadExample('simpleRhythmExample');">Simple rhythm</a></li>
+			<li><a href="#" onclick="loadExample('industrialMusicExample');">Industrial music</a></li>
+		</ul>
+	</li>
+
+</ul>
 
 
 
 
-<div name="miao" id="miao" style="position: absolute; top: 0px; left: 0px; width: 100%;">
+
+<div name="miao" id="miao" style="position: absolute; top: 30px; left: 0px; width: 100%;">
 
 <canvas id="backGroundCanvas" style="position: absolute; top: 0px; left: 0px; z-index:-1;" width="100" height="100"></canvas> 
 
@@ -549,165 +700,9 @@ Number.prototype.times = function(func, scope){
 
 /*
 
-rotate(0.1,0.1,frameCount/100);
-
-for num in [1..30]
-	translate(1.1*Math.sin(frameCount/15),0.1*Math.sin(frameCount/15),0.1*Math.sin(frameCount/15));
-	rotate(0.2,0.2,0.3);
-	scale(0.7,1,0.7);
-	box(1,5,1);
-
-////////////////////////
-
-
-translate 0,-1,0
-rotate(0.1,0.1,frameCount/1000);
-
-for num in [1..30]
-	rotate(2.5,2.2,frameCount/1000);    translate(1.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005));
-	scale(0.9,1.1,0.9);
-	box(1,5,1);
-
-////////////////////////
-
-rotate(0.1,0.1,frameCount/8000);
-translate 0,0,0
-  
-for num in [1..10]
-	rotate(2.5,2.2,frameCount/1000);    translate(1.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005));
-	scale(0.9,1.1,0.9);
-	box(1,1,1);
-
-///////////////////////////
-
-for num in [1..10]
-	rotate(3.14,2,frameCount/1000);
-	box();
-
-
-////////////////////////////
-
-// magical language substitutions
-// allow this:
-
-15 times
- rotate 0, 1, frameCount/1000 
- box
-    
-///////////////////////////
-
-10 times
-	rotate frameCount/5000,frameCount/2000,frameCount/5124
-	box 1,1,0.1
-		
-///////////////////////////
-
-scale 2.1
-5 times
-	rotate 0,1,frameCount/500
-	box 0.1,1.5,0.1
-	translate 0,0.1,0.1
-	30 times
-		rotate 0,1,1
-		box 0.01,0.01,1
-
-///////////////////////////
-
-70 times
-	rotate frameCount/101,1,frameCount/1000
-	box
-
-///////////////////////////
-background 255,255,0,0.01
-rotate 0,frameCount/20,frameCount/20
-box
-	
-//
 
 To set the flash security settings:
 http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html
-
-/////////////////////////
-
-rotate 0,1,frameCount/100
-box
-if frameCount % 20 == 0
-	soundManager.play('s12')
-
-/////////////////////////
-
-scale 0.1
-10 times
-	rotate 0,1,frameCount/100
-	translate 1,1,1
-	box
-if frameCount % 20 == 0
-	soundManager.play('s12')
-
-/////////////////////////
-
-scale 0.1
-3 times
-	rotate 0,1,1
-	10 times
-		rotate 0,1,frameCount/100
-		scale 0.9
-		translate 1,1,1
-		box
-if frameCount % 70 == 0
-	soundManager.play('s12')
-
-//////////////////////////
-
-scale 0.1
-10 times
-	rotate 0,1,frameCount/100
-	translate 1,1,1
-	box
-if (frameCount+15) % 30 == 0
-	soundManager.play('glass1')
-if (frameCount+0) % 30 == 0
-	soundManager.play('glass5')
-
-//////////////////////////
-
-bpm 440
-addSound 's12','xzzzzzzzzzzzzzzz'
-addSound 's1'  ,'zzxzzzzzxzzzzzzx'
-addSound 's2'  ,'xzzxzzxzzxxxxxxx'
-addSound 's3'  ,'zzzxzzzxzzzxzzxz'
-addSound 's5'  ,'xxzxxzxxzxxzxxxx'
-rotate 0,1,frameCount/50
-box
-
-//////////////////////////
-
-bpm 200
-//addSound 's12','zzzzzzzzzzzzzzzx'
-addSound 's1'  ,'zzxzzzzzxzzzzzzx'
-addSound 's2'  ,'zxzxzzxzzxxxxxxx'
-addSound 's3'  ,'xzzxzzzxzzzxzzxz'
-addSound 's5'  ,'xxxxxxxxzxxzxxxx'
-scale 1+Math.sin(frameCount/33)
-5 times
-	rotate frameCount/10,frameCount/250,frameCount/50
-	box
-		
-////////////////////////////
-
-bpm 400
-//addSound 's12','zzzzzzzzzzzzzzzx'
-//addSound 'additional13'  ,'zzx z zzzzxzzzzzzx'
-//addSound 'additional9'  ,'zxzx z zxzzxxxxxxx'
-addSound 'additional7'  ,'zzxz z zzzxzzzzzzx'
-addSound 'additional1'  ,'zzxz z zzzzzzzzzzx'
-addSound 'additional8'  ,'xzzx z zzxzzzxzzxz'
-addSound 'additional6' ,'xzxz x zxzxxxzxxxx'
-addSound 'additional4' ,'zxzxzzzxxzzzzzxx'
-scale 1+Math.sin(frameCount/33)
-5 times
-	rotate frameCount/10,frameCount/250,frameCount/50
-	box
 
 /////////////////////////////
 
@@ -727,6 +722,116 @@ box
 //////////////////////////////
 
 */
+
+var simpleCubeExample = ""+
+	"rotate 0, 1, frameCount/100\n"+
+	"box\n";
+
+var twoCubesExample = ""+
+""+		"2 times\n"+
+"\t"+		"rotate 0, 1, frameCount/200\n"+
+"\t"+		"box\n";
+
+var cubesAndSpikes = ""+
+""+		"scale 2.1\n"+
+""+		"5 times\n"+
+"\t"+			"rotate 0,1,frameCount/500\n"+
+"\t"+			"box 0.1,0.1,0.1\n"+
+"\t"+			"translate 0,0.1,0.1\n"+
+"\t"+			"3 times\n"+
+"\t\t"+				"rotate 0,1,1\n"+
+"\t\t"+				"box 0.01,0.01,1\n";
+
+var turbineExample = ""+
+""+		"70 times\n"+
+"\t"+		"rotate frameCount/101,1,frameCount/1000\n"+
+"\t"+		"box\n";
+
+var yellowBackgroundExample = ""+
+""+		"background 255,255,0\n"+
+""+		"rotate 0,frameCount/20,frameCount/20\n"+
+""+		"box\n";
+
+var simpleSoundExample = ""+
+""+		"rotate 0,1,frameCount/100\n"+
+""+		"box\n"+
+""+		"if frameCount % 20 == 0\n"+
+"\t"+		"soundManager.play('s12')\n";
+
+var littleSpiralOfCubes = ""+
+""+		"scale 0.1\n"+
+""+		"10 times\n"+
+"\t"+		"rotate 0,1,frameCount/100\n"+
+"\t"+		"translate 1,1,1\n"+
+"\t"+		"box\n";
+
+var tentacleExample = ""+
+""+		"scale 0.1\n"+
+""+		"3 times\n"+
+"\t"+		"rotate 0,1,1\n"+
+"\t"+		"10 times\n"+
+"\t\t"+		"rotate 0,1,frameCount/100\n"+
+"\t\t"+		"scale 0.9\n"+
+"\t\t"+		"translate 1,1,1\n"+
+"\t\t"+		"box\n";
+
+var simpleRhythmExample = ""+
+""+		"bpm 240\n"+
+""+		"addSound 's12','xzzzzzzzzzzzzzzz'\n"+
+""+		"addSound 's1'  ,'zzxzzzzzxzzzzzzx'\n"+
+""+		"addSound 's2'  ,'xzzxzzxzzxxxxxxx'\n"+
+""+		"addSound 's3'  ,'zzzxzzzxzzzxzzxz'\n"+
+""+		"addSound 's5'  ,'xxzxxzxxzxxzxxxx'\n"+
+""+		"rotate 0,1,frameCount/50\n"+
+""+		"box\n";
+
+var industrialMusicExample = ""+
+""+		"bpm 350\n"+
+""+		"addSound 'additional13'  ,'zzx z zzzzxzzzzzzx'\n"+
+""+		"addSound 'additional9'  ,'zxzx z zxzzxxxxxxx'\n"+
+""+		"addSound 'additional7'  ,'zzxz z zzzxzzzzzzx'\n"+
+""+		"addSound 'additional1'  ,'zzxz z zzzzzzzzzzx'\n"+
+""+		"addSound 'additional8'  ,'xzzx z zzxzzzxzzxz'\n"+
+""+		"addSound 'additional6' ,'xzxz x zxzxxxzxxxx'\n"+
+""+		"addSound 'additional4' ,'zxzxzzzxxzzzzzxx'\n";
+
+
+function loadExample(whichExample) {
+
+	switch(whichExample) {
+		case 'simpleCubeExample':
+			editor.setValue(simpleCubeExample);
+			break;
+		case 'twoCubesExample':
+			editor.setValue(twoCubesExample);
+			break;
+		case 'cubesAndSpikes':
+			editor.setValue(cubesAndSpikes);
+			break;
+		case 'turbineExample':
+			editor.setValue(turbineExample);
+			break;
+		case 'yellowBackgroundExample':
+			editor.setValue(yellowBackgroundExample);
+			break;
+		case 'simpleSoundExample':
+			editor.setValue(simpleSoundExample);
+			break;
+		case 'littleSpiralOfCubes':
+			editor.setValue(littleSpiralOfCubes);
+			break;
+		case 'tentacleExample':
+			editor.setValue(tentacleExample);
+			break;
+		case 'simpleRhythmExample':
+			editor.setValue(simpleRhythmExample);
+			break;
+		case 'industrialMusicExample':
+			editor.setValue(industrialMusicExample);
+			break;
+	}
+	runCode();
+}
 
 	</script>
 	
