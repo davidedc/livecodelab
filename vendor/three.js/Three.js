@@ -160,8 +160,25 @@ THREE.DOMRenderer=function(){var a=null,b=new THREE.Projector,c,d,e,f;this.domEl
 THREE.CanvasRenderer=function(a){function b(a){if(t!=a)m.globalAlpha=t=a}function c(a){if(u!=a){switch(a){case THREE.NormalBlending:m.globalCompositeOperation="source-over";break;case THREE.AdditiveBlending:m.globalCompositeOperation="lighter";break;case THREE.SubtractiveBlending:m.globalCompositeOperation="darker"}u=a}}function d(a){if(v!=a)m.strokeStyle=v=a}function e(a){if(x!=a)m.fillStyle=x=a}var a=a||{},f=this,g,h,i,l=new THREE.Projector,k=void 0!==a.canvas?a.canvas:document.createElement("canvas"),
 n,q,o,p,m=k.getContext("2d"),r=new THREE.Color(0),s=0,t=1,u=0,v=null,x=null,B=null,D=null,C=null,A,H,I,N,$=new THREE.RenderableVertex,K=new THREE.RenderableVertex,Q,L,G,j,W,y,E,S,T,R,ka,ga,V=new THREE.Color,ba=new THREE.Color,ca=new THREE.Color,da=new THREE.Color,ha=new THREE.Color,Qa=[],la=[],za,Aa,Ja,Da,$a,Ta,ib,db,Wa,Xa,ra=new THREE.Rectangle,Ba=new THREE.Rectangle,ja=new THREE.Rectangle,ab=!1,aa=new THREE.Color,P=new THREE.Color,O=new THREE.Color,Ea=new THREE.Vector3,gc,hc,Kc,eb,ic,uc,a=16;gc=
 document.createElement("canvas");gc.width=gc.height=2;hc=gc.getContext("2d");hc.fillStyle="rgba(0,0,0,1)";hc.fillRect(0,0,2,2);Kc=hc.getImageData(0,0,2,2);eb=Kc.data;ic=document.createElement("canvas");ic.width=ic.height=a;uc=ic.getContext("2d");uc.translate(-a/2,-a/2);uc.scale(a,a);a--;this.domElement=k;this.sortElements=this.sortObjects=this.autoClear=!0;this.info={render:{vertices:0,faces:0}};this.setSize=function(a,b){n=a;q=b;o=Math.floor(n/2);p=Math.floor(q/2);k.width=n;k.height=q;ra.set(-o,
--p,o,p);Ba.set(-o,-p,o,p);t=1;u=0;C=D=B=x=v=null};this.setClearColor=function(a,b){r.copy(a);s=b;Ba.set(-o,-p,o,p)};this.setClearColorHex=function(a,b){r.setHex(a);s=b;Ba.set(-o,-p,o,p)};this.clear=function(){m.setTransform(1,0,0,-1,o,p);Ba.isEmpty()||(Ba.minSelf(ra),Ba.inflate(2),1>s&&m.clearRect(Math.floor(Ba.getX()),Math.floor(Ba.getY()),Math.floor(Ba.getWidth()),Math.floor(Ba.getHeight())),0<s&&(c(THREE.NormalBlending),b(1),e("rgba("+Math.floor(255*r.r)+","+Math.floor(255*r.g)+","+Math.floor(255*
-r.b)+","+s+")"),m.fillRect(Math.floor(Ba.getX()),Math.floor(Ba.getY()),Math.floor(Ba.getWidth()),Math.floor(Ba.getHeight()))),Ba.empty())};this.render=function(a,k){function q(a){var b,c,d,e;aa.setRGB(0,0,0);P.setRGB(0,0,0);O.setRGB(0,0,0);for(b=0,c=a.length;b<c;b++)d=a[b],e=d.color,d instanceof THREE.AmbientLight?(aa.r+=e.r,aa.g+=e.g,aa.b+=e.b):d instanceof THREE.DirectionalLight?(P.r+=e.r,P.g+=e.g,P.b+=e.b):d instanceof THREE.PointLight&&(O.r+=e.r,O.g+=e.g,O.b+=e.b)}function n(a,b,c,d){var e,f,
+-p,o,p);Ba.set(-o,-p,o,p);t=1;u=0;C=D=B=x=v=null};this.setClearColor=function(a,b){r.copy(a);s=b;Ba.set(-o,-p,o,p)};this.setClearColorHex=function(a,b){r.setHex(a);s=b;Ba.set(-o,-p,o,p)};
+
+
+this.clear=function(){
+m.setTransform(1,0,0,-1,o,p);
+
+e("rgba("+Math.floor(255*r.r)+","+Math.floor(255*r.g)+","+Math.floor(255*
+r.b)+","+s+")");
+m.fillRect(Math.floor(Ba.getX()),Math.floor(Ba.getY()),Math.floor(Ba.getWidth()),Math.floor(Ba.getHeight()));
+
+/*
+Ba.isEmpty()||(Ba.minSelf(ra),Ba.inflate(2),1>s &&
+m.clearRect(Math.floor(Ba.getX()),Math.floor(Ba.getY()),Math.floor(Ba.getWidth()),Math.floor(Ba.getHeight())),0<s&&(c(THREE.NormalBlending),b(1),e("rgba("+Math.floor(255*r.r)+","+Math.floor(255*r.g)+","+Math.floor(255*
+r.b)+","+s+")"),m.fillRect(Math.floor(Ba.getX()),Math.floor(Ba.getY()),Math.floor(Ba.getWidth()),Math.floor(Ba.getHeight()))),Ba.empty())
+*/
+};
+
+
+this.render=function(a,k){function q(a){var b,c,d,e;aa.setRGB(0,0,0);P.setRGB(0,0,0);O.setRGB(0,0,0);for(b=0,c=a.length;b<c;b++)d=a[b],e=d.color,d instanceof THREE.AmbientLight?(aa.r+=e.r,aa.g+=e.g,aa.b+=e.b):d instanceof THREE.DirectionalLight?(P.r+=e.r,P.g+=e.g,P.b+=e.b):d instanceof THREE.PointLight&&(O.r+=e.r,O.g+=e.g,O.b+=e.b)}function n(a,b,c,d){var e,f,
 g,aa,j,h;for(e=0,f=a.length;e<f;e++)g=a[e],aa=g.color,g instanceof THREE.DirectionalLight?(j=g.matrixWorld.getPosition(),h=c.dot(j),0>=h||(h*=g.intensity,d.r+=aa.r*h,d.g+=aa.g*h,d.b+=aa.b*h)):g instanceof THREE.PointLight&&(j=g.matrixWorld.getPosition(),h=c.dot(Ea.sub(j,b).normalize()),0>=h||(h*=0==g.distance?1:1-Math.min(b.distanceTo(j)/g.distance,1),0!=h&&(h*=g.intensity,d.r+=aa.r*h,d.g+=aa.g*h,d.b+=aa.b*h)))}function r(a,f,g){b(g.opacity);c(g.blending);var aa,j,h,i,l,k;if(g instanceof THREE.ParticleBasicMaterial){if(g.map)i=
 g.map.image,l=i.width>>1,k=i.height>>1,g=f.scale.x*o,h=f.scale.y*p,aa=g*l,j=h*k,ja.set(a.x-aa,a.y-j,a.x+aa,a.y+j),ra.intersects(ja)&&(m.save(),m.translate(a.x,a.y),m.rotate(-f.rotation),m.scale(g,-h),m.translate(-l,-k),m.drawImage(i,0,0),m.restore())}else g instanceof THREE.ParticleCanvasMaterial&&(aa=f.scale.x*o,j=f.scale.y*p,ja.set(a.x-aa,a.y-j,a.x+aa,a.y+j),ra.intersects(ja)&&(d(g.color.getContextStyle()),e(g.color.getContextStyle()),m.save(),m.translate(a.x,a.y),m.rotate(-f.rotation),m.scale(aa,
 j),g.program(m),m.restore()))}function s(a,e,f,g){b(g.opacity);c(g.blending);m.beginPath();m.moveTo(a.positionScreen.x,a.positionScreen.y);m.lineTo(e.positionScreen.x,e.positionScreen.y);m.closePath();if(g instanceof THREE.LineBasicMaterial){a=g.linewidth;if(B!=a)m.lineWidth=B=a;a=g.linecap;if(D!=a)m.lineCap=D=a;a=g.linejoin;if(C!=a)m.lineJoin=C=a;d(g.color.getContextStyle());m.stroke();ja.inflate(2*g.linewidth)}}function t(a,d,e,g,h,l,P,O){f.info.render.vertices+=3;f.info.render.faces++;b(O.opacity);
@@ -264,7 +281,29 @@ this.autoClearColor=this.autoClear=!0;this.shadowMapEnabled=this.physicallyBased
 Qa=null,la=null,za=null,Aa=0,Ja=0,Da=0,$a=0,Ta=0,ib=0,db=new THREE.Frustum,Wa=new THREE.Matrix4,Xa=new THREE.Vector4,ra=new THREE.Vector3,Ba={ambient:[0,0,0],directional:{length:0,colors:[],positions:[]},point:{length:0,colors:[],positions:[],distances:[]}};j=function(){var a;try{if(!(a=D.getContext("experimental-webgl",{alpha:A,premultipliedAlpha:H,antialias:I,stencil:N,preserveDrawingBuffer:$})))throw"Error creating WebGL context.";console.log(navigator.userAgent+" | "+a.getParameter(a.VERSION)+
 " | "+a.getParameter(a.VENDOR)+" | "+a.getParameter(a.RENDERER)+" | "+a.getParameter(a.SHADING_LANGUAGE_VERSION))}catch(b){console.error(b)}return a}();j.clearColor(0,0,0,1);j.clearDepth(1);j.clearStencil(0);j.enable(j.DEPTH_TEST);j.depthFunc(j.LEQUAL);j.frontFace(j.CCW);j.cullFace(j.BACK);j.enable(j.CULL_FACE);j.enable(j.BLEND);j.blendEquation(j.FUNC_ADD);j.blendFunc(j.SRC_ALPHA,j.ONE_MINUS_SRC_ALPHA);j.clearColor(K.r,K.g,K.b,Q);this.context=j;var ja=j.getParameter(j.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
 j.getParameter(j.MAX_TEXTURE_SIZE);var ab=j.getParameter(j.MAX_CUBE_MAP_TEXTURE_SIZE);this.getContext=function(){return j};this.supportsVertexTextures=function(){return 0<ja};this.setSize=function(a,b){D.width=a;D.height=b;this.setViewport(0,0,D.width,D.height)};this.setViewport=function(a,b,c,d){Aa=a;Ja=b;Da=c;$a=d;j.viewport(Aa,Ja,Da,$a)};this.setScissor=function(a,b,c,d){j.scissor(a,b,c,d)};this.enableScissorTest=function(a){a?j.enable(j.SCISSOR_TEST):j.disable(j.SCISSOR_TEST)};this.setClearColorHex=
-function(a,b){K.setHex(a);Q=b;j.clearColor(K.r,K.g,K.b,Q)};this.setClearColor=function(a,b){K.copy(a);Q=b;j.clearColor(K.r,K.g,K.b,Q)};this.getClearColor=function(){return K};this.getClearAlpha=function(){return Q};this.clear=function(a,b,c){var d=0;if(void 0===a||a)d|=j.COLOR_BUFFER_BIT;if(void 0===b||b)d|=j.DEPTH_BUFFER_BIT;if(void 0===c||c)d|=j.STENCIL_BUFFER_BIT;j.clear(d)};this.clearTarget=function(a,b,c,d){this.setRenderTarget(a);this.clear(b,c,d)};this.addPostPlugin=function(a){a.init(this);
+function(a,b){K.setHex(a);Q=b;j.clearColor(K.r,K.g,K.b,Q)};
+
+this.setClearColor=function(a,b){K.copy(a);Q=b;j.clearColor(K.r,K.g,K.b,Q)};
+
+this.getClearColor=function(){return K};this.getClearAlpha=function(){return Q};
+
+this.clear=function(a,b,c){
+
+
+var d=0;
+
+if(void 0===a||a)d|=j.COLOR_BUFFER_BIT;
+
+if(void 0===b||b)d|=j.DEPTH_BUFFER_BIT;if(void 0===c||c)d|=j.STENCIL_BUFFER_BIT;
+//j.clearColor(1.0, 1.0, 0.0, 0.1);
+j.clear(d)
+
+};
+
+this.clearTarget=function(a,b,c,d){this.setRenderTarget(a);this.clear(b,c,d)};
+
+this.addPostPlugin=function(a){a.init(this);
+
 this.renderPluginsPost.push(a)};this.addPrePlugin=function(a){a.init(this);this.renderPluginsPre.push(a)};this.deallocateObject=function(a){if(a.__webglInit)if(a.__webglInit=!1,delete a._modelViewMatrix,delete a._normalMatrixArray,delete a._modelViewMatrixArray,delete a._objectMatrixArray,a instanceof THREE.Mesh)for(var b in a.geometry.geometryGroups){var c=a.geometry.geometryGroups[b];j.deleteBuffer(c.__webglVertexBuffer);j.deleteBuffer(c.__webglNormalBuffer);j.deleteBuffer(c.__webglTangentBuffer);
 j.deleteBuffer(c.__webglColorBuffer);j.deleteBuffer(c.__webglUVBuffer);j.deleteBuffer(c.__webglUV2Buffer);j.deleteBuffer(c.__webglSkinVertexABuffer);j.deleteBuffer(c.__webglSkinVertexBBuffer);j.deleteBuffer(c.__webglSkinIndicesBuffer);j.deleteBuffer(c.__webglSkinWeightsBuffer);j.deleteBuffer(c.__webglFaceBuffer);j.deleteBuffer(c.__webglLineBuffer);if(c.numMorphTargets)for(var d=0,e=c.numMorphTargets;d<e;d++)j.deleteBuffer(c.__webglMorphTargetsBuffers[d]);if(c.__webglCustomAttributesList)for(d in d=
 void 0,c.__webglCustomAttributesList)j.deleteBuffer(c.__webglCustomAttributesList[d].buffer);G.info.memory.geometries--}else if(a instanceof THREE.Ribbon)a=a.geometry,j.deleteBuffer(a.__webglVertexBuffer),j.deleteBuffer(a.__webglColorBuffer),G.info.memory.geometries--;else if(a instanceof THREE.Line)a=a.geometry,j.deleteBuffer(a.__webglVertexBuffer),j.deleteBuffer(a.__webglColorBuffer),G.info.memory.geometries--;else if(a instanceof THREE.ParticleSystem)a=a.geometry,j.deleteBuffer(a.__webglVertexBuffer),
@@ -768,3 +807,4 @@ THREE.ShaderFlares={lensFlareVertexTexture:{vertexShader:"uniform vec3 screenPos
 lensFlare:{vertexShader:"uniform vec3 screenPosition;\nuniform vec2 scale;\nuniform float rotation;\nuniform int renderType;\nattribute vec2 position;\nattribute vec2 uv;\nvarying vec2 vUV;\nvoid main() {\nvUV = uv;\nvec2 pos = position;\nif( renderType == 2 ) {\npos.x = cos( rotation ) * position.x - sin( rotation ) * position.y;\npos.y = sin( rotation ) * position.x + cos( rotation ) * position.y;\n}\ngl_Position = vec4( ( pos * scale + screenPosition.xy ).xy, screenPosition.z, 1.0 );\n}",fragmentShader:"precision mediump float;\nuniform sampler2D map;\nuniform sampler2D occlusionMap;\nuniform float opacity;\nuniform int renderType;\nuniform vec3 color;\nvarying vec2 vUV;\nvoid main() {\nif( renderType == 0 ) {\ngl_FragColor = vec4( texture2D( map, vUV ).rgb, 0.0 );\n} else if( renderType == 1 ) {\ngl_FragColor = texture2D( map, vUV );\n} else {\nfloat visibility = texture2D( occlusionMap, vec2( 0.5, 0.1 ) ).a +\ntexture2D( occlusionMap, vec2( 0.9, 0.5 ) ).a +\ntexture2D( occlusionMap, vec2( 0.5, 0.9 ) ).a +\ntexture2D( occlusionMap, vec2( 0.1, 0.5 ) ).a;\nvisibility = ( 1.0 - visibility / 4.0 );\nvec4 texture = texture2D( map, vUV );\ntexture.a *= opacity * visibility;\ngl_FragColor = texture;\ngl_FragColor.rgb *= color;\n}\n}"}};
 THREE.ShaderSprite={sprite:{vertexShader:"uniform int useScreenCoordinates;\nuniform int affectedByDistance;\nuniform vec3 screenPosition;\nuniform mat4 modelViewMatrix;\nuniform mat4 projectionMatrix;\nuniform float rotation;\nuniform vec2 scale;\nuniform vec2 alignment;\nuniform vec2 uvOffset;\nuniform vec2 uvScale;\nattribute vec2 position;\nattribute vec2 uv;\nvarying vec2 vUV;\nvoid main() {\nvUV = uvOffset + uv * uvScale;\nvec2 alignedPosition = position + alignment;\nvec2 rotatedPosition;\nrotatedPosition.x = ( cos( rotation ) * alignedPosition.x - sin( rotation ) * alignedPosition.y ) * scale.x;\nrotatedPosition.y = ( sin( rotation ) * alignedPosition.x + cos( rotation ) * alignedPosition.y ) * scale.y;\nvec4 finalPosition;\nif( useScreenCoordinates != 0 ) {\nfinalPosition = vec4( screenPosition.xy + rotatedPosition, screenPosition.z, 1.0 );\n} else {\nfinalPosition = projectionMatrix * modelViewMatrix * vec4( 0.0, 0.0, 0.0, 1.0 );\nfinalPosition.xy += rotatedPosition * ( affectedByDistance == 1 ? 1.0 : finalPosition.z );\n}\ngl_Position = finalPosition;\n}",
 fragmentShader:"precision mediump float;\nuniform vec3 color;\nuniform sampler2D map;\nuniform float opacity;\nvarying vec2 vUV;\nvoid main() {\nvec4 texture = texture2D( map, vUV );\ngl_FragColor = vec4( color * texture.xyz, texture.a * opacity );\n}"}};
+

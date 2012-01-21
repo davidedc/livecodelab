@@ -74,8 +74,12 @@
   // scale it. Note that the scale for the cube shouldn't
   // influence the stack, so we need to create a sccale node,
   // and then go up a node.
+  var isWebGLUsed = false;
   var normalMaterial = new THREE.MeshNormalMaterial()
   var cubeGeometry = new THREE.CubeGeometry(1,1,1);
+  var cameraFilterMaterial = new THREE.MeshBasicMaterial( { color: 0xffaa00, transparent: true, opacity: 0.1, blending: THREE.NormalBlending } ) ;
+  var cameraFilterGeometry = new THREE.PlaneGeometry( 1, 1, 1,1 );				
+  var cameraFilter = new THREE.Mesh(cameraFilterGeometry, cameraFilterMaterial);
 
   // loads identity matrix
   var worldMatrix = new THREE.Matrix4();
@@ -88,18 +92,30 @@
 			if( Detector.webgl && potentiallyUseWebGL ){
 				renderer = new THREE.WebGLRenderer({
 					antialias		: true,	// to get smoother output
-					/*preserveDrawingBuffer	: true	// to allow screenshot*/
+					premultipliedAlpha: false,
+					alpha: true,
+					preserveDrawingBuffer	: true	// to allow screenshot
 				});
-				renderer.setClearColorHex( 0x000000, 1 );
+			   renderer.autoClearColor = false;
+			   renderer.autoClear = false;
+			   isWebGLUsed = true;
 			// uncomment if webgl is required
 			//}else{
 			//	Detector.addGetWebGLMessage();
 			//	return true;
 			}else{
-				renderer	= new THREE.CanvasRenderer();
-				renderer.setClearColorHex( 0x000000, 1 );
+				renderer	= new THREE.CanvasRenderer({
+					antialias		: true,	// to get smoother output					
+					preserveDrawingBuffer	: true	// to allow screenshot
+				});
 			}
 			renderer.setSize( window.innerWidth, window.innerHeight );
+			//renderer.setClearColorHex( 0xFF0000, 0.1 );
+			//renderer._contextGlobalAlpha = 0.5;
+			//renderer.setBlending( THREE.NormalBlending );
+			//renderer.setOpacity( 0.5 );
+
+
 			document.getElementById('container').appendChild(renderer.domElement);
 
 			// add Stats.js - https://github.com/mrdoob/stats.js
@@ -148,7 +164,7 @@ var frameCount = 0;
 
 if( !init() )	animate();
 
-function clearScreen() {
+function clearDisplayList() {
     for(var i in scene.objects){
   		scene.remove( scene.objects[i]);
 	}
@@ -200,10 +216,39 @@ function runCode() {
       
 }
 
+
+function background(red, green, blue, alpha) {
+	if (alpha === 0) {
+			clearDisplayList();
+	}
+	
+			if( isWebGLUsed ){
+			/*
+					cameraFilter.position.set(0, 0, 4);
+    			    scene.add(cameraFilter);
+    			    */
+				theColor = new THREE.Color();
+				theColor.setRGB(red, green,blue);
+				renderer.setClearColor(theColor,alpha);
+				renderer.clear();
+
+			}else{
+			    // canvas renderer
+				theColor = new THREE.Color();
+				theColor.setRGB(red, green,blue);
+				renderer.setClearColor(theColor,alpha);
+				renderer.clear();
+			}
+
+			render();
+
+
+}
+
 // animation loop
     	function animate() {
 
-			clearScreen();
+			clearDisplayList();
 			worldMatrix.identity();
 
 			//rootObject = new THREE.Object3D();
@@ -222,7 +267,7 @@ function runCode() {
 
 			// do the render
 			render();
-			//clearScreen();
+			//clearDisplayList();
 
 			// update stats
 			stats.update();
@@ -348,6 +393,8 @@ scale = function(a, b, c) {
     
     scene.add(mesh);
     
+
+
   }
 
 /**
@@ -446,6 +493,11 @@ draw
 		rotate frameCount/101,1,frameCount/1000
 		box
 
+///////////////////////////
+draw
+	background 255,255,0,0.01
+	rotate 0,frameCount/20,frameCount/20
+	box
 
 */
 
