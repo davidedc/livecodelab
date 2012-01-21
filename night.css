@@ -28,6 +28,7 @@
         overflow: visible;
         left: -1.2em;
         color: #333333;
+        margin-top: -0.1em;
       }
 
 
@@ -37,6 +38,7 @@
 .cm-s-night .CodeMirror-gutter-text { color: #f8f8f8; }
 .cm-s-night .CodeMirror-cursor { margin-top:0.2em; height:0.7em;  border-left: 0.67em solid white !important; opacity: 0.5; }
 
+.cm-s-night span { background: yellow; color: #6900a1; }
 .cm-s-night span.cm-comment { color: #6900a1; }
 .cm-s-night span.cm-atom { color: #845dc4; }
 .cm-s-night span.cm-number, .cm-s-night span.cm-attribute { color: #ffd500; }

@@ -11,11 +11,9 @@
 		<!-- https://github.com/mrdoob/stats.js -->
 		<script src="vendor/three.js/Stats.js"></script>
 
-		<script src="vendor/threex/THREEx.screenshot.js"></script>
 		<script src="vendor/threex/THREEx.FullScreen.js"></script>
 		<script src="vendor/threex/THREEx.WindowResize.js"></script>
-		<script src="vendor/threex.dragpancontrols.js"></script>
-<script type="text/javascript" src="coffee-script.js"></script>
+		<script type="text/javascript" src="coffee-script.js"></script>
 
 		<link  href="css/main.css" rel="stylesheet"/>
 				<link rel="stylesheet" href="codemirror.css">
@@ -70,6 +68,17 @@
 		var stats, scene, renderer;
 		var camera;
 
+  // creating a geometry is expensive
+  // so we need to create ONE cube of dimensions 1,1,1
+  // if we need a cube of different size, then we need to
+  // scale it. Note that the scale for the cube shouldn't
+  // influence the stack, so we need to create a sccale node,
+  // and then go up a node.
+  var normalMaterial = new THREE.MeshNormalMaterial()
+  var cubeGeometry = new THREE.CubeGeometry(1,1,1);
+
+  // loads identity matrix
+  var worldMatrix = new THREE.Matrix4();
 
 
 		// init the scene
@@ -100,6 +109,8 @@
 			document.body.appendChild( stats.domElement );
 
 			scene = new THREE.Scene();
+			scene.matrixAutoUpdate = false;
+
 
 			// put a camera in the scene
 			camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000 );
@@ -162,12 +173,12 @@ function runCode() {
         // You can tell a method declaration because the line below is indented
         // so you should check that.
         var elaboratedSource = verbatimSource;
-        elaboratedSource =  elaboratedSource.replace(/^([a-z]+[a-zA-Z1-9]+)\s*$/m, "$1 = ->" );
+        elaboratedSource =  elaboratedSource.replace(/^([a-z]+[a-zA-Z1-9]+)\s*$/gm, "$1 = ->" );
         elaboratedSource =  elaboratedSource.replace(/(\d+)\s+times/g, "( $1 + 0).times ->" );
-        elaboratedSource =  elaboratedSource.replace(/^(\s*[a-z]+[a-zA-Z1-9]+)[ ]*$/m, "$1()" );
+        elaboratedSource =  elaboratedSource.replace(/^(\s*[a-z]+[a-zA-Z1-9]+)[ ]*$/gm, "$1()" );
         elaboratedSource =  elaboratedSource.replace(/\/\//g, "#" );
         
-        //alert(elaboratedSource);
+        alert(elaboratedSource);
       
         out = CoffeeScript.compile(elaboratedSource, {
           bare: "on"
@@ -193,20 +204,21 @@ function runCode() {
     	function animate() {
 
 			clearScreen();
+			worldMatrix.identity();
 
-rootObject = new THREE.Mesh(new THREE.Geometry());
-scene.add(rootObject);
-parentObject = rootObject;
+			//rootObject = new THREE.Object3D();
+			//scene.add(rootObject);
+			//parentObject = rootObject;
 
 			// loop on request animation loop
 			// - it has to be at the begining of the function
 			// - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
 			requestAnimationFrame( animate );
 
-	if (typeof(draw) != "undefined") { 
-	  draw();
-	  frameCount++;
-	}
+			if (typeof(draw) != "undefined") { 
+			  draw();
+			  frameCount++;
+			}
 
 			// do the render
 			render();
@@ -258,66 +270,84 @@ function callTheDrawLoopIfItExists() {
 var parentObject, rootObject, rotate, translate;
 parentObject = 0;
 rootObject = 0;
+var currentObject;
 
 translate = function(a, b, c) {
-  var currentObject;
-  currentObject = new THREE.Mesh(new THREE.Geometry());
+  /*
+  currentObject = new THREE.Object3D();
   currentObject.position.x = a;
   currentObject.position.y = b;
   currentObject.position.z = c;
   parentObject.add(currentObject);
   parentObject = currentObject;
+  */
+  worldMatrix.translate(new THREE.Vector3(a,b,c));
 };
+
 rotate = function(a, b, c) {
-  var currentObject;
-  currentObject = new THREE.Mesh(new THREE.Geometry());
+  /*
+  currentObject = new THREE.Object3D();
   currentObject.rotation.x = a;
   currentObject.rotation.y = b;
   currentObject.rotation.z = c;
   parentObject.add(currentObject);
   parentObject = currentObject;
+  */
+  //worldMatrix.setRotationFromEuler(new THREE.Vector3(a,b,c));
+  worldMatrix.rotateX(a).rotateY(b).rotateZ(c);
+
 };
+
 scale = function(a, b, c) {
-  if(arguments.length == 1){
+  if(arguments.length === 1){
   	  b=a; c=a;
   }
 
-  var currentObject;
-  currentObject = new THREE.Mesh(new THREE.Geometry());
+  /*
+  currentObject = new THREE.Object3D();
   currentObject.scale.x = a;
   currentObject.scale.y = b;
   currentObject.scale.z = c;
   parentObject.add(currentObject);
   parentObject = currentObject;
-};
+  */
+  worldMatrix.scale(new THREE.Vector3(a,b,c));
 
-  // creating a geometry is expensive
-  // so we need to create ONE cube of dimensions 1,1,1
-  // if we need a cube of different size, then we need to
-  // scale it. Note that the scale for the cube shouldn't
-  // influence the stack, so we need to create a sccale node,
-  // and then go up a node.
-  var normalMaterial = new THREE.MeshNormalMaterial()
-  var cubeGeometry = new THREE.CubeGeometry(1,1,1);
+};
     
   box = function(a,b,c) {
   	
-  	if(arguments.length == 0){
+  	if(a === undefined){
+  	  //alert('cube!')
   	  a=1; b=1; c=1;
   	  }
-  	else if(arguments.length == 1){
+  	  
+  	else if(arguments.length === 1){
   	  b=a; c=a;
   	  }
   	// create a distinct scale node
-    scale(a,b,c);
-    var mesh = new THREE.Mesh(cubeGeometry, normalMaterial)
+  	//var shouldAttachHere = parentObject;
+    //scale(a,b,c);
+    //var mesh = new THREE.Mesh(cubeGeometry, normalMaterial)
+
+
+    var mesh = new THREE.Mesh(cubeGeometry, normalMaterial);
+
     // the cube we are going to add is subject to the scale we just
     // did, so the size should be OK
-    parentObject.add(mesh)
+    //parentObject.add(mesh)
     // now we need to escape the scale node that we used to size the cube
     // otherwise all further translations/rotations/scales are going
     // to be affected.
-    parentObject = parentObject.parent
+    //parentObject = shouldAttachHere
+    mesh.matrixAutoUpdate = false;
+    mesh.matrix.copy(worldMatrix);
+  	if( a !== 1 || b !== 1 || c !== 1){
+      mesh.matrix.scale(new THREE.Vector3(a,b,c));
+    }
+    
+    scene.add(mesh);
+    
   }
 
 /**
@@ -408,6 +438,13 @@ draw
 		30 times
 			rotate 0,1,1
 			box 0.01,0.01,1
+
+///////////////////////////
+
+draw
+	70 times
+		rotate frameCount/101,1,frameCount/1000
+		box
 
 
 */

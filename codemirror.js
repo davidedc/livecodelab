@@ -2237,7 +2237,8 @@ var CodeMirror = (function() {
         if (first && ie && text.charAt(0) == " ") text = "\u00a0" + text.slice(1);
         first = false;
         if (style) html.push('<span class="', style, '">', htmlEscape(text).replace(/\t/g, tabText), "</span>");
-        else html.push(htmlEscape(text).replace(/\t/g, tabText));
+        else html.push('<span class="', '' , '">', htmlEscape(text).replace(/\t/g, tabText), "</span>");
+        //else html.push(htmlEscape(text).replace(/\t/g, tabText));
       }
       var st = this.styles, allText = this.text, marked = this.marked;
       if (sfrom == sto) sfrom = null;
