@@ -21,24 +21,30 @@
 	</head>
 <body>
 
+
 <div style="position: absolute; top: 0px; left: 0px; width: 440px;">
-        <textarea id="source" rows="25"  spellcheck="false" style="border: 0; width: 440px; color: white; background-color: transparent; text-shadow: -1px 0px black, 0px 1px black,
+        <textarea id="source" rows="25"  spellcheck="false" style="outline-size: 0px;
+outline-style: none;
+outline-color: none;
+resize: none;
+border: 0; width: 440px; color: white; background-color: transparent; text-shadow: -1px 0px black, 0px 1px black,
       1px 0px black, 0px -1px black, -2px 0px 1px black, 0px 2px 1px black,
       2px 0px 1px black, 0px -2px 1px black"></textarea>
       </div>
 
 	<!-- three.js container -->
     	<div id="container"></div>
-	<!-- info on screen display -->
+	<!-- info on screen display 
 	<div id="info">
 		<div class="bottom" id="inlineDoc" >
 			- <i>p</i> for screenshot
 		</div> 
-	</div> 
+	</div>
+	-->
 
 	<script type="text/javascript">
 		var stats, scene, renderer;
-		var camera, cameraControl, cameraControls;
+		var camera;
 
 
 
@@ -76,9 +82,6 @@
 			camera.position.set(0, 0, 5);
 			scene.add(camera);
 
-			// create a camera contol
-			cameraControls	= new THREEx.DragPanControls(camera)
-
 			// transparently support window resize
 			THREEx.WindowResize.bind(renderer, camera);
 
@@ -98,9 +101,6 @@
 
 		// render the scene
 		function render() {
-
-			// update camera controls
-			cameraControls.update();
 
 			// actually render the scene
 			renderer.render( scene, camera );
@@ -126,7 +126,24 @@ function runCode() {
     
 
       try {
-        out = CoffeeScript.compile(document.getElementById('source').value, {
+        var verbatimSource = document.getElementById('source').value;
+        
+        // little trick. This is mangled up in the translation from coffeescript
+        // (1).times ->
+        // But this isn't:
+        // (1+0).times ->
+        // So here is the little replace.
+        
+        // TODO: you should be a little smarter about the substitution of the draw method
+        // You can tell a method declaration because the line below is indented
+        // so you should check that.
+        var elaboratedSource = verbatimSource;
+        elaboratedSource =  elaboratedSource.replace(/^([a-z]+[a-zA-Z1-9]+)\s*$/m, "$1 = ->" );
+        elaboratedSource =  elaboratedSource.replace(/(\d+)\s+times/g, "( $1 + 0).times ->" );
+        elaboratedSource =  elaboratedSource.replace(/^(\s*[a-z]+[a-zA-Z1-9]+)[ ]*$/m, "$1()" );
+        //alert(elaboratedSource);
+      
+        out = CoffeeScript.compile(elaboratedSource, {
           bare: "on"
         });
         //$("#coffee2js .error").hide();
@@ -150,6 +167,10 @@ function runCode() {
     	function animate() {
 
 			clearScreen();
+
+rootObject = new THREE.Mesh(new THREE.Geometry());
+scene.add(rootObject);
+parentObject = rootObject;
 
 			// loop on request animation loop
 			// - it has to be at the begining of the function
@@ -207,22 +228,144 @@ function callTheDrawLoopIfItExists() {
 		}
 	};
 
-// sample program to test with
+
+var parentObject, rootObject, rotate, translate;
+parentObject = 0;
+rootObject = 0;
+
+translate = function(a, b, c) {
+  var currentObject;
+  currentObject = new THREE.Mesh(new THREE.Geometry());
+  currentObject.position.x = a;
+  currentObject.position.y = b;
+  currentObject.position.z = c;
+  parentObject.add(currentObject);
+  parentObject = currentObject;
+};
+rotate = function(a, b, c) {
+  var currentObject;
+  currentObject = new THREE.Mesh(new THREE.Geometry());
+  currentObject.rotation.x = a;
+  currentObject.rotation.y = b;
+  currentObject.rotation.z = c;
+  parentObject.add(currentObject);
+  parentObject = currentObject;
+};
+scale = function(a, b, c) {
+  if(arguments.length == 1){
+  	  b=a; c=a;
+  }
+
+  var currentObject;
+  currentObject = new THREE.Mesh(new THREE.Geometry());
+  currentObject.scale.x = a;
+  currentObject.scale.y = b;
+  currentObject.scale.z = c;
+  parentObject.add(currentObject);
+  parentObject = currentObject;
+};
+
+  // creating a geometry is expensive
+  // so we need to create ONE cube of dimensions 1,1,1
+  // if we need a cube of different size, then we need to
+  // scale it. Note that the scale for the cube shouldn't
+  // influence the stack, so we need to create a sccale node,
+  // and then go up a node.
+  var normalMaterial = new THREE.MeshNormalMaterial()
+  var cubeGeometry = new THREE.CubeGeometry(1,1,1);
+    
+  box = function(a,b,c) {
+  	
+  	if(arguments.length == 0){
+  	  a=1; b=1; c=1;
+  	  }
+  	else if(arguments.length == 1){
+  	  b=a; c=a;
+  	  }
+  	// create a distinct scale node
+    scale(a,b,c);
+    var mesh = new THREE.Mesh(cubeGeometry, normalMaterial)
+    // the cube we are going to add is subject to the scale we just
+    // did, so the size should be OK
+    parentObject.add(mesh)
+    // now we need to escape the scale node that we used to size the cube
+    // otherwise all further translations/rotations/scales are going
+    // to be affected.
+    parentObject = parentObject.parent
+  }
+
+/**
+ * extend the Number prototype
+ * @param func
+ * @param scope [optional]
+ */
+Number.prototype.times = function(func, scope){
+    var v = this.valueOf();
+    for (var i=0; i < v; i++){
+        func.call(scope||window,i);
+    }
+};
+
+
 /*
 
-geometry = new THREE.TorusGeometry(2, 0.92)
-material = new THREE.MeshNormalMaterial()
-mesh = new THREE.Mesh(geometry, material)
-scene.add mesh
+draw = ->
+  
+  rotate(0.1,0.1,frameCount/100);
+  
+  for num in [1..30]
+    translate(1.1*Math.sin(frameCount/15),0.1*Math.sin(frameCount/15),0.1*Math.sin(frameCount/15));
+    rotate(0.2,0.2,0.3);
+    scale(0.7,1,0.7);
+    box(1,5,1);
+
+////////////////////////
+
 
 draw = ->
-  geometry = new THREE.TorusGeometry( 2* Math.sin(frameCount/15), Math.sin(frameCount/16))
-  material = new THREE.MeshNormalMaterial()
-  mesh = new THREE.Mesh(geometry, material)
-  scene.add mesh
+  
+  translate 0,-1,0
+  rotate(0.1,0.1,frameCount/1000);
+  
+  for num in [1..30]
+    rotate(2.5,2.2,frameCount/1000);    translate(1.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005));
+    scale(0.9,1.1,0.9);
+    box(1,5,1);
 
+
+
+////////////////////////
+
+
+draw = ->
+  
+  rotate(0.1,0.1,frameCount/8000);
+  translate 0,0,0
+  
+  for num in [1..10]
+    rotate(2.5,2.2,frameCount/1000);    translate(1.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005),0.1*Math.sin(frameCount/8005));
+    scale(0.9,1.1,0.9);
+    box(1,1,1);
+
+///////////////////////////
+
+draw = ->  
+  for num in [1..10]
+    rotate(3.14,2,frameCount/1000);
+    box();
+
+
+////////////////////////////
+
+// magical language substitutions
+// allow this:
+
+draw
+  15 times
+     rotate 0, 1, frameCount/1000 
+     box
+    
 */
-
 
 	</script>
 </body>
