@@ -15,6 +15,15 @@
 		<script src="vendor/threex/THREEx.WindowResize.js"></script>
 		<script type="text/javascript" src="coffee-script.js"></script>
 
+		<script src="vendor/three.js/ShaderExtras.js"></script>
+
+		<script src="vendor/three.js/postprocessing/EffectComposer.js"></script>
+		<script src="vendor/three.js/postprocessing/RenderPass.js"></script>
+		<script src="vendor/three.js/postprocessing/ShaderPass.js"></script>
+		<script src="vendor/three.js/postprocessing/MaskPass.js"></script>
+		<script src="vendor/three.js/postprocessing/SavePass.js"></script>
+
+
 		<link  href="css/main.css" rel="stylesheet"/>
 				<link rel="stylesheet" href="codemirror.css">
 				<script src="codemirror.js"></script>
@@ -91,30 +100,27 @@
 			var potentiallyUseWebGL = true;
 			if( Detector.webgl && potentiallyUseWebGL ){
 				renderer = new THREE.WebGLRenderer({
-					antialias		: true,	// to get smoother output
-					premultipliedAlpha: false,
-					alpha: true,
-					preserveDrawingBuffer	: true	// to allow screenshot
 				});
-			   renderer.autoClearColor = false;
-			   renderer.autoClear = false;
+			   
+			   //renderer.autoClearColor = false;
+			   //renderer.autoClear = false;
 			   isWebGLUsed = true;
-			// uncomment if webgl is required
-			//}else{
-			//	Detector.addGetWebGLMessage();
-			//	return true;
+			   
+			   // this is really a bad hack, but chrome goes twice
+			   // as fast with this, while safari doesn't work,
+			   // and firefox is the fastest no matter what
+			   if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+			   	renderer.autoClear = false;
+			   }
+
 			}else{
 				renderer	= new THREE.CanvasRenderer({
 					antialias		: true,	// to get smoother output					
 					preserveDrawingBuffer	: true	// to allow screenshot
 				});
 			}
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			//renderer.setClearColorHex( 0xFF0000, 0.1 );
-			//renderer._contextGlobalAlpha = 0.5;
-			//renderer.setBlending( THREE.NormalBlending );
-			//renderer.setOpacity( 0.5 );
 
+			renderer.setSize( window.innerWidth, window.innerHeight );
 
 			document.getElementById('container').appendChild(renderer.domElement);
 
@@ -136,15 +142,31 @@
 			// transparently support window resize
 			THREEx.WindowResize.bind(renderer, camera);
 
-			/*
-			// allow 'p' to make screenshot
-			THREEx.Screenshot.bindKey(renderer);
-			// allow 'f' to go fullscreen where this feature is supported
-			if( THREEx.FullScreen.available() ){
-				THREEx.FullScreen.bindKey();		
-				document.getElementById('inlineDoc').innerHTML	+= "- <i>f</i> for fullscreen";
-			}
-			*/
+
+
+			renderTargetParameters = { format: THREE.RGBFormat, stencilBufer: false };
+			renderTarget = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters );
+
+			effectSave = new THREE.SavePass( new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters ) );
+			effectBlend = new THREE.ShaderPass( THREE.ShaderExtras[ "blend" ], "tDiffuse1" );
+
+			effectVignette = new THREE.ShaderPass( THREE.ShaderExtras[ "screen" ] );
+
+
+			// motion blur
+			effectBlend.uniforms[ 'tDiffuse2' ].texture = effectSave.renderTarget;
+			effectBlend.uniforms[ 'mixRatio' ].value = 0.65;
+
+			var renderModel = new THREE.RenderPass( scene, camera );
+
+			effectVignette.renderToScreen = true;
+
+			composer = new THREE.EffectComposer( renderer, renderTarget );
+
+			composer.addPass( renderModel );
+			composer.addPass( effectBlend );
+			composer.addPass( effectSave );
+			composer.addPass( effectVignette );
 
 }
 
@@ -153,8 +175,8 @@
 		// render the scene
 		function render() {
 
-			// actually render the scene
-			renderer.render( scene, camera );
+			composer.render( );
+
 		}
 		
 		
@@ -230,7 +252,7 @@ function background(red, green, blue, alpha) {
 				theColor = new THREE.Color();
 				theColor.setRGB(red, green,blue);
 				renderer.setClearColor(theColor,alpha);
-				renderer.clear();
+				//renderer.clear();
 
 			}else{
 			    // canvas renderer
@@ -238,9 +260,9 @@ function background(red, green, blue, alpha) {
 				theColor.setRGB(red, green,blue);
 				renderer.setClearColor(theColor,alpha);
 				renderer.clear();
+				render();
 			}
 
-			render();
 
 
 }
