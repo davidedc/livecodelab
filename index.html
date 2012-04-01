@@ -441,11 +441,21 @@ function registerCode() {
 				return aposed;
 			  }
 			  else if(singleComment) {
+			  	// preserve the line because
+			  	// the doOnce mechanism needs to retrieve
+			  	// the line where it was
 				return "\n";
 			  }
-			  // eliminate comments
+			  // eliminate multiline comments preserving the lines
 			  else {
-				return "";
+			  	var numberOfLinesInMultilineComment = comment.split("\n").length-1;
+			  	//alert('rebuilding multilines: '+ numberOfLinesInMultilineComment);
+			  	var rebuiltNewLines = '';
+			  	for (var cycleToRebuildNewLines = 0; cycleToRebuildNewLines < numberOfLinesInMultilineComment; cycleToRebuildNewLines++){
+			  		rebuiltNewLines = rebuiltNewLines + "\n";
+			  	}
+			  	//alert('rebuilding multilines: '+ rebuiltNewLines);
+				return rebuiltNewLines;
 			  }
 			});
 			
@@ -508,7 +518,7 @@ function registerCode() {
 				
 				return;
 			}
-		
+					
         
       	// indent the code
         var elaboratedSource = "\t"+editorContent.replace(
@@ -527,7 +537,7 @@ function registerCode() {
         // so you should check that.
         
         
-        //elaboratedSource =  elaboratedSource.replace(/^([a-z]+[a-zA-Z1-9]+)\s*$/gm, "$1 = ->" );
+        //elaboratedSource =  elaboratedSource.replace(/^([a-z]+[a-zA-Z0-9]+)\s*$/gm, "$1 = ->" );
         
         // some replacements add a semicolon for the
         // following reason: coffeescript allows you to split arguments
@@ -556,21 +566,38 @@ function registerCode() {
         // add all the line numbers info
         // regroup the lines into a single string again
         
-        if (editorContent.indexOf('doOnce') > -1){
+        if (elaboratedSource.indexOf('doOnce') > -1){
         	//alert("a doOnce is potentially executable");
 			elaboratedSourceByLine = elaboratedSource.split("\n");
 			//alert('splitting: ' + elaboratedSourceByLine.length );
 			for (var iteratingOverSource = 0; iteratingOverSource < elaboratedSourceByLine.length; iteratingOverSource++) {
 				//alert('iterating: ' + iteratingOverSource );
-				elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce\s+([a-z]+[a-z A-Z1-9=;\+\"\']+)$/gm, "$1;doLNOnce.push("+(iteratingOverSource-1)+");$2" );
+				elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce\s+([a-z]+[a-z\sA-Z0-9\=;\+\"\']+)$/gm, "$1;doLNOnce.push("+(iteratingOverSource-1)+");$2" );
 			}
 			elaboratedSource = elaboratedSourceByLine.join("\n");
-			alert(" "+elaboratedSource);
+			//alert(" "+elaboratedSource);
         }
         
 
 
-        elaboratedSource =  elaboratedSource.replace(/^(\s*)([a-z]+[a-zA-Z1-9]+)[ ]*$/gm, "$1;$2()" );
+        elaboratedSource =  elaboratedSource.replace(/^(\s*)([a-z]+[a-zA-Z0-9]+)[ ]*$/gm, "$1;$2()" );
+
+			// draw() could just be called by mistake and it's likely
+			// to be disastrous. User doesn't even have visibility of such method,
+			// why should he/she call it?
+			// TODO: call draw() something else that the user is not
+			// likely to use by mistake and take away this check.
+			if (
+				elaboratedSource.match(/[\s\+\;]+draw\s*\(/) ||
+				false
+			){
+				programHasBasicError = true;
+				$('#dangerSignText').css('color','red');
+				$('#errorMessageText').text("You can't call draw()");
+				return;
+			}
+
+
         // we don't want if and for to undergo the same tratment as, say, box
         // so put those back to normal.
         elaboratedSource =  elaboratedSource.replace(/;if\(\)/g, ";if" );
@@ -600,8 +627,7 @@ function registerCode() {
 
 
       // FINDS USED METHODS WHICH ARE NOT DECLARED
-      //alert("out:"+out)
-	  var matchDeclaredMethod = /([a-z]+[a-zA-Z1-9]*) = function/ ;
+	  var matchDeclaredMethod = /([a-z]+[a-zA-Z0-9]*) = function/ ;
 	  var declaredMethods = [];
 	  var mc;
 	  var copyOfOut = out;
@@ -616,7 +642,7 @@ function registerCode() {
 	  var usedMethods = [];
 	  var md;
 	  copyOfOut = out;
-	  while ((md = copyOfOut.match(  /\s([a-z]+[a-zA-Z1-9]*)\(/ ))) {
+	  while ((md = copyOfOut.match(  /\s([a-z]+[a-zA-Z0-9]*)\(/ ))) {
         usedMethods.push(md[1]);
         copyOfOut = RegExp.rightContext;
       }
@@ -625,23 +651,26 @@ function registerCode() {
 	  var error = false;
       for (var scanningUsedMethods = 0; scanningUsedMethods < usedMethods.length; scanningUsedMethods++){
 		  if (
-			  usedMethods[scanningUsedMethods].indexOf("function") > -1 ||
-			  usedMethods[scanningUsedMethods].indexOf("rotate") > -1 ||
-			  usedMethods[scanningUsedMethods].indexOf("box") > -1 ||
-			  usedMethods[scanningUsedMethods].indexOf("translate") > -1 ||
-			  usedMethods[scanningUsedMethods].indexOf("alert") > -1 ||
+			  usedMethods[scanningUsedMethods] === "function" ||
+			  usedMethods[scanningUsedMethods] === "rotate" ||
+			  usedMethods[scanningUsedMethods] === "box" ||
+			  usedMethods[scanningUsedMethods] === "translate" ||
+			  usedMethods[scanningUsedMethods] === "scale" ||
+			  usedMethods[scanningUsedMethods] === "alert" ||
 			  false
 		  ){
 		  	continue;
 		  }
       	  if (declaredMethods.length == 0){
 			  error = true;
+			  //alert("used method not declared: " + usedMethods[scanningUsedMethods]);
 			  $('#dangerSignText').css('color','red');
 			  $('#errorMessageText').text(usedMethods[scanningUsedMethods] + " used but not defined");
 			  return;
       	  }
 		  for (var scanningDeclaredMethods = 0; scanningDeclaredMethods < declaredMethods.length; scanningDeclaredMethods++){
-		  	if (usedMethods[scanningUsedMethods].indexOf(declaredMethods[scanningDeclaredMethods]) > -1){
+		  	//alert ("comparing >" + usedMethods[scanningUsedMethods]  + "< , >" + declaredMethods[scanningDeclaredMethods] +"<");
+		  	if (usedMethods[scanningUsedMethods] === declaredMethods[scanningDeclaredMethods]){
 		  		break;
 		  	}
 		  	else if (scanningDeclaredMethods == declaredMethods.length - 1) {
@@ -664,6 +693,16 @@ function registerCode() {
 	// http://perfectionkills.com/global-eval-what-are-the-options/
 	// note that exceptions are caught by the window.onerror callback
 	consecutiveFramesWithoutRunTimeError = 0;
+	
+	// so it turns out that when you ASSIGN to the frame variable inside
+	// the coffeescript, it declares a local one, which makes changing
+	// it impossible.
+	// TODO: There must be a way to tell coffeescript to accept
+	// some variables as global, for the time being let's put
+	// the cheap hack in place.
+	out = out.replace(/var frame/,";");
+	
+    //alert("out:"+out);
 	window.eval(out);
 
       
@@ -787,13 +826,13 @@ function background(red, green, blue) {
 			
 			
 			if (doLNOnce.length !== 0){
-				alert("a doOnce has been ran");
+				//alert("a doOnce has been ran");
 				elaboratedSource = editor.getValue();
 				elaboratedSourceByLine = elaboratedSource.split("\n");
 				//alert('splitting: ' + elaboratedSourceByLine.length );
 				for (var iteratingOverSource = 0; iteratingOverSource < doLNOnce.length; iteratingOverSource++) {
 					//alert('iterating: ' + iteratingOverSource );
-					elaboratedSourceByLine[doLNOnce[iteratingOverSource]] = elaboratedSourceByLine[doLNOnce[iteratingOverSource]].replace(/^(\s*)doOnce\s+([a-z]+[a-z A-Z1-9=;\+\"\']+)$/gm, "//doOnce $2" );
+					elaboratedSourceByLine[doLNOnce[iteratingOverSource]] = elaboratedSourceByLine[doLNOnce[iteratingOverSource]].replace(/^(\s*)doOnce\s+([a-z]+[a-z A-Z0-9=;\+\"\']+)$/gm, "//doOnce $2" );
 				}
 				elaboratedSource = elaboratedSourceByLine.join("\n");
 				editor.setValue(elaboratedSource);
