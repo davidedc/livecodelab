@@ -614,6 +614,8 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/scale(\s)+/g, ";scale$1" );
         elaboratedSource =  elaboratedSource.replace(/rotate(\s)+/g, ";rotate$1" );
         elaboratedSource =  elaboratedSource.replace(/translate(\s)+/g, ";translate$1" );
+        elaboratedSource =  elaboratedSource.replace(/bpm(\s)+/g, ";bpm$1" );
+        elaboratedSource =  elaboratedSource.replace(/addSound(\s)+/g, ";addSound$1" );
         
         // the semicolon mangles the first line of the function definitions
         // coffeescript doesn't like that
@@ -664,6 +666,8 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "translate" ||
 			  usedMethods[scanningUsedMethods] === "scale" ||
 			  usedMethods[scanningUsedMethods] === "alert" ||
+			  usedMethods[scanningUsedMethods] === "bpm" ||
+			  usedMethods[scanningUsedMethods] === "addSound" ||
 			  false
 		  ){
 		  	continue;
