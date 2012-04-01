@@ -581,6 +581,11 @@ function registerCode() {
 
 
         elaboratedSource =  elaboratedSource.replace(/^(\s*)([a-z]+[a-zA-Z0-9]+)[ ]*$/gm, "$1;$2()" );
+        
+        // this takes care of when a token that it's supposed to be
+        // a function is inlined with something else e.g.
+        // doOnce frame = 0; box
+        elaboratedSource =  elaboratedSource.replace(/;\s*([a-z]+[a-zA-Z0-9]+)[\s]*([;\n]+)/g, ";$1()$2" );
 
 			// draw() could just be called by mistake and it's likely
 			// to be disastrous. User doesn't even have visibility of such method,
