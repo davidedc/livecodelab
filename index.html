@@ -338,7 +338,7 @@ function clearDisplayList() {
 	}
 }
 
-function runCode() {
+function registerCode() {
     
 
       try {
@@ -675,10 +675,10 @@ function background(red, green, blue) {
 				// new code by getting the code from codemirror again
 				// because we don't know what that entails. We should
 				// just pass the code we already have.
-				// Also runCode() may split the source code by line, so we can
+				// Also registerCode() may split the source code by line, so we can
 				// avoid that since we've just split it, we could pass
 				// the already split code.
-				runCode();
+				registerCode();
         	}
 
 			
@@ -689,7 +689,7 @@ function background(red, green, blue) {
 	 document.onkeydown = function(e){
 		// CTRL-K compiles and runs
 		if(lastkey == 17 && e.which==75){
-			runCode();
+			registerCode();
 			return false;
 		}
 		else {
@@ -697,7 +697,7 @@ function background(red, green, blue) {
 		}
 		// also up or down arrow compile and run
 		if(e.which==38 || e.which==40){
-			runCode();
+			registerCode();
 			return true;
 		}		
 	};
@@ -1038,7 +1038,7 @@ function loadExample(whichExample) {
         // before giving the editor focus, otherwise for some reason
         // the focus is not regained. Go figure.
         onBlur: (function(){ setTimeout('editor.focus()',30) }),
-        onChange: (function(){runCode();})
+        onChange: (function(){registerCode();})
         //onScroll: (function(){alert('scroll')})
   });
 
