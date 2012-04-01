@@ -101,6 +101,8 @@
 			<li><a href="#" onclick="loadExample('simpleSoundExample');">Simple sound</a></li>
 			<li><a href="#" onclick="loadExample('simpleRhythmExample');">Simple rhythm</a></li>
 			<li><a href="#" onclick="loadExample('industrialMusicExample');">Industrial music</a></li>
+			<li><a href="#" onclick="loadExample('doOnceExample');">doOnce tests</a></li>
+
 		</ul>
 	</li>
 	<li id="dangerSign"><a href="#" id="dangerSignText" style="font-size:2em;margin-top:-0.5em;">&#9888;</a>
@@ -1156,6 +1158,16 @@ var industrialMusicExample = ""+
 ""+		"addSound 'additional6' ,'xzxz x zxzxxxzxxxx'\n"+
 ""+		"addSound 'additional4' ,'zxzxzzzxxzzzzzxx'\n";
 
+var doOnceExample = ""+
+""+		"rotate frame/100\n"+
+""+		"// comment\n"+
+""+		"/* another\n"+
+""+		"comment */\n"+
+""+		"//doOnce frame = 0 ; box\n"+
+""+		"box\n"+
+""+		"//doOnce alert 'miao'\n"+
+""+		"//drawOnce dsdsdsds\n";
+
 
 function loadExample(whichExample) {
 
@@ -1190,6 +1202,10 @@ function loadExample(whichExample) {
 		case 'industrialMusicExample':
 			editor.setValue(industrialMusicExample);
 			break;
+		case 'doOnceExample':
+			editor.setValue(doOnceExample);
+			break;
+
 	}
 	
 	// setting the value of the editor triggers the
