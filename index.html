@@ -846,7 +846,11 @@ function background(red, green, blue) {
 					elaboratedSourceByLine[doLNOnce[iteratingOverSource]] = elaboratedSourceByLine[doLNOnce[iteratingOverSource]].replace(/^(\s*)doOnce\s+([a-z]+[a-z A-Z0-9=;\+\"\']+)$/gm, "//doOnce $2" );
 				}
 				elaboratedSource = elaboratedSourceByLine.join("\n");
+				
+				var cursorPositionBeforeChangingProgram = editor.getCursor();
+				cursorPositionBeforeChangingProgram.ch = cursorPositionBeforeChangingProgram.ch + 2;
 				editor.setValue(elaboratedSource);
+				editor.setCursor(cursorPositionBeforeChangingProgram);
 				
 				// we want to avoid that another frame is run with the old
 				// code, as this would mean that the
