@@ -530,7 +530,7 @@ function runCode() {
         elaboratedSource =  elaboratedSource.replace(/rotate(\s)+/g, ";rotate$1" );
         elaboratedSource =  elaboratedSource.replace(/translate(\s)+/g, ";translate$1" );
         
-        // the semicolo mangles the first line of the function definitions
+        // the semicolon mangles the first line of the function definitions
         // coffeescript doesn't like that
         elaboratedSource =  elaboratedSource.replace(/->(\s+);/g, "->$1" );
         
