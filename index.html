@@ -440,6 +440,9 @@ function registerCode() {
 			  else if(aposed) {
 				return aposed;
 			  }
+			  else if(singleComment) {
+				return "\n";
+			  }
 			  // eliminate comments
 			  else {
 				return "";
