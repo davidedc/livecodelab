@@ -356,6 +356,8 @@ function registerCode() {
 		// doOnce statements that have been executed
 		// but in reality those check marks
 		// are just single-line comments, so replace here.
+
+		editorContent = editorContent.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm,"$1if false");
 		editorContent = editorContent.replace("\u2713","//");
         
         // according to jsperf, this is the fastest way to count for
@@ -573,16 +575,24 @@ function registerCode() {
         // add all the line numbers info
         // regroup the lines into a single string again
         
+        //alert('soon before replacing doOnces'+elaboratedSource);
         if (elaboratedSource.indexOf('doOnce') > -1){
         	//alert("a doOnce is potentially executable");
 			elaboratedSourceByLine = elaboratedSource.split("\n");
 			//alert('splitting: ' + elaboratedSourceByLine.length );
 			for (var iteratingOverSource = 0; iteratingOverSource < elaboratedSourceByLine.length; iteratingOverSource++) {
 				//alert('iterating: ' + iteratingOverSource );
-				elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce\s+([a-z]+[a-z\sA-Z0-9\=;\+\"\']+)$/gm, "$1;doLNOnce.push("+(iteratingOverSource-1)+");$2" );
+				elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*([a-z]+[a-z\sA-Z0-9\=;\+\"\']+)$/gm, "$1;doLNOnce.push("+(iteratingOverSource-1)+"); (1+0).times -> $2" );
+				
+				if (elaboratedSourceByLine[iteratingOverSource].match(/^(\s*)doOnce[ ]*\->[ ]*$/gm)) {
+					//alert('doOnce multiline!');
+					elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*$/gm, "$1(1+0).times ->" );
+					elaboratedSourceByLine[iteratingOverSource+1] = elaboratedSourceByLine[iteratingOverSource+1].replace(/^(\s*)(.+)$/gm, "$1;doLNOnce.push("+(iteratingOverSource-1)+"); $2" );
+				}
+				
 			}
 			elaboratedSource = elaboratedSourceByLine.join("\n");
-			//alert(" "+elaboratedSource);
+        	//alert('soon after replacing doOnces'+elaboratedSource);
         }
         
 
@@ -593,11 +603,11 @@ function registerCode() {
         // a function is inlined with something else e.g.
         // doOnce frame = 0; box
         // 2 times -> box
-        elaboratedSource =  elaboratedSource.replace(/;\s*([a-z]+[a-zA-Z0-9]+)[\s]*([;\n]+)/g, ";$1()$2" );
+        elaboratedSource =  elaboratedSource.replace(/;\s*([a-z]+[a-zA-Z0-9]+)[ ]*([;\n]+)/g, ";$1()$2" );
         // this takes care of when a token that it's supposed to be
         // a function is inlined like so:
         // 2 times -> box
-        elaboratedSource =  elaboratedSource.replace(/\->\s*([a-z]+[a-zA-Z0-9]+)[\s]*([;\n]+)/g, ";$1()$2" );
+        elaboratedSource =  elaboratedSource.replace(/\->\s*([a-z]+[a-zA-Z0-9]+)[ ]*([;\n]+)/g, ";$1()$2" );
 
 			// draw() could just be called by mistake and it's likely
 			// to be disastrous. User doesn't even have visibility of such method,
@@ -853,7 +863,8 @@ function background(red, green, blue) {
 				//alert('splitting: ' + elaboratedSourceByLine.length );
 				for (var iteratingOverSource = 0; iteratingOverSource < doLNOnce.length; iteratingOverSource++) {
 					//alert('iterating: ' + iteratingOverSource );
-					elaboratedSourceByLine[doLNOnce[iteratingOverSource]] = elaboratedSourceByLine[doLNOnce[iteratingOverSource]].replace(/^(\s*)doOnce\s+([a-z]+[a-z A-Z0-9=;\+\"\']+)$/gm, "\u2713doOnce $2" );
+					elaboratedSourceByLine[doLNOnce[iteratingOverSource]] = elaboratedSourceByLine[doLNOnce[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*[a-z]+[a-z A-Z0-9=;\+\"\']+)$/gm, "$1\u2713doOnce$2" );
+					elaboratedSourceByLine[doLNOnce[iteratingOverSource]] = elaboratedSourceByLine[doLNOnce[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*)$/gm, "$1\u2713doOnce$2" );
 				}
 				elaboratedSource = elaboratedSourceByLine.join("\n");
 				
@@ -1181,10 +1192,9 @@ var doOnceExample = ""+
 ""+		"// comment\n"+
 ""+		"/* another\n"+
 ""+		"comment */\n"+
-""+		"//doOnce frame = 0 ; box\n"+
-""+		"box\n"+
-""+		"//doOnce alert 'miao'\n"+
-""+		"//drawOnce dsdsdsds\n";
+""+		"✓doOnce ->\n"+
+"\t"+	   "frame = 0 ; box\n"+
+""+		"✓doOnce -> alert 'miao'\n";
 
 
 function loadExample(whichExample) {
