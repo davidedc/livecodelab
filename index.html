@@ -584,7 +584,7 @@ function registerCode() {
 			//alert('splitting: ' + elaboratedSourceByLine.length );
 			for (var iteratingOverSource = 0; iteratingOverSource < elaboratedSourceByLine.length; iteratingOverSource++) {
 				//alert('iterating: ' + iteratingOverSource );
-				elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*([a-z]+[a-z\sA-Z0-9\=;\+\"\']+)$/gm, "$1;doLNOnce.push("+(iteratingOverSource-1)+"); (1+0).times -> $2" );
+				elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/gm, "$1;doLNOnce.push("+(iteratingOverSource-1)+"); (1+0).times -> $2" );
 				
 				if (elaboratedSourceByLine[iteratingOverSource].match(/^(\s*)doOnce[ ]*\->[ ]*$/gm)) {
 					//alert('doOnce multiline!');
@@ -867,7 +867,7 @@ function background(red, green, blue) {
 				//alert('splitting: ' + elaboratedSourceByLine.length );
 				for (var iteratingOverSource = 0; iteratingOverSource < doLNOnce.length; iteratingOverSource++) {
 					//alert('iterating: ' + iteratingOverSource );
-					elaboratedSourceByLine[doLNOnce[iteratingOverSource]] = elaboratedSourceByLine[doLNOnce[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*[a-z]+[a-z A-Z0-9=;\+\"\']+)$/gm, "$1\u2713doOnce$2" );
+					elaboratedSourceByLine[doLNOnce[iteratingOverSource]] = elaboratedSourceByLine[doLNOnce[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*.+)$/gm, "$1\u2713doOnce$2" );
 					elaboratedSourceByLine[doLNOnce[iteratingOverSource]] = elaboratedSourceByLine[doLNOnce[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*)$/gm, "$1\u2713doOnce$2" );
 				}
 				elaboratedSource = elaboratedSourceByLine.join("\n");
