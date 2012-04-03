@@ -560,7 +560,7 @@ function registerCode() {
         // Instead, all is good if rotate is prepended with a semicolon.
         
         
-        elaboratedSource =  elaboratedSource.replace(/(\d+)\s+times/g, ";( $1 + 0).times ->" );
+        elaboratedSource =  elaboratedSource.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->" );
 
 
         // if there is at least one doOnce:
@@ -587,7 +587,12 @@ function registerCode() {
         // this takes care of when a token that it's supposed to be
         // a function is inlined with something else e.g.
         // doOnce frame = 0; box
+        // 2 times -> box
         elaboratedSource =  elaboratedSource.replace(/;\s*([a-z]+[a-zA-Z0-9]+)[\s]*([;\n]+)/g, ";$1()$2" );
+        // this takes care of when a token that it's supposed to be
+        // a function is inlined like so:
+        // 2 times -> box
+        elaboratedSource =  elaboratedSource.replace(/\->\s*([a-z]+[a-zA-Z0-9]+)[\s]*([;\n]+)/g, ";$1()$2" );
 
 			// draw() could just be called by mistake and it's likely
 			// to be disastrous. User doesn't even have visibility of such method,
@@ -1099,22 +1104,22 @@ var simpleCubeExample = ""+
 	"box\n";
 
 var twoCubesExample = ""+
-""+		"2 times\n"+
+""+		"2 times ->\n"+
 "\t"+		"rotate 0, 1, frame/200\n"+
 "\t"+		"box\n";
 
 var cubesAndSpikes = ""+
 ""+		"scale 2.1\n"+
-""+		"5 times\n"+
+""+		"5 times ->\n"+
 "\t"+			"rotate 0,1,frame/500\n"+
 "\t"+			"box 0.1,0.1,0.1\n"+
 "\t"+			"translate 0,0.1,0.1\n"+
-"\t"+			"3 times\n"+
+"\t"+			"3 times ->\n"+
 "\t\t"+				"rotate 0,1,1\n"+
 "\t\t"+				"box 0.01,0.01,1\n";
 
 var turbineExample = ""+
-""+		"70 times\n"+
+""+		"70 times ->\n"+
 "\t"+		"rotate frame/101,1,frame/1000\n"+
 "\t"+		"box\n";
 
@@ -1131,16 +1136,16 @@ var simpleSoundExample = ""+
 
 var littleSpiralOfCubes = ""+
 ""+		"scale 0.1\n"+
-""+		"10 times\n"+
+""+		"10 times ->\n"+
 "\t"+		"rotate 0,1,frame/100\n"+
 "\t"+		"translate 1,1,1\n"+
 "\t"+		"box\n";
 
 var tentacleExample = ""+
 ""+		"scale 0.1\n"+
-""+		"3 times\n"+
+""+		"3 times ->\n"+
 "\t"+		"rotate 0,1,1\n"+
-"\t"+		"10 times\n"+
+"\t"+		"10 times ->\n"+
 "\t\t"+		"rotate 0,1,frame/100\n"+
 "\t\t"+		"scale 0.9\n"+
 "\t\t"+		"translate 1,1,1\n"+
