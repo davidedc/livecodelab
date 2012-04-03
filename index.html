@@ -101,7 +101,8 @@
 			<li><a href="#" onclick="loadExample('simpleSoundExample');">Simple sound</a></li>
 			<li><a href="#" onclick="loadExample('simpleRhythmExample');">Simple rhythm</a></li>
 			<li><a href="#" onclick="loadExample('industrialMusicExample');">Industrial music</a></li>
-			<li><a href="#" onclick="loadExample('doOnceExample');">doOnce tests</a></li>
+			<li><a href="#" onclick="loadExample('doOnceExample');">doOnce</a></li>
+			<li><a href="#" onclick="loadExample('planesExample');">Planes</a></li>
 
 		</ul>
 	</li>
@@ -149,6 +150,7 @@
   var isWebGLUsed = false;
   var normalMaterial = new THREE.MeshNormalMaterial()
   var cubeGeometry = new THREE.CubeGeometry(1,1,1);
+  var planeGeometry = new THREE.PlaneGeometry(1,1);
   var cameraFilterMaterial = new THREE.MeshBasicMaterial( { color: 0xffaa00, transparent: true, opacity: 0.1, blending: THREE.NormalBlending } ) ;
   var cameraFilterGeometry = new THREE.PlaneGeometry( 1, 1, 1,1 );				
   var cameraFilter = new THREE.Mesh(cameraFilterGeometry, cameraFilterMaterial);
@@ -634,6 +636,7 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/scale(\s)+/g, ";scale$1" );
         elaboratedSource =  elaboratedSource.replace(/rotate(\s)+/g, ";rotate$1" );
         elaboratedSource =  elaboratedSource.replace(/translate(\s)+/g, ";translate$1" );
+        elaboratedSource =  elaboratedSource.replace(/rect(\s)+/g, ";rect$1" );
         elaboratedSource =  elaboratedSource.replace(/bpm(\s)+/g, ";bpm$1" );
         elaboratedSource =  elaboratedSource.replace(/addSound(\s)+/g, ";addSound$1" );
         
@@ -682,6 +685,7 @@ function registerCode() {
 		  if (
 			  usedMethods[scanningUsedMethods] === "function" ||
 			  usedMethods[scanningUsedMethods] === "rotate" ||
+			  usedMethods[scanningUsedMethods] === "rect" ||
 			  usedMethods[scanningUsedMethods] === "box" ||
 			  usedMethods[scanningUsedMethods] === "translate" ||
 			  usedMethods[scanningUsedMethods] === "scale" ||
@@ -1036,6 +1040,35 @@ scale = function(a, b, c) {
   worldMatrix.scale(new THREE.Vector3(a,b,c));
 
 };
+
+  rect = function(a,b) {
+  	
+  	if(a === undefined){
+  	  a=1; b=1;
+  	  }
+  	  
+  	else if(arguments.length === 1){
+  	  b=a;
+  	  }
+  	  
+    var mesh = new THREE.Mesh(planeGeometry, normalMaterial);
+    // otherwise only one side is shown.
+    mesh.doubleSided = true;
+
+    mesh.matrixAutoUpdate = false;
+    mesh.matrix.copy(worldMatrix);
+  	if( a !== 1 || b !== 1){
+      mesh.matrix.scale(new THREE.Vector3(a,b,1));
+      // in theory the docs say that we should change the boundradius
+      // but I don't think that we need it...
+      //mesh.boundRadiusScale = Math.max(a,b,c);
+    }
+    
+    scene.add(mesh);
+
+  }
+
+
     
   box = function(a,b,c) {
   	
@@ -1196,6 +1229,15 @@ var doOnceExample = ""+
 "\t"+	   "frame = 0 ; box\n"+
 ""+		"✓doOnce -> alert 'miao'\n";
 
+var planesExample = ""+
+""+		"scale 0.3\n"+
+""+		"3 times ->\n"+
+"\t"+		"translate 0,0,0.5\n"+
+"\t"+		"5 times ->\n"+
+"\t\t"+		"rotate frame/100\n"+
+"\t\t"+	   "translate 0.7,0,0\n"+
+"\t\t"+		"rect";
+
 
 function loadExample(whichExample) {
 
@@ -1232,6 +1274,9 @@ function loadExample(whichExample) {
 			break;
 		case 'doOnceExample':
 			editor.setValue(doOnceExample);
+			break;
+		case 'planesExample':
+			editor.setValue(planesExample);
 			break;
 
 	}
