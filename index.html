@@ -352,6 +352,11 @@ function registerCode() {
         var characterBeingExamined;
         var nextCharacterBeingExamined;
         
+		// a check mark is added to the left of
+		// doOnce statements that have been executed
+		// but in reality those check marks
+		// are just single-line comments, so replace here.
+		editorContent = editorContent.replace("\u2713","//");
         
         // according to jsperf, this is the fastest way to count for
         // occurrences of a character. We count apostrophes
@@ -848,14 +853,14 @@ function background(red, green, blue) {
 				//alert('splitting: ' + elaboratedSourceByLine.length );
 				for (var iteratingOverSource = 0; iteratingOverSource < doLNOnce.length; iteratingOverSource++) {
 					//alert('iterating: ' + iteratingOverSource );
-					elaboratedSourceByLine[doLNOnce[iteratingOverSource]] = elaboratedSourceByLine[doLNOnce[iteratingOverSource]].replace(/^(\s*)doOnce\s+([a-z]+[a-z A-Z0-9=;\+\"\']+)$/gm, "//doOnce $2" );
+					elaboratedSourceByLine[doLNOnce[iteratingOverSource]] = elaboratedSourceByLine[doLNOnce[iteratingOverSource]].replace(/^(\s*)doOnce\s+([a-z]+[a-z A-Z0-9=;\+\"\']+)$/gm, "\u2713doOnce $2" );
 				}
 				elaboratedSource = elaboratedSourceByLine.join("\n");
 				
-				var cursorPositionBeforeChangingProgram = editor.getCursor();
-				cursorPositionBeforeChangingProgram.ch = cursorPositionBeforeChangingProgram.ch + 2;
+				var cursorPositionBeforeAddingCheckMark = editor.getCursor();
+				cursorPositionBeforeAddingCheckMark.ch = cursorPositionBeforeAddingCheckMark.ch + 1;
 				editor.setValue(elaboratedSource);
-				editor.setCursor(cursorPositionBeforeChangingProgram);
+				editor.setCursor(cursorPositionBeforeAddingCheckMark);
 				
 				// we want to avoid that another frame is run with the old
 				// code, as this would mean that the
