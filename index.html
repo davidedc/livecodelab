@@ -103,6 +103,7 @@
 			<li><a href="#" onclick="loadExample('industrialMusicExample');">Industrial music</a></li>
 			<li><a href="#" onclick="loadExample('doOnceExample');">doOnce</a></li>
 			<li><a href="#" onclick="loadExample('planesExample');">Planes</a></li>
+			<li><a href="#" onclick="loadExample('matrixesExample');">Matrixes</a></li>
 
 		</ul>
 	</li>
@@ -645,6 +646,9 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/line(\s)+/g, ";line$1" );
         elaboratedSource =  elaboratedSource.replace(/bpm(\s)+/g, ";bpm$1" );
         elaboratedSource =  elaboratedSource.replace(/addSound(\s)+/g, ";addSound$1" );
+        elaboratedSource =  elaboratedSource.replace(/pushMatrix(\s)+/g, ";pushMatrix$1" );
+        elaboratedSource =  elaboratedSource.replace(/popMatrix(\s)+/g, ";popMatrix$1" );
+        elaboratedSource =  elaboratedSource.replace(/resetMatrix(\s)+/g, ";resetMatrix$1" );
         
         // the semicolon mangles the first line of the function definitions
         // coffeescript doesn't like that
@@ -699,6 +703,9 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "alert" ||
 			  usedMethods[scanningUsedMethods] === "bpm" ||
 			  usedMethods[scanningUsedMethods] === "addSound" ||
+			  usedMethods[scanningUsedMethods] === "pushMatrix" ||
+			  usedMethods[scanningUsedMethods] === "popMatrix" ||
+			  usedMethods[scanningUsedMethods] === "resetMatrix" ||
 			  false
 		  ){
 		  	continue;
@@ -834,6 +841,7 @@ function background(red, green, blue) {
 			}
 
 			//clearDisplayList();
+			matrixStack = [];
 			worldMatrix.identity();
 
 			// the sound list needs to be cleaned
@@ -981,6 +989,20 @@ addSound = function(soundID,beatString) {
     		soundLoops.soundIDs[soundLoops.soundIDs.length] = soundID;
     		soundLoops.beatStrings[soundLoops.beatStrings.length] = beatString;
 
+}
+
+var matrixStack = [];
+pushMatrix = function(){
+	matrixStack.push(worldMatrix);
+	worldMatrix = (new THREE.Matrix4()).copy(worldMatrix);
+}
+
+popMatrix = function(){
+	worldMatrix = matrixStack.pop();
+}
+
+resetMatrix = function(){
+	worldMatrix.identity();
 }
 
 translate = function(a, b, c) {
@@ -1269,6 +1291,17 @@ var planesExample = ""+
 "\t\t"+	   "translate 0.7,0,0\n"+
 "\t\t"+		"rect";
 
+var matrixesExample = ""+
+""+		"rotate frame/100\n"+
+""+		"line\n"+
+""+		"pushMatrix\n"+
+""+		"translate 0.5,0,0\n"+
+""+		"line\n"+
+""+		"popMatrix\n"+
+""+		"translate -0.5,0,0\n"+
+""+		"line\n"+
+""+		"resetMatrix\n"+
+""+		"line";
 
 function loadExample(whichExample) {
 
@@ -1308,6 +1341,9 @@ function loadExample(whichExample) {
 			break;
 		case 'planesExample':
 			editor.setValue(planesExample);
+			break;
+		case 'matrixesExample':
+			editor.setValue(matrixesExample);
 			break;
 
 	}
