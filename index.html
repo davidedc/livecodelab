@@ -149,8 +149,13 @@
   // and then go up a node.
   var isWebGLUsed = false;
   var normalMaterial = new THREE.MeshNormalMaterial()
+  var lineBasicMaterial = new THREE.LineBasicMaterial()
   var cubeGeometry = new THREE.CubeGeometry(1,1,1);
   var planeGeometry = new THREE.PlaneGeometry(1,1);
+  var lineGeometry = new THREE.Geometry();
+  lineGeometry.vertices.push(new THREE.Vertex(new THREE.Vector3(0, -0.5, 0)));
+  lineGeometry.vertices.push(new THREE.Vertex(new THREE.Vector3(0, 0.5, 0)));
+
   var cameraFilterMaterial = new THREE.MeshBasicMaterial( { color: 0xffaa00, transparent: true, opacity: 0.1, blending: THREE.NormalBlending } ) ;
   var cameraFilterGeometry = new THREE.PlaneGeometry( 1, 1, 1,1 );				
   var cameraFilter = new THREE.Mesh(cameraFilterGeometry, cameraFilterMaterial);
@@ -637,6 +642,7 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/rotate(\s)+/g, ";rotate$1" );
         elaboratedSource =  elaboratedSource.replace(/translate(\s)+/g, ";translate$1" );
         elaboratedSource =  elaboratedSource.replace(/rect(\s)+/g, ";rect$1" );
+        elaboratedSource =  elaboratedSource.replace(/line(\s)+/g, ";line$1" );
         elaboratedSource =  elaboratedSource.replace(/bpm(\s)+/g, ";bpm$1" );
         elaboratedSource =  elaboratedSource.replace(/addSound(\s)+/g, ";addSound$1" );
         
@@ -686,6 +692,7 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "function" ||
 			  usedMethods[scanningUsedMethods] === "rotate" ||
 			  usedMethods[scanningUsedMethods] === "rect" ||
+			  usedMethods[scanningUsedMethods] === "line" ||
 			  usedMethods[scanningUsedMethods] === "box" ||
 			  usedMethods[scanningUsedMethods] === "translate" ||
 			  usedMethods[scanningUsedMethods] === "scale" ||
@@ -1040,6 +1047,30 @@ scale = function(a, b, c) {
   worldMatrix.scale(new THREE.Vector3(a,b,c));
 
 };
+
+
+  line = function(a) {
+  	
+  	if(a === undefined){
+  	  a=1;
+  	  }
+  	  
+  	  
+    var mesh = new THREE.Line(lineGeometry, lineBasicMaterial);
+
+    mesh.matrixAutoUpdate = false;
+    mesh.matrix.copy(worldMatrix);
+  	if( a !== 1){
+      mesh.matrix.scale(new THREE.Vector3(1,a,1));
+      // in theory the docs say that we should change the boundradius
+      // but I don't think that we need it...
+      //mesh.boundRadiusScale = Math.max(a,b,c);
+    }
+    
+    scene.add(mesh);
+
+  }
+
 
   rect = function(a,b) {
   	
