@@ -1383,7 +1383,16 @@ var CodeMirror = (function() {
         var end = line.text.indexOf(" ", ch + 2);
         extra = htmlEscape(line.text.slice(ch + 1, end < 0 ? line.text.length : end + (ie ? 5 : 0)));
       }
-      measure.innerHTML = "<pre>" + line.getHTML(null, null, false, tabText, ch) +
+      // small change here below made by Davide Della Casa
+      // "  " was originally tabText.
+      // Problem with that is that tabText itself is a span
+      // (see computeTabText function), which makes the function
+      // below slow when the cursor moves accross lines with tabs
+      // SO I've just replaced the tabText with two spaces below
+      // because that's the length of the tab, so moving the cursor
+      // accross lines with tabs is now fast and causes no glitches
+      // on the other ongoing animations.
+      measure.innerHTML = "<pre>" + line.getHTML(null, null, false, "  ", ch) +
         '<span id="CodeMirror-temp-' + tempId + '">' + htmlEscape(line.text.charAt(ch) || " ") + "</span>" +
         extra + "</pre>";
       var elt = document.getElementById("CodeMirror-temp-" + tempId);
