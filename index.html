@@ -998,7 +998,10 @@ pushMatrix = function(){
 }
 
 popMatrix = function(){
-	worldMatrix = matrixStack.pop();
+	if (matrixStack.length !== 0)
+		worldMatrix = matrixStack.pop();
+	else
+		worldMatrix.identity();
 }
 
 resetMatrix = function(){
