@@ -149,7 +149,7 @@
   // influence the stack, so we need to create a scale node,
   // and then go up a node.
   var isWebGLUsed = false;
-  var normalMaterial = new THREE.MeshNormalMaterial()
+  var normalMaterial = new THREE.MeshNormalMaterial();
   var cubeGeometry = new THREE.CubeGeometry(1,1,1);
   var planeGeometry = new THREE.PlaneGeometry(1,1);
   var lineGeometry = new THREE.Geometry();
@@ -1082,13 +1082,14 @@ scale = function(a, b, c) {
   	if(a === undefined){
   	  a=1;
   	  }
-  	  
-  	// TODO MAYBE it would be efficient to cache 10 or so of
-  	// these materials, in case you are drawing just a few lines
-  	// with the same material properties.
-  	// So before creating a new material you check whether
-  	// you have one already made with the properties you
-  	// want.
+
+	// TODO MAYBE it would be efficient to cache 10 or so of
+	// these materials, in case you are drawing just a few lines
+	// with the same material properties.
+	// So before creating a new material you check whether
+	// you have one already made with the properties you
+	// want.
+
   	var lineBasicMaterialCOL = new THREE.LineBasicMaterial({
         color: currentStrokeColor,
     });
@@ -1232,7 +1233,6 @@ var doFill = true,
         colorModeY = 255,
         colorModeZ = 255,
         curColorMode = Constants.RGB;
-
 
 /**
     * Determines the largest value in a sequence of numbers.
