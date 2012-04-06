@@ -138,6 +138,13 @@
 	</div>
 	-->
 
+<!--
+Materials have to be cached because they are expensive to create,
+(culprit is the initMaterial function),
+so: using this neat simple LRU cache code by Rasmus Andersson.
+-->
+<script type="text/javascript" src="./lru.js"></script>
+
 	<script type="text/javascript">
 		var stats, scene, renderer;
 		var camera;
@@ -150,6 +157,7 @@
   // and then go up a node.
   var isWebGLUsed = false;
   var normalMaterial = new THREE.MeshNormalMaterial();
+  var lineMaterialsCache = new LRUCache(100);
   var cubeGeometry = new THREE.CubeGeometry(1,1,1);
   var planeGeometry = new THREE.PlaneGeometry(1,1);
   var lineGeometry = new THREE.Geometry();
@@ -1083,16 +1091,20 @@ scale = function(a, b, c) {
   	  a=1;
   	  }
 
-	// TODO MAYBE it would be efficient to cache 10 or so of
-	// these materials, in case you are drawing just a few lines
-	// with the same material properties.
-	// So before creating a new material you check whether
-	// you have one already made with the properties you
-	// want.
+	var lineBasicMaterialCOL = lineMaterialsCache.get(currentStrokeColor);
+	if ( lineBasicMaterialCOL === undefined) {
+		lineBasicMaterialCOL = new THREE.LineBasicMaterial({
+			color: currentStrokeColor,
+		});
+		lineMaterialsCache.put(currentStrokeColor, lineBasicMaterialCOL);
+	}
 
+	/*
+	// old uncached mechanism
   	var lineBasicMaterialCOL = new THREE.LineBasicMaterial({
         color: currentStrokeColor,
     });
+    */
   	
     var mesh = new THREE.Line(lineGeometry, lineBasicMaterialCOL);
 
