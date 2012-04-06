@@ -158,8 +158,11 @@ so: using this neat simple LRU cache code by Rasmus Andersson.
   var isWebGLUsed = false;
   var normalMaterial = new THREE.MeshNormalMaterial();
   var lineMaterialsCache = new LRUCache(100);
+  var rectangleMaterialsCache = new LRUCache(100);
   var linesPool = [];
+  var rectanglesPool = [];
   var usedLines = 0;
+  var usedRectangles = 0;
   var cubeGeometry = new THREE.CubeGeometry(1,1,1);
   var planeGeometry = new THREE.PlaneGeometry(1,1);
   var lineGeometry = new THREE.Geometry();
@@ -303,7 +306,14 @@ var lastStableProgram;
 		var gradientDrawn = false;
 		function render() {
 
-		
+			/*
+			// need a light for the meshlambert material
+			var light = new THREE.PointLight( 0xFFFFFF );
+			light.position.set( 10, 0, 10 );
+			scene.add( light );
+			*/
+
+
 			if (repaintBackroundEveryFrame || (!gradientDrawn)) {
 			var diagonal = Math.sqrt(Math.pow(scaledBackgroundWidth/2,2)+ Math.pow( scaledBackgroundHeight/2,2));
 			var radgrad = backgroundSceneContext.createRadialGradient(scaledBackgroundWidth/2, scaledBackgroundHeight/2, 0,scaledBackgroundWidth/2, scaledBackgroundHeight/2, diagonal);  
@@ -872,6 +882,7 @@ function background(red, green, blue) {
 			if (typeof(draw) != "undefined") { 
 			  doLNOnce = [];
 			  usedLines = 0;
+			  usedRectangles = 0;
 			  draw();
 			  frame++;
 			  consecutiveFramesWithoutRunTimeError++;
@@ -1180,12 +1191,35 @@ scale = function(a, b, c) {
   	  b=a;
   	  }
   	  
-    var mesh = new THREE.Mesh(planeGeometry, normalMaterial);
-    // otherwise only one side is shown.
-    mesh.doubleSided = true;
+	var rectMaterialCOL = rectangleMaterialsCache.get(currentFillColor);
+	if ( rectMaterialCOL === undefined) {
+		rectMaterialCOL = new THREE.MeshBasicMaterial({
+			color: currentFillColor,
+		});
+		lineMaterialsCache.put(currentFillColor, rectMaterialCOL);
+	}
+
+  	var mesh = rectanglesPool[usedRectangles];
+    if ( mesh === undefined){
+      mesh = new THREE.Mesh(planeGeometry, rectMaterialCOL);
+      rectanglesPool.push(mesh);
+      mesh.doubleSided = true;
+    }
+    else {
+    	//mesh.geometry = lineGeometry;
+    	mesh.material = rectMaterialCOL;
+    }
+    usedRectangles++;
+
+
+    // the unpooled way of doing things
+    //var mesh = new THREE.Mesh(planeGeometry, rectMaterialCOL);
+    
+    
 
     mesh.matrixAutoUpdate = false;
     mesh.matrix.copy(worldMatrix);
+    mesh.matrixWorldNeedsUpdate = true;
   	if( a !== 1 || b !== 1){
       mesh.matrix.scale(new THREE.Vector3(a,b,1));
       // in theory the docs say that we should change the boundradius
