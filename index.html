@@ -1112,45 +1112,8 @@ scale = function(a, b, c) {
   	  a=1;
   	  }
 
-	// I can't seem to change colors of lines so I'm
-	// just caching some materials with
-	// baked-in colors so hopefully I can reuse those.
-	var lineBasicMaterialCOL = lineBasicMaterialsCache.get(currentStrokeColor);
-	if ( lineBasicMaterialCOL === undefined) {
-		lineBasicMaterialCOL = new THREE.LineBasicMaterial({
-			color: currentStrokeColor,
-		});
-		lineBasicMaterialsCache.put(currentStrokeColor, lineBasicMaterialCOL);
-	}
-	
-
-	/*
-	// old uncached mechanism
-  	var lineBasicMaterialCOL = new THREE.LineBasicMaterial({
-        color: currentStrokeColor,
-    });
-    */
-  	
-  	var mesh = linesPool[usedLines];
-    if ( mesh === undefined){
-      mesh = new THREE.Line(lineGeometry, lineBasicMaterialCOL);
-      linesPool.push(mesh);
-    }
-    else {
-    	//mesh.geometry = lineGeometry;
-    	mesh.material = lineBasicMaterialCOL;
-    }
-    usedLines++;
     
-    /*
-    // THIS CODE ONLY POOLS LINES
-    // and doesn't cache materials.
-    // basically each line has its own material.
-    // The problem is that I can't get the material
-    // to change color. When I try that, they turn
-    // black. TODO Should open an issue to ask
-    // for directions.
-      	var mesh = linesPool[usedLines];
+    var mesh = linesPool[usedLines];
     if ( mesh === undefined){
 		var lineBasicMaterialCOL = new THREE.LineBasicMaterial({
 			color: currentStrokeColor
@@ -1162,13 +1125,9 @@ scale = function(a, b, c) {
     else {
     	//mesh.geometry = lineGeometry;
     	//mesh.material = lineBasicMaterialCOL;
-    	mesh.material.color = currentStrokeColor;
-    	mesh.material.needsUpdate = true;
-    	mesh.geometry.__dirtyColors = true;
-    	mesh.geometry.dynamic = true;
+    	mesh.material.color.setHex(currentStrokeColor);
     }
     usedLines++;
-    */
     
     // old unpooled mechanism
     //var mesh = new THREE.Line(lineGeometry, lineBasicMaterialCOL);
