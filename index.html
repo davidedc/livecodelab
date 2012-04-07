@@ -159,6 +159,7 @@ so: using this neat simple LRU cache code by Rasmus Andersson.
   var normalMaterial = new THREE.MeshNormalMaterial();
   var lineMaterialsCache = new LRUCache(100);
   var rectangleMaterialsCache = new LRUCache(100);
+  var wireframeMaterialsCache = new LRUCache(100);
   var linesPool = [];
   var rectanglesPool = [];
   var usedLines = 0;
@@ -1211,6 +1212,32 @@ scale = function(a, b, c) {
     }
     usedRectangles++;
 
+//
+/////  Now for the wireframe part
+//
+
+	var rectWireframeMaterialCOL = wireframeMaterialsCache.get(currentStrokeColor);
+	if ( rectWireframeMaterialCOL === undefined) {
+		rectWireframeMaterialCOL = new THREE.MeshBasicMaterial( {
+			color: currentStrokeColor,
+			wireframe: true
+		} )
+		wireframeMaterialsCache.put(currentStrokeColor, rectWireframeMaterialCOL);
+	}
+
+
+  	var mesh2 = rectanglesPool[usedRectangles];
+    if ( mesh2 === undefined){
+      mesh2 = new THREE.Mesh(planeGeometry, rectMaterialCOL);
+      rectanglesPool.push(mesh2);
+      mesh2.doubleSided = true;
+    }
+    else {
+    	//mesh.geometry = lineGeometry;
+    	mesh2.material = rectWireframeMaterialCOL;
+    }
+    usedRectangles++;
+
 
     // the unpooled way of doing things
     //var mesh = new THREE.Mesh(planeGeometry, rectMaterialCOL);
@@ -1220,14 +1247,21 @@ scale = function(a, b, c) {
     mesh.matrixAutoUpdate = false;
     mesh.matrix.copy(worldMatrix);
     mesh.matrixWorldNeedsUpdate = true;
+
+    mesh2.matrixAutoUpdate = false;
+    mesh2.matrix.copy(worldMatrix);
+    mesh2.matrixWorldNeedsUpdate = true;
+
   	if( a !== 1 || b !== 1){
       mesh.matrix.scale(new THREE.Vector3(a,b,1));
+      mesh2.matrix.scale(new THREE.Vector3(a,b,1));
       // in theory the docs say that we should change the boundradius
       // but I don't think that we need it...
       //mesh.boundRadiusScale = Math.max(a,b,c);
     }
     
     scene.add(mesh);
+    scene.add(mesh2);
 
   }
 
