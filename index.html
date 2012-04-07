@@ -1171,6 +1171,7 @@ scale = function(a, b, c) {
 		else {
 			mesh.material.color.setHex(currentFillColor);
 			mesh.material.wireframe = false;
+			mesh.doubleSided = true;
 		}
 		usedRectangles++;
 		mesh.matrixAutoUpdate = false;
@@ -1200,6 +1201,7 @@ scale = function(a, b, c) {
 			//mesh.geometry = lineGeometry;
 			mesh2.material.wireframe = true;
 			mesh2.material.color.setHex(currentStrokeColor);
+			mesh2.doubleSided = false;
 		}
 		usedRectangles++;
 		mesh2.matrixAutoUpdate = false;
