@@ -1199,105 +1199,66 @@ scale = function(a, b, c) {
   	  }
   	  
 	if (doFill) {
-		var rectMaterialCOL = meshBasicMaterialsNoWireframeCache.get(currentFillColor);
-		if ( rectMaterialCOL === undefined) {
-			rectMaterialCOL = new THREE.MeshBasicMaterial({
+		var mesh = rectanglesPool[usedRectangles];
+		var rectMaterialCOL;
+		if ( mesh === undefined){
+		  rectMaterialCOL = new THREE.MeshBasicMaterial({
 				color: currentFillColor,
 			});
-			meshBasicMaterialsNoWireframeCache.put(currentFillColor, rectMaterialCOL);
-		}
-	
-		var mesh = rectanglesPool[usedRectangles];
-		if ( mesh === undefined){
 		  mesh = new THREE.Mesh(planeGeometry, rectMaterialCOL);
 		  rectanglesPool.push(mesh);
 		  mesh.doubleSided = true;
 		}
 		else {
-			//mesh.geometry = lineGeometry;
-			mesh.material = rectMaterialCOL;
+			mesh.material.color.setHex(currentFillColor);
+			mesh.material.wireframe = false;
 		}
 		usedRectangles++;
+		mesh.matrixAutoUpdate = false;
+		mesh.matrix.copy(worldMatrix);
+		mesh.matrixWorldNeedsUpdate = true;
     }
-
-/*
-	// here is how I would do it if I could
-	// change the color of a material.
-  	var mesh = rectanglesPool[usedRectangles];
-  	var rectMaterialCOL;
-    if ( mesh === undefined){
-      rectMaterialCOL = new THREE.MeshBasicMaterial({
-			color: currentFillColor,
-		});
-      mesh = new THREE.Mesh(planeGeometry, rectMaterialCOL);
-      rectanglesPool.push(mesh);
-      mesh.doubleSided = true;
-    }
-    else {
-    	//mesh.geometry = lineGeometry;
-    	// mesh.material = rectMaterialCOL;
-    	mesh.material.color = currentFillColor;
-    }
-    usedRectangles++;
-*/
 
 //
 /////  Now for the wireframe part
 //
 
 	if (doStroke) {
-		var rectWireframeMaterialCOL = wireframeMaterialsCache.get(currentStrokeColor);
-		if ( rectWireframeMaterialCOL === undefined) {
-			rectWireframeMaterialCOL = new THREE.MeshBasicMaterial( {
+		var mesh2 = rectanglesPool[usedRectangles];
+		var rectWireframeMaterialCOL;
+		if ( mesh2 === undefined){
+		  rectWireframeMaterialCOL = new THREE.MeshBasicMaterial( {
 				color: currentStrokeColor,
 				wireframe: true
 			} )
-			wireframeMaterialsCache.put(currentStrokeColor, rectWireframeMaterialCOL);
-		}
-	
-	
-		var mesh2 = rectanglesPool[usedRectangles];
-		if ( mesh2 === undefined){
 		  mesh2 = new THREE.Mesh(planeGeometry, rectWireframeMaterialCOL);
 		  rectanglesPool.push(mesh2);
 		  // meshes with wireframe material don't
-		  // need this flag  to be set.
-		  //mesh2.doubleSided = true;
+		  // need this flag  to be set so let's leave the default.
+		  mesh2.doubleSided = false;
 		}
 		else {
 			//mesh.geometry = lineGeometry;
-			mesh2.material = rectWireframeMaterialCOL;
+			mesh2.material.wireframe = true;
+			mesh2.material.color.setHex(currentStrokeColor);
 		}
 		usedRectangles++;
-    }
-
-
-    // the unpooled way of doing things
-    //var mesh = new THREE.Mesh(planeGeometry, rectMaterialCOL);
-    
-	// now combine the two meshes
-	// note that I did try to see whether grouping the two meshes
-	// is faster, as in: https://github.com/mrdoob/three.js/blob/dev/src/extras/SceneUtils.js#L29
-	// but it's actually much slower...
-
-    if (doFill) {
-		mesh.matrixAutoUpdate = false;
-		mesh.matrix.copy(worldMatrix);
-		mesh.matrixWorldNeedsUpdate = true;
-    }
-
-    if (doStroke) {
 		mesh2.matrixAutoUpdate = false;
 		mesh2.matrix.copy(worldMatrix);
 		mesh2.matrixWorldNeedsUpdate = true;
     }
-    
+
+
+	// now combine the two meshes
+	// note that I did try to see whether grouping the two meshes
+	// is faster, as in: https://github.com/mrdoob/three.js/blob/dev/src/extras/SceneUtils.js#L29
+	// but it seems to be much slower...
+
   	if( a !== 1 || b !== 1){
       if (doFill) mesh.matrix.scale(new THREE.Vector3(a,b,1));
       if (doStroke) mesh2.matrix.scale(new THREE.Vector3(a,b,1));
       // in theory the docs say that we should change the boundradius
       // but I don't think that we need it...
-      //mesh.boundRadiusScale = Math.max(a,b,c);
     }
     
     if (doFill) scene.add(mesh);
