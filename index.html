@@ -153,8 +153,10 @@
 
   var linesPool = [];
   var rectanglesPool = [];
+  var boxesPool = [];
   var usedLines = 0;
   var usedRectangles = 0;
+  var usedBoxes = 0;
   var cubeGeometry = new THREE.CubeGeometry(1,1,1);
   var planeGeometry = new THREE.PlaneGeometry(1,1);
   var lineGeometry = new THREE.Geometry();
@@ -380,6 +382,15 @@ function combDisplayList() {
 				if (usedRectangles > 0) {
 					sceneObject.visible = true;
 					usedRectangles--;
+				}
+				else {
+					sceneObject.visible = false;
+				}
+			}
+			else if (sceneObject.isBox){
+				if (usedBoxes > 0) {
+					sceneObject.visible = true;
+					usedBoxes--;
 				}
 				else {
 					sceneObject.visible = false;
@@ -818,7 +829,7 @@ function registerCode() {
 //var chromeHackUncaughtReferenceName = '';
 //var chromeHackUncaughtReferenceNames = [];
 
-window.onerror=function(msg, url, linenumber){
+window.onerrorf=function(msg, url, linenumber){
  $('#dangerSignText').css('color','red');
  $('#errorMessageText').text(msg);
  
@@ -1155,6 +1166,7 @@ scale = function(a, b, c) {
       mesh = new THREE.Line(lineGeometry, lineBasicMaterialCOL);
       mesh.isLine = true;
       mesh.isMesh = false;
+      mesh.isBox = false;
       linesPool.push(mesh);
       scene.add(mesh);
     }
@@ -1203,6 +1215,7 @@ scale = function(a, b, c) {
 		  mesh = new THREE.Mesh(planeGeometry, rectMaterialCOL);
 		  mesh.isLine = false;
 		  mesh.isMesh = true;
+	      mesh.isBox = false;
 		  rectanglesPool.push(mesh);
 		  mesh.doubleSided = true;
 		  scene.add(mesh);
@@ -1233,6 +1246,7 @@ scale = function(a, b, c) {
 		  mesh2 = new THREE.Mesh(planeGeometry, rectWireframeMaterialCOL);
 		  mesh2.isLine = false;
 		  mesh2.isMesh = true;
+	      mesh2.isBox = false;
 		  rectanglesPool.push(mesh2);
 		  // meshes with wireframe material don't
 		  // need this flag  to be set so let's leave the default.
@@ -1264,9 +1278,6 @@ scale = function(a, b, c) {
       // but I don't think that we need it...
     }
     
-    //if (doFill) scene.add(mesh);
-    //if (doStroke) scene.add(mesh2);
-
   }
 
 
@@ -1281,32 +1292,79 @@ scale = function(a, b, c) {
   	else if(arguments.length === 1){
   	  b=a; c=a;
   	  }
-  	// create a distinct scale node
-  	//var shouldAttachHere = parentObject;
-    //scale(a,b,c);
-    //var mesh = new THREE.Mesh(cubeGeometry, normalMaterial)
+
+	if (doFill) {
+		var mesh = boxesPool[usedBoxes];
+		var rectMaterialCOL;
+		if ( mesh === undefined){
+		  rectMaterialCOL = new THREE.MeshBasicMaterial({
+				color: currentFillColor,
+			});
+		  mesh = new THREE.Mesh(cubeGeometry, rectMaterialCOL);
+		  mesh.isLine = false;
+		  mesh.isMesh = false;
+		  mesh.isBox = true;
+		  boxesPool.push(mesh);
+		  mesh.doubleSided = true;
+		  scene.add(mesh);
+		}
+		else {
+			mesh.material.color.setHex(currentFillColor);
+			mesh.material.wireframe = false;
+			mesh.doubleSided = true;
+		}
+		usedBoxes++;
+		mesh.matrixAutoUpdate = false;
+		mesh.matrix.copy(worldMatrix);
+		mesh.matrixWorldNeedsUpdate = true;
+    }
+
+//
+/////  Now for the wireframe part
+//
+
+	if (doStroke) {
+		var mesh2 = boxesPool[usedBoxes];
+		var rectWireframeMaterialCOL;
+		if ( mesh2 === undefined){
+		  rectWireframeMaterialCOL = new THREE.MeshBasicMaterial( {
+				color: currentStrokeColor,
+				wireframe: true
+			} )
+		  mesh2 = new THREE.Mesh(cubeGeometry, rectWireframeMaterialCOL);
+		  mesh2.isLine = false;
+		  mesh2.isMesh = false;
+		  mesh2.isBox = true;
+		  boxesPool.push(mesh2);
+		  // meshes with wireframe material don't
+		  // need this flag  to be set so let's leave the default.
+		  mesh2.doubleSided = false;
+		  scene.add(mesh2);
+		}
+		else {
+			//mesh.geometry = lineGeometry;
+			mesh2.material.wireframe = true;
+			mesh2.material.color.setHex(currentStrokeColor);
+			mesh2.doubleSided = false;
+		}
+		usedBoxes++;
+		mesh2.matrixAutoUpdate = false;
+		mesh2.matrix.copy(worldMatrix);
+		mesh2.matrixWorldNeedsUpdate = true;
+    }
 
 
-    var mesh = new THREE.Mesh(cubeGeometry, normalMaterial);
+	// now combine the two meshes
+	// note that I did try to see whether grouping the two meshes
+	// is faster, as in: https://github.com/mrdoob/three.js/blob/dev/src/extras/SceneUtils.js#L29
+	// but it seems to be much slower...
 
-    // the cube we are going to add is subject to the scale we just
-    // did, so the size should be OK
-    //parentObject.add(mesh)
-    // now we need to escape the scale node that we used to size the cube
-    // otherwise all further translations/rotations/scales are going
-    // to be affected.
-    //parentObject = shouldAttachHere
-    mesh.matrixAutoUpdate = false;
-    mesh.matrix.copy(worldMatrix);
   	if( a !== 1 || b !== 1 || c !== 1){
-      mesh.matrix.scale(new THREE.Vector3(a,b,c));
+      if (doFill) mesh.matrix.scale(new THREE.Vector3(a,b,c));
+      if (doStroke) mesh2.matrix.scale(new THREE.Vector3(a,b,c));
       // in theory the docs say that we should change the boundradius
       // but I don't think that we need it...
-      //mesh.boundRadiusScale = Math.max(a,b,c);
     }
-    
-    scene.add(mesh);
-    
 
 
   }
