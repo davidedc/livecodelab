@@ -1212,9 +1212,31 @@ scale = function(a, b, c) {
     }
     usedRectangles++;
 
+/*
+	// here is how I would do it if I could
+	// change the color of a material.
+  	var mesh = rectanglesPool[usedRectangles];
+  	var rectMaterialCOL;
+    if ( mesh === undefined){
+      rectMaterialCOL = new THREE.MeshBasicMaterial({
+			color: currentFillColor,
+		});
+      mesh = new THREE.Mesh(planeGeometry, rectMaterialCOL);
+      rectanglesPool.push(mesh);
+      mesh.doubleSided = true;
+    }
+    else {
+    	//mesh.geometry = lineGeometry;
+    	// mesh.material = rectMaterialCOL;
+    	mesh.material.color = currentFillColor;
+    }
+    usedRectangles++;
+*/
+
 //
 /////  Now for the wireframe part
 //
+
 
 	var rectWireframeMaterialCOL = wireframeMaterialsCache.get(currentStrokeColor);
 	if ( rectWireframeMaterialCOL === undefined) {
@@ -1242,7 +1264,10 @@ scale = function(a, b, c) {
     // the unpooled way of doing things
     //var mesh = new THREE.Mesh(planeGeometry, rectMaterialCOL);
     
-    
+	// now combine the two meshes
+	// note that I did try to see whether grouping the two meshes
+	// is faster, as in: https://github.com/mrdoob/three.js/blob/dev/src/extras/SceneUtils.js#L29
+	// but it's actually much slower...
 
     mesh.matrixAutoUpdate = false;
     mesh.matrix.copy(worldMatrix);
