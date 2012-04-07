@@ -138,13 +138,6 @@
 	</div>
 	-->
 
-<!--
-Materials have to be cached because they are expensive to create,
-(culprit is the initMaterial function),
-so: using this neat simple LRU cache code by Rasmus Andersson.
--->
-<script type="text/javascript" src="./lru.js"></script>
-
 	<script type="text/javascript">
 		var stats, scene, renderer;
 		var camera;
@@ -157,10 +150,6 @@ so: using this neat simple LRU cache code by Rasmus Andersson.
   // and then go up a node.
   var isWebGLUsed = false;
   var normalMaterial = new THREE.MeshNormalMaterial();
-
-  var lineBasicMaterialsCache = new LRUCache(100);
-  var meshBasicMaterialsNoWireframeCache = new LRUCache(100);
-  var wireframeMaterialsCache = new LRUCache(100);
 
   var linesPool = [];
   var rectanglesPool = [];
