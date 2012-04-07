@@ -157,9 +157,11 @@ so: using this neat simple LRU cache code by Rasmus Andersson.
   // and then go up a node.
   var isWebGLUsed = false;
   var normalMaterial = new THREE.MeshNormalMaterial();
-  var lineMaterialsCache = new LRUCache(100);
-  var rectangleMaterialsCache = new LRUCache(100);
+
+  var lineBasicMaterialsCache = new LRUCache(100);
+  var meshBasicMaterialsNoWireframeCache = new LRUCache(100);
   var wireframeMaterialsCache = new LRUCache(100);
+
   var linesPool = [];
   var rectanglesPool = [];
   var usedLines = 0;
@@ -1113,12 +1115,12 @@ scale = function(a, b, c) {
 	// I can't seem to change colors of lines so I'm
 	// just caching some materials with
 	// baked-in colors so hopefully I can reuse those.
-	var lineBasicMaterialCOL = lineMaterialsCache.get(currentStrokeColor);
+	var lineBasicMaterialCOL = lineBasicMaterialsCache.get(currentStrokeColor);
 	if ( lineBasicMaterialCOL === undefined) {
 		lineBasicMaterialCOL = new THREE.LineBasicMaterial({
 			color: currentStrokeColor,
 		});
-		lineMaterialsCache.put(currentStrokeColor, lineBasicMaterialCOL);
+		lineBasicMaterialsCache.put(currentStrokeColor, lineBasicMaterialCOL);
 	}
 	
 
@@ -1197,12 +1199,12 @@ scale = function(a, b, c) {
   	  }
   	  
 	if (doFill) {
-		var rectMaterialCOL = rectangleMaterialsCache.get(currentFillColor);
+		var rectMaterialCOL = meshBasicMaterialsNoWireframeCache.get(currentFillColor);
 		if ( rectMaterialCOL === undefined) {
 			rectMaterialCOL = new THREE.MeshBasicMaterial({
 				color: currentFillColor,
 			});
-			lineMaterialsCache.put(currentFillColor, rectMaterialCOL);
+			meshBasicMaterialsNoWireframeCache.put(currentFillColor, rectMaterialCOL);
 		}
 	
 		var mesh = rectanglesPool[usedRectangles];
