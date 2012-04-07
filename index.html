@@ -363,11 +363,38 @@ var doLNOnce = [];
 
 if( !init() )	animate();
 
+function combDisplayList() {
+	
+	for(var i = 0; i < scene.objects.length; ++i) {
+			if (scene.objects[i].isLine){
+				if (usedLines > 0) {
+					scene.objects[i].visible = true;
+					usedLines--;
+				}
+				else {
+					scene.objects[i].visible = false;
+				}
+			}
+			else if (scene.objects[i].isMesh){
+				if (usedRectangles > 0) {
+					scene.objects[i].visible = true;
+					usedRectangles--;
+				}
+				else {
+					scene.objects[i].visible = false;
+				}
+			}
+	}
+}
+
+
 function clearDisplayList() {
+	/*
 	for(var i = 0; i < scene.objects.length; ++i) {
 			scene.remove(scene.objects[i]);
 			i--;
 	}
+	*/
 }
 
 function registerCode() {
@@ -900,8 +927,9 @@ function background(red, green, blue) {
 			}
 
 			// do the render
+			combDisplayList();
 			render();
-			clearDisplayList();
+			//clearDisplayList();
 
 			// update stats
 			stats.update();
@@ -1124,7 +1152,10 @@ scale = function(a, b, c) {
 		});
 
       mesh = new THREE.Line(lineGeometry, lineBasicMaterialCOL);
+      mesh.isLine = true;
+      mesh.isMesh = false;
       linesPool.push(mesh);
+      scene.add(mesh);
     }
     else {
     	//mesh.geometry = lineGeometry;
@@ -1146,7 +1177,7 @@ scale = function(a, b, c) {
       //mesh.boundRadiusScale = Math.max(a,b,c);
     }
     
-    scene.add(mesh);
+    //scene.add(mesh);
 
   }
 
@@ -1169,8 +1200,11 @@ scale = function(a, b, c) {
 				color: currentFillColor,
 			});
 		  mesh = new THREE.Mesh(planeGeometry, rectMaterialCOL);
+		  mesh.isLine = false;
+		  mesh.isMesh = true;
 		  rectanglesPool.push(mesh);
 		  mesh.doubleSided = true;
+		  scene.add(mesh);
 		}
 		else {
 			mesh.material.color.setHex(currentFillColor);
@@ -1196,10 +1230,13 @@ scale = function(a, b, c) {
 				wireframe: true
 			} )
 		  mesh2 = new THREE.Mesh(planeGeometry, rectWireframeMaterialCOL);
+		  mesh2.isLine = false;
+		  mesh2.isMesh = true;
 		  rectanglesPool.push(mesh2);
 		  // meshes with wireframe material don't
 		  // need this flag  to be set so let's leave the default.
 		  mesh2.doubleSided = false;
+		  scene.add(mesh2);
 		}
 		else {
 			//mesh.geometry = lineGeometry;
@@ -1226,8 +1263,8 @@ scale = function(a, b, c) {
       // but I don't think that we need it...
     }
     
-    if (doFill) scene.add(mesh);
-    if (doStroke) scene.add(mesh2);
+    //if (doFill) scene.add(mesh);
+    //if (doStroke) scene.add(mesh2);
 
   }
 
