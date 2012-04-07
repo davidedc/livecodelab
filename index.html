@@ -363,25 +363,37 @@ var doLNOnce = [];
 
 if( !init() )	animate();
 
+// By doing some profiling it is apparent that
+// adding and removing objects has a big cost.
+// So instead of adding/removing objects every frame,
+// objects are only added at creation and they are
+// never removed from the scene. They are
+// only made invisible. This routine combs the
+// scene and finds the objects that.
+// TODO a way to shrink the scene if it's been a
+// long time that only a handful of lines/meshes
+// have been used.
+
 function combDisplayList() {
 	
 	for(var i = 0; i < scene.objects.length; ++i) {
-			if (scene.objects[i].isLine){
+			var sceneObject = scene.objects[i];
+			if (sceneObject.isLine){
 				if (usedLines > 0) {
-					scene.objects[i].visible = true;
+					sceneObject.visible = true;
 					usedLines--;
 				}
 				else {
-					scene.objects[i].visible = false;
+					sceneObject.visible = false;
 				}
 			}
-			else if (scene.objects[i].isMesh){
+			else if (sceneObject.isMesh){
 				if (usedRectangles > 0) {
-					scene.objects[i].visible = true;
+					sceneObject.visible = true;
 					usedRectangles--;
 				}
 				else {
-					scene.objects[i].visible = false;
+					sceneObject.visible = false;
 				}
 			}
 	}
