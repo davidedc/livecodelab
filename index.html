@@ -1108,6 +1108,10 @@ scale = function(a, b, c) {
 
   line = function(a) {
   	
+  	if (!doStroke) {
+  		return;
+  	}
+  	
   	if(a === undefined){
   	  a=1;
   	  }
