@@ -163,10 +163,6 @@
   lineGeometry.vertices.push(new THREE.Vertex(new THREE.Vector3(0, -0.5, 0)));
   lineGeometry.vertices.push(new THREE.Vertex(new THREE.Vector3(0, 0.5, 0)));
 
-  var cameraFilterMaterial = new THREE.MeshBasicMaterial( { color: 0xffaa00, transparent: true, opacity: 0.1, blending: THREE.NormalBlending } ) ;
-  var cameraFilterGeometry = new THREE.PlaneGeometry( 1, 1, 1,1 );				
-  var cameraFilter = new THREE.Mesh(cameraFilterGeometry, cameraFilterMaterial);
-
   // loads identity matrix
   var worldMatrix = new THREE.Matrix4();
 
