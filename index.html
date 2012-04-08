@@ -177,8 +177,8 @@
   // loads identity matrix
   var worldMatrix = new THREE.Matrix4();
 
-var midgroundScene;
-var midgroundSceneContext;
+var sceneRenderingCanvas;
+var sceneRenderingCanvasContext;
 var finalscene;
 var finalsceneContext;
 var backgroundScene;
@@ -186,8 +186,8 @@ var backgroundSceneContext;
 var backgroundScene;
 var backgroundSceneContext;
 var potentiallyUseWebGL = true;
-var useRequestAnimationFrame = true;
-var wantedFramesPerSecond = 30;
+var useRequestAnimationFrame = false;
+var wantedFramesPerSecond = 60;
 var backGroundFraction = 15;
 var scaledBackgroundWidth;
 var scaledBackgroundHeight;
@@ -212,10 +212,10 @@ var lastStableProgram;
 
 			if( Detector.webgl && potentiallyUseWebGL ){
 
-				midgroundScene = document.createElement('canvas');
+				sceneRenderingCanvas = document.createElement('canvas');
 				
 				renderer = new THREE.WebGLRenderer({
-					canvas: midgroundScene,
+					canvas: sceneRenderingCanvas,
 					antialias		: true,	// to get smoother output					
 					preserveDrawingBuffer	: false,	// to allow screenshot
 					clearColor: 0x000000, clearAlpha: 0, antialias: false
@@ -243,7 +243,7 @@ var lastStableProgram;
 				backgroundSceneContext = backgroundScene.getContext('2d');
 				
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				document.getElementById('container').appendChild(midgroundScene);
+				document.getElementById('container').appendChild(sceneRenderingCanvas);
 				//document.getElementById('backGroundCanvas').appendChild(backgroundScene);
 
 
@@ -251,10 +251,10 @@ var lastStableProgram;
 			
 			
 			 // we always draw the 3d scene off-screen
-				midgroundScene = document.createElement('canvas');
-				midgroundSceneContext = midgroundScene.getContext('2d');
+				sceneRenderingCanvas = document.createElement('canvas');
+				sceneRenderingCanvasContext = sceneRenderingCanvas.getContext('2d');
 				renderer	= new THREE.CanvasRenderer({
-					canvas: midgroundScene,
+					canvas: sceneRenderingCanvas,
 					antialias		: true,	// to get smoother output					
 					preserveDrawingBuffer	: false	// to allow screenshot
 				});
@@ -276,7 +276,7 @@ var lastStableProgram;
 				backgroundSceneContext = backgroundScene.getContext('2d');
 				
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				//document.getElementById('container').appendChild(midgroundScene);
+				//document.getElementById('container').appendChild(sceneRenderingCanvas);
 			}
 
 
@@ -357,9 +357,9 @@ var lastStableProgram;
 			
 			
 				// clear the renderer's canvas to transparent black
-				//midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight);
+				//sceneRenderingCanvasContext.clearRect(0, 0, window.innerWidth,window.innerHeight);
 				
-				// the renderer draws into an offscreen canvas called midgroundScene
+				// the renderer draws into an offscreen canvas called sceneRenderingCanvas
 				renderer.render( scene, camera );
 				
 				
@@ -367,7 +367,7 @@ var lastStableProgram;
 				backgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
 				
 				
-				backgroundSceneContext.drawImage(midgroundScene, 0, 0);
+				backgroundSceneContext.drawImage(sceneRenderingCanvas, 0, 0);
 				
 				// draw in the final context a blend of the previous content and the new one
 				backgroundSceneContext.globalAlpha = 0.5;
@@ -387,7 +387,7 @@ var lastStableProgram;
 				finalsceneContext.drawImage(backgroundScene, 0, 0);
 				
 				// clear the renderer's canvas to transparent black
-				midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
+				sceneRenderingCanvasContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
 
 
 
