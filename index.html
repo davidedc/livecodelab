@@ -181,11 +181,9 @@ var sceneRenderingCanvas;
 var sceneRenderingCanvasContext;
 var previousRenderForBlending;
 var previousRenderForBlendingContext;
-var backgroundScene;
-var backgroundSceneContext;
-var backgroundScene;
-var backgroundSceneContext;
-var potentiallyUseWebGL = false;
+var finalRenderWithSceneAndBlend;
+var finalRenderWithSceneAndBlendContext;
+var potentiallyUseWebGL = true;
 var useRequestAnimationFrame = false;
 var wantedFramesPerSecond = 60;
 var backGroundFraction = 15;
@@ -232,14 +230,9 @@ var lastStableProgram;
 			   	//renderer.autoClear = false;
 			   }
 			   
-				backgroundScene = document.getElementById('backGroundCanvas');  
-				backgroundScene.width = scaledBackgroundWidth;
-				backgroundScene.height = scaledBackgroundHeight;
-				backgroundSceneContext = backgroundScene.getContext('2d');
-				
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				document.getElementById('container').appendChild(sceneRenderingCanvas);
-				//document.getElementById('backGroundCanvas').appendChild(backgroundScene);
+				//document.getElementById('backGroundCanvas').appendChild(finalRenderWithSceneAndBlend);
 
 
 			}else{
@@ -263,12 +256,12 @@ var lastStableProgram;
 				previousRenderForBlending.height = window.innerHeight;
 				previousRenderForBlendingContext = previousRenderForBlending.getContext('2d');
 		
-				backgroundScene = document.getElementById('backGroundCanvas');  
-				//backgroundScene.width = scaledBackgroundWidth;
-				//backgroundScene.height = scaledBackgroundHeight;
-				backgroundScene.width = window.innerWidth;
-				backgroundScene.height = window.innerWidth;
-				backgroundSceneContext = backgroundScene.getContext('2d');
+				finalRenderWithSceneAndBlend = document.getElementById('backGroundCanvas');  
+				//finalRenderWithSceneAndBlend.width = scaledBackgroundWidth;
+				//finalRenderWithSceneAndBlend.height = scaledBackgroundHeight;
+				finalRenderWithSceneAndBlend.width = window.innerWidth;
+				finalRenderWithSceneAndBlend.height = window.innerWidth;
+				finalRenderWithSceneAndBlendContext = finalRenderWithSceneAndBlend.getContext('2d');
 				
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				//document.getElementById('container').appendChild(sceneRenderingCanvas);
@@ -351,35 +344,29 @@ var lastStableProgram;
 			else {
 			
 			
-				// clear the renderer's canvas to transparent black
-				//sceneRenderingCanvasContext.clearRect(0, 0, window.innerWidth,window.innerHeight);
-				
 				// the renderer draws into an offscreen canvas called sceneRenderingCanvas
 				renderer.render( scene, camera );
+								
+				// clear the final render context
+				finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
+				finalRenderWithSceneAndBlendContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
 				
-				
-				backgroundSceneContext.globalAlpha = 1.0;
-				backgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
-				
-				
-				backgroundSceneContext.drawImage(sceneRenderingCanvas, 0, 0);
+				// draw the rendering of the scene on the final render
+				finalRenderWithSceneAndBlendContext.drawImage(sceneRenderingCanvas, 0, 0);
 				
 				// draw in the final context a blend of the previous content and the new one
-				backgroundSceneContext.globalAlpha = 0.5;
-				
-				
-				
-				
+				finalRenderWithSceneAndBlendContext.globalAlpha = 0.65;
+
 				// we want the old pre-existing render to be below the
 				// new scene we are about to paint over it
 				// so there is a canvas trick for that:
 				previousRenderForBlendingContext.globalCompositeOperation = 'destination-over';				
-				backgroundSceneContext.drawImage(previousRenderForBlending, 0, 0);
+				finalRenderWithSceneAndBlendContext.drawImage(previousRenderForBlending, 0, 0);
 				
 				
 				//previousRenderForBlendingContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
 				previousRenderForBlendingContext.globalCompositeOperation = 'copy';
-				previousRenderForBlendingContext.drawImage(backgroundScene, 0, 0);
+				previousRenderForBlendingContext.drawImage(finalRenderWithSceneAndBlend, 0, 0);
 				
 				// clear the renderer's canvas to transparent black
 				sceneRenderingCanvasContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
