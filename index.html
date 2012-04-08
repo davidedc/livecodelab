@@ -186,7 +186,7 @@ var backgroundSceneContext;
 var backgroundScene;
 var backgroundSceneContext;
 var potentiallyUseWebGL = true;
-var useRequestAnimationFrame = false;
+var useRequestAnimationFrame = true;
 var wantedFramesPerSecond = 30;
 var backGroundFraction = 15;
 var scaledBackgroundWidth;
@@ -269,12 +269,14 @@ var lastStableProgram;
 				finalsceneContext = finalscene.getContext('2d');
 		
 				backgroundScene = document.getElementById('backGroundCanvas');  
-				backgroundScene.width = scaledBackgroundWidth;
-				backgroundScene.height = scaledBackgroundHeight;
+				//backgroundScene.width = scaledBackgroundWidth;
+				//backgroundScene.height = scaledBackgroundHeight;
+				backgroundScene.width = window.innerWidth;
+				backgroundScene.height = window.innerWidth;
 				backgroundSceneContext = backgroundScene.getContext('2d');
 				
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				document.getElementById('container').appendChild(midgroundScene);
+				//document.getElementById('container').appendChild(midgroundScene);
 			}
 
 
@@ -344,34 +346,6 @@ var lastStableProgram;
 			*/
 
 
-			if (repaintBackroundEveryFrame || (!gradientDrawn)) {
-			var diagonal = Math.sqrt(Math.pow(scaledBackgroundWidth/2,2)+ Math.pow( scaledBackgroundHeight/2,2));
-			var radgrad = backgroundSceneContext.createRadialGradient(scaledBackgroundWidth/2, scaledBackgroundHeight/2, 0,scaledBackgroundWidth/2, scaledBackgroundHeight/2, diagonal);  
-			radgrad.addColorStop(0, '#FF5F98');  
-			radgrad.addColorStop(0.75, '#FF0188');  
-			radgrad.addColorStop(1, 'rgba(255,1,136,0)');    
-			
-			backgroundSceneContext.globalAlpha = 1.0;
-			backgroundSceneContext.fillStyle = radgrad;
-			backgroundSceneContext.beginPath();
-			backgroundSceneContext.rect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
-			backgroundSceneContext.closePath();
-			backgroundSceneContext.fill();
-			
-			var gradObj = backgroundSceneContext.createLinearGradient(scaledBackgroundWidth/2,0,scaledBackgroundWidth/2,scaledBackgroundHeight/2);
-			gradObj.addColorStop(0.0, "#ff0000");
-			gradObj.addColorStop(1.0, "#aa0000");
-
-			backgroundSceneContext.globalAlpha = 0.3;
-			backgroundSceneContext.fillStyle = gradObj;
-			backgroundSceneContext.beginPath();
-			backgroundSceneContext.rect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
-			backgroundSceneContext.closePath();
-			backgroundSceneContext.fill();
-			
-			
-			gradientDrawn = true;
-			}
 			////////////////////////
 
 			if (isWebGLUsed) {
@@ -380,11 +354,43 @@ var lastStableProgram;
 			}
 
 			else {
-			  // clear the renderer's canvas to transparent black
-			  midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight);
+			
+			
+				// clear the renderer's canvas to transparent black
+				//midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight);
+				
+				// the renderer draws into an offscreen canvas called midgroundScene
+				renderer.render( scene, camera );
+				
+				
+				backgroundSceneContext.globalAlpha = 1.0;
+				backgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
+				
+				
+				backgroundSceneContext.drawImage(midgroundScene, 0, 0);
+				
+				// draw in the final context a blend of the previous content and the new one
+				backgroundSceneContext.globalAlpha = 0.5;
+				
+				
+				
+				
+				// we want the old pre-existing render to be below the
+				// new scene we are about to paint over it
+				// so there is a canvas trick for that:
+				finalsceneContext.globalCompositeOperation = 'destination-over';				
+				backgroundSceneContext.drawImage(finalscene, 0, 0);
+				
+				
+				//finalsceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
+				finalsceneContext.globalCompositeOperation = 'copy';
+				finalsceneContext.drawImage(backgroundScene, 0, 0);
+				
+				// clear the renderer's canvas to transparent black
+				midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
 
-			// the renderer draws into an offscreen canvas called midgroundScene
-			renderer.render( scene, camera );
+
+
 			}
 
 				
