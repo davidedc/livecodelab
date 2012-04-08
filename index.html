@@ -179,13 +179,13 @@
 
 var sceneRenderingCanvas;
 var sceneRenderingCanvasContext;
-var finalscene;
-var finalsceneContext;
+var previousRenderForBlending;
+var previousRenderForBlendingContext;
 var backgroundScene;
 var backgroundSceneContext;
 var backgroundScene;
 var backgroundSceneContext;
-var potentiallyUseWebGL = true;
+var potentiallyUseWebGL = false;
 var useRequestAnimationFrame = false;
 var wantedFramesPerSecond = 60;
 var backGroundFraction = 15;
@@ -232,11 +232,6 @@ var lastStableProgram;
 			   	//renderer.autoClear = false;
 			   }
 			   
-				finalscene = document.createElement('canvas');
-				finalscene.width = window.innerWidth;
-				finalscene.height = window.innerHeight;
-				finalsceneContext = finalscene.getContext('2d');
-		
 				backgroundScene = document.getElementById('backGroundCanvas');  
 				backgroundScene.width = scaledBackgroundWidth;
 				backgroundScene.height = scaledBackgroundHeight;
@@ -263,10 +258,10 @@ var lastStableProgram;
 			   	//renderer.setClearColorHex( 0x000000, 1 );
 
 
-				finalscene = document.createElement('canvas');
-				finalscene.width = window.innerWidth;
-				finalscene.height = window.innerHeight;
-				finalsceneContext = finalscene.getContext('2d');
+				previousRenderForBlending = document.createElement('canvas');
+				previousRenderForBlending.width = window.innerWidth;
+				previousRenderForBlending.height = window.innerHeight;
+				previousRenderForBlendingContext = previousRenderForBlending.getContext('2d');
 		
 				backgroundScene = document.getElementById('backGroundCanvas');  
 				//backgroundScene.width = scaledBackgroundWidth;
@@ -378,13 +373,13 @@ var lastStableProgram;
 				// we want the old pre-existing render to be below the
 				// new scene we are about to paint over it
 				// so there is a canvas trick for that:
-				finalsceneContext.globalCompositeOperation = 'destination-over';				
-				backgroundSceneContext.drawImage(finalscene, 0, 0);
+				previousRenderForBlendingContext.globalCompositeOperation = 'destination-over';				
+				backgroundSceneContext.drawImage(previousRenderForBlending, 0, 0);
 				
 				
-				//finalsceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
-				finalsceneContext.globalCompositeOperation = 'copy';
-				finalsceneContext.drawImage(backgroundScene, 0, 0);
+				//previousRenderForBlendingContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
+				previousRenderForBlendingContext.globalCompositeOperation = 'copy';
+				previousRenderForBlendingContext.drawImage(backgroundScene, 0, 0);
 				
 				// clear the renderer's canvas to transparent black
 				sceneRenderingCanvasContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
