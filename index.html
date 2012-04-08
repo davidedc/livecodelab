@@ -14,6 +14,17 @@
 		<script src="vendor/threex/THREEx.WindowResize.js"></script>
 		<script type="text/javascript" src="coffee-script.js"></script>
 
+		<script src="vendor/three.js/ShaderExtras.js"></script>
+		<script src="vendor/three.js/postprocessing/EffectComposer.js"></script>
+		<script src="vendor/three.js/postprocessing/RenderPass.js"></script>
+		<script src="vendor/three.js/postprocessing/ShaderPass.js"></script>
+		<!--
+			 surprisingly MaskPass.js is needed even though masks are not
+		     explicitely used
+		-->
+		<script src="vendor/three.js/postprocessing/MaskPass.js"></script>
+		<script src="vendor/three.js/postprocessing/SavePass.js"></script>
+
 
 		<link  href="css/main.css" rel="stylesheet"/>
 		<link rel="stylesheet" href="codemirror.css">
@@ -206,7 +217,8 @@ var lastStableProgram;
 				renderer = new THREE.WebGLRenderer({
 					canvas: midgroundScene,
 					antialias		: true,	// to get smoother output					
-					preserveDrawingBuffer	: false	// to allow screenshot
+					preserveDrawingBuffer	: false,	// to allow screenshot
+					clearColor: 0x000000, clearAlpha: 0, antialias: false
 				});
 			   
 			   //renderer.autoClearColor = false;
@@ -217,7 +229,7 @@ var lastStableProgram;
 			   // as fast with this, while safari doesn't work,
 			   // and firefox is the fastest no matter what
 			   if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
-			   	renderer.autoClear = false;
+			   	//renderer.autoClear = false;
 			   }
 			   
 				finalscene = document.createElement('canvas');
@@ -233,6 +245,7 @@ var lastStableProgram;
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				document.getElementById('container').appendChild(midgroundScene);
 				//document.getElementById('backGroundCanvas').appendChild(backgroundScene);
+
 
 			}else{
 			
@@ -286,6 +299,32 @@ var lastStableProgram;
 			// transparently support window resize
 			THREEx.WindowResize.bind(renderer, camera);
 			
+			if (isWebGLUsed) {
+				renderTargetParameters = { format: THREE.RGBAFormat, stencilBuffer: true };
+				
+				renderTarget = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters );			
+				effectSaveTarget = new THREE.SavePass( new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters ) );
+				effectSaveTarget.clear = false;
+				
+				effectBlend = new THREE.ShaderPass( THREE.ShaderExtras[ "blend" ], "tDiffuse1" );   
+				screenPass = new THREE.ShaderPass( THREE.ShaderExtras[ "screen" ] );
+				
+				// motion blur
+				effectBlend.uniforms[ 'tDiffuse2' ].texture = effectSaveTarget.renderTarget;
+				effectBlend.uniforms[ 'mixRatio' ].value = 0.65;
+				
+				var renderModel = new THREE.RenderPass( scene, camera );    
+				
+				composer = new THREE.EffectComposer( renderer, renderTarget );
+				
+				composer.addPass( renderModel );
+				
+				composer.addPass( effectBlend );
+				composer.addPass( effectSaveTarget );
+				composer.addPass( screenPass );
+				screenPass.renderToScreen = true;
+
+			}
 
 
 }
@@ -295,6 +334,7 @@ var lastStableProgram;
 		// render the scene
 		var gradientDrawn = false;
 		function render() {
+
 
 			/*
 			// need a light for the meshlambert material
@@ -334,12 +374,19 @@ var lastStableProgram;
 			}
 			////////////////////////
 
-			if (!isWebGLUsed){
-			  midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight);
+			if (isWebGLUsed) {
+				composer.render( );
+				//renderer.render(scene,camera);
 			}
 
+			else {
+			  // clear the renderer's canvas to transparent black
+			  midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight);
+
 			// the renderer draws into an offscreen canvas called midgroundScene
-			renderer.render( scene, camera );
+			//renderer.render( scene, camera );
+			}
+
 				
 		}
 		
