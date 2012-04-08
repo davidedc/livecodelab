@@ -1292,16 +1292,22 @@ scale = function(a, b, c) {
 		  mesh2.isMesh = true;
 	      mesh2.isBox = false;
 		  rectanglesPool.push(mesh2);
-		  // meshes with wireframe material don't
-		  // need this flag  to be set so let's leave the default.
-		  mesh2.doubleSided = false;
+		  // note that for webgl this wireframe is visible from the back
+		  // even if doublesided is false.
+		  // not so for canvas renderer.
+		  // TODO tell the three.js people
+		  mesh2.doubleSided = true;
 		  scene.add(mesh2);
 		}
 		else {
 			//mesh.geometry = lineGeometry;
 			mesh2.material.wireframe = true;
 			mesh2.material.color.setHex(currentStrokeColor);
-			mesh2.doubleSided = false;
+		  // note that for webgl this wireframe is visible from the back
+		  // even if doublesided is false.
+		  // not so for canvas renderer.
+		  // TODO tell the three.js people
+			mesh2.doubleSided = true;
 		}
 		usedRectangles++;
 		mesh2.matrixAutoUpdate = false;
