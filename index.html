@@ -178,6 +178,7 @@
   // loads identity matrix
   var worldMatrix = new THREE.Matrix4();
 
+var forceCanvasRenderer = false;
 var backgroundScene;
 var backgroundSceneContext;
 var sceneRenderingCanvas;
@@ -186,7 +187,6 @@ var previousRenderForBlending;
 var previousRenderForBlendingContext;
 var finalRenderWithSceneAndBlend;
 var finalRenderWithSceneAndBlendContext;
-var potentiallyUseWebGL = true;
 var useRequestAnimationFrame = false;
 var wantedFramesPerSecond = 60;
 var backGroundFraction = 15;
@@ -217,7 +217,7 @@ var lastStableProgram;
 			scaledBackgroundWidth = Math.floor(window.innerWidth / backGroundFraction);
 			scaledBackgroundHeight = Math.floor(window.innerHeight / backGroundFraction);
 
-			if( Detector.webgl && potentiallyUseWebGL ){
+			if( Detector.webgl && !forceCanvasRenderer ){
 
 				sceneRenderingCanvas = document.createElement('canvas');
 				
