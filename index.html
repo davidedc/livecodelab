@@ -1039,17 +1039,12 @@ buildPostprocessingChain = function () {
 				finalRenderWithSceneAndBlendContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
 				
 				// draw the rendering of the scene on the final render
-				finalRenderWithSceneAndBlendContext.drawImage(sceneRenderingCanvas, 0, 0);
-				
-				// draw in the final context a blend of the previous content and the new one
+				// clear the final render context
 				finalRenderWithSceneAndBlendContext.globalAlpha = blendAmount;
-
-				// we want the old pre-existing render to be below the
-				// new scene we are about to paint over it
-				// so there is a canvas trick for that:
-				finalRenderWithSceneAndBlendContext.globalCompositeOperation = 'destination-over';				
 				finalRenderWithSceneAndBlendContext.drawImage(previousRenderForBlending, 0, 0);
-				
+
+				finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
+				finalRenderWithSceneAndBlendContext.drawImage(sceneRenderingCanvas, 0, 0);
 				
 				//previousRenderForBlendingContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
 				previousRenderForBlendingContext.globalCompositeOperation = 'copy';
