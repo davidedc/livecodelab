@@ -186,7 +186,7 @@ var previousRenderForBlending;
 var previousRenderForBlendingContext;
 var finalRenderWithSceneAndBlend;
 var finalRenderWithSceneAndBlendContext;
-var potentiallyUseWebGL = false;
+var potentiallyUseWebGL = true;
 var useRequestAnimationFrame = false;
 var wantedFramesPerSecond = 60;
 var backGroundFraction = 15;
@@ -194,9 +194,12 @@ var scaledBackgroundWidth;
 var scaledBackgroundHeight;
 var repaintBackroundEveryFrame = true;
 var fullScreenifyBackground = true;
+var animationModeValue = 0;
+var previousAnimationModeValue = 0;
 var blendAmount = 0;
-var previousBlendAmount = 0;
-var effectBlend;
+var normal = 0;
+var retain = 1;
+var motionBlur = 2;
 
 var soundLoops = [];
 soundLoops.soundIDs = [];
@@ -317,7 +320,7 @@ buildPostprocessingChain = function () {
 	
 	// motion blur
 	effectBlend.uniforms[ 'tDiffuse2' ].texture = effectSaveTarget.renderTarget;
-	effectBlend.uniforms[ 'mixRatio' ].value = blendAmount;
+	effectBlend.uniforms[ 'mixRatio' ].value = 0;
 	
 	var renderModel = new THREE.RenderPass( scene, camera );    
 	
@@ -785,7 +788,7 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/noFill(\s)+/g, ";noFill$1" );
         elaboratedSource =  elaboratedSource.replace(/stroke(\s)+/g, ";stroke$1" );
         elaboratedSource =  elaboratedSource.replace(/noStroke(\s)+/g, ";noStroke$1" );
-        elaboratedSource =  elaboratedSource.replace(/blend(\s)+/g, ";blend$1" );
+        elaboratedSource =  elaboratedSource.replace(/animationMode(\s)+/g, ";animationMode$1" );
         
         // the semicolon mangles the first line of the function definitions
         // coffeescript doesn't like that
@@ -847,7 +850,7 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "noFill" ||
 			  usedMethods[scanningUsedMethods] === "stroke" ||
 			  usedMethods[scanningUsedMethods] === "noStroke" ||
-			  usedMethods[scanningUsedMethods] === "blend" ||
+			  usedMethods[scanningUsedMethods] === "animationMode" ||
 			  false
 		  ){
 		  	continue;
@@ -1002,7 +1005,9 @@ function background(red, green, blue) {
 			  doLNOnce = [];
 			  usedLines = 0;
 			  usedRectangles = 0;
+			  animationModeValue = normal;
 			  draw();
+			  animationModeActualChange(animationModeValue);
 			  frame++;
 			  consecutiveFramesWithoutRunTimeError++;
 			  if (consecutiveFramesWithoutRunTimeError == 5) {
@@ -1359,17 +1364,56 @@ scale = function(a, b, c) {
     
   }
 
-  blend = function(a) {
-  	previousBlendAmount = blendAmount;
-  	if (a==undefined)
-  		a = 0.5;
-  	else if (a>1)
-  		a = 1;
-  	else if (a<0)
-  		a = 0;
-  	blendAmount = a;
-  	if ((blendAmount !== previousBlendAmount) && isWebGLUsed) {
-  		effectBlend.uniforms[ 'mixRatio' ].value = blendAmount;
+
+  animationMode = function(a) {
+  	// turns out when you type normal that the first two letters "no"
+  	// are sent as "false"
+    if (a===false) return;
+  	if (a===undefined) return;
+  	animationModeValue = a;
+  }
+
+
+  animationModeActualChange = function(a) {
+  	// turns out when you type normal that the first two letters "no"
+  	// are sent as "false"
+    if (a===false) return;
+  	if (a===undefined) return;
+  	//alert("actual called " + a);
+
+	if ((animationModeValue !== previousAnimationModeValue) ) {
+  		//alert("actual changed!");
+  	}
+  	else {
+  		//alert("no change");
+  		return;
+  	}
+
+  	previousAnimationModeValue = animationModeValue;
+  	animationModeValue = a;
+  	
+  	if (isWebGLUsed && animationModeValue === motionBlur) {
+  		effectBlend.uniforms[ 'mixRatio' ].value = 0.9;
+  	}
+  	else if (!isWebGLUsed && animationModeValue === motionBlur) {
+  		blendAmount = 0.7;
+  		//alert('motion blur canvas');
+  	}
+
+  	if (isWebGLUsed && animationModeValue === retain) {
+  		effectBlend.uniforms[ 'mixRatio' ].value = 1;
+  	}
+  	else if (!isWebGLUsed && animationModeValue === retain) {
+  		blendAmount = 1;
+  		//alert('retain canvas');
+  	}
+
+  	if (isWebGLUsed && animationModeValue === normal) {
+  		effectBlend.uniforms[ 'mixRatio' ].value = 0;
+  	}
+  	else if (!isWebGLUsed && animationModeValue === normal) {
+  		blendAmount = 0;
+  		//alert('normal canvas');
   	}
   		
   }
