@@ -186,7 +186,7 @@ var previousRenderForBlending;
 var previousRenderForBlendingContext;
 var finalRenderWithSceneAndBlend;
 var finalRenderWithSceneAndBlendContext;
-var potentiallyUseWebGL = true;
+var potentiallyUseWebGL = false;
 var useRequestAnimationFrame = false;
 var wantedFramesPerSecond = 60;
 var backGroundFraction = 15;
@@ -194,6 +194,9 @@ var scaledBackgroundWidth;
 var scaledBackgroundHeight;
 var repaintBackroundEveryFrame = true;
 var fullScreenifyBackground = true;
+var blendAmount = 0;
+var previousBlendAmount = 0;
+var effectBlend;
 
 var soundLoops = [];
 soundLoops.soundIDs = [];
@@ -297,33 +300,35 @@ var lastStableProgram;
 			THREEx.WindowResize.bind(renderer, camera);
 			
 			if (isWebGLUsed) {
-				renderTargetParameters = { format: THREE.RGBAFormat, stencilBuffer: true };
-				
-				renderTarget = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters );			
-				effectSaveTarget = new THREE.SavePass( new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters ) );
-				effectSaveTarget.clear = false;
-				
-				effectBlend = new THREE.ShaderPass( THREE.ShaderExtras[ "blend" ], "tDiffuse1" );   
-				screenPass = new THREE.ShaderPass( THREE.ShaderExtras[ "screen" ] );
-				
-				// motion blur
-				effectBlend.uniforms[ 'tDiffuse2' ].texture = effectSaveTarget.renderTarget;
-				effectBlend.uniforms[ 'mixRatio' ].value = 0.65;
-				
-				var renderModel = new THREE.RenderPass( scene, camera );    
-				
-				composer = new THREE.EffectComposer( renderer, renderTarget );
-				
-				composer.addPass( renderModel );
-				
-				composer.addPass( effectBlend );
-				composer.addPass( effectSaveTarget );
-				composer.addPass( screenPass );
-				screenPass.renderToScreen = true;
-
+				buildPostprocessingChain();
 			}
 
+}
 
+buildPostprocessingChain = function () {
+	renderTargetParameters = { format: THREE.RGBAFormat, stencilBuffer: true };
+	
+	renderTarget = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters );			
+	effectSaveTarget = new THREE.SavePass( new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters ) );
+	effectSaveTarget.clear = false;
+	
+	effectBlend = new THREE.ShaderPass( THREE.ShaderExtras[ "blend" ], "tDiffuse1" );   
+	screenPass = new THREE.ShaderPass( THREE.ShaderExtras[ "screen" ] );
+	
+	// motion blur
+	effectBlend.uniforms[ 'tDiffuse2' ].texture = effectSaveTarget.renderTarget;
+	effectBlend.uniforms[ 'mixRatio' ].value = blendAmount;
+	
+	var renderModel = new THREE.RenderPass( scene, camera );    
+	
+	composer = new THREE.EffectComposer( renderer, renderTarget );
+	
+	composer.addPass( renderModel );
+	
+	composer.addPass( effectBlend );
+	composer.addPass( effectSaveTarget );
+	composer.addPass( screenPass );
+	screenPass.renderToScreen = true;
 }
 
 		
@@ -390,12 +395,12 @@ var lastStableProgram;
 				finalRenderWithSceneAndBlendContext.drawImage(sceneRenderingCanvas, 0, 0);
 				
 				// draw in the final context a blend of the previous content and the new one
-				finalRenderWithSceneAndBlendContext.globalAlpha = 0.65;
+				finalRenderWithSceneAndBlendContext.globalAlpha = blendAmount;
 
 				// we want the old pre-existing render to be below the
 				// new scene we are about to paint over it
 				// so there is a canvas trick for that:
-				previousRenderForBlendingContext.globalCompositeOperation = 'destination-over';				
+				finalRenderWithSceneAndBlendContext.globalCompositeOperation = 'destination-over';				
 				finalRenderWithSceneAndBlendContext.drawImage(previousRenderForBlending, 0, 0);
 				
 				
@@ -780,6 +785,7 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/noFill(\s)+/g, ";noFill$1" );
         elaboratedSource =  elaboratedSource.replace(/stroke(\s)+/g, ";stroke$1" );
         elaboratedSource =  elaboratedSource.replace(/noStroke(\s)+/g, ";noStroke$1" );
+        elaboratedSource =  elaboratedSource.replace(/blend(\s)+/g, ";blend$1" );
         
         // the semicolon mangles the first line of the function definitions
         // coffeescript doesn't like that
@@ -841,6 +847,7 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "noFill" ||
 			  usedMethods[scanningUsedMethods] === "stroke" ||
 			  usedMethods[scanningUsedMethods] === "noStroke" ||
+			  usedMethods[scanningUsedMethods] === "blend" ||
 			  false
 		  ){
 		  	continue;
@@ -1352,6 +1359,20 @@ scale = function(a, b, c) {
     
   }
 
+  blend = function(a) {
+  	previousBlendAmount = blendAmount;
+  	if (a==undefined)
+  		a = 0.5;
+  	else if (a>1)
+  		a = 1;
+  	else if (a<0)
+  		a = 0;
+  	blendAmount = a;
+  	if ((blendAmount !== previousBlendAmount) && isWebGLUsed) {
+  		effectBlend.uniforms[ 'mixRatio' ].value = blendAmount;
+  	}
+  		
+  }
 
     
   box = function(a,b,c) {

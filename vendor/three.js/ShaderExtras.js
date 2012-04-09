@@ -1133,7 +1133,27 @@ THREE.ShaderExtras = {
 
 				"vec4 texel1 = texture2D( tDiffuse1, vUv );",
 				"vec4 texel2 = texture2D( tDiffuse2, vUv );",
-				"gl_FragColor = opacity * mix( texel1, texel2, mixRatio );",
+				"vec3 ca = vec3(texel1.x,texel1.y,texel1.z);",
+				"vec3 cb = vec3(texel2.x,texel2.y,texel2.z);",
+				// correct the colors so that the "shadows"
+				// left by the opaque remains of the previous
+				// frames are a bit
+				// brighter
+				"cb.x = cb.x + cb.x / 4.5;",
+				"cb.y = cb.y + cb.y / 4.5;",
+				"cb.z = cb.z + cb.z / 4.5;",
+				"float alphaa = texel1.w ;",
+				"float alphab = max (0.0,texel2.w-(1.0-mixRatio)) ;",
+				"float alphao = alphaa + alphab * (1.0-alphaa);",
+				"vec3 co = (1.0/alphao) * (ca * alphaa + cb*alphab*(1.0-alphaa));",
+				"vec4 mixxx = vec4(co, alphao );",
+				//"gl_FragColor =  mix( texel1, texel1, opop );",
+				//"gl_FragColor =  mixxx;",
+				//"if (frameC == 0.0) {gl_FragColor =  vec4(0.0); return;}",
+				//"float damp = ((1.0-mixRatio)/10.0 + 1.0);",
+				//"if (texel1.w == 0.0) { texel2.w = texel2.w * mixRatio; gl_FragColor =  vec4(texel2.x,texel2.y,texel2.z, texel2.w); return;}",
+				//"if (texel2.w == 0.0) {gl_FragColor =  texel1; return;}",
+				"gl_FragColor =  mixxx;",
 
 			"}"
 
