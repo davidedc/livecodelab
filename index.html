@@ -196,6 +196,8 @@ var repaintBackroundEveryFrame = true;
 var fullScreenifyBackground = true;
 var animationModeValue = 0;
 var previousAnimationModeValue = 0;
+var currentGradientStackValue = '';
+var previousGradientStackValue = 0;
 var blendAmount = 0;
 var normal = 0;
 var retain = 1;
@@ -1007,8 +1009,6 @@ buildPostprocessingChain = function () {
 
 		
 
-		// render the scene
-		var gradientDrawn = false;
 		function render() {
 
 
@@ -1019,22 +1019,6 @@ buildPostprocessingChain = function () {
 			scene.add( light );
 			*/
 
-			if (repaintBackroundEveryFrame || (!gradientDrawn)) {
-				var diagonal = Math.sqrt(Math.pow(scaledBackgroundWidth/2,2)+ Math.pow( scaledBackgroundHeight/2,2));
-				var radgrad = backgroundSceneContext.createLinearGradient(scaledBackgroundWidth/2, 0, scaledBackgroundWidth/2, scaledBackgroundHeight/2);  
-				radgrad.addColorStop(0, '#FF5F98');  
-				radgrad.addColorStop(0.5, '#FF0188');  
-				radgrad.addColorStop(1, color.toString(255,255,255,0));    
-				
-				backgroundSceneContext.globalAlpha = 1.0;
-				backgroundSceneContext.fillStyle = radgrad;
-				backgroundSceneContext.beginPath();
-				backgroundSceneContext.rect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
-				backgroundSceneContext.closePath();
-				backgroundSceneContext.fill();
-				
-				gradientDrawn = true;
-			}
 
 
 			////////////////////////
@@ -1449,7 +1433,9 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/stroke(\s)+/g, ";stroke$1" );
         elaboratedSource =  elaboratedSource.replace(/noStroke(\s)+/g, ";noStroke$1" );
         elaboratedSource =  elaboratedSource.replace(/animationMode(\s)+/g, ";animationMode$1" );
-        
+        elaboratedSource =  elaboratedSource.replace(/simpleGradient(\s)+/g, ";simpleGradient$1" );
+        elaboratedSource =  elaboratedSource.replace(/color(\s)+/g, ";color$1" );
+
         // the semicolon mangles the first line of the function definitions
         // coffeescript doesn't like that
         elaboratedSource =  elaboratedSource.replace(/->(\s+);/g, "->$1" );
@@ -1511,6 +1497,8 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "stroke" ||
 			  usedMethods[scanningUsedMethods] === "noStroke" ||
 			  usedMethods[scanningUsedMethods] === "animationMode" ||
+			  usedMethods[scanningUsedMethods] === "simpleGradient" ||
+			  usedMethods[scanningUsedMethods] === "color" ||
 			  false
 		  ){
 		  	continue;
@@ -1666,8 +1654,10 @@ function background(red, green, blue) {
 			  usedLines = 0;
 			  usedRectangles = 0;
 			  animationModeValue = normal;
+			  simpleGradient(color(255,0,0),color(0,255,0),color(0,0,255),1);
 			  draw();
 			  animationModeActualChange(animationModeValue);
+			  simpleGradientUpdate();
 			  frame++;
 			  consecutiveFramesWithoutRunTimeError++;
 			  if (consecutiveFramesWithoutRunTimeError == 5) {
@@ -2022,6 +2012,44 @@ scale = function(a, b, c) {
       // but I don't think that we need it...
     }
     
+  }
+
+  var gradStacka,gradStackb,gradStackc,gradStackd;
+  simpleGradient = function(a,b,c,d) {
+	currentGradientStackValue = ""+a+""+b+""+c+""+d;
+	gradStacka = a;
+	gradStackb = b;
+	gradStackc = c;
+	gradStackd = d;
+  }
+
+  var simpleGradientUpdate = function() {
+
+	//alert('simpleGradientUpdate curr '+currentGradientStackValue + " prev " +previousGradientStackValue );
+	if ((currentGradientStackValue === previousGradientStackValue) ) {
+  		return;
+  	}
+  	else {
+
+				previousGradientStackValue = currentGradientStackValue;
+				console.log('repainting background');
+				var diagonal = Math.sqrt(Math.pow(scaledBackgroundWidth/2,2)+ Math.pow( scaledBackgroundHeight/2,2));
+				var radgrad = backgroundSceneContext.createLinearGradient(scaledBackgroundWidth/2, 0, scaledBackgroundWidth/2, scaledBackgroundHeight);  
+				radgrad.addColorStop(0, color.toString(gradStacka));  
+				radgrad.addColorStop(0.5, color.toString(gradStackb));  
+				radgrad.addColorStop(1, color.toString(gradStackc));    
+				
+				backgroundSceneContext.globalAlpha = 1.0;
+				backgroundSceneContext.fillStyle = radgrad;
+				backgroundSceneContext.beginPath();
+				backgroundSceneContext.rect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
+				backgroundSceneContext.closePath();
+				backgroundSceneContext.fill();
+				
+				gradientDrawn = true;
+
+  	}
+
   }
 
 
