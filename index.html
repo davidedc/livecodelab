@@ -178,7 +178,7 @@
   // loads identity matrix
   var worldMatrix = new THREE.Matrix4();
 
-var forceCanvasRenderer = false;
+var forceCanvasRenderer = true;
 var backgroundScene;
 var backgroundSceneContext;
 var sceneRenderingCanvas;
@@ -1654,7 +1654,7 @@ function background(red, green, blue) {
 			  usedLines = 0;
 			  usedRectangles = 0;
 			  animationModeValue = normal;
-			  simpleGradient(color(255,0,0),color(0,255,0),color(0,0,255),1);
+			  resetGradientStack();
 			  draw();
 			  animationModeUpdateIfChanged();
 			  simpleGradientUpdateIfChanged();
@@ -2014,13 +2014,30 @@ scale = function(a, b, c) {
     
   }
 
-  var gradStacka,gradStackb,gradStackc,gradStackd;
+  var gradStack = [];
+
+  resetGradientStack = function() {
+  	currentGradientStackValue = "";
+  	// we could be more efficient and
+  	// reuse the previous stack elements
+  	// but I don't think it matters here
+  	gradStack = [];
+
+	simpleGradient(color(255,0,0),color(0,255,0),color(0,0,255),1);
+
+  }
+
   simpleGradient = function(a,b,c,d) {
-	currentGradientStackValue = ""+a+""+b+""+c+""+d;
-	gradStacka = a;
-	gradStackb = b;
-	gradStackc = c;
-	gradStackd = d;
+	currentGradientStackValue = currentGradientStackValue + ""+a+""+b+""+c+""+d;
+	gradStack.push(
+		{
+			gradStacka: a,
+			gradStackb: b,
+			gradStackc: c,
+			gradStackd: d
+		}
+	);
+	
   }
 
   var simpleGradientUpdateIfChanged = function() {
@@ -2034,20 +2051,20 @@ scale = function(a, b, c) {
 				previousGradientStackValue = currentGradientStackValue;
 				console.log('repainting background');
 				var diagonal = Math.sqrt(Math.pow(scaledBackgroundWidth/2,2)+ Math.pow( scaledBackgroundHeight/2,2));
-				var radgrad = backgroundSceneContext.createLinearGradient(scaledBackgroundWidth/2, 0, scaledBackgroundWidth/2, scaledBackgroundHeight);  
-				radgrad.addColorStop(0, color.toString(gradStacka));  
-				radgrad.addColorStop(0.5, color.toString(gradStackb));  
-				radgrad.addColorStop(1, color.toString(gradStackc));    
-				
-				backgroundSceneContext.globalAlpha = 1.0;
-				backgroundSceneContext.fillStyle = radgrad;
-				backgroundSceneContext.beginPath();
-				backgroundSceneContext.rect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
-				backgroundSceneContext.closePath();
-				backgroundSceneContext.fill();
-				
-				gradientDrawn = true;
-
+				var radgrad;
+				for (var scanningGradStack = 0; scanningGradStack < gradStack.length; scanningGradStack++) {
+					radgrad = backgroundSceneContext.createLinearGradient(scaledBackgroundWidth/2, 0, scaledBackgroundWidth/2, scaledBackgroundHeight);  
+					radgrad.addColorStop(0, color.toString(gradStack[scanningGradStack].gradStacka));  
+					radgrad.addColorStop(0.5, color.toString(gradStack[scanningGradStack].gradStackb));  
+					radgrad.addColorStop(1, color.toString(gradStack[scanningGradStack].gradStackc));    
+					
+					backgroundSceneContext.globalAlpha = 1.0;
+					backgroundSceneContext.fillStyle = radgrad;
+					backgroundSceneContext.beginPath();
+					backgroundSceneContext.rect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
+					backgroundSceneContext.closePath();
+					backgroundSceneContext.fill();
+				}				
   	}
 
   }
