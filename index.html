@@ -131,7 +131,8 @@
 
 <div name="miao" id="miao" style="position: absolute;  top: 30px; left: 0px; width: 100%; font-size: 3em;">
 
-<canvas id="backGroundCanvas" style="position: absolute; z-index:-2; top: 0px; left: 0px;" width="100" height="100"></canvas> 
+<canvas id="backGroundCanvas" style="position: absolute; z-index:-3; top: 0px; left: 0px;" width="100" height="100"></canvas> 
+<canvas id="finalRenderWithSceneAndBlendCanvas" style="position: absolute; z-index:-2; top: 0px; left: 0px;" width="100" height="100"></canvas> 
 
 
 
@@ -177,6 +178,8 @@
   // loads identity matrix
   var worldMatrix = new THREE.Matrix4();
 
+var backgroundScene;
+var backgroundSceneContext;
 var sceneRenderingCanvas;
 var sceneRenderingCanvasContext;
 var previousRenderForBlending;
@@ -232,7 +235,7 @@ var lastStableProgram;
 			   
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				document.getElementById('container').appendChild(sceneRenderingCanvas);
-				//document.getElementById('backGroundCanvas').appendChild(finalRenderWithSceneAndBlend);
+				//document.getElementById('finalRenderWithSceneAndBlendCanvas').appendChild(finalRenderWithSceneAndBlend);
 
 
 			}else{
@@ -256,7 +259,7 @@ var lastStableProgram;
 				previousRenderForBlending.height = window.innerHeight;
 				previousRenderForBlendingContext = previousRenderForBlending.getContext('2d');
 		
-				finalRenderWithSceneAndBlend = document.getElementById('backGroundCanvas');  
+				finalRenderWithSceneAndBlend = document.getElementById('finalRenderWithSceneAndBlendCanvas');  
 				//finalRenderWithSceneAndBlend.width = scaledBackgroundWidth;
 				//finalRenderWithSceneAndBlend.height = scaledBackgroundHeight;
 				finalRenderWithSceneAndBlend.width = window.innerWidth;
@@ -268,6 +271,10 @@ var lastStableProgram;
 			}
 
 
+				backgroundScene = document.getElementById('backGroundCanvas');  
+				backgroundScene.width = scaledBackgroundWidth;
+				backgroundScene.height = scaledBackgroundHeight;
+				backgroundSceneContext = backgroundScene.getContext('2d');
 
 
 
@@ -332,6 +339,34 @@ var lastStableProgram;
 			light.position.set( 10, 0, 10 );
 			scene.add( light );
 			*/
+
+			if (repaintBackroundEveryFrame || (!gradientDrawn)) {
+				var diagonal = Math.sqrt(Math.pow(scaledBackgroundWidth/2,2)+ Math.pow( scaledBackgroundHeight/2,2));
+				var radgrad = backgroundSceneContext.createRadialGradient(scaledBackgroundWidth/2, scaledBackgroundHeight/2, 0,scaledBackgroundWidth/2, scaledBackgroundHeight/2, diagonal);  
+				radgrad.addColorStop(0, '#FF5F98');  
+				radgrad.addColorStop(0.75, '#FF0188');  
+				radgrad.addColorStop(1, 'rgba(255,1,136,0)');    
+				
+				backgroundSceneContext.globalAlpha = 1.0;
+				backgroundSceneContext.fillStyle = radgrad;
+				backgroundSceneContext.beginPath();
+				backgroundSceneContext.rect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
+				backgroundSceneContext.closePath();
+				backgroundSceneContext.fill();
+				
+				var gradObj = backgroundSceneContext.createLinearGradient(scaledBackgroundWidth/2,0,scaledBackgroundWidth/2,scaledBackgroundHeight/2);
+				gradObj.addColorStop(0.0, "#ff0000");
+				gradObj.addColorStop(1.0, "#aa0000");
+	
+				backgroundSceneContext.globalAlpha = 0.3;
+				backgroundSceneContext.fillStyle = gradObj;
+				backgroundSceneContext.beginPath();
+				backgroundSceneContext.rect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
+				backgroundSceneContext.closePath();
+				backgroundSceneContext.fill();
+								
+				gradientDrawn = true;
+			}
 
 
 			////////////////////////
