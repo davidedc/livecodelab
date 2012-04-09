@@ -1656,8 +1656,8 @@ function background(red, green, blue) {
 			  animationModeValue = normal;
 			  simpleGradient(color(255,0,0),color(0,255,0),color(0,0,255),1);
 			  draw();
-			  animationModeActualChange(animationModeValue);
-			  simpleGradientUpdate();
+			  animationModeUpdateIfChanged();
+			  simpleGradientUpdateIfChanged();
 			  frame++;
 			  consecutiveFramesWithoutRunTimeError++;
 			  if (consecutiveFramesWithoutRunTimeError == 5) {
@@ -2023,9 +2023,9 @@ scale = function(a, b, c) {
 	gradStackd = d;
   }
 
-  var simpleGradientUpdate = function() {
+  var simpleGradientUpdateIfChanged = function() {
 
-	//alert('simpleGradientUpdate curr '+currentGradientStackValue + " prev " +previousGradientStackValue );
+	//alert('simpleGradientUpdateIfChanged curr '+currentGradientStackValue + " prev " +previousGradientStackValue );
 	if ((currentGradientStackValue === previousGradientStackValue) ) {
   		return;
   	}
@@ -2062,11 +2062,7 @@ scale = function(a, b, c) {
   }
 
 
-  animationModeActualChange = function(a) {
-  	// turns out when you type normal that the first two letters "no"
-  	// are sent as "false"
-    if (a===false) return;
-  	if (a===undefined) return;
+  animationModeUpdateIfChanged = function() {
   	//alert("actual called " + a);
 
 	if ((animationModeValue !== previousAnimationModeValue) ) {
@@ -2078,7 +2074,6 @@ scale = function(a, b, c) {
   	}
 
   	previousAnimationModeValue = animationModeValue;
-  	animationModeValue = a;
   	
   	if (isWebGLUsed && animationModeValue === motionBlur) {
   		effectBlend.uniforms[ 'mixRatio' ].value = 0.7;
