@@ -315,6 +315,9 @@ buildPostprocessingChain = function () {
 	effectSaveTarget = new THREE.SavePass( new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters ) );
 	effectSaveTarget.clear = false;
 	
+	fxaaPass = new THREE.ShaderPass( THREE.ShaderExtras[ "fxaa" ] );
+	fxaaPass.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight );
+	
 	effectBlend = new THREE.ShaderPass( THREE.ShaderExtras[ "blend" ], "tDiffuse1" );   
 	screenPass = new THREE.ShaderPass( THREE.ShaderExtras[ "screen" ] );
 	
@@ -327,7 +330,7 @@ buildPostprocessingChain = function () {
 	composer = new THREE.EffectComposer( renderer, renderTarget );
 	
 	composer.addPass( renderModel );
-	
+	composer.addPass( fxaaPass );	
 	composer.addPass( effectBlend );
 	composer.addPass( effectSaveTarget );
 	composer.addPass( screenPass );
@@ -1393,10 +1396,10 @@ scale = function(a, b, c) {
   	animationModeValue = a;
   	
   	if (isWebGLUsed && animationModeValue === motionBlur) {
-  		effectBlend.uniforms[ 'mixRatio' ].value = 0.9;
+  		effectBlend.uniforms[ 'mixRatio' ].value = 0.7;
   	}
   	else if (!isWebGLUsed && animationModeValue === motionBlur) {
-  		blendAmount = 0.7;
+  		blendAmount = 0.6;
   		//alert('motion blur canvas');
   	}
 
