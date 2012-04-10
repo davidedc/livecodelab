@@ -40,23 +40,24 @@
 
 		<!-- second drop-down menu -->
 			<style type="text/css">
-					.dd_menu {background:green; padding:0px; margin:0; list-style-type:none; height:30px;}
+					a:hover {cursor: default;}
+					.dd_menu {background:#323232; border-bottom: 1px; border-bottom-color: white; border-bottom-style: solid; padding:0px; margin:0; list-style-type:none; height:30px;}
 					.dd_menu li {float:left; height:30px; border-right: solid 1px white;}
 					.dd_menu li a {padding:9px 20px; display:block; color:#fff; text-decoration:none; font:12px arial, verdana, sans-serif; font-weight: bold;}
-					.dd_menu li:hover a {text-decoration:underline;}
+					.dd_menu li:hover a {color:black;}
 					
 					.dd_menu ul { position:absolute; left:-9999px; top:-9999px; list-style-type:none;}
-					.dd_menu li:hover {position:relative; background:red;}
-					.dd_menu li:hover ul {left:0px; top:30px; background:lavender; padding:3px; border:1px solid grey; width:160px;}
+					.dd_menu li:hover {position:relative; background:white;}
+					.dd_menu li:hover ul {left:0px; top:30px; background:#323232; padding:3px; border:1px solid white; width:160px;}
 					.dd_menu li:hover ul li {height:18px; border:none;}
-					.dd_menu li:hover ul li a {height:18px; padding:0px; display:block; font-size:11px; width:158px; line-height:18px; text-indent:5px; color:#444; background-color:lavender; text-decoration:none; border:1px solid transparent;}
+					.dd_menu li:hover ul li a {height:18px; padding:0px; display:block; font-size:11px; width:158px; line-height:18px; text-indent:15px; color:white; background-color:#323232; text-decoration:none; border:1px solid transparent;}
 					.dd_menu li:hover ul li a:hover {height:18px; background:silver; color:#000; border:solid 1px #444;}
 					
-					#dangerSignText {color:green; text-decoration:none;}
-					#dangerSign:hover {background:green;}
+					#dangerSignText {color:#323232; text-decoration:none;}
+					#dangerSign:hover {background:#323232;}
 
 					#errorMessageText {text-decoration:none;}
-					#errorMessage:hover {background:green;}
+					#errorMessage:hover {background:#323232;}
 					
 			</style>
 		<!-- end of second drop-down menu -->
@@ -84,22 +85,21 @@
 
 		<!-- modal content -->
 		<div id="basic-modal-content">
-			<h3>What is this?</h3>
-			<p>This is a livecoding environment: you type a program and it is immediately executed for you.<br><br>Try one of the examples from the "Examples" menu.
+			<h3>What&apos;s this?</h3>
+			<p>This is a livecoding environment: code you type is immediately executed for you.<br><br>Try one of the examples from the "Examples".
 			</div>
 
-<div id="theMenu" style="position: absolute;  z-index:3; top: 0px; left: 0px;">
+<div id="theMenu" style="position: absolute;  z-index:3; top: 0px; left: 0px; width:100%">
 
 <ul class='dd_menu' >
 
-	<li><a href="#">Help</a>
+	<li><a href="#" style="text-decoration:none; color:red;">LIVECODELAB</a>
 		<ul>
-			<!--<li><a href="#" onclick='Boxy.alert("This is a livecoding environment:<br><br>you type a program and it is immediately executed for you.<br><br>Try copying this and pasting it in the main window:<br><br><xmp>rotate 0,1,frame/100\nbox</xmp>");' >What is this?</a></li> -->
-			<li><a href="#" onclick="$('#basic-modal-content').modal();">What is this?</a></li>
+			<li><a href="#" onclick="$('#basic-modal-content').modal();">What&apos;s this?</a></li>
 		</ul>
 	</li>
 
-	<li><a href="#">Examples</a>
+	<li><a href="#" style="text-decoration:none;">Examples</a>
 		<ul>
 		
 			<li><a href="#" onclick="loadExample('simpleCubeExample');">Simple cube</a></li>
@@ -118,9 +118,9 @@
 
 		</ul>
 	</li>
-	<li id="dangerSign"><a href="#" id="dangerSignText" style="font-size:2em;margin-top:-0.5em;">&#9888;</a>
+	<li id="dangerSign" style="border-right:none;"><a href="#" id="dangerSignText" style="font-size:2em;margin-top:-0.5em;">&#9888;</a>
 	</li>
-	<li id="errorMessage"><a href="#" id="errorMessageText" ></a>
+	<li id="errorMessage" style="border-right:none;"><a href="#" id="errorMessageText" ></a>
 	</li>
 
 </ul>
@@ -1523,7 +1523,7 @@ function registerCode() {
 
 				programHasBasicError = false;
 				reasonOfBasicError = "";
-				$('#dangerSignText').css('color','green')
+				$('#dangerSignText').css('color','#323232')
 				$('#errorMessageText').text(reasonOfBasicError)
 
 	// see here for the deepest examination ever of "eval"
@@ -2018,7 +2018,7 @@ scale = function(a, b, c) {
   	// but I don't think it matters here
   	gradStack = [];
 
-	simpleGradient(color(255,0,0),color(0,255,0),color(0,0,255),1);
+	simpleGradient(color(70),color(30),color(0),1);
 
   }
 
@@ -2193,10 +2193,14 @@ scale = function(a, b, c) {
 
   	if( a !== 1 || b !== 1 || c !== 1){
       if (doFill) mesh.matrix.scale(new THREE.Vector3(a,b,c));
-      if (doStroke) mesh2.matrix.scale(new THREE.Vector3(a,b,c));
+    }
+    // TODO: meshes should be built from geometries that are
+    // ever so slight larger than the "fill" mesh so there
+    // is no z-fighting...
+    // constant 0.001 below is to avoid z-fighting
+    if (doStroke) mesh2.matrix.scale(new THREE.Vector3(a+0.001,b+0.001,c+0.001));
       // in theory the docs say that we should change the boundradius
       // but I don't think that we need it...
-    }
 
 
   }
@@ -2454,6 +2458,8 @@ window.addEventListener(
         if (fullScreenifyBackground) {
         	fullscreenify(canvas);
         }
+		resetGradientStack();
+		simpleGradientUpdateIfChanged();
     },
     false
 );
