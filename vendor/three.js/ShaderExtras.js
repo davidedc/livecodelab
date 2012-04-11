@@ -1139,12 +1139,12 @@ THREE.ShaderExtras = {
 				// left by the opaque remains of the previous
 				// frames are a bit
 				// brighter
-				"cb.x = cb.x + cb.x / 4.5;",
-				"cb.y = cb.y + cb.y / 4.5;",
-				"cb.z = cb.z + cb.z / 4.5;",
+				"cb.x = cb.x + cb.x / 2.5;",
+				"cb.y = cb.y + cb.y / 2.5;",
+				"cb.z = cb.z + cb.z / 2.5;",
 				"float alphaa = texel1.w ;",
-				"float alphab = max (0.0,texel2.w-(1.0-mixRatio)) ;",
-				"float alphao = alphaa + alphab * (1.0-alphaa);",
+				"float alphab = texel2.w*mixRatio;",
+				"float alphao = (alphaa + alphab * (1.0-alphaa));",
 				"vec3 co = (1.0/alphao) * (ca * alphaa + cb*alphab*(1.0-alphaa));",
 				"vec4 mixxx = vec4(co, alphao );",
 				//"gl_FragColor =  mix( texel1, texel1, opop );",
