@@ -82,6 +82,9 @@
 			<img src='simpleModal/img/basic/x.png' alt='' />
 		</div>
 
+		<div id='openingCourtain' style='width:100%; height:100%; background-color:white; position: absolute;  z-index:4; top: 0px; left: 0px;'>
+		</div>
+
 
 		<!-- modal content -->
 		<div id="basic-modal-content">
@@ -2500,6 +2503,10 @@ window.addEventListener(
         }
 		resetGradientStack();
 		simpleGradientUpdateIfChanged();
+		
+
+		$('#openingCourtain').fadeOut();
+
     },
     false
 );
