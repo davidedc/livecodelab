@@ -1771,8 +1771,13 @@ function background(red, green, blue) {
 
 	var lastkey = 0
 	var fakeText = true;
-	document.onkeyup = function(e){
-	    $('p.caption').html(String.fromCharCode(e.keyCode).toLowerCase()+"|");
+	document.onkeypress = function(e){
+
+		var theEvent = e || window.event;
+		var key = theEvent.keyCode || theEvent.which;
+		key = String.fromCharCode( key );  
+
+	    $('p.caption').html(key+"|");
 	    $('p.cursor').html("");
 	    
 		if (fakeText) {
