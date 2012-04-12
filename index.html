@@ -34,7 +34,6 @@
 		<script src="jquery.min.js"></script>
 		<script src="jquery.viewport.js"></script>
 
-<link href="styleAnim.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="functions.js"> </script>
 
 		<style type="text/css">
@@ -62,6 +61,35 @@
 					#errorMessageText {text-decoration:none;}
 					#errorMessage:hover {background:#323232;}
 					
+					.horizon        
+						{
+						color: white;
+						background-color: transparent;
+						text-align: center;
+						position: absolute;
+						top: 50%;
+						left: 0px;
+						width: 100%;
+						height: 1px;
+						overflow: visible;
+						visibility: visible;
+						display: block
+						}
+					
+					#fakeAnimationContent    
+						{
+						font-family: Verdana, Geneva, Arial, sans-serif;
+						background-color: transparent;
+						margin-left: -1.5em;
+						position: absolute;
+						top: -1em;
+						left: 50%;
+						width: 3em;
+						height: 2em;
+						padding-top: 0px;
+						visibility: visible
+						}
+    
 			</style>
 		<!-- end of second drop-down menu -->
 
@@ -79,6 +107,17 @@
 
 	</head>
 <body>
+
+<div class="horizon" id="toMove" style="font-size:30em;">
+    <div id="fakeAnimationContent" >
+        <p class="caption"></p>
+    </div>
+</div>
+<div class="horizon" id="justForFakeCursor" style="font-size:30em;">
+    <div id="fakeAnimationContent" >
+		<p class="cursor">|</p>
+    </div>
+</div>
 
 		<!-- preload the images -->
 		<div style='display:none'>
@@ -143,12 +182,8 @@
 <canvas id="finalRenderWithSceneAndBlendCanvas" style="position: absolute; z-index:-2; top: 0px; left: 0px;" width="100" height="100"></canvas> 
 
 
-  <div id="effectTesting" style="position: absolute; top: 50%; left: 50%; font-size:4em;">
-    <p>C:\</p><p class="caption"></p><p class="cursor">|</p>
-  </div>    
 
-
-		<form autocapitalize="off" autocorrect="off" wrap="off"><textarea id="code" name="code" style="z-index:1" autocapitalize="off" autocorrect="off" wrap="off" ></textarea></form>
+		<form id="formCode" autocapitalize="off" autocorrect="off" wrap="off"><textarea id="code" name="code" style="z-index:1;" autocapitalize="off" autocorrect="off" wrap="off" ></textarea></form>
 
       </div>
 
@@ -1737,18 +1772,22 @@ function background(red, green, blue) {
 	var lastkey = 0
 	var fakeText = true;
 	document.onkeyup = function(e){
-	    $('p.caption').html(String.fromCharCode(e.keyCode));
+	    $('p.caption').html(String.fromCharCode(e.keyCode).toLowerCase()+"|");
+	    $('p.cursor').html("");
+	    
 		if (fakeText) {
 
-		  /*
-		  $("#effectTesting").animate(
+		  $("#toMove").animate(
 		  {
 			opacity: 0,
-			top: 0,
+			margin: -100,
+			fontSize:300,
 			left: 0
-		  }, "fast", "swing");
-		  */
+		  }, "fast");
 		  
+		  setTimeout('$("#formCode").animate({opacity: 1}, "fast");',120);
+		  setTimeout('$("#justForFakeCursor").hide();',200);
+		  setTimeout('$("#toMove").hide();',200);
 
 
 		}
@@ -2491,10 +2530,11 @@ function adjustCodeMirrorHeight() {
 	$('.CodeMirror-scroll').css('height',window.innerHeight - $('#theMenu').height()); 
 }
 
+var fakeCursorInterval;
 $(document).ready(function(){
 	editor.focus();
 	adjustCodeMirrorHeight();
-	setInterval ( "cursorAnimation()", 600 );
+	fakeCursorInterval = setInterval ( "cursorAnimation()", 600 );
 });
 
 
@@ -2514,6 +2554,11 @@ window.addEventListener(
 		
 
 		$('#openingCourtain').fadeOut();
+
+		  $("#formCode").animate(
+		  {
+			opacity: 0
+		  }, "fast");
 
     },
     false
