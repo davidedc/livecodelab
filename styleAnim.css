@@ -1,0 +1,12 @@
+body 
+{
+  font-family: Verdana, Arial, Georgia, Sans-serif;
+  font-size: 18px;
+  color: #e3e3e3;
+  background: #000000;
+}
+
+#effectTesting p
+{
+  float: left;
+}

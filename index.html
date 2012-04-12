@@ -33,7 +33,10 @@
 		<script src="coffeescriptModified.js"></script>
 		<script src="jquery.min.js"></script>
 		<script src="jquery.viewport.js"></script>
-	
+
+<link href="styleAnim.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="functions.js"> </script>
+
 		<style type="text/css">
 		  .CodeMirror {border: none; }
 		</style>
@@ -133,11 +136,16 @@
 
 
 
+
 <div name="miao" id="miao" style="position: absolute;  top: 30px; left: 0px; width: 100%; font-size: 3em;">
 
 <canvas id="backGroundCanvas" style="position: absolute; z-index:-3; top: 0px; left: 0px;" width="100" height="100"></canvas> 
 <canvas id="finalRenderWithSceneAndBlendCanvas" style="position: absolute; z-index:-2; top: 0px; left: 0px;" width="100" height="100"></canvas> 
 
+
+  <div id="effectTesting" style="position: absolute; top: 50%; left: 50%; font-size:4em;">
+    <p>C:\</p><p class="caption"></p><p class="cursor">|</p>
+  </div>    
 
 
 		<form autocapitalize="off" autocorrect="off" wrap="off"><textarea id="code" name="code" style="z-index:1" autocapitalize="off" autocorrect="off" wrap="off" ></textarea></form>
@@ -155,6 +163,11 @@
 	-->
 
 	<script type="text/javascript">
+		
+	
+
+
+
 		var stats, scene, renderer;
 		var camera;
 
@@ -1721,31 +1734,25 @@ function background(red, green, blue) {
 			
 		}
 
-	/*
 	var lastkey = 0
-	 document.onkeydown = function(e){
-		// CTRL-K compiles and runs
-		if(lastkey == 17 && e.which==75){
-			registerCode();
-			return false;
-		}
-		else {
-			lastkey = e.which;
-		}
-		// also up or down arrow compile and run
-		if(e.which==38 || e.which==40){
-			registerCode();
-			return true;
-		}		
-	};
-
+	var fakeText = true;
 	document.onkeyup = function(e){
-		
-		if(e.which==17){
-			lastkey = 0;
+	    $('p.caption').html(String.fromCharCode(e.keyCode));
+		if (fakeText) {
+
+		  /*
+		  $("#effectTesting").animate(
+		  {
+			opacity: 0,
+			top: 0,
+			left: 0
+		  }, "fast", "swing");
+		  */
+		  
+
+
 		}
 	};
-		*/	
 
 
 var parentObject, rootObject, rotate, translate;
@@ -2476,7 +2483,7 @@ function loadExample(whichExample) {
 // so we have to resize it at launch and also every time the window
 // is resized.
 
-function resizeTextArea() {
+function adjustCodeMirrorHeight() {
 	//alert("code height:" + $('#code').height());
 	//alert("window height:" + window.innerHeight);
 	//alert("code height:" + $('.CodeMirror-scroll').css('height'));
@@ -2486,7 +2493,8 @@ function resizeTextArea() {
 
 $(document).ready(function(){
 	editor.focus();
-	resizeTextArea()
+	adjustCodeMirrorHeight();
+	setInterval ( "cursorAnimation()", 600 );
 });
 
 
@@ -2515,7 +2523,7 @@ function fullscreenify(canvas) {
     var style = canvas.getAttribute('style') || '';
     //alert('style: ' +  style);
     
-    window.addEventListener('resize', function () {	resizeTextArea(); resize(canvas);}, false);
+    window.addEventListener('resize', function () {	adjustCodeMirrorHeight(); resize(canvas);}, false);
 
     resize(canvas);
 
