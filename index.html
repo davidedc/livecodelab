@@ -161,7 +161,7 @@
 			<li><a href="#" onclick="loadExample('planesExample');">Planes</a></li>
 			<li><a href="#" onclick="loadExample('matrixesExample');">Matrixes</a></li>
 			<li><a href="#" onclick="loadExample('diceExample');">Dice</a></li>
-
+			<li><a href="#" onclick="loadExample('nuclearOctopusExample');">Nuclear octopus</a></li>
 		</ul>
 	</li>
 	<li id="dangerSign" style="border-right:none;"><a href="#" id="dangerSignText" style="font-size:2em;margin-top:-0.5em;">&#9888;</a>
@@ -2439,6 +2439,30 @@ var diceExample = ""+
 "\t\t"+		"translate 2,0,0\n"+
 "\t\t"+		"box";
 
+
+var nuclearOctopusExample = ""+
+""+		"simpleGradient 0,color(frame*15%255,0,0),0\n"+
+""+		"scale 0.2\n"+
+""+		"translate 3\n"+
+""+		"rotate frame/90\n"+
+""+		"animationMode motionBlur\n"+
+""+		"//animationMode retain\n"+
+""+		"stroke 255,0,0,120\n"+
+""+		"fill frame*10%255,0,0\n"+
+""+		"pushMatrix\n"+
+""+		"count = 0\n"+
+""+		"3 times ->\n"+
+"\t"+		"count++\n"+
+"\t"+		"pushMatrix\n"+
+"\t"+		"rotate count+3+frame,2+count + frame/100,4+count\n"+
+"\t"+		"120 times ->\n"+
+"\t\t"+		"scale 0.9\n"+
+"\t\t"+		"translate 1,1,0\n"+
+"\t\t"+		"rotate frame/100\n"+
+"\t\t"+		"box\n"+
+"\t"+		"popMatrix";
+
+
 function loadExample(whichExample) {
 
 	switch(whichExample) {
@@ -2484,6 +2508,10 @@ function loadExample(whichExample) {
 		case 'diceExample':
 			editor.setValue(diceExample);
 			break;
+		case 'nuclearOctopusExample':
+			editor.setValue(nuclearOctopusExample);
+			break;
+
 	}
 	
 	// setting the value of the editor triggers the
