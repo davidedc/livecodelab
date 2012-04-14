@@ -1184,10 +1184,13 @@ function registerCode() {
         	shrinkFakeText();
         }
         
-        if (editorContent === '') {
+        if (editorContent === '' && !fakeText) {
     		fakeText = true;
     	
 			$("#formCode").animate({opacity: 0}, "fast");
+			//$("#formCode").css('opacity',0);
+			//setTimeout('if (editor.getValue() !== "") $("#formCode").css("opacity",0);',10);
+			console.log('unshrinking');
 			$("#justForFakeCursor").show();
 			$("#toMove").show();			
 			$('#caption').html('|');
@@ -1204,7 +1207,7 @@ function registerCode() {
 			  function() {
 							$('#caption').html('');
 							$('#fakeStartingBlinkingCursor').html('|');
-							fakeCursorInterval = setInterval ( "fakeCursorBlinking()", 800 );
+							//fakeCursorInterval = setInterval ( "fakeCursorBlinking()", 800 );
 						}
 		  );
 
@@ -1630,7 +1633,7 @@ function registerCode() {
 //var chromeHackUncaughtReferenceName = '';
 //var chromeHackUncaughtReferenceNames = [];
 
-window.onerror=function(msg, url, linenumber){
+window.onerrord=function(msg, url, linenumber){
  $('#dangerSignText').css('color','red');
  $('#errorMessageText').text(msg);
  
@@ -1790,7 +1793,7 @@ function background(red, green, blue) {
 	var fakeText = true;
 	document.onkeypress = function(e){
 
-		if (fakeText) shrinkFakeText(e);
+		if (fakeText && editor.getValue() !== "") shrinkFakeText(e);
 	
 	};
 	
@@ -1819,7 +1822,7 @@ function background(red, green, blue) {
 		  setTimeout('$("#formCode").animate({opacity: 1}, "fast");',120);
 		  setTimeout('$("#justForFakeCursor").hide();',200);
 		  setTimeout('$("#toMove").hide();',200);
-		  setTimeout('clearTimeout(fakeCursorInterval);',200);
+		  //setTimeout('clearTimeout(fakeCursorInterval);',200);
 		  fakeText = false;
 
     }
@@ -2495,6 +2498,8 @@ var nuclearOctopusExample = ""+
 function loadExample(whichExample) {
 
 	if (fakeText) shrinkFakeText();
+	undimEditor();
+	
 
 	switch(whichExample) {
 		case 'simpleCubeExample':
@@ -2571,6 +2576,7 @@ function loadExample(whichExample) {
 }); 
 
 
+  var cursorActivity = true;
   var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
     lineNumbers: false,
         tabSize: 2,
@@ -2584,7 +2590,8 @@ function loadExample(whichExample) {
         // the focus is not regained. Go figure.
         onBlur: (function(){ setTimeout('editor.focus()',30) }),
         onChange: (function(){registerCode();}),
-        mode: "links"
+        mode: "links",
+        onCursorActivity: (function(){undimIfCursorActivity();}),
         //onScroll: (function(){alert('scroll')})
   });
 
@@ -2635,11 +2642,53 @@ function fakeCursorBlinking()
   }, "fast", "swing");
 }
 
+function undimIfCursorActivity(){
+	if (fakeText || editor.getValue() === '') return;
+	console.log('cursor activity! opacity: ' + $("#formCode").css('opacity'));
+	cursorActivity = true;
+	undimEditor();
+}
+
+function undimEditor(){
+	if (fakeText || editor.getValue() === '') $("#formCode").css('opacity',0);
+	if ($("#formCode").css('opacity') < 0.99) {
+		console.log('undimming the editor');
+		$("#formCode").animate(
+		  {
+			opacity: 1
+		  }, "fast");
+	}
+}
+
+function dimEditor(){
+		if ($("#formCode").css('opacity') > 0.200001) {
+			console.log('starting fadeout animation');
+			$("#formCode").animate(
+			  {
+				opacity: 0.2
+			  }, "slow");
+		  }
+}
+
+function dimIfNoCursorActivity(){
+	if (fakeText || editor.getValue() === '') return;
+	if (cursorActivity) {
+		console.log('marking cursor act = false and check again in a second');
+		cursorActivity = false;
+		return;
+	}
+	else {
+		console.log('no activity in the last second and opacity: ' + $("#formCode").css('opacity') );
+		dimEditor();
+
+	}
+}
 
 $(document).ready(function(){
 	editor.focus();
 	adjustCodeMirrorHeight();
 	fakeCursorInterval = setInterval ( "fakeCursorBlinking()", 800 );
+	setInterval ( "dimIfNoCursorActivity()", 2000 );
 });
 
 
@@ -2660,10 +2709,7 @@ window.addEventListener(
 
 		$('#startingCourtainScreen').fadeOut();
 
-		  $("#formCode").animate(
-		  {
-			opacity: 0
-		  }, "fast");
+		  $("#formCode").css('opacity',0);
 
     },
     false
