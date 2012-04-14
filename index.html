@@ -1777,7 +1777,9 @@ function background(red, green, blue) {
 		var key = theEvent.keyCode || theEvent.which;
 		key = String.fromCharCode( key );  
 
-	    $('p.caption').html(key+"|");
+	    var currentCaption = $('p.caption').html();
+	    var shorterCaption  = currentCaption.substring(0,currentCaption.length - 1);
+	    $('p.caption').html( shorterCaption + key + "|");
 	    $('p.cursor').html("");
 	    
 		if (fakeText) {
