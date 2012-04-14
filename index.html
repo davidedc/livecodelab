@@ -1179,6 +1179,37 @@ function registerCode() {
       try {
       
         var editorContent = editor.getValue();
+        
+        if (editorContent !== '' && fakeText === true) {
+        	shrinkFakeText();
+        }
+        
+        if (editorContent === '') {
+    		fakeText = true;
+    	
+			$("#formCode").animate({opacity: 0}, "fast");
+			$("#justForFakeCursor").show();
+			$("#toMove").show();			
+			$('#caption').html('|');
+
+		  
+		  $("#toMove").animate(
+			  {
+				opacity: 1,
+				margin: 0,
+				fontSize:350,
+				left: 0
+			  },
+			  "fast",
+			  function() {
+							$('#caption').html('');
+							$('#fakeStartingBlinkingCursor').html('|');
+							fakeCursorInterval = setInterval ( "fakeCursorBlinking()", 800 );
+						}
+		  );
+
+        }
+        
         var copyOfEditorContent;
         var programIsMangled = false;
         var programContainsStringsOrComments = false;
@@ -1759,17 +1790,24 @@ function background(red, green, blue) {
 	var fakeText = true;
 	document.onkeypress = function(e){
 
-		var theEvent = e || window.event;
-		var key = theEvent.keyCode || theEvent.which;
-		key = String.fromCharCode( key );  
+		if (fakeText) shrinkFakeText(e);
+	
+	};
+	
+    var shrinkFakeText = function(e) {
+
+		if (e !== undefined){
+			var theEvent = e || window.event;
+			var key = theEvent.keyCode || theEvent.which;
+			key = String.fromCharCode( key ); 
+		}
+		else key = '';
 
 	    var currentCaption = $('#caption').html();
 	    var shorterCaption  = currentCaption.substring(0,currentCaption.length - 1);
 	    $('#caption').html( shorterCaption + key + "|");
-	    $('#fakeStartingBlinkingCursor').html("");
+	    $('#fakeStartingBlinkingCursor').html('');
 	    
-		if (fakeText) {
-
 		  $("#toMove").animate(
 		  {
 			opacity: 0,
@@ -1781,11 +1819,11 @@ function background(red, green, blue) {
 		  setTimeout('$("#formCode").animate({opacity: 1}, "fast");',120);
 		  setTimeout('$("#justForFakeCursor").hide();',200);
 		  setTimeout('$("#toMove").hide();',200);
+		  setTimeout('clearTimeout(fakeCursorInterval);',200);
+		  fakeText = false;
 
-
-		}
-	};
-
+    }
+    
 
 var parentObject, rootObject, rotate, translate;
 parentObject = 0;
@@ -2453,6 +2491,8 @@ var nuclearOctopusExample = ""+
 
 function loadExample(whichExample) {
 
+	if (fakeText) shrinkFakeText();
+
 	switch(whichExample) {
 		case 'simpleCubeExample':
 			editor.setValue(simpleCubeExample);
@@ -2568,7 +2608,7 @@ function fakeCursorBlinking()
 $(document).ready(function(){
 	editor.focus();
 	adjustCodeMirrorHeight();
-	fakeCursorInterval = setInterval ( "fakeCursorBlinking()", 600 );
+	fakeCursorInterval = setInterval ( "fakeCursorBlinking()", 800 );
 });
 
 
