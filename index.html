@@ -38,7 +38,6 @@
 		  .CodeMirror {border: none; }
 		</style>
 
-		<!-- second drop-down menu -->
 			<style type="text/css">
 					a:hover {cursor: default;}
 					.dd_menu {background:#323232; border-bottom: 1px; border-bottom-color: white; border-bottom-style: solid; padding:0px; margin:0; list-style-type:none; height:30px;}
@@ -59,7 +58,7 @@
 					#errorMessageText {text-decoration:none;}
 					#errorMessage:hover {background:#323232;}
 					
-					.horizon        
+					.verticalMiddleOfScreen        
 						{
 						color: white;
 						background-color: transparent;
@@ -74,13 +73,13 @@
 						display: block
 						}
 					
-					#fakeAnimationContent    
+					.fakeAnimationContent    
 						{
 						font-family: Verdana, Geneva, Arial, sans-serif;
 						background-color: transparent;
 						margin-left: -1.5em;
 						position: absolute;
-						top: -1em;
+						top: -1.1em;
 						left: 50%;
 						width: 3em;
 						height: 2em;
@@ -91,7 +90,7 @@
 			</style>
 		<!-- end of second drop-down menu -->
 
-		<!-- start modal stuff-->
+		<!-- start simple modal -->
 			<!-- Page styles -->
 			<link type='text/css' href='simpleModal/css/demo.css' rel='stylesheet' media='screen' />			
 			<!-- Contact Form CSS files -->
@@ -100,20 +99,19 @@
 			<script type='text/javascript' src='simpleModal/js/jquery.js'></script>
 			<script type='text/javascript' src='simpleModal/js/jquery.simplemodal.js'></script>
 			<script type='text/javascript' src='simpleModal/js/basic.js'></script>
-
-		<!-- end modal stuff-->
+		<!-- end simple modal -->
 
 	</head>
 <body>
 
-<div class="horizon" id="toMove" style="font-size:30em;">
-    <div id="fakeAnimationContent" >
-        <p class="caption"></p>
+<div class="verticalMiddleOfScreen" id="toMove" style="font-size:30em;">
+    <div class="fakeAnimationContent" >
+        <p id="caption"></p>
     </div>
 </div>
-<div class="horizon" id="justForFakeCursor" style="font-size:30em;">
-    <div id="fakeAnimationContent" >
-		<p class="cursor">|</p>
+<div class="verticalMiddleOfScreen" id="justForFakeCursor" style="font-size:30em;">
+    <div class="fakeAnimationContent" >
+		<p id="fakeStartingBlinkingCursor">|</p>
     </div>
 </div>
 
@@ -122,7 +120,7 @@
 			<img src='simpleModal/img/basic/x.png' alt='' />
 		</div>
 
-		<div id='openingCourtain' style='width:100%; height:100%; background-color:white; position: absolute;  z-index:4; top: 0px; left: 0px;'>
+		<div id='startingCourtainScreen' style='width:100%; height:100%; background-color:white; position: absolute;  z-index:4; top: 0px; left: 0px;'>
 		</div>
 
 
@@ -187,81 +185,71 @@
 
 	<!-- three.js container -->
     	<div id="container" style="position: absolute; z-index:-1; top: 0px; left: 0px;"></div>
-	<!-- info on screen display 
-	<div id="info">
-		<div class="bottom" id="inlineDoc" >
-			- <i>p</i> for screenshot
-		</div> 
-	</div>
-	-->
+
 
 	<script type="text/javascript">
-		
-	
-
-
 
 		var stats, scene, renderer;
 		var camera;
-
-  // creating a geometry is expensive
-  // so we need to create ONE cube of dimensions 1,1,1
-  // if we need a cube of different size, then we need to
-  // scale it. Note that the scale for the specific cube shouldn't
-  // influence the stack, so we need to create a scale node,
-  // and then go up a node.
-  var isWebGLUsed = false;
-  var normalMaterial = new THREE.MeshNormalMaterial();
-
-  var linesPool = [];
-  var rectanglesPool = [];
-  var boxesPool = [];
-  var usedLines = 0;
-  var usedRectangles = 0;
-  var usedBoxes = 0;
-  var cubeGeometry = new THREE.CubeGeometry(1,1,1);
-  var planeGeometry = new THREE.PlaneGeometry(1,1);
-  var lineGeometry = new THREE.Geometry();
-  lineGeometry.vertices.push(new THREE.Vertex(new THREE.Vector3(0, -0.5, 0)));
-  lineGeometry.vertices.push(new THREE.Vertex(new THREE.Vector3(0, 0.5, 0)));
-
-  // loads identity matrix
-  var worldMatrix = new THREE.Matrix4();
-
-var forceCanvasRenderer = false;
-var backgroundScene;
-var backgroundSceneContext;
-var sceneRenderingCanvas;
-var sceneRenderingCanvasContext;
-var previousRenderForBlending;
-var previousRenderForBlendingContext;
-var finalRenderWithSceneAndBlend;
-var finalRenderWithSceneAndBlendContext;
-var useRequestAnimationFrame = false;
-var wantedFramesPerSecond = 60;
-var backGroundFraction = 15;
-var scaledBackgroundWidth;
-var scaledBackgroundHeight;
-var repaintBackroundEveryFrame = true;
-var fullScreenifyBackground = true;
-var animationModeValue = 0;
-var previousAnimationModeValue = 0;
-var currentGradientStackValue = '';
-var previousGradientStackValue = 0;
-var blendAmount = 0;
-var normal = 0;
-var retain = 1;
-var motionBlur = 2;
-
-var soundLoops = [];
-soundLoops.soundIDs = [];
-soundLoops.beatStrings = [];
-
-var programHasBasicError = false;
-var reasonOfBasicError = "";
-var consecutiveFramesWithoutRunTimeError = 0;
-var out;
-var lastStableProgram;
+		
+		// creating a geometry is expensive
+		// so we need to create ONE cube of dimensions 1,1,1
+		// if we need a cube of different size, then we need to
+		// scale it. Note that the scale for the specific cube shouldn't
+		// influence the stack, so we need to create a scale node,
+		// and then go up a node.
+		var isWebGLUsed = false;
+		var normalMaterial = new THREE.MeshNormalMaterial();
+		
+		var linesPool = [];
+		var rectanglesPool = [];
+		var boxesPool = [];
+		var usedLines = 0;
+		var usedRectangles = 0;
+		var usedBoxes = 0;
+		var cubeGeometry = new THREE.CubeGeometry(1,1,1);
+		var planeGeometry = new THREE.PlaneGeometry(1,1);
+		var lineGeometry = new THREE.Geometry();
+		lineGeometry.vertices.push(new THREE.Vertex(new THREE.Vector3(0, -0.5, 0)));
+		lineGeometry.vertices.push(new THREE.Vertex(new THREE.Vector3(0, 0.5, 0)));
+		
+		// loads identity matrix
+		var worldMatrix = new THREE.Matrix4();
+		
+		var forceCanvasRenderer = false;
+		var backgroundScene;
+		var backgroundSceneContext;
+		var sceneRenderingCanvas;
+		var sceneRenderingCanvasContext;
+		var previousRenderForBlending;
+		var previousRenderForBlendingContext;
+		var finalRenderWithSceneAndBlend;
+		var finalRenderWithSceneAndBlendContext;
+		var useRequestAnimationFrame = false;
+		var wantedFramesPerSecond = 60;
+		var backGroundFraction = 15;
+		var scaledBackgroundWidth;
+		var scaledBackgroundHeight;
+		var repaintBackroundEveryFrame = true;
+		var fullScreenifyBackground = true;
+		var animationModeValue = 0;
+		var previousAnimationModeValue = 0;
+		var currentGradientStackValue = '';
+		var previousGradientStackValue = 0;
+		var blendAmount = 0;
+		var normal = 0;
+		var retain = 1;
+		var motionBlur = 2;
+		
+		var soundLoops = [];
+		soundLoops.soundIDs = [];
+		soundLoops.beatStrings = [];
+		
+		var programHasBasicError = false;
+		var reasonOfBasicError = "";
+		var consecutiveFramesWithoutRunTimeError = 0;
+		var out;
+		var lastStableProgram;
 
 // Functions taken from processing.js
 
@@ -1775,10 +1763,10 @@ function background(red, green, blue) {
 		var key = theEvent.keyCode || theEvent.which;
 		key = String.fromCharCode( key );  
 
-	    var currentCaption = $('p.caption').html();
+	    var currentCaption = $('#caption').html();
 	    var shorterCaption  = currentCaption.substring(0,currentCaption.length - 1);
-	    $('p.caption').html( shorterCaption + key + "|");
-	    $('p.cursor').html("");
+	    $('#caption').html( shorterCaption + key + "|");
+	    $('#fakeStartingBlinkingCursor').html("");
 	    
 		if (fakeText) {
 
@@ -2564,10 +2552,23 @@ function adjustCodeMirrorHeight() {
 }
 
 var fakeCursorInterval;
+
+function fakeCursorBlinking() 
+{
+  $("#fakeStartingBlinkingCursor").animate(
+  {
+    opacity: 0
+  }, "fast", "swing").animate(
+  {
+    opacity: 1
+  }, "fast", "swing");
+}
+
+
 $(document).ready(function(){
 	editor.focus();
 	adjustCodeMirrorHeight();
-	fakeCursorInterval = setInterval ( "cursorAnimation()", 600 );
+	fakeCursorInterval = setInterval ( "fakeCursorBlinking()", 600 );
 });
 
 
@@ -2586,7 +2587,7 @@ window.addEventListener(
 		simpleGradientUpdateIfChanged();
 		
 
-		$('#openingCourtain').fadeOut();
+		$('#startingCourtainScreen').fadeOut();
 
 		  $("#formCode").animate(
 		  {
