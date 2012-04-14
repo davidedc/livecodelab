@@ -144,7 +144,7 @@
 		<ul>
 		
 			<li><a href="#" onclick="loadExample('simpleCubeExample');">Simple cube</a></li>
-			<li><a href="#" onclick="loadExample('twoCubesExample');">Two cubes</a></li>
+			<li><a href="#" onclick="loadExample('twocubesExample');">Two cubes</a></li>
 			<li><a href="#" onclick="loadExample('cubesAndSpikes');">Cubes and spikes</a></li>
 			<li><a href="#" onclick="loadExample('turbineExample');">Turbine</a></li>
 			<li><a href="#" onclick="loadExample('yellowBackgroundExample');">Yellow background</a></li>
@@ -2351,9 +2351,12 @@ box
 
 var simpleCubeExample = ""+
 	"rotate 0, 1, frame/100\n"+
-	"box\n";
+	"box\n" + 
+	"\n" + 
+	"// see next example, click here below:\n" +
+	"// example:two_cubes \n";
 
-var twoCubesExample = ""+
+var twocubesExample = ""+
 ""+		"2 times ->\n"+
 "\t"+		"rotate 0, 1, frame/200\n"+
 "\t"+		"box\n";
@@ -2497,8 +2500,8 @@ function loadExample(whichExample) {
 		case 'simpleCubeExample':
 			editor.setValue(simpleCubeExample);
 			break;
-		case 'twoCubesExample':
-			editor.setValue(twoCubesExample);
+		case 'twocubesExample':
+			editor.setValue(twocubesExample);
 			break;
 		case 'cubesAndSpikes':
 			editor.setValue(cubesAndSpikes);
@@ -2551,6 +2554,23 @@ function loadExample(whichExample) {
 	
 	<script>
   var changesHappened = false;
+  
+  // way to add links taken form here:
+  // http://groups.google.com/group/codemirror/browse_thread/thread/a96bb56548815163/87a3869e2cfd0a37?lnk=gst&q=links#87a3869e2cfd0a37
+  CodeMirror.defineMode("links", function(config, parserConfig) { 
+    return { 
+    token: function(stream, state) {
+      if (stream.match(/\/\/\s*(example:([^\s]+))\b/)) 
+      { 
+           return "link"; 
+      } 
+            stream.skipToEnd(); 
+    
+    } 
+  }; 
+}); 
+
+
   var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
     lineNumbers: false,
         tabSize: 2,
@@ -2563,11 +2583,22 @@ function loadExample(whichExample) {
         // before giving the editor focus, otherwise for some reason
         // the focus is not regained. Go figure.
         onBlur: (function(){ setTimeout('editor.focus()',30) }),
-        onChange: (function(){registerCode();})
+        onChange: (function(){registerCode();}),
+        mode: "links"
         //onScroll: (function(){alert('scroll')})
   });
 
   
+  $('#formCode').delegate(".cm-link", "click", function(event) {
+  //alert('clicked');
+  var url;
+  url = $(event.target).text();
+  url = url.replace(/\/\/\s*example:/,"");
+  url = url.replace("_","");
+  //alert(""+url);
+  loadExample(url+"Example");
+});
+
   editor.setOption("theme", 'night');
   function selectTheme(node) {
     var theme = node.options[node.selectedIndex].innerHTML;
