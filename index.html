@@ -132,33 +132,33 @@
 
 <ul class='dd_menu' >
 
-	<li><a href="#" style="text-decoration:none; color:red;">LIVECODELAB</a>
+	<li><a href="javascript:void(0)" style="text-decoration:none; color:red;">LIVECODELAB</a>
 		<ul>
-			<li><a href="#" onclick="$('#basic-modal-content').modal();">What&apos;s this?</a></li>
+			<li><a href="javascript:void(0)" onclick="$('#basic-modal-content').modal();">What&apos;s this?</a></li>
 		</ul>
 	</li>
 
-	<li><a href="#" style="text-decoration:none;">Examples</a>
+	<li><a href="javascript:void(0)" style="text-decoration:none;">Examples</a>
 		<ul>
 		
-			<li><a href="#" onclick="loadExample('simpleCubeExample');">Simple cube</a></li>
-			<li><a href="#" onclick="loadExample('twocubesExample');">Two cubes</a></li>
-			<li><a href="#" onclick="loadExample('cubesAndSpikes');">Cubes and spikes</a></li>
-			<li><a href="#" onclick="loadExample('turbineExample');">Turbine</a></li>
-			<li><a href="#" onclick="loadExample('yellowBackgroundExample');">Yellow background</a></li>
-			<li><a href="#" onclick="loadExample('littleSpiralOfCubes');">Little spiral</a></li>
-			<li><a href="#" onclick="loadExample('tentacleExample');">Tentacle</a></li>
-			<li><a href="#" onclick="loadExample('industrialMusicExample');">Industrial music</a></li>
-			<li><a href="#" onclick="loadExample('doOnceExample');">doOnce</a></li>
-			<li><a href="#" onclick="loadExample('planesExample');">Planes</a></li>
-			<li><a href="#" onclick="loadExample('matrixesExample');">Matrixes</a></li>
-			<li><a href="#" onclick="loadExample('diceExample');">Dice</a></li>
-			<li><a href="#" onclick="loadExample('nuclearOctopusExample');">Nuclear octopus</a></li>
+			<li><a href="javascript:void(0)" onclick="loadExample('simpleCubeExample');">Simple cube</a></li>
+			<li><a href="javascript:void(0)" onclick="loadExample('twocubesExample');">Two cubes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadExample('cubesAndSpikes');">Cubes and spikes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadExample('turbineExample');">Turbine</a></li>
+			<li><a href="javascript:void(0)" onclick="loadExample('yellowBackgroundExample');">Yellow background</a></li>
+			<li><a href="javascript:void(0)" onclick="loadExample('littleSpiralOfCubes');">Little spiral</a></li>
+			<li><a href="javascript:void(0)" onclick="loadExample('tentacleExample');">Tentacle</a></li>
+			<li><a href="javascript:void(0)" onclick="loadExample('industrialMusicExample');">Industrial music</a></li>
+			<li><a href="javascript:void(0)" onclick="loadExample('doOnceExample');">doOnce</a></li>
+			<li><a href="javascript:void(0)" onclick="loadExample('planesExample');">Planes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadExample('matrixesExample');">Matrixes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadExample('diceExample');">Dice</a></li>
+			<li><a href="javascript:void(0)" onclick="loadExample('nuclearOctopusExample');">Nuclear octopus</a></li>
 		</ul>
 	</li>
-	<li id="dangerSign" style="border-right:none;"><a href="#" id="dangerSignText" style="font-size:2em;margin-top:-0.5em;">&#9888;</a>
+	<li id="dangerSign" style="border-right:none;"><a href="javascript:void(0)" id="dangerSignText" style="font-size:2em;margin-top:-0.5em;">&#9888;</a>
 	</li>
-	<li id="errorMessage" style="border-right:none;"><a href="#" id="errorMessageText" ></a>
+	<li id="errorMessage" style="border-right:none;"><a href="javascript:void(0)" id="errorMessageText" ></a>
 	</li>
 
 </ul>
@@ -1187,6 +1187,7 @@ function registerCode() {
         
         if (editorContent === '' && !fakeText) {
     		fakeText = true;
+    		window.location.hash = '';
     	
 			$("#formCode").animate({opacity: 0}, "fast");
 			//$("#formCode").css('opacity',0);
@@ -2493,6 +2494,13 @@ var nuclearOctopusExample = ""+
 
 function loadExample(whichExample) {
 
+	// set the example as a hash state
+	// so that ideally people can link directly to
+	// a specific example they like.
+	// (in the document.ready function we check for
+	// this hash value and load the correct example)
+	window.location.hash =  'example='+whichExample;
+
 	if (fakeText) shrinkFakeText();
 	undimEditor();
 	
@@ -2677,6 +2685,15 @@ function dimIfNoCursorActivity(){
 $(document).ready(function(){
 	editor.focus();
 	adjustCodeMirrorHeight();
+	
+	// check if the url points to a particular example,
+	// in which case we load the example directly.
+	// otherwise we do as usual.
+	if (window.location.hash.indexOf("example")!==-1){
+		var exampleToLoad = window.location.hash.substring(9);
+		//setTimeout ( "loadExample('"+exampleToLoad+"');",500);
+		loadExample(exampleToLoad);
+	}
 	fakeCursorInterval = setInterval ( "fakeCursorBlinking()", 800 );
 	setInterval ( "dimIfNoCursorActivity()", 2000 );
 });
