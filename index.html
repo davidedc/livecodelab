@@ -38,17 +38,17 @@
 
 			<style type="text/css">
 					a:hover {cursor: default;}
-					.dd_menu {background:#323232; border-bottom: 1px; border-bottom-color: white; border-bottom-style: solid; padding:0px; margin:0; list-style-type:none; height:30px;}
-					.dd_menu li {float:left; height:30px; border-right: solid 1px white;}
-					.dd_menu li a {padding:9px 20px; display:block; color:#fff; text-decoration:none; font:12px arial, verdana, sans-serif; font-weight: bold;}
+					.dd_menu {background:#323232; border-bottom: 1px; border-bottom-color: white; border-bottom-style: dotted; padding:0px; margin:0; list-style-type:none; height:30px;}
+					.dd_menu li {float:left; height:30px; border-right: solid 1px white; border-right-style: dotted;}
+					.dd_menu li a {padding:9px 20px; display:block; color:#fff; text-decoration:none; font:12px arial, verdana, sans-serif; font-weight: bold; }
 					.dd_menu li:hover a {color:black;}
 					
 					.dd_menu ul { position:absolute; left:-9999px; top:-9999px; list-style-type:none;}
 					.dd_menu li:hover {position:relative; background:white;}
-					.dd_menu li:hover ul {left:0px; top:30px; background:#323232; padding:3px; border:1px solid white; width:160px;}
-					.dd_menu li:hover ul li {height:18px; border:none;}
-					.dd_menu li:hover ul li a {height:18px; padding:0px; display:block; font-size:11px; width:158px; line-height:18px; text-indent:15px; color:white; background-color:#323232; text-decoration:none; border:1px solid transparent;}
-					.dd_menu li:hover ul li a:hover {height:18px; background:silver; color:#000; border:solid 1px #444;}
+					.dd_menu li:hover ul {left:0px; top:30px; background:#323232; padding:3px; border:0px solid white; width:160px;}
+					.dd_menu li:hover ul li {height:18px; border:none; }
+					.dd_menu li:hover ul li a {height:18px; padding:0px; display:block; font-size:11px; width:158px; line-height:18px; text-indent:15px; color:white; background-color:#323232; text-decoration:none;  border-top: 1px; border-top-color: #111111; border-top-style: dotted;}
+					.dd_menu li:hover ul li a:hover {height:18px; background:silver; color:#000; border:solid 1px #444; }
 					
 					#dangerSignText {color:#323232; text-decoration:none;}
 					#dangerSign:hover {background:#323232;}
@@ -148,8 +148,6 @@
 			<li><a href="#" onclick="loadExample('yellowBackgroundExample');">Yellow background</a></li>
 			<li><a href="#" onclick="loadExample('littleSpiralOfCubes');">Little spiral</a></li>
 			<li><a href="#" onclick="loadExample('tentacleExample');">Tentacle</a></li>
-			<li><a href="#" onclick="loadExample('simpleSoundExample');">Simple sound</a></li>
-			<li><a href="#" onclick="loadExample('simpleRhythmExample');">Simple rhythm</a></li>
 			<li><a href="#" onclick="loadExample('industrialMusicExample');">Industrial music</a></li>
 			<li><a href="#" onclick="loadExample('doOnceExample');">doOnce</a></li>
 			<li><a href="#" onclick="loadExample('planesExample');">Planes</a></li>
@@ -223,8 +221,11 @@
 		var previousRenderForBlendingContext;
 		var finalRenderWithSceneAndBlend;
 		var finalRenderWithSceneAndBlendContext;
-		var useRequestAnimationFrame = false;
-		var wantedFramesPerSecond = 60;
+		var useRequestAnimationFrame = true;
+		// if you put to -1 then it means that
+		// requestAnimationFrame will try to go as fast as it
+		// can.
+		var wantedFramesPerSecond = -1;
 		var backGroundFraction = 15;
 		var scaledBackgroundWidth;
 		var scaledBackgroundHeight;
@@ -1005,9 +1006,11 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
 
 			// add Stats.js - https://github.com/mrdoob/stats.js
 			stats = new Stats();
-			stats.domElement.style.position	= 'absolute';
-			stats.domElement.style.bottom	= '0px';
-			document.body.appendChild( stats.domElement );
+			// Align bottom-left
+			stats.getDomElement().style.position = 'absolute';
+			stats.getDomElement().style.right = '0px';
+			stats.getDomElement().style.top = '0px';
+			document.body.appendChild( stats.getDomElement() );
 
 			scene = new THREE.Scene();
 			scene.matrixAutoUpdate = false;
@@ -1696,6 +1699,7 @@ function background(red, green, blue) {
 }
 
 // animation loop
+		var loopInterval;
     	function animate() {
 
 			// loop on request animation loop
@@ -1705,7 +1709,17 @@ function background(red, green, blue) {
 			// I rather prefer to have a slower framerate but steadier.
 			
 			if (useRequestAnimationFrame) {
-				requestAnimationFrame( animate );
+				if (wantedFramesPerSecond === -1) {
+					requestAnimationFrame( animate );
+				}
+				else {
+					//setTimeout("window.requestAnimationFrame(animate)",
+                    //       1000 / wantedFramesPerSecond);
+                    if (loopInterval === undefined) {
+						loopInterval = setInterval("window.requestAnimationFrame(animate)",
+							   1000 / wantedFramesPerSecond);
+                    }
+				}
 			}
 			else {
 				setTimeout( 'animate();', 1000 / wantedFramesPerSecond );
@@ -1843,7 +1857,7 @@ bpm = function(a) {
 		clearTimeout(soundLoopTimer);
 		
 		if (beatsPerMinute !== 0) {
-				soundLoopTimer = setTimeout('soundLoop();',(1000*60)/beatsPerMinute);
+				soundLoopTimer = setInterval('soundLoop();',(1000*60)/beatsPerMinute);
 		}
     	oldBeatsPerMinute = beatsPerMinute;
     }
@@ -1852,12 +1866,12 @@ bpm = function(a) {
 }
 
 soundLoop = function() {
-			clearTimeout(soundLoopTimer);
+			//clearTimeout(soundLoopTimer);
 			//alert('soundLoop');
 			
-			if (beatsPerMinute !== 0) {
-					soundLoopTimer = setTimeout('soundLoop();',(1000*60)/beatsPerMinute);
-			}
+			//if (beatsPerMinute !== 0) {
+			//		soundLoopTimer = setTimeout('soundLoop();',(1000*60)/beatsPerMinute);
+			//}
 			
 			beatNumber++;
 			beatNumber = beatNumber % 16;
@@ -2382,12 +2396,6 @@ var yellowBackgroundExample = ""+
 ""+		"rotate 0,frame/20,frame/20\n"+
 ""+		"box\n";
 
-var simpleSoundExample = ""+
-""+		"rotate 0,1,frame/100\n"+
-""+		"box\n"+
-""+		"if frame % 20 == 0\n"+
-"\t"+		"soundManager.play('s12')\n";
-
 var littleSpiralOfCubes = ""+
 ""+		"scale 0.1\n"+
 ""+		"10 times ->\n"+
@@ -2404,16 +2412,6 @@ var tentacleExample = ""+
 "\t\t"+		"scale 0.9\n"+
 "\t\t"+		"translate 1,1,1\n"+
 "\t\t"+		"box\n";
-
-var simpleRhythmExample = ""+
-""+		"bpm 240\n"+
-""+		"addSound 's12','xzzzzzzzzzzzzzzz'\n"+
-""+		"addSound 's1'  ,'zzxzzzzzxzzzzzzx'\n"+
-""+		"addSound 's2'  ,'xzzxzzxzzxxxxxxx'\n"+
-""+		"addSound 's3'  ,'zzzxzzzxzzzxzzxz'\n"+
-""+		"addSound 's5'  ,'xxzxxzxxzxxzxxxx'\n"+
-""+		"rotate 0,1,frame/50\n"+
-""+		"box\n";
 
 var industrialMusicExample = ""+
 ""+		"bpm 350\n"+
@@ -2515,17 +2513,11 @@ function loadExample(whichExample) {
 		case 'yellowBackgroundExample':
 			editor.setValue(yellowBackgroundExample);
 			break;
-		case 'simpleSoundExample':
-			editor.setValue(simpleSoundExample);
-			break;
 		case 'littleSpiralOfCubes':
 			editor.setValue(littleSpiralOfCubes);
 			break;
 		case 'tentacleExample':
 			editor.setValue(tentacleExample);
-			break;
-		case 'simpleRhythmExample':
-			editor.setValue(simpleRhythmExample);
 			break;
 		case 'industrialMusicExample':
 			editor.setValue(industrialMusicExample);
