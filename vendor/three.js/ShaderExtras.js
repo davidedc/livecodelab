@@ -1139,9 +1139,9 @@ THREE.ShaderExtras = {
 				// left by the opaque remains of the previous
 				// frames are a bit
 				// brighter
-				"cb.x = cb.x + cb.x / 2.5;",
-				"cb.y = cb.y + cb.y / 2.5;",
-				"cb.z = cb.z + cb.z / 2.5;",
+				//"cb.x = cb.x + cb.x / 2.5;",
+				//"cb.y = cb.y + cb.y / 2.5;",
+				//"cb.z = cb.z + cb.z / 2.5;",
 				"float alphaa = texel1.w ;",
 				"float alphab = texel2.w*mixRatio;",
 				"float alphao = (alphaa + alphab * (1.0-alphaa));",
