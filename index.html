@@ -1020,6 +1020,23 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
 			camera.position.set(0, 0, 5);
 			scene.add(camera);
 
+			// temporarily, add a light
+
+			// add subtle ambient lighting
+			var ambientLight = new THREE.AmbientLight(0xFF0000);
+			scene.add(ambientLight);
+        
+			// create a point light
+			var pointLight = new THREE.PointLight(0xFFFFFF);
+			
+			// set its position
+			pointLight.position.x = 10;
+			pointLight.position.y = 50;
+			pointLight.position.z = 130;
+			
+			// add to the scene
+			scene.add(pointLight);
+
 			// transparently support window resize
 			THREEx.WindowResize.bind(renderer, camera);
 			
@@ -1516,6 +1533,11 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/animationMode(\s)+/g, ";animationMode$1" );
         elaboratedSource =  elaboratedSource.replace(/simpleGradient(\s)+/g, ";simpleGradient$1" );
         elaboratedSource =  elaboratedSource.replace(/color(\s)+/g, ";color$1" );
+        elaboratedSource =  elaboratedSource.replace(/ambient(\s)+/g, ";ambient$1" );
+        elaboratedSource =  elaboratedSource.replace(/reflect(\s)+/g, ";reflect$1" );
+        elaboratedSource =  elaboratedSource.replace(/refract(\s)+/g, ";refract$1" );
+        elaboratedSource =  elaboratedSource.replace(/lights(\s)+/g, ";lights$1" );
+        elaboratedSource =  elaboratedSource.replace(/noLights(\s)+/g, ";noLights$1" );
 
         // the semicolon mangles the first line of the function definitions
         // coffeescript doesn't like that
@@ -1580,6 +1602,11 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "animationMode" ||
 			  usedMethods[scanningUsedMethods] === "simpleGradient" ||
 			  usedMethods[scanningUsedMethods] === "color" ||
+			  usedMethods[scanningUsedMethods] === "ambient" ||
+			  usedMethods[scanningUsedMethods] === "reflect" ||
+			  usedMethods[scanningUsedMethods] === "refract" ||
+			  usedMethods[scanningUsedMethods] === "lights" ||
+			  usedMethods[scanningUsedMethods] === "noLights" ||
 			  false
 		  ){
 		  	continue;
@@ -2028,6 +2055,26 @@ scale = function(a, b, c) {
 
   }
 
+  var ambientColor = color(255,0,0);
+  ambient = function(a) {
+  	ambientColor = a;
+  }
+
+  var reflectValue = 1;
+  reflect = function(a) {
+	  reflectValue = a;
+  }
+  var refractValue = 0.98;
+  refract = function(a) {
+	  refractValue = a;
+  }
+  var lightsAreOn = false;
+  lights = function() {
+	  lightsAreOn = true;
+  }
+  noLights = function() {
+	  lightsAreOn = false;
+  }
 
   rect = function(a,b) {
   	
@@ -2038,39 +2085,95 @@ scale = function(a, b, c) {
   	else if(arguments.length === 1){
   	  b=a;
   	  }
-  	  
+  	
+	var pooledRectangleJustCreated = false;
 	if (doFill) {
-		var mesh = rectanglesPool[usedRectangles];
-		var rectMaterialCOL;
-		if ( mesh === undefined){
-		  rectMaterialCOL = new THREE.MeshBasicMaterial({
-				color: currentFillColor,
-				opacity: currentFillAlpha,
-			});
-		  mesh = new THREE.Mesh(planeGeometry, rectMaterialCOL);
-		  mesh.isLine = false;
-		  mesh.isMesh = true;
-	      mesh.isBox = false;
-		  rectanglesPool.push(mesh);
-		  mesh.doubleSided = true;
-		  scene.add(mesh);
+		var pooledRectangle = rectanglesPool[usedRectangles];
+		if ( pooledRectangle === undefined){
+		  // each pooled rectangle contains a geometry,
+		  // a basic material and a lambert material.
+		  pooledRectangle = {
+				basicMaterial: undefined,		  
+				lambertMaterial: undefined,		  
+				mesh: undefined
+		  };
+		  pooledRectangleJustCreated = true;
+		}
+			if (!lightsAreOn){
+				if (pooledRectangle.basicMaterial === undefined) {
+					pooledRectangle.basicMaterial = new THREE.MeshBasicMaterial({
+						color: currentFillColor,
+						opacity: currentFillAlpha,
+					});
+				}
+				else {
+					pooledRectangle.basicMaterial.color.setHex(currentFillColor);
+					pooledRectangle.basicMaterial.opacity = currentFillAlpha;
+					pooledRectangle.basicMaterial.wireframe = false;
+					pooledRectangle.basicMaterial.doubleSided = true;
+				}
+			}
+			// lights are on
+			else {
+				if (pooledRectangle.lambertMaterial === undefined) {
+				  console.log("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
+				  pooledRectangle.lambertMaterial = new THREE.MeshLambertMaterial({
+						color: currentFillColor,
+						opacity: currentFillAlpha,
+						ambient: ambientColor,
+						reflectivity: reflectValue,
+						refractionRatio: refractValue
+					});
+				}
+				else {
+					pooledRectangle.lambertMaterial.color.setHex(currentFillColor);
+					pooledRectangle.lambertMaterial.opacity = currentFillAlpha;
+					pooledRectangle.lambertMaterial.wireframe = false;
+					pooledRectangle.lambertMaterial.doubleSided = true;
+					pooledRectangle.lambertMaterial.ambient.setHex(ambientColor);
+					pooledRectangle.lambertMaterial.reflectivity = reflectValue;
+					pooledRectangle.lambertMaterial.refractionRatio = refractValue;
+				}
+		}		  
+		if ( pooledRectangleJustCreated ){
+		  if (!lightsAreOn){
+		  	pooledRectangle.mesh = new THREE.Mesh(planeGeometry, pooledRectangle.basicMaterial);
+			console.log("creating mesh with basic material");
+		  }
+		  else {
+			pooledRectangle.mesh = new THREE.Mesh(planeGeometry, pooledRectangle.lambertMaterial);
+			console.log("creating mesh with lambert material");
+		  }
 		}
 		else {
-			mesh.material.color.setHex(currentFillColor);
-			mesh.material.opacity = currentFillAlpha;
-			mesh.material.wireframe = false;
-			mesh.doubleSided = true;
+		  if (!lightsAreOn){
+		  	pooledRectangle.mesh.material = pooledRectangle.basicMaterial;
+			console.log("existing mesh associating to basic material");
+		  }
+		  else {
+			pooledRectangle.mesh.material = pooledRectangle.lambertMaterial;
+			console.log("existing mesh associating to lambert material");
+		  }
 		}
+
+		  pooledRectangle.mesh.isLine = false;
+		  pooledRectangle.mesh.isMesh = true;
+	      pooledRectangle.mesh.isBox = false;
+		  pooledRectangle.mesh.doubleSided = true;
+		  rectanglesPool.push(pooledRectangle);
+		  scene.add(pooledRectangle.mesh);
+
 		usedRectangles++;
-		mesh.matrixAutoUpdate = false;
-		mesh.matrix.copy(worldMatrix);
-		mesh.matrixWorldNeedsUpdate = true;
+		pooledRectangle.mesh.matrixAutoUpdate = false;
+		pooledRectangle.mesh.matrix.copy(worldMatrix);
+		pooledRectangle.mesh.matrixWorldNeedsUpdate = true;
     }
 
 //
 /////  Now for the wireframe part
 //
 
+/*
 	if (doStroke) {
 		var mesh2 = rectanglesPool[usedRectangles];
 		var rectWireframeMaterialCOL;
@@ -2109,7 +2212,7 @@ scale = function(a, b, c) {
 		mesh2.matrixWorldNeedsUpdate = true;
     }
 
-
+*/
 	// now combine the two meshes
 	// note that I did try to see whether grouping the two meshes
 	// is faster, as in: https://github.com/mrdoob/three.js/blob/dev/src/extras/SceneUtils.js#L29
@@ -2117,7 +2220,7 @@ scale = function(a, b, c) {
 
   	if( a !== 1 || b !== 1){
       if (doFill) mesh.matrix.scale(new THREE.Vector3(a,b,1));
-      if (doStroke) mesh2.matrix.scale(new THREE.Vector3(a,b,1));
+      //if (doStroke) mesh2.matrix.scale(new THREE.Vector3(a,b,1));
       // in theory the docs say that we should change the boundradius
       // but I don't think that we need it...
     }
