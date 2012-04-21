@@ -395,6 +395,8 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
     function color$2(aValue1, aValue2) {
       var a;
 
+      if (aValue1 === normalColor) return normalColor;
+      
       // Color int and alpha
       if (aValue1 & Constants.ALPHA_MASK) {
         a = Math.round(255 * (aValue2 / colorModeA));
@@ -851,10 +853,30 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
 
     var currentFillAlpha = 1;
     var currentFillColor = 0xFFFFFF;
+	// lowest than any 32 bit color is a special
+	// color that paints based on normals.
+    var normalColor = -16777217;
     fill = function() {
       var c = color(arguments[0], arguments[1], arguments[2], arguments[3]);
-      var crgb = color(red(c), green(c), blue(c));
-      var ca = alphaZeroToOne(c);
+      var crgb;
+      var ca;
+      //console.log("fillColor: "+c);
+      if (c === normalColor) {
+      	//console.log("yes it's normal color ");
+      	crgb = c;
+      	if (arguments[1] !== undefined) {
+      		console.log("passed alpha: " + arguments[1]);
+      		ca = arguments[1] / colorModeA;
+      		console.log("calculated alpha: " + ca);
+      	}
+      	else {
+	      	ca = 1;
+      	}
+      }
+      else {
+		  crgb = color(red(c), green(c), blue(c));
+		  ca = alphaZeroToOne(c);
+      }
       //console.log("crgb ca "+crgb + " " + ca);
       if(crgb === currentFillColor && ca === currentFillAlpha && doFill) {
         return;
@@ -909,8 +931,24 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
     var currentStrokeColor = 0x000000;
     var stroke = function() {
       var c = color(arguments[0], arguments[1], arguments[2], arguments[3]);
-      var crgb = color(red(c), green(c), blue(c));
-      var ca = alphaZeroToOne(c);
+      var crgb;
+      var ca;
+		if (c === normalColor) {
+			//console.log("yes it's normal color ");
+			crgb = c;
+			if (arguments[1] !== undefined) {
+				//console.log("passed alpha: " + arguments[1]);
+				ca = arguments[1] / colorModeA;
+				//console.log("calculated alpha: " + ca);
+			}
+			else {
+				ca = 1;
+			}
+		}
+		else {	
+			crgb = color(red(c), green(c), blue(c));
+			ca = alphaZeroToOne(c);
+		}
       //console.log("crgb ca "+crgb + " " + ca);
       if(crgb === currentStrokeColor && ca === currentStrokeAlpha && doStroke) {
         return;
@@ -1208,7 +1246,7 @@ function registerCode() {
 			$("#formCode").animate({opacity: 0}, "fast");
 			//$("#formCode").css('opacity',0);
 			//setTimeout('if (editor.getValue() !== "") $("#formCode").css("opacity",0);',10);
-			console.log('unshrinking');
+			//console.log('unshrinking');
 			$("#justForFakeCursor").show();
 			$("#toMove").show();			
 			$('#caption').html('|');
@@ -1768,8 +1806,11 @@ function background(red, green, blue) {
 			//scene.add(rootObject);
 			//parentObject = rootObject;
 
-			if (typeof(draw) != "undefined") { 
+			if (typeof(draw) != "undefined") {
 			  doLNOnce = [];
+			  fill(normalColor);
+			  stroke(normalColor);
+			  noLights();
 			  usedLines = 0;
 			  usedRectangles = 0;
 			  animationModeValue = normal;
@@ -2019,7 +2060,7 @@ scale = function(a, b, c) {
     var mesh = linesPool[usedLines];
     if ( mesh === undefined){
 		var lineBasicMaterialCOL = new THREE.LineBasicMaterial({
-			color: currentStrokeColor,
+			//color: currentStrokeColor,
 			opacity: currentStrokeAlpha,
 		});
 
@@ -2033,7 +2074,7 @@ scale = function(a, b, c) {
     else {
     	//mesh.geometry = lineGeometry;
     	//mesh.material = lineBasicMaterialCOL;
-    	mesh.material.color.setHex(currentStrokeColor);
+    	//mesh.material.color.setHex(currentStrokeColor);
 		mesh.material.opacity = currentStrokeAlpha;
     }
     usedLines++;
@@ -2051,7 +2092,17 @@ scale = function(a, b, c) {
       //mesh.boundRadiusScale = Math.max(a,b,c);
     }
     
-    //scene.add(mesh);
+    // setting the color after the geometry has been dealt with
+    // because in case we use the normalColor then we
+    // need to know the geometry.
+    if(currentStrokeColor === normalColor){
+		var sasaas = mesh.matrix.multiplyVector3( new THREE.Vector3(0,1,0) ).normalize();
+		//console.log(sasaas.x+ " " + sasaas.y + " " + sasaas.z);
+		mesh.material.color.setHex(color(((sasaas.x+1)/2)*255,((sasaas.y+1)/2)*255,((sasaas.z+1)/2)*255));
+    }
+    else {
+    	mesh.material.color.setHex(currentStrokeColor);
+	}
 
   }
 
@@ -2078,6 +2129,28 @@ scale = function(a, b, c) {
 
   rect = function(a,b) {
   	
+  	// simple case - if there is no fill and
+  	// no stroke then there is nothing to do.
+	var startIndex = 0;
+	var endIndex = 0;
+
+  	if (!doFill && !doStroke) {
+  		return;
+  	}
+  	else if (doFill && !doStroke) {
+  		startIndex = 0;
+  		endIndex = 1;
+  	}
+  	else if (!doFill && doStroke) {
+  		startIndex = 1;
+  		endIndex = 2;
+  	}
+  	else {
+  		startIndex = 0;
+  		endIndex = 2;
+  	}
+  	//console.log("si: " + startIndex + " endI: " + endIndex );
+  	
   	if(a === undefined){
   	  a=1; b=1;
   	  }
@@ -2087,142 +2160,141 @@ scale = function(a, b, c) {
   	  }
   	
 	var pooledRectangleJustCreated = false;
-	if (doFill) {
-		var pooledRectangle = rectanglesPool[usedRectangles];
-		if ( pooledRectangle === undefined){
-		  // each pooled rectangle contains a geometry,
-		  // a basic material and a lambert material.
-		  pooledRectangle = {
-				basicMaterial: undefined,		  
-				lambertMaterial: undefined,		  
-				mesh: undefined
-		  };
-		  pooledRectangleJustCreated = true;
+	
+	var strokeTime = false;
+	var colorToBeUsed;
+	var alphaToBeUsed;
+	
+	// this is to run the code twice. This should be neater
+	// and turned into a function call really.
+	for (var fillAndStroke = startIndex; fillAndStroke < endIndex; fillAndStroke++) {
+		if (fillAndStroke === 1) {
+			strokeTime = true;
+			colorToBeUsed = currentStrokeColor;
+			alphaToBeUsed = currentStrokeAlpha;
 		}
-			if (!lightsAreOn){
-				if (pooledRectangle.basicMaterial === undefined) {
-					pooledRectangle.basicMaterial = new THREE.MeshBasicMaterial({
-						color: currentFillColor,
-						opacity: currentFillAlpha,
-					});
-				}
-				else {
-					pooledRectangle.basicMaterial.color.setHex(currentFillColor);
-					pooledRectangle.basicMaterial.opacity = currentFillAlpha;
-					pooledRectangle.basicMaterial.wireframe = false;
-					pooledRectangle.basicMaterial.doubleSided = true;
-				}
+		else {
+			colorToBeUsed = currentFillColor;
+			alphaToBeUsed = currentFillAlpha;
+		}
+			var pooledRectangle = rectanglesPool[usedRectangles];
+			if ( pooledRectangle === undefined){
+			  // each pooled rectangle contains a geometry,
+			  // a basic material and a lambert material.
+			  pooledRectangle = {
+					basicMaterial: undefined,
+					lambertMaterial: undefined,
+					normalMaterial: undefined,
+					// the first time we render a mesh we need to
+					// render it with the material that takes the
+					// bigger buffer space, otherwise the
+					// more complicated materials won't show
+					// up, see:
+					// https://github.com/mrdoob/three.js/issues/1051
+					// so we always need to create a normalmaterial
+					// and render that material first, in case
+					// the user will ever want to use it.
+					// Another workaround would be to create a mesh
+					// for each different type of material
+					neverUsed: true,
+					mesh: undefined
+			  };
+			  rectanglesPool.push(pooledRectangle);
 			}
-			// lights are on
-			else {
-				if (pooledRectangle.lambertMaterial === undefined) {
-				  console.log("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
-				  pooledRectangle.lambertMaterial = new THREE.MeshLambertMaterial({
-						color: currentFillColor,
-						opacity: currentFillAlpha,
-						ambient: ambientColor,
-						reflectivity: reflectValue,
-						refractionRatio: refractValue
-					});
+				if (pooledRectangle.neverUsed || colorToBeUsed === normalColor){
+					// the first time we render a mesh we need to
+					// render it with the material that takes the
+					// bigger buffer space, see:
+					// https://github.com/mrdoob/three.js/issues/1051
+					// Another workaround would be to create a mesh
+					// for each different type of material
+					pooledRectangle.neverUsed = false;
+					if (pooledRectangle.normalMaterial === undefined) {
+						//console.log("creating normal material");
+						pooledRectangle.normalMaterial = new THREE.MeshNormalMaterial({
+							opacity: alphaToBeUsed,
+							wireframe: strokeTime,
+						});
+					}
+					else {
+						pooledRectangle.normalMaterial.opacity = alphaToBeUsed;
+						pooledRectangle.normalMaterial.wireframe = strokeTime;
+						pooledRectangle.normalMaterial.doubleSided = true;
+					}
+					if (pooledRectangle.mesh === undefined){
+						pooledRectangle.mesh = new THREE.Mesh(planeGeometry, pooledRectangle.normalMaterial);
+					}
+					else {
+						//console.log("associating normal material to existing mesh");
+						pooledRectangle.mesh.material = pooledRectangle.normalMaterial;
+					}				}
+				else if (!lightsAreOn){
+					if (pooledRectangle.basicMaterial === undefined) {
+						pooledRectangle.basicMaterial = new THREE.MeshBasicMaterial({
+							color: colorToBeUsed,
+							opacity: alphaToBeUsed,
+							wireframe: strokeTime,
+						});
+					}
+					else {
+						pooledRectangle.basicMaterial.color.setHex(colorToBeUsed);
+						pooledRectangle.basicMaterial.opacity = alphaToBeUsed;
+						pooledRectangle.basicMaterial.wireframe = strokeTime;
+						pooledRectangle.basicMaterial.doubleSided = true;
+					}
+					if (pooledRectangle.mesh === undefined){
+						pooledRectangle.mesh = new THREE.Mesh(planeGeometry, pooledRectangle.basicMaterial);
+					}
+					else {
+						pooledRectangle.mesh.material = pooledRectangle.basicMaterial;
+					}
+
 				}
+				// lights are on
 				else {
-					pooledRectangle.lambertMaterial.color.setHex(currentFillColor);
-					pooledRectangle.lambertMaterial.opacity = currentFillAlpha;
-					pooledRectangle.lambertMaterial.wireframe = false;
-					pooledRectangle.lambertMaterial.doubleSided = true;
-					pooledRectangle.lambertMaterial.ambient.setHex(ambientColor);
-					pooledRectangle.lambertMaterial.reflectivity = reflectValue;
-					pooledRectangle.lambertMaterial.refractionRatio = refractValue;
-				}
-		}		  
-		if ( pooledRectangleJustCreated ){
-		  if (!lightsAreOn){
-		  	pooledRectangle.mesh = new THREE.Mesh(planeGeometry, pooledRectangle.basicMaterial);
-			console.log("creating mesh with basic material");
-		  }
-		  else {
-			pooledRectangle.mesh = new THREE.Mesh(planeGeometry, pooledRectangle.lambertMaterial);
-			console.log("creating mesh with lambert material");
-		  }
-		}
-		else {
-		  if (!lightsAreOn){
-		  	pooledRectangle.mesh.material = pooledRectangle.basicMaterial;
-			console.log("existing mesh associating to basic material");
-		  }
-		  else {
-			pooledRectangle.mesh.material = pooledRectangle.lambertMaterial;
-			console.log("existing mesh associating to lambert material");
-		  }
-		}
-
-		  pooledRectangle.mesh.isLine = false;
-		  pooledRectangle.mesh.isMesh = true;
-	      pooledRectangle.mesh.isBox = false;
-		  pooledRectangle.mesh.doubleSided = true;
-		  rectanglesPool.push(pooledRectangle);
-		  scene.add(pooledRectangle.mesh);
-
-		usedRectangles++;
-		pooledRectangle.mesh.matrixAutoUpdate = false;
-		pooledRectangle.mesh.matrix.copy(worldMatrix);
-		pooledRectangle.mesh.matrixWorldNeedsUpdate = true;
-    }
-
-//
-/////  Now for the wireframe part
-//
-
-/*
-	if (doStroke) {
-		var mesh2 = rectanglesPool[usedRectangles];
-		var rectWireframeMaterialCOL;
-		if ( mesh2 === undefined){
-		  rectWireframeMaterialCOL = new THREE.MeshBasicMaterial( {
-				color: currentStrokeColor,
-				opacity: currentStrokeAlpha,
-				wireframe: true
-			} )
-		  mesh2 = new THREE.Mesh(planeGeometry, rectWireframeMaterialCOL);
-		  mesh2.isLine = false;
-		  mesh2.isMesh = true;
-	      mesh2.isBox = false;
-		  rectanglesPool.push(mesh2);
-		  // note that for webgl this wireframe is visible from the back
-		  // even if doublesided is false.
-		  // not so for canvas renderer.
-		  // TODO tell the three.js people
-		  mesh2.doubleSided = true;
-		  scene.add(mesh2);
-		}
-		else {
-			//mesh.geometry = lineGeometry;
-			mesh2.material.wireframe = true;
-			mesh2.material.color.setHex(currentStrokeColor);
-			mesh2.material.opacity = currentStrokeAlpha;
-		  // note that for webgl this wireframe is visible from the back
-		  // even if doublesided is false.
-		  // not so for canvas renderer.
-		  // TODO tell the three.js people
-			mesh2.doubleSided = true;
-		}
-		usedRectangles++;
-		mesh2.matrixAutoUpdate = false;
-		mesh2.matrix.copy(worldMatrix);
-		mesh2.matrixWorldNeedsUpdate = true;
-    }
-
-*/
-	// now combine the two meshes
-	// note that I did try to see whether grouping the two meshes
-	// is faster, as in: https://github.com/mrdoob/three.js/blob/dev/src/extras/SceneUtils.js#L29
-	// but it seems to be much slower...
-
-  	if( a !== 1 || b !== 1){
-      if (doFill) mesh.matrix.scale(new THREE.Vector3(a,b,1));
-      //if (doStroke) mesh2.matrix.scale(new THREE.Vector3(a,b,1));
-      // in theory the docs say that we should change the boundradius
-      // but I don't think that we need it...
+					if (pooledRectangle.lambertMaterial === undefined) {
+					  //console.log("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
+					  pooledRectangle.lambertMaterial = new THREE.MeshLambertMaterial({
+							color: colorToBeUsed,
+							opacity: alphaToBeUsed,
+							ambient: ambientColor,
+							reflectivity: reflectValue,
+							refractionRatio: refractValue,
+							wireframe: strokeTime,
+						});
+					}
+					else {
+						pooledRectangle.lambertMaterial.color.setHex(colorToBeUsed);
+						pooledRectangle.lambertMaterial.opacity = alphaToBeUsed;
+						pooledRectangle.lambertMaterial.wireframe = strokeTime;
+						pooledRectangle.lambertMaterial.doubleSided = true;
+						pooledRectangle.lambertMaterial.ambient.setHex(ambientColor);
+						pooledRectangle.lambertMaterial.reflectivity = reflectValue;
+						pooledRectangle.lambertMaterial.refractionRatio = refractValue;
+					}
+					if (pooledRectangle.mesh === undefined){
+						pooledRectangle.mesh = new THREE.Mesh(planeGeometry, pooledRectangle.lambertMaterial);
+					}
+					else {
+						pooledRectangle.mesh.material = pooledRectangle.lambertMaterial;
+					}
+			}
+			
+			pooledRectangle.mesh.isLine = false;
+			pooledRectangle.mesh.isMesh = true;
+			pooledRectangle.mesh.isBox = false;
+			pooledRectangle.mesh.doubleSided = true;
+			
+			if( a !== 1 || b !== 1){
+				pooledRectangle.mesh.mesh.matrix.scale(new THREE.Vector3(a,b,1));
+			}
+			
+			scene.add(pooledRectangle.mesh);
+			
+			usedRectangles++;
+			pooledRectangle.mesh.matrixAutoUpdate = false;
+			pooledRectangle.mesh.matrix.copy(worldMatrix);
+			pooledRectangle.mesh.matrixWorldNeedsUpdate = true;
     }
     
   }
@@ -2744,7 +2816,7 @@ function fakeCursorBlinking()
 
 function undimIfCursorActivity(){
 	if (fakeText || editor.getValue() === '') return;
-	console.log('cursor activity! opacity: ' + $("#formCode").css('opacity'));
+	//console.log('cursor activity! opacity: ' + $("#formCode").css('opacity'));
 	cursorActivity = true;
 	undimEditor();
 }
@@ -2752,7 +2824,7 @@ function undimIfCursorActivity(){
 function undimEditor(){
 	if (fakeText || editor.getValue() === '') $("#formCode").css('opacity',0);
 	if ($("#formCode").css('opacity') < 0.99) {
-		console.log('undimming the editor');
+		//console.log('undimming the editor');
 		$("#formCode").animate(
 		  {
 			opacity: 1
@@ -2762,7 +2834,7 @@ function undimEditor(){
 
 function dimEditor(){
 		if ($("#formCode").css('opacity') > 0.200001) {
-			console.log('starting fadeout animation');
+			//console.log('starting fadeout animation');
 			$("#formCode").animate(
 			  {
 				opacity: 0.2
@@ -2773,12 +2845,12 @@ function dimEditor(){
 function dimIfNoCursorActivity(){
 	if (fakeText || editor.getValue() === '') return;
 	if (cursorActivity) {
-		console.log('marking cursor act = false and check again in a second');
+		//console.log('marking cursor act = false and check again in a second');
 		cursorActivity = false;
 		return;
 	}
 	else {
-		console.log('no activity in the last second and opacity: ' + $("#formCode").css('opacity') );
+		//console.log('no activity in the last second and opacity: ' + $("#formCode").css('opacity') );
 		dimEditor();
 
 	}
