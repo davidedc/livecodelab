@@ -395,7 +395,7 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
     function color$2(aValue1, aValue2) {
       var a;
 
-      if (aValue1 === normalColor) return normalColor;
+      if (aValue1 === angleColor) return angleColor;
       
       // Color int and alpha
       if (aValue1 & Constants.ALPHA_MASK) {
@@ -855,13 +855,13 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
     var currentFillColor = 0xFFFFFF;
 	// lowest than any 32 bit color is a special
 	// color that paints based on normals.
-    var normalColor = -16777217;
+    var angleColor = -16777217;
     fill = function() {
       var c = color(arguments[0], arguments[1], arguments[2], arguments[3]);
       var crgb;
       var ca;
       //console.log("fillColor: "+c);
-      if (c === normalColor) {
+      if (c === angleColor) {
       	//console.log("yes it's normal color ");
       	crgb = c;
       	if (arguments[1] !== undefined) {
@@ -933,7 +933,7 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
       var c = color(arguments[0], arguments[1], arguments[2], arguments[3]);
       var crgb;
       var ca;
-		if (c === normalColor) {
+		if (c === angleColor) {
 			//console.log("yes it's normal color ");
 			crgb = c;
 			if (arguments[1] !== undefined) {
@@ -1699,7 +1699,7 @@ function registerCode() {
 //var chromeHackUncaughtReferenceName = '';
 //var chromeHackUncaughtReferenceNames = [];
 
-window.onerrord=function(msg, url, linenumber){
+window.onerror=function(msg, url, linenumber){
  $('#dangerSignText').css('color','red');
  $('#errorMessageText').text(msg);
  
@@ -1808,8 +1808,8 @@ function background(red, green, blue) {
 
 			if (typeof(draw) != "undefined") {
 			  doLNOnce = [];
-			  fill(normalColor);
-			  stroke(normalColor);
+			  fill(angleColor);
+			  stroke(angleColor);
 			  noLights();
 			  usedLines = 0;
 			  usedRectangles = 0;
@@ -2093,9 +2093,9 @@ scale = function(a, b, c) {
     }
     
     // setting the color after the geometry has been dealt with
-    // because in case we use the normalColor then we
+    // because in case we use the angleColor then we
     // need to know the geometry.
-    if(currentStrokeColor === normalColor){
+    if(currentStrokeColor === angleColor){
 		var sasaas = mesh.matrix.multiplyVector3( new THREE.Vector3(0,1,0) ).normalize();
 		//console.log(sasaas.x+ " " + sasaas.y + " " + sasaas.z);
 		mesh.material.color.setHex(color(((sasaas.x+1)/2)*255,((sasaas.y+1)/2)*255,((sasaas.z+1)/2)*255));
@@ -2201,7 +2201,7 @@ scale = function(a, b, c) {
 			  };
 			  rectanglesPool.push(pooledRectangle);
 			}
-				if (pooledRectangle.neverUsed || colorToBeUsed === normalColor){
+				if (pooledRectangle.neverUsed || colorToBeUsed === angleColor){
 					// the first time we render a mesh we need to
 					// render it with the material that takes the
 					// bigger buffer space, see:
