@@ -230,8 +230,8 @@
 		var scaledBackgroundHeight;
 		var repaintBackroundEveryFrame = true;
 		var fullScreenifyBackground = true;
-		var animationModeValue = 0;
-		var previousAnimationModeValue = 0;
+		var animationStyleValue = 0;
+		var previousanimationStyleValue = 0;
 		var currentGradientStackValue = '';
 		var previousGradientStackValue = 0;
 		var blendAmount = 0;
@@ -1568,7 +1568,7 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/noFill(\s)+/g, ";noFill$1" );
         elaboratedSource =  elaboratedSource.replace(/stroke(\s)+/g, ";stroke$1" );
         elaboratedSource =  elaboratedSource.replace(/noStroke(\s)+/g, ";noStroke$1" );
-        elaboratedSource =  elaboratedSource.replace(/animationMode(\s)+/g, ";animationMode$1" );
+        elaboratedSource =  elaboratedSource.replace(/animationStyle(\s)+/g, ";animationStyle$1" );
         elaboratedSource =  elaboratedSource.replace(/simpleGradient(\s)+/g, ";simpleGradient$1" );
         elaboratedSource =  elaboratedSource.replace(/background(\s)+/g, ";background$1" );
         elaboratedSource =  elaboratedSource.replace(/color(\s)+/g, ";color$1" );
@@ -1638,7 +1638,7 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "noFill" ||
 			  usedMethods[scanningUsedMethods] === "stroke" ||
 			  usedMethods[scanningUsedMethods] === "noStroke" ||
-			  usedMethods[scanningUsedMethods] === "animationMode" ||
+			  usedMethods[scanningUsedMethods] === "animationStyle" ||
 			  usedMethods[scanningUsedMethods] === "background" ||
 			  usedMethods[scanningUsedMethods] === "simpleGradient" ||
 			  usedMethods[scanningUsedMethods] === "color" ||
@@ -1815,10 +1815,10 @@ function background(red, green, blue) {
 			  noLights();
 			  usedLines = 0;
 			  usedRectangles = 0;
-			  animationModeValue = normal;
+			  animationStyleValue = normal;
 			  resetGradientStack();
 			  draw();
-			  animationModeUpdateIfChanged();
+			  animationStyleUpdateIfChanged();
 			  simpleGradientUpdateIfChanged();
 			  frame++;
 			  consecutiveFramesWithoutRunTimeError++;
@@ -2382,19 +2382,19 @@ scale = function(a, b, c) {
   }
 
 
-  animationMode = function(a) {
+  animationStyle = function(a) {
   	// turns out when you type normal that the first two letters "no"
   	// are sent as "false"
     if (a===false) return;
   	if (a===undefined) return;
-  	animationModeValue = a;
+  	animationStyleValue = a;
   }
 
 
-  animationModeUpdateIfChanged = function() {
+  animationStyleUpdateIfChanged = function() {
   	//alert("actual called " + a);
 
-	if ((animationModeValue !== previousAnimationModeValue) ) {
+	if ((animationStyleValue !== previousanimationStyleValue) ) {
   		//alert("actual changed!");
   	}
   	else {
@@ -2402,28 +2402,28 @@ scale = function(a, b, c) {
   		return;
   	}
 
-  	previousAnimationModeValue = animationModeValue;
+  	previousanimationStyleValue = animationStyleValue;
   	
-  	if (isWebGLUsed && animationModeValue === motionBlur) {
+  	if (isWebGLUsed && animationStyleValue === motionBlur) {
   		effectBlend.uniforms[ 'mixRatio' ].value = 0.7;
   	}
-  	else if (!isWebGLUsed && animationModeValue === motionBlur) {
+  	else if (!isWebGLUsed && animationStyleValue === motionBlur) {
   		blendAmount = 0.6;
   		//alert('motion blur canvas');
   	}
 
-  	if (isWebGLUsed && animationModeValue === paintOver) {
+  	if (isWebGLUsed && animationStyleValue === paintOver) {
   		effectBlend.uniforms[ 'mixRatio' ].value = 1;
   	}
-  	else if (!isWebGLUsed && animationModeValue === paintOver) {
+  	else if (!isWebGLUsed && animationStyleValue === paintOver) {
   		blendAmount = 1;
   		//alert('paintOver canvas');
   	}
 
-  	if (isWebGLUsed && animationModeValue === normal) {
+  	if (isWebGLUsed && animationStyleValue === normal) {
   		effectBlend.uniforms[ 'mixRatio' ].value = 0;
   	}
-  	else if (!isWebGLUsed && animationModeValue === normal) {
+  	else if (!isWebGLUsed && animationStyleValue === normal) {
   		blendAmount = 0;
   		//alert('normal canvas');
   	}
@@ -2741,7 +2741,7 @@ var matrixesExample = ""+
 ""+		"line";
 
 var diceExample = ""+
-""+		"animationMode motionBlur\n"+
+""+		"animationStyle motionBlur\n"+
 ""+		"simpleGradient color(255),color(255,255,0),color(255,255,0)\n"+
 ""+		"stroke 255,100,100,255\n"+
 ""+		"fill 255,0,0,155\n"+
@@ -2760,8 +2760,8 @@ var nuclearOctopusExample = ""+
 ""+		"scale 0.2\n"+
 ""+		"translate 3\n"+
 ""+		"rotate frame/90\n"+
-""+		"animationMode motionBlur\n"+
-""+		"//animationMode paintOver\n"+
+""+		"animationStyle motionBlur\n"+
+""+		"//animationStyle paintOver\n"+
 ""+		"stroke 255,0,0,120\n"+
 ""+		"fill frame*10%255,0,0\n"+
 ""+		"pushMatrix\n"+
