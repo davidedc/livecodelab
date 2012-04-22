@@ -199,9 +199,13 @@
 		var linesPool = [];
 		var rectanglesPool = [];
 		var boxesPool = [];
+		var ambientLightsPool = [];
+		var pointLightsPool = [];
 		var usedLines = 0;
 		var usedRectangles = 0;
 		var usedBoxes = 0;
+		var usedAmbientLights = 0;
+		var usedPointLights = 0;
 		var cubeGeometry = new THREE.CubeGeometry(1,1,1);
 		var planeGeometry = new THREE.PlaneGeometry(1,1);
 		var lineGeometry = new THREE.Geometry();
@@ -853,10 +857,13 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
 
     var currentFillAlpha = 1;
     var currentFillColor = 0xFFFFFF;
+    var defaultNormalFill = true;
+    var defaultNormalStroke = true;
 	// lowest than any 32 bit color is a special
 	// color that paints based on normals.
     var angleColor = -16777217;
     fill = function() {
+    	defaultNormalFill = false;
       var c = color(arguments[0], arguments[1], arguments[2], arguments[3]);
       var crgb;
       var ca;
@@ -930,6 +937,7 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
 	var currentStrokeAlpha = 1;
     var currentStrokeColor = 0x000000;
     var stroke = function() {
+    defaultNormalStroke = false;
       var c = color(arguments[0], arguments[1], arguments[2], arguments[3]);
       var crgb;
       var ca;
@@ -1061,8 +1069,8 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
 			// temporarily, add a light
 
 			// add subtle ambient lighting
-			var ambientLight = new THREE.AmbientLight(0xFF0000);
-			scene.add(ambientLight);
+			//var ambientLight = new THREE.AmbientLight(0xFF0000);
+			//scene.add(ambientLight);
         
 			// create a point light
 			var pointLight = new THREE.PointLight(0xFFFFFF);
@@ -1210,6 +1218,15 @@ function combDisplayList() {
 				if (usedBoxes > 0) {
 					sceneObject.visible = true;
 					usedBoxes--;
+				}
+				else {
+					sceneObject.visible = false;
+				}
+			}
+			else if (sceneObject.isAmbientLight){
+				if (usedAmbientLights > 0) {
+					sceneObject.visible = true;
+					usedAmbientLights--;
 				}
 				else {
 					sceneObject.visible = false;
@@ -1572,11 +1589,13 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/simpleGradient(\s)+/g, ";simpleGradient$1" );
         elaboratedSource =  elaboratedSource.replace(/background(\s)+/g, ";background$1" );
         elaboratedSource =  elaboratedSource.replace(/color(\s)+/g, ";color$1" );
-        elaboratedSource =  elaboratedSource.replace(/ambient(\s)+/g, ";ambient$1" );
-        elaboratedSource =  elaboratedSource.replace(/reflect(\s)+/g, ";reflect$1" );
-        elaboratedSource =  elaboratedSource.replace(/refract(\s)+/g, ";refract$1" );
+        //elaboratedSource =  elaboratedSource.replace(/ambient(\s)+/g, ";ambient$1" );
+        //elaboratedSource =  elaboratedSource.replace(/reflect(\s)+/g, ";reflect$1" );
+        //elaboratedSource =  elaboratedSource.replace(/refract(\s)+/g, ";refract$1" );
         elaboratedSource =  elaboratedSource.replace(/lights(\s)+/g, ";lights$1" );
         elaboratedSource =  elaboratedSource.replace(/noLights(\s)+/g, ";noLights$1" );
+        elaboratedSource =  elaboratedSource.replace(/ambientLight(\s)+/g, ";ambientLight$1" );
+        elaboratedSource =  elaboratedSource.replace(/pointLight(\s)+/g, ";pointLight$1" );
 
         // the semicolon mangles the first line of the function definitions
         // coffeescript doesn't like that
@@ -1642,11 +1661,13 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "background" ||
 			  usedMethods[scanningUsedMethods] === "simpleGradient" ||
 			  usedMethods[scanningUsedMethods] === "color" ||
-			  usedMethods[scanningUsedMethods] === "ambient" ||
-			  usedMethods[scanningUsedMethods] === "reflect" ||
-			  usedMethods[scanningUsedMethods] === "refract" ||
+			  //usedMethods[scanningUsedMethods] === "ambient" ||
+			  //usedMethods[scanningUsedMethods] === "reflect" ||
+			  //usedMethods[scanningUsedMethods] === "refract" ||
 			  usedMethods[scanningUsedMethods] === "lights" ||
 			  usedMethods[scanningUsedMethods] === "noLights" ||
+			  usedMethods[scanningUsedMethods] === "ambientLight" ||
+			  usedMethods[scanningUsedMethods] === "pointLight" ||
 			  false
 		  ){
 		  	continue;
@@ -1820,11 +1841,16 @@ function background(red, green, blue) {
 				  millisecs = d.getTime() - millisecsAtStart;
 			  }
 			  doLNOnce = [];
-			  fill(angleColor);
-			  stroke(angleColor);
+			  fill(0xFFFFFFFF);
+			  stroke(0xFF000000);
+ 			 defaultNormalFill = true;
+ 			 defaultNormalStroke = true;
 			  noLights();
 			  usedLines = 0;
 			  usedRectangles = 0;
+			  usedBoxes = 0;
+			  usedAmbientLights = 0;
+			  usedPointLights = 0;
 			  animationStyleValue = normal;
 			  resetGradientStack();
 			  draw();
@@ -2088,6 +2114,8 @@ scale = function(a, b, c) {
       mesh.isLine = true;
       mesh.isMesh = false;
       mesh.isBox = false;
+      mesh.isAmbientLight = false;
+      mesh.isPointLight = false;
       linesPool.push(mesh);
       scene.add(mesh);
     }
@@ -2126,19 +2154,25 @@ scale = function(a, b, c) {
 
   }
 
-  var ambientColor = color(255,0,0);
-  ambient = function(a) {
-  	ambientColor = a;
-  }
+	// ambientColor is always white
+	// because it needs to reflect what the
+	// ambient light color is
+	// I tried to set the ambientColor directly
+	// but it doesn't work. It needs to be white so
+	// that the tint of the ambientLight is shown. 
+  var ambientColor = color(255,255,255);
+  //ambient = function(a) {
+  	//ambientColor = a;
+  //}
 
   var reflectValue = 1;
-  reflect = function(a) {
-	  reflectValue = a;
-  }
+  //reflect = function(a) {
+	//  reflectValue = a;
+  //}
   var refractValue = 0.98;
-  refract = function(a) {
-	  refractValue = a;
-  }
+  //refract = function(a) {
+	//  refractValue = a;
+  //}
   var lightsAreOn = false;
   lights = function() {
 	  lightsAreOn = true;
@@ -2221,7 +2255,26 @@ scale = function(a, b, c) {
 			  newRectCreated = true;
 			  rectanglesPool.push(pooledRectangle);
 			}
-				if (pooledRectangle.neverUsed || colorToBeUsed === angleColor){
+			var applyDefaultNormalColor = false;
+			if (!strokeTime) {
+				if (defaultNormalFill) {
+					applyDefaultNormalColor = true;
+				}
+				else {
+					applyDefaultNormalColor = false;
+				}
+			}
+			else {
+				if (defaultNormalStroke) {
+					applyDefaultNormalColor = true;
+				}
+				else {
+					applyDefaultNormalColor = false;
+				}
+			}
+				//console.log("rect: default normal color: " + applyDefaultNormalColor);
+				//console.log("rect: alphaToBeUsed: " + alphaToBeUsed);
+				if (pooledRectangle.neverUsed || (colorToBeUsed === angleColor || applyDefaultNormalColor)){
 					// the first time we render a mesh we need to
 					// render it with the material that takes the
 					// bigger buffer space, see:
@@ -2249,6 +2302,7 @@ scale = function(a, b, c) {
 						pooledRectangle.mesh.material = pooledRectangle.normalMaterial;
 					}				}
 				else if (!lightsAreOn){
+					console.log("rect: lights are not on");
 					if (pooledRectangle.basicMaterial === undefined) {
 						pooledRectangle.basicMaterial = new THREE.MeshBasicMaterial({
 							color: colorToBeUsed,
@@ -2272,6 +2326,7 @@ scale = function(a, b, c) {
 				}
 				// lights are on
 				else {
+					//console.log("rect: lights are on");
 					if (pooledRectangle.lambertMaterial === undefined) {
 					  //console.log("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
 					  pooledRectangle.lambertMaterial = new THREE.MeshLambertMaterial({
@@ -2303,6 +2358,8 @@ scale = function(a, b, c) {
 			pooledRectangle.mesh.isLine = false;
 			pooledRectangle.mesh.isMesh = true;
 			pooledRectangle.mesh.isBox = false;
+			pooledRectangle.mesh.isAmbientLight = false;
+			pooledRectangle.mesh.isPointLight = false;
 			pooledRectangle.mesh.doubleSided = true;
 			
 			
@@ -2321,6 +2378,55 @@ scale = function(a, b, c) {
     
   }
 
+  ambientLight = function() {
+  	
+	var colorToBeUsed;
+	if (arguments[0] === undefined) {
+		// empty arguments gives some sort
+		// of grey ambient light.
+		// black is too stark and white
+		// doesn't show the effect with the
+		// default white fill
+		colorToBeUsed = color$1(125);
+	}
+	else  {
+		colorToBeUsed = color(arguments[0], arguments[1], arguments[2], arguments[3]);
+	}
+	
+	var newLightCreated = false;
+	lightsAreOn = true;
+    defaultNormalFill = false;
+    defaultNormalStroke = false;
+	
+			var pooledAmbientLight = ambientLightsPool[usedAmbientLights];
+			if ( pooledAmbientLight === undefined){
+			  //console.log('no ambientLight in pool, creating one');
+			  pooledAmbientLight = new THREE.AmbientLight(colorToBeUsed);
+			  newLightCreated = true;
+			  ambientLightsPool.push(pooledAmbientLight);
+			}
+			else {
+    			pooledAmbientLight.color.setHex(colorToBeUsed);
+			    //console.log('existing ambientLight in pool, setting color: ' + pooledAmbientLight.color.r + ' ' + pooledAmbientLight.color.g + ' ' + pooledAmbientLight.color.b);
+			}
+
+			
+			pooledAmbientLight.isLine = false;
+			pooledAmbientLight.isMesh = false;
+			pooledAmbientLight.isBox = false;
+			pooledAmbientLight.isAmbientLight = true;
+			pooledAmbientLight.isPointLight = false;
+			
+			
+			usedAmbientLights++;
+			pooledAmbientLight.matrixAutoUpdate = false;
+			pooledAmbientLight.matrix.copy(worldMatrix);
+			pooledAmbientLight.matrixWorldNeedsUpdate = true;
+
+			if (newLightCreated) scene.add(pooledAmbientLight);
+
+    
+  }
   var gradStack = [];
 
   resetGradientStack = function() {
@@ -2524,7 +2630,24 @@ scale = function(a, b, c) {
 			  newBoxCreated = true;
 			  boxesPool.push(pooledBox);
 			}
-				if (pooledBox.neverUsed || colorToBeUsed === angleColor){
+			var applyDefaultNormalColor = false;
+			if (!strokeTime) {
+				if (defaultNormalFill) {
+					applyDefaultNormalColor = true;
+				}
+				else {
+					applyDefaultNormalColor = false;
+				}
+			}
+			else {
+				if (defaultNormalStroke) {
+					applyDefaultNormalColor = true;
+				}
+				else {
+					applyDefaultNormalColor = false;
+				}
+			}
+				if (pooledBox.neverUsed || (colorToBeUsed === angleColor || applyDefaultNormalColor)){
 					// the first time we render a mesh we need to
 					// render it with the material that takes the
 					// bigger buffer space, see:
@@ -2606,6 +2729,8 @@ scale = function(a, b, c) {
 			pooledBox.mesh.isLine = false;
 			pooledBox.mesh.isMesh = false;
 			pooledBox.mesh.isBox = true;
+			pooledBox.mesh.isAmbientLight = false;
+			pooledBox.mesh.isPointLight = false;
 			pooledBox.mesh.doubleSided = false;
 			
 						
