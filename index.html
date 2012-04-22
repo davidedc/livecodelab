@@ -1222,7 +1222,7 @@ function combDisplayList() {
 					sceneObject.visible = false;
 				}
 			}
-			else if (sceneObject.isMesh){
+			else if (sceneObject.isRectangle){
 				if (usedRectangles > 0) {
 					sceneObject.visible = true;
 					usedRectangles--;
@@ -2159,7 +2159,7 @@ scale = function(a, b, c) {
 
       mesh = new THREE.Line(lineGeometry, lineBasicMaterialCOL);
       mesh.isLine = true;
-      mesh.isMesh = false;
+      mesh.isRectangle = false;
       mesh.isBox = false;
       mesh.isAmbientLight = false;
       mesh.isPointLight = false;
@@ -2408,7 +2408,7 @@ scale = function(a, b, c) {
 			}
 			
 			pooledRectangle.mesh.isLine = false;
-			pooledRectangle.mesh.isMesh = true;
+			pooledRectangle.mesh.isRectangle = true;
 			pooledRectangle.mesh.isBox = false;
 			pooledRectangle.mesh.isAmbientLight = false;
 			pooledRectangle.mesh.isPointLight = false;
@@ -2465,7 +2465,7 @@ scale = function(a, b, c) {
 
 			
 			pooledAmbientLight.isLine = false;
-			pooledAmbientLight.isMesh = false;
+			pooledAmbientLight.isRectangle = false;
 			pooledAmbientLight.isBox = false;
 			pooledAmbientLight.isAmbientLight = true;
 			pooledAmbientLight.isPointLight = false;
@@ -2785,7 +2785,7 @@ scale = function(a, b, c) {
 			}
 			
 			pooledBox.mesh.isLine = false;
-			pooledBox.mesh.isMesh = false;
+			pooledBox.mesh.isRectangle = false;
 			pooledBox.mesh.isBox = true;
 			pooledBox.mesh.isAmbientLight = false;
 			pooledBox.mesh.isPointLight = false;
@@ -3020,7 +3020,7 @@ scale = function(a, b, c) {
 			}
 			
 			pooledSphere.mesh.isLine = false;
-			pooledSphere.mesh.isMesh = false;
+			pooledSphere.mesh.isRectangle = false;
 			pooledSphere.mesh.isBox = false;
 			pooledSphere.mesh.isAmbientLight = false;
 			pooledSphere.mesh.isPointLight = false;
