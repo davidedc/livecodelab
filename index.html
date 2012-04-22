@@ -199,6 +199,9 @@
 		var linesPool = [];
 		var rectanglesPool = [];
 		var boxesPool = [];
+		// spheres can have different geometries
+		var spheresPool = {};
+		var sphereGeometriesPool = {};
 		var ambientLightsPool = [];
 		var pointLightsPool = [];
 		var usedLines = 0;
@@ -206,6 +209,9 @@
 		var usedBoxes = 0;
 		var usedAmbientLights = 0;
 		var usedPointLights = 0;
+		var usedSpheres = {};
+		var sphereDefaultDetLevel;
+		var sphereDetLevel;
 		var cubeGeometry = new THREE.CubeGeometry(1,1,1);
 		var planeGeometry = new THREE.PlaneGeometry(1,1);
 		var lineGeometry = new THREE.Geometry();
@@ -869,6 +875,10 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
       var ca;
       //console.log("fillColor: "+c);
       if (c === angleColor) {
+      	// this is so we can do a smart optimisation later
+      	// and not draw the wireframe is it happens to be the same color as
+      	// the fill
+	      defaultNormalFill = true;
       	//console.log("yes it's normal color ");
       	crgb = c;
       	if (arguments[1] !== undefined) {
@@ -942,6 +952,10 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
       var crgb;
       var ca;
 		if (c === angleColor) {
+      	// this is so we can do a smart optimisation later
+      	// and not draw the wireframe is it happens to be the same color as
+      	// the fill
+	      defaultNormalStroke = true;
 			//console.log("yes it's normal color ");
 			crgb = c;
 			if (arguments[1] !== undefined) {
@@ -984,6 +998,7 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
 
 			if( Detector.webgl && !forceCanvasRenderer ){
 
+				sphereDefaultDetLevel = 16;
 				sceneRenderingCanvas = document.createElement('canvas');
 				
 				renderer = new THREE.WebGLRenderer({
@@ -1013,6 +1028,8 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
 			
 			
 			 // we always draw the 3d scene off-screen
+				
+				sphereDefaultDetLevel = 2;
 				sceneRenderingCanvas = document.createElement('canvas');
 				sceneRenderingCanvasContext = sceneRenderingCanvas.getContext('2d');
 				renderer	= new THREE.CanvasRenderer({
@@ -1227,6 +1244,15 @@ function combDisplayList() {
 				if (usedAmbientLights > 0) {
 					sceneObject.visible = true;
 					usedAmbientLights--;
+				}
+				else {
+					sceneObject.visible = false;
+				}
+			}
+			else if (sceneObject.isSphere !== 0){
+				if (usedSpheres[''+sceneObject.isSphere] > 0) {
+					sceneObject.visible = true;
+					usedSpheres[''+sceneObject.isSphere] = usedSpheres[''+sceneObject.isSphere]-1;
 				}
 				else {
 					sceneObject.visible = false;
@@ -1596,6 +1622,8 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/noLights(\s)+/g, ";noLights$1" );
         elaboratedSource =  elaboratedSource.replace(/ambientLight(\s)+/g, ";ambientLight$1" );
         elaboratedSource =  elaboratedSource.replace(/pointLight(\s)+/g, ";pointLight$1" );
+        elaboratedSource =  elaboratedSource.replace(/sphere(\s)+/g, ";sphere$1" );
+        elaboratedSource =  elaboratedSource.replace(/sphereDetail(\s)+/g, ";sphereDetail$1" );
 
         // the semicolon mangles the first line of the function definitions
         // coffeescript doesn't like that
@@ -1668,6 +1696,8 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "noLights" ||
 			  usedMethods[scanningUsedMethods] === "ambientLight" ||
 			  usedMethods[scanningUsedMethods] === "pointLight" ||
+			  usedMethods[scanningUsedMethods] === "sphere" ||
+			  usedMethods[scanningUsedMethods] === "sphereDetail" ||
 			  false
 		  ){
 		  	continue;
@@ -1845,12 +1875,21 @@ function background(red, green, blue) {
 			  stroke(0xFF000000);
  			 defaultNormalFill = true;
  			 defaultNormalStroke = true;
+ 			 sphereDetLevel = sphereDefaultDetLevel;
 			  noLights();
 			  usedLines = 0;
 			  usedRectangles = 0;
 			  usedBoxes = 0;
 			  usedAmbientLights = 0;
 			  usedPointLights = 0;
+			  // In theory there is no need to chuck away the
+			  // counter altogether, you could go through
+			  // the existing counters contained in this object
+			  // (one for each sphere detail ever used)
+			  // and set it to zero. That would maybe save
+			  // some garbage collection time.
+			  // But it's probably not worth it...
+			  usedSpheres = {};
 			  animationStyleValue = normal;
 			  resetGradientStack();
 			  draw();
@@ -2124,6 +2163,7 @@ scale = function(a, b, c) {
       mesh.isBox = false;
       mesh.isAmbientLight = false;
       mesh.isPointLight = false;
+      mesh.isSphere = 0;
       linesPool.push(mesh);
       scene.add(mesh);
     }
@@ -2199,7 +2239,10 @@ scale = function(a, b, c) {
   	if (!doFill && !doStroke) {
   		return;
   	}
-  	else if (doFill && !doStroke) {
+  	// if the wireframe is not going to be visible on top of the
+  	// fill then don't draw it
+  	else if ((doFill && (!doStroke || (!defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (defaultNormalFill && defaultNormalStroke)) {
+  		//if (doStroke) console.log('smart optimisation, was supposed to do the stroke but not doing it!!');
   		startIndex = 0;
   		endIndex = 1;
   	}
@@ -2368,6 +2411,7 @@ scale = function(a, b, c) {
 			pooledRectangle.mesh.isBox = false;
 			pooledRectangle.mesh.isAmbientLight = false;
 			pooledRectangle.mesh.isPointLight = false;
+			pooledRectangle.mesh.isSphere = 0;
 			pooledRectangle.mesh.doubleSided = true;
 			
 			
@@ -2424,6 +2468,7 @@ scale = function(a, b, c) {
 			pooledAmbientLight.isBox = false;
 			pooledAmbientLight.isAmbientLight = true;
 			pooledAmbientLight.isPointLight = false;
+			pooledAmbientLight.isSphere = 0;
 			
 			
 			usedAmbientLights++;
@@ -2572,7 +2617,10 @@ scale = function(a, b, c) {
   	if (!doFill && !doStroke) {
   		return;
   	}
-  	else if (doFill && !doStroke) {
+  	// if the wireframe is not going to be visible on top of the
+  	// fill then don't draw it
+  	else if ((doFill && (!doStroke || (!defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (defaultNormalFill && defaultNormalStroke)) {
+  		//if (doStroke) console.log('smart optimisation, was supposed to do the stroke but not doing it!!');
   		startIndex = 0;
   		endIndex = 1;
   	}
@@ -2739,6 +2787,7 @@ scale = function(a, b, c) {
 			pooledBox.mesh.isBox = true;
 			pooledBox.mesh.isAmbientLight = false;
 			pooledBox.mesh.isPointLight = false;
+			pooledBox.mesh.isSphere = 0;
 			pooledBox.mesh.doubleSided = false;
 			
 						
@@ -2757,6 +2806,240 @@ scale = function(a, b, c) {
 			}
 
 			if (newBoxCreated) scene.add(pooledBox.mesh);
+    }
+
+
+  }
+
+  sphereDetail = function(a) {
+	if (a === undefined) return;
+	if (a < 2) a = 2;
+	sphereDetLevel = a;
+  }
+
+  sphere = function(a) {
+	var pooledSphereGeometry;
+  	// simple case - if there is no fill and
+  	// no stroke then there is nothing to do.
+	var startIndex = 0;
+	var endIndex = 0;
+
+  	//console.log("fill: "+doFill+" stroke: "+doStroke+" fillCol " + currentFillColor + " stroke col " + currentStrokeColor + " fill alpha " + currentFillAlpha);
+  	if (!doFill && !doStroke) {
+  		return;
+  	}
+  	// if the wireframe is not going to be visible on top of the
+  	// fill then don't draw it
+  	else if ((doFill && (!doStroke || (!defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (defaultNormalFill && defaultNormalStroke)) {
+  		//if (doStroke) console.log('smart optimisation, was supposed to do the stroke but not doing it!!');
+  		startIndex = 0;
+  		endIndex = 1;
+  	}
+  	else if (!doFill && doStroke) {
+  		startIndex = 1;
+  		endIndex = 2;
+  	}
+  	else {
+  		startIndex = 0;
+  		endIndex = 2;
+  	}
+  	//console.log("si: " + startIndex + " endI: " + endIndex );
+
+  	if(a === undefined){
+  	  //alert('sphere!')
+  	  a=1;
+  	  }
+
+	var strokeTime = false;
+	var colorToBeUsed;
+	var alphaToBeUsed;
+	var newSphereCreated = false;
+	
+
+	// this is to run the code twice. This should be neater
+	// and turned into a function call really.
+	for (var fillAndStroke = startIndex; fillAndStroke < endIndex; fillAndStroke++) {
+		if (fillAndStroke === 1) {
+			strokeTime = true;
+			colorToBeUsed = currentStrokeColor;
+			alphaToBeUsed = currentStrokeAlpha;
+		}
+		else {
+			colorToBeUsed = currentFillColor;
+			alphaToBeUsed = currentFillAlpha;
+		}
+			if (spheresPool[''+sphereDetLevel] === undefined) {
+				spheresPool[''+sphereDetLevel] = [];
+				//console.log('creating pool for sphere det level ' + sphereDetLevel);
+			}
+			if (usedSpheres[''+sphereDetLevel] === undefined) {
+				usedSpheres[''+sphereDetLevel] = 0;
+				//console.log('creating counter for sphere det level ' + sphereDetLevel);
+			}
+			var pooledSphere = spheresPool[''+sphereDetLevel][usedSpheres[''+sphereDetLevel]];
+			if ( pooledSphere === undefined){
+			  // each pooled sphere contains a geometry,
+			  // a basic material and a lambert material.
+			  pooledSphere = {
+					basicMaterial: undefined,
+					lambertMaterial: undefined,
+					normalMaterial: undefined,
+					// the first time we render a mesh we need to
+					// render it with the material that takes the
+					// bigger buffer space, otherwise the
+					// more complicated materials won't show
+					// up, see:
+					// https://github.com/mrdoob/three.js/issues/1051
+					// so we always need to create a normalmaterial
+					// and render that material first, in case
+					// the user will ever want to use it.
+					// Another workaround would be to create a mesh
+					// for each different type of material
+					neverUsed: true,
+					mesh: undefined
+			  };
+			  newSphereCreated = true;
+			  spheresPool[''+sphereDetLevel].push(pooledSphere);
+			  //console.log('making space for pool for sphere , size of pool for spheres of detail ' + sphereDetLevel + ' is ' + spheresPool[''+sphereDetLevel].length);
+			}
+			var applyDefaultNormalColor = false;
+			if (!strokeTime) {
+				if (defaultNormalFill) {
+					applyDefaultNormalColor = true;
+				}
+				else {
+					applyDefaultNormalColor = false;
+				}
+			}
+			else {
+				if (defaultNormalStroke) {
+					applyDefaultNormalColor = true;
+				}
+				else {
+					applyDefaultNormalColor = false;
+				}
+			}
+				if (pooledSphere.neverUsed || (colorToBeUsed === angleColor || applyDefaultNormalColor)){
+					// the first time we render a mesh we need to
+					// render it with the material that takes the
+					// bigger buffer space, see:
+					// https://github.com/mrdoob/three.js/issues/1051
+					// Another workaround would be to create a mesh
+					// for each different type of material
+					pooledSphere.neverUsed = false;
+					if (pooledSphere.normalMaterial === undefined) {
+						//console.log("creating normal material");
+						pooledSphere.normalMaterial = new THREE.MeshNormalMaterial({
+							opacity: alphaToBeUsed,
+							wireframe: strokeTime,
+						});
+					}
+					else {
+						pooledSphere.normalMaterial.opacity = alphaToBeUsed;
+						pooledSphere.normalMaterial.wireframe = strokeTime;
+						pooledSphere.normalMaterial.doubleSided = false;
+					}
+					if (pooledSphere.mesh === undefined){
+						pooledSphereGeometry = sphereGeometriesPool[''+sphereDetLevel];
+						if ( pooledSphereGeometry === undefined) {
+							pooledSphereGeometry = new THREE.SphereGeometry(1,sphereDetLevel,sphereDetLevel);
+							sphereGeometriesPool[''+sphereDetLevel] = pooledSphereGeometry;
+							//console.log('creating sphere geometry of detail ' + sphereDetLevel);
+						}
+						pooledSphere.mesh = new THREE.Mesh(pooledSphereGeometry, pooledSphere.normalMaterial);
+					}
+					else {
+						//console.log("associating normal material to existing mesh");
+						pooledSphere.mesh.material = pooledSphere.normalMaterial;
+					}				}
+				else if (!lightsAreOn){
+					if (pooledSphere.basicMaterial === undefined) {
+						pooledSphere.basicMaterial = new THREE.MeshBasicMaterial({
+							color: colorToBeUsed,
+							opacity: alphaToBeUsed,
+							wireframe: strokeTime,
+						});
+					}
+					else {
+						pooledSphere.basicMaterial.color.setHex(colorToBeUsed);
+						pooledSphere.basicMaterial.opacity = alphaToBeUsed;
+						pooledSphere.basicMaterial.wireframe = strokeTime;
+						pooledSphere.basicMaterial.doubleSided = false;
+					}
+					if (pooledSphere.mesh === undefined){
+						pooledSphereGeometry = sphereGeometriesPool[''+sphereDetLevel];
+						if ( pooledSphereGeometry === undefined) {
+							pooledSphereGeometry = new THREE.SphereGeometry(1,sphereDetLevel,sphereDetLevel);
+							sphereGeometriesPool[''+sphereDetLevel] = pooledSphereGeometry;
+							//console.log('creating sphere geometry of detail ' + sphereDetLevel);
+						}
+						pooledSphere.mesh = new THREE.Mesh(pooledSphereGeometry, pooledSphere.basicMaterial);
+					}
+					else {
+						pooledSphere.mesh.material = pooledSphere.basicMaterial;
+					}
+
+				}
+				// lights are on
+				else {
+					if (pooledSphere.lambertMaterial === undefined) {
+					  //console.log("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
+					  pooledSphere.lambertMaterial = new THREE.MeshLambertMaterial({
+							color: colorToBeUsed,
+							opacity: alphaToBeUsed,
+							ambient: ambientColor,
+							reflectivity: reflectValue,
+							refractionRatio: refractValue,
+							wireframe: strokeTime,
+						});
+					}
+					else {
+						pooledSphere.lambertMaterial.color.setHex(colorToBeUsed);
+						pooledSphere.lambertMaterial.opacity = alphaToBeUsed;
+						pooledSphere.lambertMaterial.wireframe = strokeTime;
+						pooledSphere.lambertMaterial.doubleSided = false;
+						pooledSphere.lambertMaterial.ambient.setHex(ambientColor);
+						pooledSphere.lambertMaterial.reflectivity = reflectValue;
+						pooledSphere.lambertMaterial.refractionRatio = refractValue;
+					}
+					if (pooledSphere.mesh === undefined){
+						pooledSphereGeometry = sphereGeometriesPool[''+sphereDetLevel];
+						if ( pooledSphereGeometry === undefined) {
+							pooledSphereGeometry = new THREE.SphereGeometry(1,sphereDetLevel,sphereDetLevel);
+							sphereGeometriesPool[''+sphereDetLevel] = pooledSphereGeometry;
+							//console.log('creating sphere geometry of detail ' + sphereDetLevel);
+						}
+						pooledSphere.mesh = new THREE.Mesh(pooledSphereGeometry, pooledSphere.lambertMaterial);
+					}
+					else {
+						pooledSphere.mesh.material = pooledSphere.lambertMaterial;
+					}
+			}
+			
+			pooledSphere.mesh.isLine = false;
+			pooledSphere.mesh.isMesh = false;
+			pooledSphere.mesh.isBox = false;
+			pooledSphere.mesh.isAmbientLight = false;
+			pooledSphere.mesh.isPointLight = false;
+			pooledSphere.mesh.isSphere = sphereDetLevel;
+			pooledSphere.mesh.doubleSided = false;
+			
+						
+			usedSpheres[''+sphereDetLevel] = usedSpheres[''+sphereDetLevel]+1;
+			pooledSphere.mesh.matrixAutoUpdate = false;
+			pooledSphere.mesh.matrix.copy(worldMatrix);
+			pooledSphere.mesh.matrixWorldNeedsUpdate = true;
+
+			// TODO: meshes should be built from geometries that are
+			// ever so slight larger than the "fill" mesh so there
+			// is no z-fighting...
+			// constant 0.001 below is to avoid z-fighting
+			if( a !== 1){
+				if (! strokeTime) pooledSphere.mesh.matrix.scale(new THREE.Vector3(a,a,a));
+				else pooledSphere.mesh.matrix.scale(new THREE.Vector3(a+0.001,a+0.001,a+0.001));
+			}
+
+			if (newSphereCreated) scene.add(pooledSphere.mesh);
     }
 
 
