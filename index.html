@@ -2351,7 +2351,8 @@ scale = function(a, b, c) {
 					else {
 						//console.log("associating normal material to existing mesh");
 						pooledRectangle.mesh.material = pooledRectangle.normalMaterial;
-					}				}
+					}
+				}
 				else if (!lightsAreOn){
 					console.log("rect: lights are not on");
 					if (pooledRectangle.basicMaterial === undefined) {
@@ -2729,7 +2730,8 @@ scale = function(a, b, c) {
 					else {
 						//console.log("associating normal material to existing mesh");
 						pooledBox.mesh.material = pooledBox.normalMaterial;
-					}				}
+					}
+				}
 				else if (!lightsAreOn){
 					if (pooledBox.basicMaterial === undefined) {
 						pooledBox.basicMaterial = new THREE.MeshBasicMaterial({
@@ -2951,7 +2953,8 @@ scale = function(a, b, c) {
 					else {
 						//console.log("associating normal material to existing mesh");
 						pooledSphere.mesh.material = pooledSphere.normalMaterial;
-					}				}
+					}
+				}
 				else if (!lightsAreOn){
 					if (pooledSphere.basicMaterial === undefined) {
 						pooledSphere.basicMaterial = new THREE.MeshBasicMaterial({
