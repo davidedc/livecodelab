@@ -1570,6 +1570,7 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/noStroke(\s)+/g, ";noStroke$1" );
         elaboratedSource =  elaboratedSource.replace(/animationMode(\s)+/g, ";animationMode$1" );
         elaboratedSource =  elaboratedSource.replace(/simpleGradient(\s)+/g, ";simpleGradient$1" );
+        elaboratedSource =  elaboratedSource.replace(/background(\s)+/g, ";background$1" );
         elaboratedSource =  elaboratedSource.replace(/color(\s)+/g, ";color$1" );
         elaboratedSource =  elaboratedSource.replace(/ambient(\s)+/g, ";ambient$1" );
         elaboratedSource =  elaboratedSource.replace(/reflect(\s)+/g, ";reflect$1" );
@@ -1638,6 +1639,7 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "stroke" ||
 			  usedMethods[scanningUsedMethods] === "noStroke" ||
 			  usedMethods[scanningUsedMethods] === "animationMode" ||
+			  usedMethods[scanningUsedMethods] === "background" ||
 			  usedMethods[scanningUsedMethods] === "simpleGradient" ||
 			  usedMethods[scanningUsedMethods] === "color" ||
 			  usedMethods[scanningUsedMethods] === "ambient" ||
@@ -2314,14 +2316,31 @@ scale = function(a, b, c) {
 
   }
 
+  background = function() {
+    var a = color(arguments[0], arguments[1], arguments[2], arguments[3]);
+	//console.log("adding solid background to stack");
+  	//if (a===undefined) a = color(0);
+	currentGradientStackValue = currentGradientStackValue + " null null null null "+a+" ";
+	gradStack.push(
+		{
+			gradStacka: undefined,
+			gradStackb: undefined,
+			gradStackc: undefined,
+			gradStackd: undefined,
+			solid: a
+		}
+	);
+  }
+
   simpleGradient = function(a,b,c,d) {
-	currentGradientStackValue = currentGradientStackValue + ""+a+""+b+""+c+""+d;
+	currentGradientStackValue = currentGradientStackValue + " "+a+""+b+""+c+""+d+"null ";
 	gradStack.push(
 		{
 			gradStacka: a,
 			gradStackb: b,
 			gradStackc: c,
-			gradStackd: d
+			gradStackd: d,
+			solid: null
 		}
 	);
 	
@@ -2340,17 +2359,23 @@ scale = function(a, b, c) {
 				var diagonal = Math.sqrt(Math.pow(scaledBackgroundWidth/2,2)+ Math.pow( scaledBackgroundHeight/2,2));
 				var radgrad;
 				for (var scanningGradStack = 0; scanningGradStack < gradStack.length; scanningGradStack++) {
-					radgrad = backgroundSceneContext.createLinearGradient(scaledBackgroundWidth/2, 0, scaledBackgroundWidth/2, scaledBackgroundHeight);  
-					radgrad.addColorStop(0, color.toString(gradStack[scanningGradStack].gradStacka));  
-					radgrad.addColorStop(0.5, color.toString(gradStack[scanningGradStack].gradStackb));  
-					radgrad.addColorStop(1, color.toString(gradStack[scanningGradStack].gradStackc));    
 					
-					backgroundSceneContext.globalAlpha = 1.0;
-					backgroundSceneContext.fillStyle = radgrad;
-					backgroundSceneContext.beginPath();
-					backgroundSceneContext.rect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
-					backgroundSceneContext.closePath();
-					backgroundSceneContext.fill();
+					if (gradStack[scanningGradStack].gradStacka !== undefined){
+						radgrad = backgroundSceneContext.createLinearGradient(scaledBackgroundWidth/2, 0, scaledBackgroundWidth/2, scaledBackgroundHeight);  
+						radgrad.addColorStop(0, color.toString(gradStack[scanningGradStack].gradStacka));  
+						radgrad.addColorStop(0.5, color.toString(gradStack[scanningGradStack].gradStackb));  
+						radgrad.addColorStop(1, color.toString(gradStack[scanningGradStack].gradStackc));    
+						
+						backgroundSceneContext.globalAlpha = 1.0;
+						backgroundSceneContext.fillStyle = radgrad;
+						backgroundSceneContext.fillRect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
+					}
+					else {
+						//console.log("solid background: "+ gradStack[scanningGradStack].solid);
+						backgroundSceneContext.globalAlpha = 1.0;
+						backgroundSceneContext.fillStyle = color.toString(gradStack[scanningGradStack].solid);
+						backgroundSceneContext.fillRect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
+					}
 				}				
   	}
 
