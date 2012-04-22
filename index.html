@@ -865,9 +865,9 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
       	//console.log("yes it's normal color ");
       	crgb = c;
       	if (arguments[1] !== undefined) {
-      		console.log("passed alpha: " + arguments[1]);
+      		//console.log("passed alpha: " + arguments[1]);
       		ca = arguments[1] / colorModeA;
-      		console.log("calculated alpha: " + ca);
+      		//console.log("calculated alpha: " + ca);
       	}
       	else {
 	      	ca = 1;
@@ -2159,11 +2159,10 @@ scale = function(a, b, c) {
   	  b=a;
   	  }
   	
-	var pooledRectangleJustCreated = false;
-	
 	var strokeTime = false;
 	var colorToBeUsed;
 	var alphaToBeUsed;
+	var newRectCreated = false;
 	
 	// this is to run the code twice. This should be neater
 	// and turned into a function call really.
@@ -2199,6 +2198,7 @@ scale = function(a, b, c) {
 					neverUsed: true,
 					mesh: undefined
 			  };
+			  newRectCreated = true;
 			  rectanglesPool.push(pooledRectangle);
 			}
 				if (pooledRectangle.neverUsed || colorToBeUsed === angleColor){
@@ -2285,16 +2285,18 @@ scale = function(a, b, c) {
 			pooledRectangle.mesh.isBox = false;
 			pooledRectangle.mesh.doubleSided = true;
 			
-			if( a !== 1 || b !== 1){
-				pooledRectangle.mesh.mesh.matrix.scale(new THREE.Vector3(a,b,1));
-			}
-			
-			scene.add(pooledRectangle.mesh);
 			
 			usedRectangles++;
 			pooledRectangle.mesh.matrixAutoUpdate = false;
 			pooledRectangle.mesh.matrix.copy(worldMatrix);
 			pooledRectangle.mesh.matrixWorldNeedsUpdate = true;
+
+			if( a !== 1 || b !== 1){
+				pooledRectangle.mesh.matrix.scale(new THREE.Vector3(a,b,1));
+			}
+			
+			if (newRectCreated) scene.add(pooledRectangle.mesh);
+
     }
     
   }
@@ -2405,7 +2407,28 @@ scale = function(a, b, c) {
 
     
   box = function(a,b,c) {
-  	
+  	// simple case - if there is no fill and
+  	// no stroke then there is nothing to do.
+	var startIndex = 0;
+	var endIndex = 0;
+
+  	if (!doFill && !doStroke) {
+  		return;
+  	}
+  	else if (doFill && !doStroke) {
+  		startIndex = 0;
+  		endIndex = 1;
+  	}
+  	else if (!doFill && doStroke) {
+  		startIndex = 1;
+  		endIndex = 2;
+  	}
+  	else {
+  		startIndex = 0;
+  		endIndex = 2;
+  	}
+  	//console.log("si: " + startIndex + " endI: " + endIndex );
+
   	if(a === undefined){
   	  //alert('cube!')
   	  a=1; b=1; c=1;
@@ -2415,86 +2438,150 @@ scale = function(a, b, c) {
   	  b=a; c=a;
   	  }
 
-	if (doFill) {
-		var mesh = boxesPool[usedBoxes];
-		var rectMaterialCOL;
-		if ( mesh === undefined){
-		  rectMaterialCOL = new THREE.MeshBasicMaterial({
-				color: currentFillColor,
-				opacity: currentFillAlpha,
-			});
-		  mesh = new THREE.Mesh(cubeGeometry, rectMaterialCOL);
-		  mesh.isLine = false;
-		  mesh.isMesh = false;
-		  mesh.isBox = true;
-		  boxesPool.push(mesh);
-		  mesh.doubleSided = false;
-		  scene.add(mesh);
+	var strokeTime = false;
+	var colorToBeUsed;
+	var alphaToBeUsed;
+	var newBoxCreated = false;
+	
+
+	// this is to run the code twice. This should be neater
+	// and turned into a function call really.
+	for (var fillAndStroke = startIndex; fillAndStroke < endIndex; fillAndStroke++) {
+		if (fillAndStroke === 1) {
+			strokeTime = true;
+			colorToBeUsed = currentStrokeColor;
+			alphaToBeUsed = currentStrokeAlpha;
 		}
 		else {
-			mesh.material.color.setHex(currentFillColor);
-			mesh.material.opacity = currentFillAlpha;
-			mesh.material.wireframe = false;
-			mesh.doubleSided = false;
+			colorToBeUsed = currentFillColor;
+			alphaToBeUsed = currentFillAlpha;
 		}
-		usedBoxes++;
-		mesh.matrixAutoUpdate = false;
-		mesh.matrix.copy(worldMatrix);
-		mesh.matrixWorldNeedsUpdate = true;
+			var pooledBox = boxesPool[usedBoxes];
+			if ( pooledBox === undefined){
+			  // each pooled box contains a geometry,
+			  // a basic material and a lambert material.
+			  pooledBox = {
+					basicMaterial: undefined,
+					lambertMaterial: undefined,
+					normalMaterial: undefined,
+					// the first time we render a mesh we need to
+					// render it with the material that takes the
+					// bigger buffer space, otherwise the
+					// more complicated materials won't show
+					// up, see:
+					// https://github.com/mrdoob/three.js/issues/1051
+					// so we always need to create a normalmaterial
+					// and render that material first, in case
+					// the user will ever want to use it.
+					// Another workaround would be to create a mesh
+					// for each different type of material
+					neverUsed: true,
+					mesh: undefined
+			  };
+			  newBoxCreated = true;
+			  boxesPool.push(pooledBox);
+			}
+				if (pooledBox.neverUsed || colorToBeUsed === angleColor){
+					// the first time we render a mesh we need to
+					// render it with the material that takes the
+					// bigger buffer space, see:
+					// https://github.com/mrdoob/three.js/issues/1051
+					// Another workaround would be to create a mesh
+					// for each different type of material
+					pooledBox.neverUsed = false;
+					if (pooledBox.normalMaterial === undefined) {
+						//console.log("creating normal material");
+						pooledBox.normalMaterial = new THREE.MeshNormalMaterial({
+							opacity: alphaToBeUsed,
+							wireframe: strokeTime,
+						});
+					}
+					else {
+						pooledBox.normalMaterial.opacity = alphaToBeUsed;
+						pooledBox.normalMaterial.wireframe = strokeTime;
+						pooledBox.normalMaterial.doubleSided = false;
+					}
+					if (pooledBox.mesh === undefined){
+						pooledBox.mesh = new THREE.Mesh(cubeGeometry, pooledBox.normalMaterial);
+					}
+					else {
+						//console.log("associating normal material to existing mesh");
+						pooledBox.mesh.material = pooledBox.normalMaterial;
+					}				}
+				else if (!lightsAreOn){
+					if (pooledBox.basicMaterial === undefined) {
+						pooledBox.basicMaterial = new THREE.MeshBasicMaterial({
+							color: colorToBeUsed,
+							opacity: alphaToBeUsed,
+							wireframe: strokeTime,
+						});
+					}
+					else {
+						pooledBox.basicMaterial.color.setHex(colorToBeUsed);
+						pooledBox.basicMaterial.opacity = alphaToBeUsed;
+						pooledBox.basicMaterial.wireframe = strokeTime;
+						pooledBox.basicMaterial.doubleSided = false;
+					}
+					if (pooledBox.mesh === undefined){
+						pooledBox.mesh = new THREE.Mesh(cubeGeometry, pooledBox.basicMaterial);
+					}
+					else {
+						pooledBox.mesh.material = pooledBox.basicMaterial;
+					}
+
+				}
+				// lights are on
+				else {
+					if (pooledBox.lambertMaterial === undefined) {
+					  //console.log("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
+					  pooledBox.lambertMaterial = new THREE.MeshLambertMaterial({
+							color: colorToBeUsed,
+							opacity: alphaToBeUsed,
+							ambient: ambientColor,
+							reflectivity: reflectValue,
+							refractionRatio: refractValue,
+							wireframe: strokeTime,
+						});
+					}
+					else {
+						pooledBox.lambertMaterial.color.setHex(colorToBeUsed);
+						pooledBox.lambertMaterial.opacity = alphaToBeUsed;
+						pooledBox.lambertMaterial.wireframe = strokeTime;
+						pooledBox.lambertMaterial.doubleSided = false;
+						pooledBox.lambertMaterial.ambient.setHex(ambientColor);
+						pooledBox.lambertMaterial.reflectivity = reflectValue;
+						pooledBox.lambertMaterial.refractionRatio = refractValue;
+					}
+					if (pooledBox.mesh === undefined){
+						pooledBox.mesh = new THREE.Mesh(cubeGeometry, pooledBox.lambertMaterial);
+					}
+					else {
+						pooledBox.mesh.material = pooledBox.lambertMaterial;
+					}
+			}
+			
+			pooledBox.mesh.isLine = false;
+			pooledBox.mesh.isMesh = false;
+			pooledBox.mesh.isBox = true;
+			pooledBox.mesh.doubleSided = false;
+			
+						
+			usedBoxes++;
+			pooledBox.mesh.matrixAutoUpdate = false;
+			pooledBox.mesh.matrix.copy(worldMatrix);
+			pooledBox.mesh.matrixWorldNeedsUpdate = true;
+
+			// TODO: meshes should be built from geometries that are
+			// ever so slight larger than the "fill" mesh so there
+			// is no z-fighting...
+			// constant 0.001 below is to avoid z-fighting
+			if( a !== 1 || b !== 1 || c !== 1){
+				if (! strokeTime) pooledBox.mesh.matrix.scale(new THREE.Vector3(a,b,c));
+				else pooledBox.mesh.matrix.scale(new THREE.Vector3(a+0.001,b+0.001,c+0.001));
+			}
+
+			if (newBoxCreated) scene.add(pooledBox.mesh);
     }
-
-//
-/////  Now for the wireframe part
-//
-
-	if (doStroke) {
-		var mesh2 = boxesPool[usedBoxes];
-		var rectWireframeMaterialCOL;
-		if ( mesh2 === undefined){
-		  rectWireframeMaterialCOL = new THREE.MeshBasicMaterial( {
-				color: currentStrokeColor,
-				opacity: currentStrokeAlpha,
-				wireframe: true
-			} )
-		  mesh2 = new THREE.Mesh(cubeGeometry, rectWireframeMaterialCOL);
-		  mesh2.isLine = false;
-		  mesh2.isMesh = false;
-		  mesh2.isBox = true;
-		  boxesPool.push(mesh2);
-		  // meshes with wireframe material don't
-		  // need this flag  to be set so let's leave the default.
-		  mesh2.doubleSided = false;
-		  scene.add(mesh2);
-		}
-		else {
-			//mesh.geometry = lineGeometry;
-			mesh2.material.wireframe = true;
-			mesh2.material.color.setHex(currentStrokeColor);
-			mesh2.material.opacity = currentStrokeAlpha;
-			mesh2.doubleSided = false;
-		}
-		usedBoxes++;
-		mesh2.matrixAutoUpdate = false;
-		mesh2.matrix.copy(worldMatrix);
-		mesh2.matrixWorldNeedsUpdate = true;
-    }
-
-
-	// now combine the two meshes
-	// note that I did try to see whether grouping the two meshes
-	// is faster, as in: https://github.com/mrdoob/three.js/blob/dev/src/extras/SceneUtils.js#L29
-	// but it seems to be much slower...
-
-  	if( a !== 1 || b !== 1 || c !== 1){
-      if (doFill) mesh.matrix.scale(new THREE.Vector3(a,b,c));
-    }
-    // TODO: meshes should be built from geometries that are
-    // ever so slight larger than the "fill" mesh so there
-    // is no z-fighting...
-    // constant 0.001 below is to avoid z-fighting
-    if (doStroke) mesh2.matrix.scale(new THREE.Vector3(a+0.001,b+0.001,c+0.001));
-      // in theory the docs say that we should change the boundradius
-      // but I don't think that we need it...
 
 
   }
