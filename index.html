@@ -2092,6 +2092,14 @@ scale = function(a, b, c) {
 };
 
 
+  // TODO Note that lines have a "solid fill" mode
+  // and something similar to the normalMaterial mode
+  // but there is no equivalent to the lambert material
+  // mode.
+  // That could be done by somehow mixing the color of
+  // an ambient light to the color of the stroke
+  // (although which ambient light do you pick if there
+  // is more than one?)
   line = function(a) {
   	
   	if (!doStroke) {
@@ -2143,7 +2151,7 @@ scale = function(a, b, c) {
     // setting the color after the geometry has been dealt with
     // because in case we use the angleColor then we
     // need to know the geometry.
-    if(currentStrokeColor === angleColor){
+    if(currentStrokeColor === angleColor || defaultNormalStroke){
 		var sasaas = mesh.matrix.multiplyVector3( new THREE.Vector3(0,1,0) ).normalize();
 		//console.log(sasaas.x+ " " + sasaas.y + " " + sasaas.z);
 		mesh.material.color.setHex(color(((sasaas.x+1)/2)*255,((sasaas.y+1)/2)*255,((sasaas.z+1)/2)*255));
