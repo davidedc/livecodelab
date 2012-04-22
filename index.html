@@ -1767,6 +1767,8 @@ function background(red, green, blue) {
 
 // animation loop
 		var loopInterval;
+		var millisecs;
+		var millisecsAtStart;
     	function animate() {
 
 			// loop on request animation loop
@@ -1809,6 +1811,14 @@ function background(red, green, blue) {
 			//parentObject = rootObject;
 
 			if (typeof(draw) != "undefined") {
+			  var d = new Date();
+			  if (frame===0) {
+				  millisecsAtStart = d.getTime();
+				  millisecs = 0;
+			  }
+			  else {
+				  millisecs = d.getTime() - millisecsAtStart;
+			  }
 			  doLNOnce = [];
 			  fill(angleColor);
 			  stroke(angleColor);
@@ -1818,6 +1828,14 @@ function background(red, green, blue) {
 			  animationStyleValue = normal;
 			  resetGradientStack();
 			  draw();
+			  // we have to repeat this check because in the case
+			  // the user has set frame = 0,
+			  // then we have to catch that case here
+			  // after the program has executed
+			  if (frame===0) {
+				  millisecsAtStart = d.getTime();
+				  millisecs = 0;
+			  }
 			  animationStyleUpdateIfChanged();
 			  simpleGradientUpdateIfChanged();
 			  frame++;
@@ -2643,8 +2661,8 @@ addSound 'additional1'  ,'zzxz z zzzzzzzzzzx'
 addSound 'additional8'  ,'xzzx z zzxzzzxzzxz'
 addSound 'additional6' ,'xxzz x zxzxzxxxxxx'
 addSound 'additional4' ,'zxzxzzzxzxxzzzxx'
-scale 2*Math.sin(frame/33)
-rotate frame/10,frame/250,frame/50
+scale 2*Math.sin(millisecs/330)
+rotate millisecs/100,millisecs/2500,millisecs/500
 box
 
 //////////////////////////////
@@ -2652,7 +2670,7 @@ box
 */
 
 var simpleCubeExample = ""+
-	"rotate 0, 1, frame/100\n"+
+	"rotate 0, 1, millisecs/1000\n"+
 	"box\n" + 
 	"\n" + 
 	"// see next example, click here below:\n" +
@@ -2660,13 +2678,13 @@ var simpleCubeExample = ""+
 
 var twocubesExample = ""+
 ""+		"2 times ->\n"+
-"\t"+		"rotate 0, 1, frame/200\n"+
+"\t"+		"rotate 0, 1, millisecs/2000\n"+
 "\t"+		"box\n";
 
 var cubesAndSpikes = ""+
 ""+		"scale 2.1\n"+
 ""+		"5 times ->\n"+
-"\t"+			"rotate 0,1,frame/500\n"+
+"\t"+			"rotate 0,1,millisecs/5000\n"+
 "\t"+			"box 0.1,0.1,0.1\n"+
 "\t"+			"translate 0,0.1,0.1\n"+
 "\t"+			"3 times ->\n"+
@@ -2675,18 +2693,18 @@ var cubesAndSpikes = ""+
 
 var turbineExample = ""+
 ""+		"70 times ->\n"+
-"\t"+		"rotate frame/101,1,frame/1000\n"+
+"\t"+		"rotate millisecs/10001,1,millisecs/10000\n"+
 "\t"+		"box\n";
 
 var yellowBackgroundExample = ""+
 ""+		"background 255,255,0\n"+
-""+		"rotate 0,frame/20,frame/20\n"+
+""+		"rotate 0,millisecs/200,millisecs/200\n"+
 ""+		"box\n";
 
 var littleSpiralOfCubes = ""+
 ""+		"scale 0.1\n"+
 ""+		"10 times ->\n"+
-"\t"+		"rotate 0,1,frame/100\n"+
+"\t"+		"rotate 0,1,millisecs/1000\n"+
 "\t"+		"translate 1,1,1\n"+
 "\t"+		"box\n";
 
@@ -2695,7 +2713,7 @@ var tentacleExample = ""+
 ""+		"3 times ->\n"+
 "\t"+		"rotate 0,1,1\n"+
 "\t"+		"10 times ->\n"+
-"\t\t"+		"rotate 0,1,frame/100\n"+
+"\t\t"+		"rotate 0,1,millisecs/1000\n"+
 "\t\t"+		"scale 0.9\n"+
 "\t\t"+		"translate 1,1,1\n"+
 "\t\t"+		"box\n";
@@ -2711,7 +2729,7 @@ var industrialMusicExample = ""+
 ""+		"addSound 'additional4' ,'zxzxzzzxxzzzzzxx'\n";
 
 var doOnceExample = ""+
-""+		"rotate frame/100\n"+
+""+		"rotate millisecs/1000\n"+
 ""+		"// comment\n"+
 ""+		"/* another\n"+
 ""+		"comment */\n"+
@@ -2724,12 +2742,12 @@ var planesExample = ""+
 ""+		"3 times ->\n"+
 "\t"+		"translate 0,0,0.5\n"+
 "\t"+		"5 times ->\n"+
-"\t\t"+		"rotate frame/100\n"+
+"\t\t"+		"rotate millisecs/2000\n"+
 "\t\t"+	   "translate 0.7,0,0\n"+
 "\t\t"+		"rect";
 
 var matrixesExample = ""+
-""+		"rotate frame/100\n"+
+""+		"rotate millisecs/1000\n"+
 ""+		"line\n"+
 ""+		"pushMatrix\n"+
 ""+		"translate 0.5,0,0\n"+
@@ -2750,30 +2768,29 @@ var diceExample = ""+
 ""+		"3 times ->\n"+
 "\t"+		"translate 0,0,0.5\n"+
 "\t"+		"1 times ->\n"+
-"\t\t"+		"rotate frame/50\n"+
+"\t\t"+		"rotate millisecs/1000\n"+
 "\t\t"+		"translate 2,0,0\n"+
 "\t\t"+		"box";
 
 
 var nuclearOctopusExample = ""+
-""+		"simpleGradient 0,color(frame*15%255,0,0),0\n"+
+""+		"simpleGradient 0,color((millisecs/5)%255,0,0),0\n"+
 ""+		"scale 0.2\n"+
-""+		"translate 3\n"+
-""+		"rotate frame/90\n"+
+""+		"translate 5\n"+
 ""+		"animationStyle motionBlur\n"+
 ""+		"//animationStyle paintOver\n"+
 ""+		"stroke 255,0,0,120\n"+
-""+		"fill frame*10%255,0,0\n"+
+""+		"fill millisecs%255,0,0\n"+
 ""+		"pushMatrix\n"+
 ""+		"count = 0\n"+
 ""+		"3 times ->\n"+
 "\t"+		"count++\n"+
 "\t"+		"pushMatrix\n"+
-"\t"+		"rotate count+3+frame,2+count + frame/100,4+count\n"+
+"\t"+		"rotate count+3+millisecs/1000,2+count + millisecs/1000,4+count\n"+
 "\t"+		"120 times ->\n"+
 "\t\t"+		"scale 0.9\n"+
 "\t\t"+		"translate 1,1,0\n"+
-"\t\t"+		"rotate frame/100\n"+
+"\t\t"+		"rotate millisecs/100\n"+
 "\t\t"+		"box\n"+
 "\t"+		"popMatrix";
 
