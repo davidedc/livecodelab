@@ -3448,6 +3448,15 @@ $(document).ready(function(){
 	}
 	fakeCursorInterval = setInterval ( "fakeCursorBlinking()", 800 );
 	setInterval ( "dimIfNoCursorActivity()", 2000 );
+	
+	// if we don't set these two layers to be thin,
+	// in firefox this embedded objects gets the mouse
+	// clicks of the user trying to place the cursor
+	// and then captures all the key presses.
+	// which is annoying.
+	setInterval ( "$('#sm2-container').css('width','10px')", 2000 );
+	setInterval ( "$('#sm2movie').css('width','10px')", 2000 );
+	
 });
 
 
