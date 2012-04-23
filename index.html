@@ -158,6 +158,12 @@
 			<li><a href="javascript:void(0)" onclick="loadDemo('nuclearOctopusDemo');">Nuclear octopus</a></li>
 		</ul>
 	</li>
+	<li><a href="javascript:void(0)" style="text-decoration:none;">Tutorials</a>
+		<ul>		
+			<li><a href="javascript:void(0)" onclick="loadDemo('helloWorldTutorial');">Hello World</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('rotateTutorial');">Rotate</a></li>
+		</ul>
+	</li>
 	<li id="dangerSign" style="border-right:none;"><a href="javascript:void(0)" id="dangerSignText" style="font-size:2em;margin-top:-0.3em;">!</a>
 	</li>
 	<li id="errorMessage" style="border-right:none;"><a href="javascript:void(0)" id="errorMessageText" ></a>
@@ -3107,10 +3113,7 @@ http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_man
 
 var simpleCubeDemo = ""+
 	"rotate 0, 1, millisecs/1000\n"+
-	"box\n" + 
-	"\n" + 
-	"// see next demo, click here below:\n" +
-	"// demo:two_cubes \n";
+	"box\n";
 
 var twocubesDemo = ""+
 ""+		"2 times ->\n"+
@@ -3274,6 +3277,29 @@ var nuclearOctopusDemo = ""+
 "\t\t"+		"box\n"+
 "\t"+		"popMatrix";
 
+var helloWorldTutorial = ""+
+""+		"// type these three letters\n"+
+""+		"// in an empty line below:\n"+
+""+		'// "b" and "o" and "x"\n'+
+""+		"\n"+
+""+		"\n"+
+""+		"\n"+
+""+		"// (you should see a box facing you)\n"+
+""+		"// click below for the next tutorial\n"+
+""+		"// tutorial:rotate \n";
+
+var rotateTutorial = ""+
+""+		"// now that we have a box\n"+
+""+		"// we rotate it:\n"+
+""+		'// type "rotate 1" in the\n'+
+""+		'// line before the "box"\n'+
+""+		"\n"+
+""+		"\n"+
+""+		"box\n"+
+""+		"\n"+
+""+		"// click for the next tutorial:\n"+
+""+		"// tutorial:two_cubes \n";
+
 
 function loadDemo(whichDemo) {
 
@@ -3334,6 +3360,12 @@ function loadDemo(whichDemo) {
 		case 'nuclearOctopusDemo':
 			editor.setValue(nuclearOctopusDemo);
 			break;
+		case 'helloWorldTutorial':
+			editor.setValue(helloWorldTutorial);
+			break;
+		case 'rotateTutorial':
+			editor.setValue(rotateTutorial);
+			break;
 
 	}
 	
@@ -3352,7 +3384,7 @@ function loadDemo(whichDemo) {
   CodeMirror.defineMode("links", function(config, parserConfig) { 
     return { 
     token: function(stream, state) {
-      if (stream.match(/\/\/\s*(demo:([^\s]+))\b/)) 
+      if (stream.match(/\/\/\s*(tutorial:([^\s]+))\b/)) 
       { 
            return "link"; 
       } 
@@ -3387,10 +3419,10 @@ function loadDemo(whichDemo) {
   //alert('clicked');
   var url;
   url = $(event.target).text();
-  url = url.replace(/\/\/\s*demo:/,"");
+  url = url.replace(/\/\/\s*tutorial\:/,"");
   url = url.replace("_","");
   //alert(""+url);
-  loadDemo(url+"Demo");
+  loadDemo(url+"Tutorial");
 });
 
   editor.setOption("theme", 'night');
