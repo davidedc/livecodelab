@@ -17,7 +17,7 @@ var Stats = function () {
 	_container.style.cursor = 'pointer';
 	_container.style.width = '74px';
 	//_container.style.opacity = '0.9';
-	_container.style.zIndex = '10001';
+	_container.style.zIndex = '6';
 	_container.addEventListener( 'mousedown', function ( event ) {
 
 		event.preventDefault();
