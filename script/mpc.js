@@ -90,22 +90,41 @@ soundManager.onready(function() {
   if (!soundManager.html5.needsFlash) {
     //document.getElementById('isHTML5').style.display = 'inline';
   }
-  var soundURLs = 'AMB_BD_1,AMB_FTM2,AMB_HHCL,AMB_HHOP,AMB_HHPD,AMB_HTM,AMB_LTM2,AMB_MTM,AMB_RIM1,AMB_SN13,AMB_SN_5,CHINA_1,CRASH_1,CRASH_5,CRASH_6,RIDE_1'.split(',');
-  for (var i=0; i<soundURLs.length; i++) {
-    soundManager.createSound('s'+i, 'audio/'+soundURLs[i]+'.mp3');
-  }
 
-  var glassesURLs = 'glass0,glass1,glass2,glass3,glass4,glass5'.split(',');
-  for (var i=0; i < glassesURLs.length; i++) {
-    soundManager.createSound({id:'glass'+i, multiShot: true, url:'audio/'+glassesURLs[i]+'.mp3'});
-  }
+    soundManager.createSound('toc', 'audio/AMB_BD_1.mp3');
+    soundManager.createSound('highHatOpen', 'audio/AMB_HHCL.mp3');
+    soundManager.createSound('highHatOpen', 'audio/AMB_HHOP.mp3');
+    soundManager.createSound('toc2', 'audio/AMB_HTM.mp3');
+    soundManager.createSound('toc3', 'audio/AMB_LTM2.mp3');
+    soundManager.createSound('toc4', 'audio/AMB_RIM1.mp3');
+    soundManager.createSound('snare', 'audio/AMB_SN13.mp3');
+    soundManager.createSound('snare2', 'audio/AMB_SN_5.mp3');
+    soundManager.createSound('china', 'audio/CHINA_1.mp3');
+    soundManager.createSound('crash', 'audio/CRASH_1.mp3');
+    soundManager.createSound('crash2', 'audio/CRASH_5.mp3');
+    soundManager.createSound('crash3', 'audio/CRASH_6.mp3');
+    soundManager.createSound('ride', 'audio/RIDE_1.mp3');
 
-  var additionalURLs = '8938__patchen__piano-hits-hand-03,9569__thanvannispen__industrial-low-flash04,9570__thanvannispen__industrial-low-flash07,24004__laya__dance-kick3,33325__laya__trance-kick01,33960__krlox__pudricion-4,49255__keinzweiter__bonobob-funk,100708__steveygos93__bleep_a,100708__steveygos93__bleep_b,100708__steveygos93__bleep_c,100708__steveygos93__bleep_d,116508_Beep,116508_Hello,132389__blackie666__alienbleep'.split(',');
-  for (var i=0; i < additionalURLs.length; i++) {
-    soundManager.createSound({id:'additional'+i, multiShot: true, url:'audio/'+additionalURLs[i]+'.mp3'});
-  }
+  soundManager.createSound({id:'glass', multiShot: true, url:'audio/glass2.mp3'});
+  soundManager.createSound({id:'glass1', multiShot: true, url:'audio/glass3.mp3'});
+  soundManager.createSound({id:'glass2', multiShot: true, url:'audio/glass4.mp3'});
+  soundManager.createSound({id:'glass3', multiShot: true, url:'audio/glass5.mp3'});
 
-
+  soundManager.createSound({id:'thump', multiShot: true, url:'audio/8938__patchen__piano-hits-hand-03v2.mp3'});
+  soundManager.createSound({id:'lowFlash', multiShot: true, url:'audio/9569__thanvannispen__industrial-low-flash04.mp3'});
+  soundManager.createSound({id:'lowFlash2', multiShot: true, url:'audio/9570__thanvannispen__industrial-low-flash07.mp3'});
+  soundManager.createSound({id:'tranceKick2', multiShot: true, url:'audio/24004__laya__dance-kick3.mp3'});
+  soundManager.createSound({id:'tranceKick', multiShot: true, url:'audio/33325__laya__trance-kick01.mp3'});
+  soundManager.createSound({id:'wosh', multiShot: true, url:'audio/33960__krlox__pudricion-4.mp3'});
+  soundManager.createSound({id:'voltage', multiShot: true, url:'audio/49255__keinzweiter__bonobob-funk.mp3'});
+  soundManager.createSound({id:'beepA', multiShot: true, url:'audio/100708__steveygos93__bleep_a.mp3'});
+  soundManager.createSound({id:'beepB', multiShot: true, url:'audio/100708__steveygos93__bleep_b.mp3'});
+  soundManager.createSound({id:'beepC', multiShot: true, url:'audio/100708__steveygos93__bleep_c.mp3'});
+  soundManager.createSound({id:'beepD', multiShot: true, url:'audio/100708__steveygos93__bleep_d.mp3'});
+  soundManager.createSound({id:'beep', multiShot: true, url:'audio/116508_Beep.mp3'});
+  soundManager.createSound({id:'hello', multiShot: true, url:'audio/116508_Hello.mp3'});
+  soundManager.createSound({id:'alienBeep', multiShot: true, url:'audio/132389__blackie666__alienbleep.mp3'});
+  
 
   /**
    * createSound options can also be set on a per-file basis, with specific option overrides.

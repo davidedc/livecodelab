@@ -148,7 +148,9 @@
 			<li><a href="javascript:void(0)" onclick="loadDemo('yellowBackgroundDemo');">Yellow background</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('littleSpiralOfCubes');">Little spiral</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('tentacleDemo');">Tentacle</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('industrialMusicDemo');">Industrial music</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('judgementDayDemo');">Sound: judgement day</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('industrialMusicDemo');">Sound: industrial</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('trySoundsDemo');">Sound: try them all</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('doOnceDemo');">doOnce</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('planesDemo');">Planes</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('matrixesDemo');">Matrixes</a></li>
@@ -3152,15 +3154,59 @@ var tentacleDemo = ""+
 "\t\t"+		"translate 1,1,1\n"+
 "\t\t"+		"box\n";
 
+var judgementDayDemo = ""+
+""+		"bpm 350\n"+
+""+		"addSound 'thump' ,'xxzx zxxz xzzz zzzz'\n";
+
+
 var industrialMusicDemo = ""+
 ""+		"bpm 350\n"+
-""+		"addSound 'additional13'  ,'zzxz zzzz zzxz zzzz'\n"+
-""+		"addSound 'additional9'  ,'zxzz zzzz xzzx xxxz'\n"+
-""+		"addSound 'additional7'  ,'zzxz zzzz zzxz zzzz'\n"+
-""+		"addSound 'additional1'  ,'zzxz zzzz zzzz zzzz'\n"+
-""+		"addSound 'additional8'  ,'xzzx zzzz zxzz zxzz'\n"+
-""+		"addSound 'additional6' ,'xzxz zxzz xzxx xzxx'\n"+
-""+		"addSound 'additional4' ,'zxzx zzzx xzzz zzxx'\n";
+""+		"addSound 'alienBeep'  ,'zzxz zzzz zzxz zzzz'\n"+
+""+		"addSound 'beepC'  ,'zxzz zzzz xzzx xxxz'\n"+
+""+		"addSound 'beepA'  ,'zzxz zzzz zzxz zzzz'\n"+
+""+		"addSound 'lowFlash'  ,'zzxz zzzz zzzz zzzz'\n"+
+""+		"addSound 'beepB'  ,'xzzx zzzz zxzz zxzz'\n"+
+""+		"addSound 'voltage' ,'xzxz zxzz xzxx xzxx'\n"+
+""+		"addSound 'tranceKick' ,'zxzx zzzx xzzz zzxx'\n";
+
+var trySoundsDemo = ""+
+""+		"bpm 350\n"+
+""+		"// leave this one as base\n"+
+""+		"addSound 'tranceKick' ,'zxzx zzzx xzzz zzxx'\n"+
+""+		"\n"+
+""+		"// uncomment the sounds you want to try\n"+
+""+		"//addSound 'toc','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'highHatOpen','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'highHatOpen','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'toc2','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'toc3','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'toc4','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'snare','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'snare2','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'china','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'crash','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'crash2','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'crash3','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'ride','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'glass','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'glass1','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'glass2','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'glass3','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'thump','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'lowFlash','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'lowFlash2','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'tranceKick2','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'tranceKick','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'wosh','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'voltage','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'beepA','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'beepB','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'beepC','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'beepD','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'beep','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'hello','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'alienBeep','zzxz zzzz zzxz zzzz'\n";
+
 
 var doOnceDemo = ""+
 ""+		"rotate millisecs/1000\n"+
@@ -3264,8 +3310,14 @@ function loadDemo(whichDemo) {
 		case 'tentacleDemo':
 			editor.setValue(tentacleDemo);
 			break;
+		case 'judgementDayDemo':
+			editor.setValue(judgementDayDemo);
+			break;
 		case 'industrialMusicDemo':
 			editor.setValue(industrialMusicDemo);
+			break;
+		case 'trySoundsDemo':
+			editor.setValue(trySoundsDemo);
 			break;
 		case 'doOnceDemo':
 			editor.setValue(doOnceDemo);
