@@ -1902,6 +1902,7 @@ function background(red, green, blue) {
 			  usedSpheres = {};
 			  animationStyleValue = normal;
 			  resetGradientStack();
+			  //bpm(0);
 			  draw();
 			  // we have to repeat this check because in the case
 			  // the user has set frame = 0,
@@ -1913,6 +1914,7 @@ function background(red, green, blue) {
 			  }
 			  animationStyleUpdateIfChanged();
 			  simpleGradientUpdateIfChanged();
+			  updateBpmIfChanged();
 			  frame++;
 			  consecutiveFramesWithoutRunTimeError++;
 			  if (consecutiveFramesWithoutRunTimeError == 5) {
@@ -2015,8 +2017,12 @@ var beatNumber = 0;
 bpm = function(a) {
 
 	beatsPerMinute = a;
-	if (oldBeatsPerMinute !== a){
-		//alert('changing beats per minute old ' + oldBeatsPerMinute + ' new: ' + a);
+	updateBpmIfChanged();
+}
+
+updateBpmIfChanged = function() {
+	if (oldBeatsPerMinute !== beatsPerMinute){
+		//alert('changing beats per minute old ' + oldBeatsPerMinute + ' new: ' + beatsPerMinute);
 		clearTimeout(soundLoopTimer);
 		
 		if (beatsPerMinute !== 0) {
@@ -3170,7 +3176,7 @@ var tentacleDemo = ""+
 var industrialMusicDemo = ""+
 ""+		"bpm 350\n"+
 ""+		"addSound 'additional13'  ,'zzx z zzzzxzzzzzzx'\n"+
-""+		"addSound 'additional9'  ,'zxzx z zxzzxxxxxxx'\n"+
+""+		"addSound 'additional9'  ,'zxzz z zxzzxxxxzzz'\n"+
 ""+		"addSound 'additional7'  ,'zzxz z zzzxzzzzzzx'\n"+
 ""+		"addSound 'additional1'  ,'zzxz z zzzzzzzzzzx'\n"+
 ""+		"addSound 'additional8'  ,'xzzx z zzxzzzxzzxz'\n"+
@@ -3442,7 +3448,7 @@ $(document).ready(function(){
 	// in which case we load the demo directly.
 	// otherwise we do as usual.
 	if (window.location.hash.indexOf("demo")!==-1){
-		var demoToLoad = window.location.hash.substring(9);
+		var demoToLoad = window.location.hash.substring("demo".length + 2);
 		//setTimeout ( "loadDemo('"+demoToLoad+"');",500);
 		loadDemo(demoToLoad);
 	}
