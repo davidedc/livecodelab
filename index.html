@@ -125,7 +125,7 @@
 		<!-- modal content -->
 		<div id="basic-modal-content">
 			<h3>What&apos;s this?</h3>
-			<p>This is a livecoding environment: programs run immediately as they are typed.<br><br>Pick something from the "Examples" menu.
+			<p>This is a livecoding environment: programs run immediately as they are typed.<br><br>Pick something from the "Demos" menu.
 			</div>
 
 <div id="theMenu" style="position: absolute;  z-index:3; top: 0px; left: 0px; width:100%">
@@ -138,22 +138,22 @@
 		</ul>
 	</li>
 
-	<li><a href="javascript:void(0)" style="text-decoration:none;">Examples</a>
+	<li><a href="javascript:void(0)" style="text-decoration:none;">Demos</a>
 		<ul>
 		
-			<li><a href="javascript:void(0)" onclick="loadExample('simpleCubeExample');">Simple cube</a></li>
-			<li><a href="javascript:void(0)" onclick="loadExample('twocubesExample');">Two cubes</a></li>
-			<li><a href="javascript:void(0)" onclick="loadExample('cubesAndSpikes');">Cubes and spikes</a></li>
-			<li><a href="javascript:void(0)" onclick="loadExample('turbineExample');">Turbine</a></li>
-			<li><a href="javascript:void(0)" onclick="loadExample('yellowBackgroundExample');">Yellow background</a></li>
-			<li><a href="javascript:void(0)" onclick="loadExample('littleSpiralOfCubes');">Little spiral</a></li>
-			<li><a href="javascript:void(0)" onclick="loadExample('tentacleExample');">Tentacle</a></li>
-			<li><a href="javascript:void(0)" onclick="loadExample('industrialMusicExample');">Industrial music</a></li>
-			<li><a href="javascript:void(0)" onclick="loadExample('doOnceExample');">doOnce</a></li>
-			<li><a href="javascript:void(0)" onclick="loadExample('planesExample');">Planes</a></li>
-			<li><a href="javascript:void(0)" onclick="loadExample('matrixesExample');">Matrixes</a></li>
-			<li><a href="javascript:void(0)" onclick="loadExample('diceExample');">Dice</a></li>
-			<li><a href="javascript:void(0)" onclick="loadExample('nuclearOctopusExample');">Nuclear octopus</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('simpleCubeDemo');">Simple cube</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('twocubesDemo');">Two cubes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('cubesAndSpikes');">Cubes and spikes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('turbineDemo');">Turbine</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('yellowBackgroundDemo');">Yellow background</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('littleSpiralOfCubes');">Little spiral</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('tentacleDemo');">Tentacle</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('industrialMusicDemo');">Industrial music</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('doOnceDemo');">doOnce</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('planesDemo');">Planes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('matrixesDemo');">Matrixes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('diceDemo');">Dice</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('nuclearOctopusDemo');">Nuclear octopus</a></li>
 		</ul>
 	</li>
 	<li id="dangerSign" style="border-right:none;"><a href="javascript:void(0)" id="dangerSignText" style="font-size:2em;margin-top:-0.3em;">!</a>
@@ -3118,14 +3118,14 @@ box
 
 */
 
-var simpleCubeExample = ""+
+var simpleCubeDemo = ""+
 	"rotate 0, 1, millisecs/1000\n"+
 	"box\n" + 
 	"\n" + 
-	"// see next example, click here below:\n" +
-	"// example:two_cubes \n";
+	"// see next demo, click here below:\n" +
+	"// demo:two_cubes \n";
 
-var twocubesExample = ""+
+var twocubesDemo = ""+
 ""+		"2 times ->\n"+
 "\t"+		"rotate 0, 1, millisecs/2000\n"+
 "\t"+		"box\n";
@@ -3140,12 +3140,12 @@ var cubesAndSpikes = ""+
 "\t\t"+				"rotate 0,1,1\n"+
 "\t\t"+				"box 0.01,0.01,1\n";
 
-var turbineExample = ""+
+var turbineDemo = ""+
 ""+		"70 times ->\n"+
 "\t"+		"rotate millisecs/10001,1,millisecs/10000\n"+
 "\t"+		"box\n";
 
-var yellowBackgroundExample = ""+
+var yellowBackgroundDemo = ""+
 ""+		"background 255,255,0\n"+
 ""+		"rotate 0,millisecs/2000,millisecs/2000\n"+
 ""+		"box\n";
@@ -3157,7 +3157,7 @@ var littleSpiralOfCubes = ""+
 "\t"+		"translate 1,1,1\n"+
 "\t"+		"box\n";
 
-var tentacleExample = ""+
+var tentacleDemo = ""+
 ""+		"scale 0.1\n"+
 ""+		"3 times ->\n"+
 "\t"+		"rotate 0,1,1\n"+
@@ -3167,7 +3167,7 @@ var tentacleExample = ""+
 "\t\t"+		"translate 1,1,1\n"+
 "\t\t"+		"box\n";
 
-var industrialMusicExample = ""+
+var industrialMusicDemo = ""+
 ""+		"bpm 350\n"+
 ""+		"addSound 'additional13'  ,'zzx z zzzzxzzzzzzx'\n"+
 ""+		"addSound 'additional9'  ,'zxzx z zxzzxxxxxxx'\n"+
@@ -3177,7 +3177,7 @@ var industrialMusicExample = ""+
 ""+		"addSound 'additional6' ,'xzxz x zxzxxxzxxxx'\n"+
 ""+		"addSound 'additional4' ,'zxzxzzzxxzzzzzxx'\n";
 
-var doOnceExample = ""+
+var doOnceDemo = ""+
 ""+		"rotate millisecs/1000\n"+
 ""+		"// comment\n"+
 ""+		"/* another\n"+
@@ -3186,7 +3186,7 @@ var doOnceExample = ""+
 "\t"+	   "frame = 0 ; box\n"+
 ""+		"✓doOnce -> alert 'miao'\n";
 
-var planesExample = ""+
+var planesDemo = ""+
 ""+		"scale 0.3\n"+
 ""+		"3 times ->\n"+
 "\t"+		"translate 0,0,0.5\n"+
@@ -3195,7 +3195,7 @@ var planesExample = ""+
 "\t\t"+	   "translate 0.7,0,0\n"+
 "\t\t"+		"rect";
 
-var matrixesExample = ""+
+var matrixesDemo = ""+
 ""+		"rotate millisecs/1000\n"+
 ""+		"line\n"+
 ""+		"pushMatrix\n"+
@@ -3207,7 +3207,7 @@ var matrixesExample = ""+
 ""+		"resetMatrix\n"+
 ""+		"line";
 
-var diceExample = ""+
+var diceDemo = ""+
 ""+		"animationStyle motionBlur\n"+
 ""+		"simpleGradient color(255),color(255,255,0),color(255,255,0)\n"+
 ""+		"stroke 255,100,100,255\n"+
@@ -3222,7 +3222,7 @@ var diceExample = ""+
 "\t\t"+		"box";
 
 
-var nuclearOctopusExample = ""+
+var nuclearOctopusDemo = ""+
 ""+		"simpleGradient 0,color(0,0,(millisecs/5)%255),0\n"+
 ""+		"scale 0.2\n"+
 ""+		"translate 5\n"+
@@ -3244,65 +3244,65 @@ var nuclearOctopusExample = ""+
 "\t"+		"popMatrix";
 
 
-function loadExample(whichExample) {
+function loadDemo(whichDemo) {
 
-	// set the example as a hash state
+	// set the demo as a hash state
 	// so that ideally people can link directly to
-	// a specific example they like.
+	// a specific demo they like.
 	// (in the document.ready function we check for
-	// this hash value and load the correct example)
-	window.location.hash =  'example='+whichExample;
+	// this hash value and load the correct demo)
+	window.location.hash =  'demo='+whichDemo;
 
 	if (fakeText) shrinkFakeText();
 	undimEditor();
 	
 
-	switch(whichExample) {
-		case 'simpleCubeExample':
-			editor.setValue(simpleCubeExample);
+	switch(whichDemo) {
+		case 'simpleCubeDemo':
+			editor.setValue(simpleCubeDemo);
 			break;
-		case 'twocubesExample':
-			editor.setValue(twocubesExample);
+		case 'twocubesDemo':
+			editor.setValue(twocubesDemo);
 			break;
 		case 'cubesAndSpikes':
 			editor.setValue(cubesAndSpikes);
 			break;
-		case 'turbineExample':
-			editor.setValue(turbineExample);
+		case 'turbineDemo':
+			editor.setValue(turbineDemo);
 			break;
-		case 'yellowBackgroundExample':
-			editor.setValue(yellowBackgroundExample);
+		case 'yellowBackgroundDemo':
+			editor.setValue(yellowBackgroundDemo);
 			break;
 		case 'littleSpiralOfCubes':
 			editor.setValue(littleSpiralOfCubes);
 			break;
-		case 'tentacleExample':
-			editor.setValue(tentacleExample);
+		case 'tentacleDemo':
+			editor.setValue(tentacleDemo);
 			break;
-		case 'industrialMusicExample':
-			editor.setValue(industrialMusicExample);
+		case 'industrialMusicDemo':
+			editor.setValue(industrialMusicDemo);
 			break;
-		case 'doOnceExample':
-			editor.setValue(doOnceExample);
+		case 'doOnceDemo':
+			editor.setValue(doOnceDemo);
 			break;
-		case 'planesExample':
-			editor.setValue(planesExample);
+		case 'planesDemo':
+			editor.setValue(planesDemo);
 			break;
-		case 'matrixesExample':
-			editor.setValue(matrixesExample);
+		case 'matrixesDemo':
+			editor.setValue(matrixesDemo);
 			break;
-		case 'diceExample':
-			editor.setValue(diceExample);
+		case 'diceDemo':
+			editor.setValue(diceDemo);
 			break;
-		case 'nuclearOctopusExample':
-			editor.setValue(nuclearOctopusExample);
+		case 'nuclearOctopusDemo':
+			editor.setValue(nuclearOctopusDemo);
 			break;
 
 	}
 	
 	// setting the value of the editor triggers the
 	// codeMirror onChange callback, and that runs
-	// the example.
+	// the demo.
 }
 
 	</script>
@@ -3315,7 +3315,7 @@ function loadExample(whichExample) {
   CodeMirror.defineMode("links", function(config, parserConfig) { 
     return { 
     token: function(stream, state) {
-      if (stream.match(/\/\/\s*(example:([^\s]+))\b/)) 
+      if (stream.match(/\/\/\s*(demo:([^\s]+))\b/)) 
       { 
            return "link"; 
       } 
@@ -3350,10 +3350,10 @@ function loadExample(whichExample) {
   //alert('clicked');
   var url;
   url = $(event.target).text();
-  url = url.replace(/\/\/\s*example:/,"");
+  url = url.replace(/\/\/\s*demo:/,"");
   url = url.replace("_","");
   //alert(""+url);
-  loadExample(url+"Example");
+  loadDemo(url+"Demo");
 });
 
   editor.setOption("theme", 'night');
@@ -3438,13 +3438,13 @@ $(document).ready(function(){
 	editor.focus();
 	adjustCodeMirrorHeight();
 	
-	// check if the url points to a particular example,
-	// in which case we load the example directly.
+	// check if the url points to a particular demo,
+	// in which case we load the demo directly.
 	// otherwise we do as usual.
-	if (window.location.hash.indexOf("example")!==-1){
-		var exampleToLoad = window.location.hash.substring(9);
-		//setTimeout ( "loadExample('"+exampleToLoad+"');",500);
-		loadExample(exampleToLoad);
+	if (window.location.hash.indexOf("demo")!==-1){
+		var demoToLoad = window.location.hash.substring(9);
+		//setTimeout ( "loadDemo('"+demoToLoad+"');",500);
+		loadDemo(demoToLoad);
 	}
 	fakeCursorInterval = setInterval ( "fakeCursorBlinking()", 800 );
 	setInterval ( "dimIfNoCursorActivity()", 2000 );
