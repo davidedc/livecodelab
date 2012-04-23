@@ -2058,10 +2058,9 @@ soundLoop = function() {
 
 
 addSound = function(soundID,beatString) {
-
+    		beatString = beatString.replace(/\s*/g,"");
     		soundLoops.soundIDs[soundLoops.soundIDs.length] = soundID;
     		soundLoops.beatStrings[soundLoops.beatStrings.length] = beatString;
-
 }
 
 var matrixStack = [];
@@ -3100,28 +3099,8 @@ Number.prototype.times = function(func, scope){
 
 
 /*
-
-
 To set the flash security settings:
 http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html
-
-/////////////////////////////
-
-bpm 350
-//addSound 's12','zzzzzzzzzzzzzzzx'
-addSound 'additional13'  ,'zzx z zzzzxzzzzzzx'
-addSound 'additional9'  ,'zxzx z zxzzxxxxxxx'
-addSound 'additional7'  ,'zzxz z zzzxzzzzzzx'
-addSound 'additional1'  ,'zzxz z zzzzzzzzzzx'
-addSound 'additional8'  ,'xzzx z zzxzzzxzzxz'
-addSound 'additional6' ,'xxzz x zxzxzxxxxxx'
-addSound 'additional4' ,'zxzxzzzxzxxzzzxx'
-scale 2*Math.sin(millisecs/330)
-rotate millisecs/100,millisecs/2500,millisecs/500
-box
-
-//////////////////////////////
-
 */
 
 var simpleCubeDemo = ""+
@@ -3175,13 +3154,13 @@ var tentacleDemo = ""+
 
 var industrialMusicDemo = ""+
 ""+		"bpm 350\n"+
-""+		"addSound 'additional13'  ,'zzx z zzzzxzzzzzzx'\n"+
-""+		"addSound 'additional9'  ,'zxzz z zxzzxxxxzzz'\n"+
-""+		"addSound 'additional7'  ,'zzxz z zzzxzzzzzzx'\n"+
-""+		"addSound 'additional1'  ,'zzxz z zzzzzzzzzzx'\n"+
-""+		"addSound 'additional8'  ,'xzzx z zzxzzzxzzxz'\n"+
-""+		"addSound 'additional6' ,'xzxz x zxzxxxzxxxx'\n"+
-""+		"addSound 'additional4' ,'zxzxzzzxxzzzzzxx'\n";
+""+		"addSound 'additional13'  ,'zzxz zzzz zzxz zzzz'\n"+
+""+		"addSound 'additional9'  ,'zxzz zzzz xzzx xxxz'\n"+
+""+		"addSound 'additional7'  ,'zzxz zzzz zzxz zzzz'\n"+
+""+		"addSound 'additional1'  ,'zzxz zzzz zzzz zzzz'\n"+
+""+		"addSound 'additional8'  ,'xzzx zzzz zxzz zxzz'\n"+
+""+		"addSound 'additional6' ,'xzxz zxzz xzxx xzxx'\n"+
+""+		"addSound 'additional4' ,'zxzx zzzx xzzz zzxx'\n";
 
 var doOnceDemo = ""+
 ""+		"rotate millisecs/1000\n"+
