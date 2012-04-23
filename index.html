@@ -212,6 +212,7 @@
 		var usedSpheres = {};
 		var sphereDefaultDetLevel;
 		var sphereDetLevel;
+		var currentStrokeSize = 1;
 		var cubeGeometry = new THREE.CubeGeometry(1,1,1);
 		var planeGeometry = new THREE.PlaneGeometry(1,1);
 		var lineGeometry = new THREE.Geometry();
@@ -989,6 +990,12 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
     noStroke = function() {
       doStroke = false;
     };
+
+    strokeSize = function(a) {
+      if (a===undefined) a=1;
+      else if (a<0) a=0;
+      currentStrokeSize = a;
+    };
     // enf of functions from processing.js
 		// init the scene
 		function init(){
@@ -1611,6 +1618,7 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/noFill(\s)+/g, ";noFill$1" );
         elaboratedSource =  elaboratedSource.replace(/stroke(\s)+/g, ";stroke$1" );
         elaboratedSource =  elaboratedSource.replace(/noStroke(\s)+/g, ";noStroke$1" );
+        elaboratedSource =  elaboratedSource.replace(/strokeSize(\s)+/g, ";strokeSize$1" );
         elaboratedSource =  elaboratedSource.replace(/animationStyle(\s)+/g, ";animationStyle$1" );
         elaboratedSource =  elaboratedSource.replace(/simpleGradient(\s)+/g, ";simpleGradient$1" );
         elaboratedSource =  elaboratedSource.replace(/background(\s)+/g, ";background$1" );
@@ -1685,6 +1693,7 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "noFill" ||
 			  usedMethods[scanningUsedMethods] === "stroke" ||
 			  usedMethods[scanningUsedMethods] === "noStroke" ||
+			  usedMethods[scanningUsedMethods] === "strokeSize" ||
 			  usedMethods[scanningUsedMethods] === "animationStyle" ||
 			  usedMethods[scanningUsedMethods] === "background" ||
 			  usedMethods[scanningUsedMethods] === "simpleGradient" ||
@@ -1873,6 +1882,7 @@ function background(red, green, blue) {
 			  doLNOnce = [];
 			  fill(0xFFFFFFFF);
 			  stroke(0xFF000000);
+			  currentStrokeSize = 1;
  			 defaultNormalFill = true;
  			 defaultNormalStroke = true;
  			 sphereDetLevel = sphereDefaultDetLevel;
@@ -2155,6 +2165,7 @@ scale = function(a, b, c) {
 		var lineBasicMaterialCOL = new THREE.LineBasicMaterial({
 			//color: currentStrokeColor,
 			opacity: currentStrokeAlpha,
+			linewidth: currentStrokeSize,
 		});
 
       mesh = new THREE.Line(lineGeometry, lineBasicMaterialCOL);
@@ -2172,6 +2183,7 @@ scale = function(a, b, c) {
     	//mesh.material = lineBasicMaterialCOL;
     	//mesh.material.color.setHex(currentStrokeColor);
 		mesh.material.opacity = currentStrokeAlpha;
+		mesh.material.linewidth = currentStrokeSize;
     }
     usedLines++;
     
@@ -2241,7 +2253,7 @@ scale = function(a, b, c) {
   	}
   	// if the wireframe is not going to be visible on top of the
   	// fill then don't draw it
-  	else if ((doFill && (!doStroke || (!defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (defaultNormalFill && defaultNormalStroke)) {
+  	else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
   		//if (doStroke) console.log('smart optimisation, was supposed to do the stroke but not doing it!!');
   		startIndex = 0;
   		endIndex = 1;
@@ -2338,12 +2350,14 @@ scale = function(a, b, c) {
 						pooledRectangle.normalMaterial = new THREE.MeshNormalMaterial({
 							opacity: alphaToBeUsed,
 							wireframe: strokeTime,
+							wireframeLinewidth: currentStrokeSize,
 						});
 					}
 					else {
 						pooledRectangle.normalMaterial.opacity = alphaToBeUsed;
 						pooledRectangle.normalMaterial.wireframe = strokeTime;
 						pooledRectangle.normalMaterial.doubleSided = true;
+						pooledRectangle.normalMaterial.wireframeLinewidth = currentStrokeSize;
 					}
 					if (pooledRectangle.mesh === undefined){
 						pooledRectangle.mesh = new THREE.Mesh(planeGeometry, pooledRectangle.normalMaterial);
@@ -2360,6 +2374,7 @@ scale = function(a, b, c) {
 							color: colorToBeUsed,
 							opacity: alphaToBeUsed,
 							wireframe: strokeTime,
+							wireframeLinewidth: currentStrokeSize,
 						});
 					}
 					else {
@@ -2367,6 +2382,7 @@ scale = function(a, b, c) {
 						pooledRectangle.basicMaterial.opacity = alphaToBeUsed;
 						pooledRectangle.basicMaterial.wireframe = strokeTime;
 						pooledRectangle.basicMaterial.doubleSided = true;
+						pooledRectangle.basicMaterial.wireframeLinewidth = currentStrokeSize;
 					}
 					if (pooledRectangle.mesh === undefined){
 						pooledRectangle.mesh = new THREE.Mesh(planeGeometry, pooledRectangle.basicMaterial);
@@ -2388,12 +2404,14 @@ scale = function(a, b, c) {
 							reflectivity: reflectValue,
 							refractionRatio: refractValue,
 							wireframe: strokeTime,
+							wireframeLinewidth: currentStrokeSize,
 						});
 					}
 					else {
 						pooledRectangle.lambertMaterial.color.setHex(colorToBeUsed);
 						pooledRectangle.lambertMaterial.opacity = alphaToBeUsed;
 						pooledRectangle.lambertMaterial.wireframe = strokeTime;
+						pooledRectangle.lambertMaterial.wireframeLinewidth = currentStrokeSize;
 						pooledRectangle.lambertMaterial.doubleSided = true;
 						pooledRectangle.lambertMaterial.ambient.setHex(ambientColor);
 						pooledRectangle.lambertMaterial.reflectivity = reflectValue;
@@ -2620,7 +2638,7 @@ scale = function(a, b, c) {
   	}
   	// if the wireframe is not going to be visible on top of the
   	// fill then don't draw it
-  	else if ((doFill && (!doStroke || (!defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (defaultNormalFill && defaultNormalStroke)) {
+  	else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
   		//if (doStroke) console.log('smart optimisation, was supposed to do the stroke but not doing it!!');
   		startIndex = 0;
   		endIndex = 1;
@@ -2717,11 +2735,13 @@ scale = function(a, b, c) {
 						pooledBox.normalMaterial = new THREE.MeshNormalMaterial({
 							opacity: alphaToBeUsed,
 							wireframe: strokeTime,
+							wireframeLinewidth: currentStrokeSize,
 						});
 					}
 					else {
 						pooledBox.normalMaterial.opacity = alphaToBeUsed;
 						pooledBox.normalMaterial.wireframe = strokeTime;
+						pooledBox.normalMaterial.wireframeLinewidth = currentStrokeSize;
 						pooledBox.normalMaterial.doubleSided = false;
 					}
 					if (pooledBox.mesh === undefined){
@@ -2738,12 +2758,14 @@ scale = function(a, b, c) {
 							color: colorToBeUsed,
 							opacity: alphaToBeUsed,
 							wireframe: strokeTime,
+							wireframeLinewidth: currentStrokeSize,
 						});
 					}
 					else {
 						pooledBox.basicMaterial.color.setHex(colorToBeUsed);
 						pooledBox.basicMaterial.opacity = alphaToBeUsed;
 						pooledBox.basicMaterial.wireframe = strokeTime;
+						pooledBox.basicMaterial.wireframeLinewidth = currentStrokeSize;
 						pooledBox.basicMaterial.doubleSided = false;
 					}
 					if (pooledBox.mesh === undefined){
@@ -2765,12 +2787,14 @@ scale = function(a, b, c) {
 							reflectivity: reflectValue,
 							refractionRatio: refractValue,
 							wireframe: strokeTime,
+							wireframeLinewidth: currentStrokeSize,
 						});
 					}
 					else {
 						pooledBox.lambertMaterial.color.setHex(colorToBeUsed);
 						pooledBox.lambertMaterial.opacity = alphaToBeUsed;
 						pooledBox.lambertMaterial.wireframe = strokeTime;
+						pooledBox.lambertMaterial.wireframeLinewidth = currentStrokeSize;
 						pooledBox.lambertMaterial.doubleSided = false;
 						pooledBox.lambertMaterial.ambient.setHex(ambientColor);
 						pooledBox.lambertMaterial.reflectivity = reflectValue;
@@ -2832,7 +2856,7 @@ scale = function(a, b, c) {
   	}
   	// if the wireframe is not going to be visible on top of the
   	// fill then don't draw it
-  	else if ((doFill && (!doStroke || (!defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (defaultNormalFill && defaultNormalStroke)) {
+  	else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
   		//if (doStroke) console.log('smart optimisation, was supposed to do the stroke but not doing it!!');
   		startIndex = 0;
   		endIndex = 1;
@@ -2934,11 +2958,13 @@ scale = function(a, b, c) {
 						pooledSphere.normalMaterial = new THREE.MeshNormalMaterial({
 							opacity: alphaToBeUsed,
 							wireframe: strokeTime,
+							wireframeLinewidth: currentStrokeSize,
 						});
 					}
 					else {
 						pooledSphere.normalMaterial.opacity = alphaToBeUsed;
 						pooledSphere.normalMaterial.wireframe = strokeTime;
+						pooledSphere.normalMaterial.wireframeLinewidth = currentStrokeSize;
 						pooledSphere.normalMaterial.doubleSided = false;
 					}
 					if (pooledSphere.mesh === undefined){
@@ -2961,12 +2987,14 @@ scale = function(a, b, c) {
 							color: colorToBeUsed,
 							opacity: alphaToBeUsed,
 							wireframe: strokeTime,
+							wireframeLinewidth: currentStrokeSize,
 						});
 					}
 					else {
 						pooledSphere.basicMaterial.color.setHex(colorToBeUsed);
 						pooledSphere.basicMaterial.opacity = alphaToBeUsed;
 						pooledSphere.basicMaterial.wireframe = strokeTime;
+						pooledSphere.basicMaterial.wireframeLinewidth = currentStrokeSize;
 						pooledSphere.basicMaterial.doubleSided = false;
 					}
 					if (pooledSphere.mesh === undefined){
@@ -2994,12 +3022,14 @@ scale = function(a, b, c) {
 							reflectivity: reflectValue,
 							refractionRatio: refractValue,
 							wireframe: strokeTime,
+							wireframeLinewidth: currentStrokeSize,
 						});
 					}
 					else {
 						pooledSphere.lambertMaterial.color.setHex(colorToBeUsed);
 						pooledSphere.lambertMaterial.opacity = alphaToBeUsed;
 						pooledSphere.lambertMaterial.wireframe = strokeTime;
+						pooledSphere.lambertMaterial.wireframeLinewidth = currentStrokeSize;
 						pooledSphere.lambertMaterial.doubleSided = false;
 						pooledSphere.lambertMaterial.ambient.setHex(ambientColor);
 						pooledSphere.lambertMaterial.reflectivity = reflectValue;
