@@ -169,7 +169,7 @@ var Stats = function () {
 			_msMin = Math.min( _msMin, _ms );
 			_msMax = Math.max( _msMax, _ms );
 
-			_msText.textContent = _ms + ' MS (' + _msMin + '-' + _msMax + ')';
+			_msText.textContent = _ms + ' MS ';
 			_updateGraph( _msGraph, Math.min( badgeHeight, badgeHeight - ( _ms / 200 ) * badgeHeight ) );
 
 			_timeLastFrame = _time;
