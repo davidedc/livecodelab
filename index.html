@@ -161,7 +161,9 @@
 	<li><a href="javascript:void(0)" style="text-decoration:none;">Tutorials</a>
 		<ul>		
 			<li><a href="javascript:void(0)" onclick="loadDemo('helloWorldTutorial');">Hello World</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('rotateTutorial');">Rotate</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('rotateTutorial');">rotate</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('frameTutorial');">frame</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('millisecsTutorial');">millisecs</a></li>
 		</ul>
 	</li>
 	<li id="dangerSign" style="border-right:none;"><a href="javascript:void(0)" id="dangerSignText" style="font-size:2em;margin-top:-0.3em;">!</a>
@@ -3298,6 +3300,35 @@ var rotateTutorial = ""+
 ""+		"box\n"+
 ""+		"\n"+
 ""+		"// click for the next tutorial:\n"+
+""+		"// tutorial:frame \n";
+
+var frameTutorial = ""+
+""+		"// let's make the box spin\n"+
+""+		'// by replacing "1" with "frame"\n'+
+""+		"\n"+
+""+		"rotate 1\n"+
+""+		"box\n"+
+""+		"\n"+
+""+		"// frame contains a number\n"+
+""+		"// always incrementing as\n"+
+""+		"// the screen is re-drawn.\n"+
+""+		'// (use "frame/100" to slow it down)\n'+
+""+		"// tutorial:millisecs \n";
+
+var millisecsTutorial = ""+
+""+		'// "frame" has one problem:\n'+
+""+		'// faster computers will make\n'+
+""+		'// the cube spin too fast.\n'+
+""+		'// Use "millisecs/2000" instead.\n'+
+""+		"\n"+
+""+		"rotate frame/100\n"+
+""+		"box\n"+
+""+		"\n"+
+""+		"// millisecs contains the\n"+
+""+		"// number of milliseconds since\n"+
+""+		"// the program started, so it's\n"+
+""+		"// independent of how fast\n"+
+""+		"// is the computer is at drawing.\n"+
 ""+		"// tutorial:two_cubes \n";
 
 
@@ -3365,6 +3396,12 @@ function loadDemo(whichDemo) {
 			break;
 		case 'rotateTutorial':
 			editor.setValue(rotateTutorial);
+			break;
+		case 'frameTutorial':
+			editor.setValue(frameTutorial);
+			break;
+		case 'millisecsTutorial':
+			editor.setValue(millisecsTutorial);
 			break;
 
 	}
