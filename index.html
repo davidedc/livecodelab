@@ -168,9 +168,9 @@
 			<li><a href="javascript:void(0)" onclick="loadDemo('millisecsTutorial');">millisecs</a></li>
 		</ul>
 	</li>
-	<li><a href="javascript:void(0)" style="text-decoration:none;">Autocode: off</a>
+	<li id="autocodeIndicatorContainer" onClick="toggleAutocode();"><a id="autocodeIndicator" href="javascript:void(0)"  style="text-decoration:none;">Autocode: off</a>
 	</li>
-	<li id="dangerSign" style="border-right:none;"><a href="javascript:void(0)" id="dangerSignText" style="font-size:2em;margin-top:-0.3em;">!</a>
+	<li id="dangerSign" style="border-right:none;"><a href="" id="dangerSignText" style="font-size:2em;margin-top:-0.3em;">!</a>
 	</li>
 	<li id="errorMessage" style="border-right:none;"><a href="javascript:void(0)" id="errorMessageText" ></a>
 	</li>
@@ -3354,7 +3354,189 @@ var millisecsTutorial = ""+
 ""+		"// the computer is at drawing.\n"+
 ""+		"// next-tutorial:two_cubes";
 
+var autocodeOn = false;
+var blinkingAutocoderTimeout;
+var blinkingAutocoderStatus = false;
 
+function blinkAutocodeIndicator() {
+	blinkingAutocoderStatus = !blinkingAutocoderStatus;
+	if (blinkingAutocoderStatus){
+		$("#autocodeIndicatorContainer").css("background-color",'#323232');
+	}
+	else {
+		$("#autocodeIndicatorContainer").css("background-color",'#FF0000');
+		mutate();
+	}
+}
+
+function toggleAutocode() {
+	autocodeOn = !autocodeOn;
+	
+	if (!autocodeOn) {
+		$("#autocodeIndicator").html("Autocode: off");
+		clearInterval(blinkingAutocoderTimeout);
+		$("#autocodeIndicatorContainer").css("background-color",'#323232');
+	}
+	else {
+		$("#autocodeIndicator").html("Autocode: on");
+		blinkingAutocoderTimeout = setInterval('blinkAutocodeIndicator();',500);
+		$("#autocodeIndicatorContainer").css("background-color",'#FF0000');
+	}
+}
+
+function mutate() {
+		var whichMutation = Math.floor(Math.random() * 5);
+		if (whichMutation == 0)
+		replaceAFloat();
+		else if (whichMutation == 1)
+		replaceAnInteger();
+		else if (whichMutation == 2)
+		replaceABoxWithASphere();
+		else if (whichMutation == 3)
+		replaceASphereWithABox();
+		//else if (whichMutation == 4)
+		//replaceMillisecsWithAConstant();
+		
+}
+
+function replaceAFloat() {
+        var editorContent = editor.getValue();
+		var rePattern = /([-+]?[0-9]*\.[0-9]+)/gi;
+
+		var allMatches = editorContent.match(rePattern);
+		if (allMatches === null) numberOfResults = 0;
+		else numberOfResults = allMatches.length;
+		whichOneToChange = Math.floor(Math.random() * numberOfResults) + 1;
+
+		var countWhichOneToSwap = 0;
+		editorContent = editorContent.replace(rePattern, function(match, text, urlId){
+			countWhichOneToSwap++;
+			if (countWhichOneToSwap === whichOneToChange){
+				var whichOp = Math.floor(Math.random() * 12);
+				if (whichOp == 0)
+				return parseFloat(match)*2;
+				else if (whichOp == 1)
+				return parseFloat(match)/2;
+				else if (whichOp == 2)
+				return parseFloat(match)+1;
+				else if (whichOp == 3)
+				return parseFloat(match)-1;
+				else if (whichOp == 4)
+				return parseFloat(match)*5;
+				else if (whichOp == 5)
+				return parseFloat(match)/5;
+				else if (whichOp == 6)
+				return parseFloat(match)+0.1;
+				else if (whichOp == 7)
+				return parseFloat(match)-0.1;
+				else if (whichOp == 8)
+				return parseFloat(match)+0.5;
+				else if (whichOp == 9)
+				return parseFloat(match)-0.5;
+				else if (whichOp == 10)
+				return Math.floor(parseFloat(match));
+				else if (whichOp == 11)
+				return 'millisecs/1000';
+			}
+				return match;
+		});
+		editor.setValue(editorContent);
+}
+
+function replaceABoxWithASphere() {
+        var editorContent = editor.getValue();
+		var rePattern = /(box)/gi;
+
+		var allMatches = editorContent.match(rePattern);
+		if (allMatches === null) numberOfResults = 0;
+		else numberOfResults = allMatches.length;
+		whichOneToChange = Math.floor(Math.random() * numberOfResults) + 1;
+
+		var countWhichOneToSwap = 0;
+		editorContent = editorContent.replace(rePattern, function(match, text, urlId){
+			countWhichOneToSwap++;
+			if (countWhichOneToSwap === whichOneToChange){
+				return "sphere";
+			}
+				return match;
+		});
+		editor.setValue(editorContent);
+}
+
+function replaceMillisecsWithAConstant() {
+        var editorContent = editor.getValue();
+		var rePattern = /(millisecs)/gi;
+
+		var allMatches = editorContent.match(rePattern);
+		if (allMatches === null) numberOfResults = 0;
+		else numberOfResults = allMatches.length;
+		whichOneToChange = Math.floor(Math.random() * numberOfResults) + 1;
+
+		var countWhichOneToSwap = 0;
+		editorContent = editorContent.replace(rePattern, function(match, text, urlId){
+			countWhichOneToSwap++;
+			if (countWhichOneToSwap === whichOneToChange){
+				return ''+Math.floor(Math.random() * 20) + 1;
+			}
+				return match;
+		});
+		editor.setValue(editorContent);
+}
+
+function replaceASphereWithABox() {
+        var editorContent = editor.getValue();
+		var rePattern = /(sphere)/gi;
+
+		var allMatches = editorContent.match(rePattern);
+		if (allMatches === null) numberOfResults = 0;
+		else numberOfResults = allMatches.length;
+		whichOneToChange = Math.floor(Math.random() * numberOfResults) + 1;
+
+		var countWhichOneToSwap = 0;
+		editorContent = editorContent.replace(rePattern, function(match, text, urlId){
+			countWhichOneToSwap++;
+			if (countWhichOneToSwap === whichOneToChange){
+				return "box";
+			}
+				return match;
+		});
+		editor.setValue(editorContent);
+}
+
+function replaceAnInteger() {
+        var editorContent = editor.getValue();
+		var rePattern = /([-+]?[0-9]+)/gi;
+
+		var allMatches = editorContent.match(rePattern);
+		if (allMatches === null) numberOfResults = 0;
+		else numberOfResults = allMatches.length;
+		whichOneToChange = Math.floor(Math.random() * numberOfResults) + 1;
+
+		var countWhichOneToSwap = 0;
+		editorContent = editorContent.replace(rePattern, function(match, text, urlId){
+			countWhichOneToSwap++;
+			if (countWhichOneToSwap === whichOneToChange){
+				var whichOp = Math.floor(Math.random() * 7);
+				if (whichOp == 0)
+				return Math.floor(parseFloat(match)*2);
+				else if (whichOp == 1)
+				return Math.floor(parseFloat(match)/2);
+				else if (whichOp == 2)
+				return Math.floor(parseFloat(match)+1);
+				else if (whichOp == 3)
+				return Math.floor(parseFloat(match)-1);
+				else if (whichOp == 4)
+				return Math.floor(parseFloat(match)*5);
+				else if (whichOp == 5)
+				return Math.floor(parseFloat(match)/5);
+				else if (whichOp == 6)
+				return 'Math.floor(1+millisecs/1000)';
+			}
+				return match;
+		});
+		editor.setValue(editorContent);
+
+}
 function loadDemo(whichDemo) {
 
 	// set the demo as a hash state
