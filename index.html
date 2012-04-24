@@ -161,7 +161,8 @@
 	</li>
 	<li><a href="javascript:void(0)" style="text-decoration:none;">Tutorials</a>
 		<ul>		
-			<li><a href="javascript:void(0)" onclick="loadDemo('helloWorldTutorial');">Hello World</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('introTutorial');">Intro</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('helloworldTutorial');">Hello World</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('rotateTutorial');">rotate</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('frameTutorial');">frame</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('millisecsTutorial');">millisecs</a></li>
@@ -3289,16 +3290,26 @@ var nuclearOctopusDemo = ""+
 "\t\t"+		"box\n"+
 "\t"+		"popMatrix";
 
-var helloWorldTutorial = ""+
+var introTutorial = ""+
+""+		"// Lines beginning with two\n"+
+""+		"// slashes (like these) are just comments.\n"+
+""+		'// Everything else is run\n'+
+""+		'// about 30 to 60 times per second\n'+
+""+		'// in order to create an animation.\n'+
+""+		"\n"+
+""+		"// Click the link below to start the tutorial:\n"+
+""+		"// next-tutorial:hello_world";
+
+var helloworldTutorial = ""+
 ""+		"// type these three letters\n"+
-""+		"// in an empty line below:\n"+
+""+		"// in one of these empty lines below:\n"+
 ""+		'// "b" and "o" and "x"\n'+
 ""+		"\n"+
 ""+		"\n"+
 ""+		"\n"+
 ""+		"// (you should see a box facing you)\n"+
 ""+		"// click below for the next tutorial\n"+
-""+		"// next-tutorial:rotate \n";
+""+		"// next-tutorial:rotate";
 
 var rotateTutorial = ""+
 ""+		"// now that we have a box\n"+
@@ -3310,7 +3321,7 @@ var rotateTutorial = ""+
 ""+		"box\n"+
 ""+		"\n"+
 ""+		"// click for the next tutorial:\n"+
-""+		"// next-tutorial:frame \n";
+""+		"// next-tutorial:frame";
 
 var frameTutorial = ""+
 ""+		"// let's make the box spin\n"+
@@ -3323,7 +3334,7 @@ var frameTutorial = ""+
 ""+		"// always incrementing as\n"+
 ""+		"// the screen is re-drawn.\n"+
 ""+		'// (use "frame/100" to slow it down)\n'+
-""+		"// next-tutorial:millisecs \n";
+""+		"// next-tutorial:millisecs";
 
 var millisecsTutorial = ""+
 ""+		'// "frame/100" has one problem:\n'+
@@ -3339,7 +3350,7 @@ var millisecsTutorial = ""+
 ""+		"// the program started, so it's\n"+
 ""+		"// independent of how fast\n"+
 ""+		"// the computer is at drawing.\n"+
-""+		"// next-tutorial:two_cubes \n";
+""+		"// next-tutorial:two_cubes";
 
 
 function loadDemo(whichDemo) {
@@ -3401,8 +3412,11 @@ function loadDemo(whichDemo) {
 		case 'nuclearOctopusDemo':
 			editor.setValue(nuclearOctopusDemo);
 			break;
-		case 'helloWorldTutorial':
-			editor.setValue(helloWorldTutorial);
+		case 'introTutorial':
+			editor.setValue(introTutorial);
+			break;
+		case 'helloworldTutorial':
+			editor.setValue(helloworldTutorial);
 			break;
 		case 'rotateTutorial':
 			editor.setValue(rotateTutorial);
