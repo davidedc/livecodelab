@@ -126,6 +126,7 @@
 		<div id="basic-modal-content">
 			<h3>What&apos;s this?</h3>
 			<p>This is a live coding environment: programs run immediately as they are typed.<br><br>Pick something from the "Demos" menu or try the tutorials.
+			<p>Want more info? <a href="http://www.sketchpatch.net/labs/livecodelabIntro.html"> See this</a>
 			<p>Want to hack this? <a href="https://github.com/davidedc/livecodelab"> Grab the source code!</a>
 			</div>
 
@@ -144,15 +145,13 @@
 		
 			<li><a href="javascript:void(0)" onclick="loadDemo('simpleCubeDemo');">Simple cube</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('cubesAndSpikes');">Cubes and spikes</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('yellowBackgroundDemo');">Yellow background</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('littleSpiralOfCubes');">Little spiral</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('tentacleDemo');">Tentacle</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('lampDemo');">Lamp</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('judgementDayDemo');">Sound: judgement day</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('industrialMusicDemo');">Sound: industrial</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('trySoundsDemo');">Sound: try them all</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('doOnceDemo');">doOnce</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('planesDemo');">Planes</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('matrixesDemo');">Matrixes</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('diceDemo');">Dice</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('twocubesDemo');">WebGL: two cubes</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('turbineDemo');">WebGL: turbine</a></li>
@@ -161,11 +160,25 @@
 	</li>
 	<li><a href="javascript:void(0)" style="text-decoration:none;">Tutorials</a>
 		<ul>		
-			<li><a href="javascript:void(0)" onclick="loadDemo('introTutorial');">Intro</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('helloworldTutorial');">Hello World</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('introTutorial');">intro</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('helloworldTutorial');">hello world</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('somenotesTutorial');">some notes</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('rotateTutorial');">rotate</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('frameTutorial');">frame</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('millisecsTutorial');">millisecs</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('translateTutorial');">translate</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('scaleTutorial');">scale</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('timesTutorial');">times</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('fillTutorial');">fill</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('strokeTutorial');">stroke</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('lightsTutorial');">lights</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('backgroundTutorial');">background</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('gradientTutorial');">gradient</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('lineTutorial');">line</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('sphereTutorial');">sphere</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('pushpopMatrixTutorial');">push and pop</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('animationstyleTutorial');">animation style</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('doonceTutorial');">do once</a></li>
 		</ul>
 	</li>
 	<li id="autocodeIndicatorContainer" onClick="toggleAutocode();"><a id="autocodeIndicator" href="javascript:void(0)"  style="text-decoration:none;">Autocode: off</a>
@@ -1650,13 +1663,17 @@ function registerCode() {
         // the semicolon mangles the first line of the function definitions
         // coffeescript doesn't like that
         elaboratedSource =  elaboratedSource.replace(/->(\s+);/g, "->$1" );
+
+        // the semicolon mangles the first line of if statements
+        // coffeescript doesn't like that
+        elaboratedSource =  elaboratedSource.replace(/if\s*([a-zA-Z0-9]*)(\s*);/g, "if $1$2" );
         
       
-        //alert(elaboratedSource );
+        console.log(elaboratedSource );
         out = CoffeeScript.compile(elaboratedSource, {
           bare: "on"
         });
-        //alert("in javascript: " + out);
+        //console.log("in javascript: " + out);
         
       } catch (e) {
 			$('#dangerSignText').css('color','red')
@@ -3118,18 +3135,21 @@ http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_man
 */
 
 var simpleCubeDemo = ""+
-	"rotate 0, 1, millisecs/1000\n"+
-	"box\n";
+""+		"background 255,255,0\n"+
+""+		"rotate 0,millisecs/2000,millisecs/2000\n"+
+""+		"box\n";
 
 var twocubesDemo = ""+
 ""+		"// this drawing will only make sense\n"+
 ""+		"// in a WebGL-enabled browser\n"+
 ""+		"\n"+
+""+		"background 155,255,255\n"+
 ""+		"2 times ->\n"+
 "\t"+		"rotate 0, 1, millisecs/2000\n"+
 "\t"+		"box\n";
 
 var cubesAndSpikes = ""+
+""+		"simpleGradient color(255,0,255),color(100,200,200),color(255,255,0)\n"+
 ""+		"scale 2.1\n"+
 ""+		"5 times ->\n"+
 "\t"+			"rotate 0,1,millisecs/5000\n"+
@@ -3143,16 +3163,13 @@ var turbineDemo = ""+
 ""+		"// this drawing will only make sense\n"+
 ""+		"// in a WebGL-enabled browser\n"+
 ""+		"\n"+
+""+		"background 155,55,255\n"+
 ""+		"70 times ->\n"+
 "\t"+		"rotate millisecs/10001,1,millisecs/10000\n"+
 "\t"+		"box\n";
 
-var yellowBackgroundDemo = ""+
-""+		"background 255,255,0\n"+
-""+		"rotate 0,millisecs/2000,millisecs/2000\n"+
-""+		"box\n";
-
 var littleSpiralOfCubes = ""+
+""+		"background 255,155,0\n"+
 ""+		"scale 0.1\n"+
 ""+		"10 times ->\n"+
 "\t"+		"rotate 0,1,millisecs/1000\n"+
@@ -3160,7 +3177,8 @@ var littleSpiralOfCubes = ""+
 "\t"+		"box\n";
 
 var tentacleDemo = ""+
-""+		"scale 0.1\n"+
+""+		"background 155,255,155\n"+
+""+		"scale 0.15\n"+
 ""+		"3 times ->\n"+
 "\t"+		"rotate 0,1,1\n"+
 "\t"+		"10 times ->\n"+
@@ -3168,6 +3186,21 @@ var tentacleDemo = ""+
 "\t\t"+		"scale 0.9\n"+
 "\t\t"+		"translate 1,1,1\n"+
 "\t\t"+		"box\n";
+
+var lampDemo = ""+
+""+		"animationStyle motionBlur\n"+
+""+		"simpleGradient color(255,0,0),color(255,255,0),color(255,0,255)\n"+
+""+		"//animationStyle paintOver\n"+
+""+		"scale 2\n"+
+""+		"rotate millisecs/4000, millisecs/4000,  millisecs/4000\n"+
+""+		"90 times ->\n"+
+"\t"+		"rotate millisecs/200000, millisecs/200000,  millisecs/200000\n"+
+"\t"+		"line\n"+
+"\t"+		"translate 0.5,0,0\n"+
+"\t"+		"line\n"+
+"\t"+		"translate -0.5,0,0\n"+
+"\t"+		"line\n"+
+"\t"+		"line\n";
 
 var judgementDayDemo = ""+
 ""+		"bpm 390\n"+
@@ -3222,17 +3255,9 @@ var trySoundsDemo = ""+
 ""+		"//addSound 'hello','zzxz zzzz zzxz zzzz'\n"+
 ""+		"//addSound 'alienBeep','zzxz zzzz zzxz zzzz'\n";
 
-
-var doOnceDemo = ""+
-""+		"rotate millisecs/1000\n"+
-""+		"// comment\n"+
-""+		"/* another\n"+
-""+		"comment */\n"+
-""+		"✓doOnce ->\n"+
-"\t"+	   "frame = 0 ; box\n"+
-""+		"✓doOnce -> alert 'miao'\n";
-
 var planesDemo = ""+
+""+		"animationStyle motionBlur\n"+
+""+		"simpleGradient color(255,0,255),color(100,200,200),color(255,255,0)\n"+
 ""+		"scale 0.3\n"+
 ""+		"3 times ->\n"+
 "\t"+		"translate 0,0,0.5\n"+
@@ -3240,18 +3265,6 @@ var planesDemo = ""+
 "\t\t"+		"rotate millisecs/2000\n"+
 "\t\t"+	   "translate 0.7,0,0\n"+
 "\t\t"+		"rect";
-
-var matrixesDemo = ""+
-""+		"rotate millisecs/1000\n"+
-""+		"line\n"+
-""+		"pushMatrix\n"+
-""+		"translate 0.5,0,0\n"+
-""+		"line\n"+
-""+		"popMatrix\n"+
-""+		"translate -0.5,0,0\n"+
-""+		"line\n"+
-""+		"resetMatrix\n"+
-""+		"line";
 
 var diceDemo = ""+
 ""+		"animationStyle motionBlur\n"+
@@ -3311,6 +3324,16 @@ var helloworldTutorial = ""+
 ""+		"\n"+
 ""+		"// (you should see a box facing you)\n"+
 ""+		"// click below for the next tutorial\n"+
+""+		"// next-tutorial:some_notes";
+
+var somenotesTutorial = ""+
+""+		"// If this makes sense to you:\n"+
+""+		"// the syntax used is Coffeescript\n"+
+""+		'// and the commands are almost\n'+
+""+		'// like Processing.\n'+
+""+		"\n"+
+""+		"// If this doesn't make sense to you\n"+
+""+		"// don't worry.\n"+
 ""+		"// next-tutorial:rotate";
 
 var rotateTutorial = ""+
@@ -3326,7 +3349,7 @@ var rotateTutorial = ""+
 ""+		"// next-tutorial:frame";
 
 var frameTutorial = ""+
-""+		"// let's make the box spin\n"+
+""+		"// make the box spin\n"+
 ""+		'// by replacing "1" with "frame"\n'+
 ""+		"\n"+
 ""+		"rotate 1\n"+
@@ -3352,7 +3375,175 @@ var millisecsTutorial = ""+
 ""+		"// the program started, so it's\n"+
 ""+		"// independent of how fast\n"+
 ""+		"// the computer is at drawing.\n"+
-""+		"// next-tutorial:two_cubes";
+""+		"// next-tutorial:translate";
+
+var translateTutorial = ""+
+""+		"// you can move any object\n"+
+""+		'// by using "translate"\n'+
+""+		"\n"+
+""+		"box\n"+
+""+		"translate 1,1,0\n"+
+""+		"box\n"+
+""+		"\n"+
+""+		'// try to use a rotate before \n'+
+""+		"// the first box to see how the\n"+
+""+		"// scene is affected.\n"+
+""+		"// next-tutorial:scale";
+
+var scaleTutorial = ""+
+""+		"// you can zoom in or out\n"+
+""+		'// by using "scale"\n'+
+""+		"\n"+
+""+		"rotate 3\n"+
+""+		"box\n"+
+""+		"translate 1\n"+
+""+		"scale 2\n"+
+""+		"box\n"+
+""+		"\n"+
+""+		'// try to use a rotate before \n'+
+""+		"// the first box to see how the\n"+
+""+		"// scene is affected.\n"+
+""+		"// next-tutorial:times";
+
+var timesTutorial = ""+
+""+		'// "times" can be used to\n'+
+""+		'// repeat operations like so:\n'+
+""+		"\n"+
+""+		"rotate 1\n"+
+""+		"3 times ->\n"+
+"\t"+		"translate 0.2,0.2,0.2\n"+
+"\t"+		"box\n"+
+""+		"\n"+
+""+		'// note that the tabs indicate \n'+
+""+		"// exactly which parts are repeated.\n"+
+""+		"// next-tutorial:fill";
+
+var fillTutorial = ""+
+""+		'// "fill" changes the\n'+
+""+		'// color of all the surfaces:\n'+
+""+		"\n"+
+""+		"fill 255,255,0\n"+
+""+		"box\n"+
+""+		"\n"+
+""+		'// the three numbers indicate \n'+
+""+		"// red green and blue values.\n"+
+""+		"// Also: try replacing the numbers with\n"+
+""+		'// "angleColor"\n'+
+""+		"// next-tutorial:stroke";
+
+var strokeTutorial = ""+
+""+		'// "stroke" changes all the\n'+
+""+		'// edges:"\n'+
+""+		"\n"+
+""+		"rotate 1\n"+
+""+		"strokeSize 5\n"+
+""+		"stroke 255,255,255\n"+
+""+		"box\n"+
+""+		"\n"+
+""+		'// the three numbers are RGB \n'+
+""+		"// but you can also use the\n"+
+""+		'// special color "angleColor"\n'+
+""+		'// Also you can use "strokeSize"\n'+
+""+		'// to specify the thickness.\n'+
+""+		"// next-tutorial:lights";
+
+var lightsTutorial = ""+
+""+		'// "ambientoLight" creates an\n'+
+""+		'// ambient light so things have\n'+
+""+		'// some sort of shading:\n'+
+""+		"\n"+
+""+		"ambientLight 0,255,255\n"+
+""+		"rotate millisecs/1000\n"+
+""+		"box\n"+
+""+		"\n"+
+""+		'// you can turn that light on and \n'+
+""+		"// off while you build the scene\n"+
+""+		'// by using "lights" and "noLights"\n'+
+""+		"// next-tutorial:background";
+
+var backgroundTutorial = ""+
+""+		'// "background" creates a\n'+
+""+		'// solid background:\n'+
+""+		"\n"+
+""+		"background 0,0,255\n"+
+""+		"rotate millisecs/1000\n"+
+""+		"box\n"+
+""+		"\n"+
+""+		"// next-tutorial:gradient";
+
+var gradientTutorial = ""+
+""+		'// even nicer, you can paint a\n'+
+""+		'// background gradient:\n'+
+""+		"\n"+
+""+		"simpleGradient color(190,10,10),color(30,90,100),color(0)\n"+
+""+		"rotate millisecs/1000\n"+
+""+		"box\n"+
+""+		"\n"+
+""+		"// next-tutorial:line";
+
+var lineTutorial = ""+
+""+		'// draw lines like this:\n'+
+""+		"\n"+
+""+		"20 times ->\n"+
+"\t"+		"rotate millisecs/9000\n"+
+"\t"+		"line\n"+
+""+		"\n"+
+""+		"// next-tutorial:sphere";
+
+var sphereTutorial = ""+
+""+		'// draw spheres like this:\n'+
+""+		"\n"+
+""+		"sphereDetail 10\n"+
+""+		"3 times ->\n"+
+"\t"+		"translate 0.2,0.2,0.2\n"+
+"\t"+		"sphere\n"+
+""+		"\n"+
+""+		'// ("sphereDetail" is optional)\n'+
+""+		"// next-tutorial:pushpopMatrix";
+
+var pushpopMatrixTutorial = ""+
+""+		'// pushMatrix creates a bookmark of\n'+
+""+		'// the position, which you can\n'+
+""+		'// return to later by using popMatrix\n'+
+""+		'// You can reset using "resetMatrix"\n'+
+""+		"\n"+
+""+		"rotate millisecs/1000\n"+
+""+		'pushMatrix // bookmark the position after the rotation\n'+
+""+		"line\n"+
+""+		"translate 0.5,0,0\n"+
+""+		"line\n"+
+""+		"popMatrix // go back to the bookmarked position\n"+
+""+		"translate -0.5,0,0\n"+
+""+		"line\n"+
+""+		"resetMatrix // resets the position\n"+
+""+		"line // not affected by initial rotation\n"+
+""+		"// next-tutorial:animation_style";
+
+var animationstyleTutorial = ""+
+""+		'// try uncommenting either line\n'+
+""+		'// with the animationStyle\n'+
+""+		"\n"+
+""+		"background 255\n"+
+""+		"//animationStyle motionBlur\n"+
+""+		"//animationStyle paintOver\n"+
+""+		"rotate frame/10\n"+
+""+		"box\n"+
+""+		"\n"+
+""+		"// next-tutorial:do_once";
+
+var doonceTutorial = ""+
+""+		'// try to delete the check\n'+
+""+		'// marks in the lines below\n'+
+""+		"\n"+
+""+		"rotate millisecs/1000\n"+
+""+		"box\n"+
+""+		"✓doOnce ->\n"+
+"\t"+	   "sphere\n"+
+""+		"✓doOnce -> background 255\n"+
+""+		"\n"+
+""+		'// you see the line or block\n'+
+""+		'// are ran only once and the\n'+
+""+		'// check mark re-appears\n';
 
 var autocodeOn = false;
 var blinkingAutocoderTimeout;
@@ -3544,7 +3735,7 @@ function loadDemo(whichDemo) {
 	// a specific demo they like.
 	// (in the document.ready function we check for
 	// this hash value and load the correct demo)
-	window.location.hash =  'demo='+whichDemo;
+	window.location.hash =  'bookmark='+whichDemo;
 
 	if (fakeText) shrinkFakeText();
 	undimEditor();
@@ -3563,14 +3754,14 @@ function loadDemo(whichDemo) {
 		case 'turbineDemo':
 			editor.setValue(turbineDemo);
 			break;
-		case 'yellowBackgroundDemo':
-			editor.setValue(yellowBackgroundDemo);
-			break;
 		case 'littleSpiralOfCubes':
 			editor.setValue(littleSpiralOfCubes);
 			break;
 		case 'tentacleDemo':
 			editor.setValue(tentacleDemo);
+			break;
+		case 'lampDemo':
+			editor.setValue(lampDemo);
 			break;
 		case 'judgementDayDemo':
 			editor.setValue(judgementDayDemo);
@@ -3581,14 +3772,8 @@ function loadDemo(whichDemo) {
 		case 'trySoundsDemo':
 			editor.setValue(trySoundsDemo);
 			break;
-		case 'doOnceDemo':
-			editor.setValue(doOnceDemo);
-			break;
 		case 'planesDemo':
 			editor.setValue(planesDemo);
-			break;
-		case 'matrixesDemo':
-			editor.setValue(matrixesDemo);
 			break;
 		case 'diceDemo':
 			editor.setValue(diceDemo);
@@ -3602,6 +3787,9 @@ function loadDemo(whichDemo) {
 		case 'helloworldTutorial':
 			editor.setValue(helloworldTutorial);
 			break;
+		case 'somenotesTutorial':
+			editor.setValue(somenotesTutorial);
+			break;
 		case 'rotateTutorial':
 			editor.setValue(rotateTutorial);
 			break;
@@ -3610,6 +3798,45 @@ function loadDemo(whichDemo) {
 			break;
 		case 'millisecsTutorial':
 			editor.setValue(millisecsTutorial);
+			break;
+		case 'translateTutorial':
+			editor.setValue(translateTutorial);
+			break;
+		case 'scaleTutorial':
+			editor.setValue(scaleTutorial);
+			break;
+		case 'timesTutorial':
+			editor.setValue(timesTutorial);
+			break;
+		case 'fillTutorial':
+			editor.setValue(fillTutorial);
+			break;
+		case 'strokeTutorial':
+			editor.setValue(strokeTutorial);
+			break;
+		case 'lightsTutorial':
+			editor.setValue(lightsTutorial);
+			break;
+		case 'backgroundTutorial':
+			editor.setValue(backgroundTutorial);
+			break;
+		case 'gradientTutorial':
+			editor.setValue(gradientTutorial);
+			break;
+		case 'lineTutorial':
+			editor.setValue(lineTutorial);
+			break;
+		case 'sphereTutorial':
+			editor.setValue(sphereTutorial);
+			break;
+		case 'pushpopMatrixTutorial':
+			editor.setValue(pushpopMatrixTutorial);
+			break;
+		case 'animationstyleTutorial':
+			editor.setValue(animationstyleTutorial);
+			break;
+		case 'doonceTutorial':
+			editor.setValue(doonceTutorial);
 			break;
 
 	}
@@ -3755,8 +3982,8 @@ $(document).ready(function(){
 	// check if the url points to a particular demo,
 	// in which case we load the demo directly.
 	// otherwise we do as usual.
-	if (window.location.hash.indexOf("demo")!==-1){
-		var demoToLoad = window.location.hash.substring("demo".length + 2);
+	if (window.location.hash.indexOf("bookmark")!==-1){
+		var demoToLoad = window.location.hash.substring("bookmark".length + 2);
 		//setTimeout ( "loadDemo('"+demoToLoad+"');",500);
 		loadDemo(demoToLoad);
 	}
