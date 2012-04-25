@@ -179,6 +179,7 @@
 			<li><a href="javascript:void(0)" onclick="loadDemo('pushpopMatrixTutorial');">push and pop</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('animationstyleTutorial');">animation style</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('doonceTutorial');">do once</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('autocodeTutorial');">autocode</a></li>
 		</ul>
 	</li>
 	<li id="autocodeIndicatorContainer" onClick="toggleAutocode();"><a id="autocodeIndicator" href="javascript:void(0)"  style="text-decoration:none;">Autocode: off</a>
@@ -3165,7 +3166,7 @@ var turbineDemo = ""+
 ""+		"\n"+
 ""+		"background 155,55,255\n"+
 ""+		"70 times ->\n"+
-"\t"+		"rotate millisecs/10001,1,millisecs/10000\n"+
+"\t"+		"rotate millisecs/100000,1,millisecs/100000\n"+
 "\t"+		"box\n";
 
 var littleSpiralOfCubes = ""+
@@ -3312,7 +3313,8 @@ var introTutorial = ""+
 ""+		'// about 30 to 60 times per second\n'+
 ""+		'// in order to create an animation.\n'+
 ""+		"\n"+
-""+		"// Click the link below to start the tutorial:\n"+
+""+		"// Click the link below to start the tutorial.\n"+
+""+		"// (it might need multiple clicks, it's weird like that)\n"+
 ""+		"// next-tutorial:hello_world";
 
 var helloworldTutorial = ""+
@@ -3322,7 +3324,7 @@ var helloworldTutorial = ""+
 ""+		"\n"+
 ""+		"\n"+
 ""+		"\n"+
-""+		"// (you should see a box facing you)\n"+
+""+		"// (you should then see a box facing you)\n"+
 ""+		"// click below for the next tutorial\n"+
 ""+		"// next-tutorial:some_notes";
 
@@ -3387,7 +3389,7 @@ var translateTutorial = ""+
 ""+		"\n"+
 ""+		'// try to use a rotate before \n'+
 ""+		"// the first box to see how the\n"+
-""+		"// scene is affected.\n"+
+""+		"// scene changes.\n"+
 ""+		"// next-tutorial:scale";
 
 var scaleTutorial = ""+
@@ -3402,7 +3404,7 @@ var scaleTutorial = ""+
 ""+		"\n"+
 ""+		'// try to use a rotate before \n'+
 ""+		"// the first box to see how the\n"+
-""+		"// scene is affected.\n"+
+""+		"// scene changes.\n"+
 ""+		"// next-tutorial:times";
 
 var timesTutorial = ""+
@@ -3415,7 +3417,8 @@ var timesTutorial = ""+
 "\t"+		"box\n"+
 ""+		"\n"+
 ""+		'// note that the tabs indicate \n'+
-""+		"// exactly which parts are repeated.\n"+
+""+		"// exactly the block of code\n"+
+""+		"// to be repeated.\n"+
 ""+		"// next-tutorial:fill";
 
 var fillTutorial = ""+
@@ -3433,7 +3436,7 @@ var fillTutorial = ""+
 
 var strokeTutorial = ""+
 ""+		'// "stroke" changes all the\n'+
-""+		'// edges:"\n'+
+""+		'// edges:\n'+
 ""+		"\n"+
 ""+		"rotate 1\n"+
 ""+		"strokeSize 5\n"+
@@ -3448,7 +3451,7 @@ var strokeTutorial = ""+
 ""+		"// next-tutorial:lights";
 
 var lightsTutorial = ""+
-""+		'// "ambientoLight" creates an\n'+
+""+		'// "ambientLight" creates an\n'+
 ""+		'// ambient light so things have\n'+
 ""+		'// some sort of shading:\n'+
 ""+		"\n"+
@@ -3532,18 +3535,33 @@ var animationstyleTutorial = ""+
 ""+		"// next-tutorial:do_once";
 
 var doonceTutorial = ""+
-""+		'// try to delete the check\n'+
-""+		'// marks in the lines below\n'+
+""+		'// delete either check mark below\n'+
 ""+		"\n"+
 ""+		"rotate millisecs/1000\n"+
-""+		"box\n"+
 ""+		"✓doOnce ->\n"+
-"\t"+	   "sphere\n"+
-""+		"✓doOnce -> background 255\n"+
+"\t"+	   "background 255\n"+
+"\t"+	   "fill 255,0,0\n"+
+""+		"✓doOnce -> sphere\n"+
+""+		"box\n"+
 ""+		"\n"+
-""+		'// you see the line or block\n'+
-""+		'// are ran only once and the\n'+
-""+		'// check mark re-appears\n';
+""+		'// ...the line or block of code\n'+
+""+		'// are ran one time only, after that the\n'+
+""+		'// check marks immediately re-appear\n'+
+""+		'// P.S. keep pressed the delete button\n'+
+""+		'// on that first check mark for seizures.\n'+
+""+		"// next-tutorial:autocode";
+
+var autocodeTutorial = ""+
+""+		'// the Autocode button invents random\n'+
+""+		'// variations for you.\n'+
+""+		'\n'+
+""+		'// You can interrupt the Autocoder at\n'+
+""+		'// any time by pressing the button again,\n'+
+""+		'// or you can press CTRL-Z\n'+
+""+		'// (or CMD-Z on Macs) to undo some of\n'+
+""+		'// the steps even WHILE the autocoder is running,\n'+
+""+		'// if you see that things got\n'+
+""+		'// boring down a particular path of changes.';
 
 var autocodeOn = false;
 var blinkingAutocoderTimeout;
@@ -3572,6 +3590,13 @@ function toggleAutocode() {
 		$("#autocodeIndicator").html("Autocode: on");
 		blinkingAutocoderTimeout = setInterval('blinkAutocodeIndicator();',500);
 		$("#autocodeIndicatorContainer").css("background-color",'#FF0000');
+		if (editor.getValue() === '' ||
+			(
+				(window.location.hash.indexOf("bookmark")!==-1) &&
+				(window.location.hash.indexOf("autocodeTutorial")!==-1)
+			)
+
+		) loadDemo('cubesAndSpikes');
 	}
 }
 
@@ -3837,6 +3862,9 @@ function loadDemo(whichDemo) {
 			break;
 		case 'doonceTutorial':
 			editor.setValue(doonceTutorial);
+			break;
+		case 'autocodeTutorial':
+			editor.setValue(autocodeTutorial);
 			break;
 
 	}
