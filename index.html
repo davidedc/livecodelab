@@ -126,7 +126,7 @@
 		<div id="basic-modal-content">
 			<h3>What&apos;s this?</h3>
 			<p>This is a live coding environment: programs run immediately as they are typed.<br><br>Pick something from the "Demos" menu or try the tutorials.
-			<p>Want more info? <a href="http://www.sketchpatch.net/labs/livecodelabIntro.html"> See this</a>
+			<p>Want more info? <a href="http://www.sketchpatch.net/labs/livecodelabIntro.html"> See this.</a>
 			<p>Want to hack this? <a href="https://github.com/davidedc/livecodelab"> Grab the source code!</a>
 			</div>
 
@@ -153,6 +153,9 @@
 			<li><a href="javascript:void(0)" onclick="loadDemo('trySoundsDemo');">Sound: try them all</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('planesDemo');">Planes</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('diceDemo');">Dice</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('almostvoronoiDemo');">Almost Voronoi</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('shardsDemo');">Shards</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('pinkthreadDemo');">Pink thread</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('twocubesDemo');">WebGL: two cubes</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('turbineDemo');">WebGL: turbine</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('nuclearOctopusDemo');">WebGL: Nuclear octopus</a></li>
@@ -3281,6 +3284,32 @@ var diceDemo = ""+
 "\t\t"+		"translate 2,0,0\n"+
 "\t\t"+		"box";
 
+var almostvoronoiDemo = ""+
+""+		"scale 10\n"+
+""+		"2 times ->\n"+
+"\t"+		"rotate 0,1,millisecs/10000\n"+
+"\t"+		"sphere -1";
+
+var shardsDemo = ""+
+""+		"scale 10\n"+
+""+		"fill 0\n"+
+""+		"strokeSize 7\n"+
+""+		"5 times ->\n"+
+"\t"+		"rotate 0,1,millisecs/20000\n"+
+"\t"+		"sphere \n"+
+"\t"+		"rotate 0,1,1\n"+
+"\t"+		"sphere -1.01";
+
+var pinkthreadDemo = ""+
+""+		"scale 10.5\n"+
+""+		"stroke 255,55,255\n"+
+""+		"noFill\n"+
+""+		"strokeSize 7\n"+
+""+		"5 times ->\n"+
+"\t"+		"rotate millisecs/20000\n"+
+"\t"+		"sphere\n"+
+"\t"+		"rotate 0,1,1\n"+
+"\t"+		"sphere";
 
 var nuclearOctopusDemo = ""+
 ""+		"// this drawing will only be smooth\n"+
@@ -3802,6 +3831,15 @@ function loadDemo(whichDemo) {
 			break;
 		case 'diceDemo':
 			editor.setValue(diceDemo);
+			break;
+		case 'almostvoronoiDemo':
+			editor.setValue(almostvoronoiDemo);
+			break;
+		case 'shardsDemo':
+			editor.setValue(shardsDemo);
+			break;
+		case 'pinkthreadDemo':
+			editor.setValue(pinkthreadDemo);
 			break;
 		case 'nuclearOctopusDemo':
 			editor.setValue(nuclearOctopusDemo);
