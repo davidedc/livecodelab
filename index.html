@@ -1669,7 +1669,7 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/if\s*([a-zA-Z0-9]*)(\s*);/g, "if $1$2" );
         
       
-        console.log(elaboratedSource );
+        //console.log(elaboratedSource );
         out = CoffeeScript.compile(elaboratedSource, {
           bare: "on"
         });
@@ -2404,7 +2404,7 @@ scale = function(a, b, c) {
 					}
 				}
 				else if (!lightsAreOn){
-					console.log("rect: lights are not on");
+					//console.log("rect: lights are not on");
 					if (pooledRectangle.basicMaterial === undefined) {
 						pooledRectangle.basicMaterial = new THREE.MeshBasicMaterial({
 							color: colorToBeUsed,
