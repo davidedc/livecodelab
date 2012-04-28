@@ -169,7 +169,7 @@
 			<li><a href="javascript:void(0)" onclick="loadDemo('rotateTutorial');">rotate</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('frameTutorial');">frame</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('millisecsTutorial');">millisecs</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('translateTutorial');">translate</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('moveTutorial');">move</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('scaleTutorial');">scale</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('timesTutorial');">times</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('fillTutorial');">fill</a></li>
@@ -1646,7 +1646,7 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/\/\//g, "#" );
         elaboratedSource =  elaboratedSource.replace(/scale(\s)+/g, ";scale$1" );
         elaboratedSource =  elaboratedSource.replace(/rotate(\s)+/g, ";rotate$1" );
-        elaboratedSource =  elaboratedSource.replace(/translate(\s)+/g, ";translate$1" );
+        elaboratedSource =  elaboratedSource.replace(/move(\s)+/g, ";move$1" );
         elaboratedSource =  elaboratedSource.replace(/rect(\s)+/g, ";rect$1" );
         elaboratedSource =  elaboratedSource.replace(/line(\s)+/g, ";line$1" );
         elaboratedSource =  elaboratedSource.replace(/bpm(\s)+/g, ";bpm$1" );
@@ -1725,7 +1725,7 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "rect" ||
 			  usedMethods[scanningUsedMethods] === "line" ||
 			  usedMethods[scanningUsedMethods] === "box" ||
-			  usedMethods[scanningUsedMethods] === "translate" ||
+			  usedMethods[scanningUsedMethods] === "move" ||
 			  usedMethods[scanningUsedMethods] === "scale" ||
 			  usedMethods[scanningUsedMethods] === "alert" ||
 			  usedMethods[scanningUsedMethods] === "bpm" ||
@@ -2049,7 +2049,7 @@ function background(red, green, blue) {
     }
     
 
-var parentObject, rootObject, rotate, translate;
+var parentObject, rootObject, rotate, move;
 parentObject = 0;
 rootObject = 0;
 var currentObject;
@@ -2124,7 +2124,7 @@ resetMatrix = function(){
 	worldMatrix.identity();
 }
 
-translate = function(a, b, c) {
+move = function(a, b, c) {
   /*
   currentObject = new THREE.Object3D();
   currentObject.position.x = a;
@@ -3233,7 +3233,7 @@ var cubesAndSpikes = ""+
 ""+		"5 times ->\n"+
 "\t"+			"rotate 0,1,millisecs/5000\n"+
 "\t"+			"box 0.1,0.1,0.1\n"+
-"\t"+			"translate 0,0.1,0.1\n"+
+"\t"+			"move 0,0.1,0.1\n"+
 "\t"+			"3 times ->\n"+
 "\t\t"+				"rotate 0,1,1\n"+
 "\t\t"+				"box 0.01,0.01,1\n";
@@ -3252,7 +3252,7 @@ var littleSpiralOfCubes = ""+
 ""+		"scale 0.1\n"+
 ""+		"10 times ->\n"+
 "\t"+		"rotate 0,1,millisecs/1000\n"+
-"\t"+		"translate 1,1,1\n"+
+"\t"+		"move 1,1,1\n"+
 "\t"+		"box\n";
 
 var tentacleDemo = ""+
@@ -3263,7 +3263,7 @@ var tentacleDemo = ""+
 "\t"+		"10 times ->\n"+
 "\t\t"+		"rotate 0,1,millisecs/1000\n"+
 "\t\t"+		"scale 0.9\n"+
-"\t\t"+		"translate 1,1,1\n"+
+"\t\t"+		"move 1,1,1\n"+
 "\t\t"+		"box\n";
 
 var lampDemo = ""+
@@ -3275,9 +3275,9 @@ var lampDemo = ""+
 ""+		"90 times ->\n"+
 "\t"+		"rotate millisecs/200000, millisecs/200000,  millisecs/200000\n"+
 "\t"+		"line\n"+
-"\t"+		"translate 0.5,0,0\n"+
+"\t"+		"move 0.5,0,0\n"+
 "\t"+		"line\n"+
-"\t"+		"translate -0.5,0,0\n"+
+"\t"+		"move -0.5,0,0\n"+
 "\t"+		"line\n"+
 "\t"+		"line\n";
 
@@ -3339,10 +3339,10 @@ var planesDemo = ""+
 ""+		"simpleGradient color(255,0,255),color(100,200,200),color(255,255,0)\n"+
 ""+		"scale 0.3\n"+
 ""+		"3 times ->\n"+
-"\t"+		"translate 0,0,0.5\n"+
+"\t"+		"move 0,0,0.5\n"+
 "\t"+		"5 times ->\n"+
 "\t\t"+		"rotate millisecs/2000\n"+
-"\t\t"+	   "translate 0.7,0,0\n"+
+"\t\t"+	   "move 0.7,0,0\n"+
 "\t\t"+		"rect";
 
 var diceDemo = ""+
@@ -3350,13 +3350,13 @@ var diceDemo = ""+
 ""+		"simpleGradient color(255),color(255,255,0),color(255,255,0)\n"+
 ""+		"stroke 255,100,100,255\n"+
 ""+		"fill 255,0,0,155\n"+
-""+		"translate -0.5,0,0\n"+
+""+		"move -0.5,0,0\n"+
 ""+		"scale 0.3\n"+
 ""+		"3 times ->\n"+
-"\t"+		"translate 0,0,0.5\n"+
+"\t"+		"move 0,0,0.5\n"+
 "\t"+		"1 times ->\n"+
 "\t\t"+		"rotate millisecs/1000\n"+
-"\t\t"+		"translate 2,0,0\n"+
+"\t\t"+		"move 2,0,0\n"+
 "\t\t"+		"box";
 
 var almostvoronoiDemo = ""+
@@ -3392,7 +3392,7 @@ var nuclearOctopusDemo = ""+
 ""+		"\n"+
 ""+		"simpleGradient 0,color(0,0,(millisecs/5)%255),0\n"+
 ""+		"scale 0.2\n"+
-""+		"translate 5\n"+
+""+		"move 5\n"+
 ""+		"animationStyle motionBlur\n"+
 ""+		"//animationStyle paintOver\n"+
 ""+		"stroke 255,0,0,120\n"+
@@ -3405,7 +3405,7 @@ var nuclearOctopusDemo = ""+
 "\t"+		"rotate count+3+millisecs/1000,2+count + millisecs/1000,4+count\n"+
 "\t"+		"120 times ->\n"+
 "\t\t"+		"scale 0.9\n"+
-"\t\t"+		"translate 1,1,0\n"+
+"\t\t"+		"move 1,1,0\n"+
 "\t\t"+		"rotate millisecs/100\n"+
 "\t\t"+		"box\n"+
 "\t"+		"popMatrix";
@@ -3481,14 +3481,14 @@ var millisecsTutorial = ""+
 ""+		"// the program started, so it's\n"+
 ""+		"// independent of how fast\n"+
 ""+		"// the computer is at drawing.\n"+
-""+		"// next-tutorial:translate";
+""+		"// next-tutorial:move";
 
-var translateTutorial = ""+
+var moveTutorial = ""+
 ""+		"// you can move any object\n"+
-""+		'// by using "translate"\n'+
+""+		'// by using "move"\n'+
 ""+		"\n"+
 ""+		"box\n"+
-""+		"translate 1,1,0\n"+
+""+		"move 1,1,0\n"+
 ""+		"box\n"+
 ""+		"\n"+
 ""+		'// try to use a rotate before \n'+
@@ -3502,7 +3502,7 @@ var scaleTutorial = ""+
 ""+		"\n"+
 ""+		"rotate 3\n"+
 ""+		"box\n"+
-""+		"translate 1\n"+
+""+		"move 1\n"+
 ""+		"scale 2\n"+
 ""+		"box\n"+
 ""+		"\n"+
@@ -3517,7 +3517,7 @@ var timesTutorial = ""+
 ""+		"\n"+
 ""+		"rotate 1\n"+
 ""+		"3 times ->\n"+
-"\t"+		"translate 0.2,0.2,0.2\n"+
+"\t"+		"move 0.2,0.2,0.2\n"+
 "\t"+		"box\n"+
 ""+		"\n"+
 ""+		'// note that the tabs indicate \n'+
@@ -3602,7 +3602,7 @@ var sphereTutorial = ""+
 ""+		"\n"+
 ""+		"sphereDetail 10\n"+
 ""+		"3 times ->\n"+
-"\t"+		"translate 0.2,0.2,0.2\n"+
+"\t"+		"move 0.2,0.2,0.2\n"+
 "\t"+		"sphere\n"+
 ""+		"\n"+
 ""+		'// ("sphereDetail" is optional)\n'+
@@ -3617,10 +3617,10 @@ var pushpopMatrixTutorial = ""+
 ""+		"rotate millisecs/1000\n"+
 ""+		'pushMatrix // bookmark the position after the rotation\n'+
 ""+		"line\n"+
-""+		"translate 0.5,0,0\n"+
+""+		"move 0.5,0,0\n"+
 ""+		"line\n"+
 ""+		"popMatrix // go back to the bookmarked position\n"+
-""+		"translate -0.5,0,0\n"+
+""+		"move -0.5,0,0\n"+
 ""+		"line\n"+
 ""+		"resetMatrix // resets the position\n"+
 ""+		"line // not affected by initial rotation\n"+
@@ -3938,8 +3938,8 @@ function loadDemo(whichDemo) {
 		case 'millisecsTutorial':
 			editor.setValue(millisecsTutorial);
 			break;
-		case 'translateTutorial':
-			editor.setValue(translateTutorial);
+		case 'moveTutorial':
+			editor.setValue(moveTutorial);
 			break;
 		case 'scaleTutorial':
 			editor.setValue(scaleTutorial);
