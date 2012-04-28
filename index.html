@@ -133,7 +133,14 @@
 		<div id="noWebGLMessage">
 			<h3>Drag!</h3>
 			<p>Your browser doesn't seem to support 3D acceleration.<br>
-			<br>You'll still have fun, but you really want to try to <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" target="_blank">get the 3D party going in your browser</a>. (it's worth it). 
+			<br>You'll still have fun, but you really want to try to <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" target="_blank">get the 3D party going in your browser</a>.
+			<br>(psst! - it's worth it!). 
+		</div>
+
+		<div id="exampleNeedsWebgl">
+			<h3>Oh nooo.</h3>
+			<p>All these examples starting with "webgl" are going to look silly in your browser (which doesn't seem to support 3D acceleration).<br>
+			<br>Why not try to <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" target="_blank">get some awesome 3D situation started</a>? 
 		</div>
 
 
@@ -154,18 +161,18 @@
 			<li><a href="javascript:void(0)" onclick="loadDemo('cubesAndSpikes');">Cubes and spikes</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('littleSpiralOfCubes');">Little spiral</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('tentacleDemo');">Tentacle</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('planesDemo');">Planes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('diceDemo');">Dice</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('lampDemo');">Lamp</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('judgementDayDemo');">Sound: judgement day</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('industrialMusicDemo');">Sound: industrial</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemo('trySoundsDemo');">Sound: try them all</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('planesDemo');">Planes</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('diceDemo');">Dice</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('almostvoronoiDemo');">Almost Voronoi</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('shardsDemo');">Shards</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('pinkthreadDemo');">Pink thread</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('twocubesDemo');">WebGL: two cubes</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('turbineDemo');">WebGL: turbine</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemo('nuclearOctopusDemo');">WebGL: Nuclear octopus</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('webglalmostvoronoiDemo');">WebGL: Almost Voronoi</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('webglshardsDemo');">WebGL: Shards</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('webglpinkthreadDemo');">WebGL: Pink thread</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('webgltwocubesDemo');">WebGL: two cubes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('webglturbineDemo');">WebGL: turbine</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemo('webglnuclearOctopusDemo');">WebGL: Nuclear octopus</a></li>
 		</ul>
 	</li>
 	<li><a href="javascript:void(0)" style="text-decoration:none;">Tutorials</a>
@@ -305,6 +312,8 @@
 		var doTheSpinThingy = true;
 		var resetTheSpinThingy = false;
 		var SPINFRAMES = 30;
+
+		var userWarnedAboutWebglExamples = false;
 
 // Color constants, modified from processing.js
     aliceblue =            0xfff0f8ff ;
@@ -3367,10 +3376,7 @@ var simpleCubeDemo = ""+
 ""+		"rotate 0,millisecs/2000,millisecs/2000\n"+
 ""+		"box\n";
 
-var twocubesDemo = ""+
-""+		"// this drawing will only make sense\n"+
-""+		"// in a WebGL-enabled browser\n"+
-""+		"\n"+
+var webgltwocubesDemo = ""+
 ""+		"background 155,255,255\n"+
 ""+		"2 times ->\n"+
 "\t"+		"rotate 0, 1, millisecs/2000\n"+
@@ -3387,10 +3393,7 @@ var cubesAndSpikes = ""+
 "\t\t"+				"rotate 0,1,1\n"+
 "\t\t"+				"box 0.01,0.01,1\n";
 
-var turbineDemo = ""+
-""+		"// this drawing will only make sense\n"+
-""+		"// in a WebGL-enabled browser\n"+
-""+		"\n"+
+var webglturbineDemo = ""+
 ""+		"background 155,55,255\n"+
 ""+		"70 times ->\n"+
 "\t"+		"rotate millisecs/100000,1,millisecs/100000\n"+
@@ -3508,13 +3511,13 @@ var diceDemo = ""+
 "\t\t"+		"move 2,0,0\n"+
 "\t\t"+		"box";
 
-var almostvoronoiDemo = ""+
+var webglalmostvoronoiDemo = ""+
 ""+		"scale 10\n"+
 ""+		"2 times ->\n"+
 "\t"+		"rotate 0,1,millisecs/10000\n"+
 "\t"+		"sphere -1";
 
-var shardsDemo = ""+
+var webglshardsDemo = ""+
 ""+		"scale 10\n"+
 ""+		"fill 0\n"+
 ""+		"strokeSize 7\n"+
@@ -3524,7 +3527,7 @@ var shardsDemo = ""+
 "\t"+		"rotate 0,1,1\n"+
 "\t"+		"sphere -1.01";
 
-var pinkthreadDemo = ""+
+var webglpinkthreadDemo = ""+
 ""+		"scale 10.5\n"+
 ""+		"stroke 255,55,255\n"+
 ""+		"noFill\n"+
@@ -3535,10 +3538,7 @@ var pinkthreadDemo = ""+
 "\t"+		"rotate 0,1,1\n"+
 "\t"+		"sphere";
 
-var nuclearOctopusDemo = ""+
-""+		"// this drawing will only be smooth\n"+
-""+		"// in a WebGL-enabled browser\n"+
-""+		"\n"+
+var webglnuclearOctopusDemo = ""+
 ""+		"simpleGradient 0,color(0,0,(millisecs/5)%255),0\n"+
 ""+		"scale 0.2\n"+
 ""+		"move 5\n"+
@@ -4008,6 +4008,13 @@ function replaceAnInteger() {
 }
 function loadDemo(whichDemo) {
 
+	if (!Detector.webgl && !userWarnedAboutWebglExamples && whichDemo.indexOf('webgl') === 0) {
+		userWarnedAboutWebglExamples = true;
+		$('#exampleNeedsWebgl').modal();
+		$('#simplemodal-container').height(200);
+	}
+	
+	
 	// set the demo as a hash state
 	// so that ideally people can link directly to
 	// a specific demo they like.
@@ -4019,115 +4026,123 @@ function loadDemo(whichDemo) {
 	undimEditor();
 	
 	doTheSpinThingy = false;
+	
+	var prependMessage = "";
+	if (!Detector.webgl && whichDemo.indexOf('webgl') === 0) {
+		prependMessage = ""+
+		"// this drawing makes much more sense\n"+
+		"// in a WebGL-enabled browser\n"+
+		"\n";
+	}
 
 	switch(whichDemo) {
 		case 'simpleCubeDemo':
-			editor.setValue(simpleCubeDemo);
+			editor.setValue( prependMessage + simpleCubeDemo);
 			break;
-		case 'twocubesDemo':
-			editor.setValue(twocubesDemo);
+		case 'webgltwocubesDemo':
+			editor.setValue( prependMessage + webgltwocubesDemo);
 			break;
 		case 'cubesAndSpikes':
-			editor.setValue(cubesAndSpikes);
+			editor.setValue( prependMessage + cubesAndSpikes);
 			break;
-		case 'turbineDemo':
-			editor.setValue(turbineDemo);
+		case 'webglturbineDemo':
+			editor.setValue( prependMessage + webglturbineDemo);
 			break;
 		case 'littleSpiralOfCubes':
-			editor.setValue(littleSpiralOfCubes);
+			editor.setValue( prependMessage + littleSpiralOfCubes);
 			break;
 		case 'tentacleDemo':
-			editor.setValue(tentacleDemo);
+			editor.setValue( prependMessage + tentacleDemo);
 			break;
 		case 'lampDemo':
-			editor.setValue(lampDemo);
+			editor.setValue( prependMessage + lampDemo);
 			break;
 		case 'judgementDayDemo':
-			editor.setValue(judgementDayDemo);
+			editor.setValue( prependMessage + judgementDayDemo);
 			break;
 		case 'industrialMusicDemo':
-			editor.setValue(industrialMusicDemo);
+			editor.setValue( prependMessage + industrialMusicDemo);
 			break;
 		case 'trySoundsDemo':
-			editor.setValue(trySoundsDemo);
+			editor.setValue( prependMessage + trySoundsDemo);
 			break;
 		case 'planesDemo':
-			editor.setValue(planesDemo);
+			editor.setValue( prependMessage + planesDemo);
 			break;
 		case 'diceDemo':
-			editor.setValue(diceDemo);
+			editor.setValue( prependMessage + diceDemo);
 			break;
-		case 'almostvoronoiDemo':
-			editor.setValue(almostvoronoiDemo);
+		case 'webglalmostvoronoiDemo':
+			editor.setValue( prependMessage + webglalmostvoronoiDemo);
 			break;
-		case 'shardsDemo':
-			editor.setValue(shardsDemo);
+		case 'webglshardsDemo':
+			editor.setValue( prependMessage + webglshardsDemo);
 			break;
-		case 'pinkthreadDemo':
-			editor.setValue(pinkthreadDemo);
+		case 'webglpinkthreadDemo':
+			editor.setValue( prependMessage + webglpinkthreadDemo);
 			break;
-		case 'nuclearOctopusDemo':
-			editor.setValue(nuclearOctopusDemo);
+		case 'webglnuclearOctopusDemo':
+			editor.setValue( prependMessage + webglnuclearOctopusDemo);
 			break;
 		case 'introTutorial':
-			editor.setValue(introTutorial);
+			editor.setValue( prependMessage + introTutorial);
 			break;
 		case 'helloworldTutorial':
-			editor.setValue(helloworldTutorial);
+			editor.setValue( prependMessage + helloworldTutorial);
 			break;
 		case 'somenotesTutorial':
-			editor.setValue(somenotesTutorial);
+			editor.setValue( prependMessage + somenotesTutorial);
 			break;
 		case 'rotateTutorial':
-			editor.setValue(rotateTutorial);
+			editor.setValue( prependMessage + rotateTutorial);
 			break;
 		case 'frameTutorial':
-			editor.setValue(frameTutorial);
+			editor.setValue( prependMessage + frameTutorial);
 			break;
 		case 'millisecsTutorial':
-			editor.setValue(millisecsTutorial);
+			editor.setValue( prependMessage + millisecsTutorial);
 			break;
 		case 'moveTutorial':
-			editor.setValue(moveTutorial);
+			editor.setValue( prependMessage + moveTutorial);
 			break;
 		case 'scaleTutorial':
-			editor.setValue(scaleTutorial);
+			editor.setValue( prependMessage + scaleTutorial);
 			break;
 		case 'timesTutorial':
-			editor.setValue(timesTutorial);
+			editor.setValue( prependMessage + timesTutorial);
 			break;
 		case 'fillTutorial':
-			editor.setValue(fillTutorial);
+			editor.setValue( prependMessage + fillTutorial);
 			break;
 		case 'strokeTutorial':
-			editor.setValue(strokeTutorial);
+			editor.setValue( prependMessage + strokeTutorial);
 			break;
 		case 'lightsTutorial':
-			editor.setValue(lightsTutorial);
+			editor.setValue( prependMessage + lightsTutorial);
 			break;
 		case 'backgroundTutorial':
-			editor.setValue(backgroundTutorial);
+			editor.setValue( prependMessage + backgroundTutorial);
 			break;
 		case 'gradientTutorial':
-			editor.setValue(gradientTutorial);
+			editor.setValue( prependMessage + gradientTutorial);
 			break;
 		case 'lineTutorial':
-			editor.setValue(lineTutorial);
+			editor.setValue( prependMessage + lineTutorial);
 			break;
 		case 'sphereTutorial':
-			editor.setValue(sphereTutorial);
+			editor.setValue( prependMessage + sphereTutorial);
 			break;
 		case 'pushpopMatrixTutorial':
-			editor.setValue(pushpopMatrixTutorial);
+			editor.setValue( prependMessage + pushpopMatrixTutorial);
 			break;
 		case 'animationstyleTutorial':
-			editor.setValue(animationstyleTutorial);
+			editor.setValue( prependMessage + animationstyleTutorial);
 			break;
 		case 'doonceTutorial':
-			editor.setValue(doonceTutorial);
+			editor.setValue( prependMessage + doonceTutorial);
 			break;
 		case 'autocodeTutorial':
-			editor.setValue(autocodeTutorial);
+			editor.setValue( prependMessage + autocodeTutorial);
 			break;
 
 	}
