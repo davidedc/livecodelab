@@ -290,6 +290,14 @@
 		var consecutiveFramesWithoutRunTimeError = 0;
 		var out;
 		var lastStableProgram;
+		
+		// the "spinthingy" is because we want
+		// users who type "box" to see that it's actually
+		// a 3d environment. So the first few primitives
+		// spin for a few moments when they are created.
+		var doTheSpinThingy = true;
+		var resetTheSpinThingy = false;
+		var SPINFRAMES = 30;
 
 // Functions taken from processing.js
 
@@ -1321,6 +1329,7 @@ function registerCode() {
         }
         
         if (editorContent === '' && !fakeText) {
+			resetTheSpinThingy = true;
     		fakeText = true;
     		window.location.hash = '';
     	
@@ -2401,6 +2410,7 @@ scale = function(a, b, c) {
 					}
 					if (pooledRectangle.mesh === undefined){
 						pooledRectangle.mesh = new THREE.Mesh(planeGeometry, pooledRectangle.normalMaterial);
+						pooledRectangle.startCountdown = SPINFRAMES;
 					}
 					else {
 						//console.log("associating normal material to existing mesh");
@@ -2426,6 +2436,7 @@ scale = function(a, b, c) {
 					}
 					if (pooledRectangle.mesh === undefined){
 						pooledRectangle.mesh = new THREE.Mesh(planeGeometry, pooledRectangle.basicMaterial);
+						pooledRectangle.startCountdown = SPINFRAMES;
 					}
 					else {
 						pooledRectangle.mesh.material = pooledRectangle.basicMaterial;
@@ -2459,11 +2470,20 @@ scale = function(a, b, c) {
 					}
 					if (pooledRectangle.mesh === undefined){
 						pooledRectangle.mesh = new THREE.Mesh(planeGeometry, pooledRectangle.lambertMaterial);
+						pooledRectangle.startCountdown = SPINFRAMES;
 					}
 					else {
 						pooledRectangle.mesh.material = pooledRectangle.lambertMaterial;
 					}
 			}
+
+			if (resetTheSpinThingy) {
+				pooledRectangle.startCountdown = SPINFRAMES;
+				resetTheSpinThingy = false;
+				doTheSpinThingy = true;
+			}
+			if (doTheSpinThingy) pooledRectangle.startCountdown --;
+			if (pooledRectangle.startCountdown === -1) doTheSpinThingy = false;
 			
 			pooledRectangle.mesh.isLine = false;
 			pooledRectangle.mesh.isRectangle = true;
@@ -2475,9 +2495,20 @@ scale = function(a, b, c) {
 			
 			
 			usedRectangles++;
+
+			if (doTheSpinThingy && pooledRectangle.startCountdown > 0) {
+				pushMatrix();
+				rotate(pooledRectangle.startCountdown/50);			
+				console.log(""+pooledRectangle.startCountdown);			
+			}
+			
 			pooledRectangle.mesh.matrixAutoUpdate = false;
 			pooledRectangle.mesh.matrix.copy(worldMatrix);
 			pooledRectangle.mesh.matrixWorldNeedsUpdate = true;
+
+			if (doTheSpinThingy && pooledRectangle.startCountdown > 0) {
+				popMatrix();
+			}
 
 			if( a !== 1 || b !== 1){
 				pooledRectangle.mesh.matrix.scale(new THREE.Vector3(a,b,1));
@@ -2786,6 +2817,7 @@ scale = function(a, b, c) {
 					}
 					if (pooledBox.mesh === undefined){
 						pooledBox.mesh = new THREE.Mesh(cubeGeometry, pooledBox.normalMaterial);
+						pooledBox.startCountdown = SPINFRAMES;
 					}
 					else {
 						//console.log("associating normal material to existing mesh");
@@ -2810,6 +2842,7 @@ scale = function(a, b, c) {
 					}
 					if (pooledBox.mesh === undefined){
 						pooledBox.mesh = new THREE.Mesh(cubeGeometry, pooledBox.basicMaterial);
+						pooledBox.startCountdown = SPINFRAMES;
 					}
 					else {
 						pooledBox.mesh.material = pooledBox.basicMaterial;
@@ -2842,12 +2875,21 @@ scale = function(a, b, c) {
 					}
 					if (pooledBox.mesh === undefined){
 						pooledBox.mesh = new THREE.Mesh(cubeGeometry, pooledBox.lambertMaterial);
+						pooledBox.startCountdown = SPINFRAMES;
 					}
 					else {
 						pooledBox.mesh.material = pooledBox.lambertMaterial;
 					}
 			}
 			
+			if (resetTheSpinThingy) {
+				pooledBox.startCountdown = SPINFRAMES;
+				resetTheSpinThingy = false;
+				doTheSpinThingy = true;
+			}
+			if (doTheSpinThingy) pooledBox.startCountdown --;
+			if (pooledBox.startCountdown === -1) doTheSpinThingy = false;
+						
 			pooledBox.mesh.isLine = false;
 			pooledBox.mesh.isRectangle = false;
 			pooledBox.mesh.isBox = true;
@@ -2858,9 +2900,20 @@ scale = function(a, b, c) {
 			
 						
 			usedBoxes++;
+			
+			if (doTheSpinThingy && pooledBox.startCountdown > 0) {
+				pushMatrix();
+				rotate(pooledBox.startCountdown/50);			
+				console.log(""+pooledBox.startCountdown);			
+			}
+			
 			pooledBox.mesh.matrixAutoUpdate = false;
 			pooledBox.mesh.matrix.copy(worldMatrix);
 			pooledBox.mesh.matrixWorldNeedsUpdate = true;
+
+			if (doTheSpinThingy && pooledBox.startCountdown > 0) {
+				popMatrix();
+			}
 
 			// TODO: meshes should be built from geometries that are
 			// ever so slight larger than the "fill" mesh so there
@@ -3015,6 +3068,7 @@ scale = function(a, b, c) {
 							//console.log('creating sphere geometry of detail ' + sphereDetLevel);
 						}
 						pooledSphere.mesh = new THREE.Mesh(pooledSphereGeometry, pooledSphere.normalMaterial);
+						pooledSphere.startCountdown = SPINFRAMES;
 					}
 					else {
 						//console.log("associating normal material to existing mesh");
@@ -3045,6 +3099,7 @@ scale = function(a, b, c) {
 							//console.log('creating sphere geometry of detail ' + sphereDetLevel);
 						}
 						pooledSphere.mesh = new THREE.Mesh(pooledSphereGeometry, pooledSphere.basicMaterial);
+						pooledSphere.startCountdown = SPINFRAMES;
 					}
 					else {
 						pooledSphere.mesh.material = pooledSphere.basicMaterial;
@@ -3083,11 +3138,20 @@ scale = function(a, b, c) {
 							//console.log('creating sphere geometry of detail ' + sphereDetLevel);
 						}
 						pooledSphere.mesh = new THREE.Mesh(pooledSphereGeometry, pooledSphere.lambertMaterial);
+						pooledSphere.startCountdown = SPINFRAMES;
 					}
 					else {
 						pooledSphere.mesh.material = pooledSphere.lambertMaterial;
 					}
 			}
+
+			if (resetTheSpinThingy) {
+				pooledSphere.startCountdown = SPINFRAMES;
+				resetTheSpinThingy = false;
+				doTheSpinThingy = true;
+			}
+			if (doTheSpinThingy) pooledSphere.startCountdown --;
+			if (pooledSphere.startCountdown === -1) doTheSpinThingy = false;
 			
 			pooledSphere.mesh.isLine = false;
 			pooledSphere.mesh.isRectangle = false;
@@ -3099,9 +3163,20 @@ scale = function(a, b, c) {
 			
 						
 			usedSpheres[''+sphereDetLevel] = usedSpheres[''+sphereDetLevel]+1;
+
+			if (doTheSpinThingy && pooledSphere.startCountdown > 0) {
+				pushMatrix();
+				rotate(pooledSphere.startCountdown/50);			
+				console.log(""+pooledSphere.startCountdown);			
+			}
+
 			pooledSphere.mesh.matrixAutoUpdate = false;
 			pooledSphere.mesh.matrix.copy(worldMatrix);
 			pooledSphere.mesh.matrixWorldNeedsUpdate = true;
+
+			if (doTheSpinThingy && pooledSphere.startCountdown > 0) {
+				popMatrix();
+			}
 
 			// TODO: meshes should be built from geometries that are
 			// ever so slight larger than the "fill" mesh so there
@@ -3794,6 +3869,7 @@ function loadDemo(whichDemo) {
 	if (fakeText) shrinkFakeText();
 	undimEditor();
 	
+	doTheSpinThingy = false;
 
 	switch(whichDemo) {
 		case 'simpleCubeDemo':
