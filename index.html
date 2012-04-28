@@ -161,7 +161,7 @@
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('cubesAndSpikes');">Cubes and spikes</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('littleSpiralOfCubes');">Little spiral</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('tentacleDemo');">Tentacle</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('planesDemo');">Planes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('springysquaresDemo');">Springy squares</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('diceDemo');">Dice</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('lampDemo');">Lamp</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('judgementDayDemo');">Sound: judgement day</a></li>
@@ -3489,7 +3489,7 @@ var trySoundsDemo = ""+
 ""+		"//addSound 'hello','zzxz zzzz zzxz zzzz'\n"+
 ""+		"//addSound 'alienBeep','zzxz zzzz zzxz zzzz'\n";
 
-var planesDemo = ""+
+var springysquaresDemo = ""+
 ""+		"animationStyle motionBlur\n"+
 ""+		"simpleGradient color(255,0,255),color(100,200,200),color(255,255,0)\n"+
 ""+		"scale 0.3\n"+
@@ -4069,8 +4069,8 @@ function loadDemoOrTutorial(whichDemo) {
 		case 'trySoundsDemo':
 			editor.setValue( prependMessage + trySoundsDemo);
 			break;
-		case 'planesDemo':
-			editor.setValue( prependMessage + planesDemo);
+		case 'springysquaresDemo':
+			editor.setValue( prependMessage + springysquaresDemo);
 			break;
 		case 'diceDemo':
 			editor.setValue( prependMessage + diceDemo);
