@@ -4260,6 +4260,20 @@ function dimIfNoCursorActivity(){
 }
 
 $(document).ready(function(){
+
+	//alert('resizing canvas');
+	var canvas = document.getElementById('backGroundCanvas');
+	
+	if (fullScreenifyBackground) {
+		fullscreenify(canvas);
+	}
+	resetGradientStack();
+	simpleGradientUpdateIfChanged();
+		
+
+	$('#startingCourtainScreen').fadeOut();
+	$("#formCode").css('opacity',0);
+
 	editor.focus();
 	adjustCodeMirrorHeight();
 	
@@ -4286,27 +4300,6 @@ $(document).ready(function(){
 
 
 ///////////////////////////////////////////////
-
-window.addEventListener(
-    'load',
-    function () {
-        //alert('resizing canvas');
-        var canvas = document.getElementById('backGroundCanvas');
-
-        if (fullScreenifyBackground) {
-        	fullscreenify(canvas);
-        }
-		resetGradientStack();
-		simpleGradientUpdateIfChanged();
-		
-
-		$('#startingCourtainScreen').fadeOut();
-
-		  $("#formCode").css('opacity',0);
-
-    },
-    false
-);
 
 function fullscreenify(canvas) {
     var style = canvas.getAttribute('style') || '';
