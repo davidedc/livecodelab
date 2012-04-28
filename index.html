@@ -123,12 +123,19 @@
 
 
 		<!-- modal content -->
-		<div id="basic-modal-content">
+		<div id="aboutWindow">
 			<h3>What&apos;s this?</h3>
 			<p>This is a live coding environment: programs run immediately as they are typed.<br><br>Pick something from the "Demos" menu or try the tutorials.
 			<p>Want more info? <a href="http://www.sketchpatch.net/labs/livecodelabIntro.html"> See this.</a>
 			<p>Want to hack this? <a href="https://github.com/davidedc/livecodelab"> Grab the source code!</a>
-			</div>
+		</div>
+
+		<div id="noWebGLMessage">
+			<h3>Drag!</h3>
+			<p>Your browser doesn't seem to support 3D acceleration.<br>
+			<br>You'll still have fun, but you really want to try to <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" target="_blank">get the 3D party going in your browser</a>. (it's worth it). 
+		</div>
+
 
 <div id="theMenu" style="position: absolute;  z-index:3; top: 0px; left: 0px; width:100%">
 
@@ -136,7 +143,7 @@
 
 	<li><a href="javascript:void(0)" style="text-decoration:none; color:red;">LIVECODELAB</a>
 		<ul>
-			<li><a href="javascript:void(0)" onclick="$('#basic-modal-content').modal();">What&apos;s this?</a></li>
+			<li><a href="javascript:void(0)" onclick="$('#aboutWindow').modal();$('#simplemodal-container').height(250);">What&apos;s this?</a></li>
 		</ul>
 	</li>
 
@@ -4260,7 +4267,12 @@ function dimIfNoCursorActivity(){
 }
 
 $(document).ready(function(){
-
+	
+	if (!Detector.webgl) {
+		$('#noWebGLMessage').modal();
+		$('#simplemodal-container').height(200);
+	}
+	
 	//alert('resizing canvas');
 	var canvas = document.getElementById('backGroundCanvas');
 	

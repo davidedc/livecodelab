@@ -17,7 +17,7 @@ jQuery(function ($) {
 
 	// Load dialog on click
 	$('#basic-modal .basic').click(function (e) {
-		$('#basic-modal-content').modal();
+		$('#aboutWindow').modal();
 
 		return false;
 	});
