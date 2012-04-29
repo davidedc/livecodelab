@@ -227,6 +227,8 @@
 	</li>
 	<li id="autocodeIndicatorContainer" onClick="toggleAutocode();"><a id="autocodeIndicator" href="javascript:void(0)"  style="text-decoration:none;">Autocode: off</a>
 	</li>
+	<li id="resetButtonContainer" onClick="triggerReset();"><a id="resetButton" href="javascript:void(0)"  style="text-decoration:none;">Reset</a>
+	</li>
 	<li id="dangerSign" style="border-right:none;"><a href="" id="dangerSignText" style="font-size:2em;margin-top:-0.3em;">!</a>
 	</li>
 	<li id="errorMessage" style="border-right:none;"><a href="javascript:void(0)" id="errorMessageText" ></a>
@@ -2848,7 +2850,52 @@ scale = function(a, b, c) {
 
     
   }
+
   var gradStack = [];
+  var defaultGradientColor1 = orange;
+  var defaultGradientColor2 = red;
+  var defaultGradientColor3 = black;
+  var whichDefaultBackground;
+
+  pickRandomDefaultGradient = function() {  
+	if (whichDefaultBackground === undefined) {
+		whichDefaultBackground = Math.floor(Math.random() * 5);
+	}
+	else {
+		whichDefaultBackground = (whichDefaultBackground+1)%5;
+	}
+	
+	  if (whichDefaultBackground === 0){
+		  defaultGradientColor1 = orange;
+		  defaultGradientColor2 = red;
+		  defaultGradientColor3 = black;
+		  $("#fakeStartingBlinkingCursor").css('color','white');
+	  }
+	  else if (whichDefaultBackground === 1){
+		  defaultGradientColor1 = white;
+		  defaultGradientColor2 = khaki;
+		  defaultGradientColor3 = peachpuff;
+		  $("#fakeStartingBlinkingCursor").css('color','LightPink');
+	  }
+	  else if (whichDefaultBackground === 2){
+		  defaultGradientColor1 = lightsteelblue;
+		  defaultGradientColor2 = lightcyan;
+		  defaultGradientColor3 = paleturquoise;
+		  $("#fakeStartingBlinkingCursor").css('color','CadetBlue');
+	  }
+	  else if (whichDefaultBackground === 3){
+		  defaultGradientColor1 = silver;
+		  defaultGradientColor2 = lightgrey;
+		  defaultGradientColor3 = gainsboro;
+		  $("#fakeStartingBlinkingCursor").css('color','white');
+	  }
+	  else if (whichDefaultBackground === 4){
+		  defaultGradientColor1 = color(155,255,155);
+		  defaultGradientColor2 = color(155,255,155);
+		  defaultGradientColor3 = color(155,255,155);
+		  $("#fakeStartingBlinkingCursor").css('color','DarkOliveGreen');
+	  }
+  }
 
   resetGradientStack = function() {
   	currentGradientStackValue = "";
@@ -2858,7 +2905,7 @@ scale = function(a, b, c) {
   	gradStack = [];
 
 	//simpleGradient(color(70),color(30),color(0),1);
-	simpleGradient(orange,red,black);
+	simpleGradient(defaultGradientColor1,defaultGradientColor2,defaultGradientColor3);
 
   }
 
@@ -3969,7 +4016,7 @@ var blinkingAutocoderStatus = false;
 function blinkAutocodeIndicator() {
 	blinkingAutocoderStatus = !blinkingAutocoderStatus;
 	if (blinkingAutocoderStatus){
-		$("#autocodeIndicatorContainer").css("background-color",'#000000');
+		$("#autocodeIndicatorContainer").css("background-color",'');
 	}
 	else {
 		$("#autocodeIndicatorContainer").css("background-color",'#FF0000');
@@ -3983,7 +4030,7 @@ function toggleAutocode() {
 	if (!autocodeOn) {
 		$("#autocodeIndicator").html("Autocode: off");
 		clearInterval(blinkingAutocoderTimeout);
-		$("#autocodeIndicatorContainer").css("background-color",'#000000');
+		$("#autocodeIndicatorContainer").css("background-color",'');
 	}
 	else {
 		$("#autocodeIndicator").html("Autocode: on");
@@ -4152,6 +4199,15 @@ function replaceAnInteger() {
 		editor.setValue(editorContent);
 
 }
+
+function triggerReset() {
+	pickRandomDefaultGradient();
+	if (autocodeOn) toggleAutocode();
+	editor.setValue('');
+	$("#resetButtonContainer").css("background-color",'#FF0000');
+	setTimeout('$("#resetButtonContainer").css("background-color","");',200);
+}
+
 function loadDemoOrTutorial(whichDemo) {
 
 	if (!Detector.webgl && !userWarnedAboutWebglExamples && whichDemo.indexOf('webgl') === 0) {
@@ -4508,6 +4564,7 @@ $(document).ready(function(){
 });
 
 startEnvironment = function(){
+	pickRandomDefaultGradient();
 		
 	//console.log("startEnvironment");
 	if( !init() )	animate();
