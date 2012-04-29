@@ -217,7 +217,7 @@
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('backgroundTutorial');">background</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('gradientTutorial');">gradient</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('lineTutorial');">line</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('sphereTutorial');">sphere</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('ballTutorial');">ball</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('pushpopMatrixTutorial');">push and pop</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('animationstyleTutorial');">animation style</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('doonceTutorial');">do once</a></li>
@@ -269,7 +269,9 @@
 		var linesPool = [];
 		var rectanglesPool = [];
 		var boxesPool = [];
-		// spheres can have different geometries
+		// spheres have different geometries
+		// depending on the detail level,
+		// which can be set at whim
 		var spheresPool = {};
 		var sphereGeometriesPool = {};
 		var ambientLightsPool = [];
@@ -280,8 +282,8 @@
 		var usedAmbientLights = 0;
 		var usedPointLights = 0;
 		var usedSpheres = {};
-		var sphereDefaultDetLevel;
-		var sphereDetLevel;
+		var ballDefaultDetLevel;
+		var ballDetLevel;
 		var currentStrokeSize = 1;
 		var cubeGeometry = new THREE.CubeGeometry(1,1,1);
 		var planeGeometry = new THREE.PlaneGeometry(1,1);
@@ -1233,7 +1235,7 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
 
 			if( Detector.webgl && !forceCanvasRenderer ){
 
-				sphereDefaultDetLevel = 16;
+				ballDefaultDetLevel = 16;
 				sceneRenderingCanvas = document.createElement('canvas');
 				
 				renderer = new THREE.WebGLRenderer({
@@ -1264,7 +1266,7 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
 			
 			 // we always draw the 3d scene off-screen
 				
-				sphereDefaultDetLevel = 2;
+				ballDefaultDetLevel = 6;
 				sceneRenderingCanvas = document.createElement('canvas');
 				sceneRenderingCanvasContext = sceneRenderingCanvas.getContext('2d');
 				renderer	= new THREE.CanvasRenderer({
@@ -1869,8 +1871,8 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/noLights(\s)+/g, ";noLights$1" );
         elaboratedSource =  elaboratedSource.replace(/ambientLight(\s)+/g, ";ambientLight$1" );
         elaboratedSource =  elaboratedSource.replace(/pointLight(\s)+/g, ";pointLight$1" );
-        elaboratedSource =  elaboratedSource.replace(/sphere(\s)+/g, ";sphere$1" );
-        elaboratedSource =  elaboratedSource.replace(/sphereDetail(\s)+/g, ";sphereDetail$1" );
+        elaboratedSource =  elaboratedSource.replace(/ball(\s)+/g, ";ball$1" );
+        elaboratedSource =  elaboratedSource.replace(/ballDetail(\s)+/g, ";ballDetail$1" );
 
         // the semicolon mangles the first line of the function definitions
         // coffeescript doesn't like that
@@ -1955,8 +1957,8 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "noLights" ||
 			  usedMethods[scanningUsedMethods] === "ambientLight" ||
 			  usedMethods[scanningUsedMethods] === "pointLight" ||
-			  usedMethods[scanningUsedMethods] === "sphere" ||
-			  usedMethods[scanningUsedMethods] === "sphereDetail" ||
+			  usedMethods[scanningUsedMethods] === "ball" ||
+			  usedMethods[scanningUsedMethods] === "ballDetail" ||
 			  false
 		  ){
 		  	continue;
@@ -2142,7 +2144,7 @@ function background(r, g, b) {
 			  currentStrokeSize = 1;
  			 defaultNormalFill = true;
  			 defaultNormalStroke = true;
- 			 sphereDetLevel = sphereDefaultDetLevel;
+ 			 ballDetLevel = ballDefaultDetLevel;
 			  noLights();
 			  usedLines = 0;
 			  usedRectangles = 0;
@@ -2152,7 +2154,7 @@ function background(r, g, b) {
 			  // In theory there is no need to chuck away the
 			  // counter altogether, you could go through
 			  // the existing counters contained in this object
-			  // (one for each sphere detail ever used)
+			  // (one for each ball detail ever used)
 			  // and set it to zero. That would maybe save
 			  // some garbage collection time.
 			  // But it's probably not worth it...
@@ -3192,13 +3194,14 @@ scale = function(a, b, c) {
 
   }
 
-  sphereDetail = function(a) {
+  ballDetail = function(a) {
 	if (a === undefined) return;
 	if (a < 2) a = 2;
-	sphereDetLevel = a;
+	if (a > 30) a = 30;
+	ballDetLevel = a;
   }
 
-  sphere = function(a) {
+  ball = function(a) {
 	var pooledSphereGeometry;
   	// simple case - if there is no fill and
   	// no stroke then there is nothing to do.
@@ -3227,7 +3230,7 @@ scale = function(a, b, c) {
   	//console.log("si: " + startIndex + " endI: " + endIndex );
 
   	if(a === undefined){
-  	  //alert('sphere!')
+  	  //alert('ball!')
   	  a=1;
   	  }
 
@@ -3249,15 +3252,15 @@ scale = function(a, b, c) {
 			colorToBeUsed = currentFillColor;
 			alphaToBeUsed = currentFillAlpha;
 		}
-			if (spheresPool[''+sphereDetLevel] === undefined) {
-				spheresPool[''+sphereDetLevel] = [];
-				//console.log('creating pool for sphere det level ' + sphereDetLevel);
+			if (spheresPool[''+ballDetLevel] === undefined) {
+				spheresPool[''+ballDetLevel] = [];
+				//console.log('creating pool for ball det level ' + ballDetLevel);
 			}
-			if (usedSpheres[''+sphereDetLevel] === undefined) {
-				usedSpheres[''+sphereDetLevel] = 0;
-				//console.log('creating counter for sphere det level ' + sphereDetLevel);
+			if (usedSpheres[''+ballDetLevel] === undefined) {
+				usedSpheres[''+ballDetLevel] = 0;
+				//console.log('creating counter for ball det level ' + ballDetLevel);
 			}
-			var pooledSphere = spheresPool[''+sphereDetLevel][usedSpheres[''+sphereDetLevel]];
+			var pooledSphere = spheresPool[''+ballDetLevel][usedSpheres[''+ballDetLevel]];
 			if ( pooledSphere === undefined){
 			  // each pooled sphere contains a geometry,
 			  // a basic material and a lambert material.
@@ -3280,8 +3283,8 @@ scale = function(a, b, c) {
 					mesh: undefined
 			  };
 			  newSphereCreated = true;
-			  spheresPool[''+sphereDetLevel].push(pooledSphere);
-			  //console.log('making space for pool for sphere , size of pool for spheres of detail ' + sphereDetLevel + ' is ' + spheresPool[''+sphereDetLevel].length);
+			  spheresPool[''+ballDetLevel].push(pooledSphere);
+			  //console.log('making space for pool for sphere , size of pool for spheres of detail ' + ballDetLevel + ' is ' + spheresPool[''+ballDetLevel].length);
 			}
 			var applyDefaultNormalColor = false;
 			if (!strokeTime) {
@@ -3323,11 +3326,11 @@ scale = function(a, b, c) {
 						pooledSphere.normalMaterial.doubleSided = false;
 					}
 					if (pooledSphere.mesh === undefined){
-						pooledSphereGeometry = sphereGeometriesPool[''+sphereDetLevel];
+						pooledSphereGeometry = sphereGeometriesPool[''+ballDetLevel];
 						if ( pooledSphereGeometry === undefined) {
-							pooledSphereGeometry = new THREE.SphereGeometry(1,sphereDetLevel,sphereDetLevel);
-							sphereGeometriesPool[''+sphereDetLevel] = pooledSphereGeometry;
-							//console.log('creating sphere geometry of detail ' + sphereDetLevel);
+							pooledSphereGeometry = new THREE.SphereGeometry(1,ballDetLevel,ballDetLevel);
+							sphereGeometriesPool[''+ballDetLevel] = pooledSphereGeometry;
+							//console.log('creating ball geometry of detail ' + ballDetLevel);
 						}
 						pooledSphere.mesh = new THREE.Mesh(pooledSphereGeometry, pooledSphere.normalMaterial);
 						pooledSphere.startCountdown = SPINFRAMES;
@@ -3354,11 +3357,11 @@ scale = function(a, b, c) {
 						pooledSphere.basicMaterial.doubleSided = false;
 					}
 					if (pooledSphere.mesh === undefined){
-						pooledSphereGeometry = sphereGeometriesPool[''+sphereDetLevel];
+						pooledSphereGeometry = sphereGeometriesPool[''+ballDetLevel];
 						if ( pooledSphereGeometry === undefined) {
-							pooledSphereGeometry = new THREE.SphereGeometry(1,sphereDetLevel,sphereDetLevel);
-							sphereGeometriesPool[''+sphereDetLevel] = pooledSphereGeometry;
-							//console.log('creating sphere geometry of detail ' + sphereDetLevel);
+							pooledSphereGeometry = new THREE.SphereGeometry(1,ballDetLevel,ballDetLevel);
+							sphereGeometriesPool[''+ballDetLevel] = pooledSphereGeometry;
+							//console.log('creating ball geometry of detail ' + ballDetLevel);
 						}
 						pooledSphere.mesh = new THREE.Mesh(pooledSphereGeometry, pooledSphere.basicMaterial);
 						pooledSphere.startCountdown = SPINFRAMES;
@@ -3393,11 +3396,11 @@ scale = function(a, b, c) {
 						pooledSphere.lambertMaterial.refractionRatio = refractValue;
 					}
 					if (pooledSphere.mesh === undefined){
-						pooledSphereGeometry = sphereGeometriesPool[''+sphereDetLevel];
+						pooledSphereGeometry = sphereGeometriesPool[''+ballDetLevel];
 						if ( pooledSphereGeometry === undefined) {
-							pooledSphereGeometry = new THREE.SphereGeometry(1,sphereDetLevel,sphereDetLevel);
-							sphereGeometriesPool[''+sphereDetLevel] = pooledSphereGeometry;
-							//console.log('creating sphere geometry of detail ' + sphereDetLevel);
+							pooledSphereGeometry = new THREE.SphereGeometry(1,ballDetLevel,ballDetLevel);
+							sphereGeometriesPool[''+ballDetLevel] = pooledSphereGeometry;
+							//console.log('creating ball geometry of detail ' + ballDetLevel);
 						}
 						pooledSphere.mesh = new THREE.Mesh(pooledSphereGeometry, pooledSphere.lambertMaterial);
 						pooledSphere.startCountdown = SPINFRAMES;
@@ -3420,11 +3423,11 @@ scale = function(a, b, c) {
 			pooledSphere.mesh.isBox = false;
 			pooledSphere.mesh.isAmbientLight = false;
 			pooledSphere.mesh.isPointLight = false;
-			pooledSphere.mesh.isSphere = sphereDetLevel;
+			pooledSphere.mesh.isSphere = ballDetLevel;
 			pooledSphere.mesh.doubleSided = false;
 			
 						
-			usedSpheres[''+sphereDetLevel] = usedSpheres[''+sphereDetLevel]+1;
+			usedSpheres[''+ballDetLevel] = usedSpheres[''+ballDetLevel]+1;
 
 			if (doTheSpinThingy && pooledSphere.startCountdown > 0) {
 				pushMatrix();
@@ -3622,7 +3625,7 @@ var webglalmostvoronoiDemo = ""+
 ""+		"scale 10\n"+
 ""+		"2 times ->\n"+
 "\t"+		"rotate 0,1,millisecs/10000\n"+
-"\t"+		"sphere -1";
+"\t"+		"ball -1";
 
 var webglshardsDemo = ""+
 ""+		"scale 10\n"+
@@ -3630,9 +3633,9 @@ var webglshardsDemo = ""+
 ""+		"strokeSize 7\n"+
 ""+		"5 times ->\n"+
 "\t"+		"rotate 0,1,millisecs/20000\n"+
-"\t"+		"sphere \n"+
+"\t"+		"ball \n"+
 "\t"+		"rotate 0,1,1\n"+
-"\t"+		"sphere -1.01";
+"\t"+		"ball -1.01";
 
 var webglpinkthreadDemo = ""+
 ""+		"scale 10.5\n"+
@@ -3641,9 +3644,9 @@ var webglpinkthreadDemo = ""+
 ""+		"strokeSize 7\n"+
 ""+		"5 times ->\n"+
 "\t"+		"rotate millisecs/20000\n"+
-"\t"+		"sphere\n"+
+"\t"+		"ball\n"+
 "\t"+		"rotate 0,1,1\n"+
-"\t"+		"sphere";
+"\t"+		"ball";
 
 var webglnuclearOctopusDemo = ""+
 ""+		"simpleGradient 0,color(0,0,(millisecs/5)%255),0\n"+
@@ -3851,17 +3854,17 @@ var lineTutorial = ""+
 "\t"+		"rotate millisecs/9000\n"+
 "\t"+		"line\n"+
 ""+		"\n"+
-""+		"// next-tutorial:sphere";
+""+		"// next-tutorial:ball";
 
-var sphereTutorial = ""+
-""+		'// draw spheres like this:\n'+
+var ballTutorial = ""+
+""+		'// draw balls like this:\n'+
 ""+		"\n"+
-""+		"sphereDetail 10\n"+
+""+		"ballDetail 10\n"+
 ""+		"3 times ->\n"+
 "\t"+		"move 0.2,0.2,0.2\n"+
-"\t"+		"sphere\n"+
+"\t"+		"ball\n"+
 ""+		"\n"+
-""+		'// ("sphereDetail" is optional)\n'+
+""+		'// ("ballDetail" is optional)\n'+
 ""+		"// next-tutorial:pushpopMatrix";
 
 var pushpopMatrixTutorial = ""+
@@ -3901,7 +3904,7 @@ var doonceTutorial = ""+
 ""+		"✓doOnce ->\n"+
 "\t"+	   "background 255\n"+
 "\t"+	   "fill 255,0,0\n"+
-""+		"✓doOnce -> sphere\n"+
+""+		"✓doOnce -> ball\n"+
 ""+		"box\n"+
 ""+		"\n"+
 ""+		'// ...the line or block of code\n'+
@@ -3967,9 +3970,9 @@ function mutate() {
 		else if (whichMutation == 1)
 		replaceAnInteger();
 		else if (whichMutation == 2)
-		replaceABoxWithASphere();
+		replaceABoxWithABall();
 		else if (whichMutation == 3)
-		replaceASphereWithABox();
+		replaceABallWithABox();
 		//else if (whichMutation == 4)
 		//replaceMillisecsWithAConstant();
 		
@@ -4019,7 +4022,7 @@ function replaceAFloat() {
 		editor.setValue(editorContent);
 }
 
-function replaceABoxWithASphere() {
+function replaceABoxWithABall() {
         var editorContent = editor.getValue();
 		var rePattern = /(box)/gi;
 
@@ -4032,7 +4035,7 @@ function replaceABoxWithASphere() {
 		editorContent = editorContent.replace(rePattern, function(match, text, urlId){
 			countWhichOneToSwap++;
 			if (countWhichOneToSwap === whichOneToChange){
-				return "sphere";
+				return "ball";
 			}
 				return match;
 		});
@@ -4059,9 +4062,9 @@ function replaceMillisecsWithAConstant() {
 		editor.setValue(editorContent);
 }
 
-function replaceASphereWithABox() {
+function replaceABallWithABox() {
         var editorContent = editor.getValue();
-		var rePattern = /(sphere)/gi;
+		var rePattern = /(ball)/gi;
 
 		var allMatches = editorContent.match(rePattern);
 		if (allMatches === null) numberOfResults = 0;
@@ -4236,8 +4239,8 @@ function loadDemoOrTutorial(whichDemo) {
 		case 'lineTutorial':
 			editor.setValue( prependMessage + lineTutorial);
 			break;
-		case 'sphereTutorial':
-			editor.setValue( prependMessage + sphereTutorial);
+		case 'ballTutorial':
+			editor.setValue( prependMessage + ballTutorial);
 			break;
 		case 'pushpopMatrixTutorial':
 			editor.setValue( prependMessage + pushpopMatrixTutorial);
