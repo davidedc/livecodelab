@@ -2442,7 +2442,9 @@ move = function(a, b, c) {
 rotate = function(a, b, c) {
 
   if(arguments.length == 0){
-  	  return;
+  	  a = time/1000;
+  	  b = a;
+  	  c = a;
   }
   else if(arguments.length == 1){
   	  b=a; c=a;
