@@ -102,6 +102,8 @@
 	</head>
 <body>
 
+
+
 <div class="verticalMiddleOfScreen" id="toMove" style="font-size:30em;">
     <div class="fakeAnimationContent" >
         <p id="caption"></p>
@@ -119,35 +121,45 @@
 		</div>
 
 		<div id='startingCourtainScreen' style='width:100%; height:100%; background-color:white; position: absolute;  z-index:4; top: 0px; left: 0px;'>
+			<div class="verticalMiddleOfScreen" id="loading" style="font-size:3em; color: red">
+				loading /</div>
 		</div>
 
 
 		<!-- modal content -->
 		<div id="aboutWindow">
 			<h3>What&apos;s this?</h3>
-			<p>This is a live coding environment: programs run immediately as they are typed.<br><br>Pick something from the "Demos" menu or try the tutorials.
-			<p>Want more info? <a href="http://www.sketchpatch.net/labs/livecodelabIntro.html"> See this.</a>
-			<p>Want to hack this? <a href="https://github.com/davidedc/livecodelab"> Grab the source code!</a>
+			<p>This is a live coding environment: programs run immediately as they are typed.<br><br>Pick something from the "Demos" menu or try the tutorials.</p>
+			<p>Want more info? <a href="http://www.sketchpatch.net/labs/livecodelabIntro.html"> See this.</a></p>
+			<p>Want to hack this? <a href="https://github.com/davidedc/livecodelab"> Grab the source code!</a></p>
 		</div>
 
 		<div id="noWebGLMessage">
 			<h3>Drag!</h3>
-			<p>Your browser doesn't seem to support 3D acceleration.<br>
-			<br>You'll still have fun, but you really want to try to <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" target="_blank">get the 3D party going in your browser</a>.
-			<br>(psst! - it's worth it!). 
+			<p>Your browser doesn't seem to support 3D acceleration.</p>
+			<p>You'll still have fun, but you really want to try to <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" target="_blank">get the 3D party going in your browser</a>.</p>
+			<p>(psst! - it's worth it!). </p>
 		</div>
 
 		<div id="exampleNeedsWebgl">
 			<h3>Oh nooo.</h3>
-			<p>All these examples starting with "webgl" are going to look silly in your browser (which doesn't seem to support 3D acceleration).<br>
-			<br>Why not try to <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" target="_blank">get some awesome 3D situation started</a>? 
+			<p>All these examples starting with "webgl" are going to look silly in your browser (which doesn't seem to support 3D acceleration).</p>
+			<p>Why not try to <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" target="_blank">get some awesome 3D situation started</a>?</p>
 		</div>
 
 		<div id="noAudioMessage">
 			<h3>Snap!</h3>
-			<p>Your browser doesn't seem to support audio.<br>
-			<br>Be a champion and try <a href="http://browsehappy.com/" target="_blank">a newer browser</a>.
-			<br>(while you are at it, pick one that supports 3D such as Chrome or Firefox). 
+			<p>Your browser doesn't seem to support audio.</p>
+			<p>Be a champion and try <a href="http://browsehappy.com/" target="_blank">a newer browser</a>.</p>
+			<p>(while you are at it, pick one that supports 3D such as Chrome or Firefox).</p>
+		</div>
+
+		<div id="soundSystemIsMangledMessage">
+			<h3>Congratulations!</h3>
+			<p>Your unlocked the "I borked the sound system" badge!</p>
+			<p>You probably created a stupendous amount of fast-playing music.</p>
+			<p>Just re-start the browser to get everything back to normal.</p>
+			<p>(We do this all the time, don't worry, it's OK).</p>
 		</div>
 
 
@@ -1407,7 +1419,6 @@ var drawLoopTimer = null;
 var frame = 0;
 var doLNOnce = [];
 
-if( !init() )	animate();
 
 // By doing some profiling it is apparent that
 // adding and removing objects has a big cost.
@@ -2251,6 +2262,8 @@ soundLoop = function() {
 			//		soundLoopTimer = setTimeout('soundLoop();',(1000*60)/beatsPerMinute);
 			//}
 			
+			if (soundSystemIsMangled) return;
+			
 			beatNumber++;
 			beatNumber = beatNumber % 16;
 
@@ -2258,11 +2271,30 @@ soundLoop = function() {
 				var playOrNoPlay;
 				playOrNoPlay = soundLoops.beatStrings[i].charAt(beatNumber);
 				if (playOrNoPlay === 'x') {
-					var lengthOfSoundBank = soundBank[soundLoops.soundIDs[i]].length;
+					// OK so this is what we do here:
+					// when each Audio object plays, it plays from start to end
+					// and you can't get it to re-start until it's completely done
+					// playing.
+					// This is bad because some sounds last a second or so, and they
+					// need to play more often than one time per second.
+					// So there are two possible solutions:
+					// 1) to have 20 or so sound objects, and all the times that
+					//    a file needs playing, scan them and find one that is free,
+					//    then associate that to the file one wants to play
+					//    this works well in Chrome but really bad in Safari
+					// 2) for each file, give it a queue of audio objects.
+					//    This is more complicated but seems to work
+					//    about right in all browsers. Only caveat is that Safari
+					//    needs the audio objects to be preloaded because otherwise
+					//    it jams. Conversely, Chrome doesn't like them preloaded
+					//    because it jams in that way.
+					// So here we went for 2).
+					var relevantSoundBank = soundBank[soundLoops.soundIDs[i]];
+					var lengthOfSoundBank = relevantSoundBank.length;
 					var availableSoundBank;
 					//console.log('playing number '+soundLoops.soundIDs[i]+" length: "+lengthOfSoundBank);
 					for (var checkingAvailableSoundBank = 0; checkingAvailableSoundBank < lengthOfSoundBank; checkingAvailableSoundBank++){
-						var checkingSoundBank = soundBank[soundLoops.soundIDs[i]][checkingAvailableSoundBank];
+						var checkingSoundBank = relevantSoundBank[checkingAvailableSoundBank];
 						if (checkingSoundBank.isEnded()) {
 							availableSoundBank = checkingSoundBank;
 							//console.log('sound bank '+checkingAvailableSoundBank+" is available ");
@@ -2273,8 +2305,15 @@ soundLoop = function() {
 						}
 					}
 					if (availableSoundBank === undefined){
+							console.log('creating new sound object ');
+							if (totalCreatedSoundObjects > 31) {
+								soundSystemIsMangled = true;
+								$('#soundSystemIsMangledMessage').modal();
+								$('#simplemodal-container').height(250);
+							}
 							availableSoundBank = new buzz.sound(soundFiles[soundLoops.soundIDs[i]]);
 							soundBank[soundLoops.soundIDs[i]].push(availableSoundBank);
+							totalCreatedSoundObjects++;
 					}
 					
 					//console.log('using version: ' + soundBank[soundLoops.soundIDs[i]]['lastUsed']);
@@ -4325,9 +4364,68 @@ var checkAudio = function(){
 	}
 }
 
-
-$(document).ready(function(){
+var loadAndTestAllTheSounds = function() {
+	console.log("loading and testing all sounds");
+	for (var cycleSoundDefs = 0; cycleSoundDefs < numberOfSounds; cycleSoundDefs++){
 	
+		if (buzz.isMP3Supported()) soundDef[cycleSoundDefs].soundFile = soundDef[cycleSoundDefs].soundFile+".mp3";
+		else if (buzz.isOGGSupported()) soundDef[cycleSoundDefs].soundFile = soundDef[cycleSoundDefs].soundFile+".ogg";
+		else {break}
+	
+		soundBank[soundDef[cycleSoundDefs].soundName] = [];
+		soundFiles[soundDef[cycleSoundDefs].soundName] = soundDef[cycleSoundDefs].soundFile;
+		
+		// Chrome can deal with dynamic loading
+		// of many files but doesn't like loading too many audio objects
+		// so fast - it crashes.
+		// At the opposite end, Safari doesn't like loading sound dynamically
+		// and instead works fine by loading sound all at the beginning.
+		if (navigator.userAgent.toLowerCase().indexOf('chrome') === -1) {
+			for (var preloadSounds = 0; preloadSounds < CHANNELSPERSOUND; preloadSounds++){
+				// if you load and play all the channels of all the sounds all together
+				// the browser freezes, and the OS doesn't feel too well either
+				// so better stagger the checks in time.
+				setTimeout("checkSound("+cycleSoundDefs+");", 200* cycleSoundDefs);
+			}
+		}
+	
+	} // end of the for loop
+
+	if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+		startEnvironment();
+	}
+}
+
+var checkSound = function(cycleSoundDefs){
+		var newSound = new buzz.sound(soundDef[cycleSoundDefs].soundFile);
+		console.log("loading sound "+ soundDef[cycleSoundDefs].soundFile);
+		//newSound.mute()
+		newSound.load();
+		newSound.bind("ended", function(e) {
+			this.unbind("ended");
+			endedFirstPlay++;
+			if (endedFirstPlay%10 === 0) $('#loading').append('/');
+			console.log("tested "+endedFirstPlay+" sounds");
+			if (endedFirstPlay === numberOfSounds * CHANNELSPERSOUND) {
+				console.log("tested all sounds");
+				startEnvironment();
+			}
+		});
+		newSound.play();
+		//newSound.unmute()
+		soundBank[soundDef[cycleSoundDefs].soundName].push(newSound);
+}
+	
+$(document).ready(function(){
+	console.log("document ready");
+	loadAndTestAllTheSounds();
+});
+
+startEnvironment = function(){
+	
+	console.log("startEnvironment");
+	if( !init() )	animate();
+
 	if (!Detector.webgl) {
 		//$('#noWebGLMessage').modal()
 		$('#noWebGLMessage').modal({onClose: closeAndCheckAudio});
@@ -4361,15 +4459,7 @@ $(document).ready(function(){
 	fakeCursorInterval = setInterval ( "fakeCursorBlinking()", 800 );
 	setInterval ( "dimIfNoCursorActivity()", 2000 );
 	
-	// if we don't set these two layers to be thin,
-	// in firefox this embedded objects gets the mouse
-	// clicks of the user trying to place the cursor
-	// and then captures all the key presses.
-	// which is annoying.
-	setInterval ( "$('#sm2-container').css('width','10px')", 2000 );
-	setInterval ( "$('#sm2movie').css('width','10px')", 2000 );
-	
-});
+}
 
 
 ///////////////////////////////////////////////
@@ -4419,53 +4509,51 @@ function fullscreenify(canvas) {
 
 <script type="text/javascript" src="./sound/buzz.js"></script>
 <script>
-var CHANNELSPERSOUND = 5;
+var totalCreatedSoundObjects = 0;
+var soundSystemIsMangled = false;
+var CHANNELSPERSOUND = 6;
 var soundDef = [];
 var soundDefCounter = 0;
 // first value here below of soundDefCounter is zero.
-soundDef[soundDefCounter++] = {soundName: 'toc', soundFile: './sound/audioFiles/AMB_BD_1.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'highHatOpen', soundFile: './sound/audioFiles/AMB_HHCL.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'highHatOpen', soundFile: './sound/audioFiles/AMB_HHOP.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'toc2', soundFile: './sound/audioFiles/AMB_HTM.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'toc3', soundFile: './sound/audioFiles/AMB_LTM2.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'toc4', soundFile: './sound/audioFiles/AMB_RIM1.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'snare', soundFile: './sound/audioFiles/AMB_SN13.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'snare2', soundFile: './sound/audioFiles/AMB_SN_5.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'china', soundFile: './sound/audioFiles/CHINA_1.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'crash', soundFile: './sound/audioFiles/CRASH_1.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'crash2', soundFile: './sound/audioFiles/CRASH_5.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'crash3', soundFile: './sound/audioFiles/CRASH_6.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'ride', soundFile: './sound/audioFiles/RIDE_1.mp3'};
+soundDef[soundDefCounter++] = {soundName: 'toc', soundFile: './sound/audioFiles/AMB_BD_1'};
+soundDef[soundDefCounter++] = {soundName: 'highHatOpen', soundFile: './sound/audioFiles/AMB_HHCL'};
+soundDef[soundDefCounter++] = {soundName: 'highHatOpen', soundFile: './sound/audioFiles/AMB_HHOP'};
+soundDef[soundDefCounter++] = {soundName: 'toc2', soundFile: './sound/audioFiles/AMB_HTM'};
+soundDef[soundDefCounter++] = {soundName: 'toc3', soundFile: './sound/audioFiles/AMB_LTM2'};
+soundDef[soundDefCounter++] = {soundName: 'toc4', soundFile: './sound/audioFiles/AMB_RIM1'};
+soundDef[soundDefCounter++] = {soundName: 'snare', soundFile: './sound/audioFiles/AMB_SN13'};
+soundDef[soundDefCounter++] = {soundName: 'snare2', soundFile: './sound/audioFiles/AMB_SN_5'};
+soundDef[soundDefCounter++] = {soundName: 'china', soundFile: './sound/audioFiles/CHINA_1'};
+soundDef[soundDefCounter++] = {soundName: 'crash', soundFile: './sound/audioFiles/CRASH_1'};
+soundDef[soundDefCounter++] = {soundName: 'crash2', soundFile: './sound/audioFiles/CRASH_5'};
+soundDef[soundDefCounter++] = {soundName: 'crash3', soundFile: './sound/audioFiles/CRASH_6'};
+soundDef[soundDefCounter++] = {soundName: 'ride', soundFile: './sound/audioFiles/RIDE_1'};
 
-soundDef[soundDefCounter++] = {soundName: 'glass', soundFile: './sound/audioFiles/glass2.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'glass1', soundFile: './sound/audioFiles/glass3.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'glass2', soundFile: './sound/audioFiles/glass4.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'glass3', soundFile: './sound/audioFiles/glass5.mp3'};
+soundDef[soundDefCounter++] = {soundName: 'glass', soundFile: './sound/audioFiles/glass2'};
+soundDef[soundDefCounter++] = {soundName: 'glass1', soundFile: './sound/audioFiles/glass3'};
+soundDef[soundDefCounter++] = {soundName: 'glass2', soundFile: './sound/audioFiles/glass4'};
+soundDef[soundDefCounter++] = {soundName: 'glass3', soundFile: './sound/audioFiles/glass5'};
 
-soundDef[soundDefCounter++] = {soundName: 'thump', soundFile: './sound/audioFiles/8938__patchen__piano-hits-hand-03v2.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'lowFlash', soundFile: './sound/audioFiles/9569__thanvannispen__industrial-low-flash04.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'lowFlash2', soundFile: './sound/audioFiles/9570__thanvannispen__industrial-low-flash07.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'tranceKick2', soundFile: './sound/audioFiles/24004__laya__dance-kick3.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'tranceKick', soundFile: './sound/audioFiles/33325__laya__trance-kick01.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'wosh', soundFile: './sound/audioFiles/33960__krlox__pudricion-4.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'voltage', soundFile: './sound/audioFiles/49255__keinzweiter__bonobob-funk.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'beepA', soundFile: './sound/audioFiles/100708__steveygos93__bleep_a.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'beepB', soundFile: './sound/audioFiles/100708__steveygos93__bleep_b.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'beepC', soundFile: './sound/audioFiles/100708__steveygos93__bleep_c.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'beepD', soundFile: './sound/audioFiles/100708__steveygos93__bleep_d.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'beep', soundFile: './sound/audioFiles/116508_Beep.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'hello', soundFile: './sound/audioFiles/116508_Hello.mp3'};
-soundDef[soundDefCounter++] = {soundName: 'alienBeep', soundFile: './sound/audioFiles/132389__blackie666__alienbleep.mp3'};
+soundDef[soundDefCounter++] = {soundName: 'thump', soundFile: './sound/audioFiles/8938__patchen__piano-hits-hand-03v2'};
+soundDef[soundDefCounter++] = {soundName: 'lowFlash', soundFile: './sound/audioFiles/9569__thanvannispen__industrial-low-flash04'};
+soundDef[soundDefCounter++] = {soundName: 'lowFlash2', soundFile: './sound/audioFiles/9570__thanvannispen__industrial-low-flash07'};
+soundDef[soundDefCounter++] = {soundName: 'tranceKick2', soundFile: './sound/audioFiles/24004__laya__dance-kick3'};
+soundDef[soundDefCounter++] = {soundName: 'tranceKick', soundFile: './sound/audioFiles/33325__laya__trance-kick01'};
+soundDef[soundDefCounter++] = {soundName: 'wosh', soundFile: './sound/audioFiles/33960__krlox__pudricion-4'};
+soundDef[soundDefCounter++] = {soundName: 'voltage', soundFile: './sound/audioFiles/49255__keinzweiter__bonobob-funk'};
+soundDef[soundDefCounter++] = {soundName: 'beepA', soundFile: './sound/audioFiles/100708__steveygos93__bleep_a'};
+soundDef[soundDefCounter++] = {soundName: 'beepB', soundFile: './sound/audioFiles/100708__steveygos93__bleep_b'};
+soundDef[soundDefCounter++] = {soundName: 'beepC', soundFile: './sound/audioFiles/100708__steveygos93__bleep_c'};
+soundDef[soundDefCounter++] = {soundName: 'beepD', soundFile: './sound/audioFiles/100708__steveygos93__bleep_d'};
+soundDef[soundDefCounter++] = {soundName: 'beep', soundFile: './sound/audioFiles/116508_Beep'};
+soundDef[soundDefCounter++] = {soundName: 'hello', soundFile: './sound/audioFiles/116508_Hello'};
+soundDef[soundDefCounter++] = {soundName: 'alienBeep', soundFile: './sound/audioFiles/132389__blackie666__alienbleep'};
 
 numberOfSounds = soundDefCounter;
 
 var soundBank = {};
 var soundFiles = {};
-for (var cycleSoundDefs = 0; cycleSoundDefs < numberOfSounds; cycleSoundDefs++){
-	soundBank[soundDef[cycleSoundDefs].soundName] = [];
-	soundFiles[soundDef[cycleSoundDefs].soundName] = soundDef[cycleSoundDefs].soundFile;
-	//soundBank[soundDef[cycleSoundDefs].soundName].push(new buzz.sound(soundDef[cycleSoundDefs].soundFile));
-}
+var endedFirstPlay = 0;
 
 </script>
 

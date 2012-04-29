@@ -11,6 +11,7 @@
  * Revision: $Id: basic.css 257 2010-07-27 23:06:56Z emartin24 $
  */
 
+#soundSystemIsMangledMessage {display:none;}
 #aboutWindow {display:none;}
 #noWebGLMessage {display:none;}
 #exampleNeedsWebgl {display:none;}
