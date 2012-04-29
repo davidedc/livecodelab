@@ -173,10 +173,7 @@
 
 <ul class='dd_menu' >
 
-	<li><a href="javascript:void(0)" style="text-decoration:none; color:red;">LIVECODELAB</a>
-		<ul>
-			<li><a href="javascript:void(0)" onclick="$('#aboutWindow').modal();$('#simplemodal-container').height(250);">What&apos;s this?</a></li>
-		</ul>
+	<li><a href="javascript:void(0)" onclick="$('#aboutWindow').modal();$('#simplemodal-container').height(250);" style="text-decoration:none; color:red;">LIVECODELAB</a>
 	</li>
 
 	<li><a href="javascript:void(0)" style="text-decoration:none;">Demos</a>
@@ -1910,7 +1907,29 @@ function registerCode() {
 				 }
 
 			$('#dangerSignText').css('color','red')
-			$('#errorMessageText').text(""+e)
+			var coffeeScriptErrorMessage = ""+e;
+			if (coffeeScriptErrorMessage.indexOf("Unexpected 'INDENT'") > -1){
+				coffeeScriptErrorMessage = "weird indentation"
+			}
+			else if (coffeeScriptErrorMessage.indexOf("Unexpected 'TERMINATOR'") > -1){
+				coffeeScriptErrorMessage = "line not complete"
+			}
+			else if (coffeeScriptErrorMessage.indexOf("Unexpected 'CALL_END'") > -1){
+				coffeeScriptErrorMessage = "line not complete"
+			}
+			else if (coffeeScriptErrorMessage.indexOf("Unexpected '}'") > -1){
+				coffeeScriptErrorMessage = "something wrong"
+			}
+			else if (coffeeScriptErrorMessage.indexOf("Unexpected 'MATH'") > -1){
+				coffeeScriptErrorMessage = "weird arithmetic there"
+			}
+			else if (coffeeScriptErrorMessage.indexOf("Unexpected 'LOGIC'") > -1){
+				coffeeScriptErrorMessage = "odd expression thingy"
+			}
+			else if (coffeeScriptErrorMessage.indexOf("Unexpected 'NUMBER'") > -1){
+				coffeeScriptErrorMessage = "lost number?"
+			}
+			$('#errorMessageText').text(coffeeScriptErrorMessage)
         return;
       }
 
@@ -1979,7 +1998,7 @@ function registerCode() {
 			  error = true;
 			  //alert("used method not declared: " + usedMethods[scanningUsedMethods]);
 			  $('#dangerSignText').css('color','red');
-			  $('#errorMessageText').text(usedMethods[scanningUsedMethods] + " used but not defined");
+			  $('#errorMessageText').text(usedMethods[scanningUsedMethods] + " doesn't exist");
 			  return;
       	  }
 		  for (var scanningDeclaredMethods = 0; scanningDeclaredMethods < declaredMethods.length; scanningDeclaredMethods++){
@@ -1991,7 +2010,7 @@ function registerCode() {
 			  error = true;
 			  //alert("used method not declared: " + usedMethods[scanningUsedMethods]);
 			  $('#dangerSignText').css('color','red');
-			  $('#errorMessageText').text(usedMethods[scanningUsedMethods] + " used but not defined");
+			  $('#errorMessageText').text(usedMethods[scanningUsedMethods] + " doesn't exist");
 			  return;
 		  	}
 		  }
@@ -2033,6 +2052,10 @@ window.onerror=function(msg, url, linenumber){
 	 return;
  }
  
+if (msg.indexOf("Uncaught ReferenceError: ") > -1){
+	msg = msg.substring(25);
+}
+
  $('#dangerSignText').css('color','red');
  $('#errorMessageText').text(msg);
  
@@ -3671,7 +3694,7 @@ var springysquaresDemo = ""+
 
 var diceDemo = ""+
 ""+		"animationStyle motionBlur\n"+
-""+		"simpleGradient color(255),yellow,moccasin\n"+
+""+		"simpleGradient color(255),moccasin,peachpuff\n"+
 ""+		"stroke 255,100,100,255\n"+
 ""+		"fill red,155\n"+
 ""+		"move -0.5,0,0\n"+
@@ -3879,14 +3902,12 @@ var strokeTutorial = ""+
 ""+		"// next-tutorial:color_names";
 
 var colornamesTutorial = ""+
-""+		'// you can call color by names\n'+
-""+		'// try to un-comment one line\n'+
-""+		'// at a time:\n'+
+""+		'// you can call color by name\n'+
+""+		'// try to un-comment one line:\n'+
 ""+		"\n"+
 ""+		"//fill greenyellow\n"+
 ""+		"//fill indigo\n"+
-""+		"//fill khaki\n"+
-""+		"//fill lemonchiffon\n"+
+""+		"//fill lemonchiffon // how about that!\n"+
 ""+		"rotate 1\n"+
 ""+		"box\n"+
 ""+		"\n"+
