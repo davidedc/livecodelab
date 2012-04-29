@@ -144,7 +144,7 @@
 		<div id="exampleNeedsWebgl">
 			<h3>Oh nooo.</h3>
 			<p>All these examples starting with "webgl" are going to look silly in your browser (which doesn't seem to support 3D acceleration).</p>
-			<p>Why not try to <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" target="_blank">get some awesome 3D situation started</a>?</p>
+			<p>Why not try to <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" target="_blank">get some awesome 3D action started</a>?</p>
 		</div>
 
 		<div id="noAudioMessage">
@@ -162,6 +162,12 @@
 			<p>(We do this all the time, don't worry, it's OK).</p>
 		</div>
 
+		<div id="noCanvasMessage">
+			<h3>Oh my!</h3>
+			<p>Your browser is way old.</p>
+			<p>We understand. We were there 5 years ago. Why not try <a href="http://browsehappy.com/" target="_blank">a shinier browser</a>?</p>
+			<p>(while you are at it, pick one that supports 3D such as Chrome or Firefox).</p>
+		</div>
 
 <div id="theMenu" style="position: absolute;  z-index:3; top: 0px; left: 0px; width:100%">
 
@@ -333,6 +339,12 @@
 		var SPINFRAMES = 30;
 
 		var userWarnedAboutWebglExamples = false;
+
+
+function isCanvasSupported(){
+  var elem = document.createElement('canvas');
+  return !!(elem.getContext && elem.getContext('2d'));
+}
 
 // Color constants, modified from processing.js
     aliceblue =            0xfff0f8ff ;
@@ -1700,6 +1712,12 @@ function registerCode() {
 				curlyBrackCount & 1 ||
 				squareBrackCount & 1
 			){
+				 if(autocodeOn) {
+					 editor.undo();
+					 //alert("did an undo");
+					 return;
+				 }
+				
 				programHasBasicError = true;
 				//alert("basic error");
 				//alert("p:" + $('#dangerSignText').css('color'));
@@ -1807,6 +1825,11 @@ function registerCode() {
 				elaboratedSource.match(/[\s\+\;]+draw\s*\(/) ||
 				false
 			){
+				 if(autocodeOn) {
+					 editor.undo();
+					 //alert("did an undo");
+					 return;
+				 }
 				programHasBasicError = true;
 				$('#dangerSignText').css('color','red');
 				$('#errorMessageText').text("You can't call draw()");
@@ -1865,6 +1888,13 @@ function registerCode() {
         //console.log("in javascript: " + out);
         
       } catch (e) {
+
+				 if(autocodeOn) {
+					 editor.undo();
+					 //alert("did an undo");
+					 return;
+				 }
+
 			$('#dangerSignText').css('color','red')
 			$('#errorMessageText').text(""+e)
         return;
@@ -1981,7 +2011,14 @@ function registerCode() {
 //var chromeHackUncaughtReferenceName = '';
 //var chromeHackUncaughtReferenceNames = [];
 
-window.onerrorf=function(msg, url, linenumber){
+window.onerror=function(msg, url, linenumber){
+
+ if(autocodeOn) {
+	 editor.undo();
+	 //alert("did an undo");
+	 return;
+ }
+ 
  $('#dangerSignText').css('color','red');
  $('#errorMessageText').text(msg);
  
@@ -3881,7 +3918,7 @@ var autocodeTutorial = ""+
 ""+		'// You can interrupt the Autocoder at\n'+
 ""+		'// any time by pressing the button again,\n'+
 ""+		'// or you can press CTRL-Z\n'+
-""+		'// (or CMD-Z on Macs) to undo some of\n'+
+""+		'// (or CMD-Z on Macs) to undo (or re-do) some of\n'+
 ""+		'// the steps even WHILE the autocoder is running,\n'+
 ""+		'// if you see that things got\n'+
 ""+		'// boring down a particular path of changes.';
@@ -4386,7 +4423,7 @@ var loadAndTestAllTheSounds = function() {
 				// if you load and play all the channels of all the sounds all together
 				// the browser freezes, and the OS doesn't feel too well either
 				// so better stagger the checks in time.
-				setTimeout("checkSound("+cycleSoundDefs+");", 1000* cycleSoundDefs);
+				setTimeout("checkSound("+cycleSoundDefs+");", 200* cycleSoundDefs);
 			}
 		}
 	
@@ -4400,10 +4437,11 @@ var loadAndTestAllTheSounds = function() {
 var checkSound = function(cycleSoundDefs){
 		var newSound = new buzz.sound(soundDef[cycleSoundDefs].soundFile);
 		console.log("loading sound "+ soundDef[cycleSoundDefs].soundFile);
-		//newSound.mute()
+		newSound.mute()
 		newSound.load();
 		newSound.bind("ended", function(e) {
 			this.unbind("ended");
+			this.unmute();
 			endedFirstPlay++;
 			if (endedFirstPlay%10 === 0) $('#loading').append('/');
 			console.log("tested "+endedFirstPlay+" sounds");
@@ -4413,17 +4451,22 @@ var checkSound = function(cycleSoundDefs){
 			}
 		});
 		newSound.play();
-		//newSound.unmute()
 		soundBank[soundDef[cycleSoundDefs].soundName].push(newSound);
 }
 	
 $(document).ready(function(){
 	//console.log("document ready");
+	if (!isCanvasSupported) {
+		$('#noCanvasMessage').modal({onClose: function(){$('#loading').text('sorry :-(');$.modal.close();}});
+		$('#simplemodal-container').height(200);
+		return;
+	}
+
 	loadAndTestAllTheSounds();
 });
 
 startEnvironment = function(){
-	
+		
 	//console.log("startEnvironment");
 	if( !init() )	animate();
 

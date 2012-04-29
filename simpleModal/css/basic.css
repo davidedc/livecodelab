@@ -16,6 +16,7 @@
 #noWebGLMessage {display:none;}
 #exampleNeedsWebgl {display:none;}
 #noAudioMessage {display:none;}
+#noCanvasMessage  {display:none;}
 
 /* Overlay */
 #simplemodal-overlay {background-color:#000; cursor:wait;}
