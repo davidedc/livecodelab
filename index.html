@@ -213,6 +213,7 @@
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('timesTutorial');">times</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('fillTutorial');">fill</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('strokeTutorial');">stroke</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('colornamesTutorial');">color by name</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('lightsTutorial');">lights</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('backgroundTutorial');">background</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('gradientTutorial');">gradient</a></li>
@@ -1880,14 +1881,14 @@ function registerCode() {
 
         // the semicolon mangles the first line of if statements
         // coffeescript doesn't like that
-        elaboratedSource =  elaboratedSource.replace(/if\s*([a-zA-Z0-9]*)(\s*);/g, "if $1$2" );
+        elaboratedSource =  elaboratedSource.replace(/(\s)if\s*([a-zA-Z0-9]*)(\s*);/g, "$1if $2$3" );
         
       
-        //console.log(elaboratedSource );
+        console.log(elaboratedSource );
         out = CoffeeScript.compile(elaboratedSource, {
           bare: "on"
         });
-        //console.log("in javascript: " + out);
+        console.log("in javascript: " + out);
         
       } catch (e) {
 
@@ -3482,7 +3483,7 @@ var simpleCubeDemo = ""+
 ""+		"// there you go!\n"+
 ""+		"// a simple cube!\n"+
 ""+		"\n"+
-""+		"background 255,255,0\n"+
+""+		"background yellow\n"+
 ""+		"rotate 0,time/2000,time/2000\n"+
 ""+		"box\n";
 
@@ -3493,7 +3494,7 @@ var webgltwocubesDemo = ""+
 "\t"+		"box\n";
 
 var cubesAndSpikes = ""+
-""+		"simpleGradient color(255,0,255),color(100,200,200),color(255,255,0)\n"+
+""+		"simpleGradient fuchsia,color(100,200,200),yellow\n"+
 ""+		"scale 2.1\n"+
 ""+		"5 times ->\n"+
 "\t"+			"rotate 0,1,time/5000\n"+
@@ -3510,7 +3511,7 @@ var webglturbineDemo = ""+
 "\t"+		"box\n";
 
 var littleSpiralOfCubes = ""+
-""+		"background 255,155,0\n"+
+""+		"background orange\n"+
 ""+		"scale 0.1\n"+
 ""+		"10 times ->\n"+
 "\t"+		"rotate 0,1,time/1000\n"+
@@ -3794,7 +3795,8 @@ var fillTutorial = ""+
 ""+		"\n"+
 ""+		'// the three numbers indicate \n'+
 ""+		"// red green and blue values.\n"+
-""+		"// Also: try replacing the numbers with\n"+
+""+		"// You can also use color names such as indigo\n"+
+""+		"// Try replacing the numbers with\n"+
 ""+		'// "angleColor"\n'+
 ""+		"// next-tutorial:stroke";
 
@@ -3807,12 +3809,27 @@ var strokeTutorial = ""+
 ""+		"stroke 255,255,255\n"+
 ""+		"box\n"+
 ""+		"\n"+
-""+		'// the three numbers are RGB \n'+
-""+		"// but you can also use the\n"+
-""+		'// special color "angleColor"\n'+
+""+		'// the three numbers are RGB\n'+
+""+		"// but you can also use the color names\n"+
+""+		'// or the special color "angleColor"\n'+
 ""+		'// Also you can use "strokeSize"\n'+
 ""+		'// to specify the thickness.\n'+
+""+		"// next-tutorial:color_names";
+
+var colornamesTutorial = ""+
+""+		'// you can call color by names\n'+
+""+		'// try to un-comment one line\n'+
+""+		'// at a time:\n'+
+""+		"\n"+
+""+		"//fill greenyellow\n"+
+""+		"//fill indigo\n"+
+""+		"//fill khaki\n"+
+""+		"//fill lemonchiffon\n"+
+""+		"rotate 1\n"+
+""+		"box\n"+
+""+		"\n"+
 ""+		"// next-tutorial:lights";
+
 
 var lightsTutorial = ""+
 ""+		'// "ambientLight" creates an\n'+
@@ -4227,6 +4244,9 @@ function loadDemoOrTutorial(whichDemo) {
 			break;
 		case 'strokeTutorial':
 			editor.setValue( prependMessage + strokeTutorial);
+			break;
+		case 'colornamesTutorial':
+			editor.setValue( prependMessage + colornamesTutorial);
 			break;
 		case 'lightsTutorial':
 			editor.setValue( prependMessage + lightsTutorial);
