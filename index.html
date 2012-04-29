@@ -155,11 +155,11 @@
 		</div>
 
 		<div id="soundSystemIsMangledMessage">
-			<h3>Congratulations!</h3>
+			<h3>Congrats!</h3>
 			<p>Your unlocked the "I borked the sound system" badge!</p>
 			<p>You probably created a stupendous amount of fast-playing music.</p>
 			<p>Just re-start the browser to get everything back to normal.</p>
-			<p>(We do this all the time, don't worry, it's OK).</p>
+			<p>(We know it's fun, do this all the time, it's OK).</p>
 		</div>
 
 		<div id="noCanvasMessage">
@@ -2853,7 +2853,8 @@ scale = function(a, b, c) {
   	// but I don't think it matters here
   	gradStack = [];
 
-	simpleGradient(color(70),color(30),color(0),1);
+	//simpleGradient(color(70),color(30),color(0),1);
+	simpleGradient(orange,red,black);
 
   }
 
@@ -3540,7 +3541,7 @@ var tentacleDemo = ""+
 
 var lampDemo = ""+
 ""+		"animationStyle motionBlur\n"+
-""+		"simpleGradient color(255,0,0),color(255,255,0),color(255,0,255)\n"+
+""+		"simpleGradient red,yellow,color(255,0,255)\n"+
 ""+		"//animationStyle paintOver\n"+
 ""+		"scale 2\n"+
 ""+		"rotate time/4000, time/4000,  time/4000\n"+
@@ -3608,7 +3609,7 @@ var trySoundsDemo = ""+
 
 var springysquaresDemo = ""+
 ""+		"animationStyle motionBlur\n"+
-""+		"simpleGradient color(255,0,255),color(100,200,200),color(255,255,0)\n"+
+""+		"simpleGradient fuchsia,color(100,200,200),yellow\n"+
 ""+		"scale 0.3\n"+
 ""+		"3 times ->\n"+
 "\t"+		"move 0,0,0.5\n"+
@@ -3619,9 +3620,9 @@ var springysquaresDemo = ""+
 
 var diceDemo = ""+
 ""+		"animationStyle motionBlur\n"+
-""+		"simpleGradient color(255),color(255,255,0),color(255,255,0)\n"+
+""+		"simpleGradient color(255),yellow,moccasin\n"+
 ""+		"stroke 255,100,100,255\n"+
-""+		"fill 255,0,0,155\n"+
+""+		"fill red,155\n"+
 ""+		"move -0.5,0,0\n"+
 ""+		"scale 0.3\n"+
 ""+		"3 times ->\n"+
@@ -3659,7 +3660,7 @@ var webglpinkthreadDemo = ""+
 "\t"+		"ball";
 
 var webglnuclearOctopusDemo = ""+
-""+		"simpleGradient 0,color(0,0,(time/5)%255),0\n"+
+""+		"simpleGradient black,color(0,0,(time/5)%255),black\n"+
 ""+		"scale 0.2\n"+
 ""+		"move 5\n"+
 ""+		"animationStyle motionBlur\n"+
