@@ -186,14 +186,15 @@
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('springysquaresDemo');">Springy squares</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('diceDemo');">Dice</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('lampDemo');">Lamp</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('judgementDayDemo');">Sound: judgement day</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('industrialMusicDemo');">Sound: industrial</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('trySoundsDemo');">Sound: try them all</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('trillionfeathersDemo');">A trillion feathers</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('industrialMusicDemo');">Sound: Industrial</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('trySoundsDemo');">Sound: Try them all</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglalmostvoronoiDemo');">WebGL: Almost Voronoi</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglshardsDemo');">WebGL: Shards</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglpinkthreadDemo');">WebGL: Pink thread</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webgltwocubesDemo');">WebGL: two cubes</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglturbineDemo');">WebGL: turbine</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webgltwocubesDemo');">WebGL: Two cubes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglturbineDemo');">WebGL: Turbine</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('zfightartDemo');">WebGL: Z-fight art!</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglnuclearOctopusDemo');">WebGL: Nuclear octopus</a></li>
 		</ul>
 	</li>
@@ -3596,6 +3597,18 @@ var webglturbineDemo = ""+
 "\t"+		"rotate time/100000,1,time/100000\n"+
 "\t"+		"box\n";
 
+var zfightartDemo = ""+
+""+		"// Explore the artifacts\n"+
+""+		"// of your GPU!\n"+
+""+		"// Go Z-fighting, go!\n"+
+""+		"scale 5\n"+
+""+		"rotate\n"+
+""+		"fill red\n"+
+""+		"box\n"+
+""+		"rotate 0.000001\n"+
+""+		"fill yellow\n"+
+""+		"box";
+
 var littleSpiralOfCubes = ""+
 ""+		"background orange\n"+
 ""+		"scale 0.1\n"+
@@ -3630,10 +3643,17 @@ var lampDemo = ""+
 "\t"+		"line\n"+
 "\t"+		"line\n";
 
-var judgementDayDemo = ""+
-""+		"bpm 390\n"+
-""+		"addSound 'thump' ,'xxzx zxxz zzzz zzzz'\n";
-
+var trillionfeathersDemo = ""+
+""+		"animationStyle paintOver\n"+
+""+		"move 2,0,0\n"+
+""+		"scale 2\n"+
+""+		"rotate\n"+
+""+		"20 times ->\n"+
+"\t"+		"rotate\n"+
+"\t"+		"move 0.25,0,0\n"+
+"\t"+		"line\n"+
+"\t"+		"move -0.5,0,0\n"+
+"\t"+		"line";
 
 var industrialMusicDemo = ""+
 ""+		"bpm 350\n"+
@@ -4273,6 +4293,9 @@ function loadDemoOrTutorial(whichDemo) {
 		case 'webglturbineDemo':
 			editor.setValue( prependMessage + webglturbineDemo);
 			break;
+		case 'zfightartDemo':
+			editor.setValue( prependMessage + zfightartDemo);
+			break;
 		case 'littleSpiralOfCubes':
 			editor.setValue( prependMessage + littleSpiralOfCubes);
 			break;
@@ -4282,8 +4305,8 @@ function loadDemoOrTutorial(whichDemo) {
 		case 'lampDemo':
 			editor.setValue( prependMessage + lampDemo);
 			break;
-		case 'judgementDayDemo':
-			editor.setValue( prependMessage + judgementDayDemo);
+		case 'trillionfeathersDemo':
+			editor.setValue( prependMessage + trillionfeathersDemo);
 			break;
 		case 'industrialMusicDemo':
 			editor.setValue( prependMessage + industrialMusicDemo);
