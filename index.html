@@ -2254,23 +2254,33 @@ soundLoop = function() {
 			beatNumber++;
 			beatNumber = beatNumber % 16;
 
-			//alert(' '+soundLoops.soundIDs.length);
 			for(var i in soundLoops.soundIDs){
 				var playOrNoPlay;
 				playOrNoPlay = soundLoops.beatStrings[i].charAt(beatNumber);
 				if (playOrNoPlay === 'x') {
-					//if (soundBank[soundLoops.soundIDs[i]]['lastUsed'] === undefined){
-					//	soundBank[soundLoops.soundIDs[i]]['lastUsed'] = 0;
-					//}
+					var lengthOfSoundBank = soundBank[soundLoops.soundIDs[i]].length;
+					var availableSoundBank;
+					//console.log('playing number '+soundLoops.soundIDs[i]+" length: "+lengthOfSoundBank);
+					for (var checkingAvailableSoundBank = 0; checkingAvailableSoundBank < lengthOfSoundBank; checkingAvailableSoundBank++){
+						var checkingSoundBank = soundBank[soundLoops.soundIDs[i]][checkingAvailableSoundBank];
+						if (checkingSoundBank.isEnded()) {
+							availableSoundBank = checkingSoundBank;
+							//console.log('sound bank '+checkingAvailableSoundBank+" is available ");
+							break;							
+						}
+						else {
+							//console.log('sound bank '+checkingAvailableSoundBank+" has not ended ");
+						}
+					}
+					if (availableSoundBank === undefined){
+							availableSoundBank = new buzz.sound(soundFiles[soundLoops.soundIDs[i]]);
+							soundBank[soundLoops.soundIDs[i]].push(availableSoundBank);
+					}
+					
 					//console.log('using version: ' + soundBank[soundLoops.soundIDs[i]]['lastUsed']);
 					//console.log('soundID: ' + soundLoops.soundIDs[i] + " " + soundBank[soundLoops.soundIDs[i]][soundBank[soundLoops.soundIDs[i]]['lastUsed']]);
-					//soundBank[soundLoops.soundIDs[i]][soundBank[soundLoops.soundIDs[i]]['lastUsed']].play()
+					availableSoundBank.play()
 					//soundBank[soundLoops.soundIDs[i]]['lastUsed'] = (soundBank[soundLoops.soundIDs[i]]['lastUsed']+1)%CHANNELSPERSOUND;
-					soundPlayers[soundPlayersRotation].set( "src", soundBank[soundLoops.soundIDs[i]] );
-					soundPlayers[soundPlayersRotation].load();
-					soundPlayers[soundPlayersRotation].play();
-					
-					soundPlayersRotation = (soundPlayersRotation +1) % AVAILABLESOUNDCHANNELS;
 				}
 			}
 }
@@ -4410,7 +4420,6 @@ function fullscreenify(canvas) {
 <script type="text/javascript" src="./sound/buzz.js"></script>
 <script>
 var CHANNELSPERSOUND = 5;
-var AVAILABLESOUNDCHANNELS = 50;
 var soundDef = [];
 var soundDefCounter = 0;
 // first value here below of soundDefCounter is zero.
@@ -4451,14 +4460,11 @@ soundDef[soundDefCounter++] = {soundName: 'alienBeep', soundFile: './sound/audio
 numberOfSounds = soundDefCounter;
 
 var soundBank = {};
+var soundFiles = {};
 for (var cycleSoundDefs = 0; cycleSoundDefs < numberOfSounds; cycleSoundDefs++){
-	soundBank[soundDef[cycleSoundDefs].soundName] = soundDef[cycleSoundDefs].soundFile;
-}
-
-var soundPlayers = [];
-var soundPlayersRotation = 0;
-for (var justSoundPlayers = 0; justSoundPlayers < AVAILABLESOUNDCHANNELS; justSoundPlayers++){
-	soundPlayers.push(new buzz.sound(""));
+	soundBank[soundDef[cycleSoundDefs].soundName] = [];
+	soundFiles[soundDef[cycleSoundDefs].soundName] = soundDef[cycleSoundDefs].soundFile;
+	//soundBank[soundDef[cycleSoundDefs].soundName].push(new buzz.sound(soundDef[cycleSoundDefs].soundFile));
 }
 
 </script>
