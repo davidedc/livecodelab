@@ -9,9 +9,9 @@ var Stats = function () {
 	var _container, _bar, _mode = 1, _modes = 2,
 	_frames = 0, _time = Date.now(), _timeLastFrame = _time, _timeLastSecond = _time,
 	_fps = 0, _fpsMin = 1000, _fpsMax = 0, _fpsDiv, _fpsText, _fpsGraph,
-	_fpsColors = [ [ 50, 50, 50 ], [ 255, 255, 255 ] ],
+	_fpsColors = [ [ 0, 0, 0 ], [ 255, 255, 255 ] ],
 	_ms = 0, _msMin = 1000, _msMax = 0, _msDiv, _msText, _msGraph,
-	_msColors = [ [ 50, 50, 50 ], [ 255, 255, 255 ] ];
+	_msColors = [ [ 0, 0, 0 ], [ 255, 255, 255 ] ];
 
 	_container = document.createElement( 'div' );
 	_container.style.cursor = 'pointer';
@@ -43,7 +43,7 @@ var Stats = function () {
 	_fpsDiv = document.createElement( 'div' );
 	_fpsDiv.style.textAlign = 'right';
 	_fpsDiv.style.lineHeight = '1.2em';
-	_fpsDiv.style.backgroundColor = 'rgb(50,50,50)';
+	_fpsDiv.style.backgroundColor = 'rgb(0,0,0)';
 	_fpsDiv.style.padding = '0 0 0px 0px';
 	_fpsDiv.style.display = 'none';
 	_container.appendChild( _fpsDiv );
@@ -79,7 +79,7 @@ var Stats = function () {
 	_msDiv = document.createElement( 'div' );
 	_msDiv.style.textAlign = 'right';
 	_msDiv.style.lineHeight = '1.2em';
-	_msDiv.style.backgroundColor = 'rgb(50,50,50)';
+	_msDiv.style.backgroundColor = 'rgb(0,0,0)';
 	_msDiv.style.padding = '0 0 0px 0px';
 	_msDiv.style.display = 'block';
 	_container.appendChild( _msDiv );

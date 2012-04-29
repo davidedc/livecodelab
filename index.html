@@ -38,23 +38,23 @@
 
 			<style type="text/css">
 					a:hover {cursor: default;}
-					.dd_menu {background:#323232; border-bottom: 1px; border-bottom-color: white; border-bottom-style: dotted; padding:0px; margin:0; list-style-type:none; height:30px;}
+					.dd_menu {background:#000000; border-bottom: 1px; border-bottom-color: white; border-bottom-style: dotted; padding:0px; margin:0; list-style-type:none; height:30px;}
 					.dd_menu li {float:left; height:30px; border-right: solid 1px white; border-right-style: dotted;}
 					.dd_menu li a {padding:9px 20px; display:block; color:#fff; text-decoration:none; font:12px arial, verdana, sans-serif; font-weight: bold; }
 					.dd_menu li:hover a {color:black;}
 					
 					.dd_menu ul { position:absolute; left:-9999px; top:-9999px; list-style-type:none;}
 					.dd_menu li:hover {position:relative; background:white;}
-					.dd_menu li:hover ul {left:0px; top:30px; background:#323232; padding:3px; border:0px solid white; width:160px;}
+					.dd_menu li:hover ul {left:0px; top:30px; background:#000000; padding:3px; border:0px solid white; width:160px;}
 					.dd_menu li:hover ul li {height:18px; border:none; }
-					.dd_menu li:hover ul li a {height:18px; padding:0px; display:block; font-size:11px; width:158px; line-height:18px; text-indent:15px; color:white; background-color:#323232; text-decoration:none;  border-top: 1px; border-top-color: #111111; border-top-style: dotted;}
+					.dd_menu li:hover ul li a {height:18px; padding:0px; display:block; font-size:11px; width:158px; line-height:18px; text-indent:15px; color:white; background-color:#000000; text-decoration:none;  border-top: 1px; border-top-color: #111111; border-top-style: dotted;}
 					.dd_menu li:hover ul li a:hover {height:18px; background:silver; color:#000; border:solid 1px #444; }
 					
-					#dangerSignText {color:#323232; text-decoration:none;}
-					#dangerSign:hover {background:#323232;}
+					#dangerSignText {color:#000000; text-decoration:none;}
+					#dangerSign:hover {background:#000000;}
 
 					#errorMessageText {text-decoration:none;}
-					#errorMessage:hover {background:#323232;}
+					#errorMessage:hover {background:#000000;}
 					
 					.verticalMiddleOfScreen        
 						{
@@ -1998,7 +1998,7 @@ function registerCode() {
 
 				programHasBasicError = false;
 				reasonOfBasicError = "";
-				$('#dangerSignText').css('color','#323232')
+				$('#dangerSignText').css('color','#000000')
 				$('#errorMessageText').text(reasonOfBasicError)
 
 	// see here for the deepest examination ever of "eval"
@@ -3650,7 +3650,8 @@ var webglshardsDemo = ""+
 
 var webglpinkthreadDemo = ""+
 ""+		"scale 10.5\n"+
-""+		"stroke 255,55,255\n"+
+""+		"background black\n"+
+""+		"stroke red\n"+
 ""+		"noFill\n"+
 ""+		"strokeSize 7\n"+
 ""+		"5 times ->\n"+
@@ -3964,7 +3965,7 @@ var blinkingAutocoderStatus = false;
 function blinkAutocodeIndicator() {
 	blinkingAutocoderStatus = !blinkingAutocoderStatus;
 	if (blinkingAutocoderStatus){
-		$("#autocodeIndicatorContainer").css("background-color",'#323232');
+		$("#autocodeIndicatorContainer").css("background-color",'#000000');
 	}
 	else {
 		$("#autocodeIndicatorContainer").css("background-color",'#FF0000');
@@ -3978,7 +3979,7 @@ function toggleAutocode() {
 	if (!autocodeOn) {
 		$("#autocodeIndicator").html("Autocode: off");
 		clearInterval(blinkingAutocoderTimeout);
-		$("#autocodeIndicatorContainer").css("background-color",'#323232');
+		$("#autocodeIndicatorContainer").css("background-color",'#000000');
 	}
 	else {
 		$("#autocodeIndicator").html("Autocode: on");
