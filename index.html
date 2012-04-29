@@ -143,6 +143,13 @@
 			<br>Why not try to <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" target="_blank">get some awesome 3D situation started</a>? 
 		</div>
 
+		<div id="noAudioMessage">
+			<h3>Snap!</h3>
+			<p>Your browser doesn't seem to support audio.<br>
+			<br>Be a champion and try <a href="http://browsehappy.com/" target="_blank">a newer browser</a>.
+			<br>(while you are at it, pick one that supports 3D such as Chrome or Firefox). 
+		</div>
+
 
 <div id="theMenu" style="position: absolute;  z-index:3; top: 0px; left: 0px; width:100%">
 
@@ -1963,7 +1970,7 @@ function registerCode() {
 //var chromeHackUncaughtReferenceName = '';
 //var chromeHackUncaughtReferenceNames = [];
 
-window.onerror=function(msg, url, linenumber){
+window.onerrorf=function(msg, url, linenumber){
  $('#dangerSignText').css('color','red');
  $('#errorMessageText').text(msg);
  
@@ -2251,9 +2258,14 @@ soundLoop = function() {
 			for(var i in soundLoops.soundIDs){
 				var playOrNoPlay;
 				playOrNoPlay = soundLoops.beatStrings[i].charAt(beatNumber);
-				//alert('soundID: ' + soundLoops.soundIDs[i]);
 				if (playOrNoPlay === 'x') {
-					soundManager.play(soundLoops.soundIDs[i])
+					if (soundBank[soundLoops.soundIDs[i]]['lastUsed'] === undefined){
+						soundBank[soundLoops.soundIDs[i]]['lastUsed'] = 0;
+					}
+					console.log('using version: ' + soundBank[soundLoops.soundIDs[i]]['lastUsed']);
+					console.log('soundID: ' + soundLoops.soundIDs[i] + " " + soundBank[soundLoops.soundIDs[i]][soundBank[soundLoops.soundIDs[i]]['lastUsed']]);
+					soundBank[soundLoops.soundIDs[i]][soundBank[soundLoops.soundIDs[i]]['lastUsed']].play()
+					soundBank[soundLoops.soundIDs[i]]['lastUsed'] = (soundBank[soundLoops.soundIDs[i]]['lastUsed']+1)%CHANNELSPERSOUND;
 				}
 			}
 }
@@ -4284,10 +4296,26 @@ function dimIfNoCursorActivity(){
 	}
 }
 
+var closeAndCheckAudio = function(){
+		//$('#noWebGLMessage').close();
+		$.modal.close();
+		setTimeout('checkAudio();',500);
+}
+
+var checkAudio = function(){
+	if (!buzz.isSupported()) {
+	//if (true) {
+		$('#noAudioMessage').modal();
+		$('#simplemodal-container').height(200);
+	}
+}
+
+
 $(document).ready(function(){
 	
 	if (!Detector.webgl) {
-		$('#noWebGLMessage').modal();
+		//$('#noWebGLMessage').modal()
+		$('#noWebGLMessage').modal({onClose: closeAndCheckAudio});
 		$('#simplemodal-container').height(200);
 	}
 	
@@ -4374,9 +4402,57 @@ function fullscreenify(canvas) {
 
 
 
-<script type="text/javascript" src="./script/soundmanager2.js"></script>
-<script type="text/javascript" src="./script/mpc.js"></script>
+<script type="text/javascript" src="./sound/buzz.js"></script>
+<script>
+var CHANNELSPERSOUND = 5;
+var soundDef = [];
+var soundDefCounter = 0;
+// first value here below of soundDefCounter is zero.
+//soundDef[soundDefCounter++] = {soundName: 'toc', soundFile: './sound/audioFiles/AMB_BD_1.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'highHatOpen', soundFile: './sound/audioFiles/AMB_HHCL.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'highHatOpen', soundFile: './sound/audioFiles/AMB_HHOP.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'toc2', soundFile: './sound/audioFiles/AMB_HTM.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'toc3', soundFile: './sound/audioFiles/AMB_LTM2.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'toc4', soundFile: './sound/audioFiles/AMB_RIM1.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'snare', soundFile: './sound/audioFiles/AMB_SN13.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'snare2', soundFile: './sound/audioFiles/AMB_SN_5.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'china', soundFile: './sound/audioFiles/CHINA_1.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'crash', soundFile: './sound/audioFiles/CRASH_1.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'crash2', soundFile: './sound/audioFiles/CRASH_5.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'crash3', soundFile: './sound/audioFiles/CRASH_6.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'ride', soundFile: './sound/audioFiles/RIDE_1.mp3'};
 
+//soundDef[soundDefCounter++] = {soundName: 'glass', soundFile: './sound/audioFiles/glass2.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'glass1', soundFile: './sound/audioFiles/glass3.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'glass2', soundFile: './sound/audioFiles/glass4.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'glass3', soundFile: './sound/audioFiles/glass5.mp3'};
+
+soundDef[soundDefCounter++] = {soundName: 'thump', soundFile: './sound/audioFiles/8938__patchen__piano-hits-hand-03v2.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'lowFlash', soundFile: './sound/audioFiles/9569__thanvannispen__industrial-low-flash04.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'lowFlash2', soundFile: './sound/audioFiles/9570__thanvannispen__industrial-low-flash07.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'tranceKick2', soundFile: './sound/audioFiles/24004__laya__dance-kick3.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'tranceKick', soundFile: './sound/audioFiles/33325__laya__trance-kick01.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'wosh', soundFile: './sound/audioFiles/33960__krlox__pudricion-4.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'voltage', soundFile: './sound/audioFiles/49255__keinzweiter__bonobob-funk.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'beepA', soundFile: './sound/audioFiles/100708__steveygos93__bleep_a.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'beepB', soundFile: './sound/audioFiles/100708__steveygos93__bleep_b.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'beepC', soundFile: './sound/audioFiles/100708__steveygos93__bleep_c.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'beepD', soundFile: './sound/audioFiles/100708__steveygos93__bleep_d.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'beep', soundFile: './sound/audioFiles/116508_Beep.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'hello', soundFile: './sound/audioFiles/116508_Hello.mp3'};
+//soundDef[soundDefCounter++] = {soundName: 'alienBeep', soundFile: './sound/audioFiles/132389__blackie666__alienbleep.mp3'};
+
+numberOfSounds = soundDefCounter;
+
+var soundBank = {};
+for (var cycleSoundDefs = 0; cycleSoundDefs < numberOfSounds; cycleSoundDefs++){
+	soundBank[soundDef[cycleSoundDefs].soundName] = {};
+	for (var initSounds = 0; initSounds < CHANNELSPERSOUND; initSounds++){
+		soundBank[soundDef[cycleSoundDefs].soundName][initSounds] = new buzz.sound(soundDef[cycleSoundDefs].soundFile);
+	}
+}
+
+</script>
 
 
 </body>
