@@ -2316,9 +2316,12 @@ soundLoop = function() {
 			beatNumber++;
 			beatNumber = beatNumber % 16;
 
-			for(var i in soundLoops.soundIDs){
+			//console.log('about to loop in '+soundLoops.soundIDs+" of length "+soundLoops.soundIDs.length);
+			for(var loopingTheSoundIDs = 0; loopingTheSoundIDs < soundLoops.soundIDs.length; loopingTheSoundIDs++){
+				var loopedSoundID = soundLoops.soundIDs[loopingTheSoundIDs];
 				var playOrNoPlay;
-				playOrNoPlay = soundLoops.beatStrings[i].charAt(beatNumber);
+				playOrNoPlay = soundLoops.beatStrings[loopingTheSoundIDs].charAt(beatNumber);
+				//console.log('checking sound loop '+soundLoops.beatStrings[loopingTheSoundIDs]+" beat "+beatNumber+" : "+playOrNoPlay);
 				if (playOrNoPlay === 'x') {
 					// OK so this is what we do here:
 					// when each Audio object plays, it plays from start to end
@@ -2339,10 +2342,10 @@ soundLoop = function() {
 					//    because they have a limit of 35 or so sounds.
 					// So here we went for 2), and we preload the sounds only for
 					// browsers other than Chrome and IE.
-					var relevantSoundBank = soundBank[soundLoops.soundIDs[i]];
+					var relevantSoundBank = soundBank[loopedSoundID];
 					var lengthOfSoundBank = relevantSoundBank.length;
-					var availableSoundBank;
-					//console.log('playing number '+soundLoops.soundIDs[i]+" length: "+lengthOfSoundBank);
+					var availableSoundBank = undefined;
+					//console.log('playing  '+loopedSoundID+" length: "+lengthOfSoundBank);
 					for (var checkingAvailableSoundBank = 0; checkingAvailableSoundBank < lengthOfSoundBank; checkingAvailableSoundBank++){
 						var checkingSoundBank = relevantSoundBank[checkingAvailableSoundBank];
 						if (checkingSoundBank.isEnded()) {
@@ -2361,8 +2364,8 @@ soundLoop = function() {
 								$('#soundSystemIsMangledMessage').modal();
 								$('#simplemodal-container').height(250);
 							}
-							availableSoundBank = new buzz.sound(soundFiles[soundLoops.soundIDs[i]]);
-							soundBank[soundLoops.soundIDs[i]].push(availableSoundBank);
+							availableSoundBank = new buzz.sound(soundFiles[loopedSoundID]);
+							soundBank[loopedSoundID].push(availableSoundBank);
 							totalCreatedSoundObjects++;
 					}
 					
@@ -2377,8 +2380,9 @@ soundLoop = function() {
 
 addSound = function(soundID,beatString) {
     		beatString = beatString.replace(/\s*/g,"");
-    		soundLoops.soundIDs[soundLoops.soundIDs.length] = soundID;
-    		soundLoops.beatStrings[soundLoops.beatStrings.length] = beatString;
+    		soundLoops.soundIDs.push(soundID);
+    		soundLoops.beatStrings.push(beatString);
+    		//console.log('pushing '+soundID+" beat: "+beatString);
 }
 
 var matrixStack = [];
@@ -3576,7 +3580,7 @@ var trySoundsDemo = ""+
 ""+		"\n"+
 ""+		"// uncomment the sounds you want to try\n"+
 ""+		"//addSound 'toc','zzxz zzzz zzxz zzzz'\n"+
-""+		"//addSound 'highHatOpen','zzxz zzzz zzxz zzzz'\n"+
+""+		"//addSound 'highHatClosed','zzxz zzzz zzxz zzzz'\n"+
 ""+		"//addSound 'highHatOpen','zzxz zzzz zzxz zzzz'\n"+
 ""+		"//addSound 'toc2','zzxz zzzz zzxz zzzz'\n"+
 ""+		"//addSound 'toc3','zzxz zzzz zzxz zzzz'\n"+
@@ -4377,7 +4381,7 @@ function fakeCursorBlinking()
 {
   $("#fakeStartingBlinkingCursor").animate(
   {
-    opacity: 0
+    opacity: 0.2
   }, "fast", "swing").animate(
   {
     opacity: 1
@@ -4598,7 +4602,7 @@ var soundDef = [];
 var soundDefCounter = 0;
 // first value here below of soundDefCounter is zero.
 soundDef[soundDefCounter++] = {soundName: 'toc', soundFile: './sound/audioFiles/AMB_BD_1'};
-soundDef[soundDefCounter++] = {soundName: 'highHatOpen', soundFile: './sound/audioFiles/AMB_HHCL'};
+soundDef[soundDefCounter++] = {soundName: 'highHatClosed', soundFile: './sound/audioFiles/AMB_HHCL'};
 soundDef[soundDefCounter++] = {soundName: 'highHatOpen', soundFile: './sound/audioFiles/AMB_HHOP'};
 soundDef[soundDefCounter++] = {soundName: 'toc2', soundFile: './sound/audioFiles/AMB_HTM'};
 soundDef[soundDefCounter++] = {soundName: 'toc3', soundFile: './sound/audioFiles/AMB_LTM2'};
