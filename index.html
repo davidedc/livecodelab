@@ -350,6 +350,8 @@ function isCanvasSupported(){
 }
 
 // Color constants, modified from processing.js
+// with added the missing ones from the CSS standard,
+// which includes the spelling "grey" on top of "gray"
     aliceblue =            0xfff0f8ff ;
     antiquewhite =         0xfffaebd7 ;
     aqua =                 0xff00ffff ;
@@ -375,6 +377,7 @@ function isCanvasSupported(){
     darkcyan =             0xff008b8b ;
     darkgoldenrod =        0xffb8860b ;
     darkgray =             0xffa9a9a9 ;
+    darkgrey =             0xffa9a9a9 ;
     darkgreen =            0xff006400 ;
     darkkhaki =            0xffbdb76b ;
     darkmagenta =          0xff8b008b ;
@@ -386,11 +389,13 @@ function isCanvasSupported(){
     darkseagreen =         0xff8fbc8f ;
     darkslateblue =        0xff483d8b ;
     darkslategray =        0xff2f4f4f ;
+    darkslategrey =        0xff2f4f4f ;
     darkturquoise =        0xff00ced1 ;
     darkviolet =           0xff9400d3 ;
     deeppink =             0xffff1493 ;
     deepskyblue =          0xff00bfff ;
     dimgray =              0xff696969 ;
+    dimgrey =              0xff696969 ;
     dodgerblue =           0xff1e90ff ;
     firebrick =            0xffb22222 ;
     floralwhite =          0xfffffaf0 ;
@@ -401,6 +406,7 @@ function isCanvasSupported(){
     gold =                 0xffffd700 ;
     goldenrod =            0xffdaa520 ;
     gray =                 0xff808080 ;
+    grey =                 0xff808080 ;
     green =                0xff008000 ;
     greenyellow =          0xffadff2f ;
     honeydew =             0xfff0fff0 ;
@@ -418,12 +424,14 @@ function isCanvasSupported(){
     lightcyan =            0xffe0ffff ;
     lightgoldenrodyellow = 0xfffafad2 ;
     lightgrey =            0xffd3d3d3 ;
+    lightgray =            0xffd3d3d3 ;
     lightgreen =           0xff90ee90 ;
     lightpink =            0xffffb6c1 ;
     lightsalmon =          0xffffa07a ;
     lightseagreen =        0xff20b2aa ;
     lightskyblue =         0xff87cefa ;
     lightslategray =       0xff778899 ;
+    lightslategrey =       0xff778899 ;
     lightsteelblue =       0xffb0c4de ;
     lightyellow =          0xffffffe0 ;
     lime =                 0xff00ff00 ;
@@ -476,6 +484,7 @@ function isCanvasSupported(){
     skyblue =              0xff87ceeb ;
     slateblue =            0xff6a5acd ;
     slategray =            0xff708090 ;
+    slategrey =            0xff708090 ;
     snow =                 0xfffffafa ;
     springgreen =          0xff00ff7f ;
     steelblue =            0xff4682b4 ;
@@ -1884,11 +1893,11 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/(\s)if\s*([a-zA-Z0-9]*)(\s*);/g, "$1if $2$3" );
         
       
-        console.log(elaboratedSource );
+        //console.log(elaboratedSource );
         out = CoffeeScript.compile(elaboratedSource, {
           bare: "on"
         });
-        console.log("in javascript: " + out);
+        //console.log("in javascript: " + out);
         
       } catch (e) {
 
@@ -2346,7 +2355,7 @@ soundLoop = function() {
 						}
 					}
 					if (availableSoundBank === undefined){
-							console.log('creating new sound object ');
+							//console.log('creating new sound object ');
 							if (totalCreatedSoundObjects > 31) {
 								soundSystemIsMangled = true;
 								$('#soundSystemIsMangledMessage').modal();
@@ -3694,7 +3703,7 @@ var helloworldTutorial = ""+
 
 var somenotesTutorial = ""+
 ""+		"// If this makes sense to you:\n"+
-""+		"// the syntax used is Coffeescript\n"+
+""+		"// the syntax is similar to Coffeescript\n"+
 ""+		'// and the commands are almost\n'+
 ""+		'// like Processing.\n'+
 ""+		"\n"+
@@ -3773,7 +3782,7 @@ var scaleTutorial = ""+
 
 var timesTutorial = ""+
 ""+		'// "times" (not to be confused with\n'+
-""+		'// "time") can be used to\n'+
+""+		'// "time"!) can be used to\n'+
 ""+		'// repeat operations like so:\n'+
 ""+		"\n"+
 ""+		"rotate 1\n"+
@@ -3788,7 +3797,7 @@ var timesTutorial = ""+
 
 var fillTutorial = ""+
 ""+		'// "fill" changes the\n'+
-""+		'// color of all the surfaces:\n'+
+""+		'// color of all the faces:\n'+
 ""+		"\n"+
 ""+		"fill 255,255,0\n"+
 ""+		"box\n"+
@@ -3828,6 +3837,9 @@ var colornamesTutorial = ""+
 ""+		"rotate 1\n"+
 ""+		"box\n"+
 ""+		"\n"+
+""+		'// more color names here:\n'+
+""+		'// http://html-color-codes.info/color-names/\n'+
+""+		'// (just use them in lower case)\n'+
 ""+		"// next-tutorial:lights";
 
 
@@ -4460,7 +4472,7 @@ var loadAndTestAllTheSounds = function() {
 
 var checkSound = function(cycleSoundDefs){
 		var newSound = new buzz.sound(soundDef[cycleSoundDefs].soundFile);
-		console.log("loading sound "+ soundDef[cycleSoundDefs].soundFile);
+		//console.log("loading sound "+ soundDef[cycleSoundDefs].soundFile);
 		newSound.mute()
 		newSound.load();
 		newSound.bind("ended", function(e) {
@@ -4468,9 +4480,9 @@ var checkSound = function(cycleSoundDefs){
 			this.unmute();
 			endedFirstPlay++;
 			if (endedFirstPlay%10 === 0) $('#loading').append('/');
-			console.log("tested "+endedFirstPlay+" sounds");
+			//console.log("tested "+endedFirstPlay+" sounds");
 			if (endedFirstPlay === numberOfSounds * CHANNELSPERSOUND) {
-				console.log("tested all sounds");
+				//console.log("tested all sounds");
 				startEnvironment();
 			}
 		});
