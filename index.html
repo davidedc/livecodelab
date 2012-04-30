@@ -1243,7 +1243,7 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
 			scaledBackgroundWidth = Math.floor(window.innerWidth / backGroundFraction);
 			scaledBackgroundHeight = Math.floor(window.innerHeight / backGroundFraction);
 
-			if( Detector.webgl && !forceCanvasRenderer ){
+			if( !forceCanvasRenderer && Detector.webgl && !forceCanvasRenderer ){
 
 				ballDefaultDetLevel = 16;
 				sceneRenderingCanvas = document.createElement('canvas');
@@ -4265,7 +4265,7 @@ function triggerReset() {
 
 function loadDemoOrTutorial(whichDemo) {
 
-	if (!Detector.webgl && !userWarnedAboutWebglExamples && whichDemo.indexOf('webgl') === 0) {
+	if ((!Detector.webgl || forceCanvasRenderer)  && !userWarnedAboutWebglExamples && whichDemo.indexOf('webgl') === 0) {
 		userWarnedAboutWebglExamples = true;
 		$('#exampleNeedsWebgl').modal();
 		$('#simplemodal-container').height(200);
@@ -4285,7 +4285,7 @@ function loadDemoOrTutorial(whichDemo) {
 	doTheSpinThingy = false;
 	
 	var prependMessage = "";
-	if (!Detector.webgl && whichDemo.indexOf('webgl') === 0) {
+	if ((!Detector.webgl || forceCanvasRenderer) && whichDemo.indexOf('webgl') === 0) {
 		prependMessage = ""+
 		"// this drawing makes much more sense\n"+
 		"// in a WebGL-enabled browser\n"+
@@ -4630,7 +4630,7 @@ startEnvironment = function(){
 	//console.log("startEnvironment");
 	if( !init() )	animate();
 
-	if (!Detector.webgl) {
+	if (!Detector.webgl || forceCanvasRenderer) {
 		//$('#noWebGLMessage').modal()
 		$('#noWebGLMessage').modal({onClose: closeAndCheckAudio});
 		$('#simplemodal-container').height(200);
