@@ -3572,13 +3572,13 @@ var simpleCubeDemo = ""+
 ""+		"\n"+
 ""+		"background yellow\n"+
 ""+		"rotate 0,time/2000,time/2000\n"+
-""+		"box\n";
+""+		"box";
 
 var webgltwocubesDemo = ""+
 ""+		"background 155,255,255\n"+
 ""+		"2 times ->\n"+
 "\t"+		"rotate 0, 1, time/2000\n"+
-"\t"+		"box\n";
+"\t"+		"box";
 
 var cubesAndSpikes = ""+
 ""+		"simpleGradient fuchsia,color(100,200,200),yellow\n"+
@@ -3589,13 +3589,13 @@ var cubesAndSpikes = ""+
 "\t"+			"move 0,0.1,0.1\n"+
 "\t"+			"3 times ->\n"+
 "\t\t"+				"rotate 0,1,1\n"+
-"\t\t"+				"box 0.01,0.01,1\n";
+"\t\t"+				"box 0.01,0.01,1";
 
 var webglturbineDemo = ""+
 ""+		"background 155,55,255\n"+
 ""+		"70 times ->\n"+
 "\t"+		"rotate time/100000,1,time/100000\n"+
-"\t"+		"box\n";
+"\t"+		"box";
 
 var webglzfightartDemo = ""+
 ""+		"// Explore the artifacts\n"+
@@ -3615,7 +3615,7 @@ var littleSpiralOfCubes = ""+
 ""+		"10 times ->\n"+
 "\t"+		"rotate 0,1,time/1000\n"+
 "\t"+		"move 1,1,1\n"+
-"\t"+		"box\n";
+"\t"+		"box";
 
 var tentacleDemo = ""+
 ""+		"background 155,255,155\n"+
@@ -3626,7 +3626,7 @@ var tentacleDemo = ""+
 "\t\t"+		"rotate 0,1,time/1000\n"+
 "\t\t"+		"scale 0.9\n"+
 "\t\t"+		"move 1,1,1\n"+
-"\t\t"+		"box\n";
+"\t\t"+		"box";
 
 var lampDemo = ""+
 ""+		"animationStyle motionBlur\n"+
@@ -3641,7 +3641,7 @@ var lampDemo = ""+
 "\t"+		"line\n"+
 "\t"+		"move -0.5,0,0\n"+
 "\t"+		"line\n"+
-"\t"+		"line\n";
+"\t"+		"line";
 
 var trillionfeathersDemo = ""+
 ""+		"animationStyle paintOver\n"+
@@ -3675,7 +3675,7 @@ var industrialMusicDemo = ""+
 ""+		"addSound 'lowFlash'  ,'zzxz zzzz zzzz zzzz'\n"+
 ""+		"addSound 'beepB'  ,'xzzx zzzz zxzz zxzz'\n"+
 ""+		"addSound 'voltage' ,'xzxz zxzz xzxx xzxx'\n"+
-""+		"addSound 'tranceKick' ,'zxzx zzzx xzzz zzxx'\n";
+""+		"addSound 'tranceKick' ,'zxzx zzzx xzzz zzxx'";
 
 var trySoundsDemo = ""+
 ""+		"bpm 350\n"+
@@ -3713,7 +3713,7 @@ var trySoundsDemo = ""+
 ""+		"//addSound 'beepD','zzxz zzzz zzxz zzzz'\n"+
 ""+		"//addSound 'beep','zzxz zzzz zzxz zzzz'\n"+
 ""+		"//addSound 'hello','zzxz zzzz zzxz zzzz'\n"+
-""+		"//addSound 'alienBeep','zzxz zzzz zzxz zzzz'\n";
+""+		"//addSound 'alienBeep','zzxz zzzz zzxz zzzz'";
 
 var springysquaresDemo = ""+
 ""+		"animationStyle motionBlur\n"+
@@ -4546,7 +4546,7 @@ function wheel(event){
 		// where we check whether the cursor is in the
 		// first few characters of the line to avoid
 		// following a "next-tutorial" link.
-		console.log(cursorPositio.line+" "+editor.lineCount())
+		//console.log(cursorPositio.line+" "+editor.lineCount())
 		if (cursorPositio.line !== editor.lineCount()-1) {
 			editor.setCursor(cursorPositio.line + 1, cursorPositio.ch);
 		}
