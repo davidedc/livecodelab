@@ -193,7 +193,7 @@
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglpinkthreadDemo');">WebGL: Pink thread</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webgltwocubesDemo');">WebGL: Two cubes</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglturbineDemo');">WebGL: Turbine</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('zfightartDemo');">WebGL: Z-fight art!</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglzfightartDemo');">WebGL: Z-fight art!</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglnuclearOctopusDemo');">WebGL: Nuclear octopus</a></li>
 		</ul>
 	</li>
@@ -3596,7 +3596,7 @@ var webglturbineDemo = ""+
 "\t"+		"rotate time/100000,1,time/100000\n"+
 "\t"+		"box\n";
 
-var zfightartDemo = ""+
+var webglzfightartDemo = ""+
 ""+		"// Explore the artifacts\n"+
 ""+		"// of your GPU!\n"+
 ""+		"// Go Z-fighting, go!\n"+
@@ -4292,8 +4292,8 @@ function loadDemoOrTutorial(whichDemo) {
 		case 'webglturbineDemo':
 			editor.setValue( prependMessage + webglturbineDemo);
 			break;
-		case 'zfightartDemo':
-			editor.setValue( prependMessage + zfightartDemo);
+		case 'webglzfightartDemo':
+			editor.setValue( prependMessage + webglzfightartDemo);
 			break;
 		case 'littleSpiralOfCubes':
 			editor.setValue( prependMessage + littleSpiralOfCubes);
