@@ -186,6 +186,7 @@
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('diceDemo');">Dice</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('lampDemo');">Lamp</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('trillionfeathersDemo');">A trillion feathers</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('monsterblobDemo');">Monster blob</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('industrialMusicDemo');">Sound: Industrial</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('trySoundsDemo');">Sound: Try them all</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglalmostvoronoiDemo');">WebGL: Almost Voronoi</a></li>
@@ -3654,6 +3655,18 @@ var trillionfeathersDemo = ""+
 "\t"+		"move -0.5,0,0\n"+
 "\t"+		"line";
 
+var monsterblobDemo = ""+
+""+		"ballDetail 6\n"+
+""+		"animationStyle motionBlur\n"+
+""+		"rotate time/5000\n"+
+""+		"simpleGradient fuchsia,aqua,yellow\n"+
+""+		"5 times ->\n"+
+"\t"+		"rotate 0,1,time/5000\n"+
+"\t"+		"move 0,0.1,0.1\n"+
+"\t"+		"3 times ->\n"+
+"\t\t"+			"rotate 0,0,1\n"+
+"\t\t"+			"ball -1.01,0.01,1";
+
 var industrialMusicDemo = ""+
 ""+		"bpm 350\n"+
 ""+		"addSound 'alienBeep'  ,'zzxz zzzz zzxz zzzz'\n"+
@@ -4306,6 +4319,9 @@ function loadDemoOrTutorial(whichDemo) {
 			break;
 		case 'trillionfeathersDemo':
 			editor.setValue( prependMessage + trillionfeathersDemo);
+			break;
+		case 'monsterblobDemo':
+			editor.setValue( prependMessage + monsterblobDemo);
 			break;
 		case 'industrialMusicDemo':
 			editor.setValue( prependMessage + industrialMusicDemo);
