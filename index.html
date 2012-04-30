@@ -246,7 +246,7 @@
 
 
 
-		<form id="formCode" autocapitalize="off" autocorrect="off" wrap="off"><textarea id="code" name="code" style="z-index:1;" autocapitalize="off" autocorrect="off" wrap="off" ></textarea></form>
+		<form id="formCode" autocapitalize="off" autocorrect="off" wrap="off" ><textarea id="code" name="code" style="z-index:1;" autocapitalize="off" autocorrect="off" wrap="off" ></textarea></form>
 
       </div>
 
@@ -4411,6 +4411,8 @@ function loadDemoOrTutorial(whichDemo) {
 			editor.setValue( prependMessage + autocodeTutorial);
 			break;
 
+		// bring the cursor to the top
+		editor.setCursor(0,0);
 	}
 	
 	// setting the value of the editor triggers the
@@ -4454,21 +4456,11 @@ function loadDemoOrTutorial(whichDemo) {
         onBlur: (function(){ setTimeout('editor.focus()',30) }),
         onChange: (function(){registerCode();}),
         mode: "links",
-        onCursorActivity: (function(){undimIfCursorActivity();}),
+        onCursorActivity: (function(){suspendDimmingAndCheckIfLink();}),
         //onScroll: (function(){alert('scroll')})
   });
 
   
-  $('#formCode').delegate(".cm-link", "click", function(event) {
-  //alert('clicked');
-  var url;
-  url = $(event.target).text();
-  url = url.replace(/\/\/\s*next-tutorial\:/,"");
-  url = url.replace("_","");
-  //alert(""+url);
-  loadDemoOrTutorial(url+"Tutorial");
-});
-
   editor.setOption("theme", 'night');
   function selectTheme(node) {
     var theme = node.options[node.selectedIndex].innerHTML;
@@ -4505,7 +4497,27 @@ function fakeCursorBlinking()
   }, "fast", "swing");
 }
 
-function undimIfCursorActivity(){
+// this function is called when the cursor moves
+// and we handle this in two ways
+// 1) we suspend the dimming countdown
+// 2) we undim the editor if it is dimmed
+// 3) we check whether the user moved the cursor over a link
+function suspendDimmingAndCheckIfLink(){
+
+	// Now this is kind of a nasty hack: we check where the
+	// cursor is, and if it's over a line containing the
+	// link then we follow it.
+	// There was no better way, for some reason some onClick
+	// events are lost, so what happened is that one would click on
+	// the link and nothing would happen.
+	var currentLineContent = editor.getLine(editor.getCursor(true).line);
+	if (currentLineContent.indexOf('// next-tutorial:') === 0){
+		currentLineContent = currentLineContent.substring(17);		
+		currentLineContent = currentLineContent.replace("_","");
+		//alert(""+url);
+		setTimeout('loadDemoOrTutorial("'+currentLineContent+'Tutorial");',200);
+	}
+
 	if (fakeText || editor.getValue() === '') return;
 	//console.log('cursor activity! opacity: ' + $("#formCode").css('opacity'));
 	cursorActivity = true;
