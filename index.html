@@ -156,7 +156,7 @@
 		<div id="soundSystemIsMangledMessage">
 			<h3>Congrats!</h3>
 			<p>Your unlocked the "I borked the sound system" badge!</p>
-			<p>You probably created a stupendous amount of fast-playing music.</p>
+			<p>This sometime happens when playing lots of music.</p>
 			<p>Just re-start the browser to get everything back to normal.</p>
 			<p>(We know it's fun, do this all the time, it's OK).</p>
 		</div>
@@ -2311,6 +2311,12 @@ var beatNumber = 0;
 
 bpm = function(a) {
 
+	// timid attempt at sanity check.
+	// the sound system might well bork out
+	// even below 500 bpm.
+	if (a > 500) a = 500;
+	if (a < 0) a = 0;
+	
 	beatsPerMinute = a;
 	updateBpmIfChanged();
 }
