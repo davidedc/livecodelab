@@ -4538,7 +4538,7 @@ function wheel(event){
     if ( orgEvent.wheelDeltaX !== undefined ) { deltaX = -1*orgEvent.wheelDeltaX/120; }
     
     //console.log(""+deltaX+" "+deltaY);
-    if (deltaY > 0.5) {
+    if (deltaY > 0.2) {
 		var cursorPositio = editor.getCursor(true);
 		// this is to prevent that when the cursor reaches the
 		// last line, then it goes to the END of the line
@@ -4548,12 +4548,12 @@ function wheel(event){
 		// following a "next-tutorial" link.
 		//console.log(cursorPositio.line+" "+editor.lineCount())
 		if (cursorPositio.line !== editor.lineCount()-1) {
-			editor.setCursor(cursorPositio.line + 1, cursorPositio.ch);
+			editor.setCursor(cursorPositio.line +1, cursorPositio.ch);
 		}
     }
-    else if (deltaY < -0.5) {
+    else if (deltaY < -0.2) {
 		var cursorPositio = editor.getCursor(true);
-		editor.setCursor(cursorPositio.line - 1, cursorPositio.ch);
+		editor.setCursor(cursorPositio.line -1, cursorPositio.ch);
     }
 }
 
