@@ -1250,9 +1250,9 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
 				
 				renderer = new THREE.WebGLRenderer({
 					canvas: sceneRenderingCanvas,
-					antialias		: true,	// to get smoother output					
 					preserveDrawingBuffer	: false,	// to allow screenshot
-					clearColor: 0x000000, clearAlpha: 0, antialias: false
+					antialias: false,
+					premultipliedAlpha: false
 				});
 			   
 			   //renderer.autoClearColor = false;
@@ -2114,7 +2114,7 @@ function background(r, g, b) {
 			// canvas renderer
 			theColor = new THREE.Color();
 			theColor.setRGB(r, g,b);
-			renderer.setClearColor(theColor,1);
+			//renderer.setClearColor(theColor,1);
 
 
 
@@ -3936,12 +3936,12 @@ var strokeTutorial = ""+
 ""+		"// next-tutorial:color_names";
 
 var colornamesTutorial = ""+
-""+		'// you can call color by name\n'+
+""+		'// you can call colors by name\n'+
 ""+		'// try to un-comment one line:\n'+
 ""+		"\n"+
 ""+		"//fill greenyellow\n"+
 ""+		"//fill indigo\n"+
-""+		"//fill lemonchiffon // how about that!\n"+
+""+		"//fill lemonchiffon // whaaaat?\n"+
 ""+		"rotate 1\n"+
 ""+		"box\n"+
 ""+		"\n"+
