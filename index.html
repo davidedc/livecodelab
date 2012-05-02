@@ -191,7 +191,7 @@
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('trySoundsDemo');">Sound: Try them all</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglalmostvoronoiDemo');">WebGL: Almost Voronoi</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglshardsDemo');">WebGL: Shards</a></li>
-			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglpinkthreadDemo');">WebGL: Pink thread</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglredthreadsDemo');">WebGL: Red threads</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webgltwocubesDemo');">WebGL: Two cubes</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglturbineDemo');">WebGL: Turbine</a></li>
 			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglzfightartDemo');">WebGL: Z-fight art!</a></li>
@@ -2435,6 +2435,18 @@ resetMatrix = function(){
 }
 
 move = function(a, b, c) {
+  if(arguments.length == 0){
+  	  a = Math.sin(time/500);
+  	  b = Math.cos(time/500);
+  	  c = a;
+  }
+  else if(arguments.length == 1){
+  	  b=a; c=a;
+  }
+  else if(arguments.length == 2){
+  	  c=0;
+  }
+
   /*
   currentObject = new THREE.Object3D();
   currentObject.position.x = a;
@@ -2475,7 +2487,9 @@ rotate = function(a, b, c) {
 
 scale = function(a, b, c) {
   if(arguments.length == 0){
-  	  return;
+  	  a = 1+Math.sin(time/500)/4;
+  	  b = a;
+  	  c = a;
   }
   else if(arguments.length == 1){
   	  b=a; c=a;
@@ -2485,9 +2499,9 @@ scale = function(a, b, c) {
   }
   
   // odd things happen setting scale to zero
-  if (a < 0.000000001) a = 0.000000001;
-  if (b < 0.000000001) b = 0.000000001;
-  if (c < 0.000000001) c = 0.000000001;
+  if (a > -0.000000001 && a < 0.000000001) a = 0.000000001;
+  if (b > -0.000000001 && b < 0.000000001) b = 0.000000001;
+  if (c > -0.000000001 && c < 0.000000001) c = 0.000000001;
 
   /*
   currentObject = new THREE.Object3D();
@@ -3668,7 +3682,7 @@ var monsterblobDemo = ""+
 ""+		"simpleGradient fuchsia,aqua,yellow\n"+
 ""+		"5 times ->\n"+
 "\t"+		"rotate 0,1,time/5000\n"+
-"\t"+		"move 0.2\n"+
+"\t"+		"move 0.2,0,0\n"+
 "\t"+		"3 times ->\n"+
 "\t\t"+			"rotate 1\n"+
 "\t\t"+			"ball -1";
@@ -3762,7 +3776,7 @@ var webglshardsDemo = ""+
 "\t"+		"rotate 0,1,1\n"+
 "\t"+		"ball -1.01";
 
-var webglpinkthreadDemo = ""+
+var webglredthreadsDemo = ""+
 ""+		"scale 10.5\n"+
 ""+		"background black\n"+
 ""+		"stroke red\n"+
@@ -3777,7 +3791,7 @@ var webglpinkthreadDemo = ""+
 var webglnuclearOctopusDemo = ""+
 ""+		"simpleGradient black,color(0,0,(time/5)%255),black\n"+
 ""+		"scale 0.2\n"+
-""+		"move 5\n"+
+""+		"move 5,0,0\n"+
 ""+		"animationStyle motionBlur\n"+
 ""+		"//animationStyle paintOver\n"+
 ""+		"stroke 255,0,0,120\n"+
@@ -4346,8 +4360,8 @@ function loadDemoOrTutorial(whichDemo) {
 		case 'webglshardsDemo':
 			editor.setValue( prependMessage + webglshardsDemo);
 			break;
-		case 'webglpinkthreadDemo':
-			editor.setValue( prependMessage + webglpinkthreadDemo);
+		case 'webglredthreadsDemo':
+			editor.setValue( prependMessage + webglredthreadsDemo);
 			break;
 		case 'webglnuclearOctopusDemo':
 			editor.setValue( prependMessage + webglnuclearOctopusDemo);
