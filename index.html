@@ -1111,7 +1111,7 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
 	// color that paints based on normals.
     var angleColor = -16777217;
     fill = function() {
-    	defaultNormalFill = false;
+      defaultNormalFill = false;
       var c = color(arguments[0], arguments[1], arguments[2], arguments[3]);
       var crgb;
       var ca;
@@ -1154,6 +1154,7 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
      */
     noFill = function() {
       doFill = false;
+      defaultNormalFill = false;
     };
 
     /**
