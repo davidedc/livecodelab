@@ -4383,8 +4383,8 @@ else {
 
 	// ***************************** French tutorials
 	var introTutorial = ""+
-	""+		"// Les lignes qui commencent avec\n"+
-	""+		"//  deux slashes (comme celle-ci) sont des commentaires.\n"+
+	""+		"// Les lignes qui commencent avec deux slashes\n"+
+	""+		"// (comme celle-ci) sont des commentaires.\n"+
 	""+		'// Tout le reste est lancé\n'+
 	""+		'// entre 30 et 60 fois par seconde\n'+
 	""+		'// pour créer une animation\n'+
@@ -4395,7 +4395,7 @@ else {
 	var helloworldTutorial = ""+
 	""+		"// Tapez ces cinq lettres\n"+
 	""+		"// sur une des lignes vides\n"+
-	""+		'// "b", "o", "i", "t", "e"\n'+
+	""+		'// b, o, i, t, e\n'+
 	""+		"\n"+
 	""+		"\n"+
 	""+		"\n"+
@@ -4404,20 +4404,20 @@ else {
 	""+		"// next-tutorial:some_notes";
 	
 	var somenotesTutorial = ""+
-	""+		"// Au cas où cela veut dire quelque chose pour vous :\n"+
+	""+		"// Au cas où cela vous dit quelque chose :\n"+
 	""+		"// la syntaxe est similaire à Coffeescript\n"+
 	""+		'// et les commandes sont presque\n'+
 	""+		'// comme Processing.\n'+
 	""+		"\n"+
-	""+		"// Si cela ne veut rien dire pour vous"+
+	""+		"// Si cela ne veut rien dire pour vous\n"+
 	""+		"// pas de soucis.\n"+
 	""+		"// next-tutorial:rotate";
 	
 	var rotateTutorial = ""+
 	""+		"// Maintenant nous avons une boite\n"+
 	""+		"// faisons la tourner:\n"+
-	""+		'// tapez "tourne 1" sur la\n'+
-	""+		'// ligne précédente à "boite"\n'+
+	""+		'// tapez "tourne 1" sur la ligne\n'+
+	""+		'// au dessus de "boite"\n'+
 	""+		"\n"+
 	""+		"\n"+
 	""+		"boite\n"+
@@ -4432,8 +4432,8 @@ else {
 	""+		"tourne 1\n"+
 	""+		"boite\n"+
 	""+		"\n"+
-	""+		'// "image" contient un numbre\n'+
-	""+		"// qui s’incremente au fur et à mesure\n"+
+	""+		'// "image" contient un nombre\n'+
+	""+		"// qui s’incrémente au fur et à mesure\n"+
 	""+		"// que l’écran est re-dessiné.\n"+
 	""+		'// (utilisez "image/100" pour la ralentir)\n'+
 	""+		"// next-tutorial:time";
@@ -4447,10 +4447,9 @@ else {
 	""+		"tourne image/100\n"+
 	""+		"boite\n"+
 	""+		"\n"+
-	""+		'// "temps" compte le nombre\n'+
-	""+		"// de millisecondes depuis que\n"+
-	""+		"// le programme  a démarré,\n"+
-	""+		"// il est donc indépendent de la vitesse"+
+	""+		'// "temps" compte le nombre de millisecondes\n'+
+	""+		"// depuis que le programme  a démarré,\n"+
+	""+		"// il est donc indépendent de la vitesse\n"+
 	""+		"// à laquelle l’ordinateur dessine les images.\n"+
 	""+		"// next-tutorial:move";
 	
@@ -4462,8 +4461,8 @@ else {
 	""+		"deplace 1,1,0\n"+
 	""+		"boite\n"+
 	""+		"\n"+
-	""+		'// essayez d’utiliser tourne avant\n'+
-	""+		"// la première boite pour voir\n"+
+	""+		'// essayez d’utiliser tourne\n'+
+	""+		"// avant la première boite pour voir\n"+
 	""+		"// comment la scène change.\n"+
 	""+		"// next-tutorial:scale";
 	
@@ -4528,8 +4527,8 @@ else {
 	""+		"// next-tutorial:color_names";
 	
 	var colornamesTutorial = ""+
-	""+		'// you can call colors by name\n'+
-	""+		'// try to un-comment one line:\n'+
+	""+		'// vous pouvez appelez les couleurs \n'+
+	""+		'// essayer de dé-commenter une ligne :\n'+
 	""+		"\n"+
 	""+		"//colorie rouge\n"+
 	""+		"//colorie vert\n"+
@@ -4537,28 +4536,28 @@ else {
 	""+		"tourne 1\n"+
 	""+		"boite\n"+
 	""+		"\n"+
-	""+		'// more color names here:\n'+
+	""+		'// plus de noms de couleurs ici :\n'+
 	""+		'// http://html-color-codes.info/color-names/\n'+
-	""+		'// (just use them in lower case)\n'+
+	""+		'// (utilisez en minuscule, pas de majuscules)\n'+
 	""+		"// next-tutorial:lights";
 	
 	
 	var lightsTutorial = ""+
-	""+		'// "eclairageAmbiant" creates an\n'+
-	""+		'// ambient light so things have\n'+
-	""+		'// some sort of shading:\n'+
+	""+		'// "eclairageAmbiant" créé un\n'+
+	""+		'// éclairage ambiant de sorte que les objets\n'+
+	""+		'// ont une sorte de d’ombrage:\n'+
 	""+		"\n"+
 	""+		"eclairageAmbiant 0,255,255\n"+
 	""+		"tourne temps/1000\n"+
 	""+		"boite\n"+
 	""+		"\n"+
-	""+		'// you can turn that light on and \n'+
-	""+		"// off while you build the scene\n"+
-	""+		'// by using "eclairage" and "sansEclairage"\n'+
+	""+		'// vous pouvez éteindre ou allumer cet éclairage\n'+
+	""+		"// pendant que vous construisez la scène"+
+	""+		'// en utilisant "eclairage" et "sansEclairage"\n'+
 	""+		"// next-tutorial:background";
 	
 	var backgroundTutorial = ""+
-	""+		'// "background" creates a\n'+
+	""+		'// "fond" creates a\n'+
 	""+		'// solid fond:\n'+
 	""+		"\n"+
 	""+		"fond 0,0,255\n"+
