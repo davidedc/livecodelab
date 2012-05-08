@@ -1587,10 +1587,19 @@ function registerCode() {
 			editorContent = editorContent.replace(/flouMouvement/g,"motionBlur");
 			editorContent = editorContent.replace(/peindreAudessus/g,"paintOver");
 			editorContent = editorContent.replace(/peindreAuDessus/g,"paintOver");
-			editorContent = editorContent.replace(/sansCouleur/g,"noFill");
-			editorContent = editorContent.replace(/colorie/g,"fill");
-			editorContent = editorContent.replace(/remplis/g,"fill");
-			editorContent = editorContent.replace(/color/g,"fill");
+			
+			editorContent = editorContent.replace(/sauveMatrice/g,"pushMatrix");
+			editorContent = editorContent.replace(/sauveMatrix/g,"pushMatrix");
+			editorContent = editorContent.replace(/pushMatrice/g,"pushMatrix");
+			editorContent = editorContent.replace(/restaureMatrice/g,"popMatrix");
+			editorContent = editorContent.replace(/restaureMatrix/g,"popMatrix");
+			editorContent = editorContent.replace(/popMatrice/g,"popMatrix");
+			editorContent = editorContent.replace(/effaceMatrice/g,"resetMatrix");
+			editorContent = editorContent.replace(/effaceMatrix/g,"resetMatrix");
+			editorContent = editorContent.replace(/resetMatrice/g,"resetMatrix");
+
+			editorContent = editorContent.replace(/sansRemplissage/g,"noFill");
+			editorContent = editorContent.replace(/remplissage/g,"fill");
 			editorContent = editorContent.replace(/trait/g,"stroke");
 			editorContent = editorContent.replace(/couleur/g,"color");
 			editorContent = editorContent.replace(/eclairageAmbiant/g,"ambientLight");
@@ -3893,7 +3902,7 @@ var webgltwocubesDemo = ""+
 
 var cubesAndSpikes = ""+
 ""+		"dégradéSimple fuchsia,couleur(100,200,200),jaune\n"+
-""+		"changeTaille 2.1\n"+
+""+		"taille 2.1\n"+
 ""+		"5 fois ->\n"+
 "\t"+			"tourne 0,1,temps/5000\n"+
 "\t"+			"boite 0.1,0.1,0.1\n"+
@@ -3912,17 +3921,17 @@ var webglzfightartDemo = ""+
 ""+		"// Explore the artifacts\n"+
 ""+		"// of your GPU!\n"+
 ""+		"// Go Z-fighting, go!\n"+
-""+		"changeTaille 5\n"+
+""+		"taille 5\n"+
 ""+		"tourne\n"+
-""+		"colorie rouge\n"+
+""+		"remplissage rouge\n"+
 ""+		"boite\n"+
 ""+		"tourne 0.000001\n"+
-""+		"colorie jaune\n"+
+""+		"remplissage jaune\n"+
 ""+		"boite";
 
 var littleSpiralOfCubes = ""+
 ""+		"fond orange\n"+
-""+		"changeTaille 0.1\n"+
+""+		"taille 0.1\n"+
 ""+		"10 fois ->\n"+
 "\t"+		"tourne 0,1,temps/1000\n"+
 "\t"+		"deplace 1,1,1\n"+
@@ -3930,12 +3939,12 @@ var littleSpiralOfCubes = ""+
 
 var tentacleDemo = ""+
 ""+		"fond 155,255,155\n"+
-""+		"changeTaille 0.15\n"+
+""+		"taille 0.15\n"+
 ""+		"3 fois ->\n"+
 "\t"+		"tourne 0,1,1\n"+
 "\t"+		"10 fois ->\n"+
 "\t\t"+		"tourne 0,1,temps/1000\n"+
-"\t\t"+		"changeTaille 0.9\n"+
+"\t\t"+		"taille 0.9\n"+
 "\t\t"+		"deplace 1,1,1\n"+
 "\t\t"+		"boite";
 
@@ -3943,7 +3952,7 @@ var lampDemo = ""+
 ""+		"styleAnimation flouMouvement\n"+
 ""+		"dégradéSimple rouge,jaune,couleur(255,0,255)\n"+
 ""+		"//styleAnimation peindreAuDessus\n"+
-""+		"changeTaille 2\n"+
+""+		"taille 2\n"+
 ""+		"tourne temps/4000, temps/4000,  temps/4000\n"+
 ""+		"90 fois ->\n"+
 "\t"+		"tourne temps/200000, temps/200000,  temps/200000\n"+
@@ -3957,7 +3966,7 @@ var lampDemo = ""+
 var trillionfeathersDemo = ""+
 ""+		"styleAnimation peindreAuDessus\n"+
 ""+		"deplace 2,0,0\n"+
-""+		"changeTaille 2\n"+
+""+		"taille 2\n"+
 ""+		"tourne\n"+
 ""+		"20 fois ->\n"+
 "\t"+		"tourne\n"+
@@ -4029,7 +4038,7 @@ var trySoundsDemo = ""+
 var springysquaresDemo = ""+
 ""+		"styleAnimation flouMouvement\n"+
 ""+		"dégradéSimple fuchsia,couleur(100,200,200),jaune\n"+
-""+		"changeTaille 0.3\n"+
+""+		"taille 0.3\n"+
 ""+		"3 fois ->\n"+
 "\t"+		"deplace 0,0,0.5\n"+
 "\t"+		"5 fois ->\n"+
@@ -4041,9 +4050,9 @@ var diceDemo = ""+
 ""+		"styleAnimation flouMouvement\n"+
 ""+		"dégradéSimple couleur(255),moccasin,peche\n"+
 ""+		"trait 255,100,100,255\n"+
-""+		"colorie rouge,155\n"+
+""+		"remplissage rouge,155\n"+
 ""+		"deplace -0.5,0,0\n"+
-""+		"changeTaille 0.3\n"+
+""+		"taille 0.3\n"+
 ""+		"3 fois ->\n"+
 "\t"+		"deplace 0,0,0.5\n"+
 "\t"+		"1 fois ->\n"+
@@ -4052,14 +4061,14 @@ var diceDemo = ""+
 "\t\t"+		"boite";
 
 var webglalmostvoronoiDemo = ""+
-""+		"changeTaille 10\n"+
+""+		"taille 10\n"+
 ""+		"2 fois ->\n"+
 "\t"+		"tourne 0,1,temps/10000\n"+
 "\t"+		"balle -1";
 
 var webglshardsDemo = ""+
-""+		"changeTaille 10\n"+
-""+		"colorie 0\n"+
+""+		"taille 10\n"+
+""+		"remplissage 0\n"+
 ""+		"traitSize 7\n"+
 ""+		"5 fois ->\n"+
 "\t"+		"tourne 0,1,temps/20000\n"+
@@ -4068,10 +4077,10 @@ var webglshardsDemo = ""+
 "\t"+		"balle -1.01";
 
 var webglredthreadsDemo = ""+
-""+		"changeTaille 10.5\n"+
+""+		"taille 10.5\n"+
 ""+		"fond noir\n"+
 ""+		"trait rouge\n"+
-""+		"sansCouleur\n"+
+""+		"sansRemplissage\n"+
 ""+		"traitSize 7\n"+
 ""+		"5 fois ->\n"+
 "\t"+		"tourne temps/20000\n"+
@@ -4081,24 +4090,24 @@ var webglredthreadsDemo = ""+
 
 var webglnuclearOctopusDemo = ""+
 ""+		"dégradéSimple noir,couleur(0,0,(temps/5)%255),noir\n"+
-""+		"changeTaille 0.2\n"+
+""+		"taille 0.2\n"+
 ""+		"deplace 5,0,0\n"+
 ""+		"styleAnimation flouMouvement\n"+
 ""+		"//styleAnimation peindreAuDessus\n"+
 ""+		"trait 255,0,0,120\n"+
-""+		"colorie temps%255,0,0\n"+
-""+		"pushMatrix\n"+
+""+		"remplissage temps%255,0,0\n"+
+""+		"sauveMatrice\n"+
 ""+		"count = 0\n"+
 ""+		"3 fois ->\n"+
 "\t"+		"count++\n"+
-"\t"+		"pushMatrix\n"+
+"\t"+		"sauveMatrice\n"+
 "\t"+		"tourne count+3+temps/1000,2+count + temps/1000,4+count\n"+
 "\t"+		"120 fois ->\n"+
-"\t\t"+		"changeTaille 0.9\n"+
+"\t\t"+		"taille 0.9\n"+
 "\t\t"+		"deplace 1,1,0\n"+
 "\t\t"+		"tourne temps/100\n"+
 "\t\t"+		"boite\n"+
-"\t"+		"popMatrix";
+"\t"+		"restaureMatrice";
 
 //*********************************************
 }
@@ -4467,13 +4476,13 @@ else {
 	""+		"// next-tutorial:scale";
 	
 	var scaleTutorial = ""+
-	""+		"// vous pouvez changer la taille d’un objet\n"+
-	""+		'// en utilisant "changeTaille"\n'+
+	""+		"// vous pouvez changer la taille des objets\n"+
+	""+		'// en utilisant "taille"\n'+
 	""+		"\n"+
 	""+		"tourne 3\n"+
 	""+		"boite\n"+
 	""+		"deplace 1\n"+
-	""+		"changeTaille 2\n"+
+	""+		"taille 2\n"+
 	""+		"boite\n"+
 	""+		"\n"+
 	""+		'// essayez d’utiliser tourne\n'+
@@ -4496,10 +4505,10 @@ else {
 	""+		"// next-tutorial:fill";
 	
 	var fillTutorial = ""+
-	""+		'// "colorie" change la\n'+
-	""+		'// couleur of all the faces:\n'+
+	""+		'// "remplissage" défini la\n'+
+	""+		'// couleur de toutes les faces :\n'+
 	""+		"\n"+
-	""+		"colorie 255,255,0\n"+
+	""+		"remplissage 255,255,0\n"+
 	""+		"boite\n"+
 	""+		"\n"+
 	""+		'// les trois nombres indiquent\n'+
@@ -4511,15 +4520,15 @@ else {
 	""+		"// next-tutorial:stroke";
 	
 	var strokeTutorial = ""+
-	""+		'// "trait" change toutes les\n'+
-	""+		'// bordures :\n'+
+	""+		'// "trait" change la couleur\n'+
+	""+		'// des arrêtes :\n'+
 	""+		"\n"+
 	""+		"tourne 1\n"+
 	""+		"tailleTrait 5\n"+
 	""+		"trait 255,255,255\n"+
 	""+		"boite\n"+
 	""+		"\n"+
-	""+		'// les trois nombres sont RVB\n'+
+	""+		'// les trois nombres sont les valeurs RVB\n'+
 	""+		"// mais vous pouvez utiliser les noms des couleurs,\n"+
 	""+		'// ou la couleur spéciale  "couleurAngle"\n'+
 	""+		'// Vous pouvez aussi utiliser "tailleTrait"\n'+
@@ -4527,12 +4536,12 @@ else {
 	""+		"// next-tutorial:color_names";
 	
 	var colornamesTutorial = ""+
-	""+		'// vous pouvez appelez les couleurs \n'+
+	""+		'// vous pouvez indiquer les couleurs par nom\n'+
 	""+		'// essayer de dé-commenter une ligne :\n'+
 	""+		"\n"+
-	""+		"//colorie rouge\n"+
-	""+		"//colorie vert\n"+
-	""+		"//colorie pêche\n"+
+	""+		"//remplissage rouge\n"+
+	""+		"//remplissage vert\n"+
+	""+		"//remplissage pêche\n"+
 	""+		"tourne 1\n"+
 	""+		"boite\n"+
 	""+		"\n"+
@@ -4557,8 +4566,8 @@ else {
 	""+		"// next-tutorial:background";
 	
 	var backgroundTutorial = ""+
-	""+		'// "fond" creates a\n'+
-	""+		'// solid fond:\n'+
+	""+		'// "fond" créé un\n'+
+	""+		'// fond de couleur :\n'+
 	""+		"\n"+
 	""+		"fond 0,0,255\n"+
 	""+		"tourne temps/1000\n"+
@@ -4567,8 +4576,8 @@ else {
 	""+		"// next-tutorial:gradient";
 	
 	var gradientTutorial = ""+
-	""+		'// even nicer, you can paint a\n'+
-	""+		'// background gradient:\n'+
+	""+		'// encore plus sympa, vous pouvez\n'+
+	""+		'// créér un fond en dégradé:\n'+
 	""+		"\n"+
 	""+		"degradeSimple couleur(190,10,10),couleur(30,90,100),couleur(0)\n"+
 	""+		"tourne temps/1000\n"+
@@ -4577,7 +4586,7 @@ else {
 	""+		"// next-tutorial:line";
 	
 	var lineTutorial = ""+
-	""+		'// draw lines like this:\n'+
+	""+		'// dessinez des lignes comme ceci :\n'+
 	""+		"\n"+
 	""+		"20 fois ->\n"+
 	"\t"+		"tourne temps/9000\n"+
@@ -4586,37 +4595,37 @@ else {
 	""+		"// next-tutorial:ball";
 	
 	var ballTutorial = ""+
-	""+		'// draw balls like this:\n'+
+	""+		'// dessinez des balles comme ceci :\n'+
 	""+		"\n"+
 	""+		"balleDetail 10\n"+
 	""+		"3 fois ->\n"+
 	"\t"+		"deplace 0.2,0.2,0.2\n"+
 	"\t"+		"balle\n"+
 	""+		"\n"+
-	""+		'// ("balleDetail" is optional)\n'+
+	""+		'// ("balleDetail" est optionnel)\n'+
 	""+		"// next-tutorial:pushpopMatrix";
 	
 	var pushpopMatrixTutorial = ""+
-	""+		'// pushMatrix creates a bookmark of\n'+
-	""+		'// the position, which you can\n'+
-	""+		'// return to later by using popMatrix.\n'+
-	""+		'// You can reset using "resetMatrix".\n'+
+	""+		'// sauveMatrice mémorise\n'+
+	""+		'// la position, et vous pouvez\n'+
+	""+		'// y revenir plus tard avec restaureMatrice.\n'+
+	""+		'// Vous pouvez revenir à zéro avec "effaceMatrice".\n'+
 	""+		"\n"+
 	""+		"tourne temps/1000\n"+
-	""+		'pushMatrix // bookmark the position after the rotation\n'+
+	""+		'sauveMatrice // mémorise la position après la rotation\n'+
 	""+		"ligne\n"+
 	""+		"deplace 0.5,0,0\n"+
 	""+		"ligne\n"+
-	""+		"popMatrix // go back to the bookmarked position\n"+
+	""+		"restaureMatrice // revient à la position mémorisée\n"+
 	""+		"deplace -0.5,0,0\n"+
 	""+		"ligne\n"+
-	""+		"resetMatrix // resets the position\n"+
-	""+		"ligne // not affected by initial rotation\n"+
+	""+		"effaceMatrice // remets la position à zéro\n"+
+	""+		"ligne // cette ligne n’est donc pas affecté par la rotation\n"+
 	""+		"// next-tutorial:animation_style";
 	
 	var animationstyleTutorial = ""+
-	""+		'// try uncommenting either line\n'+
-	""+		'// with the styleAnimation\n'+
+	""+		'// essayez de dé-commenter l’une ou l’autre\n'+
+	""+		'// des deux lignes  avec styleAnimation\n'+
 	""+		"\n"+
 	""+		"fond 255\n"+
 	""+		"//styleAnimation flouMouvement\n"+
@@ -4627,33 +4636,33 @@ else {
 	""+		"// next-tutorial:do_once";
 	
 	var doonceTutorial = ""+
-	""+		'// delete either check mark below\n'+
+	""+		'// effacez l’une ou l’autre des coches\n'+
 	""+		"\n"+
 	""+		"tourne temps/1000\n"+
 	""+		"✓uneFois ->\n"+
 	"\t"+	   "fond 255\n"+
-	"\t"+	   "colorie 255,0,0\n"+
+	"\t"+	   "remplissage 255,0,0\n"+
 	""+		"✓uneFois -> balle\n"+
 	""+		"boite\n"+
 	""+		"\n"+
-	""+		'// ...the line or block of code\n'+
-	""+		'// are ran one time only, after that the\n'+
-	""+		'// check marks immediately re-appear\n'+
-	""+		'// P.S. keep hitting the delete button\n'+
-	""+		'// on that first check mark for seizures.\n'+
+	""+		'// …la ligne ou le bloc de code\n'+
+	""+		'// n’est exécuté qu’une seule fois, et après cela\n'+
+	""+		'// la coche réapparait immédiattement\n'+
+	""+		'// P.S. continuez de supprimer la première coche\n'+
+	""+		'// en continu pour provoquer un évanouissement :-)\n'+
 	""+		"// next-tutorial:autocode";
 	
 	var autocodeTutorial = ""+
-	""+		'// the Autocode button invents random\n'+
-	""+		'// variations for you.\n'+
+	""+		'// le bouton Autocode invente pour vous\n'+
+	""+		'// des variations aléatoires du code.\n'+
 	""+		'\n'+
-	""+		'// You can interrupt the Autocoder at\n'+
-	""+		'// any time by pressing the button again,\n'+
-	""+		'// or you can press CTRL-Z\n'+
-	""+		'// (or CMD-Z on Macs) to undo (or re-do) some of\n'+
-	""+		'// the steps even WHILE the autocoder is running,\n'+
-	""+		'// if you see that things got\n'+
-	""+		'// boring down a particular path of changes.';
+	""+		'// vous pouvez arrêter Autocode\n'+
+	""+		'// à tout moment en ré-appuyant sur le bouton\n'+
+	""+		'// ou vous pouvez faire CTRL-Z\n'+
+	""+		'// (CMD-Z sur Mac) pour annuler (or rétablir) certainesn'+
+	""+		'// des étapes y compris PENDANT que Autocode est actif\n'+
+	""+		'// si par exemple vous trouvez que les choses\n'+
+	""+		'// deviennent ennuyeuse dans la direction prise par Autocode.';
 
 }
 var autocodeOn = false;
@@ -5370,7 +5379,7 @@ startEnvironment = function(){
 	if (frenchVersion) {
 		$('#demoMenu').text("Démos");
 		$('#tutorialsMenu').text("Tutoriaux");
-		$('#resetButton').text("Relancer");
+		$('#resetButton').text("Effacer");
 		$('#autocodeIndicator').text("Autocode: inactif");
 
 		$('#simpleCubeDemo').text("Cube simple");
@@ -5399,9 +5408,9 @@ startEnvironment = function(){
 		$('#frameTutorial').text("image");
 		$('#timeTutorial').text("temps");
 		$('#moveTutorial').text("déplace");
-		$('#scaleTutorial').text("changeTaille");
+		$('#scaleTutorial').text("taille");
 		$('#timesTutorial').text("fois");
-		$('#fillTutorial').text("colorie");
+		$('#fillTutorial').text("remplissage");
 		$('#strokeTutorial').text("trait");
 		$('#colornamesTutorial').text("les couleurs par leur nom");
 		$('#lightsTutorial').text("éclairages");
@@ -5409,7 +5418,7 @@ startEnvironment = function(){
 		$('#gradientTutorial').text("degradeSimple");
 		$('#lineTutorial').text("ligne");
 		$('#ballTutorial').text("balle");
-		$('#pushpopMatrixTutorial').text("push pop");
+		$('#pushpopMatrixTutorial').text("matrice");
 		$('#animationstyleTutorial').text("styleAnimation");
 		$('#doonceTutorial').text("uneFois");
 		$('#autocodeTutorial').text("autocode");
