@@ -29,7 +29,7 @@
 		<link rel="stylesheet" href="codemirror.css">
 		<script src="codemirror.js"></script>
 		<link rel="stylesheet" href="night.css">
-		<script src="coffeescriptModified.js"></script>
+		<script src="coffeescript-livecodelab-mode.js"></script>
 		<script src="jquery.min.js"></script>
 
 		<style type="text/css">
@@ -5074,28 +5074,12 @@ function loadDemoOrTutorial(whichDemo) {
 	<script>
   var changesHappened = false;
   
-  // way to add links taken form here:
-  // http://groups.google.com/group/codemirror/browse_thread/thread/a96bb56548815163/87a3869e2cfd0a37?lnk=gst&q=links#87a3869e2cfd0a37
-  CodeMirror.defineMode("links", function(config, parserConfig) { 
-    return { 
-    token: function(stream, state) {
-      if (stream.match(/\/\/\s*(next-tutorial:([^\s]+))\b/)) 
-      { 
-           return "link"; 
-      } 
-            stream.skipToEnd(); 
-    
-    } 
-  }; 
-}); 
-
-
   var cursorActivity = true;
   var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
     lineNumbers: false,
-        tabSize: 2,
-        indentUnit: 2,
         indentWithTabs: true,
+        tabSize: 1,
+        indentUnit: 1,
         lineWrapping: true,
         // We want the code editor to always have focus
         // since there is nothing else to type into.
@@ -5104,7 +5088,7 @@ function loadDemoOrTutorial(whichDemo) {
         // the focus is not regained. Go figure.
         onBlur: (function(){ setTimeout('editor.focus()',30) }),
         onChange: (function(){registerCode();}),
-        mode: "links",
+        mode: "livecodelab",
         onCursorActivity: (function(){suspendDimmingAndCheckIfLink();}),
         //onScroll: (function(){alert('scroll')})
   });

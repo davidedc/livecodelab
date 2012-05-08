@@ -1223,7 +1223,7 @@ var CodeMirror = (function() {
 
       //for (var str = '<span class="cm-tab">', i = 0; i < options.tabSize; ++i) str += " ";
       //return str + "</span>";
-      return "\u258C\u258C";
+      return "\u25B6";
     }
     function tabsChanged() {
       tabText = computeTabText();

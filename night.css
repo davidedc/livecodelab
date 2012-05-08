@@ -21,7 +21,6 @@
 
       .cm-tab:after {
         /* content: "\25A3"; */
-        content: "\258C";
         display: -moz-inline-block;
         display: -webkit-inline-block;
         display: inline-block;
@@ -40,13 +39,17 @@
 	border-left: 2px solid black !important;
 }
 
-.cm-s-night span { background: yellow; color: #6900a1; }
+.cm-s-night span { background: yellow; color: #ffdd00;}
 .cm-s-night span.cm-comment { color: #6900a1; }
 .cm-s-night span.cm-atom { color: #845dc4; }
 .cm-s-night span.cm-number, .cm-s-night span.cm-attribute { color: #ff0000; }
 .cm-s-night span.cm-keyword { color: #599eff; }
-.cm-s-night span.cm-string { color: #37f14a; }
+.cm-s-night span.cm-punctuation { color: #009900; }
+.cm-s-night span.cm-string { color: #599eff; }
+.cm-s-night span.cm-string-2 { color: #599eff; }
 .cm-s-night span.cm-meta { color: #7678e2; }
+.cm-s-night span.cm-operator { color: #009900; }
+.cm-s-night span.cm-variable { color: #0000ff; }
 .cm-s-night span.cm-variable-2, .cm-s-night span.cm-tag { color: #99b2ff; }
 .cm-s-night span.cm-variable-3, .cm-s-night span.cm-def { color: white; }
 .cm-s-night span.cm-error { color: #9d1e15; }

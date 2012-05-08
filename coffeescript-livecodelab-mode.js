@@ -2,8 +2,9 @@
  * Link to the project's GitHub page:
  * https://github.com/pickhardt/coffeescript-codemirror-mode
  */
-CodeMirror.defineMode('coffeescript', function(conf) {
+CodeMirror.defineMode('livecodelab', function(conf) {
     var ERRORCLASS = 'error';
+    
     
     function wordRegexp(words) {
         return new RegExp("^((" + words.join(")|(") + "))\\b");
@@ -19,7 +20,7 @@ CodeMirror.defineMode('coffeescript', function(conf) {
     var wordOperators = wordRegexp(['and', 'or', 'not',
                                     'is', 'isnt', 'in',
                                     'instanceof', 'typeof']);
-    var indentKeywords = ['draw','for', 'times', 'while', 'loop', 'if', 'unless', 'else',
+    var indentKeywords = ['draw','for', 'while', 'loop', 'if', 'unless', 'else',
                           'switch', 'try', 'catch', 'finally', 'class'];
     var commonKeywords = ['break', 'by', 'continue', 'debugger', 'delete',
                           'do', 'in', 'of', 'new', 'return', 'then',
@@ -307,6 +308,13 @@ CodeMirror.defineMode('coffeescript', function(conf) {
         },
         
         token: function(stream, state) {
+
+		  // way to add links taken form here:
+		  // http://groups.google.com/group/codemirror/browse_thread/thread/a96bb56548815163/87a3869e2cfd0a37?lnk=gst&q=links#87a3869e2cfd0a37
+		  if (stream.match(/\/\/\s*(next-tutorial:([^\s]+))\b/)) { 
+			   return "link"; 
+		  } 
+
             var style = tokenLexer(stream, state);
             
             state.lastToken = {style:style, content: stream.current()};
