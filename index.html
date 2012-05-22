@@ -270,6 +270,7 @@
 		var linesPool = [];
 		var rectanglesPool = [];
 		var boxesPool = [];
+		var cylindersPool = [];
 		// spheres have different geometries
 		// depending on the detail level,
 		// which can be set at whim
@@ -280,6 +281,7 @@
 		var usedLines = 0;
 		var usedRectangles = 0;
 		var usedBoxes = 0;
+		var usedCylinders = 0;
 		var usedAmbientLights = 0;
 		var usedPointLights = 0;
 		var usedSpheres = {};
@@ -289,6 +291,7 @@
 		var cubeGeometry = new THREE.CubeGeometry(1,1,1);
 		var planeGeometry = new THREE.PlaneGeometry(1,1);
 		var lineGeometry = new THREE.Geometry();
+		var cylinderGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
 		lineGeometry.vertices.push(new THREE.Vertex(new THREE.Vector3(0, -0.5, 0)));
 		lineGeometry.vertices.push(new THREE.Vertex(new THREE.Vector3(0, 0.5, 0)));
 		
@@ -1488,6 +1491,15 @@ function combDisplayList() {
 					sceneObject.visible = false;
 				}
 			}
+			else if (sceneObject.isCylinder){
+				if (usedCylinders > 0) {
+					sceneObject.visible = true;
+					usedCylinders--;
+				}
+				else {
+					sceneObject.visible = false;
+				}
+			}
 			else if (sceneObject.isAmbientLight){
 				if (usedAmbientLights > 0) {
 					sceneObject.visible = true;
@@ -1949,6 +1961,7 @@ function registerCode() {
         elaboratedSource =  elaboratedSource.replace(/pointLight(\s)+/g, ";pointLight$1" );
         elaboratedSource =  elaboratedSource.replace(/ball(\s)+/g, ";ball$1" );
         elaboratedSource =  elaboratedSource.replace(/ballDetail(\s)+/g, ";ballDetail$1" );
+        elaboratedSource =  elaboratedSource.replace(/peg(\s)+/g, ";peg$1" );
 
         // the semicolon mangles the first line of the function definitions
         // coffeescript doesn't like that
@@ -2057,6 +2070,7 @@ function registerCode() {
 			  usedMethods[scanningUsedMethods] === "pointLight" ||
 			  usedMethods[scanningUsedMethods] === "ball" ||
 			  usedMethods[scanningUsedMethods] === "ballDetail" ||
+			  usedMethods[scanningUsedMethods] === "peg" ||
 			  false
 		  ){
 		  	continue;
@@ -2623,6 +2637,7 @@ scale = function(a, b, c) {
       mesh.isLine = true;
       mesh.isRectangle = false;
       mesh.isBox = false;
+      mesh.isCylinder = false;
       mesh.isAmbientLight = false;
       mesh.isPointLight = false;
       mesh.isSphere = 0;
@@ -2890,6 +2905,7 @@ scale = function(a, b, c) {
 			pooledRectangle.mesh.isLine = false;
 			pooledRectangle.mesh.isRectangle = true;
 			pooledRectangle.mesh.isBox = false;
+			pooledRectangle.mesh.isCylinder = false;
 			pooledRectangle.mesh.isAmbientLight = false;
 			pooledRectangle.mesh.isPointLight = false;
 			pooledRectangle.mesh.isSphere = 0;
@@ -2958,6 +2974,7 @@ scale = function(a, b, c) {
 			pooledAmbientLight.isLine = false;
 			pooledAmbientLight.isRectangle = false;
 			pooledAmbientLight.isBox = false;
+			pooledAmbientLight.isCylinder = false;
 			pooledAmbientLight.isAmbientLight = true;
 			pooledAmbientLight.isPointLight = false;
 			pooledAmbientLight.isSphere = 0;
@@ -3341,6 +3358,7 @@ scale = function(a, b, c) {
 			pooledBox.mesh.isLine = false;
 			pooledBox.mesh.isRectangle = false;
 			pooledBox.mesh.isBox = true;
+			pooledBox.mesh.isCylinder = false;
 			pooledBox.mesh.isAmbientLight = false;
 			pooledBox.mesh.isPointLight = false;
 			pooledBox.mesh.isSphere = 0;
@@ -3377,6 +3395,241 @@ scale = function(a, b, c) {
 
 
   }
+
+
+  peg = function(a,b,c) {
+  	// simple case - if there is no fill and
+  	// no stroke then there is nothing to do.
+	var startIndex = 0;
+	var endIndex = 0;
+
+  	if (!doFill && !doStroke) {
+  		return;
+  	}
+  	// if the wireframe is not going to be visible on top of the
+  	// fill then don't draw it
+  	else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
+  		//if (doStroke) console.log('smart optimisation, was supposed to do the stroke but not doing it!!');
+  		startIndex = 0;
+  		endIndex = 1;
+  	}
+  	else if (!doFill && doStroke) {
+  		startIndex = 1;
+  		endIndex = 2;
+  	}
+  	else {
+  		startIndex = 0;
+  		endIndex = 2;
+  	}
+  	//console.log("si: " + startIndex + " endI: " + endIndex );
+
+  	if(a === undefined){
+  	  //alert('cube!')
+  	  a=1; b=1; c=1;
+  	  }
+  	  
+  	else if(arguments.length === 1){
+  	  b=a; c=a;
+  	  }
+
+	var strokeTime = false;
+	var colorToBeUsed;
+	var alphaToBeUsed;
+	var newCylinderCreated = false;
+	
+
+	// this is to run the code twice. This should be neater
+	// and turned into a function call really.
+	for (var fillAndStroke = startIndex; fillAndStroke < endIndex; fillAndStroke++) {
+		if (fillAndStroke === 1) {
+			strokeTime = true;
+			colorToBeUsed = currentStrokeColor;
+			alphaToBeUsed = currentStrokeAlpha;
+		}
+		else {
+			colorToBeUsed = currentFillColor;
+			alphaToBeUsed = currentFillAlpha;
+		}
+			var pooledCylinder = cylindersPool[usedCylinders];
+			if ( pooledCylinder === undefined){
+			  // each pooled cylinder contains a geometry,
+			  // a basic material and a lambert material.
+			  pooledCylinder = {
+					basicMaterial: undefined,
+					lambertMaterial: undefined,
+					normalMaterial: undefined,
+					// the first time we render a mesh we need to
+					// render it with the material that takes the
+					// bigger buffer space, otherwise the
+					// more complicated materials won't show
+					// up, see:
+					// https://github.com/mrdoob/three.js/issues/1051
+					// so we always need to create a normalmaterial
+					// and render that material first, in case
+					// the user will ever want to use it.
+					// Another workaround would be to create a mesh
+					// for each different type of material
+					neverUsed: true,
+					mesh: undefined
+			  };
+			  newCylinderCreated = true;
+			  cylindersPool.push(pooledCylinder);
+			}
+			var applyDefaultNormalColor = false;
+			if (!strokeTime) {
+				if (defaultNormalFill) {
+					applyDefaultNormalColor = true;
+				}
+				else {
+					applyDefaultNormalColor = false;
+				}
+			}
+			else {
+				if (defaultNormalStroke) {
+					applyDefaultNormalColor = true;
+				}
+				else {
+					applyDefaultNormalColor = false;
+				}
+			}
+				if (pooledCylinder.neverUsed || (colorToBeUsed === angleColor || applyDefaultNormalColor)){
+					// the first time we render a mesh we need to
+					// render it with the material that takes the
+					// bigger buffer space, see:
+					// https://github.com/mrdoob/three.js/issues/1051
+					// Another workaround would be to create a mesh
+					// for each different type of material
+					pooledCylinder.neverUsed = false;
+					if (pooledCylinder.normalMaterial === undefined) {
+						//console.log("creating normal material");
+						pooledCylinder.normalMaterial = new THREE.MeshNormalMaterial({
+							opacity: alphaToBeUsed,
+							wireframe: strokeTime,
+							wireframeLinewidth: currentStrokeSize,
+						});
+					}
+					else {
+						pooledCylinder.normalMaterial.opacity = alphaToBeUsed;
+						pooledCylinder.normalMaterial.wireframe = strokeTime;
+						pooledCylinder.normalMaterial.wireframeLinewidth = currentStrokeSize;
+						pooledCylinder.normalMaterial.doubleSided = false;
+					}
+					if (pooledCylinder.mesh === undefined){
+						pooledCylinder.mesh = new THREE.Mesh(cylinderGeometry, pooledCylinder.normalMaterial);
+						pooledCylinder.startCountdown = SPINFRAMES;
+					}
+					else {
+						//console.log("associating normal material to existing mesh");
+						pooledCylinder.mesh.material = pooledCylinder.normalMaterial;
+					}
+				}
+				else if (!lightsAreOn){
+					if (pooledCylinder.basicMaterial === undefined) {
+						pooledCylinder.basicMaterial = new THREE.MeshBasicMaterial({
+							color: colorToBeUsed,
+							opacity: alphaToBeUsed,
+							wireframe: strokeTime,
+							wireframeLinewidth: currentStrokeSize,
+						});
+					}
+					else {
+						pooledCylinder.basicMaterial.color.setHex(colorToBeUsed);
+						pooledCylinder.basicMaterial.opacity = alphaToBeUsed;
+						pooledCylinder.basicMaterial.wireframe = strokeTime;
+						pooledCylinder.basicMaterial.wireframeLinewidth = currentStrokeSize;
+						pooledCylinder.basicMaterial.doubleSided = false;
+					}
+					if (pooledCylinder.mesh === undefined){
+						pooledCylinder.mesh = new THREE.Mesh(cylinderGeometry, pooledCylinder.basicMaterial);
+						pooledCylinder.startCountdown = SPINFRAMES;
+					}
+					else {
+						pooledCylinder.mesh.material = pooledCylinder.basicMaterial;
+					}
+
+				}
+				// lights are on
+				else {
+					if (pooledCylinder.lambertMaterial === undefined) {
+					  //console.log("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
+					  pooledCylinder.lambertMaterial = new THREE.MeshLambertMaterial({
+							color: colorToBeUsed,
+							opacity: alphaToBeUsed,
+							ambient: ambientColor,
+							reflectivity: reflectValue,
+							refractionRatio: refractValue,
+							wireframe: strokeTime,
+							wireframeLinewidth: currentStrokeSize,
+						});
+					}
+					else {
+						pooledCylinder.lambertMaterial.color.setHex(colorToBeUsed);
+						pooledCylinder.lambertMaterial.opacity = alphaToBeUsed;
+						pooledCylinder.lambertMaterial.wireframe = strokeTime;
+						pooledCylinder.lambertMaterial.wireframeLinewidth = currentStrokeSize;
+						pooledCylinder.lambertMaterial.doubleSided = false;
+						pooledCylinder.lambertMaterial.ambient.setHex(ambientColor);
+						pooledCylinder.lambertMaterial.reflectivity = reflectValue;
+						pooledCylinder.lambertMaterial.refractionRatio = refractValue;
+					}
+					if (pooledCylinder.mesh === undefined){
+						pooledCylinder.mesh = new THREE.Mesh(cylinderGeometry, pooledCylinder.lambertMaterial);
+						pooledCylinder.startCountdown = SPINFRAMES;
+					}
+					else {
+						pooledCylinder.mesh.material = pooledCylinder.lambertMaterial;
+					}
+			}
+			
+			if (resetTheSpinThingy) {
+				pooledCylinder.startCountdown = SPINFRAMES;
+				resetTheSpinThingy = false;
+				doTheSpinThingy = true;
+			}
+			if (doTheSpinThingy) pooledCylinder.startCountdown --;
+			if (pooledCylinder.startCountdown === -1) doTheSpinThingy = false;
+						
+			pooledCylinder.mesh.isLine = false;
+			pooledCylinder.mesh.isRectangle = false;
+			pooledCylinder.mesh.isBox = false;
+			pooledCylinder.mesh.isCylinder = true;
+			pooledCylinder.mesh.isAmbientLight = false;
+			pooledCylinder.mesh.isPointLight = false;
+			pooledCylinder.mesh.isSphere = 0;
+			pooledCylinder.mesh.doubleSided = false;
+			
+						
+			usedCylinders++;
+			
+			if (doTheSpinThingy && pooledCylinder.startCountdown > 0) {
+				pushMatrix();
+				rotate(pooledCylinder.startCountdown/50);			
+				//console.log(""+pooledCylinder.startCountdown);			
+			}
+			
+			pooledCylinder.mesh.matrixAutoUpdate = false;
+			pooledCylinder.mesh.matrix.copy(worldMatrix);
+			pooledCylinder.mesh.matrixWorldNeedsUpdate = true;
+
+			if (doTheSpinThingy && pooledCylinder.startCountdown > 0) {
+				popMatrix();
+			}
+
+			// TODO: meshes should be built from geometries that are
+			// ever so slight larger than the "fill" mesh so there
+			// is no z-fighting...
+			// constant 0.001 below is to avoid z-fighting
+			if( a !== 1 || b !== 1 || c !== 1){
+				if (! strokeTime) pooledCylinder.mesh.matrix.scale(new THREE.Vector3(a,b,c));
+				else pooledCylinder.mesh.matrix.scale(new THREE.Vector3(a+0.001,b+0.001,c+0.001));
+			}
+
+			if (newCylinderCreated) scene.add(pooledCylinder.mesh);
+    }
+
+
+  }
+
 
   ballDetail = function(a) {
 	if (a === undefined) return;
@@ -3605,6 +3858,7 @@ scale = function(a, b, c) {
 			pooledSphere.mesh.isLine = false;
 			pooledSphere.mesh.isRectangle = false;
 			pooledSphere.mesh.isBox = false;
+			pooledSphere.mesh.isCylinder = false;
 			pooledSphere.mesh.isAmbientLight = false;
 			pooledSphere.mesh.isPointLight = false;
 			pooledSphere.mesh.isSphere = ballDetLevel;
