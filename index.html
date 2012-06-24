@@ -225,6 +225,12 @@
 	</li>
 	<li id="autocodeIndicatorContainer" onClick="toggleAutocode();"><a id="autocodeIndicator" href="javascript:void(0)"  style="text-decoration:none;">Autocode: off</a>
 	</li>
+	
+	
+    <!-- Adding a manual hide code toggle julien-->
+	<li id="dimCodeButtonContainer" onClick="toggleDimCode();"><a id="dimCodeIndicator" href="javascript:void(0)"  style="text-decoration:none;">Hide Code: on</a>
+	</li>
+	
 	<li id="resetButtonContainer" onClick="triggerReset();"><a id="resetButton" href="javascript:void(0)"  style="text-decoration:none;" >Reset</a>
 	</li>
 	<li id="dangerSign" style="border-right:none;"><a href="" id="dangerSignText" style="font-size:2em;margin-top:-0.3em;">!</a>
@@ -346,6 +352,10 @@
 		var SPINFRAMES = 30;
 
 		var userWarnedAboutWebglExamples = false;
+		
+		
+		var dimIntervalID;
+		
 
 
 function isCanvasSupported(){
@@ -4922,6 +4932,8 @@ else {
 var autocodeOn = false;
 var blinkingAutocoderTimeout;
 var blinkingAutocoderStatus = false;
+var dimcodeOn = false;
+
 
 function blinkAutocodeIndicator() {
 	blinkingAutocoderStatus = !blinkingAutocoderStatus;
@@ -4965,6 +4977,7 @@ function toggleAutocode() {
 		) loadDemoOrTutorial('cubesAndSpikes');
 	}
 }
+
 
 function mutate() {
 		var whichMutation = Math.floor(Math.random() * 5);
@@ -5492,12 +5505,16 @@ function undimEditor(){
 	}
 }
 
+// the dimming go to full invisibility now that there is a manual switch to toggle it off and on
+// see toggleDimCode() 
+// not sure about that, want to try it on people -- julien 
+
 function dimEditor(){
-		if ($("#formCode").css('opacity') > 0.200001) {
+		if ($("#formCode").css('opacity') > 0) {
 			//console.log('starting fadeout animation');
 			$("#formCode").animate(
 			  {
-				opacity: 0.2
+				opacity: 0
 			  }, "slow");
 		  }
 }
@@ -5515,6 +5532,37 @@ function dimIfNoCursorActivity(){
 
 	}
 }
+
+
+// a function to toggle code diming on and off -- julien 
+
+function toggleDimCode() {
+	dimcodeOn = !dimcodeOn;
+
+	if (!dimcodeOn) {
+		clearInterval (dimIntervalID);
+		undimEditor();
+		if (frenchVersion) {
+			$("#dimCodeIndicator").html("Code Caché: inactif");
+		}
+		else {
+			$("#dimCodeIndicator").html("Hide Code: off");
+		}
+
+	}
+	else {
+		// we restart a setInterval
+		dimIntervalID = setInterval ( "dimIfNoCursorActivity()", 5000 );
+		if (frenchVersion) {
+			$("#dimCodeIndicator").html("Code Caché: actif");
+		}
+		else {
+			$("#dimCodeIndicator").html("Hide Code: on");
+		}
+
+	}
+}
+
 
 var closeAndCheckAudio = function(){
 		//$('#noWebGLMessage').close();
@@ -5678,7 +5726,14 @@ startEnvironment = function(){
 		loadDemoOrTutorial(demoToLoad);
 	}
 	fakeCursorInterval = setInterval ( "fakeCursorBlinking()", 800 );
-	setInterval ( "dimIfNoCursorActivity()", 2000 );
+	
+	
+	// Init of the dim code toggle.
+	// set it to false, then immediatly toggle it to true with the managing function
+	// that way we can easily invert the default: just change false to true -- julien
+	
+	dimcodeOn = false;
+	toggleDimCode();
 	
 }
 
