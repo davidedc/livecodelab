@@ -5505,11 +5505,17 @@ function undimEditor(){
 	}
 }
 
-// the dimming go to full invisibility now that there is a manual switch to toggle it off and on
+// Now that there is a manual switch to toggle it off and on
+// the dimming goes to full INvisibility
 // see toggleDimCode() 
 // not sure about that, want to try it on people -- julien 
 
 function dimEditor(){
+		// TODO there is a chance that the animation library
+		// doesn't bring the opacity completely to zero
+		// but rather to a value close to it.
+		// Make the animation step to print something
+		// just to make sure that this is not the case.
 		if ($("#formCode").css('opacity') > 0) {
 			//console.log('starting fadeout animation');
 			$("#formCode").animate(
@@ -5522,14 +5528,13 @@ function dimEditor(){
 function dimIfNoCursorActivity(){
 	if (fakeText || editor.getValue() === '') return;
 	if (cursorActivity) {
-		//console.log('marking cursor act = false and check again in a second');
+		//console.log('marking cursor activity = false. Will check again in the next interval');
 		cursorActivity = false;
 		return;
 	}
 	else {
-		//console.log('no activity in the last second and opacity: ' + $("#formCode").css('opacity') );
+		//console.log('no activity in the last interval. Dimming now, starting opacity is: ' + $("#formCode").css('opacity') );
 		dimEditor();
-
 	}
 }
 
