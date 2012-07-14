@@ -794,6 +794,11 @@ function registerCode() {
 
 //var chromeHackUncaughtReferenceName = '';
 //var chromeHackUncaughtReferenceNames = [];
+
+// swap the two lines below in case one needs to
+// debug the environment, otherwise all errors are
+// caught and not bubbled up to the browser debugging tool.
+// var foo = function(msg, url, linenumber) {
 window.onerror = function(msg, url, linenumber) {
 
   if (autocodeOn) {
@@ -1146,8 +1151,7 @@ soundLoop = function() {
         totalCreatedSoundObjects++;
       }
 
-      console.log('using version: ' + soundBank[soundLoops.soundIDs[i]]['lastUsed']);
-      console.log('soundID: ' + soundLoops.soundIDs[i] + " " + soundBank[soundLoops.soundIDs[i]][soundBank[soundLoops.soundIDs[i]]['lastUsed']]);
+      
       availableSoundBank.play();
       //soundBank[soundLoops.soundIDs[i]]['lastUsed'] = (soundBank[soundLoops.soundIDs[i]]['lastUsed']+1)%CHANNELSPERSOUND;
     }
@@ -1625,7 +1629,7 @@ var defaultGradientColor2 = red;
 var defaultGradientColor3 = black;
 var whichDefaultBackground;
 
-pickRandomDefaultGradient = function() {
+var pickRandomDefaultGradient = function() {
   if (whichDefaultBackground === undefined) {
     whichDefaultBackground = Math.floor(Math.random() * 5);
   } else {
@@ -3024,32 +3028,6 @@ function loadDemoOrTutorial(whichDemo) {
 var changesHappened = false;
 
 var cursorActivity = true;
-var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-  lineNumbers: false,
-  indentWithTabs: true,
-  tabSize: 1,
-  indentUnit: 1,
-  lineWrapping: true,
-  // We want the code editor to always have focus
-  // since there is nothing else to type into.
-  // One of those little wonders: you have to pause a little
-  // before giving the editor focus, otherwise for some reason
-  // the focus is not regained. Go figure.
-  onBlur: (function() {
-    setTimeout('editor.focus()', 30);
-  }),
-  onChange: (function() {
-    registerCode();
-  }),
-  mode: "livecodelab",
-  onCursorActivity: (function() {
-    suspendDimmingAndCheckIfLink();
-  })
-  //onScroll: (function(){alert('scroll')})
-});
-
-
-editor.setOption("theme", 'night');
 
 function selectTheme(node) {
   var theme = node.options[node.selectedIndex].innerHTML;
