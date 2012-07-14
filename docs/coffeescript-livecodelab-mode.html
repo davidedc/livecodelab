@@ -1,0 +1,303 @@
+<!DOCTYPE html>  <html> <head>   <title>coffeescript-livecodelab-mode.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               coffeescript-livecodelab-mode.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm"> * Link to the project&#39;s GitHub page:</span>
+<span class="cm"> * https://github.com/pickhardt/coffeescript-codemirror-mode</span>
+<span class="cm"> */</span>
+<span class="nx">CodeMirror</span><span class="p">.</span><span class="nx">defineMode</span><span class="p">(</span><span class="s1">&#39;livecodelab&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">conf</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">ERRORCLASS</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span><span class="p">;</span>
+    
+    
+    <span class="kd">function</span> <span class="nx">wordRegexp</span><span class="p">(</span><span class="nx">words</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s2">&quot;^((&quot;</span> <span class="o">+</span> <span class="nx">words</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;)|(&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;))\\b&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+    <span class="kd">var</span> <span class="nx">singleOperators</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s2">&quot;^[\\+\\-\\*/%&amp;|\\^~&lt;&gt;!\?]&quot;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">singleDelimiters</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s1">&#39;^[\\(\\)\\[\\]\\{\\}@,:`=;\\.]&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">doubleOperators</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s2">&quot;^((\-&gt;)|(\=&gt;)|(\\+\\+)|(\\+\\=)|(\\-\\-)|(\\-\\=)|(\\*\\*)|(\\*\\=)|(\\/\\/)|(\\/\\=)|(==)|(!=)|(&lt;=)|(&gt;=)|(&lt;&gt;)|(&lt;&lt;)|(&gt;&gt;)|(//))&quot;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">doubleDelimiters</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s2">&quot;^((\\.\\.)|(\\+=)|(\\-=)|(\\*=)|(%=)|(/=)|(&amp;=)|(\\|=)|(\\^=))&quot;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">tripleDelimiters</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s2">&quot;^((\\.\\.\\.)|(//=)|(&gt;&gt;=)|(&lt;&lt;=)|(\\*\\*=))&quot;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">identifiers</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s2">&quot;^[_A-Za-z][_A-Za-z0-9]*&quot;</span><span class="p">);</span>
+
+    <span class="kd">var</span> <span class="nx">wordOperators</span> <span class="o">=</span> <span class="nx">wordRegexp</span><span class="p">([</span><span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="s1">&#39;or&#39;</span><span class="p">,</span> <span class="s1">&#39;not&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="s1">&#39;isnt&#39;</span><span class="p">,</span> <span class="s1">&#39;in&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;instanceof&#39;</span><span class="p">,</span> <span class="s1">&#39;typeof&#39;</span><span class="p">]);</span>
+    <span class="kd">var</span> <span class="nx">indentKeywords</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">,</span><span class="s1">&#39;for&#39;</span><span class="p">,</span> <span class="s1">&#39;while&#39;</span><span class="p">,</span> <span class="s1">&#39;loop&#39;</span><span class="p">,</span> <span class="s1">&#39;if&#39;</span><span class="p">,</span> <span class="s1">&#39;unless&#39;</span><span class="p">,</span> <span class="s1">&#39;else&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;switch&#39;</span><span class="p">,</span> <span class="s1">&#39;try&#39;</span><span class="p">,</span> <span class="s1">&#39;catch&#39;</span><span class="p">,</span> <span class="s1">&#39;finally&#39;</span><span class="p">,</span> <span class="s1">&#39;class&#39;</span><span class="p">];</span>
+    <span class="kd">var</span> <span class="nx">commonKeywords</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;break&#39;</span><span class="p">,</span> <span class="s1">&#39;by&#39;</span><span class="p">,</span> <span class="s1">&#39;continue&#39;</span><span class="p">,</span> <span class="s1">&#39;debugger&#39;</span><span class="p">,</span> <span class="s1">&#39;delete&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;do&#39;</span><span class="p">,</span> <span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="s1">&#39;of&#39;</span><span class="p">,</span> <span class="s1">&#39;new&#39;</span><span class="p">,</span> <span class="s1">&#39;return&#39;</span><span class="p">,</span> <span class="s1">&#39;then&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;this&#39;</span><span class="p">,</span> <span class="s1">&#39;throw&#39;</span><span class="p">,</span> <span class="s1">&#39;when&#39;</span><span class="p">,</span> <span class="s1">&#39;until&#39;</span><span class="p">];</span>
+
+    <span class="kd">var</span> <span class="nx">keywords</span> <span class="o">=</span> <span class="nx">wordRegexp</span><span class="p">(</span><span class="nx">indentKeywords</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">commonKeywords</span><span class="p">));</span>
+
+    <span class="nx">indentKeywords</span> <span class="o">=</span> <span class="nx">wordRegexp</span><span class="p">(</span><span class="nx">indentKeywords</span><span class="p">);</span>
+
+
+    <span class="kd">var</span> <span class="nx">stringPrefixes</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s2">&quot;^(&#39;{3}|\&quot;{3}|[&#39;\&quot;])&quot;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">regexPrefixes</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s2">&quot;^(/{3}|/)&quot;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">commonConstants</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Infinity&#39;</span><span class="p">,</span> <span class="s1">&#39;NaN&#39;</span><span class="p">,</span> <span class="s1">&#39;undefined&#39;</span><span class="p">,</span> <span class="s1">&#39;null&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="s1">&#39;on&#39;</span><span class="p">,</span> <span class="s1">&#39;off&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">];</span>
+    <span class="kd">var</span> <span class="nx">constants</span> <span class="o">=</span> <span class="nx">wordRegexp</span><span class="p">(</span><span class="nx">commonConstants</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Tokenizers</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">function</span> <span class="nx">tokenBase</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Handle scope changes</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">sol</span><span class="p">())</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">scopeOffset</span> <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">offset</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">eatSpace</span><span class="p">())</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">lineOffset</span> <span class="o">=</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">indentation</span><span class="p">();</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">lineOffset</span> <span class="o">&gt;</span> <span class="nx">scopeOffset</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="s1">&#39;indent&#39;</span><span class="p">;</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">lineOffset</span> <span class="o">&lt;</span> <span class="nx">scopeOffset</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="s1">&#39;dedent&#39;</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">scopeOffset</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">dedent</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">eatSpace</span><span class="p">())</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="kd">var</span> <span class="nx">ch</span> <span class="o">=</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">peek</span><span class="p">();</span>
+        </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Handle comments</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">ch</span> <span class="o">===</span> <span class="s1">&#39;#&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">stream</span><span class="p">.</span><span class="nx">skipToEnd</span><span class="p">();</span>
+            <span class="k">return</span> <span class="s1">&#39;comment&#39;</span><span class="p">;</span>
+        <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>added by Davide Della Casa</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">ch</span> <span class="o">===</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="p">{</span>
+		  <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/\/\//i</span><span class="p">))</span> <span class="p">{</span>
+			<span class="nx">stream</span><span class="p">.</span><span class="nx">skipToEnd</span><span class="p">();</span>
+				<span class="k">return</span> <span class="s1">&#39;comment&#39;</span><span class="p">;</span>
+		  <span class="p">}</span>
+        <span class="p">}</span>
+        </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Handle number literals</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/^-?[0-9\.]/</span><span class="p">,</span> <span class="kc">false</span><span class="p">))</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">floatLiteral</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Floats</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/^-?\d*\.\d+(e[\+\-]?\d+)?/i</span><span class="p">))</span> <span class="p">{</span>
+              <span class="nx">floatLiteral</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/^-?\d+\.\d*/</span><span class="p">))</span> <span class="p">{</span>
+              <span class="nx">floatLiteral</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/^-?\.\d+/</span><span class="p">))</span> <span class="p">{</span>
+              <span class="nx">floatLiteral</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">floatLiteral</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="s1">&#39;number&#39;</span><span class="p">;</span>
+            <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Integers</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="kd">var</span> <span class="nx">intLiteral</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Hex</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/^-?0x[0-9a-f]+/i</span><span class="p">))</span> <span class="p">{</span>
+              <span class="nx">intLiteral</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Decimal</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/^-?[1-9]\d*(e[\+\-]?\d+)?/</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nx">intLiteral</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>Zero by itself with no other piece of number.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/^-?0(?![\dx])/i</span><span class="p">))</span> <span class="p">{</span>
+              <span class="nx">intLiteral</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">intLiteral</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="s1">&#39;number&#39;</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Handle strings</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">stringPrefixes</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">state</span><span class="p">.</span><span class="nx">tokenize</span> <span class="o">=</span> <span class="nx">tokenFactory</span><span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">current</span><span class="p">(),</span> <span class="s1">&#39;string&#39;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">tokenize</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">);</span>
+        <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>Handle regex literals</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">regexPrefixes</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">current</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;/&#39;</span> <span class="o">||</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/^.*\//</span><span class="p">,</span> <span class="kc">false</span><span class="p">))</span> <span class="p">{</span> <span class="c1">// prevent highlight of division</span>
+                <span class="nx">state</span><span class="p">.</span><span class="nx">tokenize</span> <span class="o">=</span> <span class="nx">tokenFactory</span><span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">current</span><span class="p">(),</span> <span class="s1">&#39;string-2&#39;</span><span class="p">);</span>
+                <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">tokenize</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">stream</span><span class="p">.</span><span class="nx">backUp</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        </pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Handle operators and delimiters</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">tripleDelimiters</span><span class="p">)</span> <span class="o">||</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">doubleDelimiters</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s1">&#39;punctuation&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">doubleOperators</span><span class="p">)</span>
+            <span class="o">||</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">singleOperators</span><span class="p">)</span>
+            <span class="o">||</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">wordOperators</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s1">&#39;operator&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">singleDelimiters</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s1">&#39;punctuation&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">constants</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s1">&#39;atom&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">keywords</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s1">&#39;keyword&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">identifiers</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s1">&#39;variable&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+        </pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>Handle non-detected items</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">stream</span><span class="p">.</span><span class="nx">next</span><span class="p">();</span>
+        <span class="k">return</span> <span class="nx">ERRORCLASS</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="kd">function</span> <span class="nx">tokenFactory</span><span class="p">(</span><span class="nx">delimiter</span><span class="p">,</span> <span class="nx">outclass</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">delim_re</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="nx">delimiter</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">singleline</span> <span class="o">=</span> <span class="nx">delimiter</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">1</span><span class="p">;</span>
+        
+        <span class="k">return</span> <span class="kd">function</span> <span class="nx">tokenString</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="nx">stream</span><span class="p">.</span><span class="nx">eol</span><span class="p">())</span> <span class="p">{</span>
+                <span class="nx">stream</span><span class="p">.</span><span class="nx">eatWhile</span><span class="p">(</span><span class="sr">/[^&#39;&quot;\/\\]/</span><span class="p">);</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">eat</span><span class="p">(</span><span class="s1">&#39;\\&#39;</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="nx">stream</span><span class="p">.</span><span class="nx">next</span><span class="p">();</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nx">singleline</span> <span class="o">&amp;&amp;</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">eol</span><span class="p">())</span> <span class="p">{</span>
+                        <span class="k">return</span> <span class="nx">outclass</span><span class="p">;</span>
+                    <span class="p">}</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">delim_re</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="nx">state</span><span class="p">.</span><span class="nx">tokenize</span> <span class="o">=</span> <span class="nx">tokenBase</span><span class="p">;</span>
+                    <span class="k">return</span> <span class="nx">outclass</span><span class="p">;</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="nx">stream</span><span class="p">.</span><span class="nx">eat</span><span class="p">(</span><span class="sr">/[&#39;&quot;\/]/</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">singleline</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">conf</span><span class="p">.</span><span class="nx">mode</span><span class="p">.</span><span class="nx">singleLineStringErrors</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">outclass</span> <span class="o">=</span> <span class="nx">ERRORCLASS</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="nx">state</span><span class="p">.</span><span class="nx">tokenize</span> <span class="o">=</span> <span class="nx">tokenBase</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="nx">outclass</span><span class="p">;</span>
+        <span class="p">};</span>
+    <span class="p">}</span>
+    
+    <span class="kd">function</span> <span class="nx">indent</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">,</span> <span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">type</span> <span class="o">=</span> <span class="nx">type</span> <span class="o">||</span> <span class="s1">&#39;coffee&#39;</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">indentUnit</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">type</span> <span class="o">===</span> <span class="s1">&#39;coffee&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">type</span> <span class="o">===</span> <span class="s1">&#39;coffee&#39;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">indentUnit</span> <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">offset</span> <span class="o">+</span> <span class="nx">conf</span><span class="p">.</span><span class="nx">indentUnit</span><span class="p">;</span>
+                    <span class="k">break</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">indentUnit</span> <span class="o">=</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">column</span><span class="p">()</span> <span class="o">+</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">current</span><span class="p">().</span><span class="nx">length</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">.</span><span class="nx">unshift</span><span class="p">({</span>
+            <span class="nx">offset</span><span class="o">:</span> <span class="nx">indentUnit</span><span class="p">,</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="nx">type</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+    
+    <span class="kd">function</span> <span class="nx">dedent</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">type</span> <span class="o">===</span> <span class="s1">&#39;coffee&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">_indent</span> <span class="o">=</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">indentation</span><span class="p">();</span>
+            <span class="kd">var</span> <span class="nx">_indent_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">_indent</span> <span class="o">===</span> <span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">offset</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">_indent_index</span> <span class="o">=</span> <span class="nx">i</span><span class="p">;</span>
+                    <span class="k">break</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">_indent_index</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">while</span> <span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">offset</span> <span class="o">!==</span> <span class="nx">_indent</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">.</span><span class="nx">shift</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="kc">false</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">.</span><span class="nx">shift</span><span class="p">();</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">function</span> <span class="nx">tokenLexer</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">style</span> <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">tokenize</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">current</span> <span class="o">=</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">current</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>Handle '.' connected identifiers</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">current</span> <span class="o">===</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">style</span> <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">tokenize</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">);</span>
+            <span class="nx">current</span> <span class="o">=</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">current</span><span class="p">();</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">style</span> <span class="o">===</span> <span class="s1">&#39;variable&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="s1">&#39;variable&#39;</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">ERRORCLASS</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        </pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>Handle properties</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">current</span> <span class="o">===</span> <span class="s1">&#39;@&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">style</span> <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">tokenize</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">);</span>
+            <span class="nx">current</span> <span class="o">=</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">current</span><span class="p">();</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">style</span> <span class="o">===</span> <span class="s1">&#39;variable&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="s1">&#39;variable-2&#39;</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">ERRORCLASS</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        </pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Handle scope changes.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">current</span> <span class="o">===</span> <span class="s1">&#39;return&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">state</span><span class="p">.</span><span class="nx">dedent</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(((</span><span class="nx">current</span> <span class="o">===</span> <span class="s1">&#39;-&gt;&#39;</span> <span class="o">||</span> <span class="nx">current</span> <span class="o">===</span> <span class="s1">&#39;=&gt;&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+                  <span class="o">!</span><span class="nx">state</span><span class="p">.</span><span class="nx">lambda</span> <span class="o">&amp;&amp;</span>
+                  <span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">type</span> <span class="o">==</span> <span class="s1">&#39;coffee&#39;</span> <span class="o">&amp;&amp;</span>
+                  <span class="nx">stream</span><span class="p">.</span><span class="nx">peek</span><span class="p">()</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+               <span class="o">||</span> <span class="nx">style</span> <span class="o">===</span> <span class="s1">&#39;indent&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">indent</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">delimiter_index</span> <span class="o">=</span> <span class="s1">&#39;[({&#39;</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">current</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">delimiter_index</span> <span class="o">!==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">indent</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">,</span> <span class="s1">&#39;])}&#39;</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="nx">delimiter_index</span><span class="p">,</span> <span class="nx">delimiter_index</span><span class="o">+</span><span class="mi">1</span><span class="p">));</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">indentKeywords</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">current</span><span class="p">)){</span>
+            <span class="nx">indent</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">current</span> <span class="o">==</span> <span class="s1">&#39;then&#39;</span><span class="p">){</span>
+            <span class="nx">dedent</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">);</span>
+        <span class="p">}</span>
+        
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">style</span> <span class="o">===</span> <span class="s1">&#39;dedent&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">dedent</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">ERRORCLASS</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nx">delimiter_index</span> <span class="o">=</span> <span class="s1">&#39;])}&#39;</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">current</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">delimiter_index</span> <span class="o">!==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">dedent</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">ERRORCLASS</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">dedent</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">eol</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">type</span> <span class="o">==</span> <span class="s1">&#39;coffee&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">.</span><span class="nx">shift</span><span class="p">();</span>
+            <span class="nx">state</span><span class="p">.</span><span class="nx">dedent</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="k">return</span> <span class="nx">style</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">external</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">startState</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">basecolumn</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="p">{</span>
+              <span class="nx">tokenize</span><span class="o">:</span> <span class="nx">tokenBase</span><span class="p">,</span>
+              <span class="nx">scopes</span><span class="o">:</span> <span class="p">[{</span><span class="nx">offset</span><span class="o">:</span><span class="nx">basecolumn</span> <span class="o">||</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span><span class="s1">&#39;coffee&#39;</span><span class="p">}],</span>
+              <span class="nx">lastToken</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+              <span class="nx">lambda</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+              <span class="nx">dedent</span><span class="o">:</span> <span class="mi">0</span>
+          <span class="p">};</span>
+        <span class="p">},</span>
+        
+        <span class="nx">token</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>way to add links taken form here:
+http://groups.google.com/group/codemirror/browse_thread/thread/a96bb56548815163/87a3869e2cfd0a37?lnk=gst&amp;q=links#87a3869e2cfd0a37</p>             </td>             <td class="code">               <div class="highlight"><pre>		  <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/\/\/\s*(next-tutorial:([^\s]+))\b/</span><span class="p">))</span> <span class="p">{</span> 
+			   <span class="k">return</span> <span class="s2">&quot;link&quot;</span><span class="p">;</span> 
+		  <span class="p">}</span> 
+
+            <span class="kd">var</span> <span class="nx">style</span> <span class="o">=</span> <span class="nx">tokenLexer</span><span class="p">(</span><span class="nx">stream</span><span class="p">,</span> <span class="nx">state</span><span class="p">);</span>
+            
+            <span class="nx">state</span><span class="p">.</span><span class="nx">lastToken</span> <span class="o">=</span> <span class="p">{</span><span class="nx">style</span><span class="o">:</span><span class="nx">style</span><span class="p">,</span> <span class="nx">content</span><span class="o">:</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">current</span><span class="p">()};</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="nx">stream</span><span class="p">.</span><span class="nx">eol</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">lambda</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">state</span><span class="p">.</span><span class="nx">lambda</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="p">}</span>
+            
+            <span class="k">return</span> <span class="nx">style</span><span class="p">;</span>
+        <span class="p">},</span>
+        
+        <span class="nx">indent</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">textAfter</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">tokenize</span> <span class="o">!=</span> <span class="nx">tokenBase</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="p">}</span>
+            
+            <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">scopes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">offset</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+    <span class="p">};</span>
+    <span class="k">return</span> <span class="nx">external</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="nx">CodeMirror</span><span class="p">.</span><span class="nx">defineMIME</span><span class="p">(</span><span class="s1">&#39;text/x-coffeescript&#39;</span><span class="p">,</span> <span class="s1">&#39;coffeescript&#39;</span><span class="p">);</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
