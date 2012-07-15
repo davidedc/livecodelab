@@ -1,40 +1,6 @@
 // init the scene
 
 
-buildPostprocessingChain = function() {
-  renderTargetParameters = {
-    format: THREE.RGBAFormat,
-    stencilBuffer: true
-  };
-
-  renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters);
-  effectSaveTarget = new THREE.SavePass(new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters));
-  effectSaveTarget.clear = false;
-
-  fxaaPass = new THREE.ShaderPass(THREE.ShaderExtras["fxaa"]);
-  fxaaPass.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
-
-  effectBlend = new THREE.ShaderPass(THREE.ShaderExtras["blend"], "tDiffuse1");
-  screenPass = new THREE.ShaderPass(THREE.ShaderExtras["screen"]);
-
-  // motion blur
-  effectBlend.uniforms['tDiffuse2'].texture = effectSaveTarget.renderTarget;
-  effectBlend.uniforms['mixRatio'].value = 0;
-
-  var renderModel = new THREE.RenderPass(scene, camera);
-
-  composer = new THREE.EffectComposer(renderer, renderTarget);
-
-  composer.addPass(renderModel);
-  //composer.addPass( fxaaPass );
-  composer.addPass(effectBlend);
-  composer.addPass(effectSaveTarget);
-  composer.addPass(screenPass);
-  screenPass.renderToScreen = true;
-}
-
-
-
 function render() {
 
 
