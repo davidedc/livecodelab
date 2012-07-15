@@ -928,20 +928,6 @@ var shrinkFakeText = function(e) {
   }
 
 
-
-
-
-function background(r, g, b) {
-
-  clearDisplayList();
-
-  // canvas renderer
-  theColor = new THREE.Color();
-  theColor.setRGB(r, g, b);
-  //renderer.setClearColor(theColor,1);
-
-}
-
 // TODO Note that lines have a "solid fill" mode
 // and something similar to the normalMaterial mode
 // but there is no equivalent to the lambert material
@@ -1359,6 +1345,10 @@ resetGradientStack = function() {
 }
 
 background = function() {
+
+  // [todo] should the screen be cleared when you invoke
+  // the background command? (In processing it's not)
+
   var a = color(arguments[0], arguments[1], arguments[2], arguments[3]);
   console.log("adding solid background to stack");
   //if (a===undefined) a = color(0);
