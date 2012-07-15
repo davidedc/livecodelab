@@ -1,5 +1,19 @@
 // this is where the Autocode functions go
 
+var autocodeOn = false;
+var blinkingAutocoderTimeout;
+var blinkingAutocoderStatus = false;
+function blinkAutocodeIndicator() {
+  blinkingAutocoderStatus = !blinkingAutocoderStatus;
+  if (blinkingAutocoderStatus) {
+    $("#autocodeIndicatorContainer").css("background-color", '');
+  } else {
+    $("#autocodeIndicatorContainer").css("background-color", '#FF0000');
+    mutate();
+  }
+}
+
+
 function toggleAutocode() {
   autocodeOn = !autocodeOn;
 
