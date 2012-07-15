@@ -23,7 +23,7 @@ Also, the use of several powerful and mature libraries shows how far Javascript 
 *Code as Art*
 It's a live coding tool that artists can use, misuse and tweak. Go fullscreen, hide the code and you can make incredible screen recordings with just a few lines of code.
 
-*Autocode
+*Autocode*
 Automatic coding in the browser is still quite a virgin territory. It's been done a lot with lisp-y languages, but not quite in the context of things like LiveCodeLab, so there is an opportunity to do quite some original work there.
 
 
