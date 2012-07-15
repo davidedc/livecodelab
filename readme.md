@@ -9,7 +9,7 @@ Livecodelab is a special secret place where you can make fancy "on-the-fly" 3d v
 
 Once loaded in your browser, LiveCodeLab is totally client side, and can work without any internet connection.
 
-LiveCodeLab has been using by many people. They usually use it to explore:
+LiveCodeLab has been used by many people. They usually use it to explore:
 
 *Code Education*
 It's a great way to interest kids and adult in code, as it allows for instant feedback and easy pair programming. It helps introduce simple concept like loops, and much more complex like transform matrices!
