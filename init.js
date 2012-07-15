@@ -14,7 +14,7 @@ var checkAudio = function() {
   }
 
 var loadAndTestAllTheSounds = function() {
-    console.log("loading and testing all sounds");
+    log("loading and testing all sounds");
     for (var cycleSoundDefs = 0; cycleSoundDefs < numberOfSounds; cycleSoundDefs++) {
 
       if (buzz.isMP3Supported()) soundDef[cycleSoundDefs].soundFile = soundDef[cycleSoundDefs].soundFile + ".mp3";
@@ -48,7 +48,7 @@ var loadAndTestAllTheSounds = function() {
 
 var checkSound = function(cycleSoundDefs) {
     var newSound = new buzz.sound(soundDef[cycleSoundDefs].soundFile);
-    console.log("loading sound "+ soundDef[cycleSoundDefs].soundFile);
+    log("loading sound "+ soundDef[cycleSoundDefs].soundFile);
     newSound.mute();
     newSound.load();
     newSound.bind("ended", function(e) {
@@ -56,9 +56,9 @@ var checkSound = function(cycleSoundDefs) {
       this.unmute();
       endedFirstPlay++;
       if (endedFirstPlay % 10 === 0) $('#loading').append('/');
-      console.log("tested "+endedFirstPlay+" sounds");
+      log("tested "+endedFirstPlay+" sounds");
       if (endedFirstPlay === numberOfSounds * CHANNELSPERSOUND) {
-        console.log("tested all sounds");
+        log("tested all sounds");
         startEnvironment();
       }
     });
@@ -73,7 +73,7 @@ var editor;
 startEnvironment = function() {
   pickRandomDefaultGradient();
 
-  console.log("startEnvironment");
+  log("startEnvironment");
   if (!initThreeJs()) animate();
 
   if (!Detector.webgl || forceCanvasRenderer) {
@@ -195,7 +195,7 @@ editor.setOption("theme", 'night');
 }
 
 $(document).ready(function() {
-  console.log("document ready");
+  log("document ready");
   if (!isCanvasSupported) {
     $('#noCanvasMessage').modal({
       onClose: function() {

@@ -339,7 +339,7 @@ function wheel(event) {
     deltaX = -1 * orgEvent.wheelDeltaX / 120;
   }
 
-  console.log(""+deltaX+" "+deltaY);
+  log(""+deltaX+" "+deltaY);
   if (deltaY > 0.2) {
     var cursorPositio = editor.getCursor(true);
     // this is to prevent that when the cursor reaches the
@@ -348,7 +348,7 @@ function wheel(event) {
     // where we check whether the cursor is in the
     // first few characters of the line to avoid
     // following a "next-tutorial" link.
-    console.log(cursorPositio.line+" "+editor.lineCount())
+    log(cursorPositio.line+" "+editor.lineCount())
     if (cursorPositio.line !== editor.lineCount() - 1) {
       editor.setCursor(cursorPositio.line + 1, cursorPositio.ch);
     }

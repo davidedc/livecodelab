@@ -32,7 +32,7 @@ function registerCode() {
       }, "fast");
       //$("#formCode").css('opacity',0);
       //setTimeout('if (editor.getValue() !== "") $("#formCode").css("opacity",0);',10);
-      console.log('unshrinking');
+      log('unshrinking');
       $("#justForFakeCursor").show();
       $("#toMove").show();
       $('#caption').html('|');
@@ -417,11 +417,11 @@ function registerCode() {
     elaboratedSource = elaboratedSource.replace(/(\s)if\s*([a-zA-Z0-9]*)(\s*);/g, "$1if $2$3");
 
 
-    console.log(elaboratedSource );
+    log(elaboratedSource );
     out = CoffeeScript.compile(elaboratedSource, {
       bare: "on"
     });
-    console.log("in javascript: " + out);
+    log("in javascript: " + out);
   } catch (e) {
 
     if (autocodeOn) {

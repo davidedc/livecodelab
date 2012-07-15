@@ -39,12 +39,12 @@ soundLoop = function() {
   beatNumber++;
   beatNumber = beatNumber % 16;
 
-  console.log('about to loop in '+soundLoops.soundIDs+" of length "+soundLoops.soundIDs.length);
+  log('about to loop in '+soundLoops.soundIDs+" of length "+soundLoops.soundIDs.length);
   for (var loopingTheSoundIDs = 0; loopingTheSoundIDs < soundLoops.soundIDs.length; loopingTheSoundIDs++) {
     var loopedSoundID = soundLoops.soundIDs[loopingTheSoundIDs];
     var playOrNoPlay;
     playOrNoPlay = soundLoops.beatStrings[loopingTheSoundIDs].charAt(beatNumber);
-    console.log('checking sound loop '+soundLoops.beatStrings[loopingTheSoundIDs]+" beat "+beatNumber+" : "+playOrNoPlay);
+    log('checking sound loop '+soundLoops.beatStrings[loopingTheSoundIDs]+" beat "+beatNumber+" : "+playOrNoPlay);
     if (playOrNoPlay === 'x') {
       // OK so this is what we do here:
       // when each Audio object plays, it plays from start to end
@@ -68,19 +68,19 @@ soundLoop = function() {
       var relevantSoundBank = soundBank[loopedSoundID];
       var lengthOfSoundBank = relevantSoundBank.length;
       var availableSoundBank = undefined;
-      console.log('playing  '+loopedSoundID+" length: "+lengthOfSoundBank);
+      log('playing  '+loopedSoundID+" length: "+lengthOfSoundBank);
       for (var checkingAvailableSoundBank = 0; checkingAvailableSoundBank < lengthOfSoundBank; checkingAvailableSoundBank++) {
         var checkingSoundBank = relevantSoundBank[checkingAvailableSoundBank];
         if (checkingSoundBank.isEnded()) {
           availableSoundBank = checkingSoundBank;
-          console.log('sound bank '+checkingAvailableSoundBank+" is available ");
+          log('sound bank '+checkingAvailableSoundBank+" is available ");
           break;
         } else {
-          console.log('sound bank '+checkingAvailableSoundBank+" has not ended ");
+          log('sound bank '+checkingAvailableSoundBank+" has not ended ");
         }
       }
       if (availableSoundBank === undefined) {
-        console.log('creating new sound object ');
+        log('creating new sound object ');
         if (totalCreatedSoundObjects > 31) {
           soundSystemIsMangled = true;
           $('#soundSystemIsMangledMessage').modal();
@@ -103,5 +103,5 @@ addSound = function(soundID, beatString) {
   beatString = beatString.replace(/\s*/g, "");
   soundLoops.soundIDs.push(soundID);
   soundLoops.beatStrings.push(beatString);
-  console.log('pushing '+soundID+" beat: "+beatString);
+  log('pushing '+soundID+" beat: "+beatString);
 }
