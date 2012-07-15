@@ -1,0 +1,249 @@
+<!DOCTYPE html>  <html> <head>   <title>autocode.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="autocode.html">                 autocode.js               </a>                                           <a class="source" href="codemirror.html">                 codemirror.js               </a>                                           <a class="source" href="coffee-script.html">                 coffee-script.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="jquery.min.html">                 jquery.min.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               autocode.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>this is the Autocode functions</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">autocodeOn</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">blinkingAutocoderTimeout</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">blinkingAutocoderStatus</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">dimcodeOn</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+
+<span class="kd">function</span> <span class="nx">blinkAutocodeIndicator</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">blinkingAutocoderStatus</span> <span class="o">=</span> <span class="o">!</span><span class="nx">blinkingAutocoderStatus</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">blinkingAutocoderStatus</span><span class="p">){</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicatorContainer&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicatorContainer&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">);</span>
+    <span class="nx">mutate</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">toggleAutocode</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">autocodeOn</span> <span class="o">=</span> <span class="o">!</span><span class="nx">autocodeOn</span><span class="p">;</span>
+  
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">autocodeOn</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicator&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s2">&quot;Autocode: inactif&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicator&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s2">&quot;Autocode: off&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">blinkingAutocoderTimeout</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicatorContainer&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicator&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s2">&quot;Autocode: actif&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicator&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s2">&quot;Autocode: on&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">blinkingAutocoderTimeout</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="s1">&#39;blinkAutocodeIndicator();&#39;</span><span class="p">,</span><span class="mi">500</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicatorContainer&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">()</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span> <span class="o">||</span>
+      <span class="p">(</span>
+        <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&quot;bookmark&quot;</span><span class="p">)</span><span class="o">!==-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+        <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&quot;autocodeTutorial&quot;</span><span class="p">)</span><span class="o">!==-</span><span class="mi">1</span><span class="p">)</span>
+      <span class="p">)</span>
+
+    <span class="p">)</span> <span class="nx">loadDemoOrTutorial</span><span class="p">(</span><span class="s1">&#39;cubesAndSpikes&#39;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="kd">function</span> <span class="nx">mutate</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">whichMutation</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">5</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">whichMutation</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="nx">replaceAFloat</span><span class="p">();</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichMutation</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="nx">replaceAnInteger</span><span class="p">();</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichMutation</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="nx">replaceABoxWithABall</span><span class="p">();</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichMutation</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="nx">replaceABallWithABox</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>else if (whichMutation == 4)
+replacetimeWithAConstant();</p>             </td>             <td class="code">               <div class="highlight"><pre>    
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">replaceAFloat</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">editorContent</span> <span class="o">=</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">rePattern</span> <span class="o">=</span> <span class="sr">/([-+]?[0-9]*\.[0-9]+)/gi</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">allMatches</span> <span class="o">=</span> <span class="nx">editorContent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">rePattern</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">allMatches</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="nx">numberOfResults</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">else</span> <span class="nx">numberOfResults</span> <span class="o">=</span> <span class="nx">allMatches</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+    <span class="nx">whichOneToChange</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">numberOfResults</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">countWhichOneToSwap</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">editorContent</span> <span class="o">=</span> <span class="nx">editorContent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">rePattern</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">match</span><span class="p">,</span> <span class="nx">text</span><span class="p">,</span> <span class="nx">urlId</span><span class="p">){</span>
+      <span class="nx">countWhichOneToSwap</span><span class="o">++</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">countWhichOneToSwap</span> <span class="o">===</span> <span class="nx">whichOneToChange</span><span class="p">){</span>
+        <span class="kd">var</span> <span class="nx">whichOp</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">12</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">*</span><span class="mi">5</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">/</span><span class="mi">5</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">+</span><span class="mf">0.1</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">7</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">-</span><span class="mf">0.1</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">+</span><span class="mf">0.5</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">9</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">-</span><span class="mf">0.5</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">));</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">11</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="s1">&#39;time/1000&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="s1">&#39;temps/1000&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">match</span><span class="p">;</span>
+    <span class="p">});</span>
+    <span class="nx">editor</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="nx">editorContent</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">replaceABoxWithABall</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">editorContent</span> <span class="o">=</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">rePattern</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">rePattern</span> <span class="o">=</span> <span class="sr">/(box)/gi</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">rePattern</span> <span class="o">=</span> <span class="sr">/(boite)/gi</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">allMatches</span> <span class="o">=</span> <span class="nx">editorContent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">rePattern</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">allMatches</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="nx">numberOfResults</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">else</span> <span class="nx">numberOfResults</span> <span class="o">=</span> <span class="nx">allMatches</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+    <span class="nx">whichOneToChange</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">numberOfResults</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">countWhichOneToSwap</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">editorContent</span> <span class="o">=</span> <span class="nx">editorContent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">rePattern</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">match</span><span class="p">,</span> <span class="nx">text</span><span class="p">,</span> <span class="nx">urlId</span><span class="p">){</span>
+      <span class="nx">countWhichOneToSwap</span><span class="o">++</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">countWhichOneToSwap</span> <span class="o">===</span> <span class="nx">whichOneToChange</span><span class="p">){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="s2">&quot;ball&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="s2">&quot;balle&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">match</span><span class="p">;</span>
+    <span class="p">});</span>
+    <span class="nx">editor</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="nx">editorContent</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">replaceTimeWithAConstant</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">editorContent</span> <span class="o">=</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">rePattern</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">rePattern</span> <span class="o">=</span> <span class="sr">/(time)/gi</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">rePattern</span> <span class="o">=</span> <span class="sr">/(temps)/gi</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">allMatches</span> <span class="o">=</span> <span class="nx">editorContent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">rePattern</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">allMatches</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="nx">numberOfResults</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">else</span> <span class="nx">numberOfResults</span> <span class="o">=</span> <span class="nx">allMatches</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+    <span class="nx">whichOneToChange</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">numberOfResults</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">countWhichOneToSwap</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">editorContent</span> <span class="o">=</span> <span class="nx">editorContent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">rePattern</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">match</span><span class="p">,</span> <span class="nx">text</span><span class="p">,</span> <span class="nx">urlId</span><span class="p">){</span>
+      <span class="nx">countWhichOneToSwap</span><span class="o">++</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">countWhichOneToSwap</span> <span class="o">===</span> <span class="nx">whichOneToChange</span><span class="p">){</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">+</span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">match</span><span class="p">;</span>
+    <span class="p">});</span>
+    <span class="nx">editor</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="nx">editorContent</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">replaceABallWithABox</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">editorContent</span> <span class="o">=</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">rePattern</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">rePattern</span> <span class="o">=</span> <span class="sr">/(ball)/gi</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">rePattern</span> <span class="o">=</span> <span class="sr">/(balle)/gi</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">allMatches</span> <span class="o">=</span> <span class="nx">editorContent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">rePattern</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">allMatches</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="nx">numberOfResults</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">else</span> <span class="nx">numberOfResults</span> <span class="o">=</span> <span class="nx">allMatches</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+    <span class="nx">whichOneToChange</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">numberOfResults</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">countWhichOneToSwap</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">editorContent</span> <span class="o">=</span> <span class="nx">editorContent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">rePattern</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">match</span><span class="p">,</span> <span class="nx">text</span><span class="p">,</span> <span class="nx">urlId</span><span class="p">){</span>
+      <span class="nx">countWhichOneToSwap</span><span class="o">++</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">countWhichOneToSwap</span> <span class="o">===</span> <span class="nx">whichOneToChange</span><span class="p">){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="s2">&quot;box&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="s2">&quot;boite&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">match</span><span class="p">;</span>
+    <span class="p">});</span>
+    <span class="nx">editor</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="nx">editorContent</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">replaceAnInteger</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">editorContent</span> <span class="o">=</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">rePattern</span> <span class="o">=</span> <span class="sr">/([-+]?[0-9]+)/gi</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">allMatches</span> <span class="o">=</span> <span class="nx">editorContent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">rePattern</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">allMatches</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="nx">numberOfResults</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">else</span> <span class="nx">numberOfResults</span> <span class="o">=</span> <span class="nx">allMatches</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+    <span class="nx">whichOneToChange</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">numberOfResults</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">countWhichOneToSwap</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">editorContent</span> <span class="o">=</span> <span class="nx">editorContent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">rePattern</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">match</span><span class="p">,</span> <span class="nx">text</span><span class="p">,</span> <span class="nx">urlId</span><span class="p">){</span>
+      <span class="nx">countWhichOneToSwap</span><span class="o">++</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">countWhichOneToSwap</span> <span class="o">===</span> <span class="nx">whichOneToChange</span><span class="p">){</span>
+        <span class="kd">var</span> <span class="nx">whichOp</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">7</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">);</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">*</span><span class="mi">5</span><span class="p">);</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span><span class="o">/</span><span class="mi">5</span><span class="p">);</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">whichOp</span> <span class="o">==</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="s1">&#39;Math.floor(1+time/1000)&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="s1">&#39;Math.floor(1+temps/1000)&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">match</span><span class="p">;</span>
+    <span class="p">});</span>
+    <span class="nx">editor</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="nx">editorContent</span><span class="p">);</span>
+
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">triggerReset</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">pickRandomDefaultGradient</span><span class="p">();</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">autocodeOn</span><span class="p">)</span> <span class="nx">toggleAutocode</span><span class="p">();</span>
+  <span class="nx">editor</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+  <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#resetButtonContainer&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">);</span>
+  <span class="nx">setTimeout</span><span class="p">(</span><span class="s1">&#39;$(&quot;#resetButtonContainer&quot;).css(&quot;background-color&quot;,&quot;&quot;);&#39;</span><span class="p">,</span><span class="mi">200</span><span class="p">);</span>
+<span class="p">}</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
