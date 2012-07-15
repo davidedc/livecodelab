@@ -1,207 +1,11 @@
-// init the scene
-
-
-function render() {
-
-
-  /*
-      // need a light for the meshlambert material
-      var light = new THREE.PointLight( 0xFFFFFF );
-      light.position.set( 10, 0, 10 );
-      scene.add( light );
-      */
-
-
-
-  ////////////////////////
-  if (isWebGLUsed) {
-    composer.render();
-    //renderer.render(scene,camera);
-  } else {
-
-
-    // the renderer draws into an offscreen canvas called sceneRenderingCanvas
-    renderer.render(scene, camera);
-
-    // clear the final render context
-    finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
-    finalRenderWithSceneAndBlendContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
-    // draw the rendering of the scene on the final render
-    // clear the final render context
-    finalRenderWithSceneAndBlendContext.globalAlpha = blendAmount;
-    finalRenderWithSceneAndBlendContext.drawImage(previousRenderForBlending, 0, 0);
-
-    finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
-    finalRenderWithSceneAndBlendContext.drawImage(sceneRenderingCanvas, 0, 0);
-
-    //previousRenderForBlendingContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
-    previousRenderForBlendingContext.globalCompositeOperation = 'copy';
-    previousRenderForBlendingContext.drawImage(finalRenderWithSceneAndBlend, 0, 0);
-
-    // clear the renderer's canvas to transparent black
-    sceneRenderingCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
-
-
-  }
-
-
-}
-
-
 var drawLoopTimer = null;
 var frame = 0;
 var doLNOnce = [];
-
-
-// By doing some profiling it is apparent that
-// adding and removing objects has a big cost.
-// So instead of adding/removing objects every frame,
-// objects are only added at creation and they are
-// never removed from the scene. They are
-// only made invisible. This routine combs the
-// scene and finds the objects that.
-// TODO a way to shrink the scene if it's been a
-// long time that only a handful of lines/meshes
-// have been used.
-
-function combDisplayList() {
-
-  for (var i = 0; i < scene.objects.length; ++i) {
-    var sceneObject = scene.objects[i];
-    if (sceneObject.isLine) {
-      if (usedLines > 0) {
-        sceneObject.visible = true;
-        usedLines--;
-      } else {
-        sceneObject.visible = false;
-      }
-    } else if (sceneObject.isRectangle) {
-      if (usedRectangles > 0) {
-        sceneObject.visible = true;
-        usedRectangles--;
-      } else {
-        sceneObject.visible = false;
-      }
-    } else if (sceneObject.isBox) {
-      if (usedBoxes > 0) {
-        sceneObject.visible = true;
-        usedBoxes--;
-      } else {
-        sceneObject.visible = false;
-      }
-    } else if (sceneObject.isCylinder) {
-      if (usedCylinders > 0) {
-        sceneObject.visible = true;
-        usedCylinders--;
-      } else {
-        sceneObject.visible = false;
-      }
-    } else if (sceneObject.isAmbientLight) {
-      if (usedAmbientLights > 0) {
-        sceneObject.visible = true;
-        usedAmbientLights--;
-      } else {
-        sceneObject.visible = false;
-      }
-    } else if (sceneObject.isSphere !== 0) {
-      if (usedSpheres['' + sceneObject.isSphere] > 0) {
-        sceneObject.visible = true;
-        usedSpheres['' + sceneObject.isSphere] = usedSpheres['' + sceneObject.isSphere] - 1;
-      } else {
-        sceneObject.visible = false;
-      }
-    }
-  }
-}
-
-
-function clearDisplayList() {
-  /*
-  for(var i = 0; i < scene.objects.length; ++i) {
-      scene.remove(scene.objects[i]);
-      i--;
-  }
-  */
-}
-
-
-
-//var chromeHackUncaughtReferenceName = '';
-//var chromeHackUncaughtReferenceNames = [];
-
-// swap the two lines below in case one needs to
-// debug the environment, otherwise all errors are
-// caught and not bubbled up to the browser debugging tool.
-// var foo = function(msg, url, linenumber) {
-window.onerror = function(msg, url, linenumber) {
-
-  if (autocodeOn) {
-    editor.undo();
-    //alert("did an undo");
-    return;
-  }
-
-  if (msg.indexOf("Uncaught ReferenceError: ") > -1) {
-    msg = msg.substring(25);
-  }
-
-  $('#dangerSignText').css('color', 'red');
-  $('#errorMessageText').text(msg);
-
-  // ok so this is kind of a hack that we need to put
-  // in place for Chrome (both Windows and Mac)
-  // what Chrome does is: when there is a function call,
-  // it evaluates the arguments
-  // of a function even if the function is undefined
-  // so for example
-  // doO alert "miao"
-  // alerts a miao, because it's translated into
-  // doO(alert("miao))
-  // and even if doO is undefined, the argumen is evaluated
-  // This is a problem because doOnce would encourage
-  // the following use: misspell doOnce until the rest of the
-  // line is finished, then correct the mispell to actually
-  // run the line once.
-  // But unfortunately because of the quirk described above,
-  // that wouldn't work in Chrome.
-  /*
- if (msg.indexOf("Uncaught ReferenceError") > -1) {
-  chromeHackUncaughtReferenceName = msg.split(' ')[2];
-
-  var lengthToCheck = chromeHackUncaughtReferenceNames.length;
-  if (lengthToCheck == 0){
-    chromeHackUncaughtReferenceNames.push(chromeHackUncaughtReferenceName);
-  }
-  else {
-    for (var iteratingOverSource = 0; iteratingOverSource < lengthToCheck; iteratingOverSource++) {
-      if (chromeHackUncaughtReferenceNames[iteratingOverSource].indexOf(chromeHackUncaughtReferenceName) > -1) {
-        break;
-      }
-      else if (iteratingOverSource == lengthToCheck-1) {
-       // if we are here it means that the variable is not in the array
-       chromeHackUncaughtReferenceNames.push(chromeHackUncaughtReferenceName);
-      }
-    }
-  }
- }
- */
-
-  // we set this to 6 because we save it as stable
-  // when it's 5, so we avoid re-saving.
-  consecutiveFramesWithoutRunTimeError = 6;
-  window.eval(lastStableProgram);
-
-  return true;
-}
-
-
-// animation loop
 var loopInterval;
 var time;
 var timeAtStart;
 
+// animation loop
 function animate() {
 
   // loop on request animation loop
@@ -339,15 +143,53 @@ function animate() {
     registerCode();
   }
 
+}
 
+function render() {
+
+  /*
+      // need a light for the meshlambert material
+      var light = new THREE.PointLight( 0xFFFFFF );
+      light.position.set( 10, 0, 10 );
+      scene.add( light );
+  */
+
+  ////////////////////////
+  if (isWebGLUsed) {
+    composer.render();
+    //renderer.render(scene,camera);
+  } else {
+
+    // the renderer draws into an offscreen canvas called sceneRenderingCanvas
+    renderer.render(scene, camera);
+
+    // clear the final render context
+    finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
+    finalRenderWithSceneAndBlendContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+    // draw the rendering of the scene on the final render
+    // clear the final render context
+    finalRenderWithSceneAndBlendContext.globalAlpha = blendAmount;
+    finalRenderWithSceneAndBlendContext.drawImage(previousRenderForBlending, 0, 0);
+
+    finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
+    finalRenderWithSceneAndBlendContext.drawImage(sceneRenderingCanvas, 0, 0);
+
+    //previousRenderForBlendingContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
+    previousRenderForBlendingContext.globalCompositeOperation = 'copy';
+    previousRenderForBlendingContext.drawImage(finalRenderWithSceneAndBlend, 0, 0);
+
+    // clear the renderer's canvas to transparent black
+    sceneRenderingCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+  }
 }
 
 var lastkey = 0;
 var fakeText = true;
+
 document.onkeypress = function(e) {
-
   if (fakeText && editor.getValue() !== "") shrinkFakeText(e);
-
 }
 
 var shrinkFakeText = function(e) {
@@ -570,4 +412,145 @@ function fullscreenify(canvas) {
     // But for the time being we only have vertical
     // gradients so that's not going to be a problem.
   }
+}
+
+// By doing some profiling it is apparent that
+// adding and removing objects has a big cost.
+// So instead of adding/removing objects every frame,
+// objects are only added at creation and they are
+// never removed from the scene. They are
+// only made invisible. This routine combs the
+// scene and finds the objects that.
+// TODO a way to shrink the scene if it's been a
+// long time that only a handful of lines/meshes
+// have been used.
+
+function combDisplayList() {
+
+  for (var i = 0; i < scene.objects.length; ++i) {
+    var sceneObject = scene.objects[i];
+    if (sceneObject.isLine) {
+      if (usedLines > 0) {
+        sceneObject.visible = true;
+        usedLines--;
+      } else {
+        sceneObject.visible = false;
+      }
+    } else if (sceneObject.isRectangle) {
+      if (usedRectangles > 0) {
+        sceneObject.visible = true;
+        usedRectangles--;
+      } else {
+        sceneObject.visible = false;
+      }
+    } else if (sceneObject.isBox) {
+      if (usedBoxes > 0) {
+        sceneObject.visible = true;
+        usedBoxes--;
+      } else {
+        sceneObject.visible = false;
+      }
+    } else if (sceneObject.isCylinder) {
+      if (usedCylinders > 0) {
+        sceneObject.visible = true;
+        usedCylinders--;
+      } else {
+        sceneObject.visible = false;
+      }
+    } else if (sceneObject.isAmbientLight) {
+      if (usedAmbientLights > 0) {
+        sceneObject.visible = true;
+        usedAmbientLights--;
+      } else {
+        sceneObject.visible = false;
+      }
+    } else if (sceneObject.isSphere !== 0) {
+      if (usedSpheres['' + sceneObject.isSphere] > 0) {
+        sceneObject.visible = true;
+        usedSpheres['' + sceneObject.isSphere] = usedSpheres['' + sceneObject.isSphere] - 1;
+      } else {
+        sceneObject.visible = false;
+      }
+    }
+  }
+}
+
+
+function clearDisplayList() {
+  /*
+  for(var i = 0; i < scene.objects.length; ++i) {
+      scene.remove(scene.objects[i]);
+      i--;
+  }
+  */
+}
+
+
+
+//var chromeHackUncaughtReferenceName = '';
+//var chromeHackUncaughtReferenceNames = [];
+
+// swap the two lines below in case one needs to
+// debug the environment, otherwise all errors are
+// caught and not bubbled up to the browser debugging tool.
+// var foo = function(msg, url, linenumber) {
+window.onerror = function(msg, url, linenumber) {
+
+  if (autocodeOn) {
+    editor.undo();
+    //alert("did an undo");
+    return;
+  }
+
+  if (msg.indexOf("Uncaught ReferenceError: ") > -1) {
+    msg = msg.substring(25);
+  }
+
+  $('#dangerSignText').css('color', 'red');
+  $('#errorMessageText').text(msg);
+
+  // ok so this is kind of a hack that we need to put
+  // in place for Chrome (both Windows and Mac)
+  // what Chrome does is: when there is a function call,
+  // it evaluates the arguments
+  // of a function even if the function is undefined
+  // so for example
+  // doO alert "miao"
+  // alerts a miao, because it's translated into
+  // doO(alert("miao))
+  // and even if doO is undefined, the argumen is evaluated
+  // This is a problem because doOnce would encourage
+  // the following use: misspell doOnce until the rest of the
+  // line is finished, then correct the mispell to actually
+  // run the line once.
+  // But unfortunately because of the quirk described above,
+  // that wouldn't work in Chrome.
+  /*
+ if (msg.indexOf("Uncaught ReferenceError") > -1) {
+  chromeHackUncaughtReferenceName = msg.split(' ')[2];
+
+  var lengthToCheck = chromeHackUncaughtReferenceNames.length;
+  if (lengthToCheck == 0){
+    chromeHackUncaughtReferenceNames.push(chromeHackUncaughtReferenceName);
+  }
+  else {
+    for (var iteratingOverSource = 0; iteratingOverSource < lengthToCheck; iteratingOverSource++) {
+      if (chromeHackUncaughtReferenceNames[iteratingOverSource].indexOf(chromeHackUncaughtReferenceName) > -1) {
+        break;
+      }
+      else if (iteratingOverSource == lengthToCheck-1) {
+       // if we are here it means that the variable is not in the array
+       chromeHackUncaughtReferenceNames.push(chromeHackUncaughtReferenceName);
+      }
+    }
+  }
+ }
+ */
+
+  // we set this to 6 because we save it as stable
+  // when it's 5, so we avoid re-saving.
+  consecutiveFramesWithoutRunTimeError = 6;
+  window.eval(lastStableProgram);
+
+  return true;
 }
