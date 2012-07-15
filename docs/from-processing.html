@@ -1,0 +1,622 @@
+<!DOCTYPE html>  <html> <head>   <title>from-processing.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               from-processing.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>Functions taken from processing.js</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm"> * NOTE: in releases we replace symbolic Constants.* names with their values.</span>
+<span class="cm"> * Using Constants.* in code below is fine.  See tools/rewrite-pconstants.js.</span>
+<span class="cm"> */</span>
+<span class="kd">var</span> <span class="nx">Constants</span> <span class="o">=</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Color modes</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">RGB</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="nx">ARGB</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+  <span class="nx">HSB</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span>
+  <span class="nx">ALPHA</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
+  <span class="nx">CMYK</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Blend modes</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">REPLACE</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="nx">BLEND</span><span class="o">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="nx">ADD</span><span class="o">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="nx">SUBTRACT</span><span class="o">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">,</span>
+  <span class="nx">LIGHTEST</span><span class="o">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">,</span>
+  <span class="nx">DARKEST</span><span class="o">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">,</span>
+  <span class="nx">DIFFERENCE</span><span class="o">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">,</span>
+  <span class="nx">EXCLUSION</span><span class="o">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">,</span>
+  <span class="nx">MULTIPLY</span><span class="o">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">,</span>
+  <span class="nx">SCREEN</span><span class="o">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">,</span>
+  <span class="nx">OVERLAY</span><span class="o">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">9</span><span class="p">,</span>
+  <span class="nx">HARD_LIGHT</span><span class="o">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">10</span><span class="p">,</span>
+  <span class="nx">SOFT_LIGHT</span><span class="o">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">11</span><span class="p">,</span>
+  <span class="nx">DODGE</span><span class="o">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">,</span>
+  <span class="nx">BURN</span><span class="o">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">13</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Color component bit masks</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">ALPHA_MASK</span><span class="o">:</span> <span class="mh">0xff000000</span><span class="p">,</span>
+  <span class="nx">RED_MASK</span><span class="o">:</span> <span class="mh">0x00ff0000</span><span class="p">,</span>
+  <span class="nx">GREEN_MASK</span><span class="o">:</span> <span class="mh">0x0000ff00</span><span class="p">,</span>
+  <span class="nx">BLUE_MASK</span><span class="o">:</span> <span class="mh">0x000000ff</span><span class="p">,</span>
+
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">doFill</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">fillStyle</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+  <span class="nx">isFillDirty</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">doStroke</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">strokeStyle</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+  <span class="nx">isStrokeDirty</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">lineWidth</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="nx">colorModeA</span> <span class="o">=</span> <span class="mi">255</span><span class="p">,</span>
+  <span class="nx">colorModeX</span> <span class="o">=</span> <span class="mi">255</span><span class="p">,</span>
+  <span class="nx">colorModeY</span> <span class="o">=</span> <span class="mi">255</span><span class="p">,</span>
+  <span class="nx">colorModeZ</span> <span class="o">=</span> <span class="mi">255</span><span class="p">,</span>
+  <span class="nx">curColorMode</span> <span class="o">=</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">RGB</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Determines the largest value in a sequence of numbers.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {int|float} value1         int or float</span>
+<span class="cm"> * @param {int|float} value2         int or float</span>
+<span class="cm"> * @param {int|float} value3         int or float</span>
+<span class="cm"> * @param {int|float} array          int or float array</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns {int|float}</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see min</span>
+<span class="cm"> */</span>
+<span class="nx">max</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">?</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">:</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="p">}</span>
+  <span class="kd">var</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">?</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">:</span> <span class="nx">arguments</span><span class="p">;</span> <span class="c1">// if single argument, array is used</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="s2">&quot;length&quot;</span> <span class="k">in</span> <span class="nx">numbers</span> <span class="o">&amp;&amp;</span> <span class="nx">numbers</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="s2">&quot;Non-empty array is expected&quot;</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kd">var</span> <span class="nx">max</span> <span class="o">=</span> <span class="nx">numbers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="nx">count</span> <span class="o">=</span> <span class="nx">numbers</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">count</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">max</span> <span class="o">&lt;</span> <span class="nx">numbers</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="p">{</span>
+      <span class="nx">max</span> <span class="o">=</span> <span class="nx">numbers</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">max</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Determines the smallest value in a sequence of numbers.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {int|float} value1         int or float</span>
+<span class="cm"> * @param {int|float} value2         int or float</span>
+<span class="cm"> * @param {int|float} value3         int or float</span>
+<span class="cm"> * @param {int|float} array          int or float array</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns {int|float}</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see max</span>
+<span class="cm"> */</span>
+<span class="nx">min</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">?</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">:</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+  <span class="p">}</span>
+  <span class="kd">var</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">?</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">:</span> <span class="nx">arguments</span><span class="p">;</span> <span class="c1">// if single argument, array is used</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="s2">&quot;length&quot;</span> <span class="k">in</span> <span class="nx">numbers</span> <span class="o">&amp;&amp;</span> <span class="nx">numbers</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="s2">&quot;Non-empty array is expected&quot;</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kd">var</span> <span class="nx">min</span> <span class="o">=</span> <span class="nx">numbers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="nx">count</span> <span class="o">=</span> <span class="nx">numbers</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">count</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">min</span> <span class="o">&gt;</span> <span class="nx">numbers</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="p">{</span>
+      <span class="nx">min</span> <span class="o">=</span> <span class="nx">numbers</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">min</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kd">function</span> <span class="nx">color$4</span><span class="p">(</span><span class="nx">aValue1</span><span class="p">,</span> <span class="nx">aValue2</span><span class="p">,</span> <span class="nx">aValue3</span><span class="p">,</span> <span class="nx">aValue4</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">g</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">a</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">curColorMode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">HSB</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">rgb</span> <span class="o">=</span> <span class="nx">color</span><span class="p">.</span><span class="nx">toRGB</span><span class="p">(</span><span class="nx">aValue1</span><span class="p">,</span> <span class="nx">aValue2</span><span class="p">,</span> <span class="nx">aValue3</span><span class="p">);</span>
+    <span class="nx">r</span> <span class="o">=</span> <span class="nx">rgb</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+    <span class="nx">g</span> <span class="o">=</span> <span class="nx">rgb</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="nx">rgb</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">r</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="p">(</span><span class="nx">aValue1</span> <span class="o">/</span> <span class="nx">colorModeX</span><span class="p">));</span>
+    <span class="nx">g</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="p">(</span><span class="nx">aValue2</span> <span class="o">/</span> <span class="nx">colorModeY</span><span class="p">));</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="p">(</span><span class="nx">aValue3</span> <span class="o">/</span> <span class="nx">colorModeZ</span><span class="p">));</span>
+  <span class="p">}</span>
+
+  <span class="nx">a</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="p">(</span><span class="nx">aValue4</span> <span class="o">/</span> <span class="nx">colorModeA</span><span class="p">));</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Limit values less than 0 and greater than 255</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">r</span> <span class="o">=</span> <span class="p">(</span><span class="nx">r</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="nx">r</span><span class="p">;</span>
+  <span class="nx">g</span> <span class="o">=</span> <span class="p">(</span><span class="nx">g</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="nx">g</span><span class="p">;</span>
+  <span class="nx">b</span> <span class="o">=</span> <span class="p">(</span><span class="nx">b</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="nx">b</span><span class="p">;</span>
+  <span class="nx">a</span> <span class="o">=</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="nx">a</span><span class="p">;</span>
+  <span class="nx">r</span> <span class="o">=</span> <span class="p">(</span><span class="nx">r</span> <span class="o">&gt;</span> <span class="mi">255</span><span class="p">)</span> <span class="o">?</span> <span class="mi">255</span> <span class="o">:</span> <span class="nx">r</span><span class="p">;</span>
+  <span class="nx">g</span> <span class="o">=</span> <span class="p">(</span><span class="nx">g</span> <span class="o">&gt;</span> <span class="mi">255</span><span class="p">)</span> <span class="o">?</span> <span class="mi">255</span> <span class="o">:</span> <span class="nx">g</span><span class="p">;</span>
+  <span class="nx">b</span> <span class="o">=</span> <span class="p">(</span><span class="nx">b</span> <span class="o">&gt;</span> <span class="mi">255</span><span class="p">)</span> <span class="o">?</span> <span class="mi">255</span> <span class="o">:</span> <span class="nx">b</span><span class="p">;</span>
+  <span class="nx">a</span> <span class="o">=</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&gt;</span> <span class="mi">255</span><span class="p">)</span> <span class="o">?</span> <span class="mi">255</span> <span class="o">:</span> <span class="nx">a</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Create color int</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">return</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span> <span class="o">|</span> <span class="p">(</span><span class="nx">r</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">RED_MASK</span> <span class="o">|</span> <span class="p">(</span><span class="nx">g</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">GREEN_MASK</span> <span class="o">|</span> <span class="nx">b</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">BLUE_MASK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">color$2</span><span class="p">(</span><span class="nx">aValue1</span><span class="p">,</span> <span class="nx">aValue2</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">a</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">aValue1</span> <span class="o">===</span> <span class="nx">angleColor</span><span class="p">)</span> <span class="k">return</span> <span class="nx">angleColor</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Color int and alpha</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">aValue1</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="p">(</span><span class="nx">aValue2</span> <span class="o">/</span> <span class="nx">colorModeA</span><span class="p">));</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Limit values less than 0 and greater than 255</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">a</span> <span class="o">=</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&gt;</span> <span class="mi">255</span><span class="p">)</span> <span class="o">?</span> <span class="mi">255</span> <span class="o">:</span> <span class="nx">a</span><span class="p">;</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="nx">a</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="nx">aValue1</span> <span class="o">-</span> <span class="p">(</span><span class="nx">aValue1</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="nx">a</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span><span class="p">);</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Grayscale and alpha</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">curColorMode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">RGB</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">color$4</span><span class="p">(</span><span class="nx">aValue1</span><span class="p">,</span> <span class="nx">aValue1</span><span class="p">,</span> <span class="nx">aValue1</span><span class="p">,</span> <span class="nx">aValue2</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">curColorMode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">HSB</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">color$4</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="nx">aValue1</span> <span class="o">/</span> <span class="nx">colorModeX</span><span class="p">)</span> <span class="o">*</span> <span class="nx">colorModeZ</span><span class="p">,</span> <span class="nx">aValue2</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">color$1</span><span class="p">(</span><span class="nx">aValue1</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Grayscale</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">aValue1</span> <span class="o">&lt;=</span> <span class="nx">colorModeX</span> <span class="o">&amp;&amp;</span> <span class="nx">aValue1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">curColorMode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">RGB</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">color$4</span><span class="p">(</span><span class="nx">aValue1</span><span class="p">,</span> <span class="nx">aValue1</span><span class="p">,</span> <span class="nx">aValue1</span><span class="p">,</span> <span class="nx">colorModeA</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">curColorMode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">HSB</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">color$4</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="nx">aValue1</span> <span class="o">/</span> <span class="nx">colorModeX</span><span class="p">)</span> <span class="o">*</span> <span class="nx">colorModeZ</span><span class="p">,</span> <span class="nx">colorModeA</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>Color int</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">aValue1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">aValue1</span> <span class="o">&gt;</span> <span class="mi">2147483647</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Java Overflow</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">aValue1</span> <span class="o">-=</span> <span class="mi">4294967296</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">aValue1</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Creates colors for storing in variables of the color datatype. The parameters are</span>
+<span class="cm"> * interpreted as RGB or HSB values depending on the current colorMode(). The default</span>
+<span class="cm"> * mode is RGB values from 0 to 255 and therefore, the function call color(255, 204, 0)</span>
+<span class="cm"> * will return a bright yellow color. More about how colors are stored can be found in</span>
+<span class="cm"> * the reference for the color datatype.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {int|float} aValue1        red or hue or grey values relative to the current color range.</span>
+<span class="cm"> * Also can be color value in hexadecimal notation (i.e. #FFCC00 or 0xFFFFCC00)</span>
+<span class="cm"> * @param {int|float} aValue2        green or saturation values relative to the current color range</span>
+<span class="cm"> * @param {int|float} aValue3        blue or brightness values relative to the current color range</span>
+<span class="cm"> * @param {int|float} aValue4        relative to current color range. Represents alpha</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns {color} the color</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see colorMode</span>
+<span class="cm"> */</span>
+<span class="kd">var</span> <span class="nx">color</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">aValue1</span><span class="p">,</span> <span class="nx">aValue2</span><span class="p">,</span> <span class="nx">aValue3</span><span class="p">,</span> <span class="nx">aValue4</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>alert("color");
+4 arguments: (R, G, B, A) or (H, S, B, A)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">aValue1</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">aValue2</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">aValue3</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">aValue4</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">color$4</span><span class="p">(</span><span class="nx">aValue1</span><span class="p">,</span> <span class="nx">aValue2</span><span class="p">,</span> <span class="nx">aValue3</span><span class="p">,</span> <span class="nx">aValue4</span><span class="p">);</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>3 arguments: (R, G, B) or (H, S, B)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">aValue1</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">aValue2</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">aValue3</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">color$4</span><span class="p">(</span><span class="nx">aValue1</span><span class="p">,</span> <span class="nx">aValue2</span><span class="p">,</span> <span class="nx">aValue3</span><span class="p">,</span> <span class="nx">colorModeA</span><span class="p">);</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>2 arguments: (Color, A) or (Grayscale, A)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">aValue1</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">aValue2</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">color$2</span><span class="p">(</span><span class="nx">aValue1</span><span class="p">,</span> <span class="nx">aValue2</span><span class="p">);</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>1 argument: (Grayscale) or (Color)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">aValue1</span> <span class="o">===</span> <span class="s2">&quot;number&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">color$1</span><span class="p">(</span><span class="nx">aValue1</span><span class="p">);</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>Default</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">return</span> <span class="nx">color$4</span><span class="p">(</span><span class="nx">colorModeX</span><span class="p">,</span> <span class="nx">colorModeY</span><span class="p">,</span> <span class="nx">colorModeZ</span><span class="p">,</span> <span class="nx">colorModeA</span><span class="p">);</span>
+  <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Ease of use function to extract the colour bits into a string</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">color</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">colorInt</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s2">&quot;rgba(&quot;</span> <span class="o">+</span> <span class="p">((</span><span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">RED_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="p">((</span><span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">GREEN_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="p">((</span><span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">BLUE_MASK</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="p">((</span><span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span><span class="p">;</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Easy of use function to pack rgba values into a single bit-shifted color int.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">color</span><span class="p">.</span><span class="nx">toInt</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span> <span class="nx">g</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span> <span class="o">|</span> <span class="p">(</span><span class="nx">r</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">RED_MASK</span> <span class="o">|</span> <span class="p">(</span><span class="nx">g</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">GREEN_MASK</span> <span class="o">|</span> <span class="nx">b</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">BLUE_MASK</span><span class="p">;</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Creates a simple array in [R, G, B, A] format, [255, 255, 255, 255]</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">color</span><span class="p">.</span><span class="nx">toArray</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">colorInt</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">[(</span><span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">RED_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">16</span><span class="p">,</span> <span class="p">(</span><span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">GREEN_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">8</span><span class="p">,</span> <span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">BLUE_MASK</span><span class="p">,</span> <span class="p">(</span><span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">24</span><span class="p">];</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Creates a WebGL color array in [R, G, B, A] format. WebGL wants the color ranges between 0 and 1, [1, 1, 1, 1]</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">color</span><span class="p">.</span><span class="nx">toGLArray</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">colorInt</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">[((</span><span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">RED_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="p">((</span><span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">GREEN_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="p">(</span><span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">BLUE_MASK</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="p">((</span><span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span><span class="p">];</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>HSB conversion function from Mootools, MIT Licensed</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">color</span><span class="p">.</span><span class="nx">toRGB</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">h</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Limit values greater than range</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">h</span> <span class="o">=</span> <span class="p">(</span><span class="nx">h</span> <span class="o">&gt;</span> <span class="nx">colorModeX</span><span class="p">)</span> <span class="o">?</span> <span class="nx">colorModeX</span> <span class="o">:</span> <span class="nx">h</span><span class="p">;</span>
+  <span class="nx">s</span> <span class="o">=</span> <span class="p">(</span><span class="nx">s</span> <span class="o">&gt;</span> <span class="nx">colorModeY</span><span class="p">)</span> <span class="o">?</span> <span class="nx">colorModeY</span> <span class="o">:</span> <span class="nx">s</span><span class="p">;</span>
+  <span class="nx">b</span> <span class="o">=</span> <span class="p">(</span><span class="nx">b</span> <span class="o">&gt;</span> <span class="nx">colorModeZ</span><span class="p">)</span> <span class="o">?</span> <span class="nx">colorModeZ</span> <span class="o">:</span> <span class="nx">b</span><span class="p">;</span>
+
+  <span class="nx">h</span> <span class="o">=</span> <span class="p">(</span><span class="nx">h</span> <span class="o">/</span> <span class="nx">colorModeX</span><span class="p">)</span> <span class="o">*</span> <span class="mi">360</span><span class="p">;</span>
+  <span class="nx">s</span> <span class="o">=</span> <span class="p">(</span><span class="nx">s</span> <span class="o">/</span> <span class="nx">colorModeY</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">;</span>
+  <span class="nx">b</span> <span class="o">=</span> <span class="p">(</span><span class="nx">b</span> <span class="o">/</span> <span class="nx">colorModeZ</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">;</span>
+
+  <span class="kd">var</span> <span class="nx">br</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">b</span> <span class="o">/</span> <span class="mi">100</span> <span class="o">*</span> <span class="mi">255</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">s</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// Grayscale</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nx">br</span><span class="p">,</span> <span class="nx">br</span><span class="p">,</span> <span class="nx">br</span><span class="p">];</span>
+  <span class="p">}</span>
+  <span class="kd">var</span> <span class="nx">hue</span> <span class="o">=</span> <span class="nx">h</span> <span class="o">%</span> <span class="mi">360</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="nx">hue</span> <span class="o">%</span> <span class="mi">60</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">((</span><span class="nx">b</span> <span class="o">*</span> <span class="p">(</span><span class="mi">100</span> <span class="o">-</span> <span class="nx">s</span><span class="p">))</span> <span class="o">/</span> <span class="mi">10000</span> <span class="o">*</span> <span class="mi">255</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">q</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">((</span><span class="nx">b</span> <span class="o">*</span> <span class="p">(</span><span class="mi">6000</span> <span class="o">-</span> <span class="nx">s</span> <span class="o">*</span> <span class="nx">f</span><span class="p">))</span> <span class="o">/</span> <span class="mi">600000</span> <span class="o">*</span> <span class="mi">255</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">t</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">((</span><span class="nx">b</span> <span class="o">*</span> <span class="p">(</span><span class="mi">6000</span> <span class="o">-</span> <span class="nx">s</span> <span class="o">*</span> <span class="p">(</span><span class="mi">60</span> <span class="o">-</span> <span class="nx">f</span><span class="p">)))</span> <span class="o">/</span> <span class="mi">600000</span> <span class="o">*</span> <span class="mi">255</span><span class="p">);</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">hue</span> <span class="o">/</span> <span class="mi">60</span><span class="p">))</span> <span class="p">{</span>
+  <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nx">br</span><span class="p">,</span> <span class="nx">t</span><span class="p">,</span> <span class="nx">p</span><span class="p">];</span>
+  <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nx">q</span><span class="p">,</span> <span class="nx">br</span><span class="p">,</span> <span class="nx">p</span><span class="p">];</span>
+  <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nx">p</span><span class="p">,</span> <span class="nx">br</span><span class="p">,</span> <span class="nx">t</span><span class="p">];</span>
+  <span class="k">case</span> <span class="mi">3</span><span class="o">:</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nx">p</span><span class="p">,</span> <span class="nx">q</span><span class="p">,</span> <span class="nx">br</span><span class="p">];</span>
+  <span class="k">case</span> <span class="mi">4</span><span class="o">:</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nx">t</span><span class="p">,</span> <span class="nx">p</span><span class="p">,</span> <span class="nx">br</span><span class="p">];</span>
+  <span class="k">case</span> <span class="mi">5</span><span class="o">:</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nx">br</span><span class="p">,</span> <span class="nx">p</span><span class="p">,</span> <span class="nx">q</span><span class="p">];</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kd">function</span> <span class="nx">colorToHSB</span><span class="p">(</span><span class="nx">colorInt</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">red</span><span class="p">,</span> <span class="nx">green</span><span class="p">,</span> <span class="nx">blue</span><span class="p">;</span>
+
+  <span class="nx">red</span> <span class="o">=</span> <span class="p">((</span><span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">RED_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span><span class="p">;</span>
+  <span class="nx">green</span> <span class="o">=</span> <span class="p">((</span><span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">GREEN_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span><span class="p">;</span>
+  <span class="nx">blue</span> <span class="o">=</span> <span class="p">(</span><span class="nx">colorInt</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">BLUE_MASK</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span><span class="p">;</span>
+
+  <span class="kd">var</span> <span class="nx">max</span> <span class="o">=</span> <span class="nx">max</span><span class="p">(</span><span class="nx">max</span><span class="p">(</span><span class="nx">red</span><span class="p">,</span> <span class="nx">green</span><span class="p">),</span> <span class="nx">blue</span><span class="p">),</span>
+    <span class="nx">min</span> <span class="o">=</span> <span class="nx">min</span><span class="p">(</span><span class="nx">min</span><span class="p">(</span><span class="nx">red</span><span class="p">,</span> <span class="nx">green</span><span class="p">),</span> <span class="nx">blue</span><span class="p">),</span>
+    <span class="nx">hue</span><span class="p">,</span> <span class="nx">saturation</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">min</span> <span class="o">===</span> <span class="nx">max</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">max</span> <span class="o">*</span> <span class="nx">colorModeZ</span><span class="p">];</span>
+  <span class="p">}</span>
+  <span class="nx">saturation</span> <span class="o">=</span> <span class="p">(</span><span class="nx">max</span> <span class="o">-</span> <span class="nx">min</span><span class="p">)</span> <span class="o">/</span> <span class="nx">max</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">red</span> <span class="o">===</span> <span class="nx">max</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">hue</span> <span class="o">=</span> <span class="p">(</span><span class="nx">green</span> <span class="o">-</span> <span class="nx">blue</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">max</span> <span class="o">-</span> <span class="nx">min</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">green</span> <span class="o">===</span> <span class="nx">max</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">hue</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">((</span><span class="nx">blue</span> <span class="o">-</span> <span class="nx">red</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">max</span> <span class="o">-</span> <span class="nx">min</span><span class="p">));</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">hue</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">+</span> <span class="p">((</span><span class="nx">red</span> <span class="o">-</span> <span class="nx">green</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">max</span> <span class="o">-</span> <span class="nx">min</span><span class="p">));</span>
+  <span class="p">}</span>
+
+  <span class="nx">hue</span> <span class="o">/=</span> <span class="mi">6</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">hue</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">hue</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">hue</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">hue</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="p">[</span><span class="nx">hue</span> <span class="o">*</span> <span class="nx">colorModeX</span><span class="p">,</span> <span class="nx">saturation</span> <span class="o">*</span> <span class="nx">colorModeY</span><span class="p">,</span> <span class="nx">max</span> <span class="o">*</span> <span class="nx">colorModeZ</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Extracts the brightness value from a color.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {color} colInt any value of the color datatype</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns {float} The brightness color value.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see red</span>
+<span class="cm"> * @see green</span>
+<span class="cm"> * @see blue</span>
+<span class="cm"> * @see hue</span>
+<span class="cm"> * @see saturation</span>
+<span class="cm"> */</span>
+<span class="nx">brightness</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">colInt</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">colorToHSB</span><span class="p">(</span><span class="nx">colInt</span><span class="p">)[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Extracts the saturation value from a color.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {color} colInt any value of the color datatype</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns {float} The saturation color value.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see red</span>
+<span class="cm"> * @see green</span>
+<span class="cm"> * @see blue</span>
+<span class="cm"> * @see hue</span>
+<span class="cm"> * @see brightness</span>
+<span class="cm"> */</span>
+<span class="nx">saturation</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">colInt</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">colorToHSB</span><span class="p">(</span><span class="nx">colInt</span><span class="p">)[</span><span class="mi">1</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Extracts the hue value from a color.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {color} colInt any value of the color datatype</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns {float} The hue color value.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see red</span>
+<span class="cm"> * @see green</span>
+<span class="cm"> * @see blue</span>
+<span class="cm"> * @see saturation</span>
+<span class="cm"> * @see brightness</span>
+<span class="cm"> */</span>
+<span class="nx">hue</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">colInt</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">colorToHSB</span><span class="p">(</span><span class="nx">colInt</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Extracts the red value from a color, scaled to match current colorMode().</span>
+<span class="cm"> * This value is always returned as a float so be careful not to assign it to an int value.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {color} aColor any value of the color datatype</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns {float} The red color value.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see green</span>
+<span class="cm"> * @see blue</span>
+<span class="cm"> * @see alpha</span>
+<span class="cm"> * @see &gt;&gt; right shift</span>
+<span class="cm"> * @see hue</span>
+<span class="cm"> * @see saturation</span>
+<span class="cm"> * @see brightness</span>
+<span class="cm"> */</span>
+<span class="nx">redF</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">aColor</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">((</span><span class="nx">aColor</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">RED_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span> <span class="o">*</span> <span class="nx">colorModeX</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Extracts the green value from a color, scaled to match current colorMode().</span>
+<span class="cm"> * This value is always returned as a float so be careful not to assign it to an int value.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {color} aColor any value of the color datatype</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns {float} The green color value.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see red</span>
+<span class="cm"> * @see blue</span>
+<span class="cm"> * @see alpha</span>
+<span class="cm"> * @see &gt;&gt; right shift</span>
+<span class="cm"> * @see hue</span>
+<span class="cm"> * @see saturation</span>
+<span class="cm"> * @see brightness</span>
+<span class="cm"> */</span>
+<span class="nx">greenF</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">aColor</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">((</span><span class="nx">aColor</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">GREEN_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span> <span class="o">*</span> <span class="nx">colorModeY</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Extracts the blue value from a color, scaled to match current colorMode().</span>
+<span class="cm"> * This value is always returned as a float so be careful not to assign it to an int value.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {color} aColor any value of the color datatype</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns {float} The blue color value.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see red</span>
+<span class="cm"> * @see green</span>
+<span class="cm"> * @see alpha</span>
+<span class="cm"> * @see &gt;&gt; right shift</span>
+<span class="cm"> * @see hue</span>
+<span class="cm"> * @see saturation</span>
+<span class="cm"> * @see brightness</span>
+<span class="cm"> */</span>
+<span class="nx">blueF</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">aColor</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">(</span><span class="nx">aColor</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">BLUE_MASK</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span> <span class="o">*</span> <span class="nx">colorModeZ</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Extracts the alpha value from a color, scaled to match current colorMode().</span>
+<span class="cm"> * This value is always returned as a float so be careful not to assign it to an int value.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {color} aColor any value of the color datatype</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns {float} The alpha color value.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see red</span>
+<span class="cm"> * @see green</span>
+<span class="cm"> * @see blue</span>
+<span class="cm"> * @see &gt;&gt; right shift</span>
+<span class="cm"> * @see hue</span>
+<span class="cm"> * @see saturation</span>
+<span class="cm"> * @see brightness</span>
+<span class="cm"> */</span>
+<span class="nx">alpha</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">aColor</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">((</span><span class="nx">aColor</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span> <span class="o">*</span> <span class="nx">colorModeA</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="nx">alphaZeroToOne</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">aColor</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">((</span><span class="nx">aColor</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Calculates a color or colors between two colors at a specific increment.</span>
+<span class="cm"> * The amt parameter is the amount to interpolate between the two values where 0.0</span>
+<span class="cm"> * equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {color} c1     interpolate from this color</span>
+<span class="cm"> * @param {color} c2     interpolate to this color</span>
+<span class="cm"> * @param {float} amt    between 0.0 and 1.0</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns {float} The blended color.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see blendColor</span>
+<span class="cm"> * @see color</span>
+<span class="cm"> */</span>
+<span class="nx">lerpColor</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">,</span> <span class="nx">amt</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">g</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">r1</span><span class="p">,</span> <span class="nx">g1</span><span class="p">,</span> <span class="nx">b1</span><span class="p">,</span> <span class="nx">a1</span><span class="p">,</span> <span class="nx">r2</span><span class="p">,</span> <span class="nx">g2</span><span class="p">,</span> <span class="nx">b2</span><span class="p">,</span> <span class="nx">a2</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">hsb1</span><span class="p">,</span> <span class="nx">hsb2</span><span class="p">,</span> <span class="nx">rgb</span><span class="p">,</span> <span class="nx">h</span><span class="p">,</span> <span class="nx">s</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">colorBits1</span> <span class="o">=</span> <span class="nx">color</span><span class="p">(</span><span class="nx">c1</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">colorBits2</span> <span class="o">=</span> <span class="nx">color</span><span class="p">(</span><span class="nx">c2</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">curColorMode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">HSB</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>Special processing for HSB mode.
+Get HSB and Alpha values for Color 1 and 2</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">hsb1</span> <span class="o">=</span> <span class="nx">colorToHSB</span><span class="p">(</span><span class="nx">colorBits1</span><span class="p">);</span>
+    <span class="nx">a1</span> <span class="o">=</span> <span class="p">((</span><span class="nx">colorBits1</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">/</span> <span class="nx">colorModeA</span><span class="p">;</span>
+    <span class="nx">hsb2</span> <span class="o">=</span> <span class="nx">colorToHSB</span><span class="p">(</span><span class="nx">colorBits2</span><span class="p">);</span>
+    <span class="nx">a2</span> <span class="o">=</span> <span class="p">((</span><span class="nx">colorBits2</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">/</span> <span class="nx">colorModeA</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>Return lerp value for each channel, for HSB components</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">h</span> <span class="o">=</span> <span class="nx">lerp</span><span class="p">(</span><span class="nx">hsb1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">hsb2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">amt</span><span class="p">);</span>
+    <span class="nx">s</span> <span class="o">=</span> <span class="nx">lerp</span><span class="p">(</span><span class="nx">hsb1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">hsb2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">amt</span><span class="p">);</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="nx">lerp</span><span class="p">(</span><span class="nx">hsb1</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nx">hsb2</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nx">amt</span><span class="p">);</span>
+    <span class="nx">rgb</span> <span class="o">=</span> <span class="nx">color</span><span class="p">.</span><span class="nx">toRGB</span><span class="p">(</span><span class="nx">h</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">b</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>... and for Alpha-range</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">a</span> <span class="o">=</span> <span class="nx">lerp</span><span class="p">(</span><span class="nx">a1</span><span class="p">,</span> <span class="nx">a2</span><span class="p">,</span> <span class="nx">amt</span><span class="p">)</span> <span class="o">*</span> <span class="nx">colorModeA</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span> <span class="o">|</span> <span class="p">(</span><span class="nx">rgb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">RED_MASK</span> <span class="o">|</span> <span class="p">(</span><span class="nx">rgb</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">GREEN_MASK</span> <span class="o">|</span> <span class="nx">rgb</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">BLUE_MASK</span><span class="p">;</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>Get RGBA values for Color 1 to floats</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">r1</span> <span class="o">=</span> <span class="p">(</span><span class="nx">colorBits1</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">RED_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">16</span><span class="p">;</span>
+  <span class="nx">g1</span> <span class="o">=</span> <span class="p">(</span><span class="nx">colorBits1</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">GREEN_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">8</span><span class="p">;</span>
+  <span class="nx">b1</span> <span class="o">=</span> <span class="p">(</span><span class="nx">colorBits1</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">BLUE_MASK</span><span class="p">);</span>
+  <span class="nx">a1</span> <span class="o">=</span> <span class="p">((</span><span class="nx">colorBits1</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">/</span> <span class="nx">colorModeA</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>Get RGBA values for Color 2 to floats</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">r2</span> <span class="o">=</span> <span class="p">(</span><span class="nx">colorBits2</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">RED_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">16</span><span class="p">;</span>
+  <span class="nx">g2</span> <span class="o">=</span> <span class="p">(</span><span class="nx">colorBits2</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">GREEN_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">8</span><span class="p">;</span>
+  <span class="nx">b2</span> <span class="o">=</span> <span class="p">(</span><span class="nx">colorBits2</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">BLUE_MASK</span><span class="p">);</span>
+  <span class="nx">a2</span> <span class="o">=</span> <span class="p">((</span><span class="nx">colorBits2</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">/</span> <span class="nx">colorModeA</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>Return lerp value for each channel, INT for color, Float for Alpha-range</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">r</span> <span class="o">=</span> <span class="nx">lerp</span><span class="p">(</span><span class="nx">r1</span><span class="p">,</span> <span class="nx">r2</span><span class="p">,</span> <span class="nx">amt</span><span class="p">)</span> <span class="o">|</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="nx">g</span> <span class="o">=</span> <span class="nx">lerp</span><span class="p">(</span><span class="nx">g1</span><span class="p">,</span> <span class="nx">g2</span><span class="p">,</span> <span class="nx">amt</span><span class="p">)</span> <span class="o">|</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="nx">b</span> <span class="o">=</span> <span class="nx">lerp</span><span class="p">(</span><span class="nx">b1</span><span class="p">,</span> <span class="nx">b2</span><span class="p">,</span> <span class="nx">amt</span><span class="p">)</span> <span class="o">|</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="nx">a</span> <span class="o">=</span> <span class="nx">lerp</span><span class="p">(</span><span class="nx">a1</span><span class="p">,</span> <span class="nx">a2</span><span class="p">,</span> <span class="nx">amt</span><span class="p">)</span> <span class="o">*</span> <span class="nx">colorModeA</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ALPHA_MASK</span> <span class="o">|</span> <span class="p">(</span><span class="nx">r</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">RED_MASK</span> <span class="o">|</span> <span class="p">(</span><span class="nx">g</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">GREEN_MASK</span> <span class="o">|</span> <span class="nx">b</span> <span class="o">&amp;</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">BLUE_MASK</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Changes the way Processing interprets color data. By default, fill(), stroke(), and background()</span>
+<span class="cm"> * colors are set by values between 0 and 255 using the RGB color model. It is possible to change the</span>
+<span class="cm"> * numerical range used for specifying colors and to switch color systems. For example, calling colorMode(RGB, 1.0)</span>
+<span class="cm"> * will specify that values are specified between 0 and 1. The limits for defining colors are altered by setting the</span>
+<span class="cm"> * parameters range1, range2, range3, and range 4.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {MODE} mode Either RGB or HSB, corresponding to Red/Green/Blue and Hue/Saturation/Brightness</span>
+<span class="cm"> * @param {int|float} range              range for all color elements</span>
+<span class="cm"> * @param {int|float} range1             range for the red or hue depending on the current color mode</span>
+<span class="cm"> * @param {int|float} range2             range for the green or saturation depending on the current color mode</span>
+<span class="cm"> * @param {int|float} range3             range for the blue or brightness depending on the current color mode</span>
+<span class="cm"> * @param {int|float} range4             range for the alpha</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns none</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see background</span>
+<span class="cm"> * @see fill</span>
+<span class="cm"> * @see stroke</span>
+<span class="cm"> */</span>
+<span class="nx">colorMode</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="c1">// mode, range1, range2, range3, range4</span>
+  <span class="nx">curColorMode</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">colorModeX</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+    <span class="nx">colorModeY</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">||</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+    <span class="nx">colorModeZ</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">||</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+    <span class="nx">colorModeA</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">||</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Blends two color values together based on the blending mode given as the MODE parameter.</span>
+<span class="cm"> * The possible modes are described in the reference for the blend() function.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {color} c1 color: the first color to blend</span>
+<span class="cm"> * @param {color} c2 color: the second color to blend</span>
+<span class="cm"> * @param {MODE} MODE Either BLEND, ADD, SUBTRACT, DARKEST, LIGHTEST, DIFFERENCE, EXCLUSION, MULTIPLY,</span>
+<span class="cm"> * SCREEN, OVERLAY, HARD_LIGHT, SOFT_LIGHT, DODGE, or BURN</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns {float} The blended color.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see blend</span>
+<span class="cm"> * @see color</span>
+<span class="cm"> */</span>
+<span class="nx">blendColor</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">,</span> <span class="nx">mode</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">REPLACE</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">BLEND</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">blend</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">ADD</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">SUBTRACT</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">subtract</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">LIGHTEST</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">lightest</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">DARKEST</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">darkest</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">DIFFERENCE</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">difference</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">EXCLUSION</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">exclusion</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">MULTIPLY</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">multiply</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">SCREEN</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">screen</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">HARD_LIGHT</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">hard_light</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">SOFT_LIGHT</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">soft_light</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">OVERLAY</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">overlay</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">DODGE</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">dodge</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="nx">Constants</span><span class="p">.</span><span class="nx">BURN</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">modes</span><span class="p">.</span><span class="nx">burn</span><span class="p">(</span><span class="nx">c1</span><span class="p">,</span> <span class="nx">c2</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">currentFillAlpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">currentFillColor</span> <span class="o">=</span> <span class="mh">0xFFFFFF</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">defaultNormalFill</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">defaultNormalStroke</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>lowest than any 32 bit color is a special
+color that paints based on normals.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">angleColor</span> <span class="o">=</span> <span class="o">-</span><span class="mi">16777217</span><span class="p">;</span>
+<span class="nx">fill</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">defaultNormalFill</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">color</span><span class="p">(</span><span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">3</span><span class="p">]);</span>
+  <span class="kd">var</span> <span class="nx">crgb</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">ca</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>console.log("fillColor: "+c);</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">c</span> <span class="o">===</span> <span class="nx">angleColor</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>this is so we can do a smart optimisation later
+and not draw the wireframe is it happens to be the same color as
+the fill</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">defaultNormalFill</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>console.log("yes it's normal color ");</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">crgb</span> <span class="o">=</span> <span class="nx">c</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>console.log("passed alpha: " + arguments[1]);</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">ca</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="nx">colorModeA</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>console.log("calculated alpha: " + ca);</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">ca</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">crgb</span> <span class="o">=</span> <span class="nx">color</span><span class="p">(</span><span class="nx">redF</span><span class="p">(</span><span class="nx">c</span><span class="p">),</span> <span class="nx">greenF</span><span class="p">(</span><span class="nx">c</span><span class="p">),</span> <span class="nx">blueF</span><span class="p">(</span><span class="nx">c</span><span class="p">));</span>
+    <span class="nx">ca</span> <span class="o">=</span> <span class="nx">alphaZeroToOne</span><span class="p">(</span><span class="nx">c</span><span class="p">);</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <p>console.log("crgb ca "+crgb + " " + ca);</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">crgb</span> <span class="o">===</span> <span class="nx">currentFillColor</span> <span class="o">&amp;&amp;</span> <span class="nx">ca</span> <span class="o">===</span> <span class="nx">currentFillAlpha</span> <span class="o">&amp;&amp;</span> <span class="nx">doFill</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nx">doFill</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="nx">currentFillColor</span> <span class="o">=</span> <span class="nx">crgb</span><span class="p">;</span>
+  <span class="nx">currentFillAlpha</span> <span class="o">=</span> <span class="nx">ca</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * The noFill() function disables filling geometry. If both &lt;b&gt;noStroke()&lt;/b&gt; and &lt;b&gt;noFill()&lt;/b&gt;</span>
+<span class="cm"> * are called, no shapes will be drawn to the screen.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see #fill()</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+<span class="nx">noFill</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">doFill</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="nx">defaultNormalFill</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * The stroke() function sets the color used to draw lines and borders around shapes. This color</span>
+<span class="cm"> * is either specified in terms of the RGB or HSB color depending on the</span>
+<span class="cm"> * current &lt;b&gt;colorMode()&lt;/b&gt; (the default color space is RGB, with each</span>
+<span class="cm"> * value in the range from 0 to 255).</span>
+<span class="cm"> * &lt;br&gt;&lt;br&gt;When using hexadecimal notation to specify a color, use &quot;#&quot; or</span>
+<span class="cm"> * &quot;0x&quot; before the values (e.g. #CCFFAA, 0xFFCCFFAA). The # syntax uses six</span>
+<span class="cm"> * digits to specify a color (the way colors are specified in HTML and CSS).</span>
+<span class="cm"> * When using the hexadecimal notation starting with &quot;0x&quot;, the hexadecimal</span>
+<span class="cm"> * value must be specified with eight characters; the first two characters</span>
+<span class="cm"> * define the alpha component and the remainder the red, green, and blue</span>
+<span class="cm"> * components.</span>
+<span class="cm"> * &lt;br&gt;&lt;br&gt;The value for the parameter &quot;gray&quot; must be less than or equal</span>
+<span class="cm"> * to the current maximum value as specified by &lt;b&gt;colorMode()&lt;/b&gt;.</span>
+<span class="cm"> * The default maximum value is 255.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {int|float} gray    number specifying value between white and black</span>
+<span class="cm"> * @param {int|float} value1  red or hue value</span>
+<span class="cm"> * @param {int|float} value2  green or saturation value</span>
+<span class="cm"> * @param {int|float} value3  blue or brightness value</span>
+<span class="cm"> * @param {int|float} alpha   opacity of the stroke</span>
+<span class="cm"> * @param {Color} color       any value of the color datatype</span>
+<span class="cm"> * @param {int} hex           color value in hexadecimal notation (i.e. #FFCC00 or 0xFFFFCC00)</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see #fill()</span>
+<span class="cm"> * @see #noStroke()</span>
+<span class="cm"> * @see #tint()</span>
+<span class="cm"> * @see #background()</span>
+<span class="cm"> * @see #colorMode()</span>
+<span class="cm"> */</span>
+<span class="kd">var</span> <span class="nx">currentStrokeAlpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">currentStrokeColor</span> <span class="o">=</span> <span class="mh">0x000000</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">stroke</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">defaultNormalStroke</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">color</span><span class="p">(</span><span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">3</span><span class="p">]);</span>
+    <span class="kd">var</span> <span class="nx">crgb</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">ca</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">c</span> <span class="o">===</span> <span class="nx">angleColor</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>this is so we can do a smart optimisation later
+and not draw the wireframe is it happens to be the same color as
+the fill</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">defaultNormalStroke</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>console.log("yes it's normal color ");</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">crgb</span> <span class="o">=</span> <span class="nx">c</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>console.log("passed alpha: " + arguments[1]);</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">ca</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="nx">colorModeA</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>console.log("calculated alpha: " + ca);</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">ca</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">crgb</span> <span class="o">=</span> <span class="nx">color</span><span class="p">(</span><span class="nx">redF</span><span class="p">(</span><span class="nx">c</span><span class="p">),</span> <span class="nx">greenF</span><span class="p">(</span><span class="nx">c</span><span class="p">),</span> <span class="nx">blueF</span><span class="p">(</span><span class="nx">c</span><span class="p">));</span>
+      <span class="nx">ca</span> <span class="o">=</span> <span class="nx">alphaZeroToOne</span><span class="p">(</span><span class="nx">c</span><span class="p">);</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>console.log("crgb ca "+crgb + " " + ca);</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">crgb</span> <span class="o">===</span> <span class="nx">currentStrokeColor</span> <span class="o">&amp;&amp;</span> <span class="nx">ca</span> <span class="o">===</span> <span class="nx">currentStrokeAlpha</span> <span class="o">&amp;&amp;</span> <span class="nx">doStroke</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">doStroke</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="nx">currentStrokeColor</span> <span class="o">=</span> <span class="nx">crgb</span><span class="p">;</span>
+    <span class="nx">currentStrokeAlpha</span> <span class="o">=</span> <span class="nx">ca</span><span class="p">;</span>
+  <span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * The noStroke() function disables drawing the stroke (outline). If both &lt;b&gt;noStroke()&lt;/b&gt; and</span>
+<span class="cm"> * &lt;b&gt;noFill()&lt;/b&gt; are called, no shapes will be drawn to the screen.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see #stroke()</span>
+<span class="cm"> */</span>
+<span class="nx">noStroke</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">doStroke</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="nx">strokeSize</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="nx">currentStrokeSize</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>enf of functions from processing.js</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
