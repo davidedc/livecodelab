@@ -1,5 +1,3 @@
-// demos and tutorials go here
-
 
 if (!frenchVersion) {
 
@@ -170,4 +168,158 @@ if (!frenchVersion) {
 
   var autocodeTutorial = "" + "" + '// le bouton Autocode invente pour vous\n' + "" + '// des variations aléatoires du code.\n' + "" + '\n' + "" + '// vous pouvez arrêter Autocode\n' + "" + '// à tout moment en ré-appuyant sur le bouton\n' + "" + '// ou vous pouvez faire CTRL-Z\n' + "" + '// (CMD-Z sur Mac) pour annuler (or rétablir) certainesn' + "" + '// des étapes y compris PENDANT que Autocode est actif\n' + "" + '// si par exemple vous trouvez que les choses\n' + "" + '// deviennent ennuyeuse dans la direction prise par Autocode.';
 
+}
+
+function loadDemoOrTutorial(whichDemo) {
+
+  if ((!Detector.webgl || forceCanvasRenderer) && !userWarnedAboutWebglExamples && whichDemo.indexOf('webgl') === 0) {
+    userWarnedAboutWebglExamples = true;
+    $('#exampleNeedsWebgl').modal();
+    $('#simplemodal-container').height(200);
+  }
+
+
+  // set the demo as a hash state
+  // so that ideally people can link directly to
+  // a specific demo they like.
+  // (in the document.ready function we check for
+  // this hash value and load the correct demo)
+  window.location.hash = 'bookmark=' + whichDemo;
+
+  if (fakeText) shrinkFakeText();
+  undimEditor();
+
+  doTheSpinThingy = false;
+
+  var prependMessage = "";
+  if ((!Detector.webgl || forceCanvasRenderer) && whichDemo.indexOf('webgl') === 0) {
+    prependMessage = "" + "// this drawing makes much more sense\n" + "// in a WebGL-enabled browser\n" + "\n";
+  }
+
+  switch (whichDemo) {
+  case 'simpleCubeDemo':
+    editor.setValue(prependMessage + simpleCubeDemo);
+    break;
+  case 'webgltwocubesDemo':
+    editor.setValue(prependMessage + webgltwocubesDemo);
+    break;
+  case 'cubesAndSpikes':
+    editor.setValue(prependMessage + cubesAndSpikes);
+    break;
+  case 'webglturbineDemo':
+    editor.setValue(prependMessage + webglturbineDemo);
+    break;
+  case 'webglzfightartDemo':
+    editor.setValue(prependMessage + webglzfightartDemo);
+    break;
+  case 'littleSpiralOfCubes':
+    editor.setValue(prependMessage + littleSpiralOfCubes);
+    break;
+  case 'tentacleDemo':
+    editor.setValue(prependMessage + tentacleDemo);
+    break;
+  case 'lampDemo':
+    editor.setValue(prependMessage + lampDemo);
+    break;
+  case 'trillionfeathersDemo':
+    editor.setValue(prependMessage + trillionfeathersDemo);
+    break;
+  case 'monsterblobDemo':
+    editor.setValue(prependMessage + monsterblobDemo);
+    break;
+  case 'industrialMusicDemo':
+    editor.setValue(prependMessage + industrialMusicDemo);
+    break;
+  case 'trySoundsDemo':
+    editor.setValue(prependMessage + trySoundsDemo);
+    break;
+  case 'springysquaresDemo':
+    editor.setValue(prependMessage + springysquaresDemo);
+    break;
+  case 'diceDemo':
+    editor.setValue(prependMessage + diceDemo);
+    break;
+  case 'webglalmostvoronoiDemo':
+    editor.setValue(prependMessage + webglalmostvoronoiDemo);
+    break;
+  case 'webglshardsDemo':
+    editor.setValue(prependMessage + webglshardsDemo);
+    break;
+  case 'webglredthreadsDemo':
+    editor.setValue(prependMessage + webglredthreadsDemo);
+    break;
+  case 'webglnuclearOctopusDemo':
+    editor.setValue(prependMessage + webglnuclearOctopusDemo);
+    break;
+  case 'introTutorial':
+    editor.setValue(prependMessage + introTutorial);
+    break;
+  case 'helloworldTutorial':
+    editor.setValue(prependMessage + helloworldTutorial);
+    break;
+  case 'somenotesTutorial':
+    editor.setValue(prependMessage + somenotesTutorial);
+    break;
+  case 'rotateTutorial':
+    editor.setValue(prependMessage + rotateTutorial);
+    break;
+  case 'frameTutorial':
+    editor.setValue(prependMessage + frameTutorial);
+    break;
+  case 'timeTutorial':
+    editor.setValue(prependMessage + timeTutorial);
+    break;
+  case 'moveTutorial':
+    editor.setValue(prependMessage + moveTutorial);
+    break;
+  case 'scaleTutorial':
+    editor.setValue(prependMessage + scaleTutorial);
+    break;
+  case 'timesTutorial':
+    editor.setValue(prependMessage + timesTutorial);
+    break;
+  case 'fillTutorial':
+    editor.setValue(prependMessage + fillTutorial);
+    break;
+  case 'strokeTutorial':
+    editor.setValue(prependMessage + strokeTutorial);
+    break;
+  case 'colornamesTutorial':
+    editor.setValue(prependMessage + colornamesTutorial);
+    break;
+  case 'lightsTutorial':
+    editor.setValue(prependMessage + lightsTutorial);
+    break;
+  case 'backgroundTutorial':
+    editor.setValue(prependMessage + backgroundTutorial);
+    break;
+  case 'gradientTutorial':
+    editor.setValue(prependMessage + gradientTutorial);
+    break;
+  case 'lineTutorial':
+    editor.setValue(prependMessage + lineTutorial);
+    break;
+  case 'ballTutorial':
+    editor.setValue(prependMessage + ballTutorial);
+    break;
+  case 'pushpopMatrixTutorial':
+    editor.setValue(prependMessage + pushpopMatrixTutorial);
+    break;
+  case 'animationstyleTutorial':
+    editor.setValue(prependMessage + animationstyleTutorial);
+    break;
+  case 'doonceTutorial':
+    editor.setValue(prependMessage + doonceTutorial);
+    break;
+  case 'autocodeTutorial':
+    editor.setValue(prependMessage + autocodeTutorial);
+    break;
+
+    // bring the cursor to the top
+  editor.setCursor(0, 0);
+  }
+
+  // setting the value of the editor triggers the
+  // codeMirror onChange callback, and that runs
+  // the demo.
 }
