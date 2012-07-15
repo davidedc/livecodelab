@@ -7,6 +7,39 @@ Livecodelab is a special secret place where you can make fancy "on-the-fly" 3d v
 
 "On-the-fly" meaning: as you type. Type just three letters: "box", and boom! a box appears. No clicking play, no waiting, no nothing.
 
+Once loaded in your browser, LiveCodeLab is totally client side, and can work without any internet connection.
+
+LiveCodeLab has been using by many people. They usually use it to explore:
+
+*Code Education*
+It's a great way to interest kids and adult in code, as it allows for instant feedback and easy pair programming. It helps introduce simple concept like loops, and much more complex like transform matrices!
+
+*Future of the browser*
+it's a nice hint about what 3D + the web is really about.
+Also, the use of several powerful and mature libraries shows how far Javascript is now.
+
+*Code as Art*
+It's a live coding tool that artists can use, misuse and tweak.
+
+*Autocode
+Automatic coding in the browser is still quite a virgin territory. It's been done a lot with lisp-y languages, but not quite in the context of things like LiveCodeLab, so there is an opportunity to do quite some original work there.
+
+
+### Roadmap ###
+
+We need your input on the following goals:
+
+* Modularize the code, using requireJS to load everything
+
+* Proper handling of localizations
+
+* More localizations: spanish, chinese, japanese, arab, german, etc.
+
+* A way to share the user's LiveCodeLab code with others – and with keeping the client-side, self-contain-ness (passing code in URI?)
+
+For a more fine grained look at feature requests and bugs, take a look at <a href="https://github.com/davidedc/livecodelab/issues">the tracker</a>.
+
+
 #### Libraries used ###
 
 Three.js by Ricardo Cabello aka Mr.doob.
