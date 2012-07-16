@@ -39,7 +39,7 @@ var pickRandomDefaultGradient = function() {
   }
 }
 
-resetGradientStack = function() {
+var resetGradientStack = function() {
   currentGradientStackValue = "";
   // we could be more efficient and
   // reuse the previous stack elements
@@ -51,7 +51,7 @@ resetGradientStack = function() {
 
 }
 
-background = function() {
+var background = function() {
 
   // [todo] should the screen be cleared when you invoke
   // the background command? (In processing it's not)
@@ -69,7 +69,7 @@ background = function() {
   });
 }
 
-simpleGradient = function(a, b, c, d) {
+var simpleGradient = function(a, b, c, d) {
   currentGradientStackValue = currentGradientStackValue + " " + a + "" + b + "" + c + "" + d + "null ";
   gradStack.push({
     gradStacka: a,
