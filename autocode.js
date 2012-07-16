@@ -3,6 +3,9 @@
 var autocodeOn = false;
 var blinkingAutocoderTimeout;
 var blinkingAutocoderStatus = false;
+var numberOfResults = 0;
+var whichOneToChange = 0;
+
 function blinkAutocodeIndicator() {
   blinkingAutocoderStatus = !blinkingAutocoderStatus;
   if (blinkingAutocoderStatus) {
