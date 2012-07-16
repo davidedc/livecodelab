@@ -1,25 +1,25 @@
-var parentObject, rootObject, rotate, move;
+var parentObject, rootObject;
 parentObject = 0;
 rootObject = 0;
 var currentObject;
 
-
 var matrixStack = [];
-pushMatrix = function() {
+
+var pushMatrix = function() {
   matrixStack.push(worldMatrix);
   worldMatrix = (new THREE.Matrix4()).copy(worldMatrix);
 }
 
-popMatrix = function() {
+var popMatrix = function() {
   if (matrixStack.length !== 0) worldMatrix = matrixStack.pop();
   else worldMatrix.identity();
 }
 
-resetMatrix = function() {
+var resetMatrix = function() {
   worldMatrix.identity();
 }
 
-move = function(a, b, c) {
+var move = function(a, b, c) {
   if (arguments.length === 0) {
     a = Math.sin(time / 500);
     b = Math.cos(time / 500);
@@ -42,7 +42,7 @@ move = function(a, b, c) {
   worldMatrix.translate(new THREE.Vector3(a, b, c));
 };
 
-rotate = function(a, b, c) {
+function rotate(a, b, c) {
 
   if (arguments.length === 0) {
     a = time / 1000;
@@ -68,7 +68,7 @@ rotate = function(a, b, c) {
 
 };
 
-scale = function(a, b, c) {
+var scale = function(a, b, c) {
   if (arguments.length === 0) {
     a = 1 + Math.sin(time / 500) / 4;
     b = a;
