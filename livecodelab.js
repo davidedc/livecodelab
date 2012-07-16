@@ -92,7 +92,7 @@ function animate() {
       lastStableProgram = out;
       //chromeHackUncaughtReferenceName = '';
     }
-  }
+  } // if typeof draw
 
   // do the render
   combDisplayList();
@@ -104,13 +104,13 @@ function animate() {
 
   if (doLNOnce.length !== 0) {
     //alert("a doOnce has been ran");
-    elaboratedSource = editor.getValue();
+    var elaboratedSource = editor.getValue();
 
     if (frenchVersion) {
       elaboratedSource = elaboratedSource.replace(/uneFois/g, "doOnce");
     }
 
-    elaboratedSourceByLine = elaboratedSource.split("\n");
+    var elaboratedSourceByLine = elaboratedSource.split("\n");
     //alert('splitting: ' + elaboratedSourceByLine.length );
     for (var iteratingOverSource = 0; iteratingOverSource < doLNOnce.length; iteratingOverSource++) {
       //alert('iterating: ' + iteratingOverSource );
@@ -144,6 +144,8 @@ function animate() {
   }
 
 }
+
+var composer;
 
 function render() {
 
@@ -345,8 +347,8 @@ function clearDisplayList() {
 // swap the two lines below in case one needs to
 // debug the environment, otherwise all errors are
 // caught and not bubbled up to the browser debugging tool.
-// var foo = function(msg, url, linenumber) {
-window.onerror = function(msg, url, linenumber) {
+ var foo = function(msg, url, linenumber) {
+// window.onerror = function(msg, url, linenumber) {
 
   if (autocodeOn) {
     editor.undo();
