@@ -3,7 +3,7 @@ var oldBeatsPerMinute = 0;
 var soundLoopTimer;
 var beatNumber = 0;
 
-bpm = function(a) {
+var bpm = function(a) {
 
   // timid attempt at sanity check.
   // the sound system might well bork out
@@ -15,7 +15,7 @@ bpm = function(a) {
   updateBpmIfChanged();
 }
 
-updateBpmIfChanged = function() {
+var updateBpmIfChanged = function() {
   if (oldBeatsPerMinute !== beatsPerMinute) {
     //alert('changing beats per minute old ' + oldBeatsPerMinute + ' new: ' + beatsPerMinute);
     clearTimeout(soundLoopTimer);
@@ -28,7 +28,7 @@ updateBpmIfChanged = function() {
   //alert('AFTER old ' + oldBeatsPerMinute + ' new: ' + a);
 }
 
-soundLoop = function() {
+var soundLoop = function() {
   //clearTimeout(soundLoopTimer);
   //alert('soundLoop');
   //if (beatsPerMinute !== 0) {
@@ -99,7 +99,7 @@ soundLoop = function() {
 }
 
 
-addSound = function(soundID, beatString) {
+var addSound = function(soundID, beatString) {
   beatString = beatString.replace(/\s*/g, "");
   soundLoops.soundIDs.push(soundID);
   soundLoops.beatStrings.push(beatString);
