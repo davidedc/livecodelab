@@ -6,7 +6,7 @@
 // an ambient light to the color of the stroke
 // (although which ambient light do you pick if there
 // is more than one?)
-line = function(a) {
+var line = function(a) {
 
   if (!doStroke) {
     return;
@@ -70,7 +70,7 @@ line = function(a) {
 }
 
 
-rect = function(a, b) {
+var rect = function(a, b) {
 
   // simple case - if there is no fill and
   // no stroke then there is nothing to do.
@@ -287,7 +287,7 @@ rect = function(a, b) {
 }
 
 
-box = function(a, b, c) {
+var box = function(a, b, c) {
   // simple case - if there is no fill and
   // no stroke then there is nothing to do.
   var startIndex = 0;
@@ -508,7 +508,7 @@ box = function(a, b, c) {
 }
 
 
-peg = function(a, b, c) {
+var peg = function(a, b, c) {
   // simple case - if there is no fill and
   // no stroke then there is nothing to do.
   var startIndex = 0;
@@ -729,14 +729,14 @@ peg = function(a, b, c) {
 }
 
 
-ballDetail = function(a) {
+var ballDetail = function(a) {
   if (a === undefined) return;
   if (a < 2) a = 2;
   if (a > 30) a = 30;
   ballDetLevel = a;
 }
 
-ball = function(a) {
+var ball = function(a) {
   var pooledSphereGeometry;
   // simple case - if there is no fill and
   // no stroke then there is nothing to do.
