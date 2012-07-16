@@ -41,7 +41,7 @@ soundDef[soundDefCounter++] = {soundName: 'beep', soundFile: './sound/audioFiles
 soundDef[soundDefCounter++] = {soundName: 'hello', soundFile: './sound/audioFiles/116508_Hello'};
 soundDef[soundDefCounter++] = {soundName: 'alienBeep', soundFile: './sound/audioFiles/132389__blackie666__alienbleep'};
 
-numberOfSounds = soundDefCounter;
+var numberOfSounds = soundDefCounter;
 
 var soundBank = {};
 var soundFiles = {};
