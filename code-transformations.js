@@ -322,7 +322,7 @@ function registerCode() {
     //alert('soon before replacing doOnces'+elaboratedSource);
     if (elaboratedSource.indexOf('doOnce') > -1) {
       //alert("a doOnce is potentially executable");
-      elaboratedSourceByLine = elaboratedSource.split("\n");
+      var elaboratedSourceByLine = elaboratedSource.split("\n");
       //alert('splitting: ' + elaboratedSourceByLine.length );
       for (var iteratingOverSource = 0; iteratingOverSource < elaboratedSourceByLine.length; iteratingOverSource++) {
         //alert('iterating: ' + iteratingOverSource );
