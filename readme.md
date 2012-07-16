@@ -9,6 +9,11 @@ Livecodelab is a special secret place where you can make fancy "on-the-fly" 3d v
 
 LiveCodeLab is totally client side. Once loaded in your browser it works without any internet connection. You can even downloads the files and use it locally.
 
+Play! http://sketchpatch.net/livecodelab/index.html
+
+French version : http://sketchpatch.net/livecodelab/indexFR.html
+
+
 #### Live coding in the browser ####
 
 LiveCodeLab has been used by many people. They usually use it to explore:
