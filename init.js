@@ -70,7 +70,7 @@ var checkSound = function(cycleSoundDefs) {
 var editor;
 
 
-startEnvironment = function() {
+var startEnvironment = function() {
   pickRandomDefaultGradient();
 
   log("startEnvironment");
