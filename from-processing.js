@@ -1,7 +1,7 @@
 // Functions taken from processing.js
 /**
  * NOTE: in releases we replace symbolic Constants.* names with their values.
- * Using Constants.* in code below is fine.  See tools/rewrite-pconstants.js.
+ * Using Constants.* in code below is fine.  See tools/rewrite-Constants.js.
  */
 var Constants = {
   // Color modes
@@ -61,7 +61,7 @@ var doFill = true,
  *
  * @see min
  */
-max = function() {
+var max = function() {
   if (arguments.length === 2) {
     return arguments[0] < arguments[1] ? arguments[1] : arguments[0];
   }
@@ -91,7 +91,7 @@ max = function() {
  *
  * @see max
  */
-min = function() {
+var min = function() {
   if (arguments.length === 2) {
     return arguments[0] < arguments[1] ? arguments[0] : arguments[1];
   }
@@ -329,7 +329,7 @@ function colorToHSB(colorInt) {
  * @see hue
  * @see saturation
  */
-brightness = function(colInt) {
+var brightness = function(colInt) {
   return colorToHSB(colInt)[2];
 };
 
@@ -346,7 +346,7 @@ brightness = function(colInt) {
  * @see hue
  * @see brightness
  */
-saturation = function(colInt) {
+var saturation = function(colInt) {
   return colorToHSB(colInt)[1];
 };
 
@@ -363,7 +363,7 @@ saturation = function(colInt) {
  * @see saturation
  * @see brightness
  */
-hue = function(colInt) {
+var hue = function(colInt) {
   return colorToHSB(colInt)[0];
 };
 
@@ -383,7 +383,7 @@ hue = function(colInt) {
  * @see saturation
  * @see brightness
  */
-redF = function(aColor) {
+var redF = function(aColor) {
   return ((aColor & Constants.RED_MASK) >>> 16) / 255 * colorModeX;
 };
 
@@ -403,7 +403,7 @@ redF = function(aColor) {
  * @see saturation
  * @see brightness
  */
-greenF = function(aColor) {
+var greenF = function(aColor) {
   return ((aColor & Constants.GREEN_MASK) >>> 8) / 255 * colorModeY;
 };
 
@@ -423,7 +423,7 @@ greenF = function(aColor) {
  * @see saturation
  * @see brightness
  */
-blueF = function(aColor) {
+var blueF = function(aColor) {
   return (aColor & Constants.BLUE_MASK) / 255 * colorModeZ;
 };
 
@@ -443,13 +443,33 @@ blueF = function(aColor) {
  * @see saturation
  * @see brightness
  */
-alpha = function(aColor) {
+var alpha = function(aColor) {
   return ((aColor & Constants.ALPHA_MASK) >>> 24) / 255 * colorModeA;
 };
-alphaZeroToOne = function(aColor) {
+var alphaZeroToOne = function(aColor) {
   return ((aColor & Constants.ALPHA_MASK) >>> 24) / 255;
 };
 
+/**
+    * Calculates a number between two numbers at a specific increment. The amt  parameter is the
+    * amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very
+    * near the first point, 0.5 is half-way in between, etc. The lerp function is convenient for
+    * creating motion along a straight path and for drawing dotted lines.
+    *
+    * @param {int|float} value1       float or int: first value
+    * @param {int|float} value2       float or int: second value
+    * @param {int|float} amt          float: between 0.0 and 1.0
+    *
+    * @returns {float}
+    *
+    * @see curvePoint
+    * @see bezierPoint
+    */
+var lerp = function(value1, value2, amt) {
+  return ((value2 - value1) * amt) + value1;
+};
+    
+    
 /**
  * Calculates a color or colors between two colors at a specific increment.
  * The amt parameter is the amount to interpolate between the two values where 0.0
@@ -464,7 +484,7 @@ alphaZeroToOne = function(aColor) {
  * @see blendColor
  * @see color
  */
-lerpColor = function(c1, c2, amt) {
+var lerpColor = function(c1, c2, amt) {
   var r, g, b, a, r1, g1, b1, a1, r2, g2, b2, a2;
   var hsb1, hsb2, rgb, h, s;
   var colorBits1 = color(c1);
@@ -530,7 +550,7 @@ lerpColor = function(c1, c2, amt) {
  * @see fill
  * @see stroke
  */
-colorMode = function() { // mode, range1, range2, range3, range4
+var colorMode = function() { // mode, range1, range2, range3, range4
   curColorMode = arguments[0];
   if (arguments.length > 1) {
     colorModeX = arguments[1];
@@ -554,7 +574,7 @@ colorMode = function() { // mode, range1, range2, range3, range4
  * @see blend
  * @see color
  */
-blendColor = function(c1, c2, mode) {
+var blendColor = function(c1, c2, mode) {
   if (mode === Constants.REPLACE) {
     return modes.replace(c1, c2);
   } else if (mode === Constants.BLEND) {
@@ -595,7 +615,7 @@ var defaultNormalStroke = true;
 // lowest than any 32 bit color is a special
 // color that paints based on normals.
 var angleColor = -16777217;
-fill = function() {
+var fill = function() {
   defaultNormalFill = false;
   var c = color(arguments[0], arguments[1], arguments[2], arguments[3]);
   var crgb;
@@ -635,7 +655,7 @@ fill = function() {
  * @see #fill()
  *
  */
-noFill = function() {
+var noFill = function() {
   doFill = false;
   defaultNormalFill = false;
 };
@@ -710,13 +730,261 @@ var stroke = function() {
  *
  * @see #stroke()
  */
-noStroke = function() {
+var noStroke = function() {
   doStroke = false;
 };
 
-strokeSize = function(a) {
+var strokeSize = function(a) {
   if (a === undefined) a = 1;
   else if (a < 0) a = 0;
   currentStrokeSize = a;
 };
+
+// blending modes
+    /**
+    * These are internal blending modes used for BlendColor()
+    *
+    * @param {Color} c1       First Color to blend
+    * @param {Color} c2       Second Color to blend
+    *
+    * @returns {Color}        The blended Color
+    *
+    * @see BlendColor
+    * @see Blend
+    */
+var modes = (function() {
+      var ALPHA_MASK = Constants.ALPHA_MASK,
+        RED_MASK = Constants.RED_MASK,
+        GREEN_MASK = Constants.GREEN_MASK,
+        BLUE_MASK = Constants.BLUE_MASK,
+        min = Math.min,
+        max = Math.max;
+
+      function applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb) {
+        var a = min(((c1 & 0xff000000) >>> 24) + f, 0xff) << 24;
+
+        var r = (ar + (((cr - ar) * f) >> 8));
+        r = ((r < 0) ? 0 : ((r > 255) ? 255 : r)) << 16;
+
+        var g = (ag + (((cg - ag) * f) >> 8));
+        g = ((g < 0) ? 0 : ((g > 255) ? 255 : g)) << 8;
+
+        var b = ab + (((cb - ab) * f) >> 8);
+        b = (b < 0) ? 0 : ((b > 255) ? 255 : b);
+
+        return (a | r | g | b);
+      }
+
+      return {
+        replace: function(c1, c2) {
+          return c2;
+        },
+        blend: function(c1, c2) {
+          var f = (c2 & ALPHA_MASK) >>> 24,
+            ar = (c1 & RED_MASK),
+            ag = (c1 & GREEN_MASK),
+            ab = (c1 & BLUE_MASK),
+            br = (c2 & RED_MASK),
+            bg = (c2 & GREEN_MASK),
+            bb = (c2 & BLUE_MASK);
+
+          return (min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 |
+                  (ar + (((br - ar) * f) >> 8)) & RED_MASK |
+                  (ag + (((bg - ag) * f) >> 8)) & GREEN_MASK |
+                  (ab + (((bb - ab) * f) >> 8)) & BLUE_MASK);
+        },
+        add: function(c1, c2) {
+          var f = (c2 & ALPHA_MASK) >>> 24;
+          return (min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 |
+                  min(((c1 & RED_MASK) + ((c2 & RED_MASK) >> 8) * f), RED_MASK) & RED_MASK |
+                  min(((c1 & GREEN_MASK) + ((c2 & GREEN_MASK) >> 8) * f), GREEN_MASK) & GREEN_MASK |
+                  min((c1 & BLUE_MASK) + (((c2 & BLUE_MASK) * f) >> 8), BLUE_MASK));
+        },
+        subtract: function(c1, c2) {
+          var f = (c2 & ALPHA_MASK) >>> 24;
+          return (min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 |
+                  max(((c1 & RED_MASK) - ((c2 & RED_MASK) >> 8) * f), GREEN_MASK) & RED_MASK |
+                  max(((c1 & GREEN_MASK) - ((c2 & GREEN_MASK) >> 8) * f), BLUE_MASK) & GREEN_MASK |
+                  max((c1 & BLUE_MASK) - (((c2 & BLUE_MASK) * f) >> 8), 0));
+        },
+        lightest: function(c1, c2) {
+          var f = (c2 & ALPHA_MASK) >>> 24;
+          return (min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 |
+                  max(c1 & RED_MASK, ((c2 & RED_MASK) >> 8) * f) & RED_MASK |
+                  max(c1 & GREEN_MASK, ((c2 & GREEN_MASK) >> 8) * f) & GREEN_MASK |
+                  max(c1 & BLUE_MASK, ((c2 & BLUE_MASK) * f) >> 8));
+        },
+        darkest: function(c1, c2) {
+          var f = (c2 & ALPHA_MASK) >>> 24,
+            ar = (c1 & RED_MASK),
+            ag = (c1 & GREEN_MASK),
+            ab = (c1 & BLUE_MASK),
+            br = min(c1 & RED_MASK, ((c2 & RED_MASK) >> 8) * f),
+            bg = min(c1 & GREEN_MASK, ((c2 & GREEN_MASK) >> 8) * f),
+            bb = min(c1 & BLUE_MASK, ((c2 & BLUE_MASK) * f) >> 8);
+
+          return (min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 |
+                  (ar + (((br - ar) * f) >> 8)) & RED_MASK |
+                  (ag + (((bg - ag) * f) >> 8)) & GREEN_MASK |
+                  (ab + (((bb - ab) * f) >> 8)) & BLUE_MASK);
+        },
+        difference: function(c1, c2) {
+          var f  = (c2 & ALPHA_MASK) >>> 24,
+            ar = (c1 & RED_MASK) >> 16,
+            ag = (c1 & GREEN_MASK) >> 8,
+            ab = (c1 & BLUE_MASK),
+            br = (c2 & RED_MASK) >> 16,
+            bg = (c2 & GREEN_MASK) >> 8,
+            bb = (c2 & BLUE_MASK),
+            cr = (ar > br) ? (ar - br) : (br - ar),
+            cg = (ag > bg) ? (ag - bg) : (bg - ag),
+            cb = (ab > bb) ? (ab - bb) : (bb - ab);
+
+          return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+        },
+        exclusion: function(c1, c2) {
+          var f  = (c2 & ALPHA_MASK) >>> 24,
+            ar = (c1 & RED_MASK) >> 16,
+            ag = (c1 & GREEN_MASK) >> 8,
+            ab = (c1 & BLUE_MASK),
+            br = (c2 & RED_MASK) >> 16,
+            bg = (c2 & GREEN_MASK) >> 8,
+            bb = (c2 & BLUE_MASK),
+            cr = ar + br - ((ar * br) >> 7),
+            cg = ag + bg - ((ag * bg) >> 7),
+            cb = ab + bb - ((ab * bb) >> 7);
+
+          return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+        },
+        multiply: function(c1, c2) {
+          var f  = (c2 & ALPHA_MASK) >>> 24,
+            ar = (c1 & RED_MASK) >> 16,
+            ag = (c1 & GREEN_MASK) >> 8,
+            ab = (c1 & BLUE_MASK),
+            br = (c2 & RED_MASK) >> 16,
+            bg = (c2 & GREEN_MASK) >> 8,
+            bb = (c2 & BLUE_MASK),
+            cr = (ar * br) >> 8,
+            cg = (ag * bg) >> 8,
+            cb = (ab * bb) >> 8;
+
+          return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+        },
+        screen: function(c1, c2) {
+          var f  = (c2 & ALPHA_MASK) >>> 24,
+            ar = (c1 & RED_MASK) >> 16,
+            ag = (c1 & GREEN_MASK) >> 8,
+            ab = (c1 & BLUE_MASK),
+            br = (c2 & RED_MASK) >> 16,
+            bg = (c2 & GREEN_MASK) >> 8,
+            bb = (c2 & BLUE_MASK),
+            cr = 255 - (((255 - ar) * (255 - br)) >> 8),
+            cg = 255 - (((255 - ag) * (255 - bg)) >> 8),
+            cb = 255 - (((255 - ab) * (255 - bb)) >> 8);
+
+          return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+        },
+        hard_light: function(c1, c2) {
+          var f  = (c2 & ALPHA_MASK) >>> 24,
+            ar = (c1 & RED_MASK) >> 16,
+            ag = (c1 & GREEN_MASK) >> 8,
+            ab = (c1 & BLUE_MASK),
+            br = (c2 & RED_MASK) >> 16,
+            bg = (c2 & GREEN_MASK) >> 8,
+            bb = (c2 & BLUE_MASK),
+            cr = (br < 128) ? ((ar * br) >> 7) : (255 - (((255 - ar) * (255 - br)) >> 7)),
+            cg = (bg < 128) ? ((ag * bg) >> 7) : (255 - (((255 - ag) * (255 - bg)) >> 7)),
+            cb = (bb < 128) ? ((ab * bb) >> 7) : (255 - (((255 - ab) * (255 - bb)) >> 7));
+
+          return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+        },
+        soft_light: function(c1, c2) {
+          var f  = (c2 & ALPHA_MASK) >>> 24,
+            ar = (c1 & RED_MASK) >> 16,
+            ag = (c1 & GREEN_MASK) >> 8,
+            ab = (c1 & BLUE_MASK),
+            br = (c2 & RED_MASK) >> 16,
+            bg = (c2 & GREEN_MASK) >> 8,
+            bb = (c2 & BLUE_MASK),
+            cr = ((ar * br) >> 7) + ((ar * ar) >> 8) - ((ar * ar * br) >> 15),
+            cg = ((ag * bg) >> 7) + ((ag * ag) >> 8) - ((ag * ag * bg) >> 15),
+            cb = ((ab * bb) >> 7) + ((ab * ab) >> 8) - ((ab * ab * bb) >> 15);
+
+          return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+        },
+        overlay: function(c1, c2) {
+          var f  = (c2 & ALPHA_MASK) >>> 24,
+            ar = (c1 & RED_MASK) >> 16,
+            ag = (c1 & GREEN_MASK) >> 8,
+            ab = (c1 & BLUE_MASK),
+            br = (c2 & RED_MASK) >> 16,
+            bg = (c2 & GREEN_MASK) >> 8,
+            bb = (c2 & BLUE_MASK),
+            cr = (ar < 128) ? ((ar * br) >> 7) : (255 - (((255 - ar) * (255 - br)) >> 7)),
+            cg = (ag < 128) ? ((ag * bg) >> 7) : (255 - (((255 - ag) * (255 - bg)) >> 7)),
+            cb = (ab < 128) ? ((ab * bb) >> 7) : (255 - (((255 - ab) * (255 - bb)) >> 7));
+
+          return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+        },
+        dodge: function(c1, c2) {
+          var f  = (c2 & ALPHA_MASK) >>> 24,
+            ar = (c1 & RED_MASK) >> 16,
+            ag = (c1 & GREEN_MASK) >> 8,
+            ab = (c1 & BLUE_MASK),
+            br = (c2 & RED_MASK) >> 16,
+            bg = (c2 & GREEN_MASK) >> 8,
+            bb = (c2 & BLUE_MASK);
+
+          var cr = 255;
+          if (br !== 255) {
+            cr = (ar << 8) / (255 - br);
+            cr = (cr < 0) ? 0 : ((cr > 255) ? 255 : cr);
+          }
+
+          var cg = 255;
+          if (bg !== 255) {
+            cg = (ag << 8) / (255 - bg);
+            cg = (cg < 0) ? 0 : ((cg > 255) ? 255 : cg);
+          }
+
+          var cb = 255;
+          if (bb !== 255) {
+            cb = (ab << 8) / (255 - bb);
+            cb = (cb < 0) ? 0 : ((cb > 255) ? 255 : cb);
+          }
+
+          return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+        },
+        burn: function(c1, c2) {
+          var f  = (c2 & ALPHA_MASK) >>> 24,
+            ar = (c1 & RED_MASK) >> 16,
+            ag = (c1 & GREEN_MASK) >> 8,
+            ab = (c1 & BLUE_MASK),
+            br = (c2 & RED_MASK) >> 16,
+            bg = (c2 & GREEN_MASK) >> 8,
+            bb = (c2 & BLUE_MASK);
+
+          var cr = 0;
+          if (br !== 0) {
+            cr = ((255 - ar) << 8) / br;
+            cr = 255 - ((cr < 0) ? 0 : ((cr > 255) ? 255 : cr));
+          }
+
+          var cg = 0;
+          if (bg !== 0) {
+            cg = ((255 - ag) << 8) / bg;
+            cg = 255 - ((cg < 0) ? 0 : ((cg > 255) ? 255 : cg));
+          }
+
+          var cb = 0;
+          if (bb !== 0) {
+            cb = ((255 - ab) << 8) / bb;
+            cb = 255 - ((cb < 0) ? 0 : ((cb > 255) ? 255 : cb));
+          }
+
+          return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+        }
+      };
+    }());
+
 // enf of functions from processing.js
