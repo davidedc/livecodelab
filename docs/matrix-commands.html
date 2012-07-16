@@ -1,0 +1,95 @@
+<!DOCTYPE html>  <html> <head>   <title>matrix-commands.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               matrix-commands.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">parentObject</span><span class="p">,</span> <span class="nx">rootObject</span><span class="p">;</span>
+<span class="nx">parentObject</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="nx">rootObject</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">currentObject</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">matrixStack</span> <span class="o">=</span> <span class="p">[];</span>
+
+<span class="kd">var</span> <span class="nx">pushMatrix</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">matrixStack</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">worldMatrix</span><span class="p">);</span>
+  <span class="nx">worldMatrix</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Matrix4</span><span class="p">()).</span><span class="nx">copy</span><span class="p">(</span><span class="nx">worldMatrix</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">popMatrix</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">matrixStack</span><span class="p">.</span><span class="nx">length</span> <span class="o">!==</span> <span class="mi">0</span><span class="p">)</span> <span class="nx">worldMatrix</span> <span class="o">=</span> <span class="nx">matrixStack</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span>
+  <span class="k">else</span> <span class="nx">worldMatrix</span><span class="p">.</span><span class="nx">identity</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">resetMatrix</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">worldMatrix</span><span class="p">.</span><span class="nx">identity</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">move</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sin</span><span class="p">(</span><span class="nx">time</span> <span class="o">/</span> <span class="mi">500</span><span class="p">);</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">cos</span><span class="p">(</span><span class="nx">time</span> <span class="o">/</span> <span class="mi">500</span><span class="p">);</span>
+    <span class="nx">c</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+    <span class="nx">c</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="cm">/*</span>
+<span class="cm">  currentObject = new THREE.Object3D();</span>
+<span class="cm">  currentObject.position.x = a;</span>
+<span class="cm">  currentObject.position.y = b;</span>
+<span class="cm">  currentObject.position.z = c;</span>
+<span class="cm">  parentObject.add(currentObject);</span>
+<span class="cm">  parentObject = currentObject;</span>
+<span class="cm">  */</span>
+  <span class="nx">worldMatrix</span><span class="p">.</span><span class="nx">translate</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">));</span>
+<span class="p">};</span>
+
+<span class="kd">function</span> <span class="nx">rotate</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="nx">time</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+    <span class="nx">c</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+    <span class="nx">c</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="cm">/*</span>
+<span class="cm">  currentObject = new THREE.Object3D();</span>
+<span class="cm">  currentObject.rotation.x = a;</span>
+<span class="cm">  currentObject.rotation.y = b;</span>
+<span class="cm">  currentObject.rotation.z = c;</span>
+<span class="cm">  parentObject.add(currentObject);</span>
+<span class="cm">  parentObject = currentObject;</span>
+<span class="cm">  */</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>worldMatrix.setRotationFromEuler(new THREE.Vector3(a,b,c));</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">worldMatrix</span><span class="p">.</span><span class="nx">rotateX</span><span class="p">(</span><span class="nx">a</span><span class="p">).</span><span class="nx">rotateY</span><span class="p">(</span><span class="nx">b</span><span class="p">).</span><span class="nx">rotateZ</span><span class="p">(</span><span class="nx">c</span><span class="p">);</span>
+
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">scale</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sin</span><span class="p">(</span><span class="nx">time</span> <span class="o">/</span> <span class="mi">500</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span><span class="p">;</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+    <span class="nx">c</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+    <span class="nx">c</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">c</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>odd things happen setting scale to zero</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">0.000000001</span> <span class="o">&amp;&amp;</span> <span class="nx">a</span> <span class="o">&lt;</span> <span class="mf">0.000000001</span><span class="p">)</span> <span class="nx">a</span> <span class="o">=</span> <span class="mf">0.000000001</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">b</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">0.000000001</span> <span class="o">&amp;&amp;</span> <span class="nx">b</span> <span class="o">&lt;</span> <span class="mf">0.000000001</span><span class="p">)</span> <span class="nx">b</span> <span class="o">=</span> <span class="mf">0.000000001</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">c</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">0.000000001</span> <span class="o">&amp;&amp;</span> <span class="nx">c</span> <span class="o">&lt;</span> <span class="mf">0.000000001</span><span class="p">)</span> <span class="nx">c</span> <span class="o">=</span> <span class="mf">0.000000001</span><span class="p">;</span>
+
+  <span class="cm">/*</span>
+<span class="cm">  currentObject = new THREE.Object3D();</span>
+<span class="cm">  currentObject.scale.x = a;</span>
+<span class="cm">  currentObject.scale.y = b;</span>
+<span class="cm">  currentObject.scale.z = c;</span>
+<span class="cm">  parentObject.add(currentObject);</span>
+<span class="cm">  parentObject = currentObject;</span>
+<span class="cm">  */</span>
+  <span class="nx">worldMatrix</span><span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">));</span>
+
+<span class="p">};</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

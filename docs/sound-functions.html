@@ -1,0 +1,96 @@
+<!DOCTYPE html>  <html> <head>   <title>sound-functions.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               sound-functions.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">beatsPerMinute</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">oldBeatsPerMinute</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">soundLoopTimer</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">beatNumber</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">bpm</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>timid attempt at sanity check.
+the sound system might well bork out
+even below 500 bpm.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&gt;</span> <span class="mi">500</span><span class="p">)</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="nx">beatsPerMinute</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+  <span class="nx">updateBpmIfChanged</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">updateBpmIfChanged</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">oldBeatsPerMinute</span> <span class="o">!==</span> <span class="nx">beatsPerMinute</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>alert('changing beats per minute old ' + oldBeatsPerMinute + ' new: ' + beatsPerMinute);</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">soundLoopTimer</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">beatsPerMinute</span> <span class="o">!==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">soundLoopTimer</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="s1">&#39;soundLoop();&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span> <span class="o">/</span> <span class="nx">beatsPerMinute</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">oldBeatsPerMinute</span> <span class="o">=</span> <span class="nx">beatsPerMinute</span><span class="p">;</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>alert('AFTER old ' + oldBeatsPerMinute + ' new: ' + a);</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">soundLoop</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>clearTimeout(soundLoopTimer);
+alert('soundLoop');
+if (beatsPerMinute !== 0) {
+   soundLoopTimer = setTimeout('soundLoop();',(1000*60)/beatsPerMinute);
+}</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">soundSystemIsMangled</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+
+  <span class="nx">beatNumber</span><span class="o">++</span><span class="p">;</span>
+  <span class="nx">beatNumber</span> <span class="o">=</span> <span class="nx">beatNumber</span> <span class="o">%</span> <span class="mi">16</span><span class="p">;</span>
+
+  <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;about to loop in &#39;</span><span class="o">+</span><span class="nx">soundLoops</span><span class="p">.</span><span class="nx">soundIDs</span><span class="o">+</span><span class="s2">&quot; of length &quot;</span><span class="o">+</span><span class="nx">soundLoops</span><span class="p">.</span><span class="nx">soundIDs</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">loopingTheSoundIDs</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">loopingTheSoundIDs</span> <span class="o">&lt;</span> <span class="nx">soundLoops</span><span class="p">.</span><span class="nx">soundIDs</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">loopingTheSoundIDs</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">loopedSoundID</span> <span class="o">=</span> <span class="nx">soundLoops</span><span class="p">.</span><span class="nx">soundIDs</span><span class="p">[</span><span class="nx">loopingTheSoundIDs</span><span class="p">];</span>
+    <span class="kd">var</span> <span class="nx">playOrNoPlay</span><span class="p">;</span>
+    <span class="nx">playOrNoPlay</span> <span class="o">=</span> <span class="nx">soundLoops</span><span class="p">.</span><span class="nx">beatStrings</span><span class="p">[</span><span class="nx">loopingTheSoundIDs</span><span class="p">].</span><span class="nx">charAt</span><span class="p">(</span><span class="nx">beatNumber</span><span class="p">);</span>
+    <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;checking sound loop &#39;</span><span class="o">+</span><span class="nx">soundLoops</span><span class="p">.</span><span class="nx">beatStrings</span><span class="p">[</span><span class="nx">loopingTheSoundIDs</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot; beat &quot;</span><span class="o">+</span><span class="nx">beatNumber</span><span class="o">+</span><span class="s2">&quot; : &quot;</span><span class="o">+</span><span class="nx">playOrNoPlay</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">playOrNoPlay</span> <span class="o">===</span> <span class="s1">&#39;x&#39;</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>OK so this is what we do here:
+when each Audio object plays, it plays from start to end
+and you can't get it to re-start until it's completely done
+playing.
+This is bad because some sounds last a second or so, and they
+need to play more often than one time per second.
+So there are two possible solutions:
+1) to have 20 or so sound objects, and all the times that
+   a file needs playing, scan them and find one that is free,
+   then associate that to the file one wants to play
+   this works well in IE and Chrome but really bad in Safari
+2) for each file, give it a queue of audio objects.
+   This is more complicated but seems to work
+   about right in all browsers. Only caveat is that Safari
+   needs the audio objects to be preloaded because otherwise
+   it jams. Conversely, IE and Chrome don't like them preloaded
+   because they have a limit of 35 or so sounds.
+So here we went for 2), and we preload the sounds only for
+browsers other than Chrome and IE.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">relevantSoundBank</span> <span class="o">=</span> <span class="nx">soundBank</span><span class="p">[</span><span class="nx">loopedSoundID</span><span class="p">];</span>
+      <span class="kd">var</span> <span class="nx">lengthOfSoundBank</span> <span class="o">=</span> <span class="nx">relevantSoundBank</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+      <span class="kd">var</span> <span class="nx">availableSoundBank</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+      <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;playing  &#39;</span><span class="o">+</span><span class="nx">loopedSoundID</span><span class="o">+</span><span class="s2">&quot; length: &quot;</span><span class="o">+</span><span class="nx">lengthOfSoundBank</span><span class="p">);</span>
+      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">checkingAvailableSoundBank</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">checkingAvailableSoundBank</span> <span class="o">&lt;</span> <span class="nx">lengthOfSoundBank</span><span class="p">;</span> <span class="nx">checkingAvailableSoundBank</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">checkingSoundBank</span> <span class="o">=</span> <span class="nx">relevantSoundBank</span><span class="p">[</span><span class="nx">checkingAvailableSoundBank</span><span class="p">];</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">checkingSoundBank</span><span class="p">.</span><span class="nx">isEnded</span><span class="p">())</span> <span class="p">{</span>
+          <span class="nx">availableSoundBank</span> <span class="o">=</span> <span class="nx">checkingSoundBank</span><span class="p">;</span>
+          <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;sound bank &#39;</span><span class="o">+</span><span class="nx">checkingAvailableSoundBank</span><span class="o">+</span><span class="s2">&quot; is available &quot;</span><span class="p">);</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;sound bank &#39;</span><span class="o">+</span><span class="nx">checkingAvailableSoundBank</span><span class="o">+</span><span class="s2">&quot; has not ended &quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">availableSoundBank</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;creating new sound object &#39;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">totalCreatedSoundObjects</span> <span class="o">&gt;</span> <span class="mi">31</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">soundSystemIsMangled</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+          <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#soundSystemIsMangledMessage&#39;</span><span class="p">).</span><span class="nx">modal</span><span class="p">();</span>
+          <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#simplemodal-container&#39;</span><span class="p">).</span><span class="nx">height</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="nx">availableSoundBank</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">buzz</span><span class="p">.</span><span class="nx">sound</span><span class="p">(</span><span class="nx">soundFiles</span><span class="p">[</span><span class="nx">loopedSoundID</span><span class="p">]);</span>
+        <span class="nx">soundBank</span><span class="p">[</span><span class="nx">loopedSoundID</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">availableSoundBank</span><span class="p">);</span>
+        <span class="nx">totalCreatedSoundObjects</span><span class="o">++</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      
+      <span class="nx">availableSoundBank</span><span class="p">.</span><span class="nx">play</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>soundBank[soundLoops.soundIDs[i]]['lastUsed'] = (soundBank[soundLoops.soundIDs[i]]['lastUsed']+1)%CHANNELSPERSOUND;</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="kd">var</span> <span class="nx">addSound</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">soundID</span><span class="p">,</span> <span class="nx">beatString</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">beatString</span> <span class="o">=</span> <span class="nx">beatString</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\s*/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">);</span>
+  <span class="nx">soundLoops</span><span class="p">.</span><span class="nx">soundIDs</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">soundID</span><span class="p">);</span>
+  <span class="nx">soundLoops</span><span class="p">.</span><span class="nx">beatStrings</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">beatString</span><span class="p">);</span>
+  <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;pushing &#39;</span><span class="o">+</span><span class="nx">soundID</span><span class="o">+</span><span class="s2">&quot; beat: &quot;</span><span class="o">+</span><span class="nx">beatString</span><span class="p">);</span>
+<span class="p">}</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

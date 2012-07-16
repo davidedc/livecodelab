@@ -1,0 +1,883 @@
+<!DOCTYPE html>  <html> <head>   <title>geometry-commands.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               geometry-commands.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>TODO Note that lines have a "solid fill" mode
+and something similar to the normalMaterial mode
+but there is no equivalent to the lambert material
+mode.
+That could be done by somehow mixing the color of
+an ambient light to the color of the stroke
+(although which ambient light do you pick if there
+is more than one?)</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">line</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">doStroke</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+
+
+  <span class="kd">var</span> <span class="nx">mesh</span> <span class="o">=</span> <span class="nx">linesPool</span><span class="p">[</span><span class="nx">usedLines</span><span class="p">];</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">mesh</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">lineBasicMaterialCOL</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">LineBasicMaterial</span><span class="p">({</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>color: currentStrokeColor,</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">opacity</span><span class="o">:</span> <span class="nx">currentStrokeAlpha</span><span class="p">,</span>
+      <span class="nx">linewidth</span><span class="o">:</span> <span class="nx">currentStrokeSize</span>
+    <span class="p">});</span>
+
+    <span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Line</span><span class="p">(</span><span class="nx">lineGeometry</span><span class="p">,</span> <span class="nx">lineBasicMaterialCOL</span><span class="p">);</span>
+    <span class="nx">mesh</span><span class="p">.</span><span class="nx">isLine</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="nx">mesh</span><span class="p">.</span><span class="nx">isRectangle</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">mesh</span><span class="p">.</span><span class="nx">isBox</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">mesh</span><span class="p">.</span><span class="nx">isCylinder</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">mesh</span><span class="p">.</span><span class="nx">isAmbientLight</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">mesh</span><span class="p">.</span><span class="nx">isPointLight</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">mesh</span><span class="p">.</span><span class="nx">isSphere</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">linesPool</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">mesh</span><span class="p">);</span>
+    <span class="nx">scene</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">mesh</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>mesh.geometry = lineGeometry;
+mesh.material = lineBasicMaterialCOL;
+mesh.material.color.setHex(currentStrokeColor);</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">currentStrokeAlpha</span><span class="p">;</span>
+    <span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span><span class="p">.</span><span class="nx">linewidth</span> <span class="o">=</span> <span class="nx">currentStrokeSize</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nx">usedLines</span><span class="o">++</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>old unpooled mechanism
+var mesh = new THREE.Line(lineGeometry, lineBasicMaterialCOL);</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">mesh</span><span class="p">.</span><span class="nx">matrixAutoUpdate</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="nx">mesh</span><span class="p">.</span><span class="nx">matrix</span><span class="p">.</span><span class="nx">copy</span><span class="p">(</span><span class="nx">worldMatrix</span><span class="p">);</span>
+  <span class="nx">mesh</span><span class="p">.</span><span class="nx">matrixWorldNeedsUpdate</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">!==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">mesh</span><span class="p">.</span><span class="nx">matrix</span><span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>in theory the docs say that we should change the boundradius
+but I don't think that we need it...
+mesh.boundRadiusScale = Math.max(a,b,c);</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>setting the color after the geometry has been dealt with
+because in case we use the angleColor then we
+need to know the geometry.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">currentStrokeColor</span> <span class="o">===</span> <span class="nx">angleColor</span> <span class="o">||</span> <span class="nx">defaultNormalStroke</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">sasaas</span> <span class="o">=</span> <span class="nx">mesh</span><span class="p">.</span><span class="nx">matrix</span><span class="p">.</span><span class="nx">multiplyVector3</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)).</span><span class="nx">normalize</span><span class="p">();</span>
+    <span class="nx">log</span><span class="p">(</span><span class="nx">sasaas</span><span class="p">.</span><span class="nx">x</span><span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nx">sasaas</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nx">sasaas</span><span class="p">.</span><span class="nx">z</span><span class="p">);</span>
+    <span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span><span class="p">.</span><span class="nx">color</span><span class="p">.</span><span class="nx">setHex</span><span class="p">(</span><span class="nx">color</span><span class="p">(((</span><span class="nx">sasaas</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span><span class="p">,</span> <span class="p">((</span><span class="nx">sasaas</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span><span class="p">,</span> <span class="p">((</span><span class="nx">sasaas</span><span class="p">.</span><span class="nx">z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span><span class="p">));</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span><span class="p">.</span><span class="nx">color</span><span class="p">.</span><span class="nx">setHex</span><span class="p">(</span><span class="nx">currentStrokeColor</span><span class="p">);</span>
+  <span class="p">}</span>
+
+<span class="p">}</span>
+
+
+<span class="kd">var</span> <span class="nx">rect</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>simple case - if there is no fill and
+no stroke then there is nothing to do.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">doFill</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">doStroke</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>if the wireframe is not going to be visible on top of the
+fill then don't draw it</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">else</span> <span class="k">if</span> <span class="p">((</span><span class="nx">doFill</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">currentStrokeSize</span> <span class="o">===</span> <span class="mi">0</span> <span class="o">||</span> <span class="o">!</span><span class="nx">doStroke</span> <span class="o">||</span> <span class="p">(</span><span class="nx">currentStrokeSize</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">defaultNormalFill</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">defaultNormalStroke</span> <span class="o">&amp;&amp;</span> <span class="nx">currentStrokeColor</span> <span class="o">===</span> <span class="nx">currentFillColor</span> <span class="o">&amp;&amp;</span> <span class="nx">currentFillAlpha</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">currentStrokeAlpha</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)))</span> <span class="o">||</span> <span class="p">(</span><span class="nx">currentStrokeSize</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">defaultNormalFill</span> <span class="o">&amp;&amp;</span> <span class="nx">defaultNormalStroke</span><span class="p">))</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>if (doStroke) log('smart optimisation, was supposed to do the stroke but not doing it!!');</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">doFill</span> <span class="o">&amp;&amp;</span> <span class="nx">doStroke</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;si: &quot;</span> <span class="o">+</span> <span class="nx">startIndex</span> <span class="o">+</span> <span class="s2">&quot; endI: &quot;</span> <span class="o">+</span> <span class="nx">endIndex</span> <span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">strokeTime</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">colorToBeUsed</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">newRectCreated</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>this is to run the code twice. This should be neater
+and turned into a function call really.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">fillAndStroke</span> <span class="o">=</span> <span class="nx">startIndex</span><span class="p">;</span> <span class="nx">fillAndStroke</span> <span class="o">&lt;</span> <span class="nx">endIndex</span><span class="p">;</span> <span class="nx">fillAndStroke</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">fillAndStroke</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">strokeTime</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="nx">colorToBeUsed</span> <span class="o">=</span> <span class="nx">currentStrokeColor</span><span class="p">;</span>
+      <span class="nx">alphaToBeUsed</span> <span class="o">=</span> <span class="nx">currentStrokeAlpha</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">colorToBeUsed</span> <span class="o">=</span> <span class="nx">currentFillColor</span><span class="p">;</span>
+      <span class="nx">alphaToBeUsed</span> <span class="o">=</span> <span class="nx">currentFillAlpha</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">pooledRectangle</span> <span class="o">=</span> <span class="nx">rectanglesPool</span><span class="p">[</span><span class="nx">usedRectangles</span><span class="p">];</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">pooledRectangle</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>each pooled rectangle contains a geometry,
+a basic material and a lambert material.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">pooledRectangle</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">basicMaterial</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+        <span class="nx">lambertMaterial</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+        <span class="nx">normalMaterial</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>the first time we render a mesh we need to
+render it with the material that takes the
+bigger buffer space, otherwise the
+more complicated materials won't show
+up, see:
+https://github.com/mrdoob/three.js/issues/1051
+so we always need to create a normalmaterial
+and render that material first, in case
+the user will ever want to use it.
+Another workaround would be to create a mesh
+for each different type of material</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">neverUsed</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">mesh</span><span class="o">:</span> <span class="kc">undefined</span>
+      <span class="p">};</span>
+      <span class="nx">newRectCreated</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="nx">rectanglesPool</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">pooledRectangle</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">strokeTime</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">defaultNormalFill</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">defaultNormalStroke</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;rect: default normal color: &quot;</span> <span class="o">+</span> <span class="nx">applyDefaultNormalColor</span><span class="p">);</span>
+    <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;rect: alphaToBeUsed: &quot;</span> <span class="o">+</span> <span class="nx">alphaToBeUsed</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">neverUsed</span> <span class="o">||</span> <span class="p">(</span><span class="nx">colorToBeUsed</span> <span class="o">===</span> <span class="nx">angleColor</span> <span class="o">||</span> <span class="nx">applyDefaultNormalColor</span><span class="p">))</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>the first time we render a mesh we need to
+render it with the material that takes the
+bigger buffer space, see:
+https://github.com/mrdoob/three.js/issues/1051
+Another workaround would be to create a mesh
+for each different type of material</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">neverUsed</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">normalMaterial</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;creating normal material&quot;</span><span class="p">);</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">normalMaterial</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">MeshNormalMaterial</span><span class="p">({</span>
+          <span class="nx">opacity</span><span class="o">:</span> <span class="nx">alphaToBeUsed</span><span class="p">,</span>
+          <span class="nx">wireframe</span><span class="o">:</span> <span class="nx">strokeTime</span><span class="p">,</span>
+          <span class="nx">wireframeLinewidth</span><span class="o">:</span> <span class="nx">currentStrokeSize</span>
+        <span class="p">});</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">wireframe</span> <span class="o">=</span> <span class="nx">strokeTime</span><span class="p">;</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">wireframeLinewidth</span> <span class="o">=</span> <span class="nx">currentStrokeSize</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Mesh</span><span class="p">(</span><span class="nx">planeGeometry</span><span class="p">,</span> <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">);</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;associating normal material to existing mesh&quot;</span><span class="p">);</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span> <span class="o">=</span> <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">lightsAreOn</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;rect: lights are not on&quot;</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">basicMaterial</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">basicMaterial</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">MeshBasicMaterial</span><span class="p">({</span>
+          <span class="nx">color</span><span class="o">:</span> <span class="nx">colorToBeUsed</span><span class="p">,</span>
+          <span class="nx">opacity</span><span class="o">:</span> <span class="nx">alphaToBeUsed</span><span class="p">,</span>
+          <span class="nx">wireframe</span><span class="o">:</span> <span class="nx">strokeTime</span><span class="p">,</span>
+          <span class="nx">wireframeLinewidth</span><span class="o">:</span> <span class="nx">currentStrokeSize</span>
+        <span class="p">});</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">color</span><span class="p">.</span><span class="nx">setHex</span><span class="p">(</span><span class="nx">colorToBeUsed</span><span class="p">);</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">wireframe</span> <span class="o">=</span> <span class="nx">strokeTime</span><span class="p">;</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">wireframeLinewidth</span> <span class="o">=</span> <span class="nx">currentStrokeSize</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Mesh</span><span class="p">(</span><span class="nx">planeGeometry</span><span class="p">,</span> <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">);</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span> <span class="o">=</span> <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">;</span>
+      <span class="p">}</span>
+
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>lights are on</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;rect: lights are on&quot;</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">lambertMaterial</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;creating lambert:&quot;</span><span class="o">+</span><span class="nx">currentFillColor</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">currentFillAlpha</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">ambientColor</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">reflectValue</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">refractValue</span><span class="p">);</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">lambertMaterial</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">MeshLambertMaterial</span><span class="p">({</span>
+          <span class="nx">color</span><span class="o">:</span> <span class="nx">colorToBeUsed</span><span class="p">,</span>
+          <span class="nx">opacity</span><span class="o">:</span> <span class="nx">alphaToBeUsed</span><span class="p">,</span>
+          <span class="nx">ambient</span><span class="o">:</span> <span class="nx">ambientColor</span><span class="p">,</span>
+          <span class="nx">reflectivity</span><span class="o">:</span> <span class="nx">reflectValue</span><span class="p">,</span>
+          <span class="nx">refractionRatio</span><span class="o">:</span> <span class="nx">refractValue</span><span class="p">,</span>
+          <span class="nx">wireframe</span><span class="o">:</span> <span class="nx">strokeTime</span><span class="p">,</span>
+          <span class="nx">wireframeLinewidth</span><span class="o">:</span> <span class="nx">currentStrokeSize</span>
+        <span class="p">});</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">color</span><span class="p">.</span><span class="nx">setHex</span><span class="p">(</span><span class="nx">colorToBeUsed</span><span class="p">);</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">wireframe</span> <span class="o">=</span> <span class="nx">strokeTime</span><span class="p">;</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">wireframeLinewidth</span> <span class="o">=</span> <span class="nx">currentStrokeSize</span><span class="p">;</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">ambient</span><span class="p">.</span><span class="nx">setHex</span><span class="p">(</span><span class="nx">ambientColor</span><span class="p">);</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">reflectivity</span> <span class="o">=</span> <span class="nx">reflectValue</span><span class="p">;</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">refractionRatio</span> <span class="o">=</span> <span class="nx">refractValue</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Mesh</span><span class="p">(</span><span class="nx">planeGeometry</span><span class="p">,</span> <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">);</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span> <span class="o">=</span> <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">resetTheSpinThingy</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="nx">resetTheSpinThingy</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="nx">doTheSpinThingy</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">doTheSpinThingy</span><span class="p">)</span> <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">startCountdown</span><span class="o">--</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="nx">doTheSpinThingy</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+    <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isLine</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isRectangle</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isBox</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isCylinder</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isAmbientLight</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isPointLight</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isSphere</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+
+    <span class="nx">usedRectangles</span><span class="o">++</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">doTheSpinThingy</span> <span class="o">&amp;&amp;</span> <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">pushMatrix</span><span class="p">();</span>
+      <span class="nx">rotate</span><span class="p">(</span><span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">/</span> <span class="mi">50</span><span class="p">);</span>
+      <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">+</span><span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">startCountdown</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrixAutoUpdate</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrix</span><span class="p">.</span><span class="nx">copy</span><span class="p">(</span><span class="nx">worldMatrix</span><span class="p">);</span>
+    <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrixWorldNeedsUpdate</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">doTheSpinThingy</span> <span class="o">&amp;&amp;</span> <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">popMatrix</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">!==</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">b</span> <span class="o">!==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrix</span><span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">newRectCreated</span><span class="p">)</span> <span class="nx">scene</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">pooledRectangle</span><span class="p">.</span><span class="nx">mesh</span><span class="p">);</span>
+
+  <span class="p">}</span>
+
+<span class="p">}</span>
+
+
+<span class="kd">var</span> <span class="nx">box</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>simple case - if there is no fill and
+no stroke then there is nothing to do.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">doFill</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">doStroke</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>if the wireframe is not going to be visible on top of the
+fill then don't draw it</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">else</span> <span class="k">if</span> <span class="p">((</span><span class="nx">doFill</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">currentStrokeSize</span> <span class="o">===</span> <span class="mi">0</span> <span class="o">||</span> <span class="o">!</span><span class="nx">doStroke</span> <span class="o">||</span> <span class="p">(</span><span class="nx">currentStrokeSize</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">defaultNormalFill</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">defaultNormalStroke</span> <span class="o">&amp;&amp;</span> <span class="nx">currentStrokeColor</span> <span class="o">===</span> <span class="nx">currentFillColor</span> <span class="o">&amp;&amp;</span> <span class="nx">currentFillAlpha</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">currentStrokeAlpha</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)))</span> <span class="o">||</span> <span class="p">(</span><span class="nx">currentStrokeSize</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">defaultNormalFill</span> <span class="o">&amp;&amp;</span> <span class="nx">defaultNormalStroke</span><span class="p">))</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>if (doStroke) log('smart optimisation, was supposed to do the stroke but not doing it!!');</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">doFill</span> <span class="o">&amp;&amp;</span> <span class="nx">doStroke</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;si: &quot;</span> <span class="o">+</span> <span class="nx">startIndex</span> <span class="o">+</span> <span class="s2">&quot; endI: &quot;</span> <span class="o">+</span> <span class="nx">endIndex</span> <span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>alert('cube!')</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nx">c</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+    <span class="nx">c</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">strokeTime</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">colorToBeUsed</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">newBoxCreated</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>this is to run the code twice. This should be neater
+and turned into a function call really.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">fillAndStroke</span> <span class="o">=</span> <span class="nx">startIndex</span><span class="p">;</span> <span class="nx">fillAndStroke</span> <span class="o">&lt;</span> <span class="nx">endIndex</span><span class="p">;</span> <span class="nx">fillAndStroke</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">fillAndStroke</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">strokeTime</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="nx">colorToBeUsed</span> <span class="o">=</span> <span class="nx">currentStrokeColor</span><span class="p">;</span>
+      <span class="nx">alphaToBeUsed</span> <span class="o">=</span> <span class="nx">currentStrokeAlpha</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">colorToBeUsed</span> <span class="o">=</span> <span class="nx">currentFillColor</span><span class="p">;</span>
+      <span class="nx">alphaToBeUsed</span> <span class="o">=</span> <span class="nx">currentFillAlpha</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">pooledBox</span> <span class="o">=</span> <span class="nx">boxesPool</span><span class="p">[</span><span class="nx">usedBoxes</span><span class="p">];</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">pooledBox</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>each pooled box contains a geometry,
+a basic material and a lambert material.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">pooledBox</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">basicMaterial</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+        <span class="nx">lambertMaterial</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+        <span class="nx">normalMaterial</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>the first time we render a mesh we need to
+render it with the material that takes the
+bigger buffer space, otherwise the
+more complicated materials won't show
+up, see:
+https://github.com/mrdoob/three.js/issues/1051
+so we always need to create a normalmaterial
+and render that material first, in case
+the user will ever want to use it.
+Another workaround would be to create a mesh
+for each different type of material</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">neverUsed</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">mesh</span><span class="o">:</span> <span class="kc">undefined</span>
+      <span class="p">};</span>
+      <span class="nx">newBoxCreated</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="nx">boxesPool</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">pooledBox</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">strokeTime</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">defaultNormalFill</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">defaultNormalStroke</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">pooledBox</span><span class="p">.</span><span class="nx">neverUsed</span> <span class="o">||</span> <span class="p">(</span><span class="nx">colorToBeUsed</span> <span class="o">===</span> <span class="nx">angleColor</span> <span class="o">||</span> <span class="nx">applyDefaultNormalColor</span><span class="p">))</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>the first time we render a mesh we need to
+render it with the material that takes the
+bigger buffer space, see:
+https://github.com/mrdoob/three.js/issues/1051
+Another workaround would be to create a mesh
+for each different type of material</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">neverUsed</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledBox</span><span class="p">.</span><span class="nx">normalMaterial</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;creating normal material&quot;</span><span class="p">);</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">normalMaterial</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">MeshNormalMaterial</span><span class="p">({</span>
+          <span class="nx">opacity</span><span class="o">:</span> <span class="nx">alphaToBeUsed</span><span class="p">,</span>
+          <span class="nx">wireframe</span><span class="o">:</span> <span class="nx">strokeTime</span><span class="p">,</span>
+          <span class="nx">wireframeLinewidth</span><span class="o">:</span> <span class="nx">currentStrokeSize</span>
+        <span class="p">});</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">wireframe</span> <span class="o">=</span> <span class="nx">strokeTime</span><span class="p">;</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">wireframeLinewidth</span> <span class="o">=</span> <span class="nx">currentStrokeSize</span><span class="p">;</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Mesh</span><span class="p">(</span><span class="nx">cubeGeometry</span><span class="p">,</span> <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">);</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;associating normal material to existing mesh&quot;</span><span class="p">);</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span> <span class="o">=</span> <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">lightsAreOn</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledBox</span><span class="p">.</span><span class="nx">basicMaterial</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">basicMaterial</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">MeshBasicMaterial</span><span class="p">({</span>
+          <span class="nx">color</span><span class="o">:</span> <span class="nx">colorToBeUsed</span><span class="p">,</span>
+          <span class="nx">opacity</span><span class="o">:</span> <span class="nx">alphaToBeUsed</span><span class="p">,</span>
+          <span class="nx">wireframe</span><span class="o">:</span> <span class="nx">strokeTime</span><span class="p">,</span>
+          <span class="nx">wireframeLinewidth</span><span class="o">:</span> <span class="nx">currentStrokeSize</span>
+        <span class="p">});</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">color</span><span class="p">.</span><span class="nx">setHex</span><span class="p">(</span><span class="nx">colorToBeUsed</span><span class="p">);</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">wireframe</span> <span class="o">=</span> <span class="nx">strokeTime</span><span class="p">;</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">wireframeLinewidth</span> <span class="o">=</span> <span class="nx">currentStrokeSize</span><span class="p">;</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Mesh</span><span class="p">(</span><span class="nx">cubeGeometry</span><span class="p">,</span> <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">);</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span> <span class="o">=</span> <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">;</span>
+      <span class="p">}</span>
+
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>lights are on</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledBox</span><span class="p">.</span><span class="nx">lambertMaterial</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;creating lambert:&quot;</span><span class="o">+</span><span class="nx">currentFillColor</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">currentFillAlpha</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">ambientColor</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">reflectValue</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">refractValue</span><span class="p">);</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">lambertMaterial</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">MeshLambertMaterial</span><span class="p">({</span>
+          <span class="nx">color</span><span class="o">:</span> <span class="nx">colorToBeUsed</span><span class="p">,</span>
+          <span class="nx">opacity</span><span class="o">:</span> <span class="nx">alphaToBeUsed</span><span class="p">,</span>
+          <span class="nx">ambient</span><span class="o">:</span> <span class="nx">ambientColor</span><span class="p">,</span>
+          <span class="nx">reflectivity</span><span class="o">:</span> <span class="nx">reflectValue</span><span class="p">,</span>
+          <span class="nx">refractionRatio</span><span class="o">:</span> <span class="nx">refractValue</span><span class="p">,</span>
+          <span class="nx">wireframe</span><span class="o">:</span> <span class="nx">strokeTime</span><span class="p">,</span>
+          <span class="nx">wireframeLinewidth</span><span class="o">:</span> <span class="nx">currentStrokeSize</span>
+        <span class="p">});</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">color</span><span class="p">.</span><span class="nx">setHex</span><span class="p">(</span><span class="nx">colorToBeUsed</span><span class="p">);</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">wireframe</span> <span class="o">=</span> <span class="nx">strokeTime</span><span class="p">;</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">wireframeLinewidth</span> <span class="o">=</span> <span class="nx">currentStrokeSize</span><span class="p">;</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">ambient</span><span class="p">.</span><span class="nx">setHex</span><span class="p">(</span><span class="nx">ambientColor</span><span class="p">);</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">reflectivity</span> <span class="o">=</span> <span class="nx">reflectValue</span><span class="p">;</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">refractionRatio</span> <span class="o">=</span> <span class="nx">refractValue</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Mesh</span><span class="p">(</span><span class="nx">cubeGeometry</span><span class="p">,</span> <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">);</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span> <span class="o">=</span> <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">resetTheSpinThingy</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="nx">resetTheSpinThingy</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="nx">doTheSpinThingy</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">doTheSpinThingy</span><span class="p">)</span> <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">startCountdown</span><span class="o">--</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">pooledBox</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="nx">doTheSpinThingy</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+    <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isLine</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isRectangle</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isBox</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isCylinder</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isAmbientLight</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isPointLight</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isSphere</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+
+    <span class="nx">usedBoxes</span><span class="o">++</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">doTheSpinThingy</span> <span class="o">&amp;&amp;</span> <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">pushMatrix</span><span class="p">();</span>
+      <span class="nx">rotate</span><span class="p">(</span><span class="nx">pooledBox</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">/</span> <span class="mi">50</span><span class="p">);</span>
+      <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">+</span><span class="nx">pooledBox</span><span class="p">.</span><span class="nx">startCountdown</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrixAutoUpdate</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrix</span><span class="p">.</span><span class="nx">copy</span><span class="p">(</span><span class="nx">worldMatrix</span><span class="p">);</span>
+    <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrixWorldNeedsUpdate</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">doTheSpinThingy</span> <span class="o">&amp;&amp;</span> <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">popMatrix</span><span class="p">();</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>TODO: meshes should be built from geometries that are
+ever so slight larger than the "fill" mesh so there
+is no z-fighting...
+constant 0.001 below is to avoid z-fighting</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">!==</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">b</span> <span class="o">!==</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">c</span> <span class="o">!==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">strokeTime</span><span class="p">)</span> <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrix</span><span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">));</span>
+      <span class="k">else</span> <span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrix</span><span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="nx">a</span> <span class="o">+</span> <span class="mf">0.001</span><span class="p">,</span> <span class="nx">b</span> <span class="o">+</span> <span class="mf">0.001</span><span class="p">,</span> <span class="nx">c</span> <span class="o">+</span> <span class="mf">0.001</span><span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">newBoxCreated</span><span class="p">)</span> <span class="nx">scene</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">pooledBox</span><span class="p">.</span><span class="nx">mesh</span><span class="p">);</span>
+  <span class="p">}</span>
+
+
+<span class="p">}</span>
+
+
+<span class="kd">var</span> <span class="nx">peg</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>simple case - if there is no fill and
+no stroke then there is nothing to do.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">doFill</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">doStroke</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>if the wireframe is not going to be visible on top of the
+fill then don't draw it</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">else</span> <span class="k">if</span> <span class="p">((</span><span class="nx">doFill</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">currentStrokeSize</span> <span class="o">===</span> <span class="mi">0</span> <span class="o">||</span> <span class="o">!</span><span class="nx">doStroke</span> <span class="o">||</span> <span class="p">(</span><span class="nx">currentStrokeSize</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">defaultNormalFill</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">defaultNormalStroke</span> <span class="o">&amp;&amp;</span> <span class="nx">currentStrokeColor</span> <span class="o">===</span> <span class="nx">currentFillColor</span> <span class="o">&amp;&amp;</span> <span class="nx">currentFillAlpha</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">currentStrokeAlpha</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)))</span> <span class="o">||</span> <span class="p">(</span><span class="nx">currentStrokeSize</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">defaultNormalFill</span> <span class="o">&amp;&amp;</span> <span class="nx">defaultNormalStroke</span><span class="p">))</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>if (doStroke) log('smart optimisation, was supposed to do the stroke but not doing it!!');</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">doFill</span> <span class="o">&amp;&amp;</span> <span class="nx">doStroke</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;si: &quot;</span> <span class="o">+</span> <span class="nx">startIndex</span> <span class="o">+</span> <span class="s2">&quot; endI: &quot;</span> <span class="o">+</span> <span class="nx">endIndex</span> <span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>alert('cube!')</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nx">c</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+    <span class="nx">c</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">strokeTime</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">colorToBeUsed</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">newCylinderCreated</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>this is to run the code twice. This should be neater
+and turned into a function call really.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">fillAndStroke</span> <span class="o">=</span> <span class="nx">startIndex</span><span class="p">;</span> <span class="nx">fillAndStroke</span> <span class="o">&lt;</span> <span class="nx">endIndex</span><span class="p">;</span> <span class="nx">fillAndStroke</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">fillAndStroke</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">strokeTime</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="nx">colorToBeUsed</span> <span class="o">=</span> <span class="nx">currentStrokeColor</span><span class="p">;</span>
+      <span class="nx">alphaToBeUsed</span> <span class="o">=</span> <span class="nx">currentStrokeAlpha</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">colorToBeUsed</span> <span class="o">=</span> <span class="nx">currentFillColor</span><span class="p">;</span>
+      <span class="nx">alphaToBeUsed</span> <span class="o">=</span> <span class="nx">currentFillAlpha</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">pooledCylinder</span> <span class="o">=</span> <span class="nx">cylindersPool</span><span class="p">[</span><span class="nx">usedCylinders</span><span class="p">];</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">pooledCylinder</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>each pooled cylinder contains a geometry,
+a basic material and a lambert material.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">pooledCylinder</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">basicMaterial</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+        <span class="nx">lambertMaterial</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+        <span class="nx">normalMaterial</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>the first time we render a mesh we need to
+render it with the material that takes the
+bigger buffer space, otherwise the
+more complicated materials won't show
+up, see:
+https://github.com/mrdoob/three.js/issues/1051
+so we always need to create a normalmaterial
+and render that material first, in case
+the user will ever want to use it.
+Another workaround would be to create a mesh
+for each different type of material</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">neverUsed</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">mesh</span><span class="o">:</span> <span class="kc">undefined</span>
+      <span class="p">};</span>
+      <span class="nx">newCylinderCreated</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="nx">cylindersPool</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">pooledCylinder</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">strokeTime</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">defaultNormalFill</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">defaultNormalStroke</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">neverUsed</span> <span class="o">||</span> <span class="p">(</span><span class="nx">colorToBeUsed</span> <span class="o">===</span> <span class="nx">angleColor</span> <span class="o">||</span> <span class="nx">applyDefaultNormalColor</span><span class="p">))</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>the first time we render a mesh we need to
+render it with the material that takes the
+bigger buffer space, see:
+https://github.com/mrdoob/three.js/issues/1051
+Another workaround would be to create a mesh
+for each different type of material</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">neverUsed</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">normalMaterial</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;creating normal material&quot;</span><span class="p">);</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">normalMaterial</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">MeshNormalMaterial</span><span class="p">({</span>
+          <span class="nx">opacity</span><span class="o">:</span> <span class="nx">alphaToBeUsed</span><span class="p">,</span>
+          <span class="nx">wireframe</span><span class="o">:</span> <span class="nx">strokeTime</span><span class="p">,</span>
+          <span class="nx">wireframeLinewidth</span><span class="o">:</span> <span class="nx">currentStrokeSize</span><span class="p">,</span>
+        <span class="p">});</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">wireframe</span> <span class="o">=</span> <span class="nx">strokeTime</span><span class="p">;</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">wireframeLinewidth</span> <span class="o">=</span> <span class="nx">currentStrokeSize</span><span class="p">;</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Mesh</span><span class="p">(</span><span class="nx">cylinderGeometry</span><span class="p">,</span> <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">);</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;associating normal material to existing mesh&quot;</span><span class="p">);</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span> <span class="o">=</span> <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">lightsAreOn</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">basicMaterial</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">basicMaterial</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">MeshBasicMaterial</span><span class="p">({</span>
+          <span class="nx">color</span><span class="o">:</span> <span class="nx">colorToBeUsed</span><span class="p">,</span>
+          <span class="nx">opacity</span><span class="o">:</span> <span class="nx">alphaToBeUsed</span><span class="p">,</span>
+          <span class="nx">wireframe</span><span class="o">:</span> <span class="nx">strokeTime</span><span class="p">,</span>
+          <span class="nx">wireframeLinewidth</span><span class="o">:</span> <span class="nx">currentStrokeSize</span><span class="p">,</span>
+        <span class="p">});</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">color</span><span class="p">.</span><span class="nx">setHex</span><span class="p">(</span><span class="nx">colorToBeUsed</span><span class="p">);</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">wireframe</span> <span class="o">=</span> <span class="nx">strokeTime</span><span class="p">;</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">wireframeLinewidth</span> <span class="o">=</span> <span class="nx">currentStrokeSize</span><span class="p">;</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Mesh</span><span class="p">(</span><span class="nx">cylinderGeometry</span><span class="p">,</span> <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">);</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span> <span class="o">=</span> <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">;</span>
+      <span class="p">}</span>
+
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>lights are on</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">lambertMaterial</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;creating lambert:&quot;</span><span class="o">+</span><span class="nx">currentFillColor</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">currentFillAlpha</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">ambientColor</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">reflectValue</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">refractValue</span><span class="p">);</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">lambertMaterial</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">MeshLambertMaterial</span><span class="p">({</span>
+          <span class="nx">color</span><span class="o">:</span> <span class="nx">colorToBeUsed</span><span class="p">,</span>
+          <span class="nx">opacity</span><span class="o">:</span> <span class="nx">alphaToBeUsed</span><span class="p">,</span>
+          <span class="nx">ambient</span><span class="o">:</span> <span class="nx">ambientColor</span><span class="p">,</span>
+          <span class="nx">reflectivity</span><span class="o">:</span> <span class="nx">reflectValue</span><span class="p">,</span>
+          <span class="nx">refractionRatio</span><span class="o">:</span> <span class="nx">refractValue</span><span class="p">,</span>
+          <span class="nx">wireframe</span><span class="o">:</span> <span class="nx">strokeTime</span><span class="p">,</span>
+          <span class="nx">wireframeLinewidth</span><span class="o">:</span> <span class="nx">currentStrokeSize</span><span class="p">,</span>
+        <span class="p">});</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">color</span><span class="p">.</span><span class="nx">setHex</span><span class="p">(</span><span class="nx">colorToBeUsed</span><span class="p">);</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">wireframe</span> <span class="o">=</span> <span class="nx">strokeTime</span><span class="p">;</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">wireframeLinewidth</span> <span class="o">=</span> <span class="nx">currentStrokeSize</span><span class="p">;</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">ambient</span><span class="p">.</span><span class="nx">setHex</span><span class="p">(</span><span class="nx">ambientColor</span><span class="p">);</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">reflectivity</span> <span class="o">=</span> <span class="nx">reflectValue</span><span class="p">;</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">refractionRatio</span> <span class="o">=</span> <span class="nx">refractValue</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Mesh</span><span class="p">(</span><span class="nx">cylinderGeometry</span><span class="p">,</span> <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">);</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span> <span class="o">=</span> <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">resetTheSpinThingy</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="nx">resetTheSpinThingy</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="nx">doTheSpinThingy</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">doTheSpinThingy</span><span class="p">)</span> <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">startCountdown</span><span class="o">--</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="nx">doTheSpinThingy</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+    <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isLine</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isRectangle</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isBox</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isCylinder</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isAmbientLight</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isPointLight</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isSphere</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+
+    <span class="nx">usedCylinders</span><span class="o">++</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">doTheSpinThingy</span> <span class="o">&amp;&amp;</span> <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">pushMatrix</span><span class="p">();</span>
+      <span class="nx">rotate</span><span class="p">(</span><span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">/</span> <span class="mi">50</span><span class="p">);</span>
+      <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">+</span><span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">startCountdown</span><span class="p">);</span>      
+    <span class="p">}</span>
+
+    <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrixAutoUpdate</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrix</span><span class="p">.</span><span class="nx">copy</span><span class="p">(</span><span class="nx">worldMatrix</span><span class="p">);</span>
+    <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrixWorldNeedsUpdate</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">doTheSpinThingy</span> <span class="o">&amp;&amp;</span> <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">popMatrix</span><span class="p">();</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>TODO: meshes should be built from geometries that are
+ever so slight larger than the "fill" mesh so there
+is no z-fighting...
+constant 0.001 below is to avoid z-fighting</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">!==</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">b</span> <span class="o">!==</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">c</span> <span class="o">!==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">strokeTime</span><span class="p">)</span> <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrix</span><span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">));</span>
+      <span class="k">else</span> <span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrix</span><span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="nx">a</span> <span class="o">+</span> <span class="mf">0.001</span><span class="p">,</span> <span class="nx">b</span> <span class="o">+</span> <span class="mf">0.001</span><span class="p">,</span> <span class="nx">c</span> <span class="o">+</span> <span class="mf">0.001</span><span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">newCylinderCreated</span><span class="p">)</span> <span class="nx">scene</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">pooledCylinder</span><span class="p">.</span><span class="nx">mesh</span><span class="p">);</span>
+  <span class="p">}</span>
+
+
+<span class="p">}</span>
+
+
+<span class="kd">var</span> <span class="nx">ballDetail</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">)</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+  <span class="nx">ballDetLevel</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">ball</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">pooledSphereGeometry</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>simple case - if there is no fill and
+no stroke then there is nothing to do.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;fill: &quot;</span><span class="o">+</span><span class="nx">doFill</span><span class="o">+</span><span class="s2">&quot; stroke: &quot;</span><span class="o">+</span><span class="nx">doStroke</span><span class="o">+</span><span class="s2">&quot; fillCol &quot;</span> <span class="o">+</span> <span class="nx">currentFillColor</span> <span class="o">+</span> <span class="s2">&quot; stroke col &quot;</span> <span class="o">+</span> <span class="nx">currentStrokeColor</span> <span class="o">+</span> <span class="s2">&quot; fill alpha &quot;</span> <span class="o">+</span> <span class="nx">currentFillAlpha</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">doFill</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">doStroke</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <p>if the wireframe is not going to be visible on top of the
+fill then don't draw it</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">else</span> <span class="k">if</span> <span class="p">((</span><span class="nx">doFill</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">currentStrokeSize</span> <span class="o">===</span> <span class="mi">0</span> <span class="o">||</span> <span class="o">!</span><span class="nx">doStroke</span> <span class="o">||</span> <span class="p">(</span><span class="nx">currentStrokeSize</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">defaultNormalFill</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">defaultNormalStroke</span> <span class="o">&amp;&amp;</span> <span class="nx">currentStrokeColor</span> <span class="o">===</span> <span class="nx">currentFillColor</span> <span class="o">&amp;&amp;</span> <span class="nx">currentFillAlpha</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">currentStrokeAlpha</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)))</span> <span class="o">||</span> <span class="p">(</span><span class="nx">currentStrokeSize</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">defaultNormalFill</span> <span class="o">&amp;&amp;</span> <span class="nx">defaultNormalStroke</span><span class="p">))</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>if (doStroke) log('smart optimisation, was supposed to do the stroke but not doing it!!');</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">doFill</span> <span class="o">&amp;&amp;</span> <span class="nx">doStroke</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">startIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">endIndex</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;si: &quot;</span> <span class="o">+</span> <span class="nx">startIndex</span> <span class="o">+</span> <span class="s2">&quot; endI: &quot;</span> <span class="o">+</span> <span class="nx">endIndex</span> <span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>alert('ball!')</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">strokeTime</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">colorToBeUsed</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">newSphereCreated</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>this is to run the code twice. This should be neater
+and turned into a function call really.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">fillAndStroke</span> <span class="o">=</span> <span class="nx">startIndex</span><span class="p">;</span> <span class="nx">fillAndStroke</span> <span class="o">&lt;</span> <span class="nx">endIndex</span><span class="p">;</span> <span class="nx">fillAndStroke</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">fillAndStroke</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">strokeTime</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="nx">colorToBeUsed</span> <span class="o">=</span> <span class="nx">currentStrokeColor</span><span class="p">;</span>
+      <span class="nx">alphaToBeUsed</span> <span class="o">=</span> <span class="nx">currentStrokeAlpha</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">colorToBeUsed</span> <span class="o">=</span> <span class="nx">currentFillColor</span><span class="p">;</span>
+      <span class="nx">alphaToBeUsed</span> <span class="o">=</span> <span class="nx">currentFillAlpha</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">spheresPool</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">spheresPool</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">]</span> <span class="o">=</span> <span class="p">[];</span>
+      <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;creating pool for ball det level &#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">usedSpheres</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">usedSpheres</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;creating counter for ball det level &#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">pooledSphere</span> <span class="o">=</span> <span class="nx">spheresPool</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">][</span><span class="nx">usedSpheres</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">]];</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">pooledSphere</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>each pooled sphere contains a geometry,
+a basic material and a lambert material.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">pooledSphere</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">basicMaterial</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+        <span class="nx">lambertMaterial</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+        <span class="nx">normalMaterial</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>the first time we render a mesh we need to
+render it with the material that takes the
+bigger buffer space, otherwise the
+more complicated materials won't show
+up, see:
+https://github.com/mrdoob/three.js/issues/1051
+so we always need to create a normalmaterial
+and render that material first, in case
+the user will ever want to use it.
+Another workaround would be to create a mesh
+for each different type of material</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">neverUsed</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">mesh</span><span class="o">:</span> <span class="kc">undefined</span>
+      <span class="p">};</span>
+      <span class="nx">newSphereCreated</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="nx">spheresPool</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">pooledSphere</span><span class="p">);</span>
+      <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;making space for pool for sphere , size of pool for spheres of detail &#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span> <span class="o">+</span> <span class="s1">&#39; is &#39;</span> <span class="o">+</span> <span class="nx">spheresPool</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="o">+</span><span class="nx">ballDetLevel</span><span class="p">].</span><span class="nx">length</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">strokeTime</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">defaultNormalFill</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">defaultNormalStroke</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">applyDefaultNormalColor</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">neverUsed</span> <span class="o">||</span> <span class="p">(</span><span class="nx">colorToBeUsed</span> <span class="o">===</span> <span class="nx">angleColor</span> <span class="o">||</span> <span class="nx">applyDefaultNormalColor</span><span class="p">))</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>the first time we render a mesh we need to
+render it with the material that takes the
+bigger buffer space, see:
+https://github.com/mrdoob/three.js/issues/1051
+Another workaround would be to create a mesh
+for each different type of material</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">neverUsed</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">normalMaterial</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;creating normal material&quot;</span><span class="p">);</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">normalMaterial</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">MeshNormalMaterial</span><span class="p">({</span>
+          <span class="nx">opacity</span><span class="o">:</span> <span class="nx">alphaToBeUsed</span><span class="p">,</span>
+          <span class="nx">wireframe</span><span class="o">:</span> <span class="nx">strokeTime</span><span class="p">,</span>
+          <span class="nx">wireframeLinewidth</span><span class="o">:</span> <span class="nx">currentStrokeSize</span><span class="p">,</span>
+        <span class="p">});</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">wireframe</span> <span class="o">=</span> <span class="nx">strokeTime</span><span class="p">;</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">wireframeLinewidth</span> <span class="o">=</span> <span class="nx">currentStrokeSize</span><span class="p">;</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledSphereGeometry</span> <span class="o">=</span> <span class="nx">sphereGeometriesPool</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">];</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">pooledSphereGeometry</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">pooledSphereGeometry</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">SphereGeometry</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">ballDetLevel</span><span class="p">,</span> <span class="nx">ballDetLevel</span><span class="p">);</span>
+          <span class="nx">sphereGeometriesPool</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">]</span> <span class="o">=</span> <span class="nx">pooledSphereGeometry</span><span class="p">;</span>
+          <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;creating ball geometry of detail &#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Mesh</span><span class="p">(</span><span class="nx">pooledSphereGeometry</span><span class="p">,</span> <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">);</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;associating normal material to existing mesh&quot;</span><span class="p">);</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span> <span class="o">=</span> <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">normalMaterial</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">lightsAreOn</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">basicMaterial</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">basicMaterial</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">MeshBasicMaterial</span><span class="p">({</span>
+          <span class="nx">color</span><span class="o">:</span> <span class="nx">colorToBeUsed</span><span class="p">,</span>
+          <span class="nx">opacity</span><span class="o">:</span> <span class="nx">alphaToBeUsed</span><span class="p">,</span>
+          <span class="nx">wireframe</span><span class="o">:</span> <span class="nx">strokeTime</span><span class="p">,</span>
+          <span class="nx">wireframeLinewidth</span><span class="o">:</span> <span class="nx">currentStrokeSize</span><span class="p">,</span>
+        <span class="p">});</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">color</span><span class="p">.</span><span class="nx">setHex</span><span class="p">(</span><span class="nx">colorToBeUsed</span><span class="p">);</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">wireframe</span> <span class="o">=</span> <span class="nx">strokeTime</span><span class="p">;</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">wireframeLinewidth</span> <span class="o">=</span> <span class="nx">currentStrokeSize</span><span class="p">;</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledSphereGeometry</span> <span class="o">=</span> <span class="nx">sphereGeometriesPool</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">];</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">pooledSphereGeometry</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">pooledSphereGeometry</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">SphereGeometry</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">ballDetLevel</span><span class="p">,</span> <span class="nx">ballDetLevel</span><span class="p">);</span>
+          <span class="nx">sphereGeometriesPool</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">]</span> <span class="o">=</span> <span class="nx">pooledSphereGeometry</span><span class="p">;</span>
+          <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;creating ball geometry of detail &#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Mesh</span><span class="p">(</span><span class="nx">pooledSphereGeometry</span><span class="p">,</span> <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">);</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span> <span class="o">=</span> <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">basicMaterial</span><span class="p">;</span>
+      <span class="p">}</span>
+
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <p>lights are on</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">lambertMaterial</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;creating lambert:&quot;</span><span class="o">+</span><span class="nx">currentFillColor</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">currentFillAlpha</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">ambientColor</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">reflectValue</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">refractValue</span><span class="p">);</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">lambertMaterial</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">MeshLambertMaterial</span><span class="p">({</span>
+          <span class="nx">color</span><span class="o">:</span> <span class="nx">colorToBeUsed</span><span class="p">,</span>
+          <span class="nx">opacity</span><span class="o">:</span> <span class="nx">alphaToBeUsed</span><span class="p">,</span>
+          <span class="nx">ambient</span><span class="o">:</span> <span class="nx">ambientColor</span><span class="p">,</span>
+          <span class="nx">reflectivity</span><span class="o">:</span> <span class="nx">reflectValue</span><span class="p">,</span>
+          <span class="nx">refractionRatio</span><span class="o">:</span> <span class="nx">refractValue</span><span class="p">,</span>
+          <span class="nx">wireframe</span><span class="o">:</span> <span class="nx">strokeTime</span><span class="p">,</span>
+          <span class="nx">wireframeLinewidth</span><span class="o">:</span> <span class="nx">currentStrokeSize</span><span class="p">,</span>
+        <span class="p">});</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">color</span><span class="p">.</span><span class="nx">setHex</span><span class="p">(</span><span class="nx">colorToBeUsed</span><span class="p">);</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">alphaToBeUsed</span><span class="p">;</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">wireframe</span> <span class="o">=</span> <span class="nx">strokeTime</span><span class="p">;</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">wireframeLinewidth</span> <span class="o">=</span> <span class="nx">currentStrokeSize</span><span class="p">;</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">ambient</span><span class="p">.</span><span class="nx">setHex</span><span class="p">(</span><span class="nx">ambientColor</span><span class="p">);</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">reflectivity</span> <span class="o">=</span> <span class="nx">reflectValue</span><span class="p">;</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">.</span><span class="nx">refractionRatio</span> <span class="o">=</span> <span class="nx">refractValue</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pooledSphereGeometry</span> <span class="o">=</span> <span class="nx">sphereGeometriesPool</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">];</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">pooledSphereGeometry</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">pooledSphereGeometry</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">SphereGeometry</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">ballDetLevel</span><span class="p">,</span> <span class="nx">ballDetLevel</span><span class="p">);</span>
+          <span class="nx">sphereGeometriesPool</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">]</span> <span class="o">=</span> <span class="nx">pooledSphereGeometry</span><span class="p">;</span>
+          <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;creating ball geometry of detail &#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Mesh</span><span class="p">(</span><span class="nx">pooledSphereGeometry</span><span class="p">,</span> <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">);</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">material</span> <span class="o">=</span> <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">lambertMaterial</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">resetTheSpinThingy</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">=</span> <span class="nx">SPINFRAMES</span><span class="p">;</span>
+      <span class="nx">resetTheSpinThingy</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="nx">doTheSpinThingy</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">doTheSpinThingy</span><span class="p">)</span> <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">startCountdown</span><span class="o">--</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="nx">doTheSpinThingy</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+    <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isLine</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isRectangle</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isBox</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isCylinder</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isAmbientLight</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isPointLight</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">isSphere</span> <span class="o">=</span> <span class="nx">ballDetLevel</span><span class="p">;</span>
+    <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">doubleSided</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+
+    <span class="nx">usedSpheres</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">]</span> <span class="o">=</span> <span class="nx">usedSpheres</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ballDetLevel</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">doTheSpinThingy</span> <span class="o">&amp;&amp;</span> <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">pushMatrix</span><span class="p">();</span>
+      <span class="nx">rotate</span><span class="p">(</span><span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">/</span> <span class="mi">50</span><span class="p">);</span>
+      <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">+</span><span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">startCountdown</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrixAutoUpdate</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrix</span><span class="p">.</span><span class="nx">copy</span><span class="p">(</span><span class="nx">worldMatrix</span><span class="p">);</span>
+    <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrixWorldNeedsUpdate</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">doTheSpinThingy</span> <span class="o">&amp;&amp;</span> <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">startCountdown</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">popMatrix</span><span class="p">();</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <p>TODO: meshes should be built from geometries that are
+ever so slight larger than the "fill" mesh so there
+is no z-fighting...
+constant 0.001 below is to avoid z-fighting</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">!==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">strokeTime</span><span class="p">)</span> <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrix</span><span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">a</span><span class="p">));</span>
+      <span class="k">else</span> <span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">.</span><span class="nx">matrix</span><span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="nx">a</span> <span class="o">+</span> <span class="mf">0.001</span><span class="p">,</span> <span class="nx">a</span> <span class="o">+</span> <span class="mf">0.001</span><span class="p">,</span> <span class="nx">a</span> <span class="o">+</span> <span class="mf">0.001</span><span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">newSphereCreated</span><span class="p">)</span> <span class="nx">scene</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">pooledSphere</span><span class="p">.</span><span class="nx">mesh</span><span class="p">);</span>
+  <span class="p">}</span>
+
+
+<span class="p">}</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

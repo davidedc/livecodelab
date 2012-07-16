@@ -1,0 +1,185 @@
+<!DOCTYPE html>  <html> <head>   <title>init.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               init.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">closeAndCheckAudio</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>$('#noWebGLMessage').close();</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">$</span><span class="p">.</span><span class="nx">modal</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="s1">&#39;checkAudio();&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">);</span>
+  <span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">checkAudio</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">buzz</span><span class="p">.</span><span class="nx">isSupported</span><span class="p">())</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>if (true) {</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#noAudioMessage&#39;</span><span class="p">).</span><span class="nx">modal</span><span class="p">();</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#simplemodal-container&#39;</span><span class="p">).</span><span class="nx">height</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">loadAndTestAllTheSounds</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;loading and testing all sounds&quot;</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">cycleSoundDefs</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">cycleSoundDefs</span> <span class="o">&lt;</span> <span class="nx">numberOfSounds</span><span class="p">;</span> <span class="nx">cycleSoundDefs</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="nx">buzz</span><span class="p">.</span><span class="nx">isMP3Supported</span><span class="p">())</span> <span class="nx">soundDef</span><span class="p">[</span><span class="nx">cycleSoundDefs</span><span class="p">].</span><span class="nx">soundFile</span> <span class="o">=</span> <span class="nx">soundDef</span><span class="p">[</span><span class="nx">cycleSoundDefs</span><span class="p">].</span><span class="nx">soundFile</span> <span class="o">+</span> <span class="s2">&quot;.mp3&quot;</span><span class="p">;</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">buzz</span><span class="p">.</span><span class="nx">isOGGSupported</span><span class="p">())</span> <span class="nx">soundDef</span><span class="p">[</span><span class="nx">cycleSoundDefs</span><span class="p">].</span><span class="nx">soundFile</span> <span class="o">=</span> <span class="nx">soundDef</span><span class="p">[</span><span class="nx">cycleSoundDefs</span><span class="p">].</span><span class="nx">soundFile</span> <span class="o">+</span> <span class="s2">&quot;.ogg&quot;</span><span class="p">;</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="k">break</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="nx">soundBank</span><span class="p">[</span><span class="nx">soundDef</span><span class="p">[</span><span class="nx">cycleSoundDefs</span><span class="p">].</span><span class="nx">soundName</span><span class="p">]</span> <span class="o">=</span> <span class="p">[];</span>
+      <span class="nx">soundFiles</span><span class="p">[</span><span class="nx">soundDef</span><span class="p">[</span><span class="nx">cycleSoundDefs</span><span class="p">].</span><span class="nx">soundName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">soundDef</span><span class="p">[</span><span class="nx">cycleSoundDefs</span><span class="p">].</span><span class="nx">soundFile</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Chrome can deal with dynamic loading
+of many files but doesn't like loading too many audio objects
+so fast - it crashes.
+At the opposite end, Safari doesn't like loading sound dynamically
+and instead works fine by loading sound all at the beginning.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;chrome&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span><span class="sr">/MSIE (\d+\.\d+);/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">)))</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">preloadSounds</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">preloadSounds</span> <span class="o">&lt;</span> <span class="nx">CHANNELSPERSOUND</span><span class="p">;</span> <span class="nx">preloadSounds</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>if you load and play all the channels of all the sounds all together
+the browser freezes, and the OS doesn't feel too well either
+so better stagger the checks in time.</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="nx">setTimeout</span><span class="p">(</span><span class="s2">&quot;checkSound(&quot;</span> <span class="o">+</span> <span class="nx">cycleSoundDefs</span> <span class="o">+</span> <span class="s2">&quot;);&quot;</span><span class="p">,</span> <span class="mi">200</span> <span class="o">*</span> <span class="nx">cycleSoundDefs</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+
+    <span class="p">}</span> <span class="c1">// end of the for loop</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;chrome&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="o">||</span> <span class="p">(</span><span class="sr">/MSIE (\d+\.\d+);/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">)))</span> <span class="p">{</span>
+      <span class="nx">startEnvironment</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">checkSound</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">cycleSoundDefs</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">newSound</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">buzz</span><span class="p">.</span><span class="nx">sound</span><span class="p">(</span><span class="nx">soundDef</span><span class="p">[</span><span class="nx">cycleSoundDefs</span><span class="p">].</span><span class="nx">soundFile</span><span class="p">);</span>
+    <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;loading sound &quot;</span><span class="o">+</span> <span class="nx">soundDef</span><span class="p">[</span><span class="nx">cycleSoundDefs</span><span class="p">].</span><span class="nx">soundFile</span><span class="p">);</span>
+    <span class="nx">newSound</span><span class="p">.</span><span class="nx">mute</span><span class="p">();</span>
+    <span class="nx">newSound</span><span class="p">.</span><span class="nx">load</span><span class="p">();</span>
+    <span class="nx">newSound</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s2">&quot;ended&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">unbind</span><span class="p">(</span><span class="s2">&quot;ended&quot;</span><span class="p">);</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">unmute</span><span class="p">();</span>
+      <span class="nx">endedFirstPlay</span><span class="o">++</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">endedFirstPlay</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#loading&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
+      <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;tested &quot;</span><span class="o">+</span><span class="nx">endedFirstPlay</span><span class="o">+</span><span class="s2">&quot; sounds&quot;</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">endedFirstPlay</span> <span class="o">===</span> <span class="nx">numberOfSounds</span> <span class="o">*</span> <span class="nx">CHANNELSPERSOUND</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;tested all sounds&quot;</span><span class="p">);</span>
+        <span class="nx">startEnvironment</span><span class="p">();</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="nx">newSound</span><span class="p">.</span><span class="nx">play</span><span class="p">();</span>
+    <span class="nx">soundBank</span><span class="p">[</span><span class="nx">soundDef</span><span class="p">[</span><span class="nx">cycleSoundDefs</span><span class="p">].</span><span class="nx">soundName</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">newSound</span><span class="p">);</span>
+  <span class="p">}</span>
+
+
+<span class="kd">var</span> <span class="nx">editor</span><span class="p">;</span>
+
+
+<span class="kd">var</span> <span class="nx">startEnvironment</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">pickRandomDefaultGradient</span><span class="p">();</span>
+
+  <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;startEnvironment&quot;</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">initThreeJs</span><span class="p">())</span> <span class="nx">animate</span><span class="p">();</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">Detector</span><span class="p">.</span><span class="nx">webgl</span> <span class="o">||</span> <span class="nx">forceCanvasRenderer</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>$('#noWebGLMessage').modal()</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#noWebGLMessage&#39;</span><span class="p">).</span><span class="nx">modal</span><span class="p">({</span>
+      <span class="nx">onClose</span><span class="o">:</span> <span class="nx">closeAndCheckAudio</span>
+    <span class="p">});</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#simplemodal-container&#39;</span><span class="p">).</span><span class="nx">height</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>alert('resizing canvas');</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">canvas</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;backGroundCanvas&#39;</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">fullScreenifyBackground</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">fullscreenify</span><span class="p">(</span><span class="nx">canvas</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="nx">resetGradientStack</span><span class="p">();</span>
+  <span class="nx">simpleGradientUpdateIfChanged</span><span class="p">();</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#demoMenu&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Démos&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#tutorialsMenu&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Tutoriaux&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#resetButton&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Effacer&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#autocodeIndicator&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Autocode: inactif&quot;</span><span class="p">);</span>
+
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#simpleCubeDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Cube simple&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#webgltwocubesDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;WebGL: Deux cubes&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cubesAndSpikes&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Cubes et piques&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#webglturbineDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;WebGL: Turbine&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#webglzfightartDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;WebGL: Z-fight art!&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#littleSpiralOfCubes&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Petite spirale&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#tentacleDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Tentacule&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#lampDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Lampe&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#trillionfeathersDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Mille milliards de plumes&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#monsterblobDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Monstre blob&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#industrialMusicDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Son: Industriel&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#trySoundsDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Son: Essayez les tous&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#springysquaresDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Carrés rebondissants&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#diceDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Dé&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#webglalmostvoronoiDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;WebGL: Presque Voronoi&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#webglshardsDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;WebGL: Échardes&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#webglredthreadsDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;WebGL: Fils rouges&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#webglnuclearOctopusDemo&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;WebGL: Pieuvre nucléaire&quot;</span><span class="p">);</span>
+
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#introTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;intro&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#helloworldTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;hello world&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#somenotesTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;quelques notes&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#rotateTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;tourne&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#frameTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#timeTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;temps&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#moveTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;déplace&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#scaleTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;taille&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#timesTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;fois&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#fillTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;remplissage&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#strokeTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;trait&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#colornamesTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;les couleurs par leur nom&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#lightsTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;éclairages&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#backgroundTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;fond&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#gradientTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;degradeSimple&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#lineTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;ligne&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#ballTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;balle&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#pushpopMatrixTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;matrice&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#animationstyleTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;styleAnimation&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#doonceTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;uneFois&quot;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#autocodeTutorial&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;autocode&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+
+  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#startingCourtainScreen&#39;</span><span class="p">).</span><span class="nx">fadeOut</span><span class="p">();</span>
+  <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#formCode&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s1">&#39;opacity&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+<span class="nx">editor</span> <span class="o">=</span> <span class="nx">CodeMirror</span><span class="p">.</span><span class="nx">fromTextArea</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">),</span> <span class="p">{</span>
+  <span class="nx">lineNumbers</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">indentWithTabs</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">tabSize</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="nx">indentUnit</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="nx">lineWrapping</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>We want the code editor to always have focus
+since there is nothing else to type into.
+One of those little wonders: you have to pause a little
+before giving the editor focus, otherwise for some reason
+the focus is not regained. Go figure.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">onBlur</span><span class="o">:</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="s1">&#39;editor.focus()&#39;</span><span class="p">,</span> <span class="mi">30</span><span class="p">);</span>
+  <span class="p">}),</span>
+  <span class="nx">onChange</span><span class="o">:</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">registerCode</span><span class="p">();</span>
+  <span class="p">}),</span>
+  <span class="nx">mode</span><span class="o">:</span> <span class="s2">&quot;livecodelab&quot;</span><span class="p">,</span>
+  <span class="nx">onCursorActivity</span><span class="o">:</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">suspendDimmingAndCheckIfLink</span><span class="p">();</span>
+  <span class="p">})</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>onScroll: (function(){alert('scroll')})</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="p">});</span>
+
+
+<span class="nx">editor</span><span class="p">.</span><span class="nx">setOption</span><span class="p">(</span><span class="s2">&quot;theme&quot;</span><span class="p">,</span> <span class="s1">&#39;night&#39;</span><span class="p">);</span>
+
+  <span class="nx">editor</span><span class="p">.</span><span class="nx">focus</span><span class="p">();</span>
+  <span class="nx">adjustCodeMirrorHeight</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>check if the url points to a particular demo,
+in which case we load the demo directly.
+otherwise we do as usual.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&quot;bookmark&quot;</span><span class="p">)</span> <span class="o">!==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">demoToLoad</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="s2">&quot;bookmark&quot;</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">2</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>setTimeout ( "loadDemoOrTutorial('"+demoToLoad+"');",500);</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">loadDemoOrTutorial</span><span class="p">(</span><span class="nx">demoToLoad</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="nx">fakeCursorInterval</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="s2">&quot;fakeCursorBlinking()&quot;</span><span class="p">,</span> <span class="mi">800</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Init of the dim code toggle.
+set it to false, then immediatly toggle it to true with the managing function
+that way we can easily invert the default: just change false to true -- julien</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">dimcodeOn</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="nx">toggleDimCode</span><span class="p">();</span>
+
+<span class="p">}</span>
+
+<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;document ready&quot;</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">isCanvasSupported</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#noCanvasMessage&#39;</span><span class="p">).</span><span class="nx">modal</span><span class="p">({</span>
+      <span class="nx">onClose</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#loading&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s1">&#39;sorry :-(&#39;</span><span class="p">);</span>
+        <span class="nx">$</span><span class="p">.</span><span class="nx">modal</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#simplemodal-container&#39;</span><span class="p">).</span><span class="nx">height</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="nx">loadAndTestAllTheSounds</span><span class="p">();</span>
+<span class="p">});</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

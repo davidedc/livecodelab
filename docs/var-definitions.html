@@ -1,0 +1,237 @@
+<!DOCTYPE html>  <html> <head>   <title>var-definitions.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               var-definitions.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">stats</span><span class="p">,</span> <span class="nx">scene</span><span class="p">,</span> <span class="nx">renderer</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">camera</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>creating a geometry is expensive
+so we need to create ONE cube of dimensions 1,1,1
+if we need a cube of different size, then we need to
+scale it. Note that the scale for the specific cube shouldn't
+influence the stack, so we need to create a scale node,
+and then go up a node.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">isWebGLUsed</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">linesPool</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="kd">var</span> <span class="nx">rectanglesPool</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="kd">var</span> <span class="nx">boxesPool</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="kd">var</span> <span class="nx">cylindersPool</span> <span class="o">=</span> <span class="p">[];</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>spheres have different geometries
+depending on the detail level,
+which can be set at whim</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">spheresPool</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="kd">var</span> <span class="nx">sphereGeometriesPool</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="kd">var</span> <span class="nx">ambientLightsPool</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="kd">var</span> <span class="nx">pointLightsPool</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="kd">var</span> <span class="nx">usedLines</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">usedRectangles</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">usedBoxes</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">usedCylinders</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">usedAmbientLights</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">usedPointLights</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">usedSpheres</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="kd">var</span> <span class="nx">ballDefaultDetLevel</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">ballDetLevel</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">currentStrokeSize</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">cubeGeometry</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">CubeGeometry</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">planeGeometry</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">PlaneGeometry</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">lineGeometry</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Geometry</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">cylinderGeometry</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">CylinderGeometry</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">);</span>
+<span class="nx">lineGeometry</span><span class="p">.</span><span class="nx">vertices</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vertex</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)));</span>
+<span class="nx">lineGeometry</span><span class="p">.</span><span class="nx">vertices</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vertex</span><span class="p">(</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)));</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>loads identity matrix</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">worldMatrix</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Matrix4</span><span class="p">();</span>
+
+<span class="kd">var</span> <span class="nx">frenchVersion</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">forceCanvasRenderer</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">backgroundScene</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">backgroundSceneContext</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">sceneRenderingCanvas</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">sceneRenderingCanvasContext</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">previousRenderForBlending</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">previousRenderForBlendingContext</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">finalRenderWithSceneAndBlend</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">finalRenderWithSceneAndBlendContext</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">useRequestAnimationFrame</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>if you put to -1 then it means that
+requestAnimationFrame will try to go as fast as it
+can.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">wantedFramesPerSecond</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">backGroundFraction</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">scaledBackgroundWidth</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">scaledBackgroundHeight</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">repaintBackroundEveryFrame</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">fullScreenifyBackground</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">animationStyleValue</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">previousanimationStyleValue</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">currentGradientStackValue</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">previousGradientStackValue</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">blendAmount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">normal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">paintOver</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">motionBlur</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">soundLoops</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="nx">soundLoops</span><span class="p">.</span><span class="nx">soundIDs</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="nx">soundLoops</span><span class="p">.</span><span class="nx">beatStrings</span> <span class="o">=</span> <span class="p">[];</span>
+
+<span class="kd">var</span> <span class="nx">programHasBasicError</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">reasonOfBasicError</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">consecutiveFramesWithoutRunTimeError</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">out</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lastStableProgram</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>the "spinthingy" is because we want
+users who type "box" to see that it's actually
+a 3d environment. So the first few primitives
+spin for a few moments when they are created.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">doTheSpinThingy</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">resetTheSpinThingy</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">SPINFRAMES</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">userWarnedAboutWebglExamples</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+
+<span class="kd">var</span> <span class="nx">dimIntervalID</span><span class="p">;</span>
+
+
+
+<span class="kd">function</span> <span class="nx">isCanvasSupported</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">elem</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;canvas&#39;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">!!</span><span class="p">(</span><span class="nx">elem</span><span class="p">.</span><span class="nx">getContext</span> <span class="o">&amp;&amp;</span> <span class="nx">elem</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s1">&#39;2d&#39;</span><span class="p">));</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Color constants, modified from processing.js
+with added the missing ones from the CSS standard,
+which includes the spelling "grey" on top of "gray"</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">aliceblue</span> <span class="o">=</span> <span class="mh">0xfff0f8ff</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">antiquewhite</span> <span class="o">=</span> <span class="mh">0xfffaebd7</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">aqua</span> <span class="o">=</span> <span class="mh">0xff00ffff</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">aquamarine</span> <span class="o">=</span> <span class="mh">0xff7fffd4</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">azure</span> <span class="o">=</span> <span class="mh">0xfff0ffff</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">beige</span> <span class="o">=</span> <span class="mh">0xfff5f5dc</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">bisque</span> <span class="o">=</span> <span class="mh">0xffffe4c4</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">black</span> <span class="o">=</span> <span class="mh">0xff000000</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">blanchedalmond</span> <span class="o">=</span> <span class="mh">0xffffebcd</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">blue</span> <span class="o">=</span> <span class="mh">0xff0000ff</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">blueviolet</span> <span class="o">=</span> <span class="mh">0xff8a2be2</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">brown</span> <span class="o">=</span> <span class="mh">0xffa52a2a</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">burlywood</span> <span class="o">=</span> <span class="mh">0xffdeb887</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">cadetblue</span> <span class="o">=</span> <span class="mh">0xff5f9ea0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">chartreuse</span> <span class="o">=</span> <span class="mh">0xff7fff00</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">chocolate</span> <span class="o">=</span> <span class="mh">0xffd2691e</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">coral</span> <span class="o">=</span> <span class="mh">0xffff7f50</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">cornflowerblue</span> <span class="o">=</span> <span class="mh">0xff6495ed</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">cornsilk</span> <span class="o">=</span> <span class="mh">0xfffff8dc</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">crimson</span> <span class="o">=</span> <span class="mh">0xffdc143c</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">cyan</span> <span class="o">=</span> <span class="mh">0xff00ffff</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkblue</span> <span class="o">=</span> <span class="mh">0xff00008b</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkcyan</span> <span class="o">=</span> <span class="mh">0xff008b8b</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkgoldenrod</span> <span class="o">=</span> <span class="mh">0xffb8860b</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkgray</span> <span class="o">=</span> <span class="mh">0xffa9a9a9</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkgrey</span> <span class="o">=</span> <span class="mh">0xffa9a9a9</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkgreen</span> <span class="o">=</span> <span class="mh">0xff006400</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkkhaki</span> <span class="o">=</span> <span class="mh">0xffbdb76b</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkmagenta</span> <span class="o">=</span> <span class="mh">0xff8b008b</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkolivegreen</span> <span class="o">=</span> <span class="mh">0xff556b2f</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkorange</span> <span class="o">=</span> <span class="mh">0xffff8c00</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkorchid</span> <span class="o">=</span> <span class="mh">0xff9932cc</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkred</span> <span class="o">=</span> <span class="mh">0xff8b0000</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darksalmon</span> <span class="o">=</span> <span class="mh">0xffe9967a</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkseagreen</span> <span class="o">=</span> <span class="mh">0xff8fbc8f</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkslateblue</span> <span class="o">=</span> <span class="mh">0xff483d8b</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkslategray</span> <span class="o">=</span> <span class="mh">0xff2f4f4f</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkslategrey</span> <span class="o">=</span> <span class="mh">0xff2f4f4f</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkturquoise</span> <span class="o">=</span> <span class="mh">0xff00ced1</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">darkviolet</span> <span class="o">=</span> <span class="mh">0xff9400d3</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">deeppink</span> <span class="o">=</span> <span class="mh">0xffff1493</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">deepskyblue</span> <span class="o">=</span> <span class="mh">0xff00bfff</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">dimgray</span> <span class="o">=</span> <span class="mh">0xff696969</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">dimgrey</span> <span class="o">=</span> <span class="mh">0xff696969</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">dodgerblue</span> <span class="o">=</span> <span class="mh">0xff1e90ff</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">firebrick</span> <span class="o">=</span> <span class="mh">0xffb22222</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">floralwhite</span> <span class="o">=</span> <span class="mh">0xfffffaf0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">forestgreen</span> <span class="o">=</span> <span class="mh">0xff228b22</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">fuchsia</span> <span class="o">=</span> <span class="mh">0xffff00ff</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">gainsboro</span> <span class="o">=</span> <span class="mh">0xffdcdcdc</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">ghostwhite</span> <span class="o">=</span> <span class="mh">0xfff8f8ff</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">gold</span> <span class="o">=</span> <span class="mh">0xffffd700</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">goldenrod</span> <span class="o">=</span> <span class="mh">0xffdaa520</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">gray</span> <span class="o">=</span> <span class="mh">0xff808080</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">grey</span> <span class="o">=</span> <span class="mh">0xff808080</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">green</span> <span class="o">=</span> <span class="mh">0xff008000</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">greenyellow</span> <span class="o">=</span> <span class="mh">0xffadff2f</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">honeydew</span> <span class="o">=</span> <span class="mh">0xfff0fff0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">hotpink</span> <span class="o">=</span> <span class="mh">0xffff69b4</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">indianred</span> <span class="o">=</span> <span class="mh">0xffcd5c5c</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">indigo</span> <span class="o">=</span> <span class="mh">0xff4b0082</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">ivory</span> <span class="o">=</span> <span class="mh">0xfffffff0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">khaki</span> <span class="o">=</span> <span class="mh">0xfff0e68c</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lavender</span> <span class="o">=</span> <span class="mh">0xffe6e6fa</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lavenderblush</span> <span class="o">=</span> <span class="mh">0xfffff0f5</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lawngreen</span> <span class="o">=</span> <span class="mh">0xff7cfc00</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lemonchiffon</span> <span class="o">=</span> <span class="mh">0xfffffacd</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightblue</span> <span class="o">=</span> <span class="mh">0xffadd8e6</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightcoral</span> <span class="o">=</span> <span class="mh">0xfff08080</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightcyan</span> <span class="o">=</span> <span class="mh">0xffe0ffff</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightgoldenrodyellow</span> <span class="o">=</span> <span class="mh">0xfffafad2</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightgrey</span> <span class="o">=</span> <span class="mh">0xffd3d3d3</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightgray</span> <span class="o">=</span> <span class="mh">0xffd3d3d3</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightgreen</span> <span class="o">=</span> <span class="mh">0xff90ee90</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightpink</span> <span class="o">=</span> <span class="mh">0xffffb6c1</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightsalmon</span> <span class="o">=</span> <span class="mh">0xffffa07a</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightseagreen</span> <span class="o">=</span> <span class="mh">0xff20b2aa</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightskyblue</span> <span class="o">=</span> <span class="mh">0xff87cefa</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightslategray</span> <span class="o">=</span> <span class="mh">0xff778899</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightslategrey</span> <span class="o">=</span> <span class="mh">0xff778899</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightsteelblue</span> <span class="o">=</span> <span class="mh">0xffb0c4de</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lightyellow</span> <span class="o">=</span> <span class="mh">0xffffffe0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lime</span> <span class="o">=</span> <span class="mh">0xff00ff00</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">limegreen</span> <span class="o">=</span> <span class="mh">0xff32cd32</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">linen</span> <span class="o">=</span> <span class="mh">0xfffaf0e6</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">magenta</span> <span class="o">=</span> <span class="mh">0xffff00ff</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">maroon</span> <span class="o">=</span> <span class="mh">0xff800000</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">mediumaquamarine</span> <span class="o">=</span> <span class="mh">0xff66cdaa</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">mediumblue</span> <span class="o">=</span> <span class="mh">0xff0000cd</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">mediumorchid</span> <span class="o">=</span> <span class="mh">0xffba55d3</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">mediumpurple</span> <span class="o">=</span> <span class="mh">0xff9370d8</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">mediumseagreen</span> <span class="o">=</span> <span class="mh">0xff3cb371</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">mediumslateblue</span> <span class="o">=</span> <span class="mh">0xff7b68ee</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">mediumspringgreen</span> <span class="o">=</span> <span class="mh">0xff00fa9a</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">mediumturquoise</span> <span class="o">=</span> <span class="mh">0xff48d1cc</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">mediumvioletred</span> <span class="o">=</span> <span class="mh">0xffc71585</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">midnightblue</span> <span class="o">=</span> <span class="mh">0xff191970</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">mintcream</span> <span class="o">=</span> <span class="mh">0xfff5fffa</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">mistyrose</span> <span class="o">=</span> <span class="mh">0xffffe4e1</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">moccasin</span> <span class="o">=</span> <span class="mh">0xffffe4b5</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">navajowhite</span> <span class="o">=</span> <span class="mh">0xffffdead</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">navy</span> <span class="o">=</span> <span class="mh">0xff000080</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">oldlace</span> <span class="o">=</span> <span class="mh">0xfffdf5e6</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">olive</span> <span class="o">=</span> <span class="mh">0xff808000</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">olivedrab</span> <span class="o">=</span> <span class="mh">0xff6b8e23</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">orange</span> <span class="o">=</span> <span class="mh">0xffffa500</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">orangered</span> <span class="o">=</span> <span class="mh">0xffff4500</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">orchid</span> <span class="o">=</span> <span class="mh">0xffda70d6</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">palegoldenrod</span> <span class="o">=</span> <span class="mh">0xffeee8aa</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">palegreen</span> <span class="o">=</span> <span class="mh">0xff98fb98</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">paleturquoise</span> <span class="o">=</span> <span class="mh">0xffafeeee</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">palevioletred</span> <span class="o">=</span> <span class="mh">0xffd87093</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">papayawhip</span> <span class="o">=</span> <span class="mh">0xffffefd5</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">peachpuff</span> <span class="o">=</span> <span class="mh">0xffffdab9</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">peru</span> <span class="o">=</span> <span class="mh">0xffcd853f</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">pink</span> <span class="o">=</span> <span class="mh">0xffffc0cb</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">plum</span> <span class="o">=</span> <span class="mh">0xffdda0dd</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">powderblue</span> <span class="o">=</span> <span class="mh">0xffb0e0e6</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">purple</span> <span class="o">=</span> <span class="mh">0xff800080</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">red</span> <span class="o">=</span> <span class="mh">0xffff0000</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">rosybrown</span> <span class="o">=</span> <span class="mh">0xffbc8f8f</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">royalblue</span> <span class="o">=</span> <span class="mh">0xff4169e1</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">saddlebrown</span> <span class="o">=</span> <span class="mh">0xff8b4513</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">salmon</span> <span class="o">=</span> <span class="mh">0xfffa8072</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">sandybrown</span> <span class="o">=</span> <span class="mh">0xfff4a460</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">seagreen</span> <span class="o">=</span> <span class="mh">0xff2e8b57</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">seashell</span> <span class="o">=</span> <span class="mh">0xfffff5ee</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">sienna</span> <span class="o">=</span> <span class="mh">0xffa0522d</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">silver</span> <span class="o">=</span> <span class="mh">0xffc0c0c0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">skyblue</span> <span class="o">=</span> <span class="mh">0xff87ceeb</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">slateblue</span> <span class="o">=</span> <span class="mh">0xff6a5acd</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">slategray</span> <span class="o">=</span> <span class="mh">0xff708090</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">slategrey</span> <span class="o">=</span> <span class="mh">0xff708090</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">snow</span> <span class="o">=</span> <span class="mh">0xfffffafa</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">springgreen</span> <span class="o">=</span> <span class="mh">0xff00ff7f</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">steelblue</span> <span class="o">=</span> <span class="mh">0xff4682b4</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">tan</span> <span class="o">=</span> <span class="mh">0xffd2b48c</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">teal</span> <span class="o">=</span> <span class="mh">0xff008080</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">thistle</span> <span class="o">=</span> <span class="mh">0xffd8bfd8</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">tomato</span> <span class="o">=</span> <span class="mh">0xffff6347</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">turquoise</span> <span class="o">=</span> <span class="mh">0xff40e0d0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">violet</span> <span class="o">=</span> <span class="mh">0xffee82ee</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">wheat</span> <span class="o">=</span> <span class="mh">0xfff5deb3</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">white</span> <span class="o">=</span> <span class="mh">0xffffffff</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">whitesmoke</span> <span class="o">=</span> <span class="mh">0xfff5f5f5</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">yellow</span> <span class="o">=</span> <span class="mh">0xffffff00</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">yellowgreen</span> <span class="o">=</span> <span class="mh">0xff9acd32</span><span class="p">;</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

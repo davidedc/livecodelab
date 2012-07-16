@@ -1,0 +1,77 @@
+<!DOCTYPE html>  <html> <head>   <title>helper-functions.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               helper-functions.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>log() – A lightweight wrapper for console.log
+There are a few things that a console.log wrapper can and should do:
+ - Prevent errors if a console isn't around (i.e. IE)
+ - Maintain a history of logs, so you can look in the past if your console is added afterwards (e.g. firebug lite)
+ - Normalize the browser differences in console integration (e.g. when passing multiple arguments into console.log())
+ - For something you type regularly, make it quicker to type for the lazy among us.</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>usage: log('inside coolFunc',this,arguments);
+http://paulirish.com/2009/log-a-lightweight-wrapper-for-consolelog/</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">log</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="nx">log</span><span class="p">.</span><span class="nx">history</span> <span class="o">=</span> <span class="nx">log</span><span class="p">.</span><span class="nx">history</span> <span class="o">||</span> <span class="p">[];</span>   <span class="c1">// store logs to an array for reference</span>
+  <span class="nx">log</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+  <span class="k">if</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">console</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)</span> <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>/////////// START OF MOUSEWHEEL HANDLER CODE
+I couldn't quite get the exact Javascript plugin below to
+work in its original form, so I only took the
+"calculation" routine.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">wheel</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="cm">/*! Copyright (c) 2011 Brandon Aaron (http://brandonaaron.net)</span>
+<span class="cm">   * Licensed under the MIT License (LICENSE.txt).</span>
+<span class="cm">   *</span>
+<span class="cm">   * Thanks to: http://adomas.org/javascript-mouse-wheel/ for some pointers.</span>
+<span class="cm">   * Thanks to: Mathias Bank(http://www.mathias-bank.de) for a scope bug fix.</span>
+<span class="cm">   * Thanks to: Seamus Leahy for adding deltaX and deltaY</span>
+<span class="cm">   *</span>
+<span class="cm">   * Version: 3.0.6</span>
+<span class="cm">   *</span>
+<span class="cm">   * Requires: 1.2.2+</span>
+<span class="cm">   */</span>
+
+  <span class="kd">var</span> <span class="nx">orgEvent</span> <span class="o">=</span> <span class="nx">event</span> <span class="o">||</span> <span class="nb">window</span><span class="p">.</span><span class="nx">event</span><span class="p">,</span>
+    <span class="nx">args</span> <span class="o">=</span> <span class="p">[].</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="nx">delta</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nx">returnValue</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">deltaX</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nx">deltaY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="nx">event</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">event</span><span class="p">.</span><span class="nx">fix</span><span class="p">(</span><span class="nx">orgEvent</span><span class="p">);</span>
+  <span class="nx">event</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s2">&quot;mousewheel&quot;</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Old school scrollwheel delta</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">orgEvent</span><span class="p">.</span><span class="nx">wheelDelta</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">delta</span> <span class="o">=</span> <span class="nx">orgEvent</span><span class="p">.</span><span class="nx">wheelDelta</span> <span class="o">/</span> <span class="mi">120</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">orgEvent</span><span class="p">.</span><span class="nx">detail</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">delta</span> <span class="o">=</span> <span class="o">-</span><span class="nx">orgEvent</span><span class="p">.</span><span class="nx">detail</span> <span class="o">/</span> <span class="mi">3</span><span class="p">;</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>New school multidimensional scroll (touchpads) deltas</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">deltaY</span> <span class="o">=</span> <span class="nx">delta</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Gecko</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">orgEvent</span><span class="p">.</span><span class="nx">axis</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">orgEvent</span><span class="p">.</span><span class="nx">axis</span> <span class="o">===</span> <span class="nx">orgEvent</span><span class="p">.</span><span class="nx">HORIZONTAL_AXIS</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">deltaY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">deltaX</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">delta</span><span class="p">;</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Webkit</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">orgEvent</span><span class="p">.</span><span class="nx">wheelDeltaY</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">deltaY</span> <span class="o">=</span> <span class="nx">orgEvent</span><span class="p">.</span><span class="nx">wheelDeltaY</span> <span class="o">/</span> <span class="mi">120</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">orgEvent</span><span class="p">.</span><span class="nx">wheelDeltaX</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">deltaX</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">orgEvent</span><span class="p">.</span><span class="nx">wheelDeltaX</span> <span class="o">/</span> <span class="mi">120</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">+</span><span class="nx">deltaX</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">deltaY</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">deltaY</span> <span class="o">&gt;</span> <span class="mf">0.2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">cursorPositio</span> <span class="o">=</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getCursor</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>this is to prevent that when the cursor reaches the
+last line, then it goes to the END of the line
+we avoid that because of a nasty workaround
+where we check whether the cursor is in the
+first few characters of the line to avoid
+following a "next-tutorial" link.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">log</span><span class="p">(</span><span class="nx">cursorPositio</span><span class="p">.</span><span class="nx">line</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">editor</span><span class="p">.</span><span class="nx">lineCount</span><span class="p">())</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">cursorPositio</span><span class="p">.</span><span class="nx">line</span> <span class="o">!==</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">lineCount</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">editor</span><span class="p">.</span><span class="nx">setCursor</span><span class="p">(</span><span class="nx">cursorPositio</span><span class="p">.</span><span class="nx">line</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">cursorPositio</span><span class="p">.</span><span class="nx">ch</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">deltaY</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">cursorPositio</span> <span class="o">=</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getCursor</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+    <span class="nx">editor</span><span class="p">.</span><span class="nx">setCursor</span><span class="p">(</span><span class="nx">cursorPositio</span><span class="p">.</span><span class="nx">line</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">cursorPositio</span><span class="p">.</span><span class="nx">ch</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cm">/* Initialization code. */</span>
+<span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">)</span> <span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;DOMMouseScroll&#39;</span><span class="p">,</span> <span class="nx">wheel</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">onmousewheel</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">onmousewheel</span> <span class="o">=</span> <span class="nx">wheel</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>/////////// END OF MOUSEWHEEL HANDLER CODE
+this function is called when the cursor moves
+and we handle this in two ways
+1) we suspend the dimming countdown
+2) we undim the editor if it is dimmed
+3) we check whether the user moved the cursor over a link
+/////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

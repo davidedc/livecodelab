@@ -1,0 +1,76 @@
+<!DOCTYPE html>  <html> <head>   <title>text-dimming.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               text-dimming.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">suspendDimmingAndCheckIfLink</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Now this is kind of a nasty hack: we check where the
+cursor is, and if it's over a line containing the
+link then we follow it.
+There was no better way, for some reason some onClick
+events are lost, so what happened is that one would click on
+the link and nothing would happen.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">cursorP</span> <span class="o">=</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getCursor</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">cursorP</span><span class="p">.</span><span class="nx">ch</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">currentLineContent</span> <span class="o">=</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getLine</span><span class="p">(</span><span class="nx">cursorP</span><span class="p">.</span><span class="nx">line</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">currentLineContent</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;// next-tutorial:&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">currentLineContent</span> <span class="o">=</span> <span class="nx">currentLineContent</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">17</span><span class="p">);</span>
+      <span class="nx">currentLineContent</span> <span class="o">=</span> <span class="nx">currentLineContent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>alert(""+url);</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">setTimeout</span><span class="p">(</span><span class="s1">&#39;loadDemoOrTutorial(&quot;&#39;</span> <span class="o">+</span> <span class="nx">currentLineContent</span> <span class="o">+</span> <span class="s1">&#39;Tutorial&quot;);&#39;</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">fakeText</span> <span class="o">||</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">()</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+  <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;cursor activity! opacity: &#39;</span> <span class="o">+</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#formCode&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s1">&#39;opacity&#39;</span><span class="p">));</span>
+  <span class="nx">cursorActivity</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="nx">undimEditor</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">undimEditor</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">fakeText</span> <span class="o">||</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">()</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#formCode&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s1">&#39;opacity&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#formCode&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s1">&#39;opacity&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.99</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;undimming the editor&#39;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#formCode&quot;</span><span class="p">).</span><span class="nx">animate</span><span class="p">({</span>
+      <span class="nx">opacity</span><span class="o">:</span> <span class="mi">1</span>
+    <span class="p">},</span> <span class="s2">&quot;fast&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Now that there is a manual switch to toggle it off and on
+the dimming goes to full INvisibility
+see toggleDimCode() 
+not sure about that, want to try it on people -- julien </p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">dimEditor</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>TODO there is a chance that the animation library
+doesn't bring the opacity completely to zero
+but rather to a value close to it.
+Make the animation step to print something
+just to make sure that this is not the case.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#formCode&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s1">&#39;opacity&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;starting fadeout animation&#39;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#formCode&quot;</span><span class="p">).</span><span class="nx">animate</span><span class="p">({</span>
+      <span class="nx">opacity</span><span class="o">:</span> <span class="mi">0</span>
+    <span class="p">},</span> <span class="s2">&quot;slow&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">dimIfNoCursorActivity</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">fakeText</span> <span class="o">||</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">()</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">cursorActivity</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;marking cursor activity = false. Will check again in the next interval&#39;</span><span class="p">);</span>
+    <span class="nx">cursorActivity</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;no activity in the last interval. Dimming now, starting opacity is: &#39;</span> <span class="o">+</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#formCode&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s1">&#39;opacity&#39;</span><span class="p">)</span> <span class="p">);</span>
+    <span class="nx">dimEditor</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>a function to toggle code diming on and off -- julien </p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">toggleDimCode</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">dimcodeOn</span> <span class="o">=</span> <span class="o">!</span><span class="nx">dimcodeOn</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">dimcodeOn</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">dimIntervalID</span><span class="p">);</span>
+    <span class="nx">undimEditor</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#dimCodeIndicator&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s2">&quot;Code Caché: inactif&quot;</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#dimCodeIndicator&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s2">&quot;Hide Code: off&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>we restart a setInterval</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">dimIntervalID</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="s2">&quot;dimIfNoCursorActivity()&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#dimCodeIndicator&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s2">&quot;Code Caché: actif&quot;</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#dimCodeIndicator&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s2">&quot;Hide Code: on&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+  <span class="p">}</span>
+<span class="p">}</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
