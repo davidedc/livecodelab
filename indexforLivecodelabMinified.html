@@ -1,0 +1,251 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Livecodelab</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<link  href="css/main.css" rel="stylesheet"/>
+		<link rel="stylesheet" href="codemirror.css">
+		<link rel="stylesheet" href="night.css">
+		
+			<!-- Start simple modal CSS-->
+			<!-- Page styles -->
+			<link type='text/css' href='simpleModal/css/demo.css' rel='stylesheet' media='screen' />			
+			<!-- Contact Form CSS files -->
+			<link type='text/css' href='simpleModal/css/basic.css' rel='stylesheet' media='screen' />
+					<!-- end simple modal CSS-->
+
+
+		<script src="vendor/three.js/Three.js"></script>
+		<script src="coffee-script.js"></script>
+		<script  src="codemirror.js"></script>
+		<script  src="jquery.min.js"></script>
+		<script src='simpleModal/js/jquery.js'></script>
+		<script src='simpleModal/js/jquery.simplemodal.js'></script>
+		<script src="Livecodelab-minified.js"></script>
+
+
+		<style type="text/css">
+		  .CodeMirror {border: none; }
+		</style>
+
+			<style type="text/css">
+					a:hover {cursor: default;}
+					.dd_menu {background:#000000; border-bottom: 1px; border-bottom-color: white; border-bottom-style: dotted; padding:0px; margin:0; list-style-type:none; height:30px;}
+					.dd_menu li {float:left; height:30px; border-right: solid 1px white; border-right-style: dotted;}
+					.dd_menu li a {padding:9px 20px; display:block; color:#fff; text-decoration:none; font:12px arial, verdana, sans-serif; font-weight: bold; }
+					.dd_menu li:hover a {color:black;}
+					
+					.dd_menu ul { position:absolute; left:-9999px; top:-9999px; list-style-type:none;}
+					.dd_menu li:hover {position:relative; background:white;}
+					.dd_menu li:hover ul {left:0px; top:30px; background:#000000; padding:3px; border:0px solid white; width:160px;}
+					.dd_menu li:hover ul li {height:18px; border:none; }
+					.dd_menu li:hover ul li a {height:18px; padding:0px; display:block; font-size:11px; width:158px; line-height:18px; text-indent:15px; color:white; background-color:#000000; text-decoration:none;  border-top: 1px; border-top-color: #333; border-top-style: dotted;}
+					.dd_menu li:hover ul li a:hover {height:18px; background:silver; color:#000; border:solid 1px #444; }
+					
+					#dangerSignText {color:#000000; text-decoration:none;}
+					#dangerSign:hover {background:#000000;}
+
+					#errorMessageText {text-decoration:none;}
+					#errorMessage:hover {background:#000000;}
+					
+					.verticalMiddleOfScreen        
+						{
+						color: white;
+						background-color: transparent;
+						text-align: center;
+						position: absolute;
+						top: 50%;
+						left: 0px;
+						width: 100%;
+						height: 1px;
+						overflow: visible;
+						visibility: visible;
+						display: block
+						}
+					
+					.fakeAnimationContent    
+						{
+						font-family: Verdana, Geneva, Arial, sans-serif;
+						background-color: transparent;
+						margin-left: -1.5em;
+						position: absolute;
+						top: -1.1em;
+						left: 50%;
+						width: 3em;
+						height: 2em;
+						padding-top: 0px;
+						visibility: visible
+						}
+    
+			</style>
+		<!-- end of second drop-down menu -->
+
+	
+	</head>
+<body>
+
+
+
+<div class="verticalMiddleOfScreen" id="toMove" style="font-size:30em;">
+    <div class="fakeAnimationContent" >
+        <p id="caption"></p>
+    </div>
+</div>
+<div class="verticalMiddleOfScreen" id="justForFakeCursor" style="font-size:30em;">
+    <div class="fakeAnimationContent" >
+		<p id="fakeStartingBlinkingCursor">|</p>
+    </div>
+</div>
+
+		<!-- preload the images -->
+		<div style='display:none'>
+			<img src='simpleModal/img/basic/x.png' alt='' />
+		</div>
+
+		<div id='startingCourtainScreen' style='width:100%; height:100%; background-color:white; position: absolute;  z-index:4; top: 0px; left: 0px;'>
+			<div class="verticalMiddleOfScreen" id="loading" style="font-size:3em; color: red">
+				loading /</div>
+		</div>
+
+
+		<!-- modal content -->
+		<div id="aboutWindow">
+			<h3>What&apos;s this?</h3>
+			<p>This is a toy live coding environment: programs run immediately as they are typed.<br><br>Pick something from the "Demos" menu or try the tutorials.</p>
+			<p>Want more info? <a href="http://www.sketchpatch.net/labs/livecodelabIntro.html"> See this.</a></p>
+			<p>Want to hack this? <a href="https://github.com/davidedc/livecodelab"> Grab the source code!</a></p>
+		</div>
+
+		<div id="noWebGLMessage">
+			<h3>Drag!</h3>
+			<p>Your browser doesn't seem to support 3D acceleration.</p>
+			<p>You'll still have fun, but you really want to try to <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" target="_blank">get the 3D party going in your browser</a>.</p>
+			<p>(psst! - it's worth it!). </p>
+		</div>
+
+		<div id="exampleNeedsWebgl">
+			<h3>Oh nooo.</h3>
+			<p>All these examples starting with "webgl" are going to look silly in your browser (which doesn't seem to support 3D acceleration).</p>
+			<p>Why not try to <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" target="_blank">get some awesome 3D action started</a>?</p>
+		</div>
+
+		<div id="noAudioMessage">
+			<h3>Snap!</h3>
+			<p>Your browser doesn't seem to support audio.</p>
+			<p>Be a champion and try <a href="http://browsehappy.com/" target="_blank">a newer browser</a>.</p>
+			<p>(while you are at it, pick one that supports 3D such as Chrome or Firefox).</p>
+		</div>
+
+		<div id="soundSystemIsMangledMessage">
+			<h3>Congrats!</h3>
+			<p>You've unlocked the "I borked the sound system" badge!</p>
+			<p>This sometime happens when playing lots of music.</p>
+			<p>Just re-start the browser to get everything back to normal.</p>
+			<p>(We know it's fun, we do this all the time, it's OK).</p>
+		</div>
+
+		<div id="noCanvasMessage">
+			<h3>Oh my!</h3>
+			<p>Your browser is way old.</p>
+			<p>We understand. We were there 5 years ago. Why not try <a href="http://browsehappy.com/" target="_blank">a shinier browser</a>?</p>
+			<p>(while you are at it, pick one that supports 3D such as Chrome or Firefox).</p>
+		</div>
+
+<div id="theMenu" style="position: absolute;  z-index:3; top: 0px; left: 0px; width:100%">
+
+<ul class='dd_menu' >
+
+	<li><a href="javascript:void(0)" onclick="$('#aboutWindow').modal();$('#simplemodal-container').height(250);" style="text-decoration:none; color:red;">LIVECODELAB</a>
+	</li>
+
+	<li><a href="javascript:void(0)" style="text-decoration:none;" id="demoMenu">Demos</a>
+		<ul>
+		
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('simpleCubeDemo');" id="simpleCubeDemo">Simple cube</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('cubesAndSpikes');" id="cubesAndSpikes">Cubes and spikes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('littleSpiralOfCubes');" id="littleSpiralOfCubes">Little spiral</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('tentacleDemo');" id="tentacleDemo">Tentacle</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('springysquaresDemo');" id="springysquaresDemo">Springy squares</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('diceDemo');" id="diceDemo">Dice</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('lampDemo');" id="lampDemo">Lamp</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('trillionfeathersDemo');" id="trillionfeathersDemo">A trillion feathers</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('monsterblobDemo');" id="monsterblobDemo">Monster blob</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('industrialMusicDemo');" id="industrialMusicDemo">Sound: Industrial</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('trySoundsDemo');" id="trySoundsDemo">Sound: Try them all</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglalmostvoronoiDemo');" id="webglalmostvoronoiDemo">WebGL: Almost Voronoi</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglshardsDemo');" id="webglshardsDemo">WebGL: Shards</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglredthreadsDemo');" id="webglredthreadsDemo">WebGL: Red threads</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webgltwocubesDemo');" id="webgltwocubesDemo">WebGL: Two cubes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglturbineDemo');" id="webglturbineDemo">WebGL: Turbine</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglzfightartDemo');" id="webglzfightartDemo">WebGL: Z-fight art!</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglnuclearOctopusDemo');" id="webglnuclearOctopusDemo">WebGL: Nuclear octopus</a></li>
+		</ul>
+	</li>
+	<li><a href="javascript:void(0)" style="text-decoration:none;" id="tutorialsMenu">Tutorials</a>
+		<ul>		
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('introTutorial');" id="introTutorial">intro</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('helloworldTutorial');" id="helloworldTutorial">hello world</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('somenotesTutorial');" id="somenotesTutorial">some notes</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('rotateTutorial');" id="rotateTutorial">rotate</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('frameTutorial');" id="frameTutorial">frame</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('timeTutorial');" id="timeTutorial">time</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('moveTutorial');" id="moveTutorial">move</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('scaleTutorial');" id="scaleTutorial">scale</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('timesTutorial');" id="timesTutorial">times</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('fillTutorial');" id="fillTutorial">fill</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('strokeTutorial');" id="strokeTutorial">stroke</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('colornamesTutorial');" id="colornamesTutorial">color by name</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('lightsTutorial');" id="lightsTutorial">lights</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('backgroundTutorial');" id="backgroundTutorial">background</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('gradientTutorial');" id="gradientTutorial">gradient</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('lineTutorial');" id="lineTutorial">line</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('ballTutorial');" id="ballTutorial">ball</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('pushpopMatrixTutorial');" id="pushpopMatrixTutorial">push and pop</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('animationstyleTutorial');" id="animationstyleTutorial">animation style</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('doonceTutorial');" id="doonceTutorial">do once</a></li>
+			<li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('autocodeTutorial');" id="autocodeTutorial">autocode</a></li>
+		</ul>
+	</li>
+	<li id="autocodeIndicatorContainer" onClick="toggleAutocode();"><a id="autocodeIndicator" href="javascript:void(0)"  style="text-decoration:none;">Autocode: off</a>
+	</li>
+	
+	
+    <!-- Adding a manual hide code toggle julien-->
+	<li id="dimCodeButtonContainer" onClick="toggleDimCode();"><a id="dimCodeIndicator" href="javascript:void(0)"  style="text-decoration:none;">Hide Code: on</a>
+	</li>
+	
+	<li id="resetButtonContainer" onClick="triggerReset();"><a id="resetButton" href="javascript:void(0)"  style="text-decoration:none;" >Reset</a>
+	</li>
+	<li id="dangerSign" style="border-right:none;"><a href="" id="dangerSignText" style="font-size:2em;margin-top:-0.3em;">!</a>
+	</li>
+	<li id="errorMessage" style="border-right:none;"><a href="javascript:void(0)" id="errorMessageText" ></a>
+	</li>
+
+</ul>
+</div>
+
+
+
+
+<div name="miao" id="miao" style="position: absolute;  top: 30px; left: 0px; width: 100%; font-size: 3em;">
+
+<canvas id="backGroundCanvas" style="position: absolute; z-index:-3; top: 0px; left: 0px;" width="100" height="100"></canvas> 
+<canvas id="finalRenderWithSceneAndBlendCanvas" style="position: absolute; z-index:-2; top: 0px; left: 0px;" width="100" height="100"></canvas> 
+
+
+
+		<form id="formCode" autocapitalize="off" autocorrect="off" wrap="off" ><textarea id="code" name="code" style="z-index:1;" autocapitalize="off" autocorrect="off" wrap="off" ></textarea></form>
+
+      </div>
+
+	<!-- three.js container -->
+    	<div id="container" style="position: absolute; z-index:-1; top: 0px; left: 0px;"></div>
+
+
+
+
+
+</body>
+</html>
