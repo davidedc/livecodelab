@@ -17,15 +17,15 @@ var refractValue = 0.98;
 //  refractValue = a;
 //}
 var lightsAreOn = false;
-lights = function() {
+var lights = function() {
   lightsAreOn = true;
 }
-noLights = function() {
+var noLights = function() {
   lightsAreOn = false;
 }
 
 
-ambientLight = function() {
+var ambientLight = function() {
 
   var colorToBeUsed;
   if (arguments[0] === undefined) {
@@ -75,7 +75,7 @@ ambientLight = function() {
 
 }
 
-animationStyle = function(a) {
+var animationStyle = function(a) {
   // turns out when you type normal that the first two letters "no"
   // are sent as "false"
   if (a === false) return;
@@ -84,7 +84,7 @@ animationStyle = function(a) {
 }
 
 
-animationStyleUpdateIfChanged = function() {
+var animationStyleUpdateIfChanged = function() {
   //alert("actual called " + a);
   if ((animationStyleValue !== previousanimationStyleValue)) {
     //alert("actual changed!");
