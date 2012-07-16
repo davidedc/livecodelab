@@ -1,4 +1,8 @@
-function initThreeJs() {
+
+//
+//
+
+var initThreeJs = function() {
 
   scaledBackgroundWidth = Math.floor(window.innerWidth / backGroundFraction);
   scaledBackgroundHeight = Math.floor(window.innerHeight / backGroundFraction);
@@ -113,21 +117,23 @@ function initThreeJs() {
 
 }
 
-buildPostprocessingChain = function() {
-  renderTargetParameters = {
+var effectBlend;
+
+var buildPostprocessingChain = function() {
+  var renderTargetParameters = {
     format: THREE.RGBAFormat,
     stencilBuffer: true
   };
 
-  renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters);
-  effectSaveTarget = new THREE.SavePass(new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters));
+  var renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters);
+  var effectSaveTarget = new THREE.SavePass(new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters));
   effectSaveTarget.clear = false;
 
-  fxaaPass = new THREE.ShaderPass(THREE.ShaderExtras["fxaa"]);
+  var fxaaPass = new THREE.ShaderPass(THREE.ShaderExtras["fxaa"]);
   fxaaPass.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
 
   effectBlend = new THREE.ShaderPass(THREE.ShaderExtras["blend"], "tDiffuse1");
-  screenPass = new THREE.ShaderPass(THREE.ShaderExtras["screen"]);
+  var screenPass = new THREE.ShaderPass(THREE.ShaderExtras["screen"]);
 
   // motion blur
   effectBlend.uniforms['tDiffuse2'].texture = effectSaveTarget.renderTarget;
