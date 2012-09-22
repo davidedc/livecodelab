@@ -348,6 +348,14 @@ INIT (/color\s*\(.+\)/) (function (match,rest,state) {
     Tokens.push(new UNKNOWN(match[0])); 
     return state.continuation(rest) ;
  }) ;
+INIT (/noFill/) (function (match,rest,state) {
+    Tokens.push(new UNKNOWN(match[0])); 
+    return state.continuation(rest) ;
+ }) ;
+INIT (/strokeSize/) (function (match,rest,state) {
+    Tokens.push(new UNKNOWN(match[0])); 
+    return state.continuation(rest) ;
+ }) ;
 
 
 function emit( stream )
