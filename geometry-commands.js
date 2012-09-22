@@ -93,7 +93,7 @@ var rect = function(a, b) {
     startIndex = 0;
     endIndex = 2;
   }
-  log("si: " + startIndex + " endI: " + endIndex );
+//  log("si: " + startIndex + " endI: " + endIndex );
   if (a === undefined) {
     a = 1;
     b = 1;
@@ -183,7 +183,7 @@ var rect = function(a, b) {
         pooledRectangle.mesh = new THREE.Mesh(planeGeometry, pooledRectangle.normalMaterial);
         pooledRectangle.startCountdown = SPINFRAMES;
       } else {
-        log("associating normal material to existing mesh");
+//        log("associating normal material to existing mesh");
         pooledRectangle.mesh.material = pooledRectangle.normalMaterial;
       }
     } else if (!lightsAreOn) {
@@ -309,7 +309,7 @@ var box = function(a, b, c) {
     startIndex = 0;
     endIndex = 2;
   }
-  log("si: " + startIndex + " endI: " + endIndex );
+//  log("si: " + startIndex + " endI: " + endIndex );
   if (a === undefined) {
     //alert('cube!')
     a = 1;
@@ -401,7 +401,7 @@ var box = function(a, b, c) {
         pooledBox.mesh = new THREE.Mesh(cubeGeometry, pooledBox.normalMaterial);
         pooledBox.startCountdown = SPINFRAMES;
       } else {
-        log("associating normal material to existing mesh");
+//        log("associating normal material to existing mesh");
         pooledBox.mesh.material = pooledBox.normalMaterial;
       }
     } else if (!lightsAreOn) {
@@ -530,7 +530,7 @@ var peg = function(a, b, c) {
     startIndex = 0;
     endIndex = 2;
   }
-  log("si: " + startIndex + " endI: " + endIndex );
+//  log("si: " + startIndex + " endI: " + endIndex );
   if (a === undefined) {
     //alert('cube!')
     a = 1;
@@ -622,7 +622,7 @@ var peg = function(a, b, c) {
         pooledCylinder.mesh = new THREE.Mesh(cylinderGeometry, pooledCylinder.normalMaterial);
         pooledCylinder.startCountdown = SPINFRAMES;
       } else {
-        log("associating normal material to existing mesh");
+////        log("associating normal material to existing mesh");
         pooledCylinder.mesh.material = pooledCylinder.normalMaterial;
       }
     } else if (!lightsAreOn) {
@@ -760,7 +760,7 @@ var ball = function(a) {
     startIndex = 0;
     endIndex = 2;
   }
-  log("si: " + startIndex + " endI: " + endIndex );
+//  log("si: " + startIndex + " endI: " + endIndex );
   if (a === undefined) {
     //alert('ball!')
     a = 1;
@@ -862,7 +862,7 @@ var ball = function(a) {
         pooledSphere.mesh = new THREE.Mesh(pooledSphereGeometry, pooledSphere.normalMaterial);
         pooledSphere.startCountdown = SPINFRAMES;
       } else {
-        log("associating normal material to existing mesh");
+//        log("associating normal material to existing mesh");
         pooledSphere.mesh.material = pooledSphere.normalMaterial;
       }
     } else if (!lightsAreOn) {
