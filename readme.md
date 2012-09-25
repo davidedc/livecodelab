@@ -49,13 +49,14 @@ For a more fine grained look at feature requests and bugs, take a look at <a hre
 
 #### Libraries used ###
 
-Three.js by Ricardo Cabello aka Mr.doob.
-Coffeescript by Jeremy Ashkenas.
-Buzz.js by Jay Salvat.
-Processing.js library by J. Resig.
-Code Mirror by Marijn Haverbeke.
-Scrollwheel handler by Brandon Aaron.
-
+ * Three.js by Ricardo Cabello aka Mr.doob.
+ * Coffeescript by Jeremy Ashkenas.
+ * Buzz.js by Jay Salvat.
+ * Processing.js library by J. Resig.
+ * Code Mirror by Marijn Haverbeke.
+ * Scrollwheel handler by Brandon Aaron.
+ * McLexer by Matthew Might.
+ 
 #### Examples ####
 
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/Thumb35.png" width="200" height="115">
