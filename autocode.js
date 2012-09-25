@@ -57,7 +57,7 @@ function toggleAutocodeAndUpdateButtonAndBlinking() {
 //
 // * each of the "token" functions contains a) a string representation from the text in the program
 // e.g. in the example above "rotate" and "20" and b) an accessory function for printout of the token and
-// c) optionally, a function mutate() that changes the string of the fiels of a) with a mutated string
+// c) optionally, a function mutate() that changes the string of the field of a) with a mutated string
 //
 // * the token list is scanned. Each function is checked for whether it contains a "mutate"
 // function. If yes, then it's added as a candidate to an "mutatableTokens" array.
@@ -358,7 +358,7 @@ INIT (/delay/) (function (match,rest,state) {
     return state.continuation(rest) ;
  }) ;
 
-// spesh
+// special
 INIT (/\?doOnce\s+->\s*/) (function (match,rest,state) {
     Tokens.push(new DOONCE(match[0])); 
     return state.continuation(rest) ;
