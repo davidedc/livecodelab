@@ -13,6 +13,7 @@ import sys
 
 COMMON_FILES = [
 #'vendor/three.js/Three.js',
+'vendor/mclexer.js',
 'vendor/three.js/Detector.js',
 'vendor/three.js/Stats.js',
 'vendor/threex/THREEx.WindowResize.js',
