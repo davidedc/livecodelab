@@ -258,9 +258,9 @@ INIT (/scale/) (function (match,rest,state) {
  }) ;
 
 // colour
-for( i=0; i < colours.length;i++)
+for( var scanningAllColors=0; scanningAllColors < colours.length;scanningAllColors++)
 {
-	INIT (new RegExp( colours[i] )) (function (match,rest,state) { Tokens.push(new COLOUR(match[0])); return state.continuation(rest) ; }) ;
+	INIT (new RegExp( colours[scanningAllColors] )) (function (match,rest,state) { Tokens.push(new COLOUR(match[0])); return state.continuation(rest) ; }) ;
 }
 
 // colour ops
@@ -362,9 +362,9 @@ function emit( stream )
 {
 	var ret = "";
 
-	for( i=0; i<stream.length; i++ )
+	for( var scanningTheStream=0; scanningTheStream<stream.length; scanningTheStream++ )
 	{
-		ret = ret + stream[i].string
+		ret = ret + stream[scanningTheStream].string
 	}
 
 	return ret;
@@ -381,11 +381,11 @@ function doMutate( stream )
 {
 	var options = Array();
 
-	for( i=0; i<stream.length; i++ )
+	for( var scanningTheStream=0; scanningTheStream<stream.length; scanningTheStream++ )
 	{
-		if ( canMutate( stream[i] ) )
+		if ( canMutate( stream[scanningTheStream] ) )
 		{
-			options.push(i);
+			options.push(scanningTheStream);
 		}
 	}
 
