@@ -192,7 +192,7 @@ var dimcodeOn = false;
 
 function triggerReset() {
   pickRandomDefaultGradient();
-  if (autocodeOn) toggleAutocode();
+  if (autocodeOn) toggleAutocodeAndUpdateButtonAndBlinking();
   editor.setValue('');
   $("#resetButtonContainer").css("background-color", '#FF0000');
   setTimeout('$("#resetButtonContainer").css("background-color","");', 200);

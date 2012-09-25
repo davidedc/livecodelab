@@ -1,4 +1,7 @@
-// this is where the Autocode functions go
+// This contains all the autocode-related parts.
+// The file starts with some declarations and two functions that take
+// care of the UI parts (showing the correct state of the button and making it blink).
+// The remaining part then takes care of the mutations.
 
 var autocodeOn = false;
 var blinkingAutocoderTimeout;
@@ -16,8 +19,7 @@ function blinkAutocodeIndicator() {
   }
 }
 
-
-function toggleAutocode() {
+function toggleAutocodeAndUpdateButtonAndBlinking() {
   autocodeOn = !autocodeOn;
 
   if (!autocodeOn) {
@@ -43,6 +45,22 @@ function toggleAutocode() {
   }
 }
 
+// every time a mutation is invoked, the following happens:
+//  - the program is scanned by a lexer
+//    the lexer could maintain/change/act on an user-defined state based on what it
+//    encounters but for the time being that is not used. So for the time being in practice the lexer
+//    parses the tokens based on regular expressions without using states.
+//    The definitions of what constitutes a token is defined by regexes in the "rules" section
+//  - for each token, a function is added to the Token array. For example "rotate 20" creates two
+//    tokens, which are two functions TRANSLATE and NUM
+//  - each of the "token" functions contains a) a string representation from the text in the program
+//    e.g. in the example above "rotate" and "20" and b) an accessory function for printout of the token and
+//    c) optionally, a function doMutate() that changes the string of the fiels of a) with a mutated string
+//  - the token list is scanned. Each function is checked for whether it contains a "doMutate"
+//    function. If yes, then it's added as a candidate to an "options" array.
+//  - a random option is picked and doMutate is ran for that token
+//  - the token list is traversed and the strings are appended one to another, creating the new
+//    mutated program.
 
 function mutate() {
 	var editorContent = editor.getValue();
