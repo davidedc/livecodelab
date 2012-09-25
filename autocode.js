@@ -1,5 +1,4 @@
-// This contains all the autocode-related parts.
-// The file starts with some declarations and two functions that take
+// We starts with some declarations and two functions that take
 // care of the UI parts (showing the correct state of the button and making it blink).
 // The remaining part then takes care of the mutations.
 
@@ -58,12 +57,12 @@ function toggleAutocodeAndUpdateButtonAndBlinking() {
 //
 // * each of the "token" functions contains a) a string representation from the text in the program
 // e.g. in the example above "rotate" and "20" and b) an accessory function for printout of the token and
-// c) optionally, a function doMutate() that changes the string of the fiels of a) with a mutated string
+// c) optionally, a function mutate() that changes the string of the fiels of a) with a mutated string
 //
-// * the token list is scanned. Each function is checked for whether it contains a "doMutate"
-// function. If yes, then it's added as a candidate to an "options" array.
+// * the token list is scanned. Each function is checked for whether it contains a "mutate"
+// function. If yes, then it's added as a candidate to an "mutatableTokens" array.
 //
-// * a random option is picked and doMutate is ran for that token
+// * a random option is picked and mutate is ran for that token
 //
 // * the token list is traversed and the strings are appended one to another, creating the new
 // mutated program.
@@ -77,23 +76,25 @@ function mutate() {
 	INIT.lex(editorContent)
 	} catch(e) {console.log(e);} 
 
-	doMutate(Tokens);
+	pickMutatableTokenAndMutateIt(Tokens);
 	newContent = emit(Tokens);
 
 	editor.setValue(newContent);
 }
 
 
-/* Lexing states. */
+// Lexing states. There are no particular states so far.
 var INIT = new McLexer.State() ;
 
 
+// We keep an array of colours as they can be mutated too!
+// TODO this is duplicated somewhere else in livecodelab.
 var colours = Array( "aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgrey","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkslategrey","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dimgrey","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","grey","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgrey","lightgray","lightgreen","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightslategrey","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","slategrey","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen" );
 
-/* Tokens will contain all of the tokens. */
+// The Tokens array will contain all of the tokens in the form of functions.
 var Tokens = [] ;
 
-/* Token classes. */
+// Token types. If they contain a mutate() function, then they can be mutated.
 function COMMENT(string) {
   this.string = string ;
   this.toString = function () { return "COMMENT(" + string + ")" ; } ;
@@ -241,7 +242,12 @@ function UNKNOWN(string){
 }
 
 
-/* Rules. */
+// Rules are used to
+//
+// * define how tokens are picked up from text (i.e. which regex)
+//
+// * how the lexer behaves depending on different states. This is currently not used.
+
 INIT (/\/\/.*\n/) (function (match,rest,state) {
     Tokens.push(new COMMENT(match[0])); 
     return state.continuation(rest) ;
@@ -382,6 +388,8 @@ INIT (/strokeSize/) (function (match,rest,state) {
  }) ;
 
 
+// Traverses the Tokens array and concatenates the strings, hence generating a possibly mutated program.
+
 function emit( stream )
 {
 	var ret = "";
@@ -394,6 +402,7 @@ function emit( stream )
 	return ret;
 }
 
+// Checks whether a token can mutate by checking whether the mutate function exists.
 function canMutate( token )
 {
 	if ( typeof token.mutate == 'function' )
@@ -401,33 +410,35 @@ function canMutate( token )
 	return false;
 }
 
-function doMutate( stream )
+// Scans the tokens and collects the mutatable ones. Then picks one random and invokes its mutate().
+
+function pickMutatableTokenAndMutateIt( stream )
 {
-	var options = Array();
+	var mutatableTokens = Array();
 
 	for( var scanningTheStream=0; scanningTheStream<stream.length; scanningTheStream++ )
 	{
 		if ( canMutate( stream[scanningTheStream] ) )
 		{
-			options.push(scanningTheStream);
+			mutatableTokens.push(scanningTheStream);
 		}
 	}
 
-	if ( 0 == options.length )
+	if ( 0 == mutatableTokens.length )
 	{
 		console.log('no possible mutations');
 		return;
 	}
 
-	console.log(options);
+	console.log(mutatableTokens);
 
-	var idx = Math.floor(Math.random() * options.length);
+	var idx = Math.floor(Math.random() * mutatableTokens.length);
 
-	stream[ options[idx] ].mutate();
+	stream[ mutatableTokens[idx] ].mutate();
 }
 
 
-
+// Currently unused.
 
 function replaceTimeWithAConstant() {
   var editorContent = editor.getValue();
