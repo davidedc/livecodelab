@@ -57,7 +57,7 @@ var background = function() {
   // the background command? (In processing it's not)
 
   var a = color(arguments[0], arguments[1], arguments[2], arguments[3]);
-  log("adding solid background to stack");
+//  log("adding solid background to stack");
   //if (a===undefined) a = color(0);
   currentGradientStackValue = currentGradientStackValue + " null null null null " + a + " ";
   gradStack.push({
