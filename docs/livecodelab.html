@@ -133,7 +133,7 @@ clear the final render context</p>             </td>             <td class="code
 
 <span class="kd">function</span> <span class="nx">triggerReset</span><span class="p">()</span> <span class="p">{</span>
   <span class="nx">pickRandomDefaultGradient</span><span class="p">();</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">autocodeOn</span><span class="p">)</span> <span class="nx">toggleAutocode</span><span class="p">();</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">autocodeOn</span><span class="p">)</span> <span class="nx">toggleAutocodeAndUpdateButtonAndBlinking</span><span class="p">();</span>
   <span class="nx">editor</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
   <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#resetButtonContainer&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span> <span class="s1">&#39;#FF0000&#39;</span><span class="p">);</span>
   <span class="nx">setTimeout</span><span class="p">(</span><span class="s1">&#39;$(&quot;#resetButtonContainer&quot;).css(&quot;background-color&quot;,&quot;&quot;);&#39;</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
