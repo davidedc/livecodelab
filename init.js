@@ -1,3 +1,4 @@
+var startingSound;
 
 var closeAndCheckAudio = function() {
     //$('#noWebGLMessage').close();
@@ -182,6 +183,13 @@ editor.setOption("theme", 'night');
     var demoToLoad = window.location.hash.substring("bookmark".length + 2);
     //setTimeout ( "loadDemoOrTutorial('"+demoToLoad+"');",500);
     loadDemoOrTutorial(demoToLoad);
+  }
+  else {
+			startingSound = new buzz.sound( "./sound/audioFiles/start_bing", {
+					formats: [ "ogg", "mp3" ]
+			});
+			
+			setTimeout("startingSound.play();",650);
   }
   fakeCursorInterval = setInterval("fakeCursorBlinking()", 800);
 

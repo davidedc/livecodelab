@@ -7,6 +7,8 @@ var soundDefCounter = 0;
 
 // first value here below of soundDefCounter is zero.
 
+soundDef[soundDefCounter++] = {soundName: 'bing', soundFile: './sound/audioFiles/start_bing'};
+
 soundDef[soundDefCounter++] = {soundName: 'toc', soundFile: './sound/audioFiles/AMB_BD_1'};
 soundDef[soundDefCounter++] = {soundName: 'highHatClosed', soundFile: './sound/audioFiles/AMB_HHCL'};
 soundDef[soundDefCounter++] = {soundName: 'highHatOpen', soundFile: './sound/audioFiles/AMB_HHOP'};
