@@ -1,5 +1,5 @@
-var beatsPerMinute = 0;
-var oldBeatsPerMinute = 0;
+var updatesPerMinute = 0;
+var oldupdatesPerMinute = 0;
 var soundLoopTimer;
 var beatNumber = 0;
 
@@ -8,31 +8,31 @@ var bpm = function(a) {
   // timid attempt at sanity check.
   // the sound system might well bork out
   // even below 500 bpm.
-  if (a > 500) a = 500;
+  if (a > 125) a = 125;
   if (a < 0) a = 0;
 
-  beatsPerMinute = a;
-  updateBpmIfChanged();
+  updatesPerMinute = a*4;
+  changeUpdatesPerMinuteIfNeeded();
 }
 
-var updateBpmIfChanged = function() {
-  if (oldBeatsPerMinute !== beatsPerMinute) {
-    //alert('changing beats per minute old ' + oldBeatsPerMinute + ' new: ' + beatsPerMinute);
+var changeUpdatesPerMinuteIfNeeded = function() {
+  if (oldupdatesPerMinute !== updatesPerMinute) {
+    //alert('changing beats per minute old ' + oldupdatesPerMinute + ' new: ' + updatesPerMinute);
     clearTimeout(soundLoopTimer);
 
-    if (beatsPerMinute !== 0) {
-      soundLoopTimer = setInterval('soundLoop();', (1000 * 60) / beatsPerMinute);
+    if (updatesPerMinute !== 0) {
+      soundLoopTimer = setInterval('soundLoop();', (1000 * 60) / updatesPerMinute);
     }
-    oldBeatsPerMinute = beatsPerMinute;
+    oldupdatesPerMinute = updatesPerMinute;
   }
-  //alert('AFTER old ' + oldBeatsPerMinute + ' new: ' + a);
+  //alert('AFTER old ' + oldupdatesPerMinute + ' new: ' + a);
 }
 
 var soundLoop = function() {
   //clearTimeout(soundLoopTimer);
   //alert('soundLoop');
-  //if (beatsPerMinute !== 0) {
-  //    soundLoopTimer = setTimeout('soundLoop();',(1000*60)/beatsPerMinute);
+  //if (updatesPerMinute !== 0) {
+  //    soundLoopTimer = setTimeout('soundLoop();',(1000*60)/updatesPerMinute);
   //}
   if (soundSystemIsMangled) return;
 

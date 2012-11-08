@@ -85,7 +85,7 @@ function animate() {
     }
     animationStyleUpdateIfChanged();
     simpleGradientUpdateIfChanged();
-    updateBpmIfChanged();
+    changeUpdatesPerMinuteIfNeeded();
     frame++;
     consecutiveFramesWithoutRunTimeError++;
     if (consecutiveFramesWithoutRunTimeError == 5) {
