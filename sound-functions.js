@@ -8,11 +8,13 @@ var bpm = function(a) {
   // timid attempt at sanity check.
   // the sound system might well bork out
   // even below 500 bpm.
+  if (a === undefined) return;
   if (a > 125) a = 125;
   if (a < 0) a = 0;
 
+  // each beat is made of 4 parts, and we can trigger sounds
+  // on each of those, so updatesPerMinute is 4 times the bpm.
   updatesPerMinute = a*4;
-  changeUpdatesPerMinuteIfNeeded();
 }
 
 var changeUpdatesPerMinuteIfNeeded = function() {
@@ -100,6 +102,7 @@ var soundLoop = function() {
 
 
 var addSound = function(soundID, beatString) {
+  anyCodeReactingTobpm = true;
   beatString = beatString.replace(/\s*/g, "");
   soundLoops.soundIDs.push(soundID);
   soundLoops.beatStrings.push(beatString);

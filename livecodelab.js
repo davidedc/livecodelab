@@ -4,6 +4,9 @@ var doLNOnce = [];
 var loopInterval;
 var time;
 var timeAtStart;
+// if there isn't any code using the bpm setting then we can save a timer, so
+// worth tracking with this variable
+var anyCodeReactingTobpm;
 
 // animation loop
 function animate() {
@@ -32,9 +35,7 @@ function animate() {
   worldMatrix.identity();
 
   // the sound list needs to be cleaned
-  // and the beatsPerMinute set to zero
   // so that the user program can create its own from scratch
-  beatsPerMinute = 0;
   soundLoops.soundIDs = [];
   soundLoops.beatStrings = [];
 
@@ -51,6 +52,7 @@ function animate() {
       time = d.getTime() - timeAtStart;
     }
     doLNOnce = [];
+    anyCodeReactingTobpm = false;
     fill(0xFFFFFFFF);
     stroke(0xFF000000);
     currentStrokeSize = 1;
@@ -63,6 +65,7 @@ function animate() {
     usedBoxes = 0;
     usedAmbientLights = 0;
     usedPointLights = 0;
+    updatesPerMinute = 60*4;
     // In theory there is no need to chuck away the
     // counter altogether, you could go through
     // the existing counters contained in this object
@@ -83,6 +86,7 @@ function animate() {
       timeAtStart = d.getTime();
       time = 0;
     }
+    if (anyCodeReactingTobpm) changeUpdatesPerMinuteIfNeeded();
     animationStyleUpdateIfChanged();
     simpleGradientUpdateIfChanged();
     changeUpdatesPerMinuteIfNeeded();
