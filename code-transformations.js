@@ -123,7 +123,7 @@ function registerCode() {
       editorContent = editorContent.replace(/eclairageAmbiant/g, "ambientLight");
       editorContent = editorContent.replace(/sansEclairage/g, "noLights");
       editorContent = editorContent.replace(/eclairage/g, "lights");
-      editorContent = editorContent.replace(/ajouteSon/g, "addSound");
+      editorContent = editorContent.replace(/ajouteSon/g, "play");
       editorContent = editorContent.replace(/fois/g, "times");
       editorContent = editorContent.replace(/image/g, "frame");
 
@@ -422,7 +422,7 @@ function registerCode() {
     elaboratedSource = elaboratedSource.replace(/rect(\s)+/g, ";rect$1");
     elaboratedSource = elaboratedSource.replace(/line(\s)+/g, ";line$1");
     elaboratedSource = elaboratedSource.replace(/bpm(\s)+/g, ";bpm$1");
-    elaboratedSource = elaboratedSource.replace(/addSound(\s)+/g, ";addSound$1");
+    elaboratedSource = elaboratedSource.replace(/play(\s)+/g, ";play$1");
     elaboratedSource = elaboratedSource.replace(/pushMatrix(\s)+/g, ";pushMatrix$1");
     elaboratedSource = elaboratedSource.replace(/popMatrix(\s)+/g, ";popMatrix$1");
     elaboratedSource = elaboratedSource.replace(/resetMatrix(\s)+/g, ";resetMatrix$1");
@@ -497,7 +497,7 @@ function registerCode() {
   var error = false;
   for (var scanningUsedMethods = 0; scanningUsedMethods < usedMethods.length; scanningUsedMethods++) {
     if (
-    usedMethods[scanningUsedMethods] === "function" || usedMethods[scanningUsedMethods] === "rotate" || usedMethods[scanningUsedMethods] === "rect" || usedMethods[scanningUsedMethods] === "line" || usedMethods[scanningUsedMethods] === "box" || usedMethods[scanningUsedMethods] === "move" || usedMethods[scanningUsedMethods] === "scale" || usedMethods[scanningUsedMethods] === "alert" || usedMethods[scanningUsedMethods] === "bpm" || usedMethods[scanningUsedMethods] === "addSound" || usedMethods[scanningUsedMethods] === "pushMatrix" || usedMethods[scanningUsedMethods] === "popMatrix" || usedMethods[scanningUsedMethods] === "resetMatrix" || usedMethods[scanningUsedMethods] === "fill" || usedMethods[scanningUsedMethods] === "noFill" || usedMethods[scanningUsedMethods] === "stroke" || usedMethods[scanningUsedMethods] === "noStroke" || usedMethods[scanningUsedMethods] === "strokeSize" || usedMethods[scanningUsedMethods] === "animationStyle" || usedMethods[scanningUsedMethods] === "background" || usedMethods[scanningUsedMethods] === "simpleGradient" || usedMethods[scanningUsedMethods] === "color" ||
+    usedMethods[scanningUsedMethods] === "function" || usedMethods[scanningUsedMethods] === "rotate" || usedMethods[scanningUsedMethods] === "rect" || usedMethods[scanningUsedMethods] === "line" || usedMethods[scanningUsedMethods] === "box" || usedMethods[scanningUsedMethods] === "move" || usedMethods[scanningUsedMethods] === "scale" || usedMethods[scanningUsedMethods] === "alert" || usedMethods[scanningUsedMethods] === "bpm" || usedMethods[scanningUsedMethods] === "play" || usedMethods[scanningUsedMethods] === "pushMatrix" || usedMethods[scanningUsedMethods] === "popMatrix" || usedMethods[scanningUsedMethods] === "resetMatrix" || usedMethods[scanningUsedMethods] === "fill" || usedMethods[scanningUsedMethods] === "noFill" || usedMethods[scanningUsedMethods] === "stroke" || usedMethods[scanningUsedMethods] === "noStroke" || usedMethods[scanningUsedMethods] === "strokeSize" || usedMethods[scanningUsedMethods] === "animationStyle" || usedMethods[scanningUsedMethods] === "background" || usedMethods[scanningUsedMethods] === "simpleGradient" || usedMethods[scanningUsedMethods] === "color" ||
     //usedMethods[scanningUsedMethods] === "ambient" ||
     //usedMethods[scanningUsedMethods] === "reflect" ||
     //usedMethods[scanningUsedMethods] === "refract" ||

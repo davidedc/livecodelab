@@ -101,7 +101,7 @@ var soundLoop = function() {
 }
 
 
-var addSound = function(soundID, beatString) {
+var play = function(soundID, beatString) {
   anyCodeReactingTobpm = true;
   beatString = beatString.replace(/\s*/g, "");
   soundLoops.soundIDs.push(soundID);
