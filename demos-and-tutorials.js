@@ -94,7 +94,7 @@ if (!frenchVersion) {
 
   var moveTutorial = "" + "" + "// you can move any object\n" + "" + '// by using "move"\n' + "" + "\n" + "" + "box\n" + "" + "move 1,1,0\n" + "" + "box\n" + "" + "\n" + "" + '// try to use a rotate before \n' + "" + "// the first box to see how the\n" + "" + "// scene changes.\n" + "" + "// next-tutorial:scale";
 
-  var scaleTutorial = "" + "" + "// you can make an object bigger\n" + "" + '// or smaller by using "scale"\n' + "" + "\n" + "" + "rotate 3\n" + "" + "box\n" + "" + "move 1\n" + "" + "scale 2\n" + "" + "box\n" + "" + "\n" + "" + '// try to use a rotate before \n' + "" + "// the first box to see how the\n" + "" + "// scene changes.\n" + "" + "// next-tutorial:times";
+  var scaleTutorial = "" + "" + "// you can make an object bigger\n" + "" + '// or smaller by using "scale"\n' + "" + "\n" + "" + "rotate 3\n" + "" + "box\n" + "" + "move 1\n" + "" + "scale 2\n" + "" + "box\n" + "" + "\n" + "" + '// try to use scale or move before \n' + "" + "// the first box to see how the\n" + "" + "// scene changes.\n" + "" + "// next-tutorial:times";
 
   var timesTutorial = "" + "" + '// "times" (not to be confused with\n' + "" + '// "time"!) can be used to\n' + "" + '// repeat operations like so:\n' + "" + "\n" + "" + "rotate 1\n" + "" + "3 times ->\n" + "\t" + "move 0.2,0.2,0.2\n" + "\t" + "box\n" + "" + "\n" + "" + '// note how the tabs indicate \n' + "" + "// exactly the block of code\n" + "" + "// to be repeated.\n" + "" + "// next-tutorial:fill";
 
@@ -119,7 +119,9 @@ if (!frenchVersion) {
 
   var animationstyleTutorial = "" + "" + '// try uncommenting either line\n' + "" + '// with the animationStyle\n' + "" + "\n" + "" + "background 255\n" + "" + "//animationStyle motionBlur\n" + "" + "//animationStyle paintOver\n" + "" + "rotate frame/10\n" + "" + "box\n" + "" + "\n" + "" + "// next-tutorial:do_once";
 
-  var doonceTutorial = "" + "" + '// delete either check mark below\n' + "" + "\n" + "" + "rotate time/1000\n" + "" + "✓doOnce ->\n" + "\t" + "background 255\n" + "\t" + "fill 255,0,0\n" + "" + "✓doOnce -> ball\n" + "" + "box\n" + "" + "\n" + "" + '// ...the line or block of code\n' + "" + '// are ran one time only, after that the\n' + "" + '// check marks immediately re-appear\n' + "" + '// P.S. keep hitting the delete button\n' + "" + '// on that first check mark for seizures.\n' + "" + "// next-tutorial:autocode";
+  var doonceTutorial = "" + "" + '// delete either check mark below\n' + "" + "\n" + "" + "rotate time/1000\n" + "" + "✓doOnce ->\n" + "\t" + "background 255\n" + "\t" + "fill 255,0,0\n" + "" + "✓doOnce -> ball\n" + "" + "box\n" + "" + "\n" + "" + '// ...the line or block of code\n' + "" + '// are ran one time only, after that the\n' + "" + '// check marks immediately re-appear\n' + "" + '// P.S. keep hitting the delete button\n' + "" + '// on that first check mark for seizures.\n' + "" + "// next-tutorial:conditionals";
+
+  var conditionalsTutorial = "" + "" + '// you can draw different things' + "" + "\n" + "" + "// (or in general do different things)" + "" + "\n" + "" + "// based on any test you want:" + "" + "\n" + "" + "\n" + "rotate" + "" + "\n" + "" + "if frame%3 == 0" + "" + "\n" + "" + "\t"+"box" + "" + "\n" + "" + "else if frame%3 == 1" + "" + "\n" + "" + "\t"+"ball" + "" + "\n" + "" + "else" + "" + "\n" + "" + "\t"+"peg" + ""  + "\n" + ""+ ""  + "\n" + "" +"// next-tutorial:autocode";
 
   var autocodeTutorial = "" + "" + '// the Autocode button invents random\n' + "" + '// variations for you.\n' + "" + '\n' + "" + '// You can interrupt the Autocoder at\n' + "" + '// any time by pressing the button again,\n' + "" + '// or you can press CTRL-Z\n' + "" + '// (or CMD-Z on Macs) to undo (or re-do) some of\n' + "" + '// the steps even WHILE the autocoder is running,\n' + "" + '// if you see that things got\n' + "" + '// boring down a particular path of changes.';
 } else {
@@ -310,6 +312,9 @@ function loadDemoOrTutorial(whichDemo) {
     break;
   case 'doonceTutorial':
     editor.setValue(prependMessage + doonceTutorial);
+    break;
+  case 'conditionalsTutorial':
+    editor.setValue(prependMessage + conditionalsTutorial);
     break;
   case 'autocodeTutorial':
     editor.setValue(prependMessage + autocodeTutorial);
