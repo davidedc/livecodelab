@@ -312,6 +312,16 @@ function registerCode() {
     new RegExp("\\n", "g"), "\n\t");
     elaboratedSource = "draw = ->\n" + elaboratedSource;
 
+    // we make it so some common command forms can be used in postfix notation, e.g.
+    //   60 bpm
+    //   red fill
+    //   yellow stroke
+    //   black background
+    elaboratedSource = elaboratedSource.replace(/(\d+)\s+bpm(\s)/g, "bpm $1$2");
+    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)\s+fill(\s)/g, "fill $1$2");
+    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)\s+stroke(\s)/g, "stroke $1$2");
+    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)\s+background(\s)/g, "background $1$2");
+
     // little trick. This is mangled up in the translation from coffeescript
     // (1).times ->
     // But this isn't:
