@@ -77,7 +77,40 @@ function animate() {
     animationStyleValue = normal;
     resetGradientStack();
     //bpm(0);
-    draw();
+    
+    // Now here there is another try/catch check when the draw function is ran.
+    // The reason is that there might be references to uninitialised or inexistent
+    // variables. For example:
+    //   box
+    //   background yeLow
+    //   ball
+    // draws only a box, because the execution silently fails at the yeLow reference.
+    // So in that case we need to a) highlight the error and b) run the previously
+    // known good program.
+    try {
+	    draw();
+	  } catch (e) {
+		
+				// I'm not sure that this type of error should occur during autocoding
+				// but this can't hurt and it's symmetrical to the other try/catch
+				// situation we have in livecodelab
+				if (autocodeOn) {
+					editor.undo();
+					//alert("did an undo");
+					return;
+				}
+		
+				// highlight the error
+				checkErrorAndReport(e);
+				
+				// mark the program as flawed and register the previous stable one.
+				consecutiveFramesWithoutRunTimeError = 0;
+				out = lastStableProgram;
+  			window.eval(lastStableProgram);
+
+				return;
+		}
+
     // we have to repeat this check because in the case
     // the user has set frame = 0,
     // then we have to catch that case here

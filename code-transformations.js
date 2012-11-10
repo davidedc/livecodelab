@@ -10,6 +10,34 @@ Number.prototype.times = function(func, scope) {
   }
 };
 
+function checkErrorAndReport(e) {
+    $('#dangerSignText').css('color', 'red');
+    var errorMessage = "" + e;
+    if (errorMessage.indexOf("Unexpected 'INDENT'") > -1) {
+      errorMessage = "weird indentation";
+    } else if (errorMessage.indexOf("Unexpected 'TERMINATOR'") > -1) {
+      errorMessage = "line not complete";
+    } else if (errorMessage.indexOf("Unexpected 'CALL_END'") > -1) {
+      errorMessage = "line not complete";
+    } else if (errorMessage.indexOf("Unexpected '}'") > -1) {
+      errorMessage = "something wrong";
+    } else if (errorMessage.indexOf("Unexpected 'MATH'") > -1) {
+      errorMessage = "weird arithmetic there";
+    } else if (errorMessage.indexOf("Unexpected 'LOGIC'") > -1) {
+      errorMessage = "odd expression thingy";
+    } else if (errorMessage.indexOf("Unexpected 'NUMBER'") > -1) {
+      errorMessage = "lost number?";
+    } else if (errorMessage.indexOf("Unexpected 'NUMBER'") > -1) {
+      errorMessage = "lost number?";
+    } else if (errorMessage.indexOf("ReferenceError") > -1) {
+      errorMessage = errorMessage.replace(/ReferenceError:\s/gm, "");;
+    }
+
+    editorContent = 
+
+    $('#errorMessageText').text(errorMessage);
+
+}
 
 function registerCode() {
 
@@ -341,17 +369,17 @@ function registerCode() {
 
 
 
-    elaboratedSource = elaboratedSource.replace(/^(\s*)([a-z]+[a-zA-Z0-9]+)[ ]*$/gm, "$1;$2()");
+    elaboratedSource = elaboratedSource.replace(/^(\s*)([a-z]+[a-zA-Z0-9]*)[ ]*$/gm, "$1;$2()");
 
     // this takes care of when a token that it's supposed to be
     // a function is inlined with something else e.g.
     // doOnce frame = 0; box
     // 2 times -> box
-    elaboratedSource = elaboratedSource.replace(/;\s*([a-z]+[a-zA-Z0-9]+)[ ]*([;\n]+)/g, ";$1()$2");
+    elaboratedSource = elaboratedSource.replace(/;\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2");
     // this takes care of when a token that it's supposed to be
     // a function is inlined like so:
     // 2 times -> box
-    elaboratedSource = elaboratedSource.replace(/\->\s*([a-z]+[a-zA-Z0-9]+)[ ]*([;\n]+)/g, ";$1()$2");
+    elaboratedSource = elaboratedSource.replace(/\->\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2");
 
     // draw() could just be called by mistake and it's likely
     // to be disastrous. User doesn't even have visibility of such method,
@@ -429,25 +457,9 @@ function registerCode() {
       //alert("did an undo");
       return;
     }
-
-    $('#dangerSignText').css('color', 'red');
-    var coffeeScriptErrorMessage = "" + e;
-    if (coffeeScriptErrorMessage.indexOf("Unexpected 'INDENT'") > -1) {
-      coffeeScriptErrorMessage = "weird indentation";
-    } else if (coffeeScriptErrorMessage.indexOf("Unexpected 'TERMINATOR'") > -1) {
-      coffeeScriptErrorMessage = "line not complete";
-    } else if (coffeeScriptErrorMessage.indexOf("Unexpected 'CALL_END'") > -1) {
-      coffeeScriptErrorMessage = "line not complete";
-    } else if (coffeeScriptErrorMessage.indexOf("Unexpected '}'") > -1) {
-      coffeeScriptErrorMessage = "something wrong";
-    } else if (coffeeScriptErrorMessage.indexOf("Unexpected 'MATH'") > -1) {
-      coffeeScriptErrorMessage = "weird arithmetic there";
-    } else if (coffeeScriptErrorMessage.indexOf("Unexpected 'LOGIC'") > -1) {
-      coffeeScriptErrorMessage = "odd expression thingy";
-    } else if (coffeeScriptErrorMessage.indexOf("Unexpected 'NUMBER'") > -1) {
-      coffeeScriptErrorMessage = "lost number?";
-    }
-    $('#errorMessageText').text(coffeeScriptErrorMessage);
+    
+    checkErrorAndReport(e);
+    
     return;
   }
 
