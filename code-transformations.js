@@ -317,10 +317,10 @@ function registerCode() {
     //   red fill
     //   yellow stroke
     //   black background
-    elaboratedSource = elaboratedSource.replace(/(\d+)\s+bpm(\s)/g, "bpm $1$2");
-    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)\s+fill(\s)/g, "fill $1$2");
-    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)\s+stroke(\s)/g, "stroke $1$2");
-    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)\s+background(\s)/g, "background $1$2");
+    elaboratedSource = elaboratedSource.replace(/(\d+)[ ]+bpm(\s)/g, "bpm $1$2");
+    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+fill(\s)/g, "fill $1$2");
+    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+stroke(\s)/g, "stroke $1$2");
+    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+background(\s)/g, "background $1$2");
 
     // little trick. This is mangled up in the translation from coffeescript
     // (1).times ->
@@ -413,6 +413,7 @@ function registerCode() {
     // we don't want if and for to undergo the same tratment as, say, box
     // so put those back to normal.
     elaboratedSource = elaboratedSource.replace(/;if\(\)/g, ";if");
+    elaboratedSource = elaboratedSource.replace(/;else\(\)/g, ";else");
     elaboratedSource = elaboratedSource.replace(/;for\(\)/g, ";for");
 
     elaboratedSource = elaboratedSource.replace(/\/\//g, "#");
@@ -446,16 +447,19 @@ function registerCode() {
     elaboratedSource = elaboratedSource.replace(/ballDetail(\s)+/g, ";ballDetail$1");
     elaboratedSource = elaboratedSource.replace(/peg(\s)+/g, ";peg$1");
 
-    // the semicolon mangles the first line of the function definitions
-    // coffeescript doesn't like that
+    // you'd think that semicolons are OK anywhere before any command
+    // but coffee-script doesn't like some particular configurations - fixing those:
+    // the semicolon mangles the first line of the function definitions:
     elaboratedSource = elaboratedSource.replace(/->(\s+);/g, "->$1");
-
     // the semicolon mangles the first line of if statements
-    // coffeescript doesn't like that
-    elaboratedSource = elaboratedSource.replace(/(\s)if\s*([a-zA-Z0-9]*)(\s*);/g, "$1if $2$3");
+    elaboratedSource = elaboratedSource.replace(/(\s)if\s*(.*)(\s*);/g, "$1if $2$3");
+    // the semicolon mangles the first line of else if statements
+    elaboratedSource = elaboratedSource.replace(/(\s);else\s*if\s*(.*)(\s*);/g, "$1else if $2$3");
+    // the semicolon mangles the first line of else statements
+    elaboratedSource = elaboratedSource.replace(/(\s);else(.*)(\s*);/g, "$1else$2$3");
 
 
-    log(elaboratedSource );
+    //alert(elaboratedSource );
     out = CoffeeScript.compile(elaboratedSource, {
       bare: "on"
     });
