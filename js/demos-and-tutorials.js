@@ -329,10 +329,10 @@ function loadDemoOrTutorial(whichDemo) {
   case 'autocodeTutorial':
     editor.setValue(prependMessage + autocodeTutorial);
     break;
-
-    // bring the cursor to the top
-  editor.setCursor(0, 0);
   }
+
+  // bring the cursor to the top
+  editor.setCursor(0, 0);
 
   // setting the value of the editor triggers the
   // codeMirror onChange callback, and that runs
