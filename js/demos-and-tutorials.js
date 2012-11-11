@@ -1,6 +1,10 @@
 
 if (!frenchVersion) {
 
+  var roseDemo = "" + "" + "// 'A rose' by Guy John\n" + "" + "// Mozilla Festival 2012\n" + "" + "// adapted by from 'A rose' by Lib4tech\n" + "" + "\n" + "" + "scale 1.5\n" + "" + "animationStyle paintOver\n"  + "" + "rotate time/1000\n" + "" + "fill 255-((frame/2)%255),0,0\n" + "" + "stroke 255-((frame/2)%255),0,0\n" + "" + "scale 1-((frame/2)%255) / 255\n" + "" + "box";
+
+  var cheeseAndOlivesDemo = "" + "" + "// 'Cheese and olives' by\n" + "" + "// Davina Tirvengadum\n" + "" + "// Mozilla festival 2012\n" + "" + "\n" + "" + "background white\n" + "" + "scale .3\n" + "" + "move 0,-1\n" + "" + "fill yellow\n" + "" + "stroke black\n" + "" + "rotate\n" + "" + "strokeSize 3\n" + "" + "line 4\n" + "" + "box\n" + "" + "\n" + "" + "rotate 2,3\n" + "" + "move 0,3\n" + "" + "scale .3\n" + "" + "fill black\n" + "" + "stroke black\n" + "" + "ball\n" + "" + "\n" + "" + "rotate 3\n" + "" + "move 5\n" + "" + "scale 1\n" + "" + "fill green\n" + "" + "stroke green\n" + "" + "ball\n" + "" + "\n" + "" + "rotate 1\n" + "" + "move -3\n" + "" + "scale 1\n" + "" + "fill yellow\n" + "" + "stroke yellow\n" + "" + "ball";
+
   var simpleCubeDemo = "" + "" + "// there you go!\n" + "" + "// a simple cube!\n" + "" + "\n" + "" + "background yellow\n" + "" + "rotate 0,time/2000,time/2000\n" + "" + "box";
 
   var webgltwocubesDemo = "" + "" + "background 155,255,255\n" + "" + "2 times ->\n" + "\t" + "rotate 0, 1, time/2000\n" + "\t" + "box";
@@ -199,6 +203,12 @@ function loadDemoOrTutorial(whichDemo) {
   }
 
   switch (whichDemo) {
+  case 'roseDemo':
+    editor.setValue(prependMessage + roseDemo);
+    break;
+  case 'cheeseAndOlivesDemo':
+    editor.setValue(prependMessage + cheeseAndOlivesDemo);
+    break;
   case 'simpleCubeDemo':
     editor.setValue(prependMessage + simpleCubeDemo);
     break;
