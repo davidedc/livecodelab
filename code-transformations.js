@@ -33,8 +33,6 @@ function checkErrorAndReport(e) {
       errorMessage = errorMessage.replace(/ReferenceError:\s/gm, "");;
     }
 
-    editorContent = 
-
     $('#errorMessageText').text(errorMessage);
 
 }
