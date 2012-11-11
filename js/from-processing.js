@@ -283,27 +283,26 @@ color.toRGB = function(h, s, b) {
 };
 
 function colorToHSB(colorInt) {
-  var red, green, blue;
+  var red, green, blue, minBright, maxBright, hue, saturation;
 
   red = ((colorInt & Constants.RED_MASK) >>> 16) / 255;
   green = ((colorInt & Constants.GREEN_MASK) >>> 8) / 255;
   blue = (colorInt & Constants.BLUE_MASK) / 255;
 
-  var max = max(max(red, green), blue),
-    min = min(min(red, green), blue),
-    hue, saturation;
+  maxBright = max(max(red, green), blue);
+  minBright = min(min(red, green), blue);
 
-  if (min === max) {
-    return [0, 0, max * colorModeZ];
+  if (minBright === maxBright) {
+    return [0, 0, maxBright * colorModeZ];
   }
-  saturation = (max - min) / max;
+  saturation = (maxBright - minBright) / maxBright;
 
-  if (red === max) {
-    hue = (green - blue) / (max - min);
-  } else if (green === max) {
-    hue = 2 + ((blue - red) / (max - min));
+  if (red === maxBright) {
+    hue = (green - blue) / (maxBright - minBright);
+  } else if (green === maxBright) {
+    hue = 2 + ((blue - red) / (maxBright - minBright));
   } else {
-    hue = 4 + ((red - green) / (max - min));
+    hue = 4 + ((red - green) / (maxBright - minBright));
   }
 
   hue /= 6;
@@ -313,7 +312,7 @@ function colorToHSB(colorInt) {
   } else if (hue > 1) {
     hue -= 1;
   }
-  return [hue * colorModeX, saturation * colorModeY, max * colorModeZ];
+  return [hue * colorModeX, saturation * colorModeY, maxBright * colorModeZ];
 }
 
 /**
