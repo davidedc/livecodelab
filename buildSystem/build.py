@@ -72,7 +72,7 @@ def merge(files):
 
 def output(text, filename):
 
-	with open(os.path.join('..', filename), 'w') as f:
+	with open(os.path.join('..', 'js_compiled', filename), 'w') as f:
 		f.write(text)
 
 
@@ -191,9 +191,10 @@ def main(argv=None):
 	args = parse_args()
 	debug = args.debug
 	minified = args.minified
+	js_files = ["js/" + f for f in COMMON_FILES]
 
 	config = [
-	['Livecodelab-minified', 'includes', '', COMMON_FILES + EXTRAS_FILES, args.common],
+	['Livecodelab-minified', 'includes', '', js_files + EXTRAS_FILES, args.common],
 	]
 
 	for fname_lib, fname_inc, fname_externs, files, enabled in config:
