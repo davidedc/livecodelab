@@ -9,3 +9,6 @@ To get setup with Grunt should be pretty easy.
  * Install Grunt globally ```npm install -g grunt```
  * use npm to get all the dependencies ```npm install```
 
+#### Use ####
+
+From your livecodelab directory run ```grunt compile``` . A fresh new indexforLivecodelabMinified.html is baked for you.
