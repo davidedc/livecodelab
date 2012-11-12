@@ -566,12 +566,16 @@ function registerCode() {
   // note that exceptions are caught by the window.onerror callback
   consecutiveFramesWithoutRunTimeError = 0;
 
-  // so it turns out that when you ASSIGN to the frame variable inside
-  // the coffeescript, it declares a local one, which makes changing
-  // it impossible.
+  // You might want to change the frame count from the program
+  // just like you can in Processing, but it turns out that when
+  // you ASSIGN a value to the frame variable inside
+  // the coffeescript code, the coffeescript to javascript translator
+  // declares a *local* frame variable, so changes to the frame
+  // count get lost from one frame to the next.
   // TODO: There must be a way to tell coffeescript to accept
   // some variables as global, for the time being let's put
-  // the cheap hack in place.
+  // the cheap hack in place i.e. remove any local declaration that the
+  // coffeescript to javascript translator inserts.
   out = out.replace(/var frame/, ";");
 
   //alert("out:"+out);
