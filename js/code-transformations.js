@@ -499,11 +499,39 @@ function registerCode() {
   var error = false;
   for (var scanningUsedMethods = 0; scanningUsedMethods < usedMethods.length; scanningUsedMethods++) {
     if (
-    usedMethods[scanningUsedMethods] === "function" || usedMethods[scanningUsedMethods] === "rotate" || usedMethods[scanningUsedMethods] === "rect" || usedMethods[scanningUsedMethods] === "line" || usedMethods[scanningUsedMethods] === "box" || usedMethods[scanningUsedMethods] === "move" || usedMethods[scanningUsedMethods] === "scale" || usedMethods[scanningUsedMethods] === "alert" || usedMethods[scanningUsedMethods] === "bpm" || usedMethods[scanningUsedMethods] === "play" || usedMethods[scanningUsedMethods] === "pushMatrix" || usedMethods[scanningUsedMethods] === "popMatrix" || usedMethods[scanningUsedMethods] === "resetMatrix" || usedMethods[scanningUsedMethods] === "fill" || usedMethods[scanningUsedMethods] === "noFill" || usedMethods[scanningUsedMethods] === "stroke" || usedMethods[scanningUsedMethods] === "noStroke" || usedMethods[scanningUsedMethods] === "strokeSize" || usedMethods[scanningUsedMethods] === "animationStyle" || usedMethods[scanningUsedMethods] === "background" || usedMethods[scanningUsedMethods] === "simpleGradient" || usedMethods[scanningUsedMethods] === "color" ||
-    //usedMethods[scanningUsedMethods] === "ambient" ||
-    //usedMethods[scanningUsedMethods] === "reflect" ||
-    //usedMethods[scanningUsedMethods] === "refract" ||
-    usedMethods[scanningUsedMethods] === "lights" || usedMethods[scanningUsedMethods] === "noLights" || usedMethods[scanningUsedMethods] === "ambientLight" || usedMethods[scanningUsedMethods] === "pointLight" || usedMethods[scanningUsedMethods] === "ball" || usedMethods[scanningUsedMethods] === "ballDetail" || usedMethods[scanningUsedMethods] === "peg" || false) {
+			usedMethods[scanningUsedMethods] === "function" ||
+			usedMethods[scanningUsedMethods] === "rotate" ||
+			usedMethods[scanningUsedMethods] === "rect" ||
+			usedMethods[scanningUsedMethods] === "line" ||
+			usedMethods[scanningUsedMethods] === "box" ||
+			usedMethods[scanningUsedMethods] === "move" ||
+			usedMethods[scanningUsedMethods] === "scale" ||
+			usedMethods[scanningUsedMethods] === "alert" ||
+			usedMethods[scanningUsedMethods] === "bpm" ||
+			usedMethods[scanningUsedMethods] === "play" ||
+			usedMethods[scanningUsedMethods] === "pushMatrix" ||
+			usedMethods[scanningUsedMethods] === "popMatrix" ||
+			usedMethods[scanningUsedMethods] === "resetMatrix" ||
+			usedMethods[scanningUsedMethods] === "fill" ||
+			usedMethods[scanningUsedMethods] === "noFill" ||
+			usedMethods[scanningUsedMethods] === "stroke" ||
+			usedMethods[scanningUsedMethods] === "noStroke" ||
+			usedMethods[scanningUsedMethods] === "strokeSize" ||
+			usedMethods[scanningUsedMethods] === "animationStyle" ||
+			usedMethods[scanningUsedMethods] === "background" ||
+			usedMethods[scanningUsedMethods] === "simpleGradient" ||
+			usedMethods[scanningUsedMethods] === "color" ||
+			//usedMethods[scanningUsedMethods] === "ambient" ||
+			//usedMethods[scanningUsedMethods] === "reflect" ||
+			//usedMethods[scanningUsedMethods] === "refract" ||
+			usedMethods[scanningUsedMethods] === "lights" ||
+			usedMethods[scanningUsedMethods] === "noLights" ||
+			usedMethods[scanningUsedMethods] === "ambientLight" ||
+			usedMethods[scanningUsedMethods] === "pointLight" ||
+			usedMethods[scanningUsedMethods] === "ball" ||
+			usedMethods[scanningUsedMethods] === "ballDetail" ||
+			usedMethods[scanningUsedMethods] === "peg" ||
+    false) {
       continue;
     }
     if (declaredMethods.length === 0) {
