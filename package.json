@@ -1,0 +1,10 @@
+{
+  "name": "livecodelab",
+  "version": "0.1.0",
+  "description": "A live coding environment for the browser",
+  "dependencies": {
+    "grunt-closure-compiler": "~0.0.13",
+    "grunt-contrib-clean": "~0.3.1",
+    "grunt-doccoh": "~0.1.3"
+  }
+}

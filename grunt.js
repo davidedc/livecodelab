@@ -1,0 +1,95 @@
+/* grunt.js file */
+
+module.exports = function (grunt) {
+
+    'use strict';
+
+    // Project configuration.
+    grunt.initConfig({
+        lint: {
+            all: ['js/**/*.js'],
+            grunt: ['grunt.js']
+        },
+        jshint: {
+            options: {
+                browser: true
+            }
+        },
+        concat: {
+            dist: {
+                src: [
+                    'js/vendor/mclexer.js',
+                    'js/vendor/three.js/Detector.js',
+                    'js/vendor/three.js/Stats.js',
+                    'js/vendor/threex/THREEx.WindowResize.js',
+                    'js/vendor/three.js/ShaderExtras.js',
+                    'js/vendor/three.js/postprocessing/EffectComposer.js',
+                    'js/vendor/three.js/postprocessing/RenderPass.js',
+                    'js/vendor/three.js/postprocessing/ShaderPass.js',
+                    'js/vendor/three.js/postprocessing/MaskPass.js',
+                    'js/vendor/three.js/postprocessing/SavePass.js',
+                    'js/coffeescript-livecodelab-mode.js',
+                    'js/var-definitions.js',
+                    'js/from-processing.js',
+                    'js/livecodelab.js',
+                    'js/sound-functions.js',
+                    'js/sound/buzz.js',
+                    'js/sound/sounddef.js',
+                    'js/init.js',
+                    'js/matrix-commands.js',
+                    'js/background-painting.js',
+                    'js/geometry-commands.js',
+                    'js/code-transformations.js',
+                    'js/demos-and-tutorials.js',
+                    'js/autocode.js',
+                    'js/text-dimming.js',
+                    'js/lights-functions.js',
+                    'js/init-threejs.js',
+                    'js/helper-functions.js',
+                    'js/big-cursor-animation.js'
+                ],
+                dest: 'dist/built.js'
+            }
+        },
+        doccoh: {
+            src: ['js/*.js']
+        },
+        clean: {
+            docs: ['docs/'],
+            build: ['dist/*']
+        },
+        'closure-compiler': {
+            frontend: {
+                closurePath: 'buildSystem',
+                js: 'dist/built.js',
+                jsOutputFile: 'js_compiled/Livecodelab-minified.js',
+                maxBuffer: 2000000,
+                options: {
+                    jscomp_off: [
+                        'globalThis',
+                        'checkTypes'
+                    ],
+                    language_in: 'ECMASCRIPT5_STRICT',
+                    externs: [
+                        'buildSystem/externs_common.js'
+                    ]
+                }
+            }
+        }
+    });
+
+    // Default task.
+    grunt.registerTask('default', 'lint');
+
+    // Doc generation task
+    grunt.registerTask('docs', 'doccoh');
+
+    // Compilation task
+    grunt.registerTask('compile', 'clean:build concat closure-compiler');
+
+    // Load NPM Task modules
+    grunt.loadNpmTasks('grunt-closure-compiler');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-doccoh');
+
+};
