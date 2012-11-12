@@ -102,7 +102,7 @@ if (!frenchVersion) {
 
   var timesTutorial = "" + "" + '// "times" (not to be confused with\n' + "" + '// "time"!) can be used to\n' + "" + '// repeat operations like so:\n' + "" + "\n" + "" + "rotate 1\n" + "" + "3 times ->\n" + "\t" + "move 0.2,0.2,0.2\n" + "\t" + "box\n" + "" + "\n" + "" + '// note how the tabs indicate \n' + "" + "// exactly the block of code\n" + "" + "// to be repeated.\n" + "" + "// next-tutorial:fill";
 
-  var fillTutorial = "" + "" + '// "fill" changes the\n' + "" + '// color of all the faces:\n' + "" + "\n" + "" + "fill 255,255,0\n" + "" + "box\n" + "" + "\n" + "" + '// the three numbers indicate \n' + "" + "// red green and blue values.\n" + "" + "// You can also use color names such as indigo\n" + "" + "// Try replacing the numbers with\n" + "" + '// "angleColor"\n' + "" + "// next-tutorial:stroke";
+  var fillTutorial = "" + "" + '// "fill" changes the\n' + "" + '// color of all the faces:\n' + "" + "\n" + "" + "rotate 1\n" + "" + "fill 255,255,0\n" + "" + "box\n" + "" + "\n" + "" + '// the three numbers indicate \n' + "" + "// red green and blue values.\n" + "" + "// You can also use color names such as 'indigo'\n" + "" + "// Try replacing the numbers with\n" + "" + '// "angleColor"\n' + "" + "// next-tutorial:stroke";
 
   var strokeTutorial = "" + "" + '// "stroke" changes all the\n' + "" + '// edges:\n' + "" + "\n" + "" + "rotate 1\n" + "" + "strokeSize 5\n" + "" + "stroke 255,255,255\n" + "" + "box\n" + "" + "\n" + "" + '// the three numbers are RGB\n' + "" + "// but you can also use the color names\n" + "" + '// or the special color "angleColor"\n' + "" + '// Also you can use "strokeSize"\n' + "" + '// to specify the thickness.\n' + "" + "// next-tutorial:color_names";
 
