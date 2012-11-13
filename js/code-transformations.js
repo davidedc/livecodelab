@@ -10,6 +10,7 @@ Number.prototype.times = function(func, scope) {
   }
 };
 
+var listOfPossibleFunctions = new Array("function","rotate","rect","line","box","move","scale","alert","bpm","play","pushMatrix","popMatrix","resetMatrix","fill","noFill","stroke","noStroke","strokeSize","animationStyle","background","simpleGradient","color", /*"ambient","reflect", "refract" */ "lights","noLights","ambientLight","pointLight","ball","ballDetail","peg");
 function checkErrorAndReport(e) {
     $('#dangerSignText').css('color', 'red');
     var errorMessage = "" + e;
@@ -498,42 +499,9 @@ function registerCode() {
   //alert("found used methods " + usedMethods.length);
   var error = false;
   for (var scanningUsedMethods = 0; scanningUsedMethods < usedMethods.length; scanningUsedMethods++) {
-    if (
-			usedMethods[scanningUsedMethods] === "function" ||
-			usedMethods[scanningUsedMethods] === "rotate" ||
-			usedMethods[scanningUsedMethods] === "rect" ||
-			usedMethods[scanningUsedMethods] === "line" ||
-			usedMethods[scanningUsedMethods] === "box" ||
-			usedMethods[scanningUsedMethods] === "move" ||
-			usedMethods[scanningUsedMethods] === "scale" ||
-			usedMethods[scanningUsedMethods] === "alert" ||
-			usedMethods[scanningUsedMethods] === "bpm" ||
-			usedMethods[scanningUsedMethods] === "play" ||
-			usedMethods[scanningUsedMethods] === "pushMatrix" ||
-			usedMethods[scanningUsedMethods] === "popMatrix" ||
-			usedMethods[scanningUsedMethods] === "resetMatrix" ||
-			usedMethods[scanningUsedMethods] === "fill" ||
-			usedMethods[scanningUsedMethods] === "noFill" ||
-			usedMethods[scanningUsedMethods] === "stroke" ||
-			usedMethods[scanningUsedMethods] === "noStroke" ||
-			usedMethods[scanningUsedMethods] === "strokeSize" ||
-			usedMethods[scanningUsedMethods] === "animationStyle" ||
-			usedMethods[scanningUsedMethods] === "background" ||
-			usedMethods[scanningUsedMethods] === "simpleGradient" ||
-			usedMethods[scanningUsedMethods] === "color" ||
-			//usedMethods[scanningUsedMethods] === "ambient" ||
-			//usedMethods[scanningUsedMethods] === "reflect" ||
-			//usedMethods[scanningUsedMethods] === "refract" ||
-			usedMethods[scanningUsedMethods] === "lights" ||
-			usedMethods[scanningUsedMethods] === "noLights" ||
-			usedMethods[scanningUsedMethods] === "ambientLight" ||
-			usedMethods[scanningUsedMethods] === "pointLight" ||
-			usedMethods[scanningUsedMethods] === "ball" ||
-			usedMethods[scanningUsedMethods] === "ballDetail" ||
-			usedMethods[scanningUsedMethods] === "peg" ||
-    false) {
-      continue;
-    }
+		if (listOfPossibleFunctions.indexOf(usedMethods[scanningUsedMethods])!=-1) {
+			continue;
+		}
     if (declaredMethods.length === 0) {
       error = true;
       //alert("used method not declared: " + usedMethods[scanningUsedMethods]);
