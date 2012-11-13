@@ -10,6 +10,19 @@ module.exports = function (grunt) {
             all: ['js/**/*.js'],
             grunt: ['grunt.js']
         },
+        recess: {
+            lint: {
+                src: ['css/**/*.css']
+            },
+            compile: {
+                src: ['css/**/*.css'],
+                dest: 'css_compiled/main.css',
+                options: {
+                    compile: true,
+                    compress: true
+                }
+            }
+        },
         jshint: {
             options: {
                 browser: true
@@ -86,11 +99,12 @@ module.exports = function (grunt) {
     grunt.registerTask('docs', 'doccoh');
 
     // Compilation task
-    grunt.registerTask('compile', 'clean:build concat closure-compiler');
+    grunt.registerTask('compile', 'clean:build concat closure-compiler recess:compile');
 
     // Load NPM Task modules
     grunt.loadNpmTasks('grunt-closure-compiler');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-doccoh');
+    grunt.loadNpmTasks('grunt-recess');
 
 };
