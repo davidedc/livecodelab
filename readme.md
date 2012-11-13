@@ -59,6 +59,7 @@ For a more fine grained look at feature requests and bugs, take a look at <a hre
  
 #### Examples ####
 
+<img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/LiveCodeLab-BannerForGithub.png" width="800" height="236">
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/Thumb35.png" width="200" height="115">
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/Thumb34.png" width="200" height="115">
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/Thumb33.png" width="200" height="115">
