@@ -21,14 +21,14 @@ LiveCodeLab has been used by several groups/people for:
 *Teaching programming*:
 it's a great way to interest kids and adult in code, as it allows for instant feedback and easy pair programming. It helps introduce simple concept like loops, and much more complex like transform matrices!
 
-*Future of the browser*:
-it's a nice showcase of what browsers can do with the lates 3D and javascript implementations.
+*Showcasing modern browser features*:
+it's a nice showcase of what browsers can do with the latest 3D and javascript implementations.
 
-*Code as Art*:
-It's a live coding tool that artists can use, misuse and tweak. Go fullscreen, hide the code and you can make incredible screen recordings with just a few lines of code!
+*Creative coding*:
+it's a live coding tool that artists can use, misuse and tweak. Go fullscreen, hide the code and you can make incredible screen recordings with just a few lines of code!
 
-*Autocode*
-:Automatic coding in the browser is still quite a virgin territory. It's been done a lot with lisp-y languages, but not quite in the context of things like LiveCodeLab, so there is an opportunity to do quite some original work there.
+*Auto-coding*:
+automatic coding in the browser is still quite a virgin territory. It's been done a lot with lisp-y languages, but not quite in the context of things like LiveCodeLab, so there is an opportunity to do quite some original work there.
 
 
 ### Roadmap ###
