@@ -57,7 +57,7 @@ For a more fine grained look at feature requests and bugs, take a look at <a hre
  * Scrollwheel handler by Brandon Aaron.
  * McLexer by Matthew Might.
  
-#### Examples ####
+#### Glamour shots ####
 
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/LiveCodeLab-BannerForGithub.png" width="800" height="236">
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/Thumb35.png" width="200" height="115">
