@@ -417,70 +417,74 @@ function registerCode() {
     elaboratedSource = elaboratedSource.replace(/;(for)\(\)/g, ";$1");
 
     elaboratedSource = elaboratedSource.replace(/\/\//g, "#");
-    elaboratedSource = elaboratedSource.replace(/(scale)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(rotate)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(move)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(rect)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(line)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(bpm)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(play)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(pushMatrix)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(popMatrix)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(resetMatrix)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(fill)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(noFill)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(stroke)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(noStroke)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(strokeSize)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(animationStyle)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(simpleGradient)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(background)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(color)(\s)+/g, ";$1$2");
-    //elaboratedSource =  elaboratedSource.replace(/(ambient)(\s)+/g, ";$1$2" );
-    //elaboratedSource =  elaboratedSource.replace(/(reflect)(\s)+/g, ";$1$2" );
-    //elaboratedSource =  elaboratedSource.replace(/(refract)(\s)+/g, ";$1$2" );
-    elaboratedSource = elaboratedSource.replace(/(lights)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(noLights)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(ambientLight)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(pointLight)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(ball)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(ballDetail)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(peg)(\s)+/g, ";$1$2");
+    // Why do we have to match a non-digit non-letter?
+    // because we have to make sure that the keyword is "on its own"
+    // otherwise for example we interfere the replacements of "background" and "round"
+    // Checking whether the keyword is "on its own" avoid those interferences.
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(scale)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(rotate)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(move)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(rect)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(line)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(bpm)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(play)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(pushMatrix)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(popMatrix)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(resetMatrix)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(fill)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noFill)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(stroke)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noStroke)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(strokeSize)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(animationStyle)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(simpleGradient)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(background)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(color)(\s)+/g, "$1;$2$3");
+    //elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(ambient)(\s)+/g, "$1;$2$3" );
+    //elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(reflect)(\s)+/g, "$1;$2$3" );
+    //elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(refract)(\s)+/g, "$1;$2$3" );
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(lights)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noLights)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(ambientLight)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(pointLight)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(ball)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(ballDetail)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(peg)(\s)+/g, "$1;$2$3");
 
     // Calculation
-    elaboratedSource = elaboratedSource.replace(/(abs)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(ceil)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(constrain)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(dist)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(exp)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(floor)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(lerp)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(log)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(mag)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(map)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(max)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(min)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(norm)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(pow)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(round)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(sq)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(sqrt)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(abs)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(ceil)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(constrain)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(dist)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(exp)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(floor)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(lerp)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(log)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(mag)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(map)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(max)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(min)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(norm)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(pow)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(round)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(sq)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(sqrt)(\s)+/g, "$1;$2$3");
     // Trigonometry
-    elaboratedSource = elaboratedSource.replace(/(acos)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(asin)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(atan)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(atan2)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(cos)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(degrees)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(radians)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(sin)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(tan)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(acos)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(asin)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(atan)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(atan2)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(cos)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(degrees)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(radians)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(sin)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(tan)(\s)+/g, "$1;$2$3");
     // Random
-    elaboratedSource = elaboratedSource.replace(/(random)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(randomSeed)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(noise)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(noiseDetail)(\s)+/g, ";$1$2");
-    elaboratedSource = elaboratedSource.replace(/(noiseSeed)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(random)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(randomSeed)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noise)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noiseDetail)(\s)+/g, "$1;$2$3");
+    elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noiseSeed)(\s)+/g, "$1;$2$3");
 
 
     // you'd think that semicolons are OK anywhere before any command
