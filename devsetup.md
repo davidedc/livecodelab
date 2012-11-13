@@ -11,4 +11,5 @@ To get setup with Grunt should be pretty easy.
 
 #### Use ####
 
-From your livecodelab directory run ```grunt compile``` . A fresh new indexforLivecodelabMinified.html is baked for you.
+ * From your livecodelab directory run ```grunt compile``` . A fresh new indexforLivecodelabMinified.html is baked for you.
+ * ...or run ```grunt docs``` for new docs.
