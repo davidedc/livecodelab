@@ -410,51 +410,51 @@ function registerCode() {
 
     // we don't want if and for to undergo the same tratment as, say, box
     // so put those back to normal.
-    elaboratedSource = elaboratedSource.replace(/;if\(\)/g, ";if");
-    elaboratedSource = elaboratedSource.replace(/;else\(\)/g, ";else");
-    elaboratedSource = elaboratedSource.replace(/;for\(\)/g, ";for");
+    elaboratedSource = elaboratedSource.replace(/;(if)\(\)/g, ";$1");
+    elaboratedSource = elaboratedSource.replace(/;(else)\(\)/g, ";$1");
+    elaboratedSource = elaboratedSource.replace(/;(for)\(\)/g, ";$1");
 
     elaboratedSource = elaboratedSource.replace(/\/\//g, "#");
-    elaboratedSource = elaboratedSource.replace(/scale(\s)+/g, ";scale$1");
-    elaboratedSource = elaboratedSource.replace(/rotate(\s)+/g, ";rotate$1");
-    elaboratedSource = elaboratedSource.replace(/move(\s)+/g, ";move$1");
-    elaboratedSource = elaboratedSource.replace(/rect(\s)+/g, ";rect$1");
-    elaboratedSource = elaboratedSource.replace(/line(\s)+/g, ";line$1");
-    elaboratedSource = elaboratedSource.replace(/bpm(\s)+/g, ";bpm$1");
-    elaboratedSource = elaboratedSource.replace(/play(\s)+/g, ";play$1");
-    elaboratedSource = elaboratedSource.replace(/pushMatrix(\s)+/g, ";pushMatrix$1");
-    elaboratedSource = elaboratedSource.replace(/popMatrix(\s)+/g, ";popMatrix$1");
-    elaboratedSource = elaboratedSource.replace(/resetMatrix(\s)+/g, ";resetMatrix$1");
-    elaboratedSource = elaboratedSource.replace(/fill(\s)+/g, ";fill$1");
-    elaboratedSource = elaboratedSource.replace(/noFill(\s)+/g, ";noFill$1");
-    elaboratedSource = elaboratedSource.replace(/stroke(\s)+/g, ";stroke$1");
-    elaboratedSource = elaboratedSource.replace(/noStroke(\s)+/g, ";noStroke$1");
-    elaboratedSource = elaboratedSource.replace(/strokeSize(\s)+/g, ";strokeSize$1");
-    elaboratedSource = elaboratedSource.replace(/animationStyle(\s)+/g, ";animationStyle$1");
-    elaboratedSource = elaboratedSource.replace(/simpleGradient(\s)+/g, ";simpleGradient$1");
-    elaboratedSource = elaboratedSource.replace(/background(\s)+/g, ";background$1");
-    elaboratedSource = elaboratedSource.replace(/color(\s)+/g, ";color$1");
-    //elaboratedSource =  elaboratedSource.replace(/ambient(\s)+/g, ";ambient$1" );
-    //elaboratedSource =  elaboratedSource.replace(/reflect(\s)+/g, ";reflect$1" );
-    //elaboratedSource =  elaboratedSource.replace(/refract(\s)+/g, ";refract$1" );
-    elaboratedSource = elaboratedSource.replace(/lights(\s)+/g, ";lights$1");
-    elaboratedSource = elaboratedSource.replace(/noLights(\s)+/g, ";noLights$1");
-    elaboratedSource = elaboratedSource.replace(/ambientLight(\s)+/g, ";ambientLight$1");
-    elaboratedSource = elaboratedSource.replace(/pointLight(\s)+/g, ";pointLight$1");
-    elaboratedSource = elaboratedSource.replace(/ball(\s)+/g, ";ball$1");
-    elaboratedSource = elaboratedSource.replace(/ballDetail(\s)+/g, ";ballDetail$1");
-    elaboratedSource = elaboratedSource.replace(/peg(\s)+/g, ";peg$1");
+    elaboratedSource = elaboratedSource.replace(/(scale)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(rotate)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(move)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(rect)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(line)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(bpm)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(play)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(pushMatrix)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(popMatrix)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(resetMatrix)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(fill)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(noFill)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(stroke)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(noStroke)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(strokeSize)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(animationStyle)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(simpleGradient)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(background)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(color)(\s)+/g, ";$1$2");
+    //elaboratedSource =  elaboratedSource.replace(/(ambient)(\s)+/g, ";$1$2" );
+    //elaboratedSource =  elaboratedSource.replace(/(reflect)(\s)+/g, ";$1$2" );
+    //elaboratedSource =  elaboratedSource.replace(/(refract)(\s)+/g, ";$1$2" );
+    elaboratedSource = elaboratedSource.replace(/(lights)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(noLights)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(ambientLight)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(pointLight)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(ball)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(ballDetail)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(peg)(\s)+/g, ";$1$2");
 
     // you'd think that semicolons are OK anywhere before any command
     // but coffee-script doesn't like some particular configurations - fixing those:
     // the semicolon mangles the first line of the function definitions:
     elaboratedSource = elaboratedSource.replace(/->(\s+);/g, "->$1");
     // the semicolon mangles the first line of if statements
-    elaboratedSource = elaboratedSource.replace(/(\s)if\s*(.*)(\s*);/g, "$1if $2$3");
+    elaboratedSource = elaboratedSource.replace(/(\sif\s*.*\s*);/g, "$1");
     // the semicolon mangles the first line of else if statements
-    elaboratedSource = elaboratedSource.replace(/(\s);else\s*if\s*(.*)(\s*);/g, "$1else if $2$3");
+    elaboratedSource = elaboratedSource.replace(/(\s);(else\s*if\s*.*\s*);/g, "$1$2");
     // the semicolon mangles the first line of else statements
-    elaboratedSource = elaboratedSource.replace(/(\s);else(.*)(\s*);/g, "$1else$2$3");
+    elaboratedSource = elaboratedSource.replace(/(\s);(else.*\s*);/g, "$1$2");
 
 
     //alert(elaboratedSource );
