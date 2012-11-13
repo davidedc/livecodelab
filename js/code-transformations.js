@@ -10,7 +10,77 @@ Number.prototype.times = function(func, scope) {
   }
 };
 
-var listOfPossibleFunctions = new Array("function","rotate","rect","line","box","move","scale","alert","bpm","play","pushMatrix","popMatrix","resetMatrix","fill","noFill","stroke","noStroke","strokeSize","animationStyle","background","simpleGradient","color", /*"ambient","reflect", "refract" */ "lights","noLights","ambientLight","pointLight","ball","ballDetail","peg","abs","ceil","constrain","dist","exp","floor","lerp","log","mag","map","max","min","norm","pow","round","sq","sqrt","acos","asin","atan","atan2","cos","degrees","radians","sin","tan", "random","randomSeed","noise","noiseDetail","noiseSeed");
+var listOfPossibleFunctions = new Array(
+	"function",
+	"alert",
+	// Geometry
+	"rect",
+	"line",
+	"box",
+	"ball",
+	"ballDetail",
+	"peg",
+	// Matrix manipulation
+	"rotate",
+	"move",
+	"scale",
+	"pushMatrix",
+	"popMatrix",
+	"resetMatrix",
+	// Sound
+	"bpm",
+	"play",
+	// Color and drawing styles
+	"fill",
+	"noFill",
+	"stroke",
+	"noStroke",
+	"strokeSize",
+	"animationStyle",
+	"background",
+	"simpleGradient",
+	"color",
+	// Lighting
+	/*"ambient","reflect", "refract", */
+	"lights",
+	"noLights",
+	"ambientLight",
+	"pointLight",
+	// Calculations
+	"abs",
+	"ceil",
+	"constrain",
+	"dist",
+	"exp",
+	"floor",
+	"lerp",
+	"log",
+	"mag",
+	"map",
+	"max",
+	"min",
+	"norm",
+	"pow",
+	"round",
+	"sq",
+	"sqrt",
+	// Trigonometry
+	"acos",
+	"asin",
+	"atan",
+	"atan2",
+	"cos",
+	"degrees",
+	"radians",
+	"sin",
+	"tan",
+	// Random
+	"random",
+	"randomSeed",
+	"noise",
+	"noiseDetail",
+	"noiseSeed",
+"");
 
 function checkErrorAndReport(e) {
     $('#dangerSignText').css('color', 'red');
