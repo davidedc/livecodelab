@@ -1,46 +1,49 @@
-<!DOCTYPE html>  <html> <head>   <title>autocode.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               autocode.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>We starts with some declarations and two functions that take
+<!DOCTYPE html>  <html> <head>   <title>autocode.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="autocode.html">                 autocode.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="geometry-commands.html">                 geometry-commands.js               </a>                                           <a class="source" href="helper-functions.html">                 helper-functions.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="sound-functions.html">                 sound-functions.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               autocode.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>We starts with some declarations and two functions that take
 care of the UI parts (showing the correct state of the button and making it blink).
-The remaining part then takes care of the mutations.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">autocodeOn</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-<span class="kd">var</span> <span class="nx">blinkingAutocoderTimeout</span><span class="p">;</span>
-<span class="kd">var</span> <span class="nx">blinkingAutocoderStatus</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-<span class="kd">var</span> <span class="nx">numberOfResults</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="kd">var</span> <span class="nx">whichOneToChange</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+The remaining part then takes care of the mutations.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+<span class="keyword">var</span> autocodeOn = <span class="literal">false</span>;
+<span class="keyword">var</span> blinkingAutocoderTimeout;
+<span class="keyword">var</span> blinkingAutocoderStatus = <span class="literal">false</span>;
+<span class="keyword">var</span> numberOfResults = <span class="number">0</span>;
+<span class="keyword">var</span> whichOneToChange = <span class="number">0</span>;
 
-<span class="kd">function</span> <span class="nx">blinkAutocodeIndicator</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nx">blinkingAutocoderStatus</span> <span class="o">=</span> <span class="o">!</span><span class="nx">blinkingAutocoderStatus</span><span class="p">;</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">blinkingAutocoderStatus</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicatorContainer&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicatorContainer&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span> <span class="s1">&#39;#FF0000&#39;</span><span class="p">);</span>
-    <span class="nx">mutate</span><span class="p">();</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<span class="function"><span class="keyword">function</span> <span class="title">blinkAutocodeIndicator</span><span class="params">()</span> {</span>
+  blinkingAutocoderStatus = !blinkingAutocoderStatus;
+  <span class="keyword">if</span> (blinkingAutocoderStatus) {
+    $(<span class="string">"#autocodeIndicatorContainer"</span>).css(<span class="string">"background-color"</span>, <span class="string">''</span>);
+  } <span class="keyword">else</span> {
+    $(<span class="string">"#autocodeIndicatorContainer"</span>).css(<span class="string">"background-color"</span>, <span class="string">'#FF0000'</span>);
+    mutate();
+  }
+}
 
-<span class="kd">function</span> <span class="nx">toggleAutocodeAndUpdateButtonAndBlinking</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nx">autocodeOn</span> <span class="o">=</span> <span class="o">!</span><span class="nx">autocodeOn</span><span class="p">;</span>
+<span class="function"><span class="keyword">function</span> <span class="title">toggleAutocodeAndUpdateButtonAndBlinking</span><span class="params">()</span> {</span>
+  autocodeOn = !autocodeOn;
 
-  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">autocodeOn</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicator&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s2">&quot;Autocode: inactif&quot;</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicator&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s2">&quot;Autocode: off&quot;</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">blinkingAutocoderTimeout</span><span class="p">);</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicatorContainer&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicator&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s2">&quot;Autocode: actif&quot;</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicator&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s2">&quot;Autocode: on&quot;</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="nx">blinkingAutocoderTimeout</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="s1">&#39;blinkAutocodeIndicator();&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">);</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#autocodeIndicatorContainer&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span> <span class="s1">&#39;#FF0000&#39;</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">()</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span> <span class="o">||</span> <span class="p">(</span>
-    <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&quot;bookmark&quot;</span><span class="p">)</span> <span class="o">!==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&quot;autocodeTutorial&quot;</span><span class="p">)</span> <span class="o">!==</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+  <span class="keyword">if</span> (!autocodeOn) {
+    <span class="keyword">if</span> (frenchVersion) {
+      $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: inactif"</span>);
+    } <span class="keyword">else</span> {
+      $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: off"</span>);
+    }
+    clearInterval(blinkingAutocoderTimeout);
+    $(<span class="string">"#autocodeIndicatorContainer"</span>).css(<span class="string">"background-color"</span>, <span class="string">''</span>);
+  } <span class="keyword">else</span> {
+    <span class="keyword">if</span> (frenchVersion) {
+      $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: actif"</span>);
+    } <span class="keyword">else</span> {
+      $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: on"</span>);
+    }
+    blinkingAutocoderTimeout = setInterval(<span class="string">'blinkAutocodeIndicator();'</span>, <span class="number">500</span>);
+    $(<span class="string">"#autocodeIndicatorContainer"</span>).css(<span class="string">"background-color"</span>, <span class="string">'#FF0000'</span>);
+    <span class="keyword">if</span> (editor.getValue() === <span class="string">''</span> || (
+    (window.location.hash.indexOf(<span class="string">"bookmark"</span>) !== -<span class="number">1</span>) &amp;&amp; (window.location.hash.indexOf(<span class="string">"autocodeTutorial"</span>) !== -<span class="number">1</span>))
 
-    <span class="p">)</span> <span class="nx">loadDemoOrTutorial</span><span class="p">(</span><span class="s1">&#39;cubesAndSpikes&#39;</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Every time a mutation is invoked, the following happens</p>
+    ) loadDemoOrTutorial(<span class="string">'cubesAndSpikes'</span>);
+  }
+}
+
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Every time a mutation is invoked, the following happens</p>
 
 <ul>
 <li><p>the program is scanned by a lexer
@@ -58,331 +61,384 @@ function. If yes, then it's added as a candidate to an "mutatableTokens" array.<
 <li><p>a random option is picked and mutate is ran for that token</p></li>
 <li><p>the token list is traversed and the strings are appended one to another, creating the new
 mutated program.</p></li>
-</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">mutate</span><span class="p">()</span> <span class="p">{</span>
-	<span class="kd">var</span> <span class="nx">editorContent</span> <span class="o">=</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">();</span>
-	<span class="kd">var</span> <span class="nx">newContent</span><span class="p">;</span>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>
+<span class="function"><span class="keyword">function</span> <span class="title">mutate</span><span class="params">()</span> {</span>
+	<span class="keyword">var</span> editorContent = editor.getValue();
+	<span class="keyword">var</span> newContent;
 
-	<span class="nx">Tokens</span> <span class="o">=</span> <span class="p">[];</span>
-	<span class="k">try</span> <span class="p">{</span>
-	<span class="nx">INIT</span><span class="p">.</span><span class="nx">lex</span><span class="p">(</span><span class="nx">editorContent</span><span class="p">)</span>
-	<span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);}</span> 
+	Tokens = [];
+	<span class="keyword">try</span> {
+	INIT.lex(editorContent)
+	} <span class="keyword">catch</span>(e) {console.log(e);} 
 
-	<span class="nx">pickMutatableTokenAndMutateIt</span><span class="p">(</span><span class="nx">Tokens</span><span class="p">);</span>
-	<span class="nx">newContent</span> <span class="o">=</span> <span class="nx">emit</span><span class="p">(</span><span class="nx">Tokens</span><span class="p">);</span>
+	pickMutatableTokenAndMutateIt(Tokens);
+	newContent = emit(Tokens);
 
-	<span class="nx">editor</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="nx">newContent</span><span class="p">);</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Lexing states. There are no particular states so far.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">INIT</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">McLexer</span><span class="p">.</span><span class="nx">State</span><span class="p">()</span> <span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>We keep an array of colours as they can be mutated too!
-TODO this is duplicated somewhere else in livecodelab.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">colours</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">(</span> <span class="s2">&quot;aliceblue&quot;</span><span class="p">,</span><span class="s2">&quot;antiquewhite&quot;</span><span class="p">,</span><span class="s2">&quot;aqua&quot;</span><span class="p">,</span><span class="s2">&quot;aquamarine&quot;</span><span class="p">,</span><span class="s2">&quot;azure&quot;</span><span class="p">,</span><span class="s2">&quot;beige&quot;</span><span class="p">,</span><span class="s2">&quot;bisque&quot;</span><span class="p">,</span><span class="s2">&quot;black&quot;</span><span class="p">,</span><span class="s2">&quot;blanchedalmond&quot;</span><span class="p">,</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span><span class="s2">&quot;blueviolet&quot;</span><span class="p">,</span><span class="s2">&quot;brown&quot;</span><span class="p">,</span><span class="s2">&quot;burlywood&quot;</span><span class="p">,</span><span class="s2">&quot;cadetblue&quot;</span><span class="p">,</span><span class="s2">&quot;chartreuse&quot;</span><span class="p">,</span><span class="s2">&quot;chocolate&quot;</span><span class="p">,</span><span class="s2">&quot;coral&quot;</span><span class="p">,</span><span class="s2">&quot;cornflowerblue&quot;</span><span class="p">,</span><span class="s2">&quot;cornsilk&quot;</span><span class="p">,</span><span class="s2">&quot;crimson&quot;</span><span class="p">,</span><span class="s2">&quot;cyan&quot;</span><span class="p">,</span><span class="s2">&quot;darkblue&quot;</span><span class="p">,</span><span class="s2">&quot;darkcyan&quot;</span><span class="p">,</span><span class="s2">&quot;darkgoldenrod&quot;</span><span class="p">,</span><span class="s2">&quot;darkgray&quot;</span><span class="p">,</span><span class="s2">&quot;darkgrey&quot;</span><span class="p">,</span><span class="s2">&quot;darkgreen&quot;</span><span class="p">,</span><span class="s2">&quot;darkkhaki&quot;</span><span class="p">,</span><span class="s2">&quot;darkmagenta&quot;</span><span class="p">,</span><span class="s2">&quot;darkolivegreen&quot;</span><span class="p">,</span><span class="s2">&quot;darkorange&quot;</span><span class="p">,</span><span class="s2">&quot;darkorchid&quot;</span><span class="p">,</span><span class="s2">&quot;darkred&quot;</span><span class="p">,</span><span class="s2">&quot;darksalmon&quot;</span><span class="p">,</span><span class="s2">&quot;darkseagreen&quot;</span><span class="p">,</span><span class="s2">&quot;darkslateblue&quot;</span><span class="p">,</span><span class="s2">&quot;darkslategray&quot;</span><span class="p">,</span><span class="s2">&quot;darkslategrey&quot;</span><span class="p">,</span><span class="s2">&quot;darkturquoise&quot;</span><span class="p">,</span><span class="s2">&quot;darkviolet&quot;</span><span class="p">,</span><span class="s2">&quot;deeppink&quot;</span><span class="p">,</span><span class="s2">&quot;deepskyblue&quot;</span><span class="p">,</span><span class="s2">&quot;dimgray&quot;</span><span class="p">,</span><span class="s2">&quot;dimgrey&quot;</span><span class="p">,</span><span class="s2">&quot;dodgerblue&quot;</span><span class="p">,</span><span class="s2">&quot;firebrick&quot;</span><span class="p">,</span><span class="s2">&quot;floralwhite&quot;</span><span class="p">,</span><span class="s2">&quot;forestgreen&quot;</span><span class="p">,</span><span class="s2">&quot;fuchsia&quot;</span><span class="p">,</span><span class="s2">&quot;gainsboro&quot;</span><span class="p">,</span><span class="s2">&quot;ghostwhite&quot;</span><span class="p">,</span><span class="s2">&quot;gold&quot;</span><span class="p">,</span><span class="s2">&quot;goldenrod&quot;</span><span class="p">,</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span><span class="s2">&quot;green&quot;</span><span class="p">,</span><span class="s2">&quot;greenyellow&quot;</span><span class="p">,</span><span class="s2">&quot;honeydew&quot;</span><span class="p">,</span><span class="s2">&quot;hotpink&quot;</span><span class="p">,</span><span class="s2">&quot;indianred&quot;</span><span class="p">,</span><span class="s2">&quot;indigo&quot;</span><span class="p">,</span><span class="s2">&quot;ivory&quot;</span><span class="p">,</span><span class="s2">&quot;khaki&quot;</span><span class="p">,</span><span class="s2">&quot;lavender&quot;</span><span class="p">,</span><span class="s2">&quot;lavenderblush&quot;</span><span class="p">,</span><span class="s2">&quot;lawngreen&quot;</span><span class="p">,</span><span class="s2">&quot;lemonchiffon&quot;</span><span class="p">,</span><span class="s2">&quot;lightblue&quot;</span><span class="p">,</span><span class="s2">&quot;lightcoral&quot;</span><span class="p">,</span><span class="s2">&quot;lightcyan&quot;</span><span class="p">,</span><span class="s2">&quot;lightgoldenrodyellow&quot;</span><span class="p">,</span><span class="s2">&quot;lightgrey&quot;</span><span class="p">,</span><span class="s2">&quot;lightgray&quot;</span><span class="p">,</span><span class="s2">&quot;lightgreen&quot;</span><span class="p">,</span><span class="s2">&quot;lightpink&quot;</span><span class="p">,</span><span class="s2">&quot;lightsalmon&quot;</span><span class="p">,</span><span class="s2">&quot;lightseagreen&quot;</span><span class="p">,</span><span class="s2">&quot;lightskyblue&quot;</span><span class="p">,</span><span class="s2">&quot;lightslategray&quot;</span><span class="p">,</span><span class="s2">&quot;lightslategrey&quot;</span><span class="p">,</span><span class="s2">&quot;lightsteelblue&quot;</span><span class="p">,</span><span class="s2">&quot;lightyellow&quot;</span><span class="p">,</span><span class="s2">&quot;lime&quot;</span><span class="p">,</span><span class="s2">&quot;limegreen&quot;</span><span class="p">,</span><span class="s2">&quot;linen&quot;</span><span class="p">,</span><span class="s2">&quot;magenta&quot;</span><span class="p">,</span><span class="s2">&quot;maroon&quot;</span><span class="p">,</span><span class="s2">&quot;mediumaquamarine&quot;</span><span class="p">,</span><span class="s2">&quot;mediumblue&quot;</span><span class="p">,</span><span class="s2">&quot;mediumorchid&quot;</span><span class="p">,</span><span class="s2">&quot;mediumpurple&quot;</span><span class="p">,</span><span class="s2">&quot;mediumseagreen&quot;</span><span class="p">,</span><span class="s2">&quot;mediumslateblue&quot;</span><span class="p">,</span><span class="s2">&quot;mediumspringgreen&quot;</span><span class="p">,</span><span class="s2">&quot;mediumturquoise&quot;</span><span class="p">,</span><span class="s2">&quot;mediumvioletred&quot;</span><span class="p">,</span><span class="s2">&quot;midnightblue&quot;</span><span class="p">,</span><span class="s2">&quot;mintcream&quot;</span><span class="p">,</span><span class="s2">&quot;mistyrose&quot;</span><span class="p">,</span><span class="s2">&quot;moccasin&quot;</span><span class="p">,</span><span class="s2">&quot;navajowhite&quot;</span><span class="p">,</span><span class="s2">&quot;navy&quot;</span><span class="p">,</span><span class="s2">&quot;oldlace&quot;</span><span class="p">,</span><span class="s2">&quot;olive&quot;</span><span class="p">,</span><span class="s2">&quot;olivedrab&quot;</span><span class="p">,</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span><span class="s2">&quot;orangered&quot;</span><span class="p">,</span><span class="s2">&quot;orchid&quot;</span><span class="p">,</span><span class="s2">&quot;palegoldenrod&quot;</span><span class="p">,</span><span class="s2">&quot;palegreen&quot;</span><span class="p">,</span><span class="s2">&quot;paleturquoise&quot;</span><span class="p">,</span><span class="s2">&quot;palevioletred&quot;</span><span class="p">,</span><span class="s2">&quot;papayawhip&quot;</span><span class="p">,</span><span class="s2">&quot;peachpuff&quot;</span><span class="p">,</span><span class="s2">&quot;peru&quot;</span><span class="p">,</span><span class="s2">&quot;pink&quot;</span><span class="p">,</span><span class="s2">&quot;plum&quot;</span><span class="p">,</span><span class="s2">&quot;powderblue&quot;</span><span class="p">,</span><span class="s2">&quot;purple&quot;</span><span class="p">,</span><span class="s2">&quot;red&quot;</span><span class="p">,</span><span class="s2">&quot;rosybrown&quot;</span><span class="p">,</span><span class="s2">&quot;royalblue&quot;</span><span class="p">,</span><span class="s2">&quot;saddlebrown&quot;</span><span class="p">,</span><span class="s2">&quot;salmon&quot;</span><span class="p">,</span><span class="s2">&quot;sandybrown&quot;</span><span class="p">,</span><span class="s2">&quot;seagreen&quot;</span><span class="p">,</span><span class="s2">&quot;seashell&quot;</span><span class="p">,</span><span class="s2">&quot;sienna&quot;</span><span class="p">,</span><span class="s2">&quot;silver&quot;</span><span class="p">,</span><span class="s2">&quot;skyblue&quot;</span><span class="p">,</span><span class="s2">&quot;slateblue&quot;</span><span class="p">,</span><span class="s2">&quot;slategray&quot;</span><span class="p">,</span><span class="s2">&quot;slategrey&quot;</span><span class="p">,</span><span class="s2">&quot;snow&quot;</span><span class="p">,</span><span class="s2">&quot;springgreen&quot;</span><span class="p">,</span><span class="s2">&quot;steelblue&quot;</span><span class="p">,</span><span class="s2">&quot;tan&quot;</span><span class="p">,</span><span class="s2">&quot;teal&quot;</span><span class="p">,</span><span class="s2">&quot;thistle&quot;</span><span class="p">,</span><span class="s2">&quot;tomato&quot;</span><span class="p">,</span><span class="s2">&quot;turquoise&quot;</span><span class="p">,</span><span class="s2">&quot;violet&quot;</span><span class="p">,</span><span class="s2">&quot;wheat&quot;</span><span class="p">,</span><span class="s2">&quot;white&quot;</span><span class="p">,</span><span class="s2">&quot;whitesmoke&quot;</span><span class="p">,</span><span class="s2">&quot;yellow&quot;</span><span class="p">,</span><span class="s2">&quot;yellowgreen&quot;</span> <span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>The Tokens array will contain all of the tokens in the form of functions.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">Tokens</span> <span class="o">=</span> <span class="p">[]</span> <span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Token types. If they contain a mutate() function, then they can be mutated.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">COMMENT</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;COMMENT(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">SPACE</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;SPACE(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">NEWLINE</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;&lt;br/&gt;&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">TRANSLATION</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;TRANSLATION(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">VARIABLE</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;VARIABLE(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">NUM</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;NUM(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-
-  <span class="k">this</span><span class="p">.</span><span class="nx">mutate</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-  	<span class="kd">var</span> <span class="nx">num</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Number</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">string</span><span class="p">);</span>
-	<span class="kd">var</span> <span class="nx">scalar</span><span class="p">;</span>
-
-	<span class="k">if</span> <span class="p">(</span> <span class="mi">0</span> <span class="o">==</span> <span class="nx">num</span> <span class="p">)</span>
-		<span class="nx">num</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
-
-	<span class="k">if</span> <span class="p">(</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mf">0.5</span> <span class="p">)</span>
-	<span class="p">{</span>
-		<span class="nx">scalar</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">-</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
-	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		<span class="nx">scalar</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
-	<span class="p">}</span>
-	<span class="kd">var</span> <span class="nx">offset</span> <span class="o">=</span> <span class="nx">num</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
-
-	<span class="nx">num</span> <span class="o">+=</span> <span class="nx">offset</span><span class="p">;</span>
-	<span class="nx">num</span> <span class="o">=</span> <span class="nx">num</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-
-	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;mutate number &quot;</span><span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">+</span><span class="s2">&quot; -&gt; &quot;</span><span class="o">+</span><span class="nx">num</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
-	<span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">num</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">OP</span><span class="p">(</span><span class="nx">string</span><span class="p">){</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;OP(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">ARGDLIM</span><span class="p">(</span><span class="nx">string</span><span class="p">){</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;ARGDLIM(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">TAB</span><span class="p">(</span><span class="nx">string</span><span class="p">){</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;TAB(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">DOONCE</span><span class="p">(</span><span class="nx">string</span><span class="p">){</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;DOONCE(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">COLOUROP</span><span class="p">(</span><span class="nx">string</span><span class="p">){</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;COLOUROP(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">COLOUR</span><span class="p">(</span><span class="nx">string</span><span class="p">){</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;COLOUR(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-
-  <span class="k">this</span><span class="p">.</span><span class="nx">mutate</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-	<span class="kd">var</span> <span class="nx">idx</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">colours</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
-
-	<span class="k">while</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">==</span> <span class="nx">colours</span><span class="p">[</span><span class="nx">idx</span><span class="p">]</span> <span class="p">)</span>
-		<span class="nx">idx</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">colours</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
-
-	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;mutate colour &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot; -&gt; &quot;</span> <span class="o">+</span> <span class="nx">colours</span><span class="p">[</span><span class="nx">idx</span><span class="p">]);</span>
-	<span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">colours</span><span class="p">[</span><span class="nx">idx</span><span class="p">];</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">MESH</span><span class="p">(</span><span class="nx">string</span><span class="p">){</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;MESH(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-
-  <span class="k">this</span><span class="p">.</span><span class="nx">mutate</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-  	<span class="k">switch</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">string</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="k">case</span> <span class="s1">&#39;box&#39;</span><span class="o">:</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="s1">&#39;ball&#39;</span>
-			<span class="k">return</span><span class="p">;</span>
-		<span class="k">case</span> <span class="s1">&#39;ball&#39;</span><span class="o">:</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="s1">&#39;box&#39;</span>
-			<span class="k">return</span><span class="p">;</span>
-		<span class="k">case</span> <span class="s1">&#39;line&#39;</span><span class="o">:</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="s1">&#39;rect&#39;</span>
-			<span class="k">return</span><span class="p">;</span>
-		<span class="k">case</span> <span class="s1">&#39;rect&#39;</span><span class="o">:</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="s1">&#39;line&#39;</span>
-			<span class="k">return</span><span class="p">;</span>
-	<span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">STATEFUN</span><span class="p">(</span><span class="nx">string</span><span class="p">){</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;STATEFUN(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">ITERATION</span><span class="p">(</span><span class="nx">string</span><span class="p">){</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;ITERATION(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-
-  <span class="k">this</span><span class="p">.</span><span class="nx">mutate</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-  	<span class="kd">var</span> <span class="nx">pat</span> <span class="o">=</span> <span class="sr">/\d/</span><span class="p">;</span>
-	<span class="kd">var</span> <span class="nx">num</span> <span class="o">=</span> <span class="nx">pat</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">string</span><span class="p">);</span>
-
-	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;ITER NUM: &quot;</span><span class="o">+</span><span class="nx">num</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mf">0.5</span> <span class="p">)</span>
-	<span class="p">{</span>
-		<span class="nx">num</span><span class="o">++</span><span class="p">;</span>
-	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		<span class="nx">num</span><span class="o">--</span><span class="p">;</span>
-	<span class="p">}</span>
-
-	<span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">num</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot; times -&gt;&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+	editor.setValue(newContent);
+}
 
 
-<span class="kd">function</span> <span class="nx">UNKNOWN</span><span class="p">(</span><span class="nx">string</span><span class="p">){</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span> <span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;UNKNOWN(&quot;</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="p">;</span> <span class="p">}</span> <span class="p">;</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Rules are used to</p>
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Lexing states. There are no particular states so far.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> INIT = <span class="keyword">new</span> McLexer.State() ;
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>We keep an array of colours as they can be mutated too!
+TODO this is duplicated somewhere else in livecodelab.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> colours = Array( <span class="string">"aliceblue"</span>,<span class="string">"antiquewhite"</span>,<span class="string">"aqua"</span>,<span class="string">"aquamarine"</span>,<span class="string">"azure"</span>,<span class="string">"beige"</span>,<span class="string">"bisque"</span>,<span class="string">"black"</span>,<span class="string">"blanchedalmond"</span>,<span class="string">"blue"</span>,<span class="string">"blueviolet"</span>,<span class="string">"brown"</span>,<span class="string">"burlywood"</span>,<span class="string">"cadetblue"</span>,<span class="string">"chartreuse"</span>,<span class="string">"chocolate"</span>,<span class="string">"coral"</span>,<span class="string">"cornflowerblue"</span>,<span class="string">"cornsilk"</span>,<span class="string">"crimson"</span>,<span class="string">"cyan"</span>,<span class="string">"darkblue"</span>,<span class="string">"darkcyan"</span>,<span class="string">"darkgoldenrod"</span>,<span class="string">"darkgray"</span>,<span class="string">"darkgrey"</span>,<span class="string">"darkgreen"</span>,<span class="string">"darkkhaki"</span>,<span class="string">"darkmagenta"</span>,<span class="string">"darkolivegreen"</span>,<span class="string">"darkorange"</span>,<span class="string">"darkorchid"</span>,<span class="string">"darkred"</span>,<span class="string">"darksalmon"</span>,<span class="string">"darkseagreen"</span>,<span class="string">"darkslateblue"</span>,<span class="string">"darkslategray"</span>,<span class="string">"darkslategrey"</span>,<span class="string">"darkturquoise"</span>,<span class="string">"darkviolet"</span>,<span class="string">"deeppink"</span>,<span class="string">"deepskyblue"</span>,<span class="string">"dimgray"</span>,<span class="string">"dimgrey"</span>,<span class="string">"dodgerblue"</span>,<span class="string">"firebrick"</span>,<span class="string">"floralwhite"</span>,<span class="string">"forestgreen"</span>,<span class="string">"fuchsia"</span>,<span class="string">"gainsboro"</span>,<span class="string">"ghostwhite"</span>,<span class="string">"gold"</span>,<span class="string">"goldenrod"</span>,<span class="string">"gray"</span>,<span class="string">"grey"</span>,<span class="string">"green"</span>,<span class="string">"greenyellow"</span>,<span class="string">"honeydew"</span>,<span class="string">"hotpink"</span>,<span class="string">"indianred"</span>,<span class="string">"indigo"</span>,<span class="string">"ivory"</span>,<span class="string">"khaki"</span>,<span class="string">"lavender"</span>,<span class="string">"lavenderblush"</span>,<span class="string">"lawngreen"</span>,<span class="string">"lemonchiffon"</span>,<span class="string">"lightblue"</span>,<span class="string">"lightcoral"</span>,<span class="string">"lightcyan"</span>,<span class="string">"lightgoldenrodyellow"</span>,<span class="string">"lightgrey"</span>,<span class="string">"lightgray"</span>,<span class="string">"lightgreen"</span>,<span class="string">"lightpink"</span>,<span class="string">"lightsalmon"</span>,<span class="string">"lightseagreen"</span>,<span class="string">"lightskyblue"</span>,<span class="string">"lightslategray"</span>,<span class="string">"lightslategrey"</span>,<span class="string">"lightsteelblue"</span>,<span class="string">"lightyellow"</span>,<span class="string">"lime"</span>,<span class="string">"limegreen"</span>,<span class="string">"linen"</span>,<span class="string">"magenta"</span>,<span class="string">"maroon"</span>,<span class="string">"mediumaquamarine"</span>,<span class="string">"mediumblue"</span>,<span class="string">"mediumorchid"</span>,<span class="string">"mediumpurple"</span>,<span class="string">"mediumseagreen"</span>,<span class="string">"mediumslateblue"</span>,<span class="string">"mediumspringgreen"</span>,<span class="string">"mediumturquoise"</span>,<span class="string">"mediumvioletred"</span>,<span class="string">"midnightblue"</span>,<span class="string">"mintcream"</span>,<span class="string">"mistyrose"</span>,<span class="string">"moccasin"</span>,<span class="string">"navajowhite"</span>,<span class="string">"navy"</span>,<span class="string">"oldlace"</span>,<span class="string">"olive"</span>,<span class="string">"olivedrab"</span>,<span class="string">"orange"</span>,<span class="string">"orangered"</span>,<span class="string">"orchid"</span>,<span class="string">"palegoldenrod"</span>,<span class="string">"palegreen"</span>,<span class="string">"paleturquoise"</span>,<span class="string">"palevioletred"</span>,<span class="string">"papayawhip"</span>,<span class="string">"peachpuff"</span>,<span class="string">"peru"</span>,<span class="string">"pink"</span>,<span class="string">"plum"</span>,<span class="string">"powderblue"</span>,<span class="string">"purple"</span>,<span class="string">"red"</span>,<span class="string">"rosybrown"</span>,<span class="string">"royalblue"</span>,<span class="string">"saddlebrown"</span>,<span class="string">"salmon"</span>,<span class="string">"sandybrown"</span>,<span class="string">"seagreen"</span>,<span class="string">"seashell"</span>,<span class="string">"sienna"</span>,<span class="string">"silver"</span>,<span class="string">"skyblue"</span>,<span class="string">"slateblue"</span>,<span class="string">"slategray"</span>,<span class="string">"slategrey"</span>,<span class="string">"snow"</span>,<span class="string">"springgreen"</span>,<span class="string">"steelblue"</span>,<span class="string">"tan"</span>,<span class="string">"teal"</span>,<span class="string">"thistle"</span>,<span class="string">"tomato"</span>,<span class="string">"turquoise"</span>,<span class="string">"violet"</span>,<span class="string">"wheat"</span>,<span class="string">"white"</span>,<span class="string">"whitesmoke"</span>,<span class="string">"yellow"</span>,<span class="string">"yellowgreen"</span> );
+
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>The Tokens array will contain all of the tokens in the form of functions.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> Tokens = [] ;
+
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Token types. If they contain a mutate() function, then they can be mutated.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="keyword">function</span> <span class="title">COMMENT</span><span class="params">(string)</span> {</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"COMMENT("</span> + string + <span class="string">")"</span> ; } ;
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">SPACE</span><span class="params">(string)</span> {</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"SPACE("</span> + string + <span class="string">")"</span> ; } ;
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">NEWLINE</span><span class="params">(string)</span> {</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"&lt;br/&gt;"</span> ; } ;
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">TRANSLATION</span><span class="params">(string)</span> {</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"TRANSLATION("</span> + string + <span class="string">")"</span> ; } ;
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">VARIABLE</span><span class="params">(string)</span> {</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"VARIABLE("</span> + string + <span class="string">")"</span> ; } ;
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">NUM</span><span class="params">(string)</span> {</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"NUM("</span> + string + <span class="string">")"</span> ; } ;
+
+  <span class="keyword">this</span>.mutate = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+  	<span class="keyword">var</span> num = <span class="keyword">new</span> Number(<span class="keyword">this</span>.string);
+	<span class="keyword">var</span> scalar;
+
+	<span class="keyword">if</span> ( <span class="number">0</span> == num )
+		num = <span class="number">0.1</span>;
+
+	<span class="keyword">if</span> ( Math.random() &gt; <span class="number">0.5</span> )
+	{
+		scalar = <span class="number">0</span> - Math.random();
+	} <span class="keyword">else</span> {
+		scalar = Math.random();
+	}
+	<span class="keyword">var</span> offset = num * Math.random();
+
+	num += offset;
+	num = num.toFixed(<span class="number">2</span>);
+
+	console.log(<span class="string">"mutate number "</span>+ <span class="keyword">this</span>.string +<span class="string">" -&gt; "</span>+num.toString());
+	<span class="keyword">this</span>.string = num.toString();
+  }
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">OP</span><span class="params">(string)</span>{</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"OP("</span> + string + <span class="string">")"</span> ; } ;
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">ARGDLIM</span><span class="params">(string)</span>{</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"ARGDLIM("</span> + string + <span class="string">")"</span> ; } ;
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">TAB</span><span class="params">(string)</span>{</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"TAB("</span> + string + <span class="string">")"</span> ; } ;
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">DOONCE</span><span class="params">(string)</span>{</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"DOONCE("</span> + string + <span class="string">")"</span> ; } ;
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">COLOUROP</span><span class="params">(string)</span>{</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"COLOUROP("</span> + string + <span class="string">")"</span> ; } ;
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">COLOUR</span><span class="params">(string)</span>{</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"COLOUR("</span> + string + <span class="string">")"</span> ; } ;
+
+  <span class="keyword">this</span>.mutate = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+	<span class="keyword">var</span> idx = Math.floor(Math.random() * colours.length);
+
+	<span class="keyword">while</span> ( <span class="keyword">this</span>.string == colours[idx] )
+		idx = Math.floor(Math.random() * colours.length);
+
+	console.log(<span class="string">"mutate colour "</span> + <span class="keyword">this</span>.string + <span class="string">" -&gt; "</span> + colours[idx]);
+	<span class="keyword">this</span>.string = colours[idx];
+  }
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">MESH</span><span class="params">(string)</span>{</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"MESH("</span> + string + <span class="string">")"</span> ; } ;
+
+  <span class="keyword">this</span>.mutate = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+  	<span class="keyword">switch</span>(<span class="keyword">this</span>.string)
+	{
+		<span class="keyword">case</span> <span class="string">'box'</span>:
+			<span class="keyword">this</span>.string = <span class="string">'ball'</span>
+			<span class="keyword">return</span>;
+		<span class="keyword">case</span> <span class="string">'ball'</span>:
+			<span class="keyword">this</span>.string = <span class="string">'box'</span>
+			<span class="keyword">return</span>;
+		<span class="keyword">case</span> <span class="string">'line'</span>:
+			<span class="keyword">this</span>.string = <span class="string">'rect'</span>
+			<span class="keyword">return</span>;
+		<span class="keyword">case</span> <span class="string">'rect'</span>:
+			<span class="keyword">this</span>.string = <span class="string">'line'</span>
+			<span class="keyword">return</span>;
+	}
+  }
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">STATEFUN</span><span class="params">(string)</span>{</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"STATEFUN("</span> + string + <span class="string">")"</span> ; } ;
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">ITERATION</span><span class="params">(string)</span>{</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"ITERATION("</span> + string + <span class="string">")"</span> ; } ;
+
+  <span class="keyword">this</span>.mutate = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+  	<span class="keyword">var</span> pat = <span class="regexp">/\d/</span>;
+	<span class="keyword">var</span> num = pat.exec(<span class="keyword">this</span>.string);
+
+	console.log(<span class="string">"ITER NUM: "</span>+num);
+	<span class="keyword">if</span> ( Math.random() &gt; <span class="number">0.5</span> )
+	{
+		num++;
+	} <span class="keyword">else</span> {
+		num--;
+	}
+
+	<span class="keyword">this</span>.string = num.toString()+<span class="string">" times -&gt;"</span>
+  }
+}
+
+
+<span class="function"><span class="keyword">function</span> <span class="title">UNKNOWN</span><span class="params">(string)</span>{</span>
+  <span class="keyword">this</span>.string = string ;
+  <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="keyword">return</span> <span class="string">"UNKNOWN("</span> + string + <span class="string">")"</span> ; } ;
+}
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Rules are used to</p>
 
 <ul>
 <li><p>define how tokens are picked up from text (i.e. which regex)</p></li>
 <li><p>how the lexer behaves depending on different states. This is currently not used.</p></li>
-</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">INIT</span> <span class="p">(</span><span class="sr">/\/\/.*\n/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">COMMENT</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/\t/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">TAB</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/-?[0-9]+\.?[0-9]*/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">NUM</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/[*|\/|+|-]/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">OP</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/,/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">ARGDLIM</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/[\n|\r]{1,2}/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">NEWLINE</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>translations</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">INIT</span> <span class="p">(</span><span class="sr">/rotate/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">TRANSLATION</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/move/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">TRANSLATION</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/scale/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">TRANSLATION</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>colour</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">for</span><span class="p">(</span> <span class="kd">var</span> <span class="nx">scanningAllColors</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">scanningAllColors</span> <span class="o">&lt;</span> <span class="nx">colours</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="nx">scanningAllColors</span><span class="o">++</span><span class="p">)</span>
-<span class="p">{</span>
-	<span class="nx">INIT</span> <span class="p">(</span><span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span> <span class="nx">colours</span><span class="p">[</span><span class="nx">scanningAllColors</span><span class="p">]</span> <span class="p">))</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span> <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">COLOUR</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span> <span class="p">})</span> <span class="p">;</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>colour ops</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">INIT</span> <span class="p">(</span><span class="sr">/background/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">COLOUROP</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/fill/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">COLOUROP</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/stroke/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">COLOUROP</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>hmm  TODO</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">INIT</span> <span class="p">(</span><span class="sr">/simpleGradient/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">COLOUROP</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>mesh</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">INIT</span> <span class="p">(</span><span class="sr">/box/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">MESH</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/ball/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">MESH</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/rect/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">MESH</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/line/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">MESH</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>state changes?</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">INIT</span> <span class="p">(</span><span class="sr">/ballDetail/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">STATEFUN</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>
+INIT (<span class="regexp">/\/\/.*\n/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> COMMENT(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/\t/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> TAB(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/-?[0-9]+\.?[0-9]*/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> NUM(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/[*|\/|+|-]/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> OP(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/,/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> ARGDLIM(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/[\n|\r]{1,2}/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> NEWLINE(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
 
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/animationStyle\s\w+/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">STATEFUN</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>iteration</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">INIT</span> <span class="p">(</span><span class="sr">/\d+\s+times\s+-&gt;/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">ITERATION</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>vars</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">INIT</span> <span class="p">(</span><span class="sr">/time/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">VARIABLE</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/delay/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">VARIABLE</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>special</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">INIT</span> <span class="p">(</span><span class="sr">/\?doOnce\s+-&gt;\s*/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">DOONCE</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>ignore white space ?</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">INIT</span> <span class="p">(</span><span class="sr">/ +/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">SPACE</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>The bad stuff</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">INIT</span> <span class="p">(</span><span class="sr">/color\s*\(.+\)/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">UNKNOWN</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/noFill/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">UNKNOWN</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span>
-<span class="nx">INIT</span> <span class="p">(</span><span class="sr">/strokeSize/</span><span class="p">)</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">match</span><span class="p">,</span><span class="nx">rest</span><span class="p">,</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">Tokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">UNKNOWN</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span> 
-    <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">continuation</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="p">;</span>
- <span class="p">})</span> <span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Traverses the Tokens array and concatenates the strings, hence generating a possibly mutated program.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">emit</span><span class="p">(</span> <span class="nx">stream</span> <span class="p">)</span>
-<span class="p">{</span>
-	<span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>translations</p>             </td>             <td class="code">               <div class="highlight"><pre>INIT (<span class="regexp">/rotate/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> TRANSLATION(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/move/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> TRANSLATION(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/scale/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> TRANSLATION(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
 
-	<span class="k">for</span><span class="p">(</span> <span class="kd">var</span> <span class="nx">scanningTheStream</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">scanningTheStream</span><span class="o">&lt;</span><span class="nx">stream</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">scanningTheStream</span><span class="o">++</span> <span class="p">)</span>
-	<span class="p">{</span>
-		<span class="nx">ret</span> <span class="o">=</span> <span class="nx">ret</span> <span class="o">+</span> <span class="nx">stream</span><span class="p">[</span><span class="nx">scanningTheStream</span><span class="p">].</span><span class="nx">string</span>
-	<span class="p">}</span>
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>colour</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">for</span>( <span class="keyword">var</span> scanningAllColors=<span class="number">0</span>; scanningAllColors &lt; colours.length;scanningAllColors++)
+{
+	INIT (<span class="keyword">new</span> RegExp( colours[scanningAllColors] )) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span> Tokens.push(<span class="keyword">new</span> COLOUR(match[<span class="number">0</span>])); <span class="keyword">return</span> state.continuation(rest) ; }) ;
+}
 
-	<span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Checks whether a token can mutate by checking whether the mutate function exists.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">canMutate</span><span class="p">(</span> <span class="nx">token</span> <span class="p">)</span>
-<span class="p">{</span>
-	<span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">token</span><span class="p">.</span><span class="nx">mutate</span> <span class="o">==</span> <span class="s1">&#39;function&#39;</span> <span class="p">)</span>
-		<span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-	<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Scans the tokens and collects the mutatable ones. Then picks one random and invokes its mutate().</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">pickMutatableTokenAndMutateIt</span><span class="p">(</span> <span class="nx">stream</span> <span class="p">)</span>
-<span class="p">{</span>
-	<span class="kd">var</span> <span class="nx">mutatableTokens</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">();</span>
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>colour ops</p>             </td>             <td class="code">               <div class="highlight"><pre>INIT (<span class="regexp">/background/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> COLOUROP(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/fill/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> COLOUROP(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/stroke/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> COLOUROP(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
 
-	<span class="k">for</span><span class="p">(</span> <span class="kd">var</span> <span class="nx">scanningTheStream</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">scanningTheStream</span><span class="o">&lt;</span><span class="nx">stream</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">scanningTheStream</span><span class="o">++</span> <span class="p">)</span>
-	<span class="p">{</span>
-		<span class="k">if</span> <span class="p">(</span> <span class="nx">canMutate</span><span class="p">(</span> <span class="nx">stream</span><span class="p">[</span><span class="nx">scanningTheStream</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span>
-		<span class="p">{</span>
-			<span class="nx">mutatableTokens</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">scanningTheStream</span><span class="p">);</span>
-		<span class="p">}</span>
-	<span class="p">}</span>
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>hmm  TODO</p>             </td>             <td class="code">               <div class="highlight"><pre>INIT (<span class="regexp">/simpleGradient/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> COLOUROP(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
 
-	<span class="k">if</span> <span class="p">(</span> <span class="mi">0</span> <span class="o">==</span> <span class="nx">mutatableTokens</span><span class="p">.</span><span class="nx">length</span> <span class="p">)</span>
-	<span class="p">{</span>
-		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;no possible mutations&#39;</span><span class="p">);</span>
-		<span class="k">return</span><span class="p">;</span>
-	<span class="p">}</span>
+</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>mesh</p>             </td>             <td class="code">               <div class="highlight"><pre>INIT (<span class="regexp">/box/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> MESH(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/ball/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> MESH(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/rect/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> MESH(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/line/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> MESH(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
 
-	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">mutatableTokens</span><span class="p">);</span>
+</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>state changes?</p>             </td>             <td class="code">               <div class="highlight"><pre>INIT (<span class="regexp">/ballDetail/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> STATEFUN(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
 
-	<span class="kd">var</span> <span class="nx">idx</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">mutatableTokens</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+INIT (<span class="regexp">/animationStyle\s\w+/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> STATEFUN(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
 
-	<span class="nx">stream</span><span class="p">[</span> <span class="nx">mutatableTokens</span><span class="p">[</span><span class="nx">idx</span><span class="p">]</span> <span class="p">].</span><span class="nx">mutate</span><span class="p">();</span>
-<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>Currently unused.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">replaceTimeWithAConstant</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">editorContent</span> <span class="o">=</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">();</span>
-  <span class="kd">var</span> <span class="nx">rePattern</span><span class="p">;</span>
-  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">frenchVersion</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">rePattern</span> <span class="o">=</span> <span class="sr">/(time)/gi</span><span class="p">;</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="nx">rePattern</span> <span class="o">=</span> <span class="sr">/(temps)/gi</span><span class="p">;</span>
-  <span class="p">}</span>
+</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>iteration</p>             </td>             <td class="code">               <div class="highlight"><pre>INIT (<span class="regexp">/\d+\s+times\s+-&gt;/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> ITERATION(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
 
-  <span class="kd">var</span> <span class="nx">allMatches</span> <span class="o">=</span> <span class="nx">editorContent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">rePattern</span><span class="p">);</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">allMatches</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="nx">numberOfResults</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="k">else</span> <span class="nx">numberOfResults</span> <span class="o">=</span> <span class="nx">allMatches</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
-  <span class="nx">whichOneToChange</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">numberOfResults</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>vars</p>             </td>             <td class="code">               <div class="highlight"><pre>INIT (<span class="regexp">/time/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> VARIABLE(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/delay/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> VARIABLE(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
 
-  <span class="kd">var</span> <span class="nx">countWhichOneToSwap</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="nx">editorContent</span> <span class="o">=</span> <span class="nx">editorContent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">rePattern</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">match</span><span class="p">,</span> <span class="nx">text</span><span class="p">,</span> <span class="nx">urlId</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">countWhichOneToSwap</span><span class="o">++</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">countWhichOneToSwap</span> <span class="o">===</span> <span class="nx">whichOneToChange</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="nx">match</span><span class="p">;</span>
-  <span class="p">});</span>
-  <span class="nx">editor</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="nx">editorContent</span><span class="p">);</span>
-<span class="p">}</span>
+</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>special</p>             </td>             <td class="code">               <div class="highlight"><pre>INIT (<span class="regexp">/\?doOnce\s+-&gt;\s*/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> DOONCE(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>ignore white space ?</p>             </td>             <td class="code">               <div class="highlight"><pre>INIT (<span class="regexp">/ +/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> SPACE(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>The bad stuff</p>             </td>             <td class="code">               <div class="highlight"><pre>INIT (<span class="regexp">/color\s*\(.+\)/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> UNKNOWN(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/noFill/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> UNKNOWN(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+INIT (<span class="regexp">/strokeSize/</span>) (<span class="function"><span class="keyword">function</span> <span class="params">(match,rest,state)</span> {</span>
+    Tokens.push(<span class="keyword">new</span> UNKNOWN(match[<span class="number">0</span>])); 
+    <span class="keyword">return</span> state.continuation(rest) ;
+ }) ;
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Traverses the Tokens array and concatenates the strings, hence generating a possibly mutated program.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+<span class="function"><span class="keyword">function</span> <span class="title">emit</span><span class="params">( stream )</span>
+{</span>
+	<span class="keyword">var</span> ret = <span class="string">""</span>;
+
+	<span class="keyword">for</span>( <span class="keyword">var</span> scanningTheStream=<span class="number">0</span>; scanningTheStream&lt;stream.length; scanningTheStream++ )
+	{
+		ret = ret + stream[scanningTheStream].string
+	}
+
+	<span class="keyword">return</span> ret;
+}
+
+</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Checks whether a token can mutate by checking whether the mutate function exists.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="keyword">function</span> <span class="title">canMutate</span><span class="params">( token )</span>
+{</span>
+	<span class="keyword">if</span> ( <span class="keyword">typeof</span> token.mutate == <span class="string">'function'</span> )
+		<span class="keyword">return</span> <span class="literal">true</span>;
+	<span class="keyword">return</span> <span class="literal">false</span>;
+}
+
+</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Scans the tokens and collects the mutatable ones. Then picks one random and invokes its mutate().</p>             </td>             <td class="code">               <div class="highlight"><pre>
+<span class="function"><span class="keyword">function</span> <span class="title">pickMutatableTokenAndMutateIt</span><span class="params">( stream )</span>
+{</span>
+	<span class="keyword">var</span> mutatableTokens = Array();
+
+	<span class="keyword">for</span>( <span class="keyword">var</span> scanningTheStream=<span class="number">0</span>; scanningTheStream&lt;stream.length; scanningTheStream++ )
+	{
+		<span class="keyword">if</span> ( canMutate( stream[scanningTheStream] ) )
+		{
+			mutatableTokens.push(scanningTheStream);
+		}
+	}
+
+	<span class="keyword">if</span> ( <span class="number">0</span> == mutatableTokens.length )
+	{
+		console.log(<span class="string">'no possible mutations'</span>);
+		<span class="keyword">return</span>;
+	}
+
+	console.log(mutatableTokens);
+
+	<span class="keyword">var</span> idx = Math.floor(Math.random() * mutatableTokens.length);
+
+	stream[ mutatableTokens[idx] ].mutate();
+}
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>Currently unused.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+<span class="function"><span class="keyword">function</span> <span class="title">replaceTimeWithAConstant</span><span class="params">()</span> {</span>
+  <span class="keyword">var</span> editorContent = editor.getValue();
+  <span class="keyword">var</span> rePattern;
+  <span class="keyword">if</span> (!frenchVersion) {
+    rePattern = <span class="regexp">/(time)/gi</span>;
+  } <span class="keyword">else</span> {
+    rePattern = <span class="regexp">/(temps)/gi</span>;
+  }
+
+  <span class="keyword">var</span> allMatches = editorContent.match(rePattern);
+  <span class="keyword">if</span> (allMatches === <span class="literal">null</span>) numberOfResults = <span class="number">0</span>;
+  <span class="keyword">else</span> numberOfResults = allMatches.length;
+  whichOneToChange = Math.floor(Math.random() * numberOfResults) + <span class="number">1</span>;
+
+  <span class="keyword">var</span> countWhichOneToSwap = <span class="number">0</span>;
+  editorContent = editorContent.replace(rePattern, <span class="keyword">function</span>(match, text, urlId) {
+    countWhichOneToSwap++;
+    <span class="keyword">if</span> (countWhichOneToSwap === whichOneToChange) {
+      <span class="keyword">return</span> <span class="string">''</span> + Math.floor(Math.random() * <span class="number">20</span>) + <span class="number">1</span>;
+    }
+    <span class="keyword">return</span> match;
+  });
+  editor.setValue(editorContent);
+}
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

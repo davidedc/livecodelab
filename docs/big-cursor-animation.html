@@ -1,44 +1,45 @@
-<!DOCTYPE html>  <html> <head>   <title>big-cursor-animation.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               big-cursor-animation.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">lastkey</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="kd">var</span> <span class="nx">fakeText</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<!DOCTYPE html>  <html> <head>   <title>big-cursor-animation.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="autocode.html">                 autocode.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="geometry-commands.html">                 geometry-commands.js               </a>                                           <a class="source" href="helper-functions.html">                 helper-functions.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="sound-functions.html">                 sound-functions.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               big-cursor-animation.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> lastkey = <span class="number">0</span>;
+<span class="keyword">var</span> fakeText = <span class="literal">true</span>;
 
-<span class="nb">document</span><span class="p">.</span><span class="nx">onkeypress</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">fakeText</span> <span class="o">&amp;&amp;</span> <span class="nx">editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">()</span> <span class="o">!==</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="nx">shrinkFakeText</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
-<span class="p">}</span>
+document.onkeypress = <span class="keyword">function</span>(e) {
+  <span class="keyword">if</span> (fakeText &amp;&amp; editor.getValue() !== <span class="string">""</span>) shrinkFakeText(e);
+}
 
-<span class="kd">var</span> <span class="nx">shrinkFakeText</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+<span class="keyword">var</span> shrinkFakeText = <span class="keyword">function</span>(e) {
 
-    <span class="k">if</span> <span class="p">(</span><span class="nx">e</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">theEvent</span> <span class="o">=</span> <span class="nx">e</span> <span class="o">||</span> <span class="nb">window</span><span class="p">.</span><span class="nx">event</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">key</span> <span class="o">=</span> <span class="nx">theEvent</span><span class="p">.</span><span class="nx">keyCode</span> <span class="o">||</span> <span class="nx">theEvent</span><span class="p">.</span><span class="nx">which</span><span class="p">;</span>
-      <span class="nx">key</span> <span class="o">=</span> <span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="nx">key</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="nx">key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+    <span class="keyword">if</span> (e !== <span class="literal">undefined</span>) {
+      <span class="keyword">var</span> theEvent = e || window.event;
+      <span class="keyword">var</span> key = theEvent.keyCode || theEvent.which;
+      key = String.fromCharCode(key);
+    } <span class="keyword">else</span> key = <span class="string">''</span>;
 
-    <span class="kd">var</span> <span class="nx">currentCaption</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#caption&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">shorterCaption</span> <span class="o">=</span> <span class="nx">currentCaption</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">currentCaption</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#caption&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">shorterCaption</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s2">&quot;|&quot;</span><span class="p">);</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#fakeStartingBlinkingCursor&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+    <span class="keyword">var</span> currentCaption = $(<span class="string">'#caption'</span>).html();
+    <span class="keyword">var</span> shorterCaption = currentCaption.substring(<span class="number">0</span>, currentCaption.length - <span class="number">1</span>);
+    $(<span class="string">'#caption'</span>).html(shorterCaption + key + <span class="string">"|"</span>);
+    $(<span class="string">'#fakeStartingBlinkingCursor'</span>).html(<span class="string">''</span>);
 
-    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#toMove&quot;</span><span class="p">).</span><span class="nx">animate</span><span class="p">({</span>
-      <span class="nx">opacity</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="nx">margin</span><span class="o">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span>
-      <span class="nx">fontSize</span><span class="o">:</span> <span class="mi">300</span><span class="p">,</span>
-      <span class="nx">left</span><span class="o">:</span> <span class="mi">0</span>
-    <span class="p">},</span> <span class="s2">&quot;fast&quot;</span><span class="p">);</span>
+    $(<span class="string">"#toMove"</span>).animate({
+      opacity: <span class="number">0</span>,
+      margin: -<span class="number">100</span>,
+      fontSize: <span class="number">300</span>,
+      left: <span class="number">0</span>
+    }, <span class="string">"fast"</span>);
 
-    <span class="nx">setTimeout</span><span class="p">(</span><span class="s1">&#39;$(&quot;#formCode&quot;).animate({opacity: 1}, &quot;fast&quot;);&#39;</span><span class="p">,</span> <span class="mi">120</span><span class="p">);</span>
-    <span class="nx">setTimeout</span><span class="p">(</span><span class="s1">&#39;$(&quot;#justForFakeCursor&quot;).hide();&#39;</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
-    <span class="nx">setTimeout</span><span class="p">(</span><span class="s1">&#39;$(&quot;#toMove&quot;).hide();&#39;</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>setTimeout('clearTimeout(fakeCursorInterval);',200);</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">fakeText</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    setTimeout(<span class="string">'$("#formCode").animate({opacity: 1}, "fast");'</span>, <span class="number">120</span>);
+    setTimeout(<span class="string">'$("#justForFakeCursor").hide();'</span>, <span class="number">200</span>);
+    setTimeout(<span class="string">'$("#toMove").hide();'</span>, <span class="number">200</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>setTimeout('clearTimeout(fakeCursorInterval);',200);</p>             </td>             <td class="code">               <div class="highlight"><pre>    fakeText = <span class="literal">false</span>;
 
-  <span class="p">}</span>
+  }
 
-<span class="kd">var</span> <span class="nx">fakeCursorInterval</span><span class="p">;</span>
+<span class="keyword">var</span> fakeCursorInterval;
 
-<span class="kd">function</span> <span class="nx">fakeCursorBlinking</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#fakeStartingBlinkingCursor&quot;</span><span class="p">).</span><span class="nx">animate</span><span class="p">({</span>
-    <span class="nx">opacity</span><span class="o">:</span> <span class="mf">0.2</span>
-  <span class="p">},</span> <span class="s2">&quot;fast&quot;</span><span class="p">,</span> <span class="s2">&quot;swing&quot;</span><span class="p">).</span><span class="nx">animate</span><span class="p">({</span>
-    <span class="nx">opacity</span><span class="o">:</span> <span class="mi">1</span>
-  <span class="p">},</span> <span class="s2">&quot;fast&quot;</span><span class="p">,</span> <span class="s2">&quot;swing&quot;</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="function"><span class="keyword">function</span> <span class="title">fakeCursorBlinking</span><span class="params">()</span> {</span>
+  $(<span class="string">"#fakeStartingBlinkingCursor"</span>).animate({
+    opacity: <span class="number">0.2</span>
+  }, <span class="string">"fast"</span>, <span class="string">"swing"</span>).animate({
+    opacity: <span class="number">1</span>
+  }, <span class="string">"fast"</span>, <span class="string">"swing"</span>);
+}
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

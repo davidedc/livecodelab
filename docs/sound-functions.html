@@ -1,41 +1,49 @@
-<!DOCTYPE html>  <html> <head>   <title>sound-functions.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               sound-functions.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">updatesPerMinute</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="kd">var</span> <span class="nx">oldupdatesPerMinute</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="kd">var</span> <span class="nx">soundLoopTimer</span><span class="p">;</span>
-<span class="kd">var</span> <span class="nx">beatNumber</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<!DOCTYPE html>  <html> <head>   <title>sound-functions.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="autocode.html">                 autocode.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="geometry-commands.html">                 geometry-commands.js               </a>                                           <a class="source" href="helper-functions.html">                 helper-functions.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="sound-functions.html">                 sound-functions.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               sound-functions.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> updatesPerMinute = <span class="number">0</span>;
+<span class="keyword">var</span> oldupdatesPerMinute = <span class="number">0</span>;
+<span class="keyword">var</span> soundLoopTimer;
+<span class="keyword">var</span> beatNumber = <span class="number">0</span>;
 
-<span class="kd">var</span> <span class="nx">bpm</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>timid attempt at sanity check.
+<span class="keyword">var</span> bpm = <span class="keyword">function</span>(a) {
+
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>timid attempt at sanity check.
 the sound system might well bork out
-even below 500 bpm.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&gt;</span> <span class="mi">125</span><span class="p">)</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">125</span><span class="p">;</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>each beat is made of 4 parts, and we can trigger sounds
-on each of those, so updatesPerMinute is 4 times the bpm.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">updatesPerMinute</span> <span class="o">=</span> <span class="nx">a</span><span class="o">*</span><span class="mi">4</span><span class="p">;</span>
-<span class="p">}</span>
+even below 500 bpm.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="keyword">if</span> (a === <span class="literal">undefined</span>) <span class="keyword">return</span>;
+  <span class="keyword">if</span> (a &gt; <span class="number">125</span>) a = <span class="number">125</span>;
+  <span class="keyword">if</span> (a &lt; <span class="number">0</span>) a = <span class="number">0</span>;
 
-<span class="kd">var</span> <span class="nx">changeUpdatesPerMinuteIfNeeded</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">oldupdatesPerMinute</span> <span class="o">!==</span> <span class="nx">updatesPerMinute</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>alert('changing beats per minute old ' + oldupdatesPerMinute + ' new: ' + updatesPerMinute);</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">soundLoopTimer</span><span class="p">);</span>
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>each beat is made of 4 parts, and we can trigger sounds
+on each of those, so updatesPerMinute is 4 times the bpm.</p>             </td>             <td class="code">               <div class="highlight"><pre>  updatesPerMinute = a*<span class="number">4</span>;
+}
 
-    <span class="k">if</span> <span class="p">(</span><span class="nx">updatesPerMinute</span> <span class="o">!==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">soundLoopTimer</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="s1">&#39;soundLoop();&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span> <span class="o">/</span> <span class="nx">updatesPerMinute</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="nx">oldupdatesPerMinute</span> <span class="o">=</span> <span class="nx">updatesPerMinute</span><span class="p">;</span>
-  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>alert('AFTER old ' + oldupdatesPerMinute + ' new: ' + a);</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="p">}</span>
+<span class="keyword">var</span> changeUpdatesPerMinuteIfNeeded = <span class="keyword">function</span>() {
+  <span class="keyword">if</span> (oldupdatesPerMinute !== updatesPerMinute) {
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>alert('changing beats per minute old ' + oldupdatesPerMinute + ' new: ' + updatesPerMinute);</p>             </td>             <td class="code">               <div class="highlight"><pre>    clearTimeout(soundLoopTimer);
 
-<span class="kd">var</span> <span class="nx">soundLoop</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>clearTimeout(soundLoopTimer);
+    <span class="keyword">if</span> (updatesPerMinute !== <span class="number">0</span>) {
+      soundLoopTimer = setInterval(<span class="string">'soundLoop();'</span>, (<span class="number">1000</span> * <span class="number">60</span>) / updatesPerMinute);
+    }
+    oldupdatesPerMinute = updatesPerMinute;
+  }
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>alert('AFTER old ' + oldupdatesPerMinute + ' new: ' + a);</p>             </td>             <td class="code">               <div class="highlight"><pre>}
+
+<span class="keyword">var</span> soundLoop = <span class="keyword">function</span>() {
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>clearTimeout(soundLoopTimer);
 alert('soundLoop');
 if (updatesPerMinute !== 0) {
    soundLoopTimer = setTimeout('soundLoop();',(1000*60)/updatesPerMinute);
-}</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="p">(</span><span class="nx">soundSystemIsMangled</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+}</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="keyword">if</span> (soundSystemIsMangled) <span class="keyword">return</span>;
 
-  <span class="nx">beatNumber</span><span class="o">++</span><span class="p">;</span>
-  <span class="nx">beatNumber</span> <span class="o">=</span> <span class="nx">beatNumber</span> <span class="o">%</span> <span class="mi">16</span><span class="p">;</span>
+  beatNumber++;
+  beatNumber = beatNumber % <span class="number">16</span>;
 
-  <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;about to loop in &#39;</span><span class="o">+</span><span class="nx">soundLoops</span><span class="p">.</span><span class="nx">soundIDs</span><span class="o">+</span><span class="s2">&quot; of length &quot;</span><span class="o">+</span><span class="nx">soundLoops</span><span class="p">.</span><span class="nx">soundIDs</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">loopingTheSoundIDs</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">loopingTheSoundIDs</span> <span class="o">&lt;</span> <span class="nx">soundLoops</span><span class="p">.</span><span class="nx">soundIDs</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">loopingTheSoundIDs</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">loopedSoundID</span> <span class="o">=</span> <span class="nx">soundLoops</span><span class="p">.</span><span class="nx">soundIDs</span><span class="p">[</span><span class="nx">loopingTheSoundIDs</span><span class="p">];</span>
-    <span class="kd">var</span> <span class="nx">playOrNoPlay</span><span class="p">;</span>
-    <span class="nx">playOrNoPlay</span> <span class="o">=</span> <span class="nx">soundLoops</span><span class="p">.</span><span class="nx">beatStrings</span><span class="p">[</span><span class="nx">loopingTheSoundIDs</span><span class="p">].</span><span class="nx">charAt</span><span class="p">(</span><span class="nx">beatNumber</span><span class="p">);</span>
-    <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;checking sound loop &#39;</span><span class="o">+</span><span class="nx">soundLoops</span><span class="p">.</span><span class="nx">beatStrings</span><span class="p">[</span><span class="nx">loopingTheSoundIDs</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot; beat &quot;</span><span class="o">+</span><span class="nx">beatNumber</span><span class="o">+</span><span class="s2">&quot; : &quot;</span><span class="o">+</span><span class="nx">playOrNoPlay</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">playOrNoPlay</span> <span class="o">===</span> <span class="s1">&#39;x&#39;</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>OK so this is what we do here:
+  log(<span class="string">'about to loop in '</span>+soundLoops.soundIDs+<span class="string">" of length "</span>+soundLoops.soundIDs.length);
+  <span class="keyword">for</span> (<span class="keyword">var</span> loopingTheSoundIDs = <span class="number">0</span>; loopingTheSoundIDs &lt; soundLoops.soundIDs.length; loopingTheSoundIDs++) {
+    <span class="keyword">var</span> loopedSoundID = soundLoops.soundIDs[loopingTheSoundIDs];
+    <span class="keyword">var</span> playOrNoPlay;
+    playOrNoPlay = soundLoops.beatStrings[loopingTheSoundIDs].charAt(beatNumber);
+    log(<span class="string">'checking sound loop '</span>+soundLoops.beatStrings[loopingTheSoundIDs]+<span class="string">" beat "</span>+beatNumber+<span class="string">" : "</span>+playOrNoPlay);
+    <span class="keyword">if</span> (playOrNoPlay === <span class="string">'x'</span>) {
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>OK so this is what we do here:
 when each Audio object plays, it plays from start to end
 and you can't get it to re-start until it's completely done
 playing.
@@ -53,44 +61,45 @@ So there are two possible solutions:
    it jams. Conversely, IE and Chrome don't like them preloaded
    because they have a limit of 35 or so sounds.
 So here we went for 2), and we preload the sounds only for
-browsers other than Chrome and IE.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">relevantSoundBank</span> <span class="o">=</span> <span class="nx">soundBank</span><span class="p">[</span><span class="nx">loopedSoundID</span><span class="p">];</span>
-      <span class="kd">var</span> <span class="nx">lengthOfSoundBank</span> <span class="o">=</span> <span class="nx">relevantSoundBank</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">availableSoundBank</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
-      <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;playing  &#39;</span><span class="o">+</span><span class="nx">loopedSoundID</span><span class="o">+</span><span class="s2">&quot; length: &quot;</span><span class="o">+</span><span class="nx">lengthOfSoundBank</span><span class="p">);</span>
-      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">checkingAvailableSoundBank</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">checkingAvailableSoundBank</span> <span class="o">&lt;</span> <span class="nx">lengthOfSoundBank</span><span class="p">;</span> <span class="nx">checkingAvailableSoundBank</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">checkingSoundBank</span> <span class="o">=</span> <span class="nx">relevantSoundBank</span><span class="p">[</span><span class="nx">checkingAvailableSoundBank</span><span class="p">];</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">checkingSoundBank</span><span class="p">.</span><span class="nx">isEnded</span><span class="p">())</span> <span class="p">{</span>
-          <span class="nx">availableSoundBank</span> <span class="o">=</span> <span class="nx">checkingSoundBank</span><span class="p">;</span>
-          <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;sound bank &#39;</span><span class="o">+</span><span class="nx">checkingAvailableSoundBank</span><span class="o">+</span><span class="s2">&quot; is available &quot;</span><span class="p">);</span>
-          <span class="k">break</span><span class="p">;</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-          <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;sound bank &#39;</span><span class="o">+</span><span class="nx">checkingAvailableSoundBank</span><span class="o">+</span><span class="s2">&quot; has not ended &quot;</span><span class="p">);</span>
-        <span class="p">}</span>
-      <span class="p">}</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">availableSoundBank</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;creating new sound object &#39;</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">totalCreatedSoundObjects</span> <span class="o">&gt;</span> <span class="mi">31</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">soundSystemIsMangled</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-          <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#soundSystemIsMangledMessage&#39;</span><span class="p">).</span><span class="nx">modal</span><span class="p">();</span>
-          <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#simplemodal-container&#39;</span><span class="p">).</span><span class="nx">height</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="nx">availableSoundBank</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">buzz</span><span class="p">.</span><span class="nx">sound</span><span class="p">(</span><span class="nx">soundFiles</span><span class="p">[</span><span class="nx">loopedSoundID</span><span class="p">]);</span>
-        <span class="nx">soundBank</span><span class="p">[</span><span class="nx">loopedSoundID</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">availableSoundBank</span><span class="p">);</span>
-        <span class="nx">totalCreatedSoundObjects</span><span class="o">++</span><span class="p">;</span>
-      <span class="p">}</span>
+browsers other than Chrome and IE.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">var</span> relevantSoundBank = soundBank[loopedSoundID];
+      <span class="keyword">var</span> lengthOfSoundBank = relevantSoundBank.length;
+      <span class="keyword">var</span> availableSoundBank = <span class="literal">undefined</span>;
+      log(<span class="string">'playing  '</span>+loopedSoundID+<span class="string">" length: "</span>+lengthOfSoundBank);
+      <span class="keyword">for</span> (<span class="keyword">var</span> checkingAvailableSoundBank = <span class="number">0</span>; checkingAvailableSoundBank &lt; lengthOfSoundBank; checkingAvailableSoundBank++) {
+        <span class="keyword">var</span> checkingSoundBank = relevantSoundBank[checkingAvailableSoundBank];
+        <span class="keyword">if</span> (checkingSoundBank.isEnded()) {
+          availableSoundBank = checkingSoundBank;
+          log(<span class="string">'sound bank '</span>+checkingAvailableSoundBank+<span class="string">" is available "</span>);
+          <span class="keyword">break</span>;
+        } <span class="keyword">else</span> {
+          log(<span class="string">'sound bank '</span>+checkingAvailableSoundBank+<span class="string">" has not ended "</span>);
+        }
+      }
+      <span class="keyword">if</span> (availableSoundBank === <span class="literal">undefined</span>) {
+        log(<span class="string">'creating new sound object '</span>);
+        <span class="keyword">if</span> (totalCreatedSoundObjects &gt; <span class="number">31</span>) {
+          soundSystemIsMangled = <span class="literal">true</span>;
+          $(<span class="string">'#soundSystemIsMangledMessage'</span>).modal();
+          $(<span class="string">'#simplemodal-container'</span>).height(<span class="number">250</span>);
+        }
+        availableSoundBank = <span class="keyword">new</span> buzz.sound(soundFiles[loopedSoundID]);
+        soundBank[loopedSoundID].push(availableSoundBank);
+        totalCreatedSoundObjects++;
+      }
 
       
-      <span class="nx">availableSoundBank</span><span class="p">.</span><span class="nx">play</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>soundBank[soundLoops.soundIDs[i]]['lastUsed'] = (soundBank[soundLoops.soundIDs[i]]['lastUsed']+1)%CHANNELSPERSOUND;</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+      availableSoundBank.play();
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>soundBank[soundLoops.soundIDs[i]]['lastUsed'] = (soundBank[soundLoops.soundIDs[i]]['lastUsed']+1)%CHANNELSPERSOUND;</p>             </td>             <td class="code">               <div class="highlight"><pre>    }
+  }
+}
 
 
-<span class="kd">var</span> <span class="nx">play</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">soundID</span><span class="p">,</span> <span class="nx">beatString</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">anyCodeReactingTobpm</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-  <span class="nx">beatString</span> <span class="o">=</span> <span class="nx">beatString</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\s*/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">);</span>
-  <span class="nx">soundLoops</span><span class="p">.</span><span class="nx">soundIDs</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">soundID</span><span class="p">);</span>
-  <span class="nx">soundLoops</span><span class="p">.</span><span class="nx">beatStrings</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">beatString</span><span class="p">);</span>
-  <span class="nx">log</span><span class="p">(</span><span class="s1">&#39;pushing &#39;</span><span class="o">+</span><span class="nx">soundID</span><span class="o">+</span><span class="s2">&quot; beat: &quot;</span><span class="o">+</span><span class="nx">beatString</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="keyword">var</span> play = <span class="keyword">function</span>(soundID, beatString) {
+  anyCodeReactingTobpm = <span class="literal">true</span>;
+  beatString = beatString.replace(<span class="regexp">/\s*/g</span>, <span class="string">""</span>);
+  soundLoops.soundIDs.push(soundID);
+  soundLoops.beatStrings.push(beatString);
+  log(<span class="string">'pushing '</span>+soundID+<span class="string">" beat: "</span>+beatString);
+}
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
