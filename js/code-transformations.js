@@ -10,7 +10,8 @@ Number.prototype.times = function(func, scope) {
   }
 };
 
-var listOfPossibleFunctions = new Array("function","rotate","rect","line","box","move","scale","alert","bpm","play","pushMatrix","popMatrix","resetMatrix","fill","noFill","stroke","noStroke","strokeSize","animationStyle","background","simpleGradient","color", /*"ambient","reflect", "refract" */ "lights","noLights","ambientLight","pointLight","ball","ballDetail","peg");
+var listOfPossibleFunctions = new Array("function","rotate","rect","line","box","move","scale","alert","bpm","play","pushMatrix","popMatrix","resetMatrix","fill","noFill","stroke","noStroke","strokeSize","animationStyle","background","simpleGradient","color", /*"ambient","reflect", "refract" */ "lights","noLights","ambientLight","pointLight","ball","ballDetail","peg","abs","ceil","constrain","dist","exp","floor","lerp","log","mag","map","max","min","norm","pow","round","sq","sqrt","acos","asin","atan","atan2","cos","degrees","radians","sin","tan", "random","randomSeed","noise","noiseDetail","noiseSeed");
+
 function checkErrorAndReport(e) {
     $('#dangerSignText').css('color', 'red');
     var errorMessage = "" + e;
@@ -445,6 +446,42 @@ function registerCode() {
     elaboratedSource = elaboratedSource.replace(/(ball)(\s)+/g, ";$1$2");
     elaboratedSource = elaboratedSource.replace(/(ballDetail)(\s)+/g, ";$1$2");
     elaboratedSource = elaboratedSource.replace(/(peg)(\s)+/g, ";$1$2");
+
+    // Calculation
+    elaboratedSource = elaboratedSource.replace(/(abs)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(ceil)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(constrain)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(dist)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(exp)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(floor)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(lerp)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(log)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(mag)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(map)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(max)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(min)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(norm)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(pow)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(round)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(sq)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(sqrt)(\s)+/g, ";$1$2");
+    // Trigonometry
+    elaboratedSource = elaboratedSource.replace(/(acos)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(asin)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(atan)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(atan2)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(cos)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(degrees)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(radians)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(sin)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(tan)(\s)+/g, ";$1$2");
+    // Random
+    elaboratedSource = elaboratedSource.replace(/(random)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(randomSeed)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(noise)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(noiseDetail)(\s)+/g, ";$1$2");
+    elaboratedSource = elaboratedSource.replace(/(noiseSeed)(\s)+/g, ";$1$2");
+
 
     // you'd think that semicolons are OK anywhere before any command
     // but coffee-script doesn't like some particular configurations - fixing those:

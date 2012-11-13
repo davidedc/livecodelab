@@ -46,7 +46,8 @@ COMMON_FILES = [
 'lights-functions.js',
 'init-threejs.js',
 'helper-functions.js',
-'big-cursor-animation.js'
+'big-cursor-animation.js',
+'math.js'
 ]
 
 EXTRAS_FILES = []
