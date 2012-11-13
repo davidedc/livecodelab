@@ -39,6 +39,7 @@ COMMON_FILES = [
 'matrix-commands.js',
 'background-painting.js',
 'geometry-commands.js',
+'math.js',
 'code-transformations.js',
 'demos-and-tutorials.js',
 'autocode.js',
@@ -46,8 +47,7 @@ COMMON_FILES = [
 'lights-functions.js',
 'init-threejs.js',
 'helper-functions.js',
-'big-cursor-animation.js',
-'math.js'
+'big-cursor-animation.js'
 ]
 
 EXTRAS_FILES = []
