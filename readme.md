@@ -7,7 +7,7 @@ Livecodelab is a special secret place where you can make fancy "on-the-fly" 3d v
 
 "On-the-fly" meaning: as you type. Type just three letters: "box", and boom! a box appears. No clicking play, no waiting, no nothing.
 
-LiveCodeLab is totally client side - no internet connection needed once you downloads the files.
+LiveCodeLab is totally client side - once downloaded, no internet connection is needed.
 
 Play! http://sketchpatch.net/livecodelab/index.html
 
