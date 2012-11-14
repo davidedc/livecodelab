@@ -1,9 +1,5 @@
 /* Loosely based on the Midnight Textmate theme */
 
-  /*give the body height:100% so that its child
-    elements can have percentage heights*/
-  body{ height:100% }
-
   /*this is what we want the div to look like*/
   div.fullscreen{
     display:block;

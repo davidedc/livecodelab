@@ -12,26 +12,10 @@ module.exports = function (grunt) {
         },
         recess: {
             lint: {
-                src: [
-                    'css/codemirror.css',
-                    'css/dropdownmenu.css',
-                    'css/main.css',
-                    'css/night.css',
-                    'css/styleAnim.css',
-                    'css/simpleModalBasic.css',
-                    'css/simpleModalDemo.css'
-                ]
+                src: ['css/**/*.css'],
             },
             compile: {
-                src: [
-                    'css/codemirror.css',
-                    'css/dropdownmenu.css',
-                    'css/main.css',
-                    'css/night.css',
-                    'css/styleAnim.css',
-                    'css/simpleModalBasic.css',
-                    'css/simpleModalDemo.css'
-                ],
+                src: ['css/**/*.css'],
                 dest: 'css_compiled/main.css',
                 options: {
                     compile: true,
