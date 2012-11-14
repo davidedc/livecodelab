@@ -75,6 +75,8 @@
         <script src="js/helper-functions.js"></script>
         <script src="js/big-cursor-animation.js"></script>
 
+        <script src="js/menu.js"></script>
+
     </head>
     <body>
 
@@ -149,75 +151,75 @@
             <ul class='dd_menu'>
 
                 <li>
-                    <a href="javascript:void(0)" onclick="$('#aboutWindow').modal();$('#simplemodal-container').height(250);" style="text-decoration:none; color:red;">LIVECODELAB</a>
+                    <a id="aboutMenu" style="text-decoration:none; color:red;">LIVECODELAB</a>
                 </li>
 
-                <li>
+                <li id="demos">
                     <a href="javascript:void(0)" style="text-decoration:none;" id="demoMenu">Demos</a>
                     <ul>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('roseDemo');" id="roseDemo">Rose</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('cheeseAndOlivesDemo');" id="cheeseAndOlivesDemo">Cheese and olives</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('simpleCubeDemo');" id="simpleCubeDemo">Simple cube</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('cubesAndSpikes');" id="cubesAndSpikes">Cubes and spikes</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('littleSpiralOfCubes');" id="littleSpiralOfCubes">Little spiral</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('tentacleDemo');" id="tentacleDemo">Tentacle</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('springysquaresDemo');" id="springysquaresDemo">Springy squares</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('diceDemo');" id="diceDemo">Dice</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('lampDemo');" id="lampDemo">Lamp</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('trillionfeathersDemo');" id="trillionfeathersDemo">A trillion feathers</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('monsterblobDemo');" id="monsterblobDemo">Monster blob</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('industrialMusicDemo');" id="industrialMusicDemo">Sound: Industrial</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('trySoundsDemo');" id="trySoundsDemo">Sound: Try them all</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglalmostvoronoiDemo');" id="webglalmostvoronoiDemo">WebGL: Almost Voronoi</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglshardsDemo');" id="webglshardsDemo">WebGL: Shards</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglredthreadsDemo');" id="webglredthreadsDemo">WebGL: Red threads</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webgltwocubesDemo');" id="webgltwocubesDemo">WebGL: Two cubes</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglturbineDemo');" id="webglturbineDemo">WebGL: Turbine</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglzfightartDemo');" id="webglzfightartDemo">WebGL: Z-fight art!</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('webglnuclearOctopusDemo');" id="webglnuclearOctopusDemo">WebGL: Nuclear octopus</a></li>
+                        <li><a id="roseDemo">Rose</a></li>
+                        <li><a id="cheeseAndOlivesDemo">Cheese and olives</a></li>
+                        <li><a id="simpleCubeDemo">Simple cube</a></li>
+                        <li><a id="cubesAndSpikes">Cubes and spikes</a></li>
+                        <li><a id="littleSpiralOfCubes">Little spiral</a></li>
+                        <li><a id="tentacleDemo">Tentacle</a></li>
+                        <li><a id="springysquaresDemo">Springy squares</a></li>
+                        <li><a id="diceDemo">Dice</a></li>
+                        <li><a id="lampDemo">Lamp</a></li>
+                        <li><a id="trillionfeathersDemo">A trillion feathers</a></li>
+                        <li><a id="monsterblobDemo">Monster blob</a></li>
+                        <li><a id="industrialMusicDemo">Sound: Industrial</a></li>
+                        <li><a id="trySoundsDemo">Sound: Try them all</a></li>
+                        <li><a id="webglalmostvoronoiDemo">WebGL: Almost Voronoi</a></li>
+                        <li><a id="webglshardsDemo">WebGL: Shards</a></li>
+                        <li><a id="webglredthreadsDemo">WebGL: Red threads</a></li>
+                        <li><a id="webgltwocubesDemo">WebGL: Two cubes</a></li>
+                        <li><a id="webglturbineDemo">WebGL: Turbine</a></li>
+                        <li><a id="webglzfightartDemo">WebGL: Z-fight art!</a></li>
+                        <li><a id="webglnuclearOctopusDemo">WebGL: Nuclear octopus</a></li>
                     </ul>
 
                 </li>
 
-                <li>
+                <li id="tutorials">
                     <a href="javascript:void(0)" style="text-decoration:none;" id="tutorialsMenu">Tutorials</a>
                     <ul>        
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('introTutorial');" id="introTutorial">intro</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('helloworldTutorial');" id="helloworldTutorial">hello world</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('somenotesTutorial');" id="somenotesTutorial">some notes</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('rotateTutorial');" id="rotateTutorial">rotate</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('frameTutorial');" id="frameTutorial">frame</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('timeTutorial');" id="timeTutorial">time</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('moveTutorial');" id="moveTutorial">move</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('scaleTutorial');" id="scaleTutorial">scale</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('timesTutorial');" id="timesTutorial">times</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('fillTutorial');" id="fillTutorial">fill</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('strokeTutorial');" id="strokeTutorial">stroke</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('colornamesTutorial');" id="colornamesTutorial">color by name</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('lightsTutorial');" id="lightsTutorial">lights</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('backgroundTutorial');" id="backgroundTutorial">background</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('gradientTutorial');" id="gradientTutorial">gradient</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('lineTutorial');" id="lineTutorial">line</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('ballTutorial');" id="ballTutorial">ball</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('pushpopMatrixTutorial');" id="pushpopMatrixTutorial">push and pop</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('animationstyleTutorial');" id="animationstyleTutorial">animation style</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('doonceTutorial');" id="doonceTutorial">do once</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('conditionalsTutorial');" id="conditionalsTutorial">conditionals</a></li>
-                        <li><a href="javascript:void(0)" onclick="loadDemoOrTutorial('autocodeTutorial');" id="autocodeTutorial">autocode</a></li>
+                        <li><a id="introTutorial">intro</a></li>
+                        <li><a id="helloworldTutorial">hello world</a></li>
+                        <li><a id="somenotesTutorial">some notes</a></li>
+                        <li><a id="rotateTutorial">rotate</a></li>
+                        <li><a id="frameTutorial">frame</a></li>
+                        <li><a id="timeTutorial">time</a></li>
+                        <li><a id="moveTutorial">move</a></li>
+                        <li><a id="scaleTutorial">scale</a></li>
+                        <li><a id="timesTutorial">times</a></li>
+                        <li><a id="fillTutorial">fill</a></li>
+                        <li><a id="strokeTutorial">stroke</a></li>
+                        <li><a id="colornamesTutorial">color by name</a></li>
+                        <li><a id="lightsTutorial">lights</a></li>
+                        <li><a id="backgroundTutorial">background</a></li>
+                        <li><a id="gradientTutorial">gradient</a></li>
+                        <li><a id="lineTutorial">line</a></li>
+                        <li><a id="ballTutorial">ball</a></li>
+                        <li><a id="pushpopMatrixTutorial">push and pop</a></li>
+                        <li><a id="animationstyleTutorial">animation style</a></li>
+                        <li><a id="doonceTutorial">do once</a></li>
+                        <li><a id="conditionalsTutorial">conditionals</a></li>
+                        <li><a id="autocodeTutorial">autocode</a></li>
                     </ul>
 
                 </li>
 
-                <li id="autocodeIndicatorContainer" onClick="toggleAutocodeAndUpdateButtonAndBlinking();">
+                <li id="autocodeIndicatorContainer">
                     <a id="autocodeIndicator" href="javascript:void(0)"  style="text-decoration:none;">Autocode: off</a>
                 </li>
 
 
                 <!-- Adding a manual hide code toggle julien-->
-                <li id="dimCodeButtonContainer" onClick="toggleDimCode();">
+                <li id="dimCodeButtonContainer">
                     <a id="dimCodeIndicator" href="javascript:void(0)"  style="text-decoration:none;">Hide Code: on</a>
                 </li>
-                <li id="resetButtonContainer" onClick="triggerReset();">
+                <li id="resetButtonContainer">
                     <a id="resetButton" href="javascript:void(0)"  style="text-decoration:none;">Reset</a>
                 </li>
                 <li id="dangerSign" style="border-right:none;">
