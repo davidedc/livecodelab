@@ -14,6 +14,13 @@ module.exports = function (grunt) {
         recess: {
             lint: {
                 src: ['css/**/*.css'],
+                options: {
+                    strictPropertyOrder: false,
+                    noOverqualifying: false,
+                    noUnderscores: false,
+                    zeroUnits: false,
+                    noIDs: false
+                }
             },
             compile: {
                 src: ['css/**/*.css'],
