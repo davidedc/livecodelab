@@ -1,3 +1,5 @@
+/*jslint browser: true, nomen: true, devel: true */
+/*global frenchVersion, $, Detector, forceCanvasRenderer, userWarnedAboutWebglExamples: true, fakeText, undimEditor, editor, doTheSpinThingy: true, shrinkFakeText*/
 
 if (!frenchVersion) {
 
