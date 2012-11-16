@@ -1,335 +1,1284 @@
-<!DOCTYPE html>  <html> <head>   <title>demos-and-tutorials.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="autocode.html">                 autocode.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="geometry-commands.html">                 geometry-commands.js               </a>                                           <a class="source" href="helper-functions.html">                 helper-functions.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="sound-functions.html">                 sound-functions.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               demos-and-tutorials.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre>
+<!DOCTYPE html>  <html> <head>   <title>demos-and-tutorials.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="autocode.html">                 autocode.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="geometry-commands.html">                 geometry-commands.js               </a>                                           <a class="source" href="helper-functions.html">                 helper-functions.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="menu.html">                 menu.js               </a>                                           <a class="source" href="sound-functions.html">                 sound-functions.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               demos-and-tutorials.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true, nomen: true, devel: true */</span>
+<span class="comment">/*global frenchVersion, $, Detector, forceCanvasRenderer, userWarnedAboutWebglExamples: true, fakeText, undimEditor, editor, doTheSpinThingy: true, shrinkFakeText*/</span>
+
+<span class="string">'use strict'</span>;
+
 <span class="keyword">if</span> (!frenchVersion) {
 
-  <span class="keyword">var</span> roseDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// 'A rose' by Guy John\n"</span> + <span class="string">""</span> + <span class="string">"// Mozilla Festival 2012\n"</span> + <span class="string">""</span> + <span class="string">"// adapted from 'A rose' by Lib4tech\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"scale 1.5\n"</span> + <span class="string">""</span> + <span class="string">"animationStyle paintOver\n"</span>  + <span class="string">""</span> + <span class="string">"rotate frame/100\n"</span> + <span class="string">""</span> + <span class="string">"fill 255-((frame/2)%255),0,0\n"</span> + <span class="string">""</span> + <span class="string">"stroke 255-((frame/2)%255),0,0\n"</span> + <span class="string">""</span> + <span class="string">"scale 1-((frame/2)%255) / 255\n"</span> + <span class="string">""</span> + <span class="string">"box"</span>;
+    <span class="keyword">var</span> roseDemo = [
+        <span class="string">"// 'A rose' by Guy John"</span>,
+        <span class="string">"// Mozilla Festival 2012"</span>,
+        <span class="string">"// adapted from 'A rose' by Lib4tech"</span>,
+        <span class="string">""</span>,
+        <span class="string">"scale 1.5"</span>,
+        <span class="string">"animationStyle paintOver"</span>,
+        <span class="string">"rotate frame/100"</span>,
+        <span class="string">"fill 255-((frame/2)%255),0,0"</span>,
+        <span class="string">"stroke 255-((frame/2)%255),0,0"</span>,
+        <span class="string">"scale 1-((frame/2)%255) / 255"</span>,
+        <span class="string">"box"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> cheeseAndOlivesDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// 'Cheese and olives' by\n"</span> + <span class="string">""</span> + <span class="string">"// Davina Tirvengadum\n"</span> + <span class="string">""</span> + <span class="string">"// Mozilla festival 2012\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"background white\n"</span> + <span class="string">""</span> + <span class="string">"scale .3\n"</span> + <span class="string">""</span> + <span class="string">"move 0,-1\n"</span> + <span class="string">""</span> + <span class="string">"fill yellow\n"</span> + <span class="string">""</span> + <span class="string">"stroke black\n"</span> + <span class="string">""</span> + <span class="string">"rotate\n"</span> + <span class="string">""</span> + <span class="string">"strokeSize 3\n"</span> + <span class="string">""</span> + <span class="string">"line 4\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"rotate 2,3\n"</span> + <span class="string">""</span> + <span class="string">"move 0,3\n"</span> + <span class="string">""</span> + <span class="string">"scale .3\n"</span> + <span class="string">""</span> + <span class="string">"fill black\n"</span> + <span class="string">""</span> + <span class="string">"stroke black\n"</span> + <span class="string">""</span> + <span class="string">"ball\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"rotate 3\n"</span> + <span class="string">""</span> + <span class="string">"move 5\n"</span> + <span class="string">""</span> + <span class="string">"scale 1\n"</span> + <span class="string">""</span> + <span class="string">"fill green\n"</span> + <span class="string">""</span> + <span class="string">"stroke green\n"</span> + <span class="string">""</span> + <span class="string">"ball\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"rotate 1\n"</span> + <span class="string">""</span> + <span class="string">"move -3\n"</span> + <span class="string">""</span> + <span class="string">"scale 1\n"</span> + <span class="string">""</span> + <span class="string">"fill yellow\n"</span> + <span class="string">""</span> + <span class="string">"stroke yellow\n"</span> + <span class="string">""</span> + <span class="string">"ball"</span>;
+    <span class="keyword">var</span> cheeseAndOlivesDemo = [
+        <span class="string">"// 'Cheese and olives' by"</span>,
+        <span class="string">"// Davina Tirvengadum"</span>,
+        <span class="string">"// Mozilla festival 2012"</span>,
+        <span class="string">""</span>,
+        <span class="string">"background white"</span>,
+        <span class="string">"scale .3"</span>,
+        <span class="string">"move 0,-1"</span>,
+        <span class="string">"fill yellow"</span>,
+        <span class="string">"stroke black"</span>,
+        <span class="string">"rotate"</span>,
+        <span class="string">"strokeSize 3"</span>,
+        <span class="string">"line 4"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">""</span>,
+        <span class="string">"rotate 2,3"</span>,
+        <span class="string">"move 0,3"</span>,
+        <span class="string">"scale .3"</span>,
+        <span class="string">"fill black"</span>,
+        <span class="string">"stroke black"</span>,
+        <span class="string">"ball"</span>,
+        <span class="string">""</span>,
+        <span class="string">"rotate 3"</span>,
+        <span class="string">"move 5"</span>,
+        <span class="string">"scale 1"</span>,
+        <span class="string">"fill green"</span>,
+        <span class="string">"stroke green"</span>,
+        <span class="string">"ball"</span>,
+        <span class="string">""</span>,
+        <span class="string">"rotate 1"</span>,
+        <span class="string">"move -3"</span>,
+        <span class="string">"scale 1"</span>,
+        <span class="string">"fill yellow"</span>,
+        <span class="string">"stroke yellow"</span>,
+        <span class="string">"ball"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> simpleCubeDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// there you go!\n"</span> + <span class="string">""</span> + <span class="string">"// a simple cube!\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"background yellow\n"</span> + <span class="string">""</span> + <span class="string">"rotate 0,time/2000,time/2000\n"</span> + <span class="string">""</span> + <span class="string">"box"</span>;
+    <span class="keyword">var</span> simpleCubeDemo = [
+        <span class="string">"// there you go!"</span>,
+        <span class="string">"// a simple cube!"</span>,
+        <span class="string">""</span>,
+        <span class="string">"background yellow"</span>,
+        <span class="string">"rotate 0,time/2000,time/2000"</span>,
+        <span class="string">"box"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> webgltwocubesDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"background 155,255,255\n"</span> + <span class="string">""</span> + <span class="string">"2 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate 0, 1, time/2000\n"</span> + <span class="string">"\t"</span> + <span class="string">"box"</span>;
+    <span class="keyword">var</span> webgltwocubesDemo = [
+        <span class="string">"background 155,255,255"</span>,
+        <span class="string">"2 times -&gt;"</span>,
+        <span class="string">"\trotate 0, 1, time/2000"</span>,
+        <span class="string">"\tbox"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> cubesAndSpikes = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"simpleGradient fuchsia,color(100,200,200),yellow\n"</span> + <span class="string">""</span> + <span class="string">"scale 2.1\n"</span> + <span class="string">""</span> + <span class="string">"5 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate 0,1,time/5000\n"</span> + <span class="string">"\t"</span> + <span class="string">"box 0.1,0.1,0.1\n"</span> + <span class="string">"\t"</span> + <span class="string">"move 0,0.1,0.1\n"</span> + <span class="string">"\t"</span> + <span class="string">"3 times -&gt;\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"rotate 0,1,1\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"box 0.01,0.01,1"</span>;
+    <span class="keyword">var</span> cubesAndSpikes = [
+        <span class="string">"simpleGradient fuchsia,color(100,200,200),yellow"</span>,
+        <span class="string">"scale 2.1"</span>,
+        <span class="string">"5 times -&gt;"</span>,
+        <span class="string">"\trotate 0,1,time/5000"</span>,
+        <span class="string">"\tbox 0.1,0.1,0.1"</span>,
+        <span class="string">"\tmove 0,0.1,0.1"</span>,
+        <span class="string">"\t3 times -&gt;"</span>,
+        <span class="string">"\t\trotate 0,1,1"</span>,
+        <span class="string">"\t\tbox 0.01,0.01,1"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> webglturbineDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"background 155,55,255\n"</span> + <span class="string">""</span> + <span class="string">"70 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate time/100000,1,time/100000\n"</span> + <span class="string">"\t"</span> + <span class="string">"box"</span>;
+    <span class="keyword">var</span> webglturbineDemo = [
+        <span class="string">"background 155,55,255"</span>,
+        <span class="string">"70 times -&gt;"</span>,
+        <span class="string">"\trotate time/100000,1,time/100000"</span>,
+        <span class="string">"\tbox"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> webglzfightartDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// Explore the artifacts\n"</span> + <span class="string">""</span> + <span class="string">"// of your GPU!\n"</span> + <span class="string">""</span> + <span class="string">"// Go Z-fighting, go!\n"</span> + <span class="string">""</span> + <span class="string">"scale 5\n"</span> + <span class="string">""</span> + <span class="string">"rotate\n"</span> + <span class="string">""</span> + <span class="string">"fill red\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"rotate 0.000001\n"</span> + <span class="string">""</span> + <span class="string">"fill yellow\n"</span> + <span class="string">""</span> + <span class="string">"box"</span>;
+    <span class="keyword">var</span> webglzfightartDemo = [
+        <span class="string">"// Explore the artifacts"</span>,
+        <span class="string">"// of your GPU!"</span>,
+        <span class="string">"// Go Z-fighting, go!"</span>,
+        <span class="string">"scale 5"</span>,
+        <span class="string">"rotate"</span>,
+        <span class="string">"fill red"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">"rotate 0.000001"</span>,
+        <span class="string">"fill yellow"</span>,
+        <span class="string">"box"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> littleSpiralOfCubes = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"background orange\n"</span> + <span class="string">""</span> + <span class="string">"scale 0.1\n"</span> + <span class="string">""</span> + <span class="string">"10 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate 0,1,time/1000\n"</span> + <span class="string">"\t"</span> + <span class="string">"move 1,1,1\n"</span> + <span class="string">"\t"</span> + <span class="string">"box"</span>;
+    <span class="keyword">var</span> littleSpiralOfCubes = [
+        <span class="string">"background orange"</span>,
+        <span class="string">"scale 0.1"</span>,
+        <span class="string">"10 times -&gt;"</span>,
+        <span class="string">"\trotate 0,1,time/1000"</span>,
+        <span class="string">"\tmove 1,1,1"</span>,
+        <span class="string">"\tbox"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> tentacleDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"background 155,255,155\n"</span> + <span class="string">""</span> + <span class="string">"scale 0.15\n"</span> + <span class="string">""</span> + <span class="string">"3 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate 0,1,1\n"</span> + <span class="string">"\t"</span> + <span class="string">"10 times -&gt;\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"rotate 0,1,time/1000\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"scale 0.9\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"move 1,1,1\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"box"</span>;
+    <span class="keyword">var</span> tentacleDemo = [
+        <span class="string">"background 155,255,155"</span>,
+        <span class="string">"scale 0.15"</span>,
+        <span class="string">"3 times -&gt;"</span>,
+        <span class="string">"\trotate 0,1,1"</span>,
+        <span class="string">"\t10 times -&gt;"</span>,
+        <span class="string">"\t\trotate 0,1,time/1000"</span>,
+        <span class="string">"\t\tscale 0.9"</span>,
+        <span class="string">"\t\tmove 1,1,1"</span>,
+        <span class="string">"\t\tbox"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> lampDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"animationStyle motionBlur\n"</span> + <span class="string">""</span> + <span class="string">"simpleGradient red,yellow,color(255,0,255)\n"</span> + <span class="string">""</span> + <span class="string">"//animationStyle paintOver\n"</span> + <span class="string">""</span> + <span class="string">"scale 2\n"</span> + <span class="string">""</span> + <span class="string">"rotate time/4000, time/4000,  time/4000\n"</span> + <span class="string">""</span> + <span class="string">"90 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate time/200000, time/200000,  time/200000\n"</span> + <span class="string">"\t"</span> + <span class="string">"line\n"</span> + <span class="string">"\t"</span> + <span class="string">"move 0.5,0,0\n"</span> + <span class="string">"\t"</span> + <span class="string">"line\n"</span> + <span class="string">"\t"</span> + <span class="string">"move -0.5,0,0\n"</span> + <span class="string">"\t"</span> + <span class="string">"line\n"</span> + <span class="string">"\t"</span> + <span class="string">"line"</span>;
+    <span class="keyword">var</span> lampDemo = [
+        <span class="string">"animationStyle motionBlur"</span>,
+        <span class="string">"simpleGradient red,yellow,color(255,0,255)"</span>,
+        <span class="string">"//animationStyle paintOver"</span>,
+        <span class="string">"scale 2"</span>,
+        <span class="string">"rotate time/4000, time/4000,  time/4000"</span>,
+        <span class="string">"90 times -&gt;"</span>,
+        <span class="string">"\trotate time/200000, time/200000,  time/200000"</span>,
+        <span class="string">"\tline"</span>,
+        <span class="string">"\tmove 0.5,0,0"</span>,
+        <span class="string">"\tline"</span>,
+        <span class="string">"\tmove -0.5,0,0"</span>,
+        <span class="string">"\tline"</span>,
+        <span class="string">"\tline"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> trillionfeathersDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"animationStyle paintOver\n"</span> + <span class="string">""</span> + <span class="string">"move 2,0,0\n"</span> + <span class="string">""</span> + <span class="string">"scale 2\n"</span> + <span class="string">""</span> + <span class="string">"rotate\n"</span> + <span class="string">""</span> + <span class="string">"20 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate\n"</span> + <span class="string">"\t"</span> + <span class="string">"move 0.25,0,0\n"</span> + <span class="string">"\t"</span> + <span class="string">"line\n"</span> + <span class="string">"\t"</span> + <span class="string">"move -0.5,0,0\n"</span> + <span class="string">"\t"</span> + <span class="string">"line"</span>;
+    <span class="keyword">var</span> trillionfeathersDemo = [
+        <span class="string">"animationStyle paintOver"</span>,
+        <span class="string">"move 2,0,0"</span>,
+        <span class="string">"scale 2"</span>,
+        <span class="string">"rotate"</span>,
+        <span class="string">"20 times -&gt;"</span>,
+        <span class="string">"\trotate"</span>,
+        <span class="string">"\tmove 0.25,0,0"</span>,
+        <span class="string">"\tline"</span>,
+        <span class="string">"\tmove -0.5,0,0"</span>,
+        <span class="string">"\tline"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> monsterblobDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"ballDetail 6\n"</span> + <span class="string">""</span> + <span class="string">"animationStyle motionBlur\n"</span> + <span class="string">""</span> + <span class="string">"rotate time/5000\n"</span> + <span class="string">""</span> + <span class="string">"simpleGradient fuchsia,aqua,yellow\n"</span> + <span class="string">""</span> + <span class="string">"5 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate 0,1,time/5000\n"</span> + <span class="string">"\t"</span> + <span class="string">"move 0.2,0,0\n"</span> + <span class="string">"\t"</span> + <span class="string">"3 times -&gt;\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"rotate 1\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"ball -1"</span>;
+    <span class="keyword">var</span> monsterblobDemo = [
+        <span class="string">"ballDetail 6"</span>,
+        <span class="string">"animationStyle motionBlur"</span>,
+        <span class="string">"rotate time/5000"</span>,
+        <span class="string">"simpleGradient fuchsia,aqua,yellow"</span>,
+        <span class="string">"5 times -&gt;"</span>,
+        <span class="string">"\trotate 0,1,time/5000"</span>,
+        <span class="string">"\tmove 0.2,0,0"</span>,
+        <span class="string">"\t3 times -&gt;"</span>,
+        <span class="string">"\t\trotate 1"</span>,
+        <span class="string">"\t\tball -1"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> industrialMusicDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"bpm 88\n"</span> + <span class="string">""</span> + <span class="string">"play 'alienBeep'  ,'zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"play 'beepC'  ,'zxzz zzzz xzzx xxxz'\n"</span> + <span class="string">""</span> + <span class="string">"play 'beepA'  ,'zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"play 'lowFlash'  ,'zzxz zzzz zzzz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"play 'beepB'  ,'xzzx zzzz zxzz zxzz'\n"</span> + <span class="string">""</span> + <span class="string">"play 'voltage' ,'xzxz zxzz xzxx xzxx'\n"</span> + <span class="string">""</span> + <span class="string">"play 'tranceKick' ,'zxzx zzzx xzzz zzxx'"</span>;
+    <span class="keyword">var</span> industrialMusicDemo = [
+        <span class="string">"bpm 88"</span>,
+        <span class="string">"play 'alienBeep'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"play 'beepC'  ,'zxzz zzzz xzzx xxxz'"</span>,
+        <span class="string">"play 'beepA'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"play 'lowFlash'  ,'zzxz zzzz zzzz zzzz'"</span>,
+        <span class="string">"play 'beepB'  ,'xzzx zzzz zxzz zxzz'"</span>,
+        <span class="string">"play 'voltage'  ,'xzxz zxzz xzxx xzxx'"</span>,
+        <span class="string">"play 'tranceKick'  ,'zxzx zzzx xzzz zzxx'"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> trySoundsDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"bpm 88\n"</span> + <span class="string">""</span> + <span class="string">"// leave this one as base\n"</span> + <span class="string">""</span> + <span class="string">"play 'tranceKick' ,'zxzx zzzx xzzz zzxx'\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// uncomment the sounds you want to try\n"</span> + <span class="string">""</span> + <span class="string">"//play 'toc','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'highHatClosed','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'highHatOpen','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'toc2','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'toc3','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'toc4','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'snare','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'snare2','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'china','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'crash','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'crash2','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'crash3','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'ride','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'glass','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'glass1','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'glass2','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'glass3','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'thump','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'lowFlash','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'lowFlash2','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'tranceKick2','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'tranceKick','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'wosh','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'voltage','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'beepA','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'beepB','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'beepC','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'beepD','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'beep','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'hello','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//play 'alienBeep','zzxz zzzz zzxz zzzz'"</span>;
+    <span class="keyword">var</span> trySoundsDemo = [
+        <span class="string">"bpm 88"</span>,
+        <span class="string">"// leave this one as base"</span>,
+        <span class="string">"play 'tranceKick'  ,'zxzx zzzx xzzz zzxx'"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// uncomment the sounds you want to try"</span>,
+        <span class="string">"//play 'toc'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'highHatClosed'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'highHatOpen'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'toc2'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'toc3'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'toc4'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'snare'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'snare2'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'china'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'crash'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'crash2'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'crash3'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'ride'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'glass'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'glass1'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'glass2'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'glass3'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'thump'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'lowFlash'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'lowFlash2'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'tranceKick2'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'tranceKick'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'wosh'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'voltage'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'beepA'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'beepB'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'beepC'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'beepD'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'beep'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'hello'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//play 'alienBeep'  ,'zzxz zzzz zzxz zzzz'"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> springysquaresDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"animationStyle motionBlur\n"</span> + <span class="string">""</span> + <span class="string">"simpleGradient fuchsia,color(100,200,200),yellow\n"</span> + <span class="string">""</span> + <span class="string">"scale 0.3\n"</span> + <span class="string">""</span> + <span class="string">"3 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"move 0,0,0.5\n"</span> + <span class="string">"\t"</span> + <span class="string">"5 times -&gt;\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"rotate time/2000\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"move 0.7,0,0\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"rect"</span>;
+    <span class="keyword">var</span> springysquaresDemo = [
+        <span class="string">"animationStyle motionBlur"</span>,
+        <span class="string">"simpleGradient fuchsia,color(100,200,200),yellow"</span>,
+        <span class="string">"scale 0.3"</span>,
+        <span class="string">"3 times -&gt;"</span>,
+        <span class="string">"\tmove 0,0,0.5"</span>,
+        <span class="string">"\t5 times -&gt;"</span>,
+        <span class="string">"\t\trotate time/2000"</span>,
+        <span class="string">"\t\tmove 0.7,0,0"</span>,
+        <span class="string">"\t\trect"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> diceDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"animationStyle motionBlur\n"</span> + <span class="string">""</span> + <span class="string">"simpleGradient color(255),moccasin,peachpuff\n"</span> + <span class="string">""</span> + <span class="string">"stroke 255,100,100,255\n"</span> + <span class="string">""</span> + <span class="string">"fill red,155\n"</span> + <span class="string">""</span> + <span class="string">"move -0.5,0,0\n"</span> + <span class="string">""</span> + <span class="string">"scale 0.3\n"</span> + <span class="string">""</span> + <span class="string">"3 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"move 0,0,0.5\n"</span> + <span class="string">"\t"</span> + <span class="string">"1 times -&gt;\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"rotate time/1000\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"move 2,0,0\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"box"</span>;
+    <span class="keyword">var</span> diceDemo = [
+        <span class="string">"animationStyle motionBlur"</span>,
+        <span class="string">"simpleGradient color(255),moccasin,peachpuff"</span>,
+        <span class="string">"stroke 255,100,100,255"</span>,
+        <span class="string">"fill red,155"</span>,
+        <span class="string">"move -0.5,0,0"</span>,
+        <span class="string">"scale 0.3"</span>,
+        <span class="string">"3 times -&gt;"</span>,
+        <span class="string">"\tmove 0,0,0.5"</span>,
+        <span class="string">"\t1 times -&gt;"</span>,
+        <span class="string">"\t\trotate time/1000"</span>,
+        <span class="string">"\t\tmove 2,0,0"</span>,
+        <span class="string">"\t\tbox"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> webglalmostvoronoiDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"scale 10\n"</span> + <span class="string">""</span> + <span class="string">"2 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate 0,1,time/10000\n"</span> + <span class="string">"\t"</span> + <span class="string">"ball -1"</span>;
+    <span class="keyword">var</span> webglalmostvoronoiDemo = [
+        <span class="string">"scale 10"</span>,
+        <span class="string">"2 times -&gt;"</span>,
+        <span class="string">"\trotate 0,1,time/10000"</span>,
+        <span class="string">"\tball -1"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> webglshardsDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"scale 10\n"</span> + <span class="string">""</span> + <span class="string">"fill 0\n"</span> + <span class="string">""</span> + <span class="string">"strokeSize 7\n"</span> + <span class="string">""</span> + <span class="string">"5 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate 0,1,time/20000\n"</span> + <span class="string">"\t"</span> + <span class="string">"ball \n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate 0,1,1\n"</span> + <span class="string">"\t"</span> + <span class="string">"ball -1.01"</span>;
+    <span class="keyword">var</span> webglshardsDemo = [
+        <span class="string">"scale 10"</span>,
+        <span class="string">"fill 0"</span>,
+        <span class="string">"strokeSize 7"</span>,
+        <span class="string">"5 times -&gt;"</span>,
+        <span class="string">"\trotate 0,1,time/20000"</span>,
+        <span class="string">"\tball "</span>,
+        <span class="string">"\trotate 0,1,1"</span>,
+        <span class="string">"\tball -1.01"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> webglredthreadsDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"scale 10.5\n"</span> + <span class="string">""</span> + <span class="string">"background black\n"</span> + <span class="string">""</span> + <span class="string">"stroke red\n"</span> + <span class="string">""</span> + <span class="string">"noFill\n"</span> + <span class="string">""</span> + <span class="string">"strokeSize 7\n"</span> + <span class="string">""</span> + <span class="string">"5 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate time/20000\n"</span> + <span class="string">"\t"</span> + <span class="string">"ball\n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate 0,1,1\n"</span> + <span class="string">"\t"</span> + <span class="string">"ball"</span>;
+    <span class="keyword">var</span> webglredthreadsDemo = [
+        <span class="string">"scale 10.5"</span>,
+        <span class="string">"background black"</span>,
+        <span class="string">"stroke red"</span>,
+        <span class="string">"noFill"</span>,
+        <span class="string">"strokeSize 7"</span>,
+        <span class="string">"5 times -&gt;"</span>,
+        <span class="string">"\trotate time/20000"</span>,
+        <span class="string">"\tball"</span>,
+        <span class="string">"\trotate 0,1,1"</span>,
+        <span class="string">"\tball"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> webglnuclearOctopusDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"simpleGradient black,color(0,0,(time/5)%255),black\n"</span> + <span class="string">""</span> + <span class="string">"scale 0.2\n"</span> + <span class="string">""</span> + <span class="string">"move 5,0,0\n"</span> + <span class="string">""</span> + <span class="string">"animationStyle motionBlur\n"</span> + <span class="string">""</span> + <span class="string">"//animationStyle paintOver\n"</span> + <span class="string">""</span> + <span class="string">"stroke 255,0,0,120\n"</span> + <span class="string">""</span> + <span class="string">"fill time%255,0,0\n"</span> + <span class="string">""</span> + <span class="string">"pushMatrix\n"</span> + <span class="string">""</span> + <span class="string">"count = 0\n"</span> + <span class="string">""</span> + <span class="string">"3 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"count++\n"</span> + <span class="string">"\t"</span> + <span class="string">"pushMatrix\n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate count+3+time/1000,2+count + time/1000,4+count\n"</span> + <span class="string">"\t"</span> + <span class="string">"120 times -&gt;\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"scale 0.9\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"move 1,1,0\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"rotate time/100\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"box\n"</span> + <span class="string">"\t"</span> + <span class="string">"popMatrix"</span>;
+    <span class="keyword">var</span> webglnuclearOctopusDemo = [
+        <span class="string">"simpleGradient black,color(0,0,(time/5)%255),black"</span>,
+        <span class="string">"scale 0.2"</span>,
+        <span class="string">"move 5,0,0"</span>,
+        <span class="string">"animationStyle motionBlur"</span>,
+        <span class="string">"//animationStyle paintOver"</span>,
+        <span class="string">"stroke 255,0,0,120"</span>,
+        <span class="string">"fill time%255,0,0"</span>,
+        <span class="string">"pushMatrix"</span>,
+        <span class="string">"count = 0"</span>,
+        <span class="string">"3 times -&gt;"</span>,
+        <span class="string">"\tcount++"</span>,
+        <span class="string">"\tpushMatrix"</span>,
+        <span class="string">"\trotate count+3+time/1000,2+count + time/1000,4+count"</span>,
+        <span class="string">"\t120 times -&gt;"</span>,
+        <span class="string">"\t\tscale 0.9"</span>,
+        <span class="string">"\t\tmove 1,1,0"</span>,
+        <span class="string">"\t\trotate time/100"</span>,
+        <span class="string">"\t\tbox"</span>,
+        <span class="string">"\tpopMatrix"</span>
+    ].join(<span class="string">"\n"</span>);
+
 } <span class="keyword">else</span> {
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>French demos <strong><em>*</em><em>*</em><em>*</em><em>*</em><em>*</em><em>*</em><em>*</em><em>*</em><em>*</em><em>*</em></strong></p>             </td>             <td class="code">               <div class="highlight"><pre>
-  simpleCubeDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// there you go!\n"</span> + <span class="string">""</span> + <span class="string">"// a simple cube!\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"fond jaune\n"</span> + <span class="string">""</span> + <span class="string">"tourne 0,temps/2000,temps/2000\n"</span> + <span class="string">""</span> + <span class="string">"boite"</span>;
+    simpleCubeDemo = [
+        <span class="string">"// there you go!"</span>,
+        <span class="string">"// a simple cube!"</span>,
+        <span class="string">""</span>,
+        <span class="string">"fond jaune"</span>,
+        <span class="string">"tourne 0,temps/2000,temps/2000"</span>,
+        <span class="string">"boite"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  webgltwocubesDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"fond 155,255,255\n"</span> + <span class="string">""</span> + <span class="string">"2 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne 0, 1, temps/2000\n"</span> + <span class="string">"\t"</span> + <span class="string">"boite"</span>;
+    webgltwocubesDemo = [
+        <span class="string">"fond 155,255,255"</span>,
+        <span class="string">"2 fois -&gt;"</span>,
+        <span class="string">"\ttourne 0, 1, temps/2000"</span>,
+        <span class="string">"\tboite"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  cubesAndSpikes = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"dégradéSimple fuchsia,couleur(100,200,200),jaune\n"</span> + <span class="string">""</span> + <span class="string">"taille 2.1\n"</span> + <span class="string">""</span> + <span class="string">"5 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne 0,1,temps/5000\n"</span> + <span class="string">"\t"</span> + <span class="string">"boite 0.1,0.1,0.1\n"</span> + <span class="string">"\t"</span> + <span class="string">"deplace 0,0.1,0.1\n"</span> + <span class="string">"\t"</span> + <span class="string">"3 fois -&gt;\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"tourne 0,1,1\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"boite 0.01,0.01,1"</span>;
+    cubesAndSpikes = [
+        <span class="string">"dégradéSimple fuchsia,couleur(100,200,200),jaune"</span>,
+        <span class="string">"taille 2.1"</span>,
+        <span class="string">"5 fois -&gt;"</span>,
+        <span class="string">"\ttourne 0,1,temps/5000"</span>,
+        <span class="string">"\tboite 0.1,0.1,0.1"</span>,
+        <span class="string">"\tdeplace 0,0.1,0.1"</span>,
+        <span class="string">"\t3 fois -&gt;"</span>,
+        <span class="string">"\t\ttourne 0,1,1"</span>,
+        <span class="string">"\t\tboite 0.01,0.01,1"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  webglturbineDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"fond 155,55,255\n"</span> + <span class="string">""</span> + <span class="string">"70 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne temps/100000,1,temps/100000\n"</span> + <span class="string">"\t"</span> + <span class="string">"boite"</span>;
+    webglturbineDemo = [
+        <span class="string">"fond 155,55,255"</span>,
+        <span class="string">"70 fois -&gt;"</span>,
+        <span class="string">"\ttourne temps/100000,1,temps/100000"</span>,
+        <span class="string">"\tboite"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  webglzfightartDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// Explore the artifacts\n"</span> + <span class="string">""</span> + <span class="string">"// of your GPU!\n"</span> + <span class="string">""</span> + <span class="string">"// Go Z-fighting, go!\n"</span> + <span class="string">""</span> + <span class="string">"taille 5\n"</span> + <span class="string">""</span> + <span class="string">"tourne\n"</span> + <span class="string">""</span> + <span class="string">"remplissage rouge\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"tourne 0.000001\n"</span> + <span class="string">""</span> + <span class="string">"remplissage jaune\n"</span> + <span class="string">""</span> + <span class="string">"boite"</span>;
+    webglzfightartDemo = [
+        <span class="string">"// Explore the artifacts"</span>,
+        <span class="string">"// of your GPU!"</span>,
+        <span class="string">"// Go Z-fighting, go!"</span>,
+        <span class="string">"taille 5"</span>,
+        <span class="string">"tourne"</span>,
+        <span class="string">"remplissage rouge"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">"tourne 0.000001"</span>,
+        <span class="string">"remplissage jaune"</span>,
+        <span class="string">"boite"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  littleSpiralOfCubes = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"fond orange\n"</span> + <span class="string">""</span> + <span class="string">"taille 0.1\n"</span> + <span class="string">""</span> + <span class="string">"10 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne 0,1,temps/1000\n"</span> + <span class="string">"\t"</span> + <span class="string">"deplace 1,1,1\n"</span> + <span class="string">"\t"</span> + <span class="string">"boite"</span>;
 
-  tentacleDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"fond 155,255,155\n"</span> + <span class="string">""</span> + <span class="string">"taille 0.15\n"</span> + <span class="string">""</span> + <span class="string">"3 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne 0,1,1\n"</span> + <span class="string">"\t"</span> + <span class="string">"10 fois -&gt;\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"tourne 0,1,temps/1000\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"taille 0.9\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"deplace 1,1,1\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"boite"</span>;
+    littleSpiralOfCubes = [
+        <span class="string">"fond orange"</span>,
+        <span class="string">"taille 0.1"</span>,
+        <span class="string">"10 fois -&gt;"</span>,
+        <span class="string">"\ttourne 0,1,temps/1000"</span>,
+        <span class="string">"\tdeplace 1,1,1"</span>,
+        <span class="string">"\tboite"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  lampDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"styleAnimation flouMouvement\n"</span> + <span class="string">""</span> + <span class="string">"dégradéSimple rouge,jaune,couleur(255,0,255)\n"</span> + <span class="string">""</span> + <span class="string">"//styleAnimation peindreAuDessus\n"</span> + <span class="string">""</span> + <span class="string">"taille 2\n"</span> + <span class="string">""</span> + <span class="string">"tourne temps/4000, temps/4000,  temps/4000\n"</span> + <span class="string">""</span> + <span class="string">"90 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne temps/200000, temps/200000,  temps/200000\n"</span> + <span class="string">"\t"</span> + <span class="string">"ligne\n"</span> + <span class="string">"\t"</span> + <span class="string">"deplace 0.5,0,0\n"</span> + <span class="string">"\t"</span> + <span class="string">"ligne\n"</span> + <span class="string">"\t"</span> + <span class="string">"deplace -0.5,0,0\n"</span> + <span class="string">"\t"</span> + <span class="string">"ligne\n"</span> + <span class="string">"\t"</span> + <span class="string">"ligne"</span>;
 
-  trillionfeathersDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"styleAnimation peindreAuDessus\n"</span> + <span class="string">""</span> + <span class="string">"deplace 2,0,0\n"</span> + <span class="string">""</span> + <span class="string">"taille 2\n"</span> + <span class="string">""</span> + <span class="string">"tourne\n"</span> + <span class="string">""</span> + <span class="string">"20 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne\n"</span> + <span class="string">"\t"</span> + <span class="string">"deplace 0.25,0,0\n"</span> + <span class="string">"\t"</span> + <span class="string">"ligne\n"</span> + <span class="string">"\t"</span> + <span class="string">"deplace -0.5,0,0\n"</span> + <span class="string">"\t"</span> + <span class="string">"ligne"</span>;
+    tentacleDemo = [
+        <span class="string">"fond 155,255,155"</span>,
+        <span class="string">"taille 0.15"</span>,
+        <span class="string">"3 fois -&gt;"</span>,
+        <span class="string">"\ttourne 0,1,1"</span>,
+        <span class="string">"\t10 fois -&gt;"</span>,
+        <span class="string">"\t\ttourne 0,1,temps/1000"</span>,
+        <span class="string">"\t\ttaille 0.9"</span>,
+        <span class="string">"\t\tdeplace 1,1,1"</span>,
+        <span class="string">"\t\tboite"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  monsterblobDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"balleDetail 6\n"</span> + <span class="string">""</span> + <span class="string">"styleAnimation flouMouvement\n"</span> + <span class="string">""</span> + <span class="string">"tourne temps/5000\n"</span> + <span class="string">""</span> + <span class="string">"dégradéSimple fuchsia,aqua,jaune\n"</span> + <span class="string">""</span> + <span class="string">"5 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne 0,1,temps/5000\n"</span> + <span class="string">"\t"</span> + <span class="string">"deplace 0.2,0,0\n"</span> + <span class="string">"\t"</span> + <span class="string">"3 fois -&gt;\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"tourne 1\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"balle -1"</span>;
+    lampDemo = [
+        <span class="string">"styleAnimation flouMouvement"</span>,
+        <span class="string">"dégradéSimple rouge,jaune,couleur(255,0,255)"</span>,
+        <span class="string">"//styleAnimation peindreAuDessus"</span>,
+        <span class="string">"taille 2"</span>,
+        <span class="string">"tourne temps/4000, temps/4000,  temps/4000"</span>,
+        <span class="string">"90 fois -&gt;"</span>,
+        <span class="string">"\ttourne temps/200000, temps/200000,  temps/200000"</span>,
+        <span class="string">"\tligne"</span>,
+        <span class="string">"\tdeplace 0.5,0,0"</span>,
+        <span class="string">"\tligne"</span>,
+        <span class="string">"\tdeplace -0.5,0,0"</span>,
+        <span class="string">"\tligne"</span>,
+        <span class="string">"\tligne"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  industrialMusicDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"bpm 88\n"</span> + <span class="string">""</span> + <span class="string">"ajouteSon 'alienBeep'  ,'zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"ajouteSon 'beepC'  ,'zxzz zzzz xzzx xxxz'\n"</span> + <span class="string">""</span> + <span class="string">"ajouteSon 'beepA'  ,'zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"ajouteSon 'lowFlash'  ,'zzxz zzzz zzzz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"ajouteSon 'beepB'  ,'xzzx zzzz zxzz zxzz'\n"</span> + <span class="string">""</span> + <span class="string">"ajouteSon 'voltage' ,'xzxz zxzz xzxx xzxx'\n"</span> + <span class="string">""</span> + <span class="string">"ajouteSon 'tranceKick' ,'zxzx zzzx xzzz zzxx'"</span>;
+    trillionfeathersDemo = [
+        <span class="string">"styleAnimation peindreAuDessus"</span>,
+        <span class="string">"deplace 2,0,0"</span>,
+        <span class="string">"taille 2"</span>,
+        <span class="string">"tourne"</span>,
+        <span class="string">"20 fois -&gt;"</span>,
+        <span class="string">"\ttourne"</span>,
+        <span class="string">"\tdeplace 0.25,0,0"</span>,
+        <span class="string">"\tligne"</span>,
+        <span class="string">"\tdeplace -0.5,0,0"</span>,
+        <span class="string">"\tligne"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  trySoundsDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"bpm 88\n"</span> + <span class="string">""</span> + <span class="string">"// leave this one as base\n"</span> + <span class="string">""</span> + <span class="string">"ajouteSon 'tranceKick' ,'zxzx zzzx xzzz zzxx'\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// uncomment the sounds you want to try\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'toc','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'highHatClosed','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'highHatOpen','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'toc2','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'toc3','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'toc4','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'snare','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'snare2','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'china','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'crash','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'crash2','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'crash3','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'ride','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'glass','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'glass1','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'glass2','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'glass3','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'thump','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'lowFlash','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'lowFlash2','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'tranceKick2','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'tranceKick','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'wosh','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'voltage','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'beepA','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'beepB','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'beepC','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'beepD','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'beep','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'hello','zzxz zzzz zzxz zzzz'\n"</span> + <span class="string">""</span> + <span class="string">"//ajouteSon 'alienBeep','zzxz zzzz zzxz zzzz'"</span>;
 
-  springysquaresDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"styleAnimation flouMouvement\n"</span> + <span class="string">""</span> + <span class="string">"dégradéSimple fuchsia,couleur(100,200,200),jaune\n"</span> + <span class="string">""</span> + <span class="string">"taille 0.3\n"</span> + <span class="string">""</span> + <span class="string">"3 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"deplace 0,0,0.5\n"</span> + <span class="string">"\t"</span> + <span class="string">"5 fois -&gt;\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"tourne temps/2000\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"deplace 0.7,0,0\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"rect"</span>;
+    monsterblobDemo = [
+        <span class="string">"balleDetail 6"</span>,
+        <span class="string">"styleAnimation flouMouvement"</span>,
+        <span class="string">"tourne temps/5000"</span>,
+        <span class="string">"dégradéSimple fuchsia,aqua,jaune"</span>,
+        <span class="string">"5 fois -&gt;"</span>,
+        <span class="string">"\ttourne 0,1,temps/5000"</span>,
+        <span class="string">"\tdeplace 0.2,0,0"</span>,
+        <span class="string">"\t3 fois -&gt;"</span>,
+        <span class="string">"\t\ttourne 1"</span>,
+        <span class="string">"\t\tballe -1"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  diceDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"styleAnimation flouMouvement\n"</span> + <span class="string">""</span> + <span class="string">"dégradéSimple couleur(255),moccasin,peche\n"</span> + <span class="string">""</span> + <span class="string">"trait 255,100,100,255\n"</span> + <span class="string">""</span> + <span class="string">"remplissage rouge,155\n"</span> + <span class="string">""</span> + <span class="string">"deplace -0.5,0,0\n"</span> + <span class="string">""</span> + <span class="string">"taille 0.3\n"</span> + <span class="string">""</span> + <span class="string">"3 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"deplace 0,0,0.5\n"</span> + <span class="string">"\t"</span> + <span class="string">"1 fois -&gt;\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"tourne temps/1000\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"deplace 2,0,0\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"boite"</span>;
+    industrialMusicDemo = [
+        <span class="string">"bpm 88"</span>,
+        <span class="string">"ajouteSon 'alienBeep'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"ajouteSon 'beepC'  ,'zxzz zzzz xzzx xxxz'"</span>,
+        <span class="string">"ajouteSon 'beepA'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"ajouteSon 'lowFlash'  ,'zzxz zzzz zzzz zzzz'"</span>,
+        <span class="string">"ajouteSon 'beepB'  ,'xzzx zzzz zxzz zxzz'"</span>,
+        <span class="string">"ajouteSon 'voltage'  ,'xzxz zxzz xzxx xzxx'"</span>,
+        <span class="string">"ajouteSon 'tranceKick'  ,'zxzx zzzx xzzz zzxx'"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  webglalmostvoronoiDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"taille 10\n"</span> + <span class="string">""</span> + <span class="string">"2 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne 0,1,temps/10000\n"</span> + <span class="string">"\t"</span> + <span class="string">"balle -1"</span>;
+    trySoundsDemo = [
+        <span class="string">"bpm 88"</span>,
+        <span class="string">"// leave this one as base"</span>,
+        <span class="string">"ajouteSon 'tranceKick'  ,'zxzx zzzx xzzz zzxx'"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// uncomment the sounds you want to try"</span>,
+        <span class="string">"//ajouteSon 'toc'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'highHatClosed'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'highHatOpen'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'toc2'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'toc3'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'toc4'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'snare'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'snare2'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'china'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'crash'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'crash2'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'crash3'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'ride'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'glass'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'glass1'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'glass2'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'glass3'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'thump'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'lowFlash'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'lowFlash2'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'tranceKick2'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'tranceKick'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'wosh'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'voltage'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'beepA'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'beepB'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'beepC'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'beepD'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'beep'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'hello'  ,'zzxz zzzz zzxz zzzz'"</span>,
+        <span class="string">"//ajouteSon 'alienBeep'  ,'zzxz zzzz zzxz zzzz'"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  webglshardsDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"taille 10\n"</span> + <span class="string">""</span> + <span class="string">"remplissage 0\n"</span> + <span class="string">""</span> + <span class="string">"traitSize 7\n"</span> + <span class="string">""</span> + <span class="string">"5 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne 0,1,temps/20000\n"</span> + <span class="string">"\t"</span> + <span class="string">"balle \n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne 0,1,1\n"</span> + <span class="string">"\t"</span> + <span class="string">"balle -1.01"</span>;
+    springysquaresDemo = [
+        <span class="string">"styleAnimation flouMouvement"</span>,
+        <span class="string">"dégradéSimple fuchsia,couleur(100,200,200),jaune"</span>,
+        <span class="string">"taille 0.3"</span>,
+        <span class="string">"3 fois -&gt;"</span>,
+        <span class="string">"\tdeplace 0,0,0.5"</span>,
+        <span class="string">"\t5 fois -&gt;"</span>,
+        <span class="string">"\t\ttourne temps/2000"</span>,
+        <span class="string">"\t\tdeplace 0.7,0,0"</span>,
+        <span class="string">"\t\trect"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  webglredthreadsDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"taille 10.5\n"</span> + <span class="string">""</span> + <span class="string">"fond noir\n"</span> + <span class="string">""</span> + <span class="string">"trait rouge\n"</span> + <span class="string">""</span> + <span class="string">"sansRemplissage\n"</span> + <span class="string">""</span> + <span class="string">"traitSize 7\n"</span> + <span class="string">""</span> + <span class="string">"5 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne temps/20000\n"</span> + <span class="string">"\t"</span> + <span class="string">"balle\n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne 0,1,1\n"</span> + <span class="string">"\t"</span> + <span class="string">"balle"</span>;
+    diceDemo = [
+        <span class="string">"styleAnimation flouMouvement"</span>,
+        <span class="string">"dégradéSimple couleur(255),moccasin,peche"</span>,
+        <span class="string">"trait 255,100,100,255"</span>,
+        <span class="string">"remplissage rouge,155"</span>,
+        <span class="string">"deplace -0.5,0,0"</span>,
+        <span class="string">"taille 0.3"</span>,
+        <span class="string">"3 fois -&gt;"</span>,
+        <span class="string">"\tdeplace 0,0,0.5"</span>,
+        <span class="string">"\t1 fois -&gt;"</span>,
+        <span class="string">"\t\ttourne temps/1000"</span>,
+        <span class="string">"\t\tdeplace 2,0,0"</span>,
+        <span class="string">"\t\tboite"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  webglnuclearOctopusDemo = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"dégradéSimple noir,couleur(0,0,(temps/5)%255),noir\n"</span> + <span class="string">""</span> + <span class="string">"taille 0.2\n"</span> + <span class="string">""</span> + <span class="string">"deplace 5,0,0\n"</span> + <span class="string">""</span> + <span class="string">"styleAnimation flouMouvement\n"</span> + <span class="string">""</span> + <span class="string">"//styleAnimation peindreAuDessus\n"</span> + <span class="string">""</span> + <span class="string">"trait 255,0,0,120\n"</span> + <span class="string">""</span> + <span class="string">"remplissage temps%255,0,0\n"</span> + <span class="string">""</span> + <span class="string">"sauveMatrice\n"</span> + <span class="string">""</span> + <span class="string">"count = 0\n"</span> + <span class="string">""</span> + <span class="string">"3 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"count++\n"</span> + <span class="string">"\t"</span> + <span class="string">"sauveMatrice\n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne count+3+temps/1000,2+count + temps/1000,4+count\n"</span> + <span class="string">"\t"</span> + <span class="string">"120 fois -&gt;\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"taille 0.9\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"deplace 1,1,0\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"tourne temps/100\n"</span> + <span class="string">"\t\t"</span> + <span class="string">"boite\n"</span> + <span class="string">"\t"</span> + <span class="string">"restaureMatrice"</span>;
+    webglalmostvoronoiDemo = [
+        <span class="string">"taille 10"</span>,
+        <span class="string">"2 fois -&gt;"</span>,
+        <span class="string">"\ttourne 0,1,temps/10000"</span>,
+        <span class="string">"\tballe -1"</span>
+    ].join(<span class="string">"\n"</span>);
+
+    webglshardsDemo = [
+        <span class="string">"taille 10"</span>,
+        <span class="string">"remplissage 0"</span>,
+        <span class="string">"traitSize 7"</span>,
+        <span class="string">"5 fois -&gt;"</span>,
+        <span class="string">"\ttourne 0,1,temps/20000"</span>,
+        <span class="string">"\tballe "</span>,
+        <span class="string">"\ttourne 0,1,1"</span>,
+        <span class="string">"\tballe -1.01"</span>
+    ].join(<span class="string">"\n"</span>);
+
+    webglredthreadsDemo = [
+        <span class="string">"taille 10.5"</span>,
+        <span class="string">"fond noir"</span>,
+        <span class="string">"trait rouge"</span>,
+        <span class="string">"sansRemplissage"</span>,
+        <span class="string">"traitSize 7"</span>,
+        <span class="string">"5 fois -&gt;"</span>,
+        <span class="string">"\ttourne temps/20000"</span>,
+        <span class="string">"\tballe"</span>,
+        <span class="string">"\ttourne 0,1,1"</span>,
+        <span class="string">"\tballe"</span>
+    ].join(<span class="string">"\n"</span>);
+
+    webglnuclearOctopusDemo = [
+        <span class="string">"dégradéSimple noir,couleur(0,0,(temps/5)%255),noir"</span>,
+        <span class="string">"taille 0.2"</span>,
+        <span class="string">"deplace 5,0,0"</span>,
+        <span class="string">"styleAnimation flouMouvement"</span>,
+        <span class="string">"//styleAnimation peindreAuDessus"</span>,
+        <span class="string">"trait 255,0,0,120"</span>,
+        <span class="string">"remplissage temps%255,0,0"</span>,
+        <span class="string">"sauveMatrice"</span>,
+        <span class="string">"count = 0"</span>,
+        <span class="string">"3 fois -&gt;"</span>,
+        <span class="string">"\tcount++"</span>,
+        <span class="string">"\tsauveMatrice"</span>,
+        <span class="string">"\ttourne count+3+temps/1000,2+count + temps/1000,4+count"</span>,
+        <span class="string">"\t120 fois -&gt;"</span>,
+        <span class="string">"\t\ttaille 0.9"</span>,
+        <span class="string">"\t\tdeplace 1,1,0"</span>,
+        <span class="string">"\t\ttourne temps/100"</span>,
+        <span class="string">"\t\tboite"</span>,
+        <span class="string">"\trestaureMatrice"</span>
+    ].join(<span class="string">"\n"</span>);
 
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <hr />             </td>             <td class="code">               <div class="highlight"><pre>}
 
 <span class="keyword">if</span> (!frenchVersion) {
 
-  <span class="keyword">var</span> introTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// Lines beginning with two\n"</span> + <span class="string">""</span> + <span class="string">"// slashes (like these) are just comments.\n"</span> + <span class="string">""</span> + <span class="string">'// Everything else is run\n'</span> + <span class="string">""</span> + <span class="string">'// about 30 to 60 times per second\n'</span> + <span class="string">""</span> + <span class="string">'// in order to create an animation.\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// Click the link below to start the tutorial.\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:hello_world"</span>;
+    <span class="keyword">var</span> introTutorial = [
+        <span class="string">"// Lines beginning with two"</span>,
+        <span class="string">"// slashes (like these) are just comments."</span>,
+        <span class="string">"// Everything else is run"</span>,
+        <span class="string">"// about 30 to 60 times per second"</span>,
+        <span class="string">"// in order to create an animation."</span>,
+        <span class="string">"// Click the link below to start the tutorial."</span>,
+        <span class="string">"// next-tutorial:hello_world"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> helloworldTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// type these three letters\n"</span> + <span class="string">""</span> + <span class="string">"// in one of these empty lines below:\n"</span> + <span class="string">""</span> + <span class="string">'// "b" and "o" and "x"\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// (you should then see a box facing you)\n"</span> + <span class="string">""</span> + <span class="string">"// click below for the next tutorial\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:some_notes"</span>;
+    <span class="keyword">var</span> helloworldTutorial = [
+        <span class="string">"// type these three letters"</span>,
+        <span class="string">"// in one of these empty lines below:"</span>,
+        <span class="string">"// 'b' and 'o' and 'x'"</span>,
+        <span class="string">""</span>,
+        <span class="string">""</span>,
+        <span class="string">"// (you should then see a box facing you)"</span>,
+        <span class="string">"// click below for the next tutorial"</span>,
+        <span class="string">"// next-tutorial:some_notes"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> somenotesTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// If this makes sense to you:\n"</span> + <span class="string">""</span> + <span class="string">"// the syntax is similar to Coffeescript\n"</span> + <span class="string">""</span> + <span class="string">'// and the commands are almost\n'</span> + <span class="string">""</span> + <span class="string">'// like Processing.\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// If this doesn't make sense to you\n"</span> + <span class="string">""</span> + <span class="string">"// don't worry.\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:rotate"</span>;
+    <span class="keyword">var</span> somenotesTutorial = [
+        <span class="string">"// If this makes sense to you:"</span>,
+        <span class="string">"// the syntax is similar to Coffeescript"</span>,
+        <span class="string">"// and the commands are almost"</span>,
+        <span class="string">"// like Processing."</span>,
+        <span class="string">"// If this doesn't make sense to you"</span>,
+        <span class="string">"// don't worry."</span>,
+        <span class="string">"// next-tutorial:rotate"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> rotateTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// now that we have a box\n"</span> + <span class="string">""</span> + <span class="string">"// let's rotate it:\n"</span> + <span class="string">""</span> + <span class="string">'// type "rotate 1" in the\n'</span> + <span class="string">""</span> + <span class="string">'// line before the "box"\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// click for the next tutorial:\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:frame"</span>;
+    <span class="keyword">var</span> rotateTutorial = [
+        <span class="string">"// now that we have a box"</span>,
+        <span class="string">"// let's rotate it:"</span>,
+        <span class="string">"// type 'rotate 1' in the"</span>,
+        <span class="string">"// line before the 'box'"</span>,
+        <span class="string">""</span>,
+        <span class="string">"box"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// click for the next tutorial:"</span>,
+        <span class="string">"// next-tutorial:frame"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> frameTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// make the box spin\n"</span> + <span class="string">""</span> + <span class="string">'// by replacing "1" with "frame"\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"rotate 1\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// "frame" contains a number\n'</span> + <span class="string">""</span> + <span class="string">"// always incrementing as\n"</span> + <span class="string">""</span> + <span class="string">"// the screen is re-drawn.\n"</span> + <span class="string">""</span> + <span class="string">'// (use "frame/100" to slow it down)\n'</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:time"</span>;
+    <span class="keyword">var</span> frameTutorial = [
+        <span class="string">"// make the box spin"</span>,
+        <span class="string">"// by replacing '1' with 'frame'"</span>,
+        <span class="string">"rotate 1"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// 'frame' contains a number"</span>,
+        <span class="string">"// always incrementing as"</span>,
+        <span class="string">"// the screen is re-drawn."</span>,
+        <span class="string">"// (use 'frame/100' to slow it down)"</span>,
+        <span class="string">"// next-tutorial:time"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> timeTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// "frame/100" has one problem:\n'</span> + <span class="string">""</span> + <span class="string">'// faster computers will make\n'</span> + <span class="string">""</span> + <span class="string">'// the cube spin too fast.\n'</span> + <span class="string">""</span> + <span class="string">'// Replace it with "time/2000".\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"rotate frame/100\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// "time" counts the\n'</span> + <span class="string">""</span> + <span class="string">"// number of milliseconds since\n"</span> + <span class="string">""</span> + <span class="string">"// the program started, so it's\n"</span> + <span class="string">""</span> + <span class="string">"// independent of how fast\n"</span> + <span class="string">""</span> + <span class="string">"// the computer is at drawing.\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:move"</span>;
+    <span class="keyword">var</span> timeTutorial = [
+        <span class="string">"// 'frame/100' has one problem:"</span>,
+        <span class="string">"// faster computers will make"</span>,
+        <span class="string">"// the cube spin too fast."</span>,
+        <span class="string">"// Replace it with 'time/2000'."</span>,
+        <span class="string">"rotate frame/100"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// 'time' counts the"</span>,
+        <span class="string">"// number of milliseconds since"</span>,
+        <span class="string">"// the program started, so it's"</span>,
+        <span class="string">"// independent of how fast"</span>,
+        <span class="string">"// the computer is at drawing."</span>,
+        <span class="string">"// next-tutorial:move"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> moveTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// you can move any object\n"</span> + <span class="string">""</span> + <span class="string">'// by using "move"\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"move 1,1,0\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// try to use a rotate before \n'</span> + <span class="string">""</span> + <span class="string">"// the first box to see how the\n"</span> + <span class="string">""</span> + <span class="string">"// scene changes.\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:scale"</span>;
+    <span class="keyword">var</span> moveTutorial = [
+        <span class="string">"// you can move any object"</span>,
+        <span class="string">"// by using 'move'"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">"move 1,1,0"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// try to use a rotate before"</span>,
+        <span class="string">"// the first box to see how the"</span>,
+        <span class="string">"// scene changes."</span>,
+        <span class="string">"// next-tutorial:scale"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> scaleTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// you can make an object bigger\n"</span> + <span class="string">""</span> + <span class="string">'// or smaller by using "scale"\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"rotate 3\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"move 1\n"</span> + <span class="string">""</span> + <span class="string">"scale 2\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// try to use scale or move before \n'</span> + <span class="string">""</span> + <span class="string">"// the first box to see how the\n"</span> + <span class="string">""</span> + <span class="string">"// scene changes.\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:times"</span>;
+    <span class="keyword">var</span> scaleTutorial = [
+        <span class="string">"// you can make an object bigger"</span>,
+        <span class="string">"// or smaller by using 'scale'"</span>,
+        <span class="string">"rotate 3"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">"move 1"</span>,
+        <span class="string">"scale 2"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// try to use scale or move before"</span>,
+        <span class="string">"// the first box to see how the"</span>,
+        <span class="string">"// scene changes."</span>,
+        <span class="string">"// next-tutorial:times"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> timesTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// "times" (not to be confused with\n'</span> + <span class="string">""</span> + <span class="string">'// "time"!) can be used to\n'</span> + <span class="string">""</span> + <span class="string">'// repeat operations like so:\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"rotate 1\n"</span> + <span class="string">""</span> + <span class="string">"3 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"move 0.2,0.2,0.2\n"</span> + <span class="string">"\t"</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// note how the tabs indicate \n'</span> + <span class="string">""</span> + <span class="string">"// exactly the block of code\n"</span> + <span class="string">""</span> + <span class="string">"// to be repeated.\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:fill"</span>;
+    <span class="keyword">var</span> timesTutorial = [
+        <span class="string">"// 'times' (not to be confused with"</span>,
+        <span class="string">"// 'time'!) can be used to"</span>,
+        <span class="string">"// repeat operations like so:"</span>,
+        <span class="string">"rotate 1"</span>,
+        <span class="string">"3 times -&gt;"</span>,
+        <span class="string">"\tmove 0.2,0.2,0.2"</span>,
+        <span class="string">"\tbox"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// note how the tabs indicate"</span>,
+        <span class="string">"// exactly the block of code"</span>,
+        <span class="string">"// to be repeated."</span>,
+        <span class="string">"// next-tutorial:fill"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> fillTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// "fill" changes the\n'</span> + <span class="string">""</span> + <span class="string">'// color of all the faces:\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"rotate 1\n"</span> + <span class="string">""</span> + <span class="string">"fill 255,255,0\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// the three numbers indicate \n'</span> + <span class="string">""</span> + <span class="string">"// red green and blue values.\n"</span> + <span class="string">""</span> + <span class="string">"// You can also use color names such as 'indigo'\n"</span> + <span class="string">""</span> + <span class="string">"// Try replacing the numbers with\n"</span> + <span class="string">""</span> + <span class="string">'// "angleColor"\n'</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:stroke"</span>;
+    <span class="keyword">var</span> fillTutorial = [
+        <span class="string">"// 'fill' changes the"</span>,
+        <span class="string">"// color of all the faces:"</span>,
+        <span class="string">"rotate 1"</span>,
+        <span class="string">"fill 255,255,0"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// the three numbers indicate "</span>,
+        <span class="string">"// red green and blue values."</span>,
+        <span class="string">"// You can also use color names such as 'indigo'"</span>,
+        <span class="string">"// Try replacing the numbers with"</span>,
+        <span class="string">"// 'angleColor'"</span>,
+        <span class="string">"// next-tutorial:stroke"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> strokeTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// "stroke" changes all the\n'</span> + <span class="string">""</span> + <span class="string">'// edges:\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"rotate 1\n"</span> + <span class="string">""</span> + <span class="string">"strokeSize 5\n"</span> + <span class="string">""</span> + <span class="string">"stroke 255,255,255\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// the three numbers are RGB\n'</span> + <span class="string">""</span> + <span class="string">"// but you can also use the color names\n"</span> + <span class="string">""</span> + <span class="string">'// or the special color "angleColor"\n'</span> + <span class="string">""</span> + <span class="string">'// Also you can use "strokeSize"\n'</span> + <span class="string">""</span> + <span class="string">'// to specify the thickness.\n'</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:color_names"</span>;
+    <span class="keyword">var</span> strokeTutorial = [
+        <span class="string">"// 'stroke' changes all the"</span>,
+        <span class="string">"// edges:"</span>,
+        <span class="string">"rotate 1"</span>,
+        <span class="string">"strokeSize 5"</span>,
+        <span class="string">"stroke 255,255,255"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// the three numbers are RGB"</span>,
+        <span class="string">"// but you can also use the color names"</span>,
+        <span class="string">"// or the special color 'angleColor'"</span>,
+        <span class="string">"// Also you can use 'strokeSize'"</span>,
+        <span class="string">"// to specify the thickness."</span>,
+        <span class="string">"// next-tutorial:color_names"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> colornamesTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// you can call colors by name\n'</span> + <span class="string">""</span> + <span class="string">'// try to un-comment one line:\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"//fill greenyellow\n"</span> + <span class="string">""</span> + <span class="string">"//fill indigo\n"</span> + <span class="string">""</span> + <span class="string">"//fill lemonchiffon // whaaaat?\n"</span> + <span class="string">""</span> + <span class="string">"rotate 1\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// more color names here:\n'</span> + <span class="string">""</span> + <span class="string">'// http://html-color-codes.info/color-names/\n'</span> + <span class="string">""</span> + <span class="string">'// (just use them in lower case)\n'</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:lights"</span>;
+    <span class="keyword">var</span> colornamesTutorial = [
+        <span class="string">"// you can call colors by name"</span>,
+        <span class="string">"// try to un-comment one line:"</span>,
+        <span class="string">"//fill greenyellow"</span>,
+        <span class="string">"//fill indigo"</span>,
+        <span class="string">"//fill lemonchiffon // whaaaat?"</span>,
+        <span class="string">"rotate 1"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// more color names here:"</span>,
+        <span class="string">"// http://html-color-codes.info/color-names/"</span>,
+        <span class="string">"// (just use them in lower case)"</span>,
+        <span class="string">"// next-tutorial:lights"</span>
+    ].join(<span class="string">"\n"</span>);
 
 
-  <span class="keyword">var</span> lightsTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// "ambientLight" creates an\n'</span> + <span class="string">""</span> + <span class="string">'// ambient light so things have\n'</span> + <span class="string">""</span> + <span class="string">'// some sort of shading:\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"ambientLight 0,255,255\n"</span> + <span class="string">""</span> + <span class="string">"rotate time/1000\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// you can turn that light on and \n'</span> + <span class="string">""</span> + <span class="string">"// off while you build the scene\n"</span> + <span class="string">""</span> + <span class="string">'// by using "lights" and "noLights"\n'</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:background"</span>;
+    <span class="keyword">var</span> lightsTutorial = [
+        <span class="string">"// 'ambientLight' creates an"</span>,
+        <span class="string">"// ambient light so things have"</span>,
+        <span class="string">"// some sort of shading:"</span>,
+        <span class="string">"ambientLight 0,255,255"</span>,
+        <span class="string">"rotate time/1000"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// you can turn that light on and "</span>,
+        <span class="string">"// off while you build the scene"</span>,
+        <span class="string">"// by using 'lights' and 'noLights'"</span>,
+        <span class="string">"// next-tutorial:background"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> backgroundTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// "background" creates a\n'</span> + <span class="string">""</span> + <span class="string">'// solid background:\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"background 0,0,255\n"</span> + <span class="string">""</span> + <span class="string">"rotate time/1000\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:gradient"</span>;
+    <span class="keyword">var</span> backgroundTutorial = [
+        <span class="string">"// 'background' creates a"</span>,
+        <span class="string">"// solid background:"</span>,
+        <span class="string">"background 0,0,255"</span>,
+        <span class="string">"rotate time/1000"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// next-tutorial:gradient"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> gradientTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// even nicer, you can paint a\n'</span> + <span class="string">""</span> + <span class="string">'// background gradient:\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"simpleGradient color(190,10,10),color(30,90,100),color(0)\n"</span> + <span class="string">""</span> + <span class="string">"rotate time/1000\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:line"</span>;
+    <span class="keyword">var</span> gradientTutorial = [
+        <span class="string">"// even nicer, you can paint a"</span>,
+        <span class="string">"// background gradient:"</span>,
+        <span class="string">"simpleGradient color(190,10,10),color(30,90,100),color(0)"</span>,
+        <span class="string">"rotate time/1000"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// next-tutorial:line"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> lineTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// draw lines like this:\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"20 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"rotate time/9000\n"</span> + <span class="string">"\t"</span> + <span class="string">"line\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:ball"</span>;
+    <span class="keyword">var</span> lineTutorial = [
+        <span class="string">"// draw lines like this:"</span>,
+        <span class="string">"20 times -&gt;"</span>,
+        <span class="string">"\trotate time/9000"</span>,
+        <span class="string">"\tline"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// next-tutorial:ball"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> ballTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// draw balls like this:\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"ballDetail 10\n"</span> + <span class="string">""</span> + <span class="string">"3 times -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"move 0.2,0.2,0.2\n"</span> + <span class="string">"\t"</span> + <span class="string">"ball\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// ("ballDetail" is optional)\n'</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:pushpopMatrix"</span>;
+    <span class="keyword">var</span> ballTutorial = [
+        <span class="string">"// draw balls like this:"</span>,
+        <span class="string">"ballDetail 10"</span>,
+        <span class="string">"3 times -&gt;"</span>,
+        <span class="string">"\tmove 0.2,0.2,0.2"</span>,
+        <span class="string">"\tball"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// ('ballDetail' is optional)"</span>,
+        <span class="string">"// next-tutorial:pushpopMatrix"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> pushpopMatrixTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// pushMatrix creates a bookmark of\n'</span> + <span class="string">""</span> + <span class="string">'// the position, which you can\n'</span> + <span class="string">""</span> + <span class="string">'// return to later by using popMatrix.\n'</span> + <span class="string">""</span> + <span class="string">'// You can reset using "resetMatrix".\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"rotate time/1000\n"</span> + <span class="string">""</span> + <span class="string">'pushMatrix // bookmark the position after the rotation\n'</span> + <span class="string">""</span> + <span class="string">"line\n"</span> + <span class="string">""</span> + <span class="string">"move 0.5,0,0\n"</span> + <span class="string">""</span> + <span class="string">"line\n"</span> + <span class="string">""</span> + <span class="string">"popMatrix // go back to the bookmarked position\n"</span> + <span class="string">""</span> + <span class="string">"move -0.5,0,0\n"</span> + <span class="string">""</span> + <span class="string">"line\n"</span> + <span class="string">""</span> + <span class="string">"resetMatrix // resets the position\n"</span> + <span class="string">""</span> + <span class="string">"line // not affected by initial rotation\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:animation_style"</span>;
+    <span class="keyword">var</span> pushpopMatrixTutorial = [
+        <span class="string">"// pushMatrix creates a bookmark of"</span>,
+        <span class="string">"// the position, which you can"</span>,
+        <span class="string">"// return to later by using popMatrix."</span>,
+        <span class="string">"// You can reset using 'resetMatrix'."</span>,
+        <span class="string">"rotate time/1000"</span>,
+        <span class="string">"pushMatrix // bookmark the position after the rotation"</span>,
+        <span class="string">"line"</span>,
+        <span class="string">"move 0.5,0,0"</span>,
+        <span class="string">"line"</span>,
+        <span class="string">"popMatrix // go back to the bookmarked position"</span>,
+        <span class="string">"move -0.5,0,0"</span>,
+        <span class="string">"line"</span>,
+        <span class="string">"resetMatrix // resets the position"</span>,
+        <span class="string">"line // not affected by initial rotation"</span>,
+        <span class="string">"// next-tutorial:animation_style"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> animationstyleTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// try uncommenting either line\n'</span> + <span class="string">""</span> + <span class="string">'// with the animationStyle\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"background 255\n"</span> + <span class="string">""</span> + <span class="string">"//animationStyle motionBlur\n"</span> + <span class="string">""</span> + <span class="string">"//animationStyle paintOver\n"</span> + <span class="string">""</span> + <span class="string">"rotate frame/10\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:do_once"</span>;
+    <span class="keyword">var</span> animationstyleTutorial = [
+        <span class="string">"// try uncommenting either line"</span>,
+        <span class="string">"// with the animationStyle"</span>,
+        <span class="string">"background 255"</span>,
+        <span class="string">"//animationStyle motionBlur"</span>,
+        <span class="string">"//animationStyle paintOver"</span>,
+        <span class="string">"rotate frame/10"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// next-tutorial:do_once"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> doonceTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// delete either check mark below\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"rotate time/1000\n"</span> + <span class="string">""</span> + <span class="string">"✓doOnce -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"background 255\n"</span> + <span class="string">"\t"</span> + <span class="string">"fill 255,0,0\n"</span> + <span class="string">""</span> + <span class="string">"✓doOnce -&gt; ball\n"</span> + <span class="string">""</span> + <span class="string">"box\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// ...the line or block of code\n'</span> + <span class="string">""</span> + <span class="string">'// are ran one time only, after that the\n'</span> + <span class="string">""</span> + <span class="string">'// check marks immediately re-appear\n'</span> + <span class="string">""</span> + <span class="string">'// P.S. keep hitting the delete button\n'</span> + <span class="string">""</span> + <span class="string">'// on that first check mark for seizures.\n'</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:conditionals"</span>;
+    <span class="keyword">var</span> doonceTutorial = [
+        <span class="string">"// delete either check mark below"</span>,
+        <span class="string">"rotate time/1000"</span>,
+        <span class="string">"✓doOnce -&gt;"</span>,
+        <span class="string">"\tbackground 255"</span>,
+        <span class="string">"\tfill 255,0,0"</span>,
+        <span class="string">"✓doOnce -&gt; ball"</span>,
+        <span class="string">"box"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// ...the line or block of code"</span>,
+        <span class="string">"// are ran one time only, after that the"</span>,
+        <span class="string">"// check marks immediately re-appear"</span>,
+        <span class="string">"// P.S. keep hitting the delete button"</span>,
+        <span class="string">"// on that first check mark for seizures."</span>,
+        <span class="string">"// next-tutorial:conditionals"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> conditionalsTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// you can draw different things'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// (or in general do different things)"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// based on any"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// test condition you want:"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">"rotate"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"if frame%3 == 0"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"\t"</span>+<span class="string">"box"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"else if frame%3 == 1"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"\t"</span>+<span class="string">"ball"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"else"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"\t"</span>+<span class="string">"peg"</span> + <span class="string">""</span>  + <span class="string">"\n"</span> + <span class="string">""</span>+ <span class="string">""</span>  + <span class="string">"\n"</span> + <span class="string">""</span> +<span class="string">"// next-tutorial:autocode"</span>;
+    <span class="keyword">var</span> conditionalsTutorial = [
+        <span class="string">"// you can draw different things"</span>,
+        <span class="string">"// (or in general do different things)"</span>,
+        <span class="string">"// based on any"</span>,
+        <span class="string">"// test condition you want:"</span>,
+        <span class="string">""</span>,
+        <span class="string">"rotate"</span>,
+        <span class="string">"if frame%3 == 0"</span>,
+        <span class="string">"\tbox"</span>,
+        <span class="string">"else if frame%3 == 1"</span>,
+        <span class="string">"\tball"</span>,
+        <span class="string">"else"</span>,
+        <span class="string">"\tpeg"</span>,
+        <span class="string">"// next-tutorial:autocode"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  <span class="keyword">var</span> autocodeTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// the Autocode button invents random\n'</span> + <span class="string">""</span> + <span class="string">'// variations for you.\n'</span> + <span class="string">""</span> + <span class="string">'\n'</span> + <span class="string">""</span> + <span class="string">'// You can interrupt the Autocoder at\n'</span> + <span class="string">""</span> + <span class="string">'// any time by pressing the button again,\n'</span> + <span class="string">""</span> + <span class="string">'// or you can press CTRL-Z\n'</span> + <span class="string">""</span> + <span class="string">'// (or CMD-Z on Macs) to undo (or re-do) some of\n'</span> + <span class="string">""</span> + <span class="string">'// the steps even WHILE the autocoder is running,\n'</span> + <span class="string">""</span> + <span class="string">'// if you see that things got\n'</span> + <span class="string">""</span> + <span class="string">'// boring down a particular path of changes.'</span>;
+    <span class="keyword">var</span> autocodeTutorial = [
+        <span class="string">"// the Autocode button invents random"</span>,
+        <span class="string">"// variations for you."</span>,
+        <span class="string">""</span>,
+        <span class="string">"// You can interrupt the Autocoder at"</span>,
+        <span class="string">"// any time by pressing the button again,"</span>,
+        <span class="string">"// or you can press CTRL-Z"</span>,
+        <span class="string">"// (or CMD-Z on Macs) to undo (or re-do) some of"</span>,
+        <span class="string">"// the steps even WHILE the autocoder is running,"</span>,
+        <span class="string">"// if you see that things got"</span>,
+        <span class="string">"// boring down a particular path of changes."</span>
+    ].join(<span class="string">"\n"</span>);
 } <span class="keyword">else</span> {
 
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p><strong><em>*</em><em>*</em><em>*</em><em>*</em><em>*</em><em>*</em><em>*</em><em>*</em>*</strong> French tutorials</p>             </td>             <td class="code">               <div class="highlight"><pre>   introTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// Les lignes qui commencent avec deux slashes\n"</span> + <span class="string">""</span> + <span class="string">"// (comme celle-ci) sont des commentaires.\n"</span> + <span class="string">""</span> + <span class="string">'// Tout le reste est lancé\n'</span> + <span class="string">""</span> + <span class="string">'// entre 30 et 60 fois par seconde\n'</span> + <span class="string">""</span> + <span class="string">'// pour créer une animation\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// Cliquez sur le lien ci-dessous pour démarrer le tutorial.\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:hello_world"</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p><strong><em>*</em><em>*</em><em>*</em><em>*</em><em>*</em><em>*</em><em>*</em><em>*</em>*</strong> French tutorials</p>             </td>             <td class="code">               <div class="highlight"><pre>    introTutorial = [
+        <span class="string">"// Les lignes qui commencent avec deux slashes"</span>,
+        <span class="string">"// (comme celle-ci) sont des commentaires."</span>,
+        <span class="string">"// Tout le reste est lancé"</span>,
+        <span class="string">"// entre 30 et 60 fois par seconde"</span>,
+        <span class="string">"// pour créer une animation"</span>,
+        <span class="string">"// Cliquez sur le lien ci-dessous pour démarrer le tutorial."</span>,
+        <span class="string">"// next-tutorial:hello_world"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  helloworldTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// Tapez ces cinq lettres\n"</span> + <span class="string">""</span> + <span class="string">"// sur une des lignes vides\n"</span> + <span class="string">""</span> + <span class="string">'// b, o, i, t, e\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// (vous devriez voir une belle boite apparaître)\n"</span> + <span class="string">""</span> + <span class="string">"// cliquez pour le prochain tutorial :\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:some_notes"</span>;
+    helloworldTutorial = [
+        <span class="string">"// Tapez ces cinq lettres"</span>,
+        <span class="string">"// sur une des lignes vides"</span>,
+        <span class="string">"// b, o, i, t, e"</span>,
+        <span class="string">""</span>,
+        <span class="string">""</span>,
+        <span class="string">"// (vous devriez voir une belle boite apparaître)"</span>,
+        <span class="string">"// cliquez pour le prochain tutorial :"</span>,
+        <span class="string">"// next-tutorial:some_notes"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  somenotesTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// Au cas où cela vous dit quelque chose :\n"</span> + <span class="string">""</span> + <span class="string">"// la syntaxe est similaire à Coffeescript\n"</span> + <span class="string">""</span> + <span class="string">'// et les commandes sont presque\n'</span> + <span class="string">""</span> + <span class="string">'// comme Processing.\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// Si cela ne veut rien dire pour vous\n"</span> + <span class="string">""</span> + <span class="string">"// pas de soucis.\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:rotate"</span>;
+    somenotesTutorial = [
+        <span class="string">"// Au cas où cela vous dit quelque chose :"</span>,
+        <span class="string">"// la syntaxe est similaire à Coffeescript"</span>,
+        <span class="string">"// et les commandes sont presque"</span>,
+        <span class="string">"// comme Processing."</span>,
+        <span class="string">"// Si cela ne veut rien dire pour vous"</span>,
+        <span class="string">"// pas de soucis."</span>,
+        <span class="string">"// next-tutorial:rotate"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  rotateTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// Maintenant nous avons une boite\n"</span> + <span class="string">""</span> + <span class="string">"// faisons la tourner:\n"</span> + <span class="string">""</span> + <span class="string">'// tapez "tourne 1" sur la ligne\n'</span> + <span class="string">""</span> + <span class="string">'// au dessus de "boite"\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// cliquez pour le prochain tutorial :\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:frame"</span>;
+    rotateTutorial = [
+        <span class="string">"// Maintenant nous avons une boite"</span>,
+        <span class="string">"// faisons la tourner:"</span>,
+        <span class="string">"// tapez 'tourne 1' sur la ligne"</span>,
+        <span class="string">"// au dessus de 'boite'"</span>,
+        <span class="string">""</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// cliquez pour le prochain tutorial :"</span>,
+        <span class="string">"// next-tutorial:frame"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  frameTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// faites tourner la boite\n"</span> + <span class="string">""</span> + <span class="string">'// en remplaçant "1" par "image"\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"tourne 1\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// "image" contient un nombre\n'</span> + <span class="string">""</span> + <span class="string">"// qui s’incrémente au fur et à mesure\n"</span> + <span class="string">""</span> + <span class="string">"// que l’écran est re-dessiné.\n"</span> + <span class="string">""</span> + <span class="string">'// (utilisez "image/100" pour la ralentir)\n'</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:time"</span>;
+    frameTutorial = [
+        <span class="string">"// faites tourner la boite"</span>,
+        <span class="string">"// en remplaçant '1' par 'image'"</span>,
+        <span class="string">"tourne 1"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// 'image' contient un nombre"</span>,
+        <span class="string">"// qui s’incrémente au fur et à mesure"</span>,
+        <span class="string">"// que l’écran est re-dessiné."</span>,
+        <span class="string">"// (utilisez 'image/100' pour la ralentir)"</span>,
+        <span class="string">"// next-tutorial:time"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  timeTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// "image/100" a un problème :\n'</span> + <span class="string">""</span> + <span class="string">'// les ordinateurs rapides vont faire\n'</span> + <span class="string">""</span> + <span class="string">'// tourner le cube trop vite.\n'</span> + <span class="string">""</span> + <span class="string">'// Remplacez le par "temps/2000".\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"tourne image/100\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// "temps" compte le nombre de millisecondes\n'</span> + <span class="string">""</span> + <span class="string">"// depuis que le programme  a démarré,\n"</span> + <span class="string">""</span> + <span class="string">"// il est donc indépendent de la vitesse\n"</span> + <span class="string">""</span> + <span class="string">"// à laquelle l’ordinateur dessine les images.\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:move"</span>;
+    timeTutorial = [
+        <span class="string">"// 'image/100' a un problème :"</span>,
+        <span class="string">"// les ordinateurs rapides vont faire"</span>,
+        <span class="string">"// tourner le cube trop vite."</span>,
+        <span class="string">"// Remplacez le par 'temps/2000'."</span>,
+        <span class="string">"tourne image/100"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// 'temps' compte le nombre de millisecondes"</span>,
+        <span class="string">"// depuis que le programme  a démarré,"</span>,
+        <span class="string">"// il est donc indépendent de la vitesse"</span>,
+        <span class="string">"// à laquelle l’ordinateur dessine les images."</span>,
+        <span class="string">"// next-tutorial:move"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  moveTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// vous pouvez déplacer n’importe quel objet\n"</span> + <span class="string">""</span> + <span class="string">'// en utilisant "deplace"\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"deplace 1,1,0\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// essayez d’utiliser tourne\n'</span> + <span class="string">""</span> + <span class="string">"// avant la première boite pour voir\n"</span> + <span class="string">""</span> + <span class="string">"// comment la scène change.\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:scale"</span>;
+    moveTutorial = [
+        <span class="string">"// vous pouvez déplacer n’importe quel objet"</span>,
+        <span class="string">"// en utilisant 'deplace'"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">"deplace 1,1,0"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// essayez d’utiliser tourne"</span>,
+        <span class="string">"// avant la première boite pour voir"</span>,
+        <span class="string">"// comment la scène change."</span>,
+        <span class="string">"// next-tutorial:scale"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  scaleTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">"// vous pouvez changer la taille des objets\n"</span> + <span class="string">""</span> + <span class="string">'// en utilisant "taille"\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"tourne 3\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"deplace 1\n"</span> + <span class="string">""</span> + <span class="string">"taille 2\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// essayez d’utiliser tourne\n'</span> + <span class="string">""</span> + <span class="string">"// avant la première boite pour voir\n"</span> + <span class="string">""</span> + <span class="string">"// comment la scène change..\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:times"</span>;
+    scaleTutorial = [
+        <span class="string">"// vous pouvez changer la taille des objets"</span>,
+        <span class="string">"// en utilisant 'taille'"</span>,
+        <span class="string">"tourne 3"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">"deplace 1"</span>,
+        <span class="string">"taille 2"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// essayez d’utiliser tourne"</span>,
+        <span class="string">"// avant la première boite pour voir"</span>,
+        <span class="string">"// comment la scène change.."</span>,
+        <span class="string">"// next-tutorial:times"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  timesTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// "fois" peut-être utilisé\n'</span> + <span class="string">""</span> + <span class="string">'// pour répéter des opérations :\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"tourne 1\n"</span> + <span class="string">""</span> + <span class="string">"3 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"deplace 0.2,0.2,0.2\n"</span> + <span class="string">"\t"</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// notez comme les tabulations indiquent \n'</span> + <span class="string">""</span> + <span class="string">"// exactement le bloc de code\n"</span> + <span class="string">""</span> + <span class="string">"// qui doit être répété.\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:fill"</span>;
+    timesTutorial = [
+        <span class="string">"// 'fois' peut-être utilisé"</span>,
+        <span class="string">"// pour répéter des opérations :"</span>,
+        <span class="string">"tourne 1"</span>,
+        <span class="string">"3 fois -&gt;"</span>,
+        <span class="string">"\tdeplace 0.2,0.2,0.2"</span>,
+        <span class="string">"\tboite"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// notez comme les tabulations indiquent "</span>,
+        <span class="string">"// exactement le bloc de code"</span>,
+        <span class="string">"// qui doit être répété."</span>,
+        <span class="string">"// next-tutorial:fill"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  fillTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// "remplissage" défini la\n'</span> + <span class="string">""</span> + <span class="string">'// couleur de toutes les faces :\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"remplissage 255,255,0\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// les trois nombres indiquent\n'</span> + <span class="string">""</span> + <span class="string">"// les valeurs de rouge, vert et bleu.\n"</span> + <span class="string">""</span> + <span class="string">"// Vous pouvez aussi utiliser\n"</span> + <span class="string">""</span> + <span class="string">"// des noms de couleur comme indigo\n"</span> + <span class="string">""</span> + <span class="string">"// Essayez de remplacer les nombres avec\n"</span> + <span class="string">""</span> + <span class="string">'// "couleurAngle"\n'</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:stroke"</span>;
+    fillTutorial = [
+        <span class="string">"// 'remplissage' défini la"</span>,
+        <span class="string">"// couleur de toutes les faces :"</span>,
+        <span class="string">"remplissage 255,255,0"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// les trois nombres indiquent"</span>,
+        <span class="string">"// les valeurs de rouge, vert et bleu."</span>,
+        <span class="string">"// Vous pouvez aussi utiliser"</span>,
+        <span class="string">"// des noms de couleur comme indigo"</span>,
+        <span class="string">"// Essayez de remplacer les nombres avec"</span>,
+        <span class="string">"// 'couleurAngle'"</span>,
+        <span class="string">"// next-tutorial:stroke"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  strokeTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// "trait" change la couleur\n'</span> + <span class="string">""</span> + <span class="string">'// des arrêtes :\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"tourne 1\n"</span> + <span class="string">""</span> + <span class="string">"tailleTrait 5\n"</span> + <span class="string">""</span> + <span class="string">"trait 255,255,255\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// les trois nombres sont les valeurs RVB\n'</span> + <span class="string">""</span> + <span class="string">"// mais vous pouvez utiliser les noms des couleurs,\n"</span> + <span class="string">""</span> + <span class="string">'// ou la couleur spéciale  "couleurAngle"\n'</span> + <span class="string">""</span> + <span class="string">'// Vous pouvez aussi utiliser "tailleTrait"\n'</span> + <span class="string">""</span> + <span class="string">'// pour préciser l’épaisseur.\n'</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:color_names"</span>;
+    strokeTutorial = [
+        <span class="string">"// 'trait' change la couleur"</span>,
+        <span class="string">"// des arrêtes :"</span>,
+        <span class="string">"tourne 1"</span>,
+        <span class="string">"tailleTrait 5"</span>,
+        <span class="string">"trait 255,255,255"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// les trois nombres sont les valeurs RVB"</span>,
+        <span class="string">"// mais vous pouvez utiliser les noms des couleurs,"</span>,
+        <span class="string">"// ou la couleur spéciale  'couleurAngle'"</span>,
+        <span class="string">"// Vous pouvez aussi utiliser 'tailleTrait'"</span>,
+        <span class="string">"// pour préciser l’épaisseur."</span>,
+        <span class="string">"// next-tutorial:color_names"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  colornamesTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// vous pouvez indiquer les couleurs par nom\n'</span> + <span class="string">""</span> + <span class="string">'// essayer de dé-commenter une ligne :\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"//remplissage rouge\n"</span> + <span class="string">""</span> + <span class="string">"//remplissage vert\n"</span> + <span class="string">""</span> + <span class="string">"//remplissage pêche\n"</span> + <span class="string">""</span> + <span class="string">"tourne 1\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// plus de noms de couleurs ici :\n'</span> + <span class="string">""</span> + <span class="string">'// http://html-color-codes.info/color-names/\n'</span> + <span class="string">""</span> + <span class="string">'// (utilisez en minuscule, pas de majuscules)\n'</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:lights"</span>;
+    colornamesTutorial = [
+        <span class="string">"// vous pouvez indiquer les couleurs par nom"</span>,
+        <span class="string">"// essayer de dé-commenter une ligne :"</span>,
+        <span class="string">"//remplissage rouge"</span>,
+        <span class="string">"//remplissage vert"</span>,
+        <span class="string">"//remplissage pêche"</span>,
+        <span class="string">"tourne 1"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// plus de noms de couleurs ici :"</span>,
+        <span class="string">"// http://html-color-codes.info/color-names/"</span>,
+        <span class="string">"// (utilisez en minuscule, pas de majuscules)"</span>,
+        <span class="string">"// next-tutorial:lights"</span>
+    ].join(<span class="string">"\n"</span>);
 
 
-  lightsTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// "eclairageAmbiant" créé un\n'</span> + <span class="string">""</span> + <span class="string">'// éclairage ambiant de sorte que les objets\n'</span> + <span class="string">""</span> + <span class="string">'// ont une sorte de d’ombrage:\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"eclairageAmbiant 0,255,255\n"</span> + <span class="string">""</span> + <span class="string">"tourne temps/1000\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// vous pouvez éteindre ou allumer cet éclairage\n'</span> + <span class="string">""</span> + <span class="string">"// pendant que vous construisez la scène"</span> + <span class="string">""</span> + <span class="string">'// en utilisant "eclairage" et "sansEclairage"\n'</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:background"</span>;
+    lightsTutorial = [
+        <span class="string">"// 'eclairageAmbiant' créé un"</span>,
+        <span class="string">"// éclairage ambiant de sorte que les objets"</span>,
+        <span class="string">"// ont une sorte de d’ombrage:"</span>,
+        <span class="string">"eclairageAmbiant 0,255,255"</span>,
+        <span class="string">"tourne temps/1000"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// vous pouvez éteindre ou allumer cet éclairage"</span>,
+        <span class="string">"// pendant que vous construisez la scène"</span>,
+        <span class="string">"// en utilisant 'eclairage' et 'sansEclairage'"</span>,
+        <span class="string">"// next-tutorial:background"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  backgroundTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// "fond" créé un\n'</span> + <span class="string">""</span> + <span class="string">'// fond de couleur :\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"fond 0,0,255\n"</span> + <span class="string">""</span> + <span class="string">"tourne temps/1000\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:gradient"</span>;
+    backgroundTutorial = [
+        <span class="string">"// 'fond' créé un"</span>,
+        <span class="string">"// fond de couleur :"</span>,
+        <span class="string">"fond 0,0,255"</span>,
+        <span class="string">"tourne temps/1000"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// next-tutorial:gradient"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  gradientTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// encore plus sympa, vous pouvez\n'</span> + <span class="string">""</span> + <span class="string">'// créér un fond en dégradé:\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"degradeSimple couleur(190,10,10),couleur(30,90,100),couleur(0)\n"</span> + <span class="string">""</span> + <span class="string">"tourne temps/1000\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:line"</span>;
+    gradientTutorial = [
+        <span class="string">"// encore plus sympa, vous pouvez"</span>,
+        <span class="string">"// créér un fond en dégradé:"</span>,
+        <span class="string">"degradeSimple couleur(190,10,10),couleur(30,90,100),couleur(0)"</span>,
+        <span class="string">"tourne temps/1000"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// next-tutorial:line"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  lineTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// dessinez des lignes comme ceci :\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"20 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"tourne temps/9000\n"</span> + <span class="string">"\t"</span> + <span class="string">"ligne\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:ball"</span>;
+    lineTutorial = [
+        <span class="string">"// dessinez des lignes comme ceci :"</span>,
+        <span class="string">"20 fois -&gt;"</span>,
+        <span class="string">"\ttourne temps/9000"</span>,
+        <span class="string">"\tligne"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// next-tutorial:ball"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  ballTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// dessinez des balles comme ceci :\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"balleDetail 10\n"</span> + <span class="string">""</span> + <span class="string">"3 fois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"deplace 0.2,0.2,0.2\n"</span> + <span class="string">"\t"</span> + <span class="string">"balle\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// ("balleDetail" est optionnel)\n'</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:pushpopMatrix"</span>;
+    ballTutorial = [
+        <span class="string">"// dessinez des balles comme ceci :"</span>,
+        <span class="string">"balleDetail 10"</span>,
+        <span class="string">"3 fois -&gt;"</span>,
+        <span class="string">"\tdeplace 0.2,0.2,0.2"</span>,
+        <span class="string">"\tballe"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// ('balleDetail' est optionnel)"</span>,
+        <span class="string">"// next-tutorial:pushpopMatrix"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  pushpopMatrixTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// sauveMatrice mémorise\n'</span> + <span class="string">""</span> + <span class="string">'// la position, et vous pouvez\n'</span> + <span class="string">""</span> + <span class="string">'// y revenir plus tard avec restaureMatrice.\n'</span> + <span class="string">""</span> + <span class="string">'// Vous pouvez revenir à zéro avec "effaceMatrice".\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"tourne temps/1000\n"</span> + <span class="string">""</span> + <span class="string">'sauveMatrice // mémorise la position après la rotation\n'</span> + <span class="string">""</span> + <span class="string">"ligne\n"</span> + <span class="string">""</span> + <span class="string">"deplace 0.5,0,0\n"</span> + <span class="string">""</span> + <span class="string">"ligne\n"</span> + <span class="string">""</span> + <span class="string">"restaureMatrice // revient à la position mémorisée\n"</span> + <span class="string">""</span> + <span class="string">"deplace -0.5,0,0\n"</span> + <span class="string">""</span> + <span class="string">"ligne\n"</span> + <span class="string">""</span> + <span class="string">"effaceMatrice // remets la position à zéro\n"</span> + <span class="string">""</span> + <span class="string">"ligne // cette ligne n’est donc pas affecté par la rotation\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:animation_style"</span>;
+    pushpopMatrixTutorial = [
+        <span class="string">"// sauveMatrice mémorise"</span>,
+        <span class="string">"// la position, et vous pouvez"</span>,
+        <span class="string">"// y revenir plus tard avec restaureMatrice."</span>,
+        <span class="string">"// Vous pouvez revenir à zéro avec 'effaceMatrice'."</span>,
+        <span class="string">"tourne temps/1000"</span>,
+        <span class="string">"sauveMatrice // mémorise la position après la rotation"</span>,
+        <span class="string">"ligne"</span>,
+        <span class="string">"deplace 0.5,0,0"</span>,
+        <span class="string">"ligne"</span>,
+        <span class="string">"restaureMatrice // revient à la position mémorisée"</span>,
+        <span class="string">"deplace -0.5,0,0"</span>,
+        <span class="string">"ligne"</span>,
+        <span class="string">"effaceMatrice // remets la position à zéro"</span>,
+        <span class="string">"ligne // cette ligne n’est donc pas affecté par la rotation"</span>,
+        <span class="string">"// next-tutorial:animation_style"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  animationstyleTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// essayez de dé-commenter l’une ou l’autre\n'</span> + <span class="string">""</span> + <span class="string">'// des deux lignes  avec styleAnimation\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"fond 255\n"</span> + <span class="string">""</span> + <span class="string">"//styleAnimation flouMouvement\n"</span> + <span class="string">""</span> + <span class="string">"//styleAnimation peindreAudessus\n"</span> + <span class="string">""</span> + <span class="string">"tourne image/10\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:do_once"</span>;
+    animationstyleTutorial = [
+        <span class="string">"// essayez de dé-commenter l’une ou l’autre"</span>,
+        <span class="string">"// des deux lignes  avec styleAnimation"</span>,
+        <span class="string">"fond 255"</span>,
+        <span class="string">"//styleAnimation flouMouvement"</span>,
+        <span class="string">"//styleAnimation peindreAudessus"</span>,
+        <span class="string">"tourne image/10"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// next-tutorial:do_once"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  doonceTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// effacez l’une ou l’autre des coches\n'</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">"tourne temps/1000\n"</span> + <span class="string">""</span> + <span class="string">"✓uneFois -&gt;\n"</span> + <span class="string">"\t"</span> + <span class="string">"fond 255\n"</span> + <span class="string">"\t"</span> + <span class="string">"remplissage 255,0,0\n"</span> + <span class="string">""</span> + <span class="string">"✓uneFois -&gt; balle\n"</span> + <span class="string">""</span> + <span class="string">"boite\n"</span> + <span class="string">""</span> + <span class="string">"\n"</span> + <span class="string">""</span> + <span class="string">'// …la ligne ou le bloc de code\n'</span> + <span class="string">""</span> + <span class="string">'// n’est exécuté qu’une seule fois, et après cela\n'</span> + <span class="string">""</span> + <span class="string">'// la coche réapparait immédiattement\n'</span> + <span class="string">""</span> + <span class="string">'// P.S. continuez de supprimer la première coche\n'</span> + <span class="string">""</span> + <span class="string">'// en continu pour provoquer un évanouissement :-)\n'</span> + <span class="string">""</span> + <span class="string">"// next-tutorial:autocode"</span>;
+    doonceTutorial = [
+        <span class="string">"// effacez l’une ou l’autre des coches"</span>,
+        <span class="string">"tourne temps/1000"</span>,
+        <span class="string">"✓uneFois -&gt;"</span>,
+        <span class="string">"\tfond 255"</span>,
+        <span class="string">"\tremplissage 255,0,0"</span>,
+        <span class="string">"✓uneFois -&gt; balle"</span>,
+        <span class="string">"boite"</span>,
+        <span class="string">""</span>,
+        <span class="string">"// …la ligne ou le bloc de code"</span>,
+        <span class="string">"// n’est exécuté qu’une seule fois, et après cela"</span>,
+        <span class="string">"// la coche réapparait immédiattement"</span>,
+        <span class="string">"// P.S. continuez de supprimer la première coche"</span>,
+        <span class="string">"// en continu pour provoquer un évanouissement :-)"</span>,
+        <span class="string">"// next-tutorial:autocode"</span>
+    ].join(<span class="string">"\n"</span>);
 
-  autocodeTutorial = <span class="string">""</span> + <span class="string">""</span> + <span class="string">'// le bouton Autocode invente pour vous\n'</span> + <span class="string">""</span> + <span class="string">'// des variations aléatoires du code.\n'</span> + <span class="string">""</span> + <span class="string">'\n'</span> + <span class="string">""</span> + <span class="string">'// vous pouvez arrêter Autocode\n'</span> + <span class="string">""</span> + <span class="string">'// à tout moment en ré-appuyant sur le bouton\n'</span> + <span class="string">""</span> + <span class="string">'// ou vous pouvez faire CTRL-Z\n'</span> + <span class="string">""</span> + <span class="string">'// (CMD-Z sur Mac) pour annuler (or rétablir) certainesn'</span> + <span class="string">""</span> + <span class="string">'// des étapes y compris PENDANT que Autocode est actif\n'</span> + <span class="string">""</span> + <span class="string">'// si par exemple vous trouvez que les choses\n'</span> + <span class="string">""</span> + <span class="string">'// deviennent ennuyeuse dans la direction prise par Autocode.'</span>;
+    autocodeTutorial = [
+        <span class="string">"// le bouton Autocode invente pour vous"</span>,
+        <span class="string">"// des variations aléatoires du code."</span>,
+        <span class="string">"// vous pouvez arrêter Autocode"</span>,
+        <span class="string">"// à tout moment en ré-appuyant sur le bouton"</span>,
+        <span class="string">"// ou vous pouvez faire CTRL-Z"</span>,
+        <span class="string">"// (CMD-Z sur Mac) pour annuler (or rétablir) certainesn"</span>,
+        <span class="string">"// des étapes y compris PENDANT que Autocode est actif"</span>,
+        <span class="string">"// si par exemple vous trouvez que les choses"</span>,
+        <span class="string">"// deviennent ennuyeuse dans la direction prise par Autocode."</span>
+    ].join(<span class="string">"\n"</span>);
 
 }
 
 <span class="function"><span class="keyword">function</span> <span class="title">loadDemoOrTutorial</span><span class="params">(whichDemo)</span> {</span>
 
-  <span class="keyword">if</span> ((!Detector.webgl || forceCanvasRenderer) &amp;&amp; !userWarnedAboutWebglExamples &amp;&amp; whichDemo.indexOf(<span class="string">'webgl'</span>) === <span class="number">0</span>) {
-    userWarnedAboutWebglExamples = <span class="literal">true</span>;
-    $(<span class="string">'#exampleNeedsWebgl'</span>).modal();
-    $(<span class="string">'#simplemodal-container'</span>).height(<span class="number">200</span>);
-  }
+    <span class="keyword">if</span> ((!Detector.webgl || forceCanvasRenderer) &amp;&amp; !userWarnedAboutWebglExamples &amp;&amp; whichDemo.indexOf(<span class="string">'webgl'</span>) === <span class="number">0</span>) {
+        userWarnedAboutWebglExamples = <span class="literal">true</span>;
+        $(<span class="string">'#exampleNeedsWebgl'</span>).modal();
+        $(<span class="string">'#simplemodal-container'</span>).height(<span class="number">200</span>);
+    }
 
 
 </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>set the demo as a hash state
 so that ideally people can link directly to
 a specific demo they like.
 (in the document.ready function we check for
-this hash value and load the correct demo)</p>             </td>             <td class="code">               <div class="highlight"><pre>  window.location.hash = <span class="string">'bookmark='</span> + whichDemo;
+this hash value and load the correct demo)</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.location.hash = <span class="string">'bookmark='</span> + whichDemo;
 
-  <span class="keyword">if</span> (fakeText) shrinkFakeText();
-  undimEditor();
+    <span class="keyword">if</span> (fakeText) {
+        shrinkFakeText();
+    }
 
-  doTheSpinThingy = <span class="literal">false</span>;
+    undimEditor();
 
-  <span class="keyword">var</span> prependMessage = <span class="string">""</span>;
-  <span class="keyword">if</span> ((!Detector.webgl || forceCanvasRenderer) &amp;&amp; whichDemo.indexOf(<span class="string">'webgl'</span>) === <span class="number">0</span>) {
-    prependMessage = <span class="string">""</span> + <span class="string">"// this drawing makes much more sense\n"</span> + <span class="string">"// in a WebGL-enabled browser\n"</span> + <span class="string">"\n"</span>;
-  }
+    doTheSpinThingy = <span class="literal">false</span>;
 
-  <span class="keyword">switch</span> (whichDemo) {
-  <span class="keyword">case</span> <span class="string">'roseDemo'</span>:
-    editor.setValue(prependMessage + roseDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'cheeseAndOlivesDemo'</span>:
-    editor.setValue(prependMessage + cheeseAndOlivesDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'simpleCubeDemo'</span>:
-    editor.setValue(prependMessage + simpleCubeDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'webgltwocubesDemo'</span>:
-    editor.setValue(prependMessage + webgltwocubesDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'cubesAndSpikes'</span>:
-    editor.setValue(prependMessage + cubesAndSpikes);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'webglturbineDemo'</span>:
-    editor.setValue(prependMessage + webglturbineDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'webglzfightartDemo'</span>:
-    editor.setValue(prependMessage + webglzfightartDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'littleSpiralOfCubes'</span>:
-    editor.setValue(prependMessage + littleSpiralOfCubes);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'tentacleDemo'</span>:
-    editor.setValue(prependMessage + tentacleDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'lampDemo'</span>:
-    editor.setValue(prependMessage + lampDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'trillionfeathersDemo'</span>:
-    editor.setValue(prependMessage + trillionfeathersDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'monsterblobDemo'</span>:
-    editor.setValue(prependMessage + monsterblobDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'industrialMusicDemo'</span>:
-    editor.setValue(prependMessage + industrialMusicDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'trySoundsDemo'</span>:
-    editor.setValue(prependMessage + trySoundsDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'springysquaresDemo'</span>:
-    editor.setValue(prependMessage + springysquaresDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'diceDemo'</span>:
-    editor.setValue(prependMessage + diceDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'webglalmostvoronoiDemo'</span>:
-    editor.setValue(prependMessage + webglalmostvoronoiDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'webglshardsDemo'</span>:
-    editor.setValue(prependMessage + webglshardsDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'webglredthreadsDemo'</span>:
-    editor.setValue(prependMessage + webglredthreadsDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'webglnuclearOctopusDemo'</span>:
-    editor.setValue(prependMessage + webglnuclearOctopusDemo);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'introTutorial'</span>:
-    editor.setValue(prependMessage + introTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'helloworldTutorial'</span>:
-    editor.setValue(prependMessage + helloworldTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'somenotesTutorial'</span>:
-    editor.setValue(prependMessage + somenotesTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'rotateTutorial'</span>:
-    editor.setValue(prependMessage + rotateTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'frameTutorial'</span>:
-    editor.setValue(prependMessage + frameTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'timeTutorial'</span>:
-    editor.setValue(prependMessage + timeTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'moveTutorial'</span>:
-    editor.setValue(prependMessage + moveTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'scaleTutorial'</span>:
-    editor.setValue(prependMessage + scaleTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'timesTutorial'</span>:
-    editor.setValue(prependMessage + timesTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'fillTutorial'</span>:
-    editor.setValue(prependMessage + fillTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'strokeTutorial'</span>:
-    editor.setValue(prependMessage + strokeTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'colornamesTutorial'</span>:
-    editor.setValue(prependMessage + colornamesTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'lightsTutorial'</span>:
-    editor.setValue(prependMessage + lightsTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'backgroundTutorial'</span>:
-    editor.setValue(prependMessage + backgroundTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'gradientTutorial'</span>:
-    editor.setValue(prependMessage + gradientTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'lineTutorial'</span>:
-    editor.setValue(prependMessage + lineTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'ballTutorial'</span>:
-    editor.setValue(prependMessage + ballTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'pushpopMatrixTutorial'</span>:
-    editor.setValue(prependMessage + pushpopMatrixTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'animationstyleTutorial'</span>:
-    editor.setValue(prependMessage + animationstyleTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'doonceTutorial'</span>:
-    editor.setValue(prependMessage + doonceTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'conditionalsTutorial'</span>:
-    editor.setValue(prependMessage + conditionalsTutorial);
-    <span class="keyword">break</span>;
-  <span class="keyword">case</span> <span class="string">'autocodeTutorial'</span>:
-    editor.setValue(prependMessage + autocodeTutorial);
-    <span class="keyword">break</span>;
-  }
+    <span class="keyword">var</span> prependMessage = <span class="string">""</span>;
+    <span class="keyword">if</span> ((!Detector.webgl || forceCanvasRenderer) &amp;&amp; whichDemo.indexOf(<span class="string">'webgl'</span>) === <span class="number">0</span>) {
+        prependMessage = [
+            <span class="string">"// this drawing makes much more sense"</span>,
+            <span class="string">"// in a WebGL-enabled browser"</span>
+        ].join(<span class="string">"\n"</span>);
+    }
 
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>bring the cursor to the top</p>             </td>             <td class="code">               <div class="highlight"><pre>  editor.setCursor(<span class="number">0</span>, <span class="number">0</span>);
+    <span class="keyword">switch</span> (whichDemo) {
+    <span class="keyword">case</span> <span class="string">'roseDemo'</span>:
+        editor.setValue(prependMessage + roseDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'cheeseAndOlivesDemo'</span>:
+        editor.setValue(prependMessage + cheeseAndOlivesDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'simpleCubeDemo'</span>:
+        editor.setValue(prependMessage + simpleCubeDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'webgltwocubesDemo'</span>:
+        editor.setValue(prependMessage + webgltwocubesDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'cubesAndSpikes'</span>:
+        editor.setValue(prependMessage + cubesAndSpikes);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'webglturbineDemo'</span>:
+        editor.setValue(prependMessage + webglturbineDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'webglzfightartDemo'</span>:
+        editor.setValue(prependMessage + webglzfightartDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'littleSpiralOfCubes'</span>:
+        editor.setValue(prependMessage + littleSpiralOfCubes);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'tentacleDemo'</span>:
+        editor.setValue(prependMessage + tentacleDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'lampDemo'</span>:
+        editor.setValue(prependMessage + lampDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'trillionfeathersDemo'</span>:
+        editor.setValue(prependMessage + trillionfeathersDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'monsterblobDemo'</span>:
+        editor.setValue(prependMessage + monsterblobDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'industrialMusicDemo'</span>:
+        editor.setValue(prependMessage + industrialMusicDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'trySoundsDemo'</span>:
+        editor.setValue(prependMessage + trySoundsDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'springysquaresDemo'</span>:
+        editor.setValue(prependMessage + springysquaresDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'diceDemo'</span>:
+        editor.setValue(prependMessage + diceDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'webglalmostvoronoiDemo'</span>:
+        editor.setValue(prependMessage + webglalmostvoronoiDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'webglshardsDemo'</span>:
+        editor.setValue(prependMessage + webglshardsDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'webglredthreadsDemo'</span>:
+        editor.setValue(prependMessage + webglredthreadsDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'webglnuclearOctopusDemo'</span>:
+        editor.setValue(prependMessage + webglnuclearOctopusDemo);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'introTutorial'</span>:
+        editor.setValue(prependMessage + introTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'helloworldTutorial'</span>:
+        editor.setValue(prependMessage + helloworldTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'somenotesTutorial'</span>:
+        editor.setValue(prependMessage + somenotesTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'rotateTutorial'</span>:
+        editor.setValue(prependMessage + rotateTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'frameTutorial'</span>:
+        editor.setValue(prependMessage + frameTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'timeTutorial'</span>:
+        editor.setValue(prependMessage + timeTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'moveTutorial'</span>:
+        editor.setValue(prependMessage + moveTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'scaleTutorial'</span>:
+        editor.setValue(prependMessage + scaleTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'timesTutorial'</span>:
+        editor.setValue(prependMessage + timesTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'fillTutorial'</span>:
+        editor.setValue(prependMessage + fillTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'strokeTutorial'</span>:
+        editor.setValue(prependMessage + strokeTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'colornamesTutorial'</span>:
+        editor.setValue(prependMessage + colornamesTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'lightsTutorial'</span>:
+        editor.setValue(prependMessage + lightsTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'backgroundTutorial'</span>:
+        editor.setValue(prependMessage + backgroundTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'gradientTutorial'</span>:
+        editor.setValue(prependMessage + gradientTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'lineTutorial'</span>:
+        editor.setValue(prependMessage + lineTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'ballTutorial'</span>:
+        editor.setValue(prependMessage + ballTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'pushpopMatrixTutorial'</span>:
+        editor.setValue(prependMessage + pushpopMatrixTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'animationstyleTutorial'</span>:
+        editor.setValue(prependMessage + animationstyleTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'doonceTutorial'</span>:
+        editor.setValue(prependMessage + doonceTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'conditionalsTutorial'</span>:
+        editor.setValue(prependMessage + conditionalsTutorial);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'autocodeTutorial'</span>:
+        editor.setValue(prependMessage + autocodeTutorial);
+        <span class="keyword">break</span>;
+    }
+
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>bring the cursor to the top</p>             </td>             <td class="code">               <div class="highlight"><pre>    editor.setCursor(<span class="number">0</span>, <span class="number">0</span>);
 
 </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>setting the value of the editor triggers the
 codeMirror onChange callback, and that runs
 the demo.</p>             </td>             <td class="code">               <div class="highlight"><pre>}
+
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
