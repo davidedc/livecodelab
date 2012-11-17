@@ -7,15 +7,17 @@
 // (although which ambient light do you pick if there
 // is more than one?)
 var line = function(a) {
+  
+  var thisGometryCanFill = false;
+  var thisGometryCanStroke = true;
 
-  if (!doStroke) {
+  if (!doStroke && (!doFill || !thisGometryCanFill)) {
     return;
   }
 
   if (a === undefined) {
     a = 1;
   }
-
 
   var mesh = linesPool[usedLines];
   if (mesh === undefined) {
@@ -72,15 +74,17 @@ var line = function(a) {
 
 var rect = function(a, b) {
 
-  if (!doFill && !doStroke) {
-    return;
-  }
+  var thisGometryCanFill = true;
+  var thisGometryCanStroke = true;
 
   // simple case - if there is no fill and
   // no stroke then there is nothing to do.
   var startIndex = 0;
   var endIndex = 0;
 
+  if (!doStroke && (!doFill || !thisGometryCanFill)) {
+    return;
+  }
   // if the wireframe is not going to be visible on top of the
   // fill then don't draw it
   else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
@@ -290,15 +294,17 @@ var rect = function(a, b) {
 
 var box = function(a, b, c) {
 
-  if (!doFill && !doStroke) {
-    return;
-  }
+  var thisGometryCanFill = true;
+  var thisGometryCanStroke = true;
 
   // simple case - if there is no fill and
   // no stroke then there is nothing to do.
   var startIndex = 0;
   var endIndex = 0;
 
+  if (!doStroke && (!doFill || !thisGometryCanFill)) {
+    return;
+  }
   // if the wireframe is not going to be visible on top of the
   // fill then don't draw it
   else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
@@ -513,15 +519,18 @@ var box = function(a, b, c) {
 
 var peg = function(a, b, c) {
 
-  if (!doFill && !doStroke) {
-    return;
-  }
+  var thisGometryCanFill = true;
+  var thisGometryCanStroke = true;
+
 
   // simple case - if there is no fill and
   // no stroke then there is nothing to do.
   var startIndex = 0;
   var endIndex = 0;
 
+  if (!doStroke && (!doFill || !thisGometryCanFill)) {
+    return;
+  }
   // if the wireframe is not going to be visible on top of the
   // fill then don't draw it
   else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
@@ -742,18 +751,21 @@ var ballDetail = function(a) {
 }
 
 var ball = function(a) {
-  var pooledSphereGeometry;
 
-  log("fill: "+doFill+" stroke: "+doStroke+" fillCol " + currentFillColor + " stroke col " + currentStrokeColor + " fill alpha " + currentFillAlpha);
-  if (!doFill && !doStroke) {
-    return;
-  }
+  var thisGometryCanFill = true;
+  var thisGometryCanStroke = true;
+
+
+  var pooledSphereGeometry;
 
   // simple case - if there is no fill and
   // no stroke then there is nothing to do.
   var startIndex = 0;
   var endIndex = 0;
 
+  if (!doStroke && (!doFill || !thisGometryCanFill)) {
+    return;
+  }
   // if the wireframe is not going to be visible on top of the
   // fill then don't draw it
   else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
