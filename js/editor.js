@@ -22,7 +22,8 @@ var createEditor = function () {
         mode: "livecodelab",
         onCursorActivity: (function () {
             suspendDimmingAndCheckIfLink();
-        })
+        }),
+        theme: 'night'
     });
     return editor;
 };

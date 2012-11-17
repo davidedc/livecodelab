@@ -146,10 +146,8 @@ var startEnvironment = function() {
   $('#startingCourtainScreen').fadeOut();
   $("#formCode").css('opacity', 0);
 
-    editor = createEditor();
+  editor = createEditor();
 
-
-editor.setOption("theme", 'night');
 
   editor.focus();
   adjustCodeMirrorHeight();
