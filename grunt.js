@@ -51,6 +51,7 @@ module.exports = function (grunt) {
                     'js/vendor/three.js/postprocessing/SavePass.js',
                     'js/editor/coffeescript-livecodelab-mode.js',
                     'js/var-definitions.js',
+                    'js/editor/editor.js',
                     'js/from-processing.js',
                     'js/livecodelab.js',
                     'js/sound-functions.js',
