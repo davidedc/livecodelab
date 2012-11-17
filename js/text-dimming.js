@@ -73,20 +73,11 @@ function toggleDimCode() {
   if (!dimcodeOn) {
     clearInterval(dimIntervalID);
     undimEditor();
-    if (frenchVersion) {
-      $("#dimCodeIndicator").html("Code Caché: inactif");
-    } else {
-      $("#dimCodeIndicator").html("Hide Code: off");
-    }
+    $("#dimCodeIndicator").html("Hide Code: off");
 
   } else {
     // we restart a setInterval
     dimIntervalID = setInterval("dimIfNoCursorActivity()", 5000);
-    if (frenchVersion) {
-      $("#dimCodeIndicator").html("Code Caché: actif");
-    } else {
-      $("#dimCodeIndicator").html("Hide Code: on");
-    }
-
+    $("#dimCodeIndicator").html("Hide Code: on");
   }
 }

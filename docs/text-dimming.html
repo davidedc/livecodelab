@@ -68,20 +68,12 @@ just to make sure that this is not the case.</p>             </td>             <
   <span class="keyword">if</span> (!dimcodeOn) {
     clearInterval(dimIntervalID);
     undimEditor();
-    <span class="keyword">if</span> (frenchVersion) {
-      $(<span class="string">"#dimCodeIndicator"</span>).html(<span class="string">"Code Caché: inactif"</span>);
-    } <span class="keyword">else</span> {
-      $(<span class="string">"#dimCodeIndicator"</span>).html(<span class="string">"Hide Code: off"</span>);
-    }
+    $(<span class="string">"#dimCodeIndicator"</span>).html(<span class="string">"Hide Code: off"</span>);
 
   } <span class="keyword">else</span> {
 </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>we restart a setInterval</p>             </td>             <td class="code">               <div class="highlight"><pre>    dimIntervalID = setInterval(<span class="string">"dimIfNoCursorActivity()"</span>, <span class="number">5000</span>);
-    <span class="keyword">if</span> (frenchVersion) {
-      $(<span class="string">"#dimCodeIndicator"</span>).html(<span class="string">"Code Caché: actif"</span>);
-    } <span class="keyword">else</span> {
-      $(<span class="string">"#dimCodeIndicator"</span>).html(<span class="string">"Hide Code: on"</span>);
-    }
-
+    $(<span class="string">"#dimCodeIndicator"</span>).html(<span class="string">"Hide Code: on"</span>);
   }
 }
+
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

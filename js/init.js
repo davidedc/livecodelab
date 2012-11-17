@@ -91,55 +91,6 @@ var startEnvironment = function() {
   resetGradientStack();
   simpleGradientUpdateIfChanged();
 
-  if (frenchVersion) {
-    $('#demoMenu').text("Démos");
-    $('#tutorialsMenu').text("Tutoriaux");
-    $('#resetButton').text("Effacer");
-    $('#autocodeIndicator').text("Autocode: inactif");
-
-    $('#simpleCubeDemo').text("Cube simple");
-    $('#webgltwocubesDemo').text("WebGL: Deux cubes");
-    $('#cubesAndSpikes').text("Cubes et piques");
-    $('#webglturbineDemo').text("WebGL: Turbine");
-    $('#webglzfightartDemo').text("WebGL: Z-fight art!");
-    $('#littleSpiralOfCubes').text("Petite spirale");
-    $('#tentacleDemo').text("Tentacule");
-    $('#lampDemo').text("Lampe");
-    $('#trillionfeathersDemo').text("Mille milliards de plumes");
-    $('#monsterblobDemo').text("Monstre blob");
-    $('#industrialMusicDemo').text("Son: Industriel");
-    $('#trySoundsDemo').text("Son: Essayez les tous");
-    $('#springysquaresDemo').text("Carrés rebondissants");
-    $('#diceDemo').text("Dé");
-    $('#webglalmostvoronoiDemo').text("WebGL: Presque Voronoi");
-    $('#webglshardsDemo').text("WebGL: Échardes");
-    $('#webglredthreadsDemo').text("WebGL: Fils rouges");
-    $('#webglnuclearOctopusDemo').text("WebGL: Pieuvre nucléaire");
-
-    $('#introTutorial').text("intro");
-    $('#helloworldTutorial').text("hello world");
-    $('#somenotesTutorial').text("quelques notes");
-    $('#rotateTutorial').text("tourne");
-    $('#frameTutorial').text("image");
-    $('#timeTutorial').text("temps");
-    $('#moveTutorial').text("déplace");
-    $('#scaleTutorial').text("taille");
-    $('#timesTutorial').text("fois");
-    $('#fillTutorial').text("remplissage");
-    $('#strokeTutorial').text("trait");
-    $('#colornamesTutorial').text("les couleurs par leur nom");
-    $('#lightsTutorial').text("éclairages");
-    $('#backgroundTutorial').text("fond");
-    $('#gradientTutorial').text("degradeSimple");
-    $('#lineTutorial').text("ligne");
-    $('#ballTutorial').text("balle");
-    $('#pushpopMatrixTutorial').text("matrice");
-    $('#animationstyleTutorial').text("styleAnimation");
-    $('#doonceTutorial').text("uneFois");
-    $('#autocodeTutorial').text("autocode");
-  }
-
-
   $('#startingCourtainScreen').fadeOut();
   $("#formCode").css('opacity', 0);
 
