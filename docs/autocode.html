@@ -21,19 +21,11 @@ The remaining part then takes care of the mutations.</p>             </td>      
   autocodeOn = !autocodeOn;
 
   <span class="keyword">if</span> (!autocodeOn) {
-    <span class="keyword">if</span> (frenchVersion) {
-      $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: inactif"</span>);
-    } <span class="keyword">else</span> {
-      $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: off"</span>);
-    }
+    $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: off"</span>);
     clearInterval(blinkingAutocoderTimeout);
     $(<span class="string">"#autocodeIndicatorContainer"</span>).css(<span class="string">"background-color"</span>, <span class="string">''</span>);
   } <span class="keyword">else</span> {
-    <span class="keyword">if</span> (frenchVersion) {
-      $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: actif"</span>);
-    } <span class="keyword">else</span> {
-      $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: on"</span>);
-    }
+    $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: on"</span>);
     blinkingAutocoderTimeout = setInterval(<span class="string">'blinkAutocodeIndicator();'</span>, <span class="number">500</span>);
     $(<span class="string">"#autocodeIndicatorContainer"</span>).css(<span class="string">"background-color"</span>, <span class="string">'#FF0000'</span>);
     <span class="keyword">if</span> (editor.getValue() === <span class="string">''</span> || (
@@ -419,11 +411,7 @@ INIT (<span class="regexp">/strokeSize/</span>) (<span class="function"><span cl
 <span class="function"><span class="keyword">function</span> <span class="title">replaceTimeWithAConstant</span><span class="params">()</span> {</span>
   <span class="keyword">var</span> editorContent = editor.getValue();
   <span class="keyword">var</span> rePattern;
-  <span class="keyword">if</span> (!frenchVersion) {
-    rePattern = <span class="regexp">/(time)/gi</span>;
-  } <span class="keyword">else</span> {
-    rePattern = <span class="regexp">/(temps)/gi</span>;
-  }
+  rePattern = <span class="regexp">/(time)/gi</span>;
 
   <span class="keyword">var</span> allMatches = editorContent.match(rePattern);
   <span class="keyword">if</span> (allMatches === <span class="literal">null</span>) numberOfResults = <span class="number">0</span>;
