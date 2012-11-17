@@ -49,8 +49,9 @@ module.exports = function (grunt) {
                     'js/vendor/three.js/postprocessing/ShaderPass.js',
                     'js/vendor/three.js/postprocessing/MaskPass.js',
                     'js/vendor/three.js/postprocessing/SavePass.js',
-                    'js/coffeescript-livecodelab-mode.js',
+                    'js/editor/coffeescript-livecodelab-mode.js',
                     'js/var-definitions.js',
+                    'js/editor/editor.js',
                     'js/from-processing.js',
                     'js/livecodelab.js',
                     'js/sound-functions.js',
@@ -67,7 +68,7 @@ module.exports = function (grunt) {
                     'js/text-dimming.js',
                     'js/lights-functions.js',
                     'js/init-threejs.js',
-                    'js/helper-functions.js',
+                    'js/editor/mousewheel.js',
                     'js/big-cursor-animation.js',
                     'js/menu.js'
                 ],
@@ -75,7 +76,8 @@ module.exports = function (grunt) {
             }
         },
         doccoh: {
-            src: ['js/*.js']
+            src: ['js/*.js',
+                  'js/editor/*.js']
         },
         clean: {
             docs: ['docs/'],
