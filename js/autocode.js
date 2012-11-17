@@ -22,19 +22,11 @@ function toggleAutocodeAndUpdateButtonAndBlinking() {
   autocodeOn = !autocodeOn;
 
   if (!autocodeOn) {
-    if (frenchVersion) {
-      $("#autocodeIndicator").html("Autocode: inactif");
-    } else {
-      $("#autocodeIndicator").html("Autocode: off");
-    }
+    $("#autocodeIndicator").html("Autocode: off");
     clearInterval(blinkingAutocoderTimeout);
     $("#autocodeIndicatorContainer").css("background-color", '');
   } else {
-    if (frenchVersion) {
-      $("#autocodeIndicator").html("Autocode: actif");
-    } else {
-      $("#autocodeIndicator").html("Autocode: on");
-    }
+    $("#autocodeIndicator").html("Autocode: on");
     blinkingAutocoderTimeout = setInterval('blinkAutocodeIndicator();', 500);
     $("#autocodeIndicatorContainer").css("background-color", '#FF0000');
     if (editor.getValue() === '' || (
@@ -443,11 +435,7 @@ function pickMutatableTokenAndMutateIt( stream )
 function replaceTimeWithAConstant() {
   var editorContent = editor.getValue();
   var rePattern;
-  if (!frenchVersion) {
-    rePattern = /(time)/gi;
-  } else {
-    rePattern = /(temps)/gi;
-  }
+  rePattern = /(time)/gi;
 
   var allMatches = editorContent.match(rePattern);
   if (allMatches === null) numberOfResults = 0;

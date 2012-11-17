@@ -143,10 +143,6 @@ function animate() {
     //alert("a doOnce has been ran");
     var elaboratedSource = editor.getValue();
 
-    if (frenchVersion) {
-      elaboratedSource = elaboratedSource.replace(/uneFois/g, "doOnce");
-    }
-
     var elaboratedSourceByLine = elaboratedSource.split("\n");
     //alert('splitting: ' + elaboratedSourceByLine.length );
     for (var iteratingOverSource = 0; iteratingOverSource < doLNOnce.length; iteratingOverSource++) {
@@ -158,10 +154,6 @@ function animate() {
 
     var cursorPositionBeforeAddingCheckMark = editor.getCursor();
     cursorPositionBeforeAddingCheckMark.ch = cursorPositionBeforeAddingCheckMark.ch + 1;
-
-    if (frenchVersion) {
-      elaboratedSource = elaboratedSource.replace(/doOnce/g, "uneFois");
-    }
 
     editor.setValue(elaboratedSource);
     editor.setCursor(cursorPositionBeforeAddingCheckMark);

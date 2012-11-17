@@ -124,10 +124,6 @@ update stats</p>             </td>             <td class="code">               <
   <span class="keyword">if</span> (doLNOnce.length !== <span class="number">0</span>) {
 </pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>alert("a doOnce has been ran");</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> elaboratedSource = editor.getValue();
 
-    <span class="keyword">if</span> (frenchVersion) {
-      elaboratedSource = elaboratedSource.replace(<span class="regexp">/uneFois/g</span>, <span class="string">"doOnce"</span>);
-    }
-
     <span class="keyword">var</span> elaboratedSourceByLine = elaboratedSource.split(<span class="string">"\n"</span>);
 </pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>alert('splitting: ' + elaboratedSourceByLine.length );</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">for</span> (<span class="keyword">var</span> iteratingOverSource = <span class="number">0</span>; iteratingOverSource &lt; doLNOnce.length; iteratingOverSource++) {
 </pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>alert('iterating: ' + iteratingOverSource );</p>             </td>             <td class="code">               <div class="highlight"><pre>      elaboratedSourceByLine[doLNOnce[iteratingOverSource]] = elaboratedSourceByLine[doLNOnce[iteratingOverSource]].replace(<span class="regexp">/^(\s*)doOnce([ ]*\-&gt;[ ]*.+)$/gm</span>, <span class="string">"$1\u2713doOnce$2"</span>);
@@ -137,10 +133,6 @@ update stats</p>             </td>             <td class="code">               <
 
     <span class="keyword">var</span> cursorPositionBeforeAddingCheckMark = editor.getCursor();
     cursorPositionBeforeAddingCheckMark.ch = cursorPositionBeforeAddingCheckMark.ch + <span class="number">1</span>;
-
-    <span class="keyword">if</span> (frenchVersion) {
-      elaboratedSource = elaboratedSource.replace(<span class="regexp">/doOnce/g</span>, <span class="string">"uneFois"</span>);
-    }
 
     editor.setValue(elaboratedSource);
     editor.setCursor(cursorPositionBeforeAddingCheckMark);

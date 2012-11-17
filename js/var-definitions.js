@@ -60,7 +60,6 @@ lineGeometry.vertices.push(new THREE.Vertex(new THREE.Vector3(0, 0.5, 0)));
 // loads identity matrix
 var worldMatrix = new THREE.Matrix4();
 
-var frenchVersion = false;
 var forceCanvasRenderer = false;
 var backgroundScene;
 var backgroundSceneContext;
