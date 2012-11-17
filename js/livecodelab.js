@@ -311,20 +311,37 @@ function fullscreenify(canvas) {
 // objects are only added at creation and they are
 // never removed from the scene. They are
 // only made invisible. This routine combs the
-// scene and finds the objects that.
+// scene and finds the objects that need to be visible and
+// those that need to be hidden.
+// This is a scenario of how it works:
+//   frame 1: 3 boxes invoked. effect: 3 cubes are created and put in the scene
+//   frame 2: 1 box invoked. effect: 1st cube is updated with new scale/matrix/material
+//            and the other 2 boxes are set to hidden
+// So there is a pool of objects for each primitive. It starts empty, new objects are
+// added to the scene only if the ones available from previous draws are not sufficient.
 // TODO a way to shrink the scene if it's been a
 // long time that only a handful of lines/meshes
 // have been used.
+// Note: Mr Doob said that the new scene destruction/creation primitives of Three.js
+//       are much faster. Also the objects of the scene are harder to reach, so
+//       it could be the case that this mechanism is not needed anymore.
 
 function combDisplayList() {
-
+  // scan all the objects in the display list
   for (var i = 0; i < scene.objects.length; ++i) {
     var sceneObject = scene.objects[i];
+    
+    // check the type of object. Each type has one pool. Go through each object in the
+    // pool and set to visible the number of used objects in this frame, set the
+    // others to hidden.
+    // Only tiny exception is that the sphere has one pool for each detail level.
     if (sceneObject.isLine) {
+      // set the first "used*****" objects to visible...
       if (usedLines > 0) {
         sceneObject.visible = true;
         usedLines--;
       } else {
+        // ... and the others to invisible
         sceneObject.visible = false;
       }
     } else if (sceneObject.isRectangle) {
@@ -356,6 +373,9 @@ function combDisplayList() {
         sceneObject.visible = false;
       }
     } else if (sceneObject.isSphere !== 0) {
+      // there is a separate pool for each sphere detail level
+      // the detail level number is kept in the sceneObject.isSphere field
+      // (should probably have its own field to keep things clean really)
       if (usedSpheres['' + sceneObject.isSphere] > 0) {
         sceneObject.visible = true;
         usedSpheres['' + sceneObject.isSphere] = usedSpheres['' + sceneObject.isSphere] - 1;
