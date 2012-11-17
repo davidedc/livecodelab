@@ -122,7 +122,7 @@ var rect = function(a,b,c) {
   var strokeTime = false;
   var colorToBeUsed;
   var alphaToBeUsed;
-  var newRectCreated = false;
+  var newGeometricObjectCreated = false;
 
   // this is to run the code twice. This should be neater
   // and turned into a function call really.
@@ -157,7 +157,7 @@ var rect = function(a,b,c) {
         neverUsed: true,
         mesh: undefined
       };
-      newRectCreated = true;
+      newGeometricObjectCreated = true;
       rectanglesPool.push(pooledRectangle);
     }
     var applyDefaultNormalColor = false;
@@ -298,7 +298,7 @@ var rect = function(a,b,c) {
       pooledRectangle.mesh.matrix.scale(new THREE.Vector3(a, b, 1));
     }
 
-    if (newRectCreated) scene.add(pooledRectangle.mesh);
+    if (newGeometricObjectCreated) scene.add(pooledRectangle.mesh);
 
   }
 
@@ -347,7 +347,7 @@ var box = function(a,b,c) {
   var strokeTime = false;
   var colorToBeUsed;
   var alphaToBeUsed;
-  var newBoxCreated = false;
+  var newGeometricObjectCreated = false;
 
 
   // this is to run the code twice. This should be neater
@@ -383,7 +383,7 @@ var box = function(a,b,c) {
         neverUsed: true,
         mesh: undefined
       };
-      newBoxCreated = true;
+      newGeometricObjectCreated = true;
       boxesPool.push(pooledBox);
     }
     var applyDefaultNormalColor = false;
@@ -525,7 +525,7 @@ var box = function(a,b,c) {
       else pooledBox.mesh.matrix.scale(new THREE.Vector3(a + 0.001, b + 0.001, c + 0.001));
     }
 
-    if (newBoxCreated) scene.add(pooledBox.mesh);
+    if (newGeometricObjectCreated) scene.add(pooledBox.mesh);
   }
 
 
@@ -574,7 +574,7 @@ var peg = function(a,b,c) {
   var strokeTime = false;
   var colorToBeUsed;
   var alphaToBeUsed;
-  var newCylinderCreated = false;
+  var newGeometricObjectCreated = false;
 
 
   // this is to run the code twice. This should be neater
@@ -610,7 +610,7 @@ var peg = function(a,b,c) {
         neverUsed: true,
         mesh: undefined
       };
-      newCylinderCreated = true;
+      newGeometricObjectCreated = true;
       cylindersPool.push(pooledCylinder);
     }
     var applyDefaultNormalColor = false;
@@ -752,7 +752,7 @@ var peg = function(a,b,c) {
       else pooledCylinder.mesh.matrix.scale(new THREE.Vector3(a + 0.001, b + 0.001, c + 0.001));
     }
 
-    if (newCylinderCreated) scene.add(pooledCylinder.mesh);
+    if (newGeometricObjectCreated) scene.add(pooledCylinder.mesh);
   }
 
 
@@ -810,7 +810,7 @@ var ball = function(a,b,c) {
   var strokeTime = false;
   var colorToBeUsed;
   var alphaToBeUsed;
-  var newSphereCreated = false;
+  var newGeometricObjectCreated = false;
 
 
   // this is to run the code twice. This should be neater
@@ -854,7 +854,7 @@ var ball = function(a,b,c) {
         neverUsed: true,
         mesh: undefined
       };
-      newSphereCreated = true;
+      newGeometricObjectCreated = true;
       spheresPool['' + ballDetLevel].push(pooledSphere);
       log('making space for pool for sphere , size of pool for spheres of detail ' + ballDetLevel + ' is ' + spheresPool[''+ballDetLevel].length);
     }
@@ -1015,7 +1015,7 @@ var ball = function(a,b,c) {
       else pooledSphere.mesh.matrix.scale(new THREE.Vector3(a + 0.001, a + 0.001, a + 0.001));
     }
 
-    if (newSphereCreated) scene.add(pooledSphere.mesh);
+    if (newGeometricObjectCreated) scene.add(pooledSphere.mesh);
   }
 
 
