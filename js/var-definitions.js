@@ -1,6 +1,8 @@
 var stats, scene, renderer;
 var camera;
 
+var editor;
+
 // creating a geometry is expensive
 // so we need to create ONE cube of dimensions 1,1,1
 // if we need a cube of different size, then we need to
