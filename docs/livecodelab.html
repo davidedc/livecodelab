@@ -276,20 +276,33 @@ So instead of adding/removing objects every frame,
 objects are only added at creation and they are
 never removed from the scene. They are
 only made invisible. This routine combs the
-scene and finds the objects that.
+scene and finds the objects that need to be visible and
+those that need to be hidden.
+This is a scenario of how it works:
+  frame 1: 3 boxes invoked. effect: 3 cubes are created and put in the scene
+  frame 2: 1 box invoked. effect: 1st cube is updated with new scale/matrix/material
+           and the other 2 boxes are set to hidden
+So there is a pool of objects for each primitive. It starts empty, new objects are
+added to the scene only if the ones available from previous draws are not sufficient.
 TODO a way to shrink the scene if it's been a
 long time that only a handful of lines/meshes
-have been used.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+have been used.
+Note: Mr Doob said that the new scene destruction/creation primitives of Three.js
+      are much faster. Also the objects of the scene are harder to reach, so
+      it could be the case that this mechanism is not needed anymore.</p>             </td>             <td class="code">               <div class="highlight"><pre>
 <span class="function"><span class="keyword">function</span> <span class="title">combDisplayList</span><span class="params">()</span> {</span>
-
-  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; scene.objects.length; ++i) {
+</pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>scan all the objects in the display list</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; scene.objects.length; ++i) {
     <span class="keyword">var</span> sceneObject = scene.objects[i];
-    <span class="keyword">if</span> (sceneObject.isLine) {
-      <span class="keyword">if</span> (usedLines &gt; <span class="number">0</span>) {
+    
+</pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>check the type of object. Each type has one pool. Go through each object in the
+pool and set to visible the number of used objects in this frame, set the
+others to hidden.
+Only tiny exception is that the sphere has one pool for each detail level.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (sceneObject.isLine) {
+</pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>set the first "used<strong>*</strong>" objects to visible...</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">if</span> (usedLines &gt; <span class="number">0</span>) {
         sceneObject.visible = <span class="literal">true</span>;
         usedLines--;
       } <span class="keyword">else</span> {
-        sceneObject.visible = <span class="literal">false</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>... and the others to invisible</p>             </td>             <td class="code">               <div class="highlight"><pre>        sceneObject.visible = <span class="literal">false</span>;
       }
     } <span class="keyword">else</span> <span class="keyword">if</span> (sceneObject.isRectangle) {
       <span class="keyword">if</span> (usedRectangles &gt; <span class="number">0</span>) {
@@ -320,7 +333,9 @@ have been used.</p>             </td>             <td class="code">             
         sceneObject.visible = <span class="literal">false</span>;
       }
     } <span class="keyword">else</span> <span class="keyword">if</span> (sceneObject.isSphere !== <span class="number">0</span>) {
-      <span class="keyword">if</span> (usedSpheres[<span class="string">''</span> + sceneObject.isSphere] &gt; <span class="number">0</span>) {
+</pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>there is a separate pool for each sphere detail level
+the detail level number is kept in the sceneObject.isSphere field
+(should probably have its own field to keep things clean really)</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">if</span> (usedSpheres[<span class="string">''</span> + sceneObject.isSphere] &gt; <span class="number">0</span>) {
         sceneObject.visible = <span class="literal">true</span>;
         usedSpheres[<span class="string">''</span> + sceneObject.isSphere] = usedSpheres[<span class="string">''</span> + sceneObject.isSphere] - <span class="number">1</span>;
       } <span class="keyword">else</span> {
@@ -342,15 +357,15 @@ have been used.</p>             </td>             <td class="code">             
 
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>var chromeHackUncaughtReferenceName = '';
+</pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <p>var chromeHackUncaughtReferenceName = '';
 var chromeHackUncaughtReferenceNames = [];</p>             </td>             <td class="code">               <div class="highlight"><pre>
-</pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>swap the two lines below in case one needs to
+</pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <p>swap the two lines below in case one needs to
 debug the environment, otherwise all errors are
 caught and not bubbled up to the browser debugging tool.</p>             </td>             <td class="code">               <div class="highlight"><pre> <span class="keyword">var</span> foo = <span class="keyword">function</span>(msg, url, linenumber) {
-</pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>window.onerror = function(msg, url, linenumber) {</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-45">&#182;</a>               </div>               <p>window.onerror = function(msg, url, linenumber) {</p>             </td>             <td class="code">               <div class="highlight"><pre>
   <span class="keyword">if</span> (autocodeOn) {
     editor.undo();
-</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>alert("did an undo");</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">return</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-46">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-46">&#182;</a>               </div>               <p>alert("did an undo");</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">return</span>;
   }
 
   <span class="keyword">if</span> (msg.indexOf(<span class="string">"Uncaught ReferenceError: "</span>) &gt; -<span class="number">1</span>) {
@@ -360,7 +375,7 @@ caught and not bubbled up to the browser debugging tool.</p>             </td>  
   $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);
   $(<span class="string">'#errorMessageText'</span>).text(msg);
 
-</pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>ok so this is kind of a hack that we need to put
+</pre></div>             </td>           </tr>                               <tr id="section-47">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-47">&#182;</a>               </div>               <p>ok so this is kind of a hack that we need to put
 in place for Chrome (both Windows and Mac)
 what Chrome does is: when there is a function call,
 it evaluates the arguments
@@ -389,14 +404,14 @@ that wouldn't work in Chrome.</p>             </td>             <td class="code"
         break;
       }
       else if (iteratingOverSource == lengthToCheck-1) {
-</pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <p>if we are here it means that the variable is not in the array</p>             </td>             <td class="code">               <div class="highlight"><pre>       chromeHackUncaughtReferenceNames.push(chromeHackUncaughtReferenceName);
+</pre></div>             </td>           </tr>                               <tr id="section-48">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-48">&#182;</a>               </div>               <p>if we are here it means that the variable is not in the array</p>             </td>             <td class="code">               <div class="highlight"><pre>       chromeHackUncaughtReferenceNames.push(chromeHackUncaughtReferenceName);
       }
     }
   }
  }
  */
 
-</pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <p>we set this to 6 because we save it as stable
+</pre></div>             </td>           </tr>                               <tr id="section-49">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-49">&#182;</a>               </div>               <p>we set this to 6 because we save it as stable
 when it's 5, so we avoid re-saving.</p>             </td>             <td class="code">               <div class="highlight"><pre>  consecutiveFramesWithoutRunTimeError = <span class="number">6</span>;
   window.eval(lastStableProgram);
 
