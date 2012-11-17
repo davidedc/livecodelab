@@ -23,8 +23,26 @@ var line = function(a,b,c) {
     c = a;
   }
 
+  // simple case - if there is no fill and
+  // no stroke then there is nothing to do.
+  var startIndex = 0;
+  var endIndex = 0;
+
   if (!doStroke && (!doFill || !thisGometryCanFill)) {
     return;
+  }
+  // if the wireframe is not going to be visible on top of the
+  // fill then don't draw it
+  else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
+    //if (doStroke) log('smart optimisation, was supposed to do the stroke but not doing it!!');
+    startIndex = 0;
+    endIndex = 1;
+  } else if (!doFill && doStroke) {
+    startIndex = 1;
+    endIndex = 2;
+  } else {
+    startIndex = 0;
+    endIndex = 2;
   }
 
   var mesh = linesPool[usedLines];
