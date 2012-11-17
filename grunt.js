@@ -67,7 +67,7 @@ module.exports = function (grunt) {
                     'js/text-dimming.js',
                     'js/lights-functions.js',
                     'js/init-threejs.js',
-                    'js/helper-functions.js',
+                    'js/editor/mousewheel.js',
                     'js/big-cursor-animation.js',
                     'js/menu.js'
                 ],
