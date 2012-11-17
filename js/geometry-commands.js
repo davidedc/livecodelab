@@ -8,8 +8,11 @@
 // is more than one?)
 var line = function(a,b,c) {
   
+  // primitive-specific initialisations:
   var thisGometryCanFill = false;
   var thisGometryCanStroke = true;
+  var primitiveType = GEOM_TYPE_LINE;
+  // end of primitive-specific initialisations:
 
   // b and c are not functional in some geometric
   // primitives, but we handle them here in all cases
@@ -45,7 +48,7 @@ var line = function(a,b,c) {
     endIndex = 2;
   }
 
-  var mesh = linesPool[usedLines];
+  var mesh = objectPool[primitiveType][usedLines];
   if (mesh === undefined) {
     var lineBasicMaterialCOL = new THREE.LineBasicMaterial({
       //color: currentStrokeColor,
@@ -61,7 +64,7 @@ var line = function(a,b,c) {
     mesh.isAmbientLight = false;
     mesh.isPointLight = false;
     mesh.isSphere = 0;
-    linesPool.push(mesh);
+    objectPool[primitiveType].push(mesh);
     scene.add(mesh);
   } else {
     //mesh.geometry = lineGeometry;
@@ -100,8 +103,11 @@ var line = function(a,b,c) {
 
 var rect = function(a,b,c) {
 
+  // primitive-specific initialisations:
   var thisGometryCanFill = true;
   var thisGometryCanStroke = true;
+  var primitiveType = GEOM_TYPE_RECT;
+  // end of primitive-specific initialisations:
 
   // b and c are not functional in some geometric
   // primitives, but we handle them here in all cases
@@ -153,7 +159,7 @@ var rect = function(a,b,c) {
       colorToBeUsed = currentFillColor;
       alphaToBeUsed = currentFillAlpha;
     }
-    var pooledObject = rectanglesPool[usedRectangles];
+    var pooledObject = objectPool[primitiveType][usedRectangles];
     if (pooledObject === undefined) {
       // each pooled rectangle contains a geometry,
       // a basic material and a lambert material.
@@ -176,7 +182,7 @@ var rect = function(a,b,c) {
         mesh: undefined
       };
       newGeometricObjectCreated = true;
-      rectanglesPool.push(pooledObject);
+      objectPool[primitiveType].push(pooledObject);
     }
     var applyDefaultNormalColor = false;
     if (!strokeTime) {
@@ -325,8 +331,11 @@ var rect = function(a,b,c) {
 
 var box = function(a,b,c) {
 
+  // primitive-specific initialisations:
   var thisGometryCanFill = true;
   var thisGometryCanStroke = true;
+  var primitiveType = GEOM_TYPE_BOX;
+  // end of primitive-specific initialisations:
 
   // b and c are not functional in some geometric
   // primitives, but we handle them here in all cases
@@ -378,7 +387,7 @@ var box = function(a,b,c) {
       colorToBeUsed = currentFillColor;
       alphaToBeUsed = currentFillAlpha;
     }
-    var pooledObject = boxesPool[usedBoxes];
+    var pooledObject = objectPool[primitiveType][usedBoxes];
     if (pooledObject === undefined) {
       // each pooled box contains a geometry,
       // a basic material and a lambert material.
@@ -401,7 +410,7 @@ var box = function(a,b,c) {
         mesh: undefined
       };
       newGeometricObjectCreated = true;
-      boxesPool.push(pooledObject);
+      objectPool[primitiveType].push(pooledObject);
     }
     var applyDefaultNormalColor = false;
     if (!strokeTime) {
@@ -551,8 +560,11 @@ var box = function(a,b,c) {
 
 var peg = function(a,b,c) {
 
+  // primitive-specific initialisations:
   var thisGometryCanFill = true;
   var thisGometryCanStroke = true;
+  var primitiveType = GEOM_TYPE_CYLINDER;
+  // end of primitive-specific initialisations:
 
   // b and c are not functional in some geometric
   // primitives, but we handle them here in all cases
@@ -604,7 +616,7 @@ var peg = function(a,b,c) {
       colorToBeUsed = currentFillColor;
       alphaToBeUsed = currentFillAlpha;
     }
-    var pooledObject = cylindersPool[usedCylinders];
+    var pooledObject = objectPool[primitiveType][usedCylinders];
     if (pooledObject === undefined) {
       // each pooled cylinder contains a geometry,
       // a basic material and a lambert material.
@@ -627,7 +639,7 @@ var peg = function(a,b,c) {
         mesh: undefined
       };
       newGeometricObjectCreated = true;
-      cylindersPool.push(pooledObject);
+      objectPool[primitiveType].push(pooledObject);
     }
     var applyDefaultNormalColor = false;
     if (!strokeTime) {
@@ -784,8 +796,11 @@ var ballDetail = function(a) {
 
 var ball = function(a,b,c) {
 
+  // primitive-specific initialisations:
   var thisGometryCanFill = true;
   var thisGometryCanStroke = true;
+  var primitiveType = GEOM_TYPE_SPHERE + ballDetLevel - minimumBallDetail;
+  // end of primitive-specific initialisations:
 
   // b and c are not functional in some geometric
   // primitives, but we handle them here in all cases
@@ -839,15 +854,11 @@ var ball = function(a,b,c) {
       colorToBeUsed = currentFillColor;
       alphaToBeUsed = currentFillAlpha;
     }
-    if (spheresPool['' + ballDetLevel] === undefined) {
-      spheresPool['' + ballDetLevel] = [];
-      log('creating pool for ball det level ' + ballDetLevel);
-    }
     if (usedSpheres['' + ballDetLevel] === undefined) {
       usedSpheres['' + ballDetLevel] = 0;
       log('creating counter for ball det level ' + ballDetLevel);
     }
-    var pooledObject = spheresPool['' + ballDetLevel][usedSpheres['' + ballDetLevel]];
+    var pooledObject = objectPool[primitiveType][usedSpheres['' + ballDetLevel]];
     if (pooledObject === undefined) {
       // each pooled sphere contains a geometry,
       // a basic material and a lambert material.
@@ -870,8 +881,8 @@ var ball = function(a,b,c) {
         mesh: undefined
       };
       newGeometricObjectCreated = true;
-      spheresPool['' + ballDetLevel].push(pooledObject);
-      log('making space for pool for sphere , size of pool for spheres of detail ' + ballDetLevel + ' is ' + spheresPool[''+ballDetLevel].length);
+      objectPool[primitiveType].push(pooledObject);
+      log('making space for pool for sphere , size of pool for spheres of detail ' + ballDetLevel + ' is ' + objectPool[primitiveType].length);
     }
     var applyDefaultNormalColor = false;
     if (!strokeTime) {

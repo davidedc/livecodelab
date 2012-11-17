@@ -11,17 +11,35 @@ var editor;
 // and then go up a node.
 var isWebGLUsed = false;
 
-var linesPool = [];
-var rectanglesPool = [];
-var boxesPool = [];
-var cylindersPool = [];
-// spheres have different geometries
-// depending on the detail level,
-// which can be set at whim
-var spheresPool = {};
+var minimumBallDetail = 2;
+var maximumBallDetail = 30;
+
+var GEOM_TYPE_LINE = 0;
+var GEOM_TYPE_RECT = 1;
+var GEOM_TYPE_BOX = 2;
+var GEOM_TYPE_CYLINDER = 3;
+var GEOM_TYPE_SPHERE = 4;
+
+// All object pools start empty. Note that each sphere detail level must have
+// its own pool, because you can't easily change the mesh of an object.
+// If one doesn't like the idea of creating dozens of empty arrays that won't ever be
+// used (since probably only a few sphere detail levels will be used in a session)
+// then one could leave all these arrays undefined and define them at runtime
+// only when needed.
+var objectPool = [];
+objectPool[GEOM_TYPE_LINE] = [];
+objectPool[GEOM_TYPE_RECT] = [];
+objectPool[GEOM_TYPE_BOX] = [];
+objectPool[GEOM_TYPE_CYLINDER] = [];
+for (var creatingSpherePools = 0; creatingSpherePools < (maximumBallDetail - minimumBallDetail + 1); creatingSpherePools++){
+	objectPool[GEOM_TYPE_SPHERE + creatingSpherePools] = [];
+}
+
 var sphereGeometriesPool = {};
+
 var ambientLightsPool = [];
 var pointLightsPool = [];
+
 var usedLines = 0;
 var usedRectangles = 0;
 var usedBoxes = 0;
