@@ -1282,6 +1282,23 @@ function loadDemoOrTutorial(whichDemo) {
     // bring the cursor to the top
     editor.setCursor(0, 0);
 
+    // we want to avoid that the selected example
+    // or tutorial when started paints over a screen with a previous drawing
+    // of the previous code.
+    // So basically we draw an empty frame.
+    // a) make sure that animationStyle
+    animationStyle(normal);
+    // b) apply the potentially new animationStyle
+    animationStyleUpdateIfChanged();
+    // combing the display list now means that all items in the
+    // display list are set to hidden because no draw() code has been ran
+    // to put items in it.
+    combDisplayList();
+    // render the empty frame
+    render();
+    // register the new code so the next frame will be drawn using the new code.
+    registerCode();
+
     // setting the value of the editor triggers the
     // codeMirror onChange callback, and that runs
     // the demo.
