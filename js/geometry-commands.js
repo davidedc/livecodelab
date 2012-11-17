@@ -6,17 +6,25 @@
 // an ambient light to the color of the stroke
 // (although which ambient light do you pick if there
 // is more than one?)
-var line = function(a) {
+var line = function(a,b,c) {
   
   var thisGometryCanFill = false;
   var thisGometryCanStroke = true;
 
-  if (!doStroke && (!doFill || !thisGometryCanFill)) {
-    return;
-  }
-
+  // b and c are not functional in some geometric
+  // primitives, but we handle them here in all cases
+  // to make the code uniform and unifiable
   if (a === undefined) {
     a = 1;
+    b = 1;
+    c = 1;
+  } else if (arguments.length === 1) {
+    b = a;
+    c = a;
+  }
+
+  if (!doStroke && (!doFill || !thisGometryCanFill)) {
+    return;
   }
 
   var mesh = linesPool[usedLines];
@@ -72,10 +80,22 @@ var line = function(a) {
 }
 
 
-var rect = function(a, b) {
+var rect = function(a,b,c) {
 
   var thisGometryCanFill = true;
   var thisGometryCanStroke = true;
+
+  // b and c are not functional in some geometric
+  // primitives, but we handle them here in all cases
+  // to make the code uniform and unifiable
+  if (a === undefined) {
+    a = 1;
+    b = 1;
+    c = 1;
+  } else if (arguments.length === 1) {
+    b = a;
+    c = a;
+  }
 
   // simple case - if there is no fill and
   // no stroke then there is nothing to do.
@@ -97,13 +117,6 @@ var rect = function(a, b) {
   } else {
     startIndex = 0;
     endIndex = 2;
-  }
-//  log("si: " + startIndex + " endI: " + endIndex );
-  if (a === undefined) {
-    a = 1;
-    b = 1;
-  } else if (arguments.length === 1) {
-    b = a;
   }
 
   var strokeTime = false;
@@ -292,10 +305,22 @@ var rect = function(a, b) {
 }
 
 
-var box = function(a, b, c) {
+var box = function(a,b,c) {
 
   var thisGometryCanFill = true;
   var thisGometryCanStroke = true;
+
+  // b and c are not functional in some geometric
+  // primitives, but we handle them here in all cases
+  // to make the code uniform and unifiable
+  if (a === undefined) {
+    a = 1;
+    b = 1;
+    c = 1;
+  } else if (arguments.length === 1) {
+    b = a;
+    c = a;
+  }
 
   // simple case - if there is no fill and
   // no stroke then there is nothing to do.
@@ -317,16 +342,6 @@ var box = function(a, b, c) {
   } else {
     startIndex = 0;
     endIndex = 2;
-  }
-//  log("si: " + startIndex + " endI: " + endIndex );
-  if (a === undefined) {
-    //alert('cube!')
-    a = 1;
-    b = 1;
-    c = 1;
-  } else if (arguments.length === 1) {
-    b = a;
-    c = a;
   }
 
   var strokeTime = false;
@@ -517,11 +532,22 @@ var box = function(a, b, c) {
 }
 
 
-var peg = function(a, b, c) {
+var peg = function(a,b,c) {
 
   var thisGometryCanFill = true;
   var thisGometryCanStroke = true;
 
+  // b and c are not functional in some geometric
+  // primitives, but we handle them here in all cases
+  // to make the code uniform and unifiable
+  if (a === undefined) {
+    a = 1;
+    b = 1;
+    c = 1;
+  } else if (arguments.length === 1) {
+    b = a;
+    c = a;
+  }
 
   // simple case - if there is no fill and
   // no stroke then there is nothing to do.
@@ -543,16 +569,6 @@ var peg = function(a, b, c) {
   } else {
     startIndex = 0;
     endIndex = 2;
-  }
-//  log("si: " + startIndex + " endI: " + endIndex );
-  if (a === undefined) {
-    //alert('cube!')
-    a = 1;
-    b = 1;
-    c = 1;
-  } else if (arguments.length === 1) {
-    b = a;
-    c = a;
   }
 
   var strokeTime = false;
@@ -750,11 +766,22 @@ var ballDetail = function(a) {
   ballDetLevel = a;
 }
 
-var ball = function(a) {
+var ball = function(a,b,c) {
 
   var thisGometryCanFill = true;
   var thisGometryCanStroke = true;
 
+  // b and c are not functional in some geometric
+  // primitives, but we handle them here in all cases
+  // to make the code uniform and unifiable
+  if (a === undefined) {
+    a = 1;
+    b = 1;
+    c = 1;
+  } else if (arguments.length === 1) {
+    b = a;
+    c = a;
+  }
 
   var pooledSphereGeometry;
 
@@ -778,11 +805,6 @@ var ball = function(a) {
   } else {
     startIndex = 0;
     endIndex = 2;
-  }
-//  log("si: " + startIndex + " endI: " + endIndex );
-  if (a === undefined) {
-    //alert('ball!')
-    a = 1;
   }
 
   var strokeTime = false;
