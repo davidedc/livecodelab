@@ -4,10 +4,11 @@ Performance considerations i.e. how to get 60 fps.
 If LiveCodeLab is not running at 60 fps there could be 3 limiting factors. Here is a description of those possible bottlenecks with solutions/workarounds.
 
 1. **CPU/memory**. It could be that the running program does a lot of calculations or creates/destroys a lot of memory. For example it might be creating and initialising long arrays 30 times per second. The solution in this case is to slim down the program, or to use a browser with a fast and efficient javascript implementation.
-2. **Geometry**. This is the case where complex meshes are frequently changed. LiveCodeLab gives only a handful of meshes and caches them, so this shouldn't be a limiting factor, but possible solutions:
+2. **Geometry**. This is the case where complex meshes are frequently changed, or several thousands of objects (even if of very small size) are placed in the scene. LiveCodeLab gives only a handful of meshes and caches them, but one could still create scenes with several thousands object. Possible solutions:
  - try to reduce the detail levels e.g. using ballDetail
  - omit drawing models that are too small to be visible
-3. **Fill**. This is the most common case: there is a lot of painting going on in the screen or lots of surfaces in the scene. As an example, one can bring fps down to 3 by drawing 1000 balls nested one inside the other. Only one average size ball is visible, and yet plenty of GPU work happens. You can check whether this is the bottleneck by resizing the browser window (and restarting livecodelab) and noticing whether fps improves. If it does, then the "fill" is the bottleneck.
+ - draw fewer objects
+3. **Fill**. This is when there is a lot of painting going on in the screen or lots of surfaces in the scene. This usually happens when there are too many objects, but note that one could hit this bottleneck before hitting the "geometry" bottleneck, especially when the objects have big surface areas such as in the case of big browser window size. As an example, one can bring fps down to 3 by drawing 1000 balls nested one inside the other. Only one average size ball is visible, and yet plenty of GPU work happens. You can check whether this is the bottleneck by resizing the browser window (and restarting livecodelab) and noticing whether fps improves. If it does, then the "fill" is the bottleneck.
 There are three possible solutions to the fill bottleneck:
 
  * confirm that the browser supports WebGl. Firefox and Chrome can support WebGL on many HW configurations, but even mainstream HW can sometimes lack support in some browser versions (e.g. macbook Airs). WebGL support on Linux systems is somewhat spotty, because of the point below:
