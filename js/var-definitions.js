@@ -20,6 +20,18 @@ var GEOM_TYPE_BOX = 2;
 var GEOM_TYPE_CYLINDER = 3;
 var GEOM_TYPE_SPHERE = 4;
 
+// Since you can't change the mesh of an object once it's created, we keep around
+// a pool of objects for each mesh type. There is one pool for lines, one for rectangles, one
+// for boxes. There is one pool for each detail level of spheres (since they are different)
+// meshes. For the time being there is no detail level for cylinders so there is only
+// one pool for cylinders.
+
+// For how the mechanism works now, all pooled objects end up in the scene graph.
+// The scene graph is traversed at each frame and only the used objects are marked as
+// visible, the other unused objects are hidden. This is because adding/removing
+// objects from the scene is expensive. Note that this might have changed with more
+// recent versions of Three.js of the past 4 months.
+
 // All object pools start empty. Note that each sphere detail level must have
 // its own pool, because you can't easily change the mesh of an object.
 // If one doesn't like the idea of creating dozens of empty arrays that won't ever be
@@ -40,13 +52,14 @@ var sphereGeometriesPool = {};
 var ambientLightsPool = [];
 var pointLightsPool = [];
 
-var usedLines = 0;
-var usedRectangles = 0;
-var usedBoxes = 0;
-var usedCylinders = 0;
+// For each pool we have a count of how many of those entries
+// are actually used in the current frame.
+// This is so that we can go through the scene graph and hide the unused objects.
+var objectsUsedInFrameCounts = [];
 var usedAmbientLights = 0;
 var usedPointLights = 0;
-var usedSpheres = {};
+
+
 var ballDefaultDetLevel;
 var ballDetLevel;
 var currentStrokeSize = 1;

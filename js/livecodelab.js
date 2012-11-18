@@ -59,21 +59,19 @@ function animate() {
     defaultNormalFill = true;
     defaultNormalStroke = true;
     ballDetLevel = ballDefaultDetLevel;
-    noLights();
-    usedLines = 0;
-    usedRectangles = 0;
-    usedBoxes = 0;
-    usedAmbientLights = 0;
-    usedPointLights = 0;
     updatesPerMinute = 60*4;
-    // In theory there is no need to chuck away the
-    // counter altogether, you could go through
-    // the existing counters contained in this object
-    // (one for each ball detail ever used)
-    // and set it to zero. That would maybe save
-    // some garbage collection time.
-    // But it's probably not worth it...
-    usedSpheres = {};
+    noLights();
+
+    usedAmbientLights = 0;
+    usedPointLights = 0;    
+		objectsUsedInFrameCounts[GEOM_TYPE_LINE] = 0;
+		objectsUsedInFrameCounts[GEOM_TYPE_RECT] = 0;
+		objectsUsedInFrameCounts[GEOM_TYPE_BOX] = 0;
+		objectsUsedInFrameCounts[GEOM_TYPE_CYLINDER] = 0;
+		for (var initialisingSphereCounts = 0; initialisingSphereCounts < (maximumBallDetail - minimumBallDetail + 1); initialisingSphereCounts++){
+			objectsUsedInFrameCounts[GEOM_TYPE_SPHERE + initialisingSphereCounts] = 0;
+		}
+
     animationStyleValue = normal;
     resetGradientStack();
     //bpm(0);
@@ -327,54 +325,30 @@ function combDisplayList() {
     // pool and set to visible the number of used objects in this frame, set the
     // others to hidden.
     // Only tiny exception is that the sphere has one pool for each detail level.
-    if (sceneObject.isLine) {
-      // set the first "used*****" objects to visible...
-      if (usedLines > 0) {
-        sceneObject.visible = true;
-        usedLines--;
-      } else {
-        // ... and the others to invisible
-        sceneObject.visible = false;
-      }
-    } else if (sceneObject.isRectangle) {
-      if (usedRectangles > 0) {
-        sceneObject.visible = true;
-        usedRectangles--;
-      } else {
-        sceneObject.visible = false;
-      }
-    } else if (sceneObject.isBox) {
-      if (usedBoxes > 0) {
-        sceneObject.visible = true;
-        usedBoxes--;
-      } else {
-        sceneObject.visible = false;
-      }
-    } else if (sceneObject.isCylinder) {
-      if (usedCylinders > 0) {
-        sceneObject.visible = true;
-        usedCylinders--;
-      } else {
-        sceneObject.visible = false;
-      }
-    } else if (sceneObject.isAmbientLight) {
+    var primitiveType;
+    if (sceneObject.isLine) primitiveType = GEOM_TYPE_LINE;
+    else if (sceneObject.isRectangle) primitiveType = GEOM_TYPE_RECT;
+    else if (sceneObject.isBox) primitiveType = GEOM_TYPE_BOX;
+    else if (sceneObject.isCylinder) primitiveType = GEOM_TYPE_CYLINDER;
+    else if (sceneObject.isSphere !== 0) primitiveType = GEOM_TYPE_SPHERE + sceneObject.isSphere - minimumBallDetail;
+
+		// set the first "used*****" objects to visible...
+		if (objectsUsedInFrameCounts[primitiveType] > 0) {
+			sceneObject.visible = true;
+			objectsUsedInFrameCounts[primitiveType]--;
+		} else {
+			// ... and the others to invisible
+			sceneObject.visible = false;
+		}
+
+    if (sceneObject.isAmbientLight) {
       if (usedAmbientLights > 0) {
         sceneObject.visible = true;
         usedAmbientLights--;
       } else {
         sceneObject.visible = false;
       }
-    } else if (sceneObject.isSphere !== 0) {
-      // there is a separate pool for each sphere detail level
-      // the detail level number is kept in the sceneObject.isSphere field
-      // (should probably have its own field to keep things clean really)
-      if (usedSpheres['' + sceneObject.isSphere] > 0) {
-        sceneObject.visible = true;
-        usedSpheres['' + sceneObject.isSphere] = usedSpheres['' + sceneObject.isSphere] - 1;
-      } else {
-        sceneObject.visible = false;
-      }
-    }
+    } 
   }
 }
 

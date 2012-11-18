@@ -48,7 +48,7 @@ var line = function(a,b,c) {
     endIndex = 2;
   }
 
-  var mesh = objectPool[primitiveType][usedLines];
+  var mesh = objectPool[primitiveType][objectsUsedInFrameCounts[primitiveType]];
   if (mesh === undefined) {
     var lineBasicMaterialCOL = new THREE.LineBasicMaterial({
       //color: currentStrokeColor,
@@ -73,7 +73,7 @@ var line = function(a,b,c) {
     mesh.material.opacity = currentStrokeAlpha;
     mesh.material.linewidth = currentStrokeSize;
   }
-  usedLines++;
+  objectsUsedInFrameCounts[primitiveType]++;
 
   // old unpooled mechanism
   //var mesh = new THREE.Line(lineGeometry, lineBasicMaterialCOL);
@@ -159,7 +159,7 @@ var rect = function(a,b,c) {
       colorToBeUsed = currentFillColor;
       alphaToBeUsed = currentFillAlpha;
     }
-    var pooledObject = objectPool[primitiveType][usedRectangles];
+    var pooledObject = objectPool[primitiveType][objectsUsedInFrameCounts[primitiveType]];
     if (pooledObject === undefined) {
       // each pooled rectangle contains a geometry,
       // a basic material and a lambert material.
@@ -302,7 +302,7 @@ var rect = function(a,b,c) {
     pooledObject.mesh.doubleSided = true;
 
 
-    usedRectangles++;
+    objectsUsedInFrameCounts[primitiveType]++;
 
     if (doTheSpinThingy && pooledObject.startCountdown > 0) {
       pushMatrix();
@@ -387,7 +387,7 @@ var box = function(a,b,c) {
       colorToBeUsed = currentFillColor;
       alphaToBeUsed = currentFillAlpha;
     }
-    var pooledObject = objectPool[primitiveType][usedBoxes];
+    var pooledObject = objectPool[primitiveType][objectsUsedInFrameCounts[primitiveType]];
     if (pooledObject === undefined) {
       // each pooled box contains a geometry,
       // a basic material and a lambert material.
@@ -526,7 +526,7 @@ var box = function(a,b,c) {
     pooledObject.mesh.doubleSided = false;
 
 
-    usedBoxes++;
+    objectsUsedInFrameCounts[primitiveType]++;
 
     if (doTheSpinThingy && pooledObject.startCountdown > 0) {
       pushMatrix();
@@ -616,7 +616,7 @@ var peg = function(a,b,c) {
       colorToBeUsed = currentFillColor;
       alphaToBeUsed = currentFillAlpha;
     }
-    var pooledObject = objectPool[primitiveType][usedCylinders];
+    var pooledObject = objectPool[primitiveType][objectsUsedInFrameCounts[primitiveType]];
     if (pooledObject === undefined) {
       // each pooled cylinder contains a geometry,
       // a basic material and a lambert material.
@@ -755,7 +755,7 @@ var peg = function(a,b,c) {
     pooledObject.mesh.doubleSided = false;
 
 
-    usedCylinders++;
+    objectsUsedInFrameCounts[primitiveType]++;
 
     if (doTheSpinThingy && pooledObject.startCountdown > 0) {
       pushMatrix();
@@ -854,11 +854,7 @@ var ball = function(a,b,c) {
       colorToBeUsed = currentFillColor;
       alphaToBeUsed = currentFillAlpha;
     }
-    if (usedSpheres['' + ballDetLevel] === undefined) {
-      usedSpheres['' + ballDetLevel] = 0;
-      log('creating counter for ball det level ' + ballDetLevel);
-    }
-    var pooledObject = objectPool[primitiveType][usedSpheres['' + ballDetLevel]];
+    var pooledObject = objectPool[primitiveType][objectsUsedInFrameCounts[primitiveType]];
     if (pooledObject === undefined) {
       // each pooled sphere contains a geometry,
       // a basic material and a lambert material.
@@ -1016,7 +1012,7 @@ var ball = function(a,b,c) {
     pooledObject.mesh.doubleSided = false;
 
 
-    usedSpheres['' + ballDetLevel] = usedSpheres['' + ballDetLevel] + 1;
+    objectsUsedInFrameCounts[primitiveType] = objectsUsedInFrameCounts[primitiveType] + 1;
 
     if (doTheSpinThingy && pooledObject.startCountdown > 0) {
       pushMatrix();
