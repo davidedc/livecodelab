@@ -1,3 +1,9 @@
+/*jslint browser: true, devel: true */
+/*global $ */
+
+
+var cursorActivity = true;
+
 function suspendDimmingAndCheckIfLink() {
 
   // Now this is kind of a nasty hack: we check where the
@@ -66,6 +72,8 @@ function dimIfNoCursorActivity() {
 
 
 // a function to toggle code diming on and off -- julien 
+
+var dimcodeOn = false;
 
 function toggleDimCode() {
   dimcodeOn = !dimcodeOn;
