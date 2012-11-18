@@ -731,20 +731,22 @@ this hash value and load the correct demo)</p>             </td>             <td
 
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>bring the cursor to the top</p>             </td>             <td class="code">               <div class="highlight"><pre>    editor.setCursor(<span class="number">0</span>, <span class="number">0</span>);
 
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>we want to avoid that the selected example
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Note that setting the value of the editor (editor.setValue above) triggers the
+codeMirror onChange callback, which registers the new code - so the next draw()
+will run the new demo code. But before doing that will happen (when the timer
+for the next frame triggers), we'll have cleared the screen with the code
+below.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>we want to avoid that the selected example
 or tutorial when started paints over a screen with a previous drawing
 of the previous code.
 So basically we draw an empty frame.
 a) make sure that animationStyle</p>             </td>             <td class="code">               <div class="highlight"><pre>    animationStyle(normal);
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>b) apply the potentially new animationStyle</p>             </td>             <td class="code">               <div class="highlight"><pre>    animationStyleUpdateIfChanged();
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>combing the display list now means that all items in the
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>b) apply the potentially new animationStyle</p>             </td>             <td class="code">               <div class="highlight"><pre>    animationStyleUpdateIfChanged();
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>combing the display list now means that all items in the
 display list are set to hidden because no draw() code has been ran
 to put items in it.</p>             </td>             <td class="code">               <div class="highlight"><pre>    combDisplayList();
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>render the empty frame</p>             </td>             <td class="code">               <div class="highlight"><pre>    render();
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>register the new code so the next frame will be drawn using the new code.</p>             </td>             <td class="code">               <div class="highlight"><pre>    registerCode();
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>render the empty frame</p>             </td>             <td class="code">               <div class="highlight"><pre>    render();
 
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>setting the value of the editor triggers the
-codeMirror onChange callback, and that runs
-the demo.</p>             </td>             <td class="code">               <div class="highlight"><pre>}
+}
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
