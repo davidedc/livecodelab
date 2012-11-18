@@ -213,17 +213,6 @@ function render() {
 }
 
 
-
-function triggerReset() {
-    BackgroundPainter.pickRandomDefaultGradient();
-    if (autocoder.active) toggleAutocodeAndUpdateButtonAndBlinking();
-    editor.setValue('');
-    $("#resetButtonContainer").css("background-color", '#FF0000');
-    setTimeout('$("#resetButtonContainer").css("background-color","");', 200);
-}
-
-
-
 // resizing the text area is necessary otherwise
 // as the user types to the end of it, instead of just scrolling
 // the content leaving all the other parts of the page where

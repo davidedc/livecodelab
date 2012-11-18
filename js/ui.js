@@ -1,7 +1,24 @@
-/*jslint devel: true */
-/*global autocoder */
+/*jslint browser: true, devel: true */
+/*global $, autocoder, pickRandomDefaultGradient, toggleAutocodeAndUpdateButtonAndBlinking, editor, loadDemoOrTutorial, toggleDimCode */
 
-$(document).ready(function() {
+var triggerReset = function () {
+
+    'use strict';
+
+    pickRandomDefaultGradient();
+    if (autocoder.active) {
+        toggleAutocodeAndUpdateButtonAndBlinking();
+    }
+    editor.setValue('');
+    $("#resetButtonContainer").css("background-color", '#FF0000');
+    setTimeout(function () {
+        $("#resetButtonContainer").css("background-color", "");
+    }, 200);
+};
+
+$(document).ready(function () {
+
+    'use strict';
 
     $('#aboutMenu').click(function () {
 
@@ -41,4 +58,3 @@ $(document).ready(function() {
 
 
 });
-
