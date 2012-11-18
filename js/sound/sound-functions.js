@@ -108,3 +108,74 @@ var play = function(soundID, beatString) {
   soundLoops.beatStrings.push(beatString);
   logger('pushing '+soundID+" beat: "+beatString);
 }
+
+
+var closeAndCheckAudio = function () {
+    //$('#noWebGLMessage').close();
+    $.modal.close();
+    setTimeout('checkAudio();', 500);
+}
+
+var checkAudio = function () {
+    if (!buzz.isSupported()) {
+        //if (true) {
+        $('#noAudioMessage').modal();
+        $('#simplemodal-container').height(200);
+    }
+}
+
+var loadAndTestAllTheSounds = function () {
+    logger("loading and testing all sounds");
+    for (var cycleSoundDefs = 0; cycleSoundDefs < numberOfSounds; cycleSoundDefs++) {
+
+        if (buzz.isMP3Supported()) soundDef[cycleSoundDefs].soundFile = soundDef[cycleSoundDefs].soundFile + ".mp3";
+        else if (buzz.isOGGSupported()) soundDef[cycleSoundDefs].soundFile = soundDef[cycleSoundDefs].soundFile + ".ogg";
+        else {
+            break;
+        }
+
+        soundBank[soundDef[cycleSoundDefs].soundName] = [];
+        soundFiles[soundDef[cycleSoundDefs].soundName] = soundDef[cycleSoundDefs].soundFile;
+
+        // Chrome can deal with dynamic loading
+        // of many files but doesn't like loading too many audio objects
+        // so fast - it crashes.
+        // At the opposite end, Safari doesn't like loading sound dynamically
+        // and instead works fine by loading sound all at the beginning.
+        if (navigator.userAgent.toLowerCase().indexOf('chrome') === -1 && !(/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
+            for (var preloadSounds = 0; preloadSounds < CHANNELSPERSOUND; preloadSounds++) {
+                // if you load and play all the channels of all the sounds all together
+                // the browser freezes, and the OS doesn't feel too well either
+                // so better stagger the checks in time.
+                setTimeout("checkSound(" + cycleSoundDefs + ");", 200 * cycleSoundDefs);
+            }
+        }
+
+    } // end of the for loop
+    if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || (/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
+        startEnvironment();
+    }
+}
+
+var checkSound = function (cycleSoundDefs) {
+    var newSound = new buzz.sound(soundDef[cycleSoundDefs].soundFile);
+    logger("loading sound " + soundDef[cycleSoundDefs].soundFile);
+    newSound.mute();
+    newSound.load();
+    newSound.bind("ended", function (e) {
+        this.unbind("ended");
+        this.unmute();
+        endedFirstPlay++;
+        if (endedFirstPlay % 10 === 0) $('#loading').append('/');
+        logger("tested " + endedFirstPlay + " sounds");
+        if (endedFirstPlay === numberOfSounds * CHANNELSPERSOUND) {
+            logger("tested all sounds");
+            startEnvironment();
+        }
+    });
+    newSound.play();
+    soundBank[soundDef[cycleSoundDefs].soundName].push(newSound);
+}
+
+
+
