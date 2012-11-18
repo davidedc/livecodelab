@@ -169,7 +169,7 @@ var rect = function(a,b,c) {
     }
     var pooledObject = objectPool[primitiveType][objectsUsedInFrameCounts[primitiveType]];
     if (pooledObject === undefined) {
-      // each pooled rectangle contains a geometry,
+      // each pooled object contains a geometry,
       // a basic material and a lambert material.
       pooledObject = {
         basicMaterial: undefined,
@@ -224,7 +224,7 @@ var rect = function(a,b,c) {
       } else {
         pooledObject.normalMaterial.opacity = alphaToBeUsed;
         pooledObject.normalMaterial.wireframe = strokeTime;
-        pooledObject.normalMaterial.doubleSided = true;
+        pooledObject.normalMaterial.doubleSided = doubleSided;
         pooledObject.normalMaterial.wireframeLinewidth = currentStrokeSize;
       }
       if (pooledObject.mesh === undefined) {
@@ -246,7 +246,7 @@ var rect = function(a,b,c) {
         pooledObject.basicMaterial.color.setHex(colorToBeUsed);
         pooledObject.basicMaterial.opacity = alphaToBeUsed;
         pooledObject.basicMaterial.wireframe = strokeTime;
-        pooledObject.basicMaterial.doubleSided = true;
+        pooledObject.basicMaterial.doubleSided = doubleSided;
         pooledObject.basicMaterial.wireframeLinewidth = currentStrokeSize;
       }
       if (pooledObject.mesh === undefined) {
@@ -275,7 +275,7 @@ var rect = function(a,b,c) {
         pooledObject.lambertMaterial.opacity = alphaToBeUsed;
         pooledObject.lambertMaterial.wireframe = strokeTime;
         pooledObject.lambertMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.lambertMaterial.doubleSided = true;
+        pooledObject.lambertMaterial.doubleSided = doubleSided;
         pooledObject.lambertMaterial.ambient.setHex(ambientColor);
         pooledObject.lambertMaterial.reflectivity = reflectValue;
         pooledObject.lambertMaterial.refractionRatio = refractValue;
@@ -406,7 +406,7 @@ var box = function(a,b,c) {
     }
     var pooledObject = objectPool[primitiveType][objectsUsedInFrameCounts[primitiveType]];
     if (pooledObject === undefined) {
-      // each pooled box contains a geometry,
+      // each pooled object contains a geometry,
       // a basic material and a lambert material.
       pooledObject = {
         basicMaterial: undefined,
@@ -462,7 +462,7 @@ var box = function(a,b,c) {
         pooledObject.normalMaterial.opacity = alphaToBeUsed;
         pooledObject.normalMaterial.wireframe = strokeTime;
         pooledObject.normalMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.normalMaterial.doubleSided = false;
+        pooledObject.normalMaterial.doubleSided = doubleSided;
       }
       if (pooledObject.mesh === undefined) {
         pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.normalMaterial);
@@ -484,7 +484,7 @@ var box = function(a,b,c) {
         pooledObject.basicMaterial.opacity = alphaToBeUsed;
         pooledObject.basicMaterial.wireframe = strokeTime;
         pooledObject.basicMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.basicMaterial.doubleSided = false;
+        pooledObject.basicMaterial.doubleSided = doubleSided;
       }
       if (pooledObject.mesh === undefined) {
         pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.basicMaterial);
@@ -512,7 +512,7 @@ var box = function(a,b,c) {
         pooledObject.lambertMaterial.opacity = alphaToBeUsed;
         pooledObject.lambertMaterial.wireframe = strokeTime;
         pooledObject.lambertMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.lambertMaterial.doubleSided = false;
+        pooledObject.lambertMaterial.doubleSided = doubleSided;
         pooledObject.lambertMaterial.ambient.setHex(ambientColor);
         pooledObject.lambertMaterial.reflectivity = reflectValue;
         pooledObject.lambertMaterial.refractionRatio = refractValue;
@@ -643,7 +643,7 @@ var peg = function(a,b,c) {
     }
     var pooledObject = objectPool[primitiveType][objectsUsedInFrameCounts[primitiveType]];
     if (pooledObject === undefined) {
-      // each pooled cylinder contains a geometry,
+      // each pooled object contains a geometry,
       // a basic material and a lambert material.
       pooledObject = {
         basicMaterial: undefined,
@@ -699,7 +699,7 @@ var peg = function(a,b,c) {
         pooledObject.normalMaterial.opacity = alphaToBeUsed;
         pooledObject.normalMaterial.wireframe = strokeTime;
         pooledObject.normalMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.normalMaterial.doubleSided = false;
+        pooledObject.normalMaterial.doubleSided = doubleSided;
       }
       if (pooledObject.mesh === undefined) {
         pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.normalMaterial);
@@ -721,7 +721,7 @@ var peg = function(a,b,c) {
         pooledObject.basicMaterial.opacity = alphaToBeUsed;
         pooledObject.basicMaterial.wireframe = strokeTime;
         pooledObject.basicMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.basicMaterial.doubleSided = false;
+        pooledObject.basicMaterial.doubleSided = doubleSided;
       }
       if (pooledObject.mesh === undefined) {
         pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.basicMaterial);
@@ -749,7 +749,7 @@ var peg = function(a,b,c) {
         pooledObject.lambertMaterial.opacity = alphaToBeUsed;
         pooledObject.lambertMaterial.wireframe = strokeTime;
         pooledObject.lambertMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.lambertMaterial.doubleSided = false;
+        pooledObject.lambertMaterial.doubleSided = doubleSided;
         pooledObject.lambertMaterial.ambient.setHex(ambientColor);
         pooledObject.lambertMaterial.reflectivity = reflectValue;
         pooledObject.lambertMaterial.refractionRatio = refractValue;
@@ -887,7 +887,7 @@ var ball = function(a,b,c) {
     }
     var pooledObject = objectPool[primitiveType][objectsUsedInFrameCounts[primitiveType]];
     if (pooledObject === undefined) {
-      // each pooled sphere contains a geometry,
+      // each pooled object contains a geometry,
       // a basic material and a lambert material.
       pooledObject = {
         basicMaterial: undefined,
@@ -943,7 +943,7 @@ var ball = function(a,b,c) {
         pooledObject.normalMaterial.opacity = alphaToBeUsed;
         pooledObject.normalMaterial.wireframe = strokeTime;
         pooledObject.normalMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.normalMaterial.doubleSided = false;
+        pooledObject.normalMaterial.doubleSided = doubleSided;
       }
       if (pooledObject.mesh === undefined) {
         pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.normalMaterial);
@@ -965,7 +965,7 @@ var ball = function(a,b,c) {
         pooledObject.basicMaterial.opacity = alphaToBeUsed;
         pooledObject.basicMaterial.wireframe = strokeTime;
         pooledObject.basicMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.basicMaterial.doubleSided = false;
+        pooledObject.basicMaterial.doubleSided = doubleSided;
       }
       if (pooledObject.mesh === undefined) {
         pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.basicMaterial);
@@ -993,7 +993,7 @@ var ball = function(a,b,c) {
         pooledObject.lambertMaterial.opacity = alphaToBeUsed;
         pooledObject.lambertMaterial.wireframe = strokeTime;
         pooledObject.lambertMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.lambertMaterial.doubleSided = false;
+        pooledObject.lambertMaterial.doubleSided = doubleSided;
         pooledObject.lambertMaterial.ambient.setHex(ambientColor);
         pooledObject.lambertMaterial.reflectivity = reflectValue;
         pooledObject.lambertMaterial.refractionRatio = refractValue;
