@@ -72,11 +72,8 @@ $(document).ready(<span class="function"><span class="keyword">function</span> <
         <span class="keyword">return</span>;
     }
 
-    loadAndTestAllTheSounds();
-
-    <span class="keyword">if</span> (navigator.userAgent.toLowerCase().indexOf(<span class="string">'chrome'</span>) &gt; -<span class="number">1</span> || (<span class="regexp">/MSIE (\d+\.\d+);/</span>.test(navigator.userAgent))) {
-        startEnvironment();
-    }
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>pass startEnvironment function in to be used as a callback
+once the sounds are loaded it's fire and starts the app up</p>             </td>             <td class="code">               <div class="highlight"><pre>    loadAndTestAllTheSounds(startEnvironment);
 
 });
 
