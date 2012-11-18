@@ -39,7 +39,7 @@ module.exports = function (grunt) {
         concat: {
             dist: {
                 src: [
-                    'js/vendor/mclexer.js',
+                    'js/autocoder/mclexer.js',
                     'js/vendor/three.js/Detector.js',
                     'js/vendor/three.js/Stats.js',
                     'js/vendor/threex/THREEx.WindowResize.js',
@@ -64,7 +64,7 @@ module.exports = function (grunt) {
                     'js/math.js',
                     'js/code-transformations.js',
                     'js/demos-and-tutorials.js',
-                    'js/autocode.js',
+                    'js/autocoder/autocode.js',
                     'js/text-dimming.js',
                     'js/lights-functions.js',
                     'js/init-threejs.js',

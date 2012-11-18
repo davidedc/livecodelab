@@ -289,7 +289,7 @@ function registerCode() {
     // according to jsperf, the fastest way to check if number is even/odd
     if (
     aposCount & 1 || quoteCount & 1 || roundBrackCount & 1 || curlyBrackCount & 1 || squareBrackCount & 1) {
-      if (autocodeOn) {
+      if (autocoder.active) {
         editor.undo();
         //alert("did an undo");
         return;
@@ -404,7 +404,7 @@ function registerCode() {
     // likely to use by mistake and take away this check.
     if (
     elaboratedSource.match(/[\s\+\;]+draw\s*\(/) || false) {
-      if (autocodeOn) {
+      if (autocoder.active) {
         editor.undo();
         //alert("did an undo");
         return;
@@ -512,7 +512,7 @@ function registerCode() {
     log("in javascript: " + out);
   } catch (e) {
 
-    if (autocodeOn) {
+    if (autocoder.active) {
       editor.undo();
       //alert("did an undo");
       return;
