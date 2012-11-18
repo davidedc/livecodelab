@@ -130,7 +130,7 @@ function registerCode() {
       }, "fast");
       //$("#formCode").css('opacity',0);
       //setTimeout('if (editor.getValue() !== "") $("#formCode").css("opacity",0);',10);
-      log('unshrinking');
+      logger('unshrinking');
       $("#justForFakeCursor").show();
       $("#toMove").show();
       $('#caption').html('|');
@@ -509,7 +509,7 @@ function registerCode() {
     out = CoffeeScript.compile(elaboratedSource, {
       bare: "on"
     });
-    log("in javascript: " + out);
+    logger("in javascript: " + out);
   } catch (e) {
 
     if (autocoder.active) {

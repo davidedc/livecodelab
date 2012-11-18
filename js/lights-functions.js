@@ -46,13 +46,13 @@ var ambientLight = function() {
 
   var pooledAmbientLight = ambientLightsPool[usedAmbientLights];
   if (pooledAmbientLight === undefined) {
-    log('no ambientLight in pool, creating one');
+    logger('no ambientLight in pool, creating one');
     pooledAmbientLight = new THREE.AmbientLight(colorToBeUsed);
     newLightCreated = true;
     ambientLightsPool.push(pooledAmbientLight);
   } else {
     pooledAmbientLight.color.setHex(colorToBeUsed);
-    log('existing ambientLight in pool, setting color: ' + pooledAmbientLight.color.r + ' ' + pooledAmbientLight.color.g + ' ' + pooledAmbientLight.color.b);
+    logger('existing ambientLight in pool, setting color: ' + pooledAmbientLight.color.r + ' ' + pooledAmbientLight.color.g + ' ' + pooledAmbientLight.color.b);
   }
 
 

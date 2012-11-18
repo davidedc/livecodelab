@@ -37,7 +37,7 @@ var line = function(a,b,c) {
   // if the wireframe is not going to be visible on top of the
   // fill then don't draw it
   else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
-    //if (doStroke) log('smart optimisation, was supposed to do the stroke but not doing it!!');
+    //if (doStroke) logger('smart optimisation, was supposed to do the stroke but not doing it!!');
     startIndex = 0;
     endIndex = 1;
   } else if (!doFill && doStroke) {
@@ -92,7 +92,7 @@ var line = function(a,b,c) {
   // need to know the geometry.
   if (currentStrokeColor === angleColor || defaultNormalStroke) {
     var sasaas = mesh.matrix.multiplyVector3(new THREE.Vector3(0, 1, 0)).normalize();
-    log(sasaas.x+ " " + sasaas.y + " " + sasaas.z);
+    //logger(sasaas.x+ " " + sasaas.y + " " + sasaas.z);
     mesh.material.color.setHex(color(((sasaas.x + 1) / 2) * 255, ((sasaas.y + 1) / 2) * 255, ((sasaas.z + 1) / 2) * 255));
   } else {
     mesh.material.color.setHex(currentStrokeColor);
@@ -140,7 +140,7 @@ var rect = function(a,b,c) {
   // if the wireframe is not going to be visible on top of the
   // fill then don't draw it
   else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
-    //if (doStroke) log('smart optimisation, was supposed to do the stroke but not doing it!!');
+    //if (doStroke) logger('smart optimisation, was supposed to do the stroke but not doing it!!');
     startIndex = 0;
     endIndex = 1;
   } else if (!doFill && doStroke) {
@@ -215,7 +215,7 @@ var rect = function(a,b,c) {
       // for each different type of material
       pooledObject.neverUsed = false;
       if (pooledObject.normalMaterial === undefined) {
-        log("creating normal material");
+        logger("creating normal material");
         pooledObject.normalMaterial = new THREE.MeshNormalMaterial({
           opacity: alphaToBeUsed,
           wireframe: strokeTime,
@@ -231,7 +231,7 @@ var rect = function(a,b,c) {
         pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.normalMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
-//        log("associating normal material to existing mesh");
+//        logger("associating normal material to existing mesh");
         pooledObject.mesh.material = pooledObject.normalMaterial;
       }
     } else if (!lightsAreOn) {
@@ -260,7 +260,7 @@ var rect = function(a,b,c) {
     // lights are on
     else {
       if (pooledObject.lambertMaterial === undefined) {
-        log("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
+        logger("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
         pooledObject.lambertMaterial = new THREE.MeshLambertMaterial({
           color: colorToBeUsed,
           opacity: alphaToBeUsed,
@@ -311,7 +311,7 @@ var rect = function(a,b,c) {
     if (doTheSpinThingy && pooledObject.startCountdown > 0) {
       pushMatrix();
       rotate(pooledObject.startCountdown / 50);
-      log(""+pooledObject.startCountdown);
+      logger(pooledObject.startCountdown);
     }
 
     pooledObject.mesh.matrixAutoUpdate = false;
@@ -377,7 +377,7 @@ var box = function(a,b,c) {
   // if the wireframe is not going to be visible on top of the
   // fill then don't draw it
   else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
-    //if (doStroke) log('smart optimisation, was supposed to do the stroke but not doing it!!');
+    //if (doStroke) logger('smart optimisation, was supposed to do the stroke but not doing it!!');
     startIndex = 0;
     endIndex = 1;
   } else if (!doFill && doStroke) {
@@ -452,7 +452,7 @@ var box = function(a,b,c) {
       // for each different type of material
       pooledObject.neverUsed = false;
       if (pooledObject.normalMaterial === undefined) {
-        log("creating normal material");
+        logger("creating normal material");
         pooledObject.normalMaterial = new THREE.MeshNormalMaterial({
           opacity: alphaToBeUsed,
           wireframe: strokeTime,
@@ -468,7 +468,7 @@ var box = function(a,b,c) {
         pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.normalMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
-//        log("associating normal material to existing mesh");
+//        logger("associating normal material to existing mesh");
         pooledObject.mesh.material = pooledObject.normalMaterial;
       }
     } else if (!lightsAreOn) {
@@ -497,7 +497,7 @@ var box = function(a,b,c) {
     // lights are on
     else {
       if (pooledObject.lambertMaterial === undefined) {
-        log("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
+        logger("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
         pooledObject.lambertMaterial = new THREE.MeshLambertMaterial({
           color: colorToBeUsed,
           opacity: alphaToBeUsed,
@@ -548,7 +548,7 @@ var box = function(a,b,c) {
     if (doTheSpinThingy && pooledObject.startCountdown > 0) {
       pushMatrix();
       rotate(pooledObject.startCountdown / 50);
-      log(""+pooledObject.startCountdown);
+      logger(pooledObject.startCountdown);
     }
 
     pooledObject.mesh.matrixAutoUpdate = false;
@@ -614,7 +614,7 @@ var peg = function(a,b,c) {
   // if the wireframe is not going to be visible on top of the
   // fill then don't draw it
   else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
-    //if (doStroke) log('smart optimisation, was supposed to do the stroke but not doing it!!');
+    //if (doStroke) logger('smart optimisation, was supposed to do the stroke but not doing it!!');
     startIndex = 0;
     endIndex = 1;
   } else if (!doFill && doStroke) {
@@ -689,7 +689,7 @@ var peg = function(a,b,c) {
       // for each different type of material
       pooledObject.neverUsed = false;
       if (pooledObject.normalMaterial === undefined) {
-        log("creating normal material");
+        logger("creating normal material");
         pooledObject.normalMaterial = new THREE.MeshNormalMaterial({
           opacity: alphaToBeUsed,
           wireframe: strokeTime,
@@ -705,7 +705,7 @@ var peg = function(a,b,c) {
         pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.normalMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
-////        log("associating normal material to existing mesh");
+////        logger("associating normal material to existing mesh");
         pooledObject.mesh.material = pooledObject.normalMaterial;
       }
     } else if (!lightsAreOn) {
@@ -734,7 +734,7 @@ var peg = function(a,b,c) {
     // lights are on
     else {
       if (pooledObject.lambertMaterial === undefined) {
-        log("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
+        logger("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
         pooledObject.lambertMaterial = new THREE.MeshLambertMaterial({
           color: colorToBeUsed,
           opacity: alphaToBeUsed,
@@ -785,7 +785,7 @@ var peg = function(a,b,c) {
     if (doTheSpinThingy && pooledObject.startCountdown > 0) {
       pushMatrix();
       rotate(pooledObject.startCountdown / 50);
-      log(""+pooledObject.startCountdown);      
+      logger(""+pooledObject.startCountdown);      
     }
 
     pooledObject.mesh.matrixAutoUpdate = false;
@@ -858,7 +858,7 @@ var ball = function(a,b,c) {
   // if the wireframe is not going to be visible on top of the
   // fill then don't draw it
   else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
-    //if (doStroke) log('smart optimisation, was supposed to do the stroke but not doing it!!');
+    //if (doStroke) logger('smart optimisation, was supposed to do the stroke but not doing it!!');
     startIndex = 0;
     endIndex = 1;
   } else if (!doFill && doStroke) {
@@ -933,7 +933,7 @@ var ball = function(a,b,c) {
       // for each different type of material
       pooledObject.neverUsed = false;
       if (pooledObject.normalMaterial === undefined) {
-        log("creating normal material");
+        logger("creating normal material");
         pooledObject.normalMaterial = new THREE.MeshNormalMaterial({
           opacity: alphaToBeUsed,
           wireframe: strokeTime,
@@ -949,7 +949,7 @@ var ball = function(a,b,c) {
         pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.normalMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
-//        log("associating normal material to existing mesh");
+//        logger("associating normal material to existing mesh");
         pooledObject.mesh.material = pooledObject.normalMaterial;
       }
     } else if (!lightsAreOn) {
@@ -978,7 +978,7 @@ var ball = function(a,b,c) {
     // lights are on
     else {
       if (pooledObject.lambertMaterial === undefined) {
-        log("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
+        logger("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
         pooledObject.lambertMaterial = new THREE.MeshLambertMaterial({
           color: colorToBeUsed,
           opacity: alphaToBeUsed,
@@ -1029,7 +1029,7 @@ var ball = function(a,b,c) {
     if (doTheSpinThingy && pooledObject.startCountdown > 0) {
       pushMatrix();
       rotate(pooledObject.startCountdown / 50);
-      log(""+pooledObject.startCountdown);
+      logger(""+pooledObject.startCountdown);
     }
 
     pooledObject.mesh.matrixAutoUpdate = false;
