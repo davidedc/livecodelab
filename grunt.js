@@ -39,6 +39,7 @@ module.exports = function (grunt) {
         concat: {
             dist: {
                 src: [
+                    'js/logger.js',
                     'js/autocoder/mclexer.js',
                     'js/vendor/three.js/Detector.js',
                     'js/vendor/three.js/Stats.js',
