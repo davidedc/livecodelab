@@ -63,12 +63,22 @@ var usedPointLights = 0;
 var ballDefaultDetLevel;
 var ballDetLevel;
 var currentStrokeSize = 1;
-var cubeGeometry = new THREE.CubeGeometry(1, 1, 1);
-var planeGeometry = new THREE.PlaneGeometry(1, 1);
-var lineGeometry = new THREE.Geometry();
-var cylinderGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
-lineGeometry.vertices.push(new THREE.Vertex(new THREE.Vector3(0, -0.5, 0)));
-lineGeometry.vertices.push(new THREE.Vertex(new THREE.Vector3(0, 0.5, 0)));
+
+var geometriesBank = [];
+geometriesBank[GEOM_TYPE_LINE] = new THREE.Geometry();
+  geometriesBank[GEOM_TYPE_LINE].vertices.push(new THREE.Vertex(new THREE.Vector3(0, -0.5, 0)));
+  geometriesBank[GEOM_TYPE_LINE].vertices.push(new THREE.Vertex(new THREE.Vector3(0, 0.5, 0)));
+geometriesBank[GEOM_TYPE_RECT] = new THREE.PlaneGeometry(1, 1);
+geometriesBank[GEOM_TYPE_BOX] = new THREE.CubeGeometry(1, 1, 1);
+geometriesBank[GEOM_TYPE_CYLINDER] = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
+for (var creatingSphereGeometries = 0; creatingSphereGeometries < (maximumBallDetail - minimumBallDetail + 1); creatingSphereGeometries++){
+	geometriesBank[GEOM_TYPE_SPHERE + creatingSphereGeometries] = new THREE.SphereGeometry(1, minimumBallDetail + creatingSphereGeometries, minimumBallDetail + creatingSphereGeometries);
+}
+
+//var geometriesBank[primitiveType];
+//var planeGeometry;
+//var geometriesBank[primitiveType];
+//var geometriesBank[primitiveType];
 
 // loads identity matrix
 var worldMatrix = new THREE.Matrix4();
