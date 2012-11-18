@@ -198,7 +198,7 @@ var loadAndTestAllTheSounds = function () {
                 // the browser freezes, and the OS doesn't feel too well either
                 // so better stagger the checks in time.
                 setTimeout(function () {
-                    checkSound(soundInfo)
+                    checkSound(soundDef, soundInfo)
                 }, 200 * cycleSoundDefs);
             }
         }
@@ -207,7 +207,7 @@ var loadAndTestAllTheSounds = function () {
 };
 
 // Called from loadAndTestAllTheSounds
-var checkSound = function (soundInfo) {
+var checkSound = function (soundDef, soundInfo) {
 
     'use strict';
 
@@ -221,10 +221,10 @@ var checkSound = function (soundInfo) {
         endedFirstPlay++;
         if (endedFirstPlay % 10 === 0) $('#loading').append('/');
         logger("tested " + endedFirstPlay + " sounds");
-        if (endedFirstPlay === numberOfSounds * CHANNELSPERSOUND) {
+        if (endedFirstPlay === soundDef.sounds.length * CHANNELSPERSOUND) {
             logger("tested all sounds");
         }
     });
     newSound.play();
-    soundBank[soundInfo.soundName].push(newSound);
+    soundBank[soundInfo.name].push(newSound);
 };
