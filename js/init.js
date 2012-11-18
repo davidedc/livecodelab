@@ -78,10 +78,8 @@ $(document).ready(function () {
         return;
     }
 
-    loadAndTestAllTheSounds();
-
-    if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || (/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
-        startEnvironment();
-    }
+    // pass startEnvironment function in to be used as a callback
+    // once the sounds are loaded it's fire and starts the app up
+    loadAndTestAllTheSounds(startEnvironment);
 
 });

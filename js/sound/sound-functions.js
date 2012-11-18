@@ -164,11 +164,9 @@ var checkAudio = function () {
 };
 
 // Called form the document ready block in init.js
-var loadAndTestAllTheSounds = function () {
+var loadAndTestAllTheSounds = function (callback) {
 
     'use strict';
-
-    logger("loading and testing all sounds");
 
     var soundDef, soundInfo, cycleSoundDefs, preloadSounds;
 
@@ -187,42 +185,54 @@ var loadAndTestAllTheSounds = function () {
         soundBank[soundInfo.name] = [];
         soundFiles[soundInfo.name] = soundInfo.path;
 
+        logger("loading sound: " + soundInfo.name);
+
         // Chrome can deal with dynamic loading
         // of many files but doesn't like loading too many audio objects
         // so fast - it crashes.
         // At the opposite end, Safari doesn't like loading sound dynamically
         // and instead works fine by loading sound all at the beginning.
         if (navigator.userAgent.toLowerCase().indexOf('chrome') === -1 && !(/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
+
             for (preloadSounds = 0; preloadSounds < CHANNELSPERSOUND; preloadSounds++) {
+                logger("checking sound " + soundInfo.name);
                 // if you load and play all the channels of all the sounds all together
                 // the browser freezes, and the OS doesn't feel too well either
                 // so better stagger the checks in time.
-                setTimeout(function () {
-                    checkSound(soundDef, soundInfo)
-                }, 200 * cycleSoundDefs);
+                setTimeout(checkSound, 200 * cycleSoundDefs, soundDef, soundInfo, callback);
             }
+
         }
 
     } // end of the for loop
+
+    // if this is chrome, fire the callback immediately
+    // otherwise wait untill all the sounds have been tested
+    if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || (/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
+        callback();
+    }
+
 };
 
 // Called from loadAndTestAllTheSounds
-var checkSound = function (soundDef, soundInfo) {
+var checkSound = function (soundDef, soundInfo, callback) {
 
     'use strict';
 
     var newSound = new buzz.sound(soundInfo.path);
-    logger("loading sound " + soundInfo.path);
+
+    logger("testing sound: " + soundInfo.path);
     newSound.mute();
     newSound.load();
     newSound.bind("ended", function (e) {
-        this.unbind("ended");
-        this.unmute();
+        newSound.unbind("ended");
+        newSound.unmute();
         endedFirstPlay++;
         if (endedFirstPlay % 10 === 0) $('#loading').append('/');
         logger("tested " + endedFirstPlay + " sounds");
         if (endedFirstPlay === soundDef.sounds.length * CHANNELSPERSOUND) {
             logger("tested all sounds");
+            callback();
         }
     });
     newSound.play();
