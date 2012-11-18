@@ -1,4 +1,4 @@
-<img src="http://www.sketchpatch.net/labs/screenshots/LiveCodeLab-GithubBanner.png" width="851" height="252">
+<img src="http://www.sketchpatch.net/labs/screenshots/LiveCodeLab-GithubBanner.png" width="851" height="52">
 
 #### Online toy live coding environment ####
 
