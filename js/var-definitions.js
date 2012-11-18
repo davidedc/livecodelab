@@ -4,6 +4,8 @@ var camera;
 var editor;
 var autocoder;
 
+var logger = createDebugger();
+
 // creating a geometry is expensive
 // so we need to create ONE cube of dimensions 1,1,1
 // if we need a cube of different size, then we need to

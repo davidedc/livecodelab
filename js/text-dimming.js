@@ -18,7 +18,7 @@ function suspendDimmingAndCheckIfLink() {
   }
 
   if (fakeText || editor.getValue() === '') return;
-  log('cursor activity! opacity: ' + $("#formCode").css('opacity'));
+  logger('cursor activity! opacity: ' + $("#formCode").css('opacity'));
   cursorActivity = true;
   undimEditor();
 }
@@ -26,7 +26,7 @@ function suspendDimmingAndCheckIfLink() {
 function undimEditor() {
   if (fakeText || editor.getValue() === '') $("#formCode").css('opacity', 0);
   if ($("#formCode").css('opacity') < 0.99) {
-    log('undimming the editor');
+    logger('undimming the editor');
     $("#formCode").animate({
       opacity: 1
     }, "fast");
@@ -45,7 +45,7 @@ function dimEditor() {
   // Make the animation step to print something
   // just to make sure that this is not the case.
   if ($("#formCode").css('opacity') > 0) {
-    log('starting fadeout animation');
+    logger('starting fadeout animation');
     $("#formCode").animate({
       opacity: 0
     }, "slow");
@@ -55,11 +55,11 @@ function dimEditor() {
 function dimIfNoCursorActivity() {
   if (fakeText || editor.getValue() === '') return;
   if (cursorActivity) {
-    log('marking cursor activity = false. Will check again in the next interval');
+    logger('marking cursor activity = false. Will check again in the next interval');
     cursorActivity = false;
     return;
   } else {
-    log('no activity in the last interval. Dimming now, starting opacity is: ' + $("#formCode").css('opacity') );
+    logger('no activity in the last interval. Dimming now, starting opacity is: ' + $("#formCode").css('opacity') );
     dimEditor();
   }
 }
