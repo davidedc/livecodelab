@@ -92,7 +92,7 @@ function animate() {
 				// I'm not sure that this type of error should occur during autocoding
 				// but this can't hurt and it's symmetrical to the other try/catch
 				// situation we have in livecodelab
-				if (autocodeOn) {
+				if (autocoder.active) {
 					editor.undo();
 					//alert("did an undo");
 					return;
@@ -219,7 +219,7 @@ var dimcodeOn = false;
 
 function triggerReset() {
   pickRandomDefaultGradient();
-  if (autocodeOn) toggleAutocodeAndUpdateButtonAndBlinking();
+  if (autocoder.active) toggleAutocodeAndUpdateButtonAndBlinking();
   editor.setValue('');
   $("#resetButtonContainer").css("background-color", '#FF0000');
   setTimeout('$("#resetButtonContainer").css("background-color","");', 200);
@@ -373,7 +373,7 @@ function clearDisplayList() {
  var foo = function(msg, url, linenumber) {
 // window.onerror = function(msg, url, linenumber) {
 
-  if (autocodeOn) {
+  if (autocoder.active) {
     editor.undo();
     //alert("did an undo");
     return;
