@@ -57,7 +57,7 @@ var background = function() {
   // the background command? (In processing it's not)
 
   var a = color(arguments[0], arguments[1], arguments[2], arguments[3]);
-//  log("adding solid background to stack");
+//  logger("adding solid background to stack");
   //if (a===undefined) a = color(0);
   currentGradientStackValue = currentGradientStackValue + " null null null null " + a + " ";
   gradStack.push({
@@ -89,7 +89,7 @@ var simpleGradientUpdateIfChanged = function() {
     } else {
 
       previousGradientStackValue = currentGradientStackValue;
-      log('repainting background');
+      logger('repainting background');
       var diagonal = Math.sqrt(Math.pow(scaledBackgroundWidth / 2, 2) + Math.pow(scaledBackgroundHeight / 2, 2));
       var radgrad;
       for (var scanningGradStack = 0; scanningGradStack < gradStack.length; scanningGradStack++) {
@@ -104,7 +104,7 @@ var simpleGradientUpdateIfChanged = function() {
           backgroundSceneContext.fillStyle = radgrad;
           backgroundSceneContext.fillRect(0, 0, scaledBackgroundWidth, scaledBackgroundHeight);
         } else {
-          log("solid background: "+ gradStack[scanningGradStack].solid);
+          logger("solid background: "+ gradStack[scanningGradStack].solid);
           backgroundSceneContext.globalAlpha = 1.0;
           backgroundSceneContext.fillStyle = color.toString(gradStack[scanningGradStack].solid);
           backgroundSceneContext.fillRect(0, 0, scaledBackgroundWidth, scaledBackgroundHeight);

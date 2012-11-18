@@ -619,18 +619,18 @@ var fill = function() {
   var c = color(arguments[0], arguments[1], arguments[2], arguments[3]);
   var crgb;
   var ca;
-  //log("fillColor: "+c);
+  //logger("fillColor: "+c);
   if (c === angleColor) {
     // this is so we can do a smart optimisation later
     // and not draw the wireframe is it happens to be the same color as
     // the fill
     defaultNormalFill = true;
-    //log("yes it's normal color ");
+    //logger("yes it's normal color ");
     crgb = c;
     if (arguments[1] !== undefined) {
-      //log("passed alpha: " + arguments[1]);
+      //logger("passed alpha: " + arguments[1]);
       ca = arguments[1] / colorModeA;
-      //log("calculated alpha: " + ca);
+      //logger("calculated alpha: " + ca);
     } else {
       ca = 1;
     }
@@ -638,7 +638,7 @@ var fill = function() {
     crgb = color(redF(c), greenF(c), blueF(c));
     ca = alphaZeroToOne(c);
   }
-  //log("crgb ca "+crgb + " " + ca);
+  //logger("crgb ca "+crgb + " " + ca);
   if (crgb === currentFillColor && ca === currentFillAlpha && doFill) {
     return;
   }
@@ -701,12 +701,12 @@ var stroke = function() {
       // and not draw the wireframe is it happens to be the same color as
       // the fill
       defaultNormalStroke = true;
-      //log("yes it's normal color ");
+      //logger("yes it's normal color ");
       crgb = c;
       if (arguments[1] !== undefined) {
-        //log("passed alpha: " + arguments[1]);
+        //logger("passed alpha: " + arguments[1]);
         ca = arguments[1] / colorModeA;
-        //log("calculated alpha: " + ca);
+        //logger("calculated alpha: " + ca);
       } else {
         ca = 1;
       }
@@ -714,7 +714,7 @@ var stroke = function() {
       crgb = color(redF(c), greenF(c), blueF(c));
       ca = alphaZeroToOne(c);
     }
-    //log("crgb ca "+crgb + " " + ca);
+    //logger("crgb ca "+crgb + " " + ca);
     if (crgb === currentStrokeColor && ca === currentStrokeAlpha && doStroke) {
       return;
     }

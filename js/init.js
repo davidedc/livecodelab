@@ -15,7 +15,7 @@ var checkAudio = function() {
   }
 
 var loadAndTestAllTheSounds = function() {
-    log("loading and testing all sounds");
+    logger("loading and testing all sounds");
     for (var cycleSoundDefs = 0; cycleSoundDefs < numberOfSounds; cycleSoundDefs++) {
 
       if (buzz.isMP3Supported()) soundDef[cycleSoundDefs].soundFile = soundDef[cycleSoundDefs].soundFile + ".mp3";
@@ -49,7 +49,7 @@ var loadAndTestAllTheSounds = function() {
 
 var checkSound = function(cycleSoundDefs) {
     var newSound = new buzz.sound(soundDef[cycleSoundDefs].soundFile);
-    log("loading sound "+ soundDef[cycleSoundDefs].soundFile);
+    logger("loading sound "+ soundDef[cycleSoundDefs].soundFile);
     newSound.mute();
     newSound.load();
     newSound.bind("ended", function(e) {
@@ -57,9 +57,9 @@ var checkSound = function(cycleSoundDefs) {
       this.unmute();
       endedFirstPlay++;
       if (endedFirstPlay % 10 === 0) $('#loading').append('/');
-      log("tested "+endedFirstPlay+" sounds");
+      logger("tested "+endedFirstPlay+" sounds");
       if (endedFirstPlay === numberOfSounds * CHANNELSPERSOUND) {
-        log("tested all sounds");
+        logger("tested all sounds");
         startEnvironment();
       }
     });
@@ -71,7 +71,7 @@ var checkSound = function(cycleSoundDefs) {
 var startEnvironment = function() {
   pickRandomDefaultGradient();
 
-  log("startEnvironment");
+  logger("startEnvironment");
   if (!initThreeJs()) animate();
 
   if (!Detector.webgl || forceCanvasRenderer) {
@@ -129,7 +129,7 @@ var startEnvironment = function() {
 }
 
 $(document).ready(function() {
-  log("document ready");
+  logger("document ready");
   if (!isCanvasSupported) {
     $('#noCanvasMessage').modal({
       onClose: function() {
