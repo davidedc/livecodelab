@@ -172,10 +172,7 @@ var loadAndTestAllTheSounds = function () {
         }
 
     } // end of the for loop
-    if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || (/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
-        startEnvironment();
-    }
-}
+};
 
 // Called from loadAndTestAllTheSounds
 var checkSound = function (cycleSoundDefs) {
@@ -191,7 +188,6 @@ var checkSound = function (cycleSoundDefs) {
         logger("tested " + endedFirstPlay + " sounds");
         if (endedFirstPlay === numberOfSounds * CHANNELSPERSOUND) {
             logger("tested all sounds");
-            startEnvironment();
         }
     });
     newSound.play();

@@ -79,4 +79,9 @@ $(document).ready(function () {
     }
 
     loadAndTestAllTheSounds();
+
+    if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || (/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
+        startEnvironment();
+    }
+
 });
