@@ -1,8 +1,23 @@
+/*jslint devel: true */
+/*global $, buzz, autocoder */
+
 var updatesPerMinute = 0;
 var oldupdatesPerMinute = 0;
 var soundLoopTimer;
 var beatNumber = 0;
+var totalCreatedSoundObjects = 0;
+var soundSystemIsMangled = false;
+var CHANNELSPERSOUND = 6;
+var endedFirstPlay = 0;
+var soundBank = {};
+var soundFiles = {};
 
+
+
+
+
+// sets BPM
+// is called by code in patches
 var bpm = function(a) {
 
   // timid attempt at sanity check.
@@ -17,6 +32,17 @@ var bpm = function(a) {
   updatesPerMinute = a*4;
 }
 
+// called from within patches
+var play = function(soundID, beatString) {
+  anyCodeReactingTobpm = true;
+  beatString = beatString.replace(/\s*/g, "");
+  soundLoops.soundIDs.push(soundID);
+  soundLoops.beatStrings.push(beatString);
+  logger('pushing '+soundID+" beat: "+beatString);
+}
+
+
+// Called from animate function in livecodelab.js
 var changeUpdatesPerMinuteIfNeeded = function() {
   if (oldupdatesPerMinute !== updatesPerMinute) {
     //alert('changing beats per minute old ' + oldupdatesPerMinute + ' new: ' + updatesPerMinute);
@@ -30,6 +56,7 @@ var changeUpdatesPerMinuteIfNeeded = function() {
   //alert('AFTER old ' + oldupdatesPerMinute + ' new: ' + a);
 }
 
+// Called from changeUpdatesPerMinuteIfNeeded
 var soundLoop = function() {
   //clearTimeout(soundLoopTimer);
   //alert('soundLoop');
@@ -100,22 +127,14 @@ var soundLoop = function() {
   }
 }
 
-
-var play = function(soundID, beatString) {
-  anyCodeReactingTobpm = true;
-  beatString = beatString.replace(/\s*/g, "");
-  soundLoops.soundIDs.push(soundID);
-  soundLoops.beatStrings.push(beatString);
-  logger('pushing '+soundID+" beat: "+beatString);
-}
-
-
+// Called in init.js
 var closeAndCheckAudio = function () {
     //$('#noWebGLMessage').close();
     $.modal.close();
     setTimeout('checkAudio();', 500);
 }
 
+// Called from closeAndCheckAudio
 var checkAudio = function () {
     if (!buzz.isSupported()) {
         //if (true) {
@@ -124,6 +143,7 @@ var checkAudio = function () {
     }
 }
 
+// Called form the document ready block in init.js
 var loadAndTestAllTheSounds = function () {
     logger("loading and testing all sounds");
     for (var cycleSoundDefs = 0; cycleSoundDefs < numberOfSounds; cycleSoundDefs++) {
@@ -157,6 +177,7 @@ var loadAndTestAllTheSounds = function () {
     }
 }
 
+// Called from loadAndTestAllTheSounds
 var checkSound = function (cycleSoundDefs) {
     var newSound = new buzz.sound(soundDef[cycleSoundDefs].soundFile);
     logger("loading sound " + soundDef[cycleSoundDefs].soundFile);

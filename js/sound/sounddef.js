@@ -1,7 +1,7 @@
 
-var totalCreatedSoundObjects = 0;
-var soundSystemIsMangled = false;
-var CHANNELSPERSOUND = 6;
+
+
+
 var soundDef = [];
 var soundDefCounter = 0;
 
@@ -45,6 +45,3 @@ soundDef[soundDefCounter++] = {soundName: 'alienBeep', soundFile: './sound/audio
 
 var numberOfSounds = soundDefCounter;
 
-var soundBank = {};
-var soundFiles = {};
-var endedFirstPlay = 0;
