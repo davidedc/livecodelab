@@ -43,6 +43,7 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
       // each pooled object contains a geometry,
       // a basic material and a lambert material.
       pooledObject = {
+        lineMaterial: undefined,
         basicMaterial: undefined,
         lambertMaterial: undefined,
         normalMaterial: undefined,
@@ -77,7 +78,40 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
         applyDefaultNormalColor = false;
       }
     }
-    if (pooledObject.neverUsed || (colorToBeUsed === angleColor || applyDefaultNormalColor)) {
+    if (primitiveProperties.primitiveType === GEOM_TYPE_LINE) {
+      pooledObject.neverUsed = false;
+      if (pooledObject.lineMaterial === undefined) {
+        logger("creating line material");
+        pooledObject.lineMaterial = new THREE.LineBasicMaterial({
+					color: currentStrokeColor,
+					opacity: currentStrokeAlpha,
+					linewidth: currentStrokeSize
+				});
+      } else {
+				pooledObject.lineMaterial.opacity = currentStrokeAlpha;
+				pooledObject.lineMaterial.linewidth = currentStrokeSize;
+      }
+      if (pooledObject.mesh === undefined) {
+        pooledObject.mesh = new primitiveProperties.THREEConstructor(geometriesBank[primitiveProperties.primitiveType], pooledObject.lineMaterial);
+        pooledObject.startCountdown = SPINFRAMES;
+      } else {
+////        logger("associating normal material to existing mesh");
+        pooledObject.mesh.material = pooledObject.lineMaterial;
+      }
+
+		// setting the color after the geometry has been dealt with
+		// because in case we use the angleColor then we
+		// need to know the geometry.
+			if (currentStrokeColor === angleColor || defaultNormalStroke) {
+				var sasaas = pooledObject.mesh.matrix.multiplyVector3(new THREE.Vector3(0, 1, 0)).normalize();
+				//logger(sasaas.x+ " " + sasaas.y + " " + sasaas.z);
+				pooledObject.mesh.material.color.setHex(color(((sasaas.x + 1) / 2) * 255, ((sasaas.y + 1) / 2) * 255, ((sasaas.z + 1) / 2) * 255));
+			} else {
+				pooledObject.mesh.material.color.setHex(currentStrokeColor);
+			}
+
+    }
+    else if (pooledObject.neverUsed || (colorToBeUsed === angleColor || applyDefaultNormalColor)) {
       // the first time we render a mesh we need to
       // render it with the material that takes the
       // bigger buffer space, see:
@@ -99,7 +133,7 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
         pooledObject.normalMaterial.doubleSided = primitiveProperties.doubleSided;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.normalMaterial);
+        pooledObject.mesh = new primitiveProperties.THREEConstructor(geometriesBank[primitiveProperties.primitiveType], pooledObject.normalMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
 ////        logger("associating normal material to existing mesh");
@@ -121,7 +155,7 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
         pooledObject.basicMaterial.doubleSided = primitiveProperties.doubleSided;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.basicMaterial);
+        pooledObject.mesh = new primitiveProperties.THREEConstructor(geometriesBank[primitiveProperties.primitiveType], pooledObject.basicMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
         pooledObject.mesh.material = pooledObject.basicMaterial;
@@ -152,7 +186,7 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
         pooledObject.lambertMaterial.refractionRatio = refractValue;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.lambertMaterial);
+        pooledObject.mesh = new primitiveProperties.THREEConstructor(geometriesBank[primitiveProperties.primitiveType], pooledObject.lambertMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
         pooledObject.mesh.material = pooledObject.lambertMaterial;
@@ -221,7 +255,16 @@ var line = function(a,b,c) {
   var primitiveProperties = {
 		thisGometryCanFill: false,
 		thisGometryCanStroke: true,
-		primitiveType: GEOM_TYPE_LINE
+		primitiveType: GEOM_TYPE_LINE,
+		isLine: true,
+		isRectangle: false,
+		isBox: false,
+		isCylinder: false,
+		isAmbientLight: false,
+		isPointLight: false,
+		isSphere: 0,
+		doubleSided: false,
+		THREEConstructor: THREE.Line
 	}
   // end of primitive-specific initialisations:
 
@@ -237,77 +280,8 @@ var line = function(a,b,c) {
     c = a;
   }
 
-  // simple case - if there is no fill and
-  // no stroke then there is nothing to do.
-  var startIndex = 0;
-  var endIndex = 0;
+	commonPrimitiveDrawingLogic(a,b,c,primitiveProperties);
 
-  if (!doStroke && (!doFill || !primitiveProperties.thisGometryCanFill)) {
-    return;
-  }
-  // if the wireframe is not going to be visible on top of the
-  // fill then don't draw it
-  else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
-    //if (doStroke) logger('smart optimisation, was supposed to do the stroke but not doing it!!');
-    startIndex = 0;
-    endIndex = 1;
-  } else if (!doFill && doStroke) {
-    startIndex = 1;
-    endIndex = 2;
-  } else {
-    startIndex = 0;
-    endIndex = 2;
-  }
-
-  var mesh = objectPool[primitiveProperties.primitiveType][objectsUsedInFrameCounts[primitiveProperties.primitiveType]];
-  if (mesh === undefined) {
-    var lineBasicMaterialCOL = new THREE.LineBasicMaterial({
-      //color: currentStrokeColor,
-      opacity: currentStrokeAlpha,
-      linewidth: currentStrokeSize
-    });
-
-    mesh = new THREE.Line(geometriesBank[primitiveProperties.primitiveType], lineBasicMaterialCOL);
-    mesh.isLine = true;
-    mesh.isRectangle = false;
-    mesh.isBox = false;
-    mesh.isCylinder = false;
-    mesh.isAmbientLight = false;
-    mesh.isPointLight = false;
-    mesh.isSphere = 0;
-    objectPool[primitiveProperties.primitiveType].push(mesh);
-    scene.add(mesh);
-  } else {
-    //mesh.geometry = geometriesBank[primitiveProperties.primitiveType];
-    //mesh.material = lineBasicMaterialCOL;
-    //mesh.material.color.setHex(currentStrokeColor);
-    mesh.material.opacity = currentStrokeAlpha;
-    mesh.material.linewidth = currentStrokeSize;
-  }
-  objectsUsedInFrameCounts[primitiveProperties.primitiveType]++;
-
-  // old unpooled mechanism
-  //var mesh = new THREE.Line(geometriesBank[primitiveProperties.primitiveType], lineBasicMaterialCOL);
-  mesh.matrixAutoUpdate = false;
-  mesh.matrix.copy(worldMatrix);
-  mesh.matrixWorldNeedsUpdate = true;
-  if (a !== 1) {
-    mesh.matrix.scale(new THREE.Vector3(1, a, 1));
-    // in theory the docs say that we should change the boundradius
-    // but I don't think that we need it...
-    //mesh.boundRadiusScale = Math.max(a,b,c);
-  }
-
-  // setting the color after the geometry has been dealt with
-  // because in case we use the angleColor then we
-  // need to know the geometry.
-  if (currentStrokeColor === angleColor || defaultNormalStroke) {
-    var sasaas = mesh.matrix.multiplyVector3(new THREE.Vector3(0, 1, 0)).normalize();
-    //logger(sasaas.x+ " " + sasaas.y + " " + sasaas.z);
-    mesh.material.color.setHex(color(((sasaas.x + 1) / 2) * 255, ((sasaas.y + 1) / 2) * 255, ((sasaas.z + 1) / 2) * 255));
-  } else {
-    mesh.material.color.setHex(currentStrokeColor);
-  }
 
 }
 
@@ -326,7 +300,8 @@ var rect = function(a,b,c) {
 		isAmbientLight: false,
 		isPointLight: false,
 		isSphere: 0,
-		doubleSided: true
+		doubleSided: true,
+		THREEConstructor: THREE.Mesh
 	}
   // end of primitive-specific initialisations:
 
@@ -361,7 +336,8 @@ var box = function(a,b,c) {
 		isAmbientLight: false,
 		isPointLight: false,
 		isSphere: 0,
-		doubleSided: false
+		doubleSided: false,
+		THREEConstructor: THREE.Mesh
 	}
   // end of primitive-specific initialisations:
 
@@ -395,7 +371,8 @@ var peg = function(a,b,c) {
 		isAmbientLight: false,
 		isPointLight: false,
 		isSphere: 0,
-		doubleSided: false
+		doubleSided: false,
+		THREEConstructor: THREE.Mesh
 	}
   // end of primitive-specific initialisations:
 
@@ -437,7 +414,8 @@ var ball = function(a,b,c) {
 		isAmbientLight: false,
 		isPointLight: false,
 		isSphere: ballDetLevel,
-		doubleSided: false
+		doubleSided: false,
+		THREEConstructor: THREE.Mesh
 	}
   // end of primitive-specific initialisations:
 
