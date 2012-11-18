@@ -41,12 +41,12 @@ var soundLoop = function() {
   beatNumber++;
   beatNumber = beatNumber % 16;
 
-  logger('about to loop in '+soundLoops.soundIDs+" of length "+soundLoops.soundIDs.length);
+  //logger('about to loop in '+soundLoops.soundIDs+" of length "+soundLoops.soundIDs.length);
   for (var loopingTheSoundIDs = 0; loopingTheSoundIDs < soundLoops.soundIDs.length; loopingTheSoundIDs++) {
     var loopedSoundID = soundLoops.soundIDs[loopingTheSoundIDs];
     var playOrNoPlay;
     playOrNoPlay = soundLoops.beatStrings[loopingTheSoundIDs].charAt(beatNumber);
-    logger('checking sound loop '+soundLoops.beatStrings[loopingTheSoundIDs]+" beat "+beatNumber+" : "+playOrNoPlay);
+    //logger('checking sound loop '+soundLoops.beatStrings[loopingTheSoundIDs]+" beat "+beatNumber+" : "+playOrNoPlay);
     if (playOrNoPlay === 'x') {
       // OK so this is what we do here:
       // when each Audio object plays, it plays from start to end
@@ -70,7 +70,7 @@ var soundLoop = function() {
       var relevantSoundBank = soundBank[loopedSoundID];
       var lengthOfSoundBank = relevantSoundBank.length;
       var availableSoundBank = undefined;
-      logger('playing  '+loopedSoundID+" length: "+lengthOfSoundBank);
+      //logger('playing  '+loopedSoundID+" length: "+lengthOfSoundBank);
       for (var checkingAvailableSoundBank = 0; checkingAvailableSoundBank < lengthOfSoundBank; checkingAvailableSoundBank++) {
         var checkingSoundBank = relevantSoundBank[checkingAvailableSoundBank];
         if (checkingSoundBank.isEnded()) {

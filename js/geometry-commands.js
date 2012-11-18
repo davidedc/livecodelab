@@ -92,7 +92,7 @@ var line = function(a,b,c) {
   // need to know the geometry.
   if (currentStrokeColor === angleColor || defaultNormalStroke) {
     var sasaas = mesh.matrix.multiplyVector3(new THREE.Vector3(0, 1, 0)).normalize();
-    logger(sasaas.x+ " " + sasaas.y + " " + sasaas.z);
+    //logger(sasaas.x+ " " + sasaas.y + " " + sasaas.z);
     mesh.material.color.setHex(color(((sasaas.x + 1) / 2) * 255, ((sasaas.y + 1) / 2) * 255, ((sasaas.z + 1) / 2) * 255));
   } else {
     mesh.material.color.setHex(currentStrokeColor);
