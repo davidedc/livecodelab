@@ -55,7 +55,7 @@ module.exports = function (grunt) {
                     'js/editor/editor.js',
                     'js/from-processing.js',
                     'js/livecodelab.js',
-                    'js/sound-functions.js',
+                    'js/sound/sound-functions.js',
                     'js/sound/buzz.js',
                     'js/sound/sounddef.js',
                     'js/init.js',
