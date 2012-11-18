@@ -733,6 +733,12 @@ function loadDemoOrTutorial(whichDemo) {
     // bring the cursor to the top
     editor.setCursor(0, 0);
 
+    // Note that setting the value of the editor (editor.setValue above) triggers the
+    // codeMirror onChange callback, which registers the new code - so the next draw()
+    // will run the new demo code. But before doing that will happen (when the timer
+    // for the next frame triggers), we'll have cleared the screen with the code
+    // below.
+
     // we want to avoid that the selected example
     // or tutorial when started paints over a screen with a previous drawing
     // of the previous code.
@@ -747,10 +753,5 @@ function loadDemoOrTutorial(whichDemo) {
     combDisplayList();
     // render the empty frame
     render();
-    // register the new code so the next frame will be drawn using the new code.
-    registerCode();
 
-    // setting the value of the editor triggers the
-    // codeMirror onChange callback, and that runs
-    // the demo.
 }
