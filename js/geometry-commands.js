@@ -9,9 +9,11 @@
 var line = function(a,b,c) {
   
   // primitive-specific initialisations:
-  var thisGometryCanFill = false;
-  var thisGometryCanStroke = true;
-  var primitiveType = GEOM_TYPE_LINE;
+  var primitiveProperties = {
+		thisGometryCanFill: false,
+		thisGometryCanStroke: true,
+		primitiveType: GEOM_TYPE_LINE
+	}
   // end of primitive-specific initialisations:
 
   // b and c are not functional in some geometric
@@ -31,7 +33,7 @@ var line = function(a,b,c) {
   var startIndex = 0;
   var endIndex = 0;
 
-  if (!doStroke && (!doFill || !thisGometryCanFill)) {
+  if (!doStroke && (!doFill || !primitiveProperties.thisGometryCanFill)) {
     return;
   }
   // if the wireframe is not going to be visible on top of the
@@ -48,7 +50,7 @@ var line = function(a,b,c) {
     endIndex = 2;
   }
 
-  var mesh = objectPool[primitiveType][objectsUsedInFrameCounts[primitiveType]];
+  var mesh = objectPool[primitiveProperties.primitiveType][objectsUsedInFrameCounts[primitiveProperties.primitiveType]];
   if (mesh === undefined) {
     var lineBasicMaterialCOL = new THREE.LineBasicMaterial({
       //color: currentStrokeColor,
@@ -56,7 +58,7 @@ var line = function(a,b,c) {
       linewidth: currentStrokeSize
     });
 
-    mesh = new THREE.Line(geometriesBank[primitiveType], lineBasicMaterialCOL);
+    mesh = new THREE.Line(geometriesBank[primitiveProperties.primitiveType], lineBasicMaterialCOL);
     mesh.isLine = true;
     mesh.isRectangle = false;
     mesh.isBox = false;
@@ -64,19 +66,19 @@ var line = function(a,b,c) {
     mesh.isAmbientLight = false;
     mesh.isPointLight = false;
     mesh.isSphere = 0;
-    objectPool[primitiveType].push(mesh);
+    objectPool[primitiveProperties.primitiveType].push(mesh);
     scene.add(mesh);
   } else {
-    //mesh.geometry = geometriesBank[primitiveType];
+    //mesh.geometry = geometriesBank[primitiveProperties.primitiveType];
     //mesh.material = lineBasicMaterialCOL;
     //mesh.material.color.setHex(currentStrokeColor);
     mesh.material.opacity = currentStrokeAlpha;
     mesh.material.linewidth = currentStrokeSize;
   }
-  objectsUsedInFrameCounts[primitiveType]++;
+  objectsUsedInFrameCounts[primitiveProperties.primitiveType]++;
 
   // old unpooled mechanism
-  //var mesh = new THREE.Line(geometriesBank[primitiveType], lineBasicMaterialCOL);
+  //var mesh = new THREE.Line(geometriesBank[primitiveProperties.primitiveType], lineBasicMaterialCOL);
   mesh.matrixAutoUpdate = false;
   mesh.matrix.copy(worldMatrix);
   mesh.matrixWorldNeedsUpdate = true;
@@ -104,17 +106,19 @@ var line = function(a,b,c) {
 var rect = function(a,b,c) {
 
   // primitive-specific initialisations:
-  var thisGometryCanFill = true;
-  var thisGometryCanStroke = true;
-  var primitiveType = GEOM_TYPE_RECT;
-  var isLine = false;
-  var isRectangle = true;
-  var isBox = false;
-  var isCylinder = false;
-  var isAmbientLight = false;
-  var isPointLight = false;
-  var isSphere = 0;
-  var doubleSided = true;
+  var primitiveProperties = {
+		thisGometryCanFill: true,
+		thisGometryCanStroke: true,
+		primitiveType: GEOM_TYPE_RECT,
+		isLine: false,
+		isRectangle: true,
+		isBox: false,
+		isCylinder: false,
+		isAmbientLight: false,
+		isPointLight: false,
+		isSphere: 0,
+		doubleSided: true
+	}
   // end of primitive-specific initialisations:
 
   // b and c are not functional in some geometric
@@ -134,7 +138,7 @@ var rect = function(a,b,c) {
   var startIndex = 0;
   var endIndex = 0;
 
-  if (!doStroke && (!doFill || !thisGometryCanFill)) {
+  if (!doStroke && (!doFill || !primitiveProperties.thisGometryCanFill)) {
     return;
   }
   // if the wireframe is not going to be visible on top of the
@@ -167,7 +171,7 @@ var rect = function(a,b,c) {
       colorToBeUsed = currentFillColor;
       alphaToBeUsed = currentFillAlpha;
     }
-    var pooledObject = objectPool[primitiveType][objectsUsedInFrameCounts[primitiveType]];
+    var pooledObject = objectPool[primitiveProperties.primitiveType][objectsUsedInFrameCounts[primitiveProperties.primitiveType]];
     if (pooledObject === undefined) {
       // each pooled object contains a geometry,
       // a basic material and a lambert material.
@@ -190,7 +194,7 @@ var rect = function(a,b,c) {
         mesh: undefined
       };
       newGeometricObjectCreated = true;
-      objectPool[primitiveType].push(pooledObject);
+      objectPool[primitiveProperties.primitiveType].push(pooledObject);
     }
     var applyDefaultNormalColor = false;
     if (!strokeTime) {
@@ -224,11 +228,11 @@ var rect = function(a,b,c) {
       } else {
         pooledObject.normalMaterial.opacity = alphaToBeUsed;
         pooledObject.normalMaterial.wireframe = strokeTime;
-        pooledObject.normalMaterial.doubleSided = doubleSided;
+        pooledObject.normalMaterial.doubleSided = primitiveProperties.doubleSided;
         pooledObject.normalMaterial.wireframeLinewidth = currentStrokeSize;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.normalMaterial);
+        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.normalMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
 //        logger("associating normal material to existing mesh");
@@ -246,11 +250,11 @@ var rect = function(a,b,c) {
         pooledObject.basicMaterial.color.setHex(colorToBeUsed);
         pooledObject.basicMaterial.opacity = alphaToBeUsed;
         pooledObject.basicMaterial.wireframe = strokeTime;
-        pooledObject.basicMaterial.doubleSided = doubleSided;
+        pooledObject.basicMaterial.doubleSided = primitiveProperties.doubleSided;
         pooledObject.basicMaterial.wireframeLinewidth = currentStrokeSize;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.basicMaterial);
+        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.basicMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
         pooledObject.mesh.material = pooledObject.basicMaterial;
@@ -275,13 +279,13 @@ var rect = function(a,b,c) {
         pooledObject.lambertMaterial.opacity = alphaToBeUsed;
         pooledObject.lambertMaterial.wireframe = strokeTime;
         pooledObject.lambertMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.lambertMaterial.doubleSided = doubleSided;
+        pooledObject.lambertMaterial.doubleSided = primitiveProperties.doubleSided;
         pooledObject.lambertMaterial.ambient.setHex(ambientColor);
         pooledObject.lambertMaterial.reflectivity = reflectValue;
         pooledObject.lambertMaterial.refractionRatio = refractValue;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.lambertMaterial);
+        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.lambertMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
         pooledObject.mesh.material = pooledObject.lambertMaterial;
@@ -296,22 +300,22 @@ var rect = function(a,b,c) {
     if (doTheSpinThingy) pooledObject.startCountdown--;
     if (pooledObject.startCountdown === -1) doTheSpinThingy = false;
 
-    pooledObject.mesh.isLine = isLine;
-    pooledObject.mesh.isRectangle = isRectangle;
-    pooledObject.mesh.isBox = isBox;
-    pooledObject.mesh.isCylinder = isCylinder;
-    pooledObject.mesh.isAmbientLight = isAmbientLight;
-    pooledObject.mesh.isPointLight = isPointLight;
-    pooledObject.mesh.isSphere = isSphere;
-    pooledObject.mesh.doubleSided = doubleSided;
+    pooledObject.mesh.isLine = primitiveProperties.isLine;
+    pooledObject.mesh.isRectangle = primitiveProperties.isRectangle;
+    pooledObject.mesh.isBox = primitiveProperties.isBox;
+    pooledObject.mesh.isCylinder = primitiveProperties.isCylinder;
+    pooledObject.mesh.isAmbientLight = primitiveProperties.isAmbientLight;
+    pooledObject.mesh.isPointLight = primitiveProperties.isPointLight;
+    pooledObject.mesh.isSphere = primitiveProperties.isSphere;
+    pooledObject.mesh.doubleSided = primitiveProperties.doubleSided;
 
 
-    objectsUsedInFrameCounts[primitiveType]++;
+    objectsUsedInFrameCounts[primitiveProperties.primitiveType]++;
 
     if (doTheSpinThingy && pooledObject.startCountdown > 0) {
       pushMatrix();
       rotate(pooledObject.startCountdown / 50);
-      logger(pooledObject.startCountdown);
+      logger(""+pooledObject.startCountdown);
     }
 
     pooledObject.mesh.matrixAutoUpdate = false;
@@ -341,17 +345,19 @@ var rect = function(a,b,c) {
 var box = function(a,b,c) {
 
   // primitive-specific initialisations:
-  var thisGometryCanFill = true;
-  var thisGometryCanStroke = true;
-  var primitiveType = GEOM_TYPE_BOX;
-  var isLine = false;
-  var isRectangle = false;
-  var isBox = true;
-  var isCylinder = false;
-  var isAmbientLight = false;
-  var isPointLight = false;
-  var isSphere = 0;
-  var doubleSided = false;
+  var primitiveProperties = {
+		thisGometryCanFill: true,
+		thisGometryCanStroke: true,
+		primitiveType: GEOM_TYPE_BOX,
+		isLine: false,
+		isRectangle: false,
+		isBox: true,
+		isCylinder: false,
+		isAmbientLight: false,
+		isPointLight: false,
+		isSphere: 0,
+		doubleSided: false
+	}
   // end of primitive-specific initialisations:
 
   // b and c are not functional in some geometric
@@ -371,7 +377,7 @@ var box = function(a,b,c) {
   var startIndex = 0;
   var endIndex = 0;
 
-  if (!doStroke && (!doFill || !thisGometryCanFill)) {
+  if (!doStroke && (!doFill || !primitiveProperties.thisGometryCanFill)) {
     return;
   }
   // if the wireframe is not going to be visible on top of the
@@ -404,7 +410,7 @@ var box = function(a,b,c) {
       colorToBeUsed = currentFillColor;
       alphaToBeUsed = currentFillAlpha;
     }
-    var pooledObject = objectPool[primitiveType][objectsUsedInFrameCounts[primitiveType]];
+    var pooledObject = objectPool[primitiveProperties.primitiveType][objectsUsedInFrameCounts[primitiveProperties.primitiveType]];
     if (pooledObject === undefined) {
       // each pooled object contains a geometry,
       // a basic material and a lambert material.
@@ -427,7 +433,7 @@ var box = function(a,b,c) {
         mesh: undefined
       };
       newGeometricObjectCreated = true;
-      objectPool[primitiveType].push(pooledObject);
+      objectPool[primitiveProperties.primitiveType].push(pooledObject);
     }
     var applyDefaultNormalColor = false;
     if (!strokeTime) {
@@ -462,10 +468,10 @@ var box = function(a,b,c) {
         pooledObject.normalMaterial.opacity = alphaToBeUsed;
         pooledObject.normalMaterial.wireframe = strokeTime;
         pooledObject.normalMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.normalMaterial.doubleSided = doubleSided;
+        pooledObject.normalMaterial.doubleSided = primitiveProperties.doubleSided;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.normalMaterial);
+        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.normalMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
 //        logger("associating normal material to existing mesh");
@@ -484,10 +490,10 @@ var box = function(a,b,c) {
         pooledObject.basicMaterial.opacity = alphaToBeUsed;
         pooledObject.basicMaterial.wireframe = strokeTime;
         pooledObject.basicMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.basicMaterial.doubleSided = doubleSided;
+        pooledObject.basicMaterial.doubleSided = primitiveProperties.doubleSided;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.basicMaterial);
+        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.basicMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
         pooledObject.mesh.material = pooledObject.basicMaterial;
@@ -512,13 +518,13 @@ var box = function(a,b,c) {
         pooledObject.lambertMaterial.opacity = alphaToBeUsed;
         pooledObject.lambertMaterial.wireframe = strokeTime;
         pooledObject.lambertMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.lambertMaterial.doubleSided = doubleSided;
+        pooledObject.lambertMaterial.doubleSided = primitiveProperties.doubleSided;
         pooledObject.lambertMaterial.ambient.setHex(ambientColor);
         pooledObject.lambertMaterial.reflectivity = reflectValue;
         pooledObject.lambertMaterial.refractionRatio = refractValue;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.lambertMaterial);
+        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.lambertMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
         pooledObject.mesh.material = pooledObject.lambertMaterial;
@@ -533,22 +539,22 @@ var box = function(a,b,c) {
     if (doTheSpinThingy) pooledObject.startCountdown--;
     if (pooledObject.startCountdown === -1) doTheSpinThingy = false;
 
-    pooledObject.mesh.isLine = isLine;
-    pooledObject.mesh.isRectangle = isRectangle;
-    pooledObject.mesh.isBox = isBox;
-    pooledObject.mesh.isCylinder = isCylinder;
-    pooledObject.mesh.isAmbientLight = isAmbientLight;
-    pooledObject.mesh.isPointLight = isPointLight;
-    pooledObject.mesh.isSphere = isSphere;
-    pooledObject.mesh.doubleSided = doubleSided;
+    pooledObject.mesh.isLine = primitiveProperties.isLine;
+    pooledObject.mesh.isRectangle = primitiveProperties.isRectangle;
+    pooledObject.mesh.isBox = primitiveProperties.isBox;
+    pooledObject.mesh.isCylinder = primitiveProperties.isCylinder;
+    pooledObject.mesh.isAmbientLight = primitiveProperties.isAmbientLight;
+    pooledObject.mesh.isPointLight = primitiveProperties.isPointLight;
+    pooledObject.mesh.isSphere = primitiveProperties.isSphere;
+    pooledObject.mesh.doubleSided = primitiveProperties.doubleSided;
 
 
-    objectsUsedInFrameCounts[primitiveType]++;
+    objectsUsedInFrameCounts[primitiveProperties.primitiveType]++;
 
     if (doTheSpinThingy && pooledObject.startCountdown > 0) {
       pushMatrix();
       rotate(pooledObject.startCountdown / 50);
-      logger(pooledObject.startCountdown);
+      logger(""+pooledObject.startCountdown);
     }
 
     pooledObject.mesh.matrixAutoUpdate = false;
@@ -578,17 +584,19 @@ var box = function(a,b,c) {
 var peg = function(a,b,c) {
 
   // primitive-specific initialisations:
-  var thisGometryCanFill = true;
-  var thisGometryCanStroke = true;
-  var primitiveType = GEOM_TYPE_CYLINDER;
-  var isLine = false;
-  var isRectangle = false;
-  var isBox = false;
-  var isCylinder = true;
-  var isAmbientLight = false;
-  var isPointLight = false;
-  var isSphere = 0;
-  var doubleSided = false;
+  var primitiveProperties = {
+		thisGometryCanFill: true,
+		thisGometryCanStroke: true,
+		primitiveType: GEOM_TYPE_CYLINDER,
+		isLine: false,
+		isRectangle: false,
+		isBox: false,
+		isCylinder: true,
+		isAmbientLight: false,
+		isPointLight: false,
+		isSphere: 0,
+		doubleSided: false
+	}
   // end of primitive-specific initialisations:
 
   // b and c are not functional in some geometric
@@ -608,7 +616,7 @@ var peg = function(a,b,c) {
   var startIndex = 0;
   var endIndex = 0;
 
-  if (!doStroke && (!doFill || !thisGometryCanFill)) {
+  if (!doStroke && (!doFill || !primitiveProperties.thisGometryCanFill)) {
     return;
   }
   // if the wireframe is not going to be visible on top of the
@@ -641,7 +649,7 @@ var peg = function(a,b,c) {
       colorToBeUsed = currentFillColor;
       alphaToBeUsed = currentFillAlpha;
     }
-    var pooledObject = objectPool[primitiveType][objectsUsedInFrameCounts[primitiveType]];
+    var pooledObject = objectPool[primitiveProperties.primitiveType][objectsUsedInFrameCounts[primitiveProperties.primitiveType]];
     if (pooledObject === undefined) {
       // each pooled object contains a geometry,
       // a basic material and a lambert material.
@@ -664,7 +672,7 @@ var peg = function(a,b,c) {
         mesh: undefined
       };
       newGeometricObjectCreated = true;
-      objectPool[primitiveType].push(pooledObject);
+      objectPool[primitiveProperties.primitiveType].push(pooledObject);
     }
     var applyDefaultNormalColor = false;
     if (!strokeTime) {
@@ -693,16 +701,16 @@ var peg = function(a,b,c) {
         pooledObject.normalMaterial = new THREE.MeshNormalMaterial({
           opacity: alphaToBeUsed,
           wireframe: strokeTime,
-          wireframeLinewidth: currentStrokeSize,
+          wireframeLinewidth: currentStrokeSize
         });
       } else {
         pooledObject.normalMaterial.opacity = alphaToBeUsed;
         pooledObject.normalMaterial.wireframe = strokeTime;
         pooledObject.normalMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.normalMaterial.doubleSided = doubleSided;
+        pooledObject.normalMaterial.doubleSided = primitiveProperties.doubleSided;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.normalMaterial);
+        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.normalMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
 ////        logger("associating normal material to existing mesh");
@@ -714,17 +722,17 @@ var peg = function(a,b,c) {
           color: colorToBeUsed,
           opacity: alphaToBeUsed,
           wireframe: strokeTime,
-          wireframeLinewidth: currentStrokeSize,
+          wireframeLinewidth: currentStrokeSize
         });
       } else {
         pooledObject.basicMaterial.color.setHex(colorToBeUsed);
         pooledObject.basicMaterial.opacity = alphaToBeUsed;
         pooledObject.basicMaterial.wireframe = strokeTime;
         pooledObject.basicMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.basicMaterial.doubleSided = doubleSided;
+        pooledObject.basicMaterial.doubleSided = primitiveProperties.doubleSided;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.basicMaterial);
+        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.basicMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
         pooledObject.mesh.material = pooledObject.basicMaterial;
@@ -742,20 +750,20 @@ var peg = function(a,b,c) {
           reflectivity: reflectValue,
           refractionRatio: refractValue,
           wireframe: strokeTime,
-          wireframeLinewidth: currentStrokeSize,
+          wireframeLinewidth: currentStrokeSize
         });
       } else {
         pooledObject.lambertMaterial.color.setHex(colorToBeUsed);
         pooledObject.lambertMaterial.opacity = alphaToBeUsed;
         pooledObject.lambertMaterial.wireframe = strokeTime;
         pooledObject.lambertMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.lambertMaterial.doubleSided = doubleSided;
+        pooledObject.lambertMaterial.doubleSided = primitiveProperties.doubleSided;
         pooledObject.lambertMaterial.ambient.setHex(ambientColor);
         pooledObject.lambertMaterial.reflectivity = reflectValue;
         pooledObject.lambertMaterial.refractionRatio = refractValue;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.lambertMaterial);
+        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.lambertMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
         pooledObject.mesh.material = pooledObject.lambertMaterial;
@@ -770,17 +778,17 @@ var peg = function(a,b,c) {
     if (doTheSpinThingy) pooledObject.startCountdown--;
     if (pooledObject.startCountdown === -1) doTheSpinThingy = false;
 
-    pooledObject.mesh.isLine = isLine;
-    pooledObject.mesh.isRectangle = isRectangle;
-    pooledObject.mesh.isBox = isBox;
-    pooledObject.mesh.isCylinder = isCylinder;
-    pooledObject.mesh.isAmbientLight = isAmbientLight;
-    pooledObject.mesh.isPointLight = isPointLight;
-    pooledObject.mesh.isSphere = isSphere;
-    pooledObject.mesh.doubleSided = doubleSided;
+    pooledObject.mesh.isLine = primitiveProperties.isLine;
+    pooledObject.mesh.isRectangle = primitiveProperties.isRectangle;
+    pooledObject.mesh.isBox = primitiveProperties.isBox;
+    pooledObject.mesh.isCylinder = primitiveProperties.isCylinder;
+    pooledObject.mesh.isAmbientLight = primitiveProperties.isAmbientLight;
+    pooledObject.mesh.isPointLight = primitiveProperties.isPointLight;
+    pooledObject.mesh.isSphere = primitiveProperties.isSphere;
+    pooledObject.mesh.doubleSided = primitiveProperties.doubleSided;
 
 
-    objectsUsedInFrameCounts[primitiveType]++;
+    objectsUsedInFrameCounts[primitiveProperties.primitiveType]++;
 
     if (doTheSpinThingy && pooledObject.startCountdown > 0) {
       pushMatrix();
@@ -822,17 +830,19 @@ var ballDetail = function(a) {
 var ball = function(a,b,c) {
 
   // primitive-specific initialisations:
-  var thisGometryCanFill = true;
-  var thisGometryCanStroke = true;
-  var primitiveType = GEOM_TYPE_SPHERE + ballDetLevel - minimumBallDetail;
-  var isLine = false;
-  var isRectangle = false;
-  var isBox = false;
-  var isCylinder = false;
-  var isAmbientLight = false;
-  var isPointLight = false;
-  var isSphere = ballDetLevel;
-  var doubleSided = false;
+  var primitiveProperties = {
+		thisGometryCanFill: true,
+		thisGometryCanStroke: true,
+		primitiveType: GEOM_TYPE_SPHERE + ballDetLevel - minimumBallDetail,
+		isLine: false,
+		isRectangle: false,
+		isBox: false,
+		isCylinder: false,
+		isAmbientLight: false,
+		isPointLight: false,
+		isSphere: ballDetLevel,
+		doubleSided: false
+	}
   // end of primitive-specific initialisations:
 
   // b and c are not functional in some geometric
@@ -852,7 +862,7 @@ var ball = function(a,b,c) {
   var startIndex = 0;
   var endIndex = 0;
 
-  if (!doStroke && (!doFill || !thisGometryCanFill)) {
+  if (!doStroke && (!doFill || !primitiveProperties.thisGometryCanFill)) {
     return;
   }
   // if the wireframe is not going to be visible on top of the
@@ -885,7 +895,7 @@ var ball = function(a,b,c) {
       colorToBeUsed = currentFillColor;
       alphaToBeUsed = currentFillAlpha;
     }
-    var pooledObject = objectPool[primitiveType][objectsUsedInFrameCounts[primitiveType]];
+    var pooledObject = objectPool[primitiveProperties.primitiveType][objectsUsedInFrameCounts[primitiveProperties.primitiveType]];
     if (pooledObject === undefined) {
       // each pooled object contains a geometry,
       // a basic material and a lambert material.
@@ -908,7 +918,7 @@ var ball = function(a,b,c) {
         mesh: undefined
       };
       newGeometricObjectCreated = true;
-      objectPool[primitiveType].push(pooledObject);
+      objectPool[primitiveProperties.primitiveType].push(pooledObject);
     }
     var applyDefaultNormalColor = false;
     if (!strokeTime) {
@@ -937,16 +947,16 @@ var ball = function(a,b,c) {
         pooledObject.normalMaterial = new THREE.MeshNormalMaterial({
           opacity: alphaToBeUsed,
           wireframe: strokeTime,
-          wireframeLinewidth: currentStrokeSize,
+          wireframeLinewidth: currentStrokeSize
         });
       } else {
         pooledObject.normalMaterial.opacity = alphaToBeUsed;
         pooledObject.normalMaterial.wireframe = strokeTime;
         pooledObject.normalMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.normalMaterial.doubleSided = doubleSided;
+        pooledObject.normalMaterial.doubleSided = primitiveProperties.doubleSided;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.normalMaterial);
+        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.normalMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
 //        logger("associating normal material to existing mesh");
@@ -958,17 +968,17 @@ var ball = function(a,b,c) {
           color: colorToBeUsed,
           opacity: alphaToBeUsed,
           wireframe: strokeTime,
-          wireframeLinewidth: currentStrokeSize,
+          wireframeLinewidth: currentStrokeSize
         });
       } else {
         pooledObject.basicMaterial.color.setHex(colorToBeUsed);
         pooledObject.basicMaterial.opacity = alphaToBeUsed;
         pooledObject.basicMaterial.wireframe = strokeTime;
         pooledObject.basicMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.basicMaterial.doubleSided = doubleSided;
+        pooledObject.basicMaterial.doubleSided = primitiveProperties.doubleSided;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.basicMaterial);
+        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.basicMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
         pooledObject.mesh.material = pooledObject.basicMaterial;
@@ -986,20 +996,20 @@ var ball = function(a,b,c) {
           reflectivity: reflectValue,
           refractionRatio: refractValue,
           wireframe: strokeTime,
-          wireframeLinewidth: currentStrokeSize,
+          wireframeLinewidth: currentStrokeSize
         });
       } else {
         pooledObject.lambertMaterial.color.setHex(colorToBeUsed);
         pooledObject.lambertMaterial.opacity = alphaToBeUsed;
         pooledObject.lambertMaterial.wireframe = strokeTime;
         pooledObject.lambertMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.lambertMaterial.doubleSided = doubleSided;
+        pooledObject.lambertMaterial.doubleSided = primitiveProperties.doubleSided;
         pooledObject.lambertMaterial.ambient.setHex(ambientColor);
         pooledObject.lambertMaterial.reflectivity = reflectValue;
         pooledObject.lambertMaterial.refractionRatio = refractValue;
       }
       if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveType], pooledObject.lambertMaterial);
+        pooledObject.mesh = new THREE.Mesh(geometriesBank[primitiveProperties.primitiveType], pooledObject.lambertMaterial);
         pooledObject.startCountdown = SPINFRAMES;
       } else {
         pooledObject.mesh.material = pooledObject.lambertMaterial;
@@ -1014,17 +1024,17 @@ var ball = function(a,b,c) {
     if (doTheSpinThingy) pooledObject.startCountdown--;
     if (pooledObject.startCountdown === -1) doTheSpinThingy = false;
 
-    pooledObject.mesh.isLine = isLine;
-    pooledObject.mesh.isRectangle = isRectangle;
-    pooledObject.mesh.isBox = isBox;
-    pooledObject.mesh.isCylinder = isCylinder;
-    pooledObject.mesh.isAmbientLight = isAmbientLight;
-    pooledObject.mesh.isPointLight = isPointLight;
-    pooledObject.mesh.isSphere = isSphere;
-    pooledObject.mesh.doubleSided = doubleSided;
+    pooledObject.mesh.isLine = primitiveProperties.isLine;
+    pooledObject.mesh.isRectangle = primitiveProperties.isRectangle;
+    pooledObject.mesh.isBox = primitiveProperties.isBox;
+    pooledObject.mesh.isCylinder = primitiveProperties.isCylinder;
+    pooledObject.mesh.isAmbientLight = primitiveProperties.isAmbientLight;
+    pooledObject.mesh.isPointLight = primitiveProperties.isPointLight;
+    pooledObject.mesh.isSphere = primitiveProperties.isSphere;
+    pooledObject.mesh.doubleSided = primitiveProperties.doubleSided;
 
 
-    objectsUsedInFrameCounts[primitiveType]++;
+    objectsUsedInFrameCounts[primitiveProperties.primitiveType]++;
 
     if (doTheSpinThingy && pooledObject.startCountdown > 0) {
       pushMatrix();
