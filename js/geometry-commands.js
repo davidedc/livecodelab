@@ -78,6 +78,7 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
         applyDefaultNormalColor = false;
       }
     }
+
     if (primitiveProperties.primitiveType === GEOM_TYPE_LINE) {
       pooledObject.neverUsed = false;
       if (pooledObject.lineMaterial === undefined) {
@@ -98,7 +99,6 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
 ////        logger("associating normal material to existing mesh");
         pooledObject.mesh.material = pooledObject.lineMaterial;
       }
-
 		// setting the color after the geometry has been dealt with
 		// because in case we use the angleColor then we
 		// need to know the geometry.
@@ -397,7 +397,7 @@ var ballDetail = function(a) {
   if (a === undefined) return;
   if (a < 2) a = 2;
   if (a > 30) a = 30;
-  ballDetLevel = a;
+  ballDetLevel = Math.round(a);
 }
 
 var ball = function(a,b,c) {
