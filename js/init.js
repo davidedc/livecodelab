@@ -96,9 +96,11 @@ var startEnvironment = function() {
 
   editor = createEditor();
 
-
   editor.focus();
   adjustCodeMirrorHeight();
+
+  //create autocoder here
+  autocoder = createAutocoder(editor);
 
   // check if the url points to a particular demo,
   // in which case we load the demo directly.

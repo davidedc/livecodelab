@@ -1,5 +1,5 @@
 /*jslint devel: true */
-/*global*/
+/*global autocoder */
 
 $(document).ready(function() {
 
@@ -25,7 +25,7 @@ $(document).ready(function() {
 
 
     $('#autocodeIndicatorContainer').click(function () {
-        toggleAutocodeAndUpdateButtonAndBlinking();
+        autocoder.toggle();
         return false;
     });
 
