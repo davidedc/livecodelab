@@ -1,5 +1,5 @@
 /*jslint devel: true */
-/*global $, autocoder, logger, pickRandomDefaultGradient, initThreeJs, buzz */
+/*global $, autocoder, logger, BackgroundPainter, initThreeJs, buzz */
 
 var startingSound;
 
@@ -7,7 +7,7 @@ var startEnvironment = function () {
 
     'use strict';
 
-    pickRandomDefaultGradient();
+    BackgroundPainter.pickRandomDefaultGradient();
 
     logger("startEnvironment");
     if (!initThreeJs()) animate();
@@ -26,8 +26,8 @@ var startEnvironment = function () {
     if (fullScreenifyBackground) {
         fullscreenify(canvas);
     }
-    resetGradientStack();
-    simpleGradientUpdateIfChanged();
+    BackgroundPainter.resetGradientStack();
+    BackgroundPainter.simpleGradientUpdateIfChanged();
 
     $('#startingCourtainScreen').fadeOut();
     $("#formCode").css('opacity', 0);
