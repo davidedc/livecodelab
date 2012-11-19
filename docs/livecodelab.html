@@ -69,7 +69,7 @@ parentObject = rootObject;</p>             </td>             <td class="code">  
         }
 
         animationStyleValue = normal;
-        resetGradientStack();
+        BackgroundPainter.resetGradientStack();
 </pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>bpm(0);</p>             </td>             <td class="code">               <div class="highlight"><pre>
 </pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Now here there is another try/catch check when the draw function is ran.
 The reason is that there might be references to uninitialised or inexistent
@@ -108,7 +108,7 @@ after the program has executed</p>             </td>             <td class="code
         }
         <span class="keyword">if</span> (anyCodeReactingTobpm) changeUpdatesPerMinuteIfNeeded();
         animationStyleUpdateIfChanged();
-        simpleGradientUpdateIfChanged();
+        BackgroundPainter.simpleGradientUpdateIfChanged();
         changeUpdatesPerMinuteIfNeeded();
         frame++;
         consecutiveFramesWithoutRunTimeError++;
@@ -188,7 +188,7 @@ clear the final render context</p>             </td>             <td class="code
 
 
 <span class="function"><span class="keyword">function</span> <span class="title">triggerReset</span><span class="params">()</span> {</span>
-    pickRandomDefaultGradient();
+    BackgroundPainter.pickRandomDefaultGradient();
     <span class="keyword">if</span> (autocoder.active) toggleAutocodeAndUpdateButtonAndBlinking();
     editor.setValue(<span class="string">''</span>);
     $(<span class="string">"#resetButtonContainer"</span>).css(<span class="string">"background-color"</span>, <span class="string">'#FF0000'</span>);
