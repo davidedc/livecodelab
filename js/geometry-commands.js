@@ -31,7 +31,7 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
   var strokeTime = false;
   var colorToBeUsed;
   var alphaToBeUsed;
-  var newGeometricObjectCreated = false;
+  var newObjectToBeAddedToTheScene = false;
 
   // this is to run the code twice. This should be neater
   // and turned into a function call really.
@@ -69,7 +69,7 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
         // for each different type of material
         mesh: undefined
       };
-      newGeometricObjectCreated = true;
+      newObjectToBeAddedToTheScene = true;
       objectPool[primitiveProperties.primitiveType].push(pooledObject);
     }
 
@@ -104,7 +104,7 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
 			}
 
     }
-    else if (newGeometricObjectCreated || (colorToBeUsed === angleColor || applyDefaultNormalColor)) {
+    else if (newObjectToBeAddedToTheScene || (colorToBeUsed === angleColor || applyDefaultNormalColor)) {
       // the first time we render a mesh we need to
       // render it with the material that takes the
       // bigger buffer space, see:
@@ -228,7 +228,7 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
       else pooledObject.mesh.matrix.scale(new THREE.Vector3(a + 0.001, b + 0.001, c + 0.001));
     }
 
-    if (newGeometricObjectCreated) scene.add(pooledObject.mesh);
+    if (newObjectToBeAddedToTheScene) scene.add(pooledObject.mesh);
   }
 }
 
