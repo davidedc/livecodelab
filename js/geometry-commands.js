@@ -36,13 +36,16 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
   // this is to run the code twice. This should be neater
   // and turned into a function call really.
   for (var fillAndStroke = startIndex; fillAndStroke < endIndex; fillAndStroke++) {
+    var applyDefaultNormalColor = false;
     if (fillAndStroke === 1) {
       strokeTime = true;
       colorToBeUsed = currentStrokeColor;
       alphaToBeUsed = currentStrokeAlpha;
+      applyDefaultNormalColor = defaultNormalStroke;
     } else {
       colorToBeUsed = currentFillColor;
       alphaToBeUsed = currentFillAlpha;
+      applyDefaultNormalColor = defaultNormalFill;
     }
     var pooledObject = objectPool[primitiveProperties.primitiveType][objectsUsedInFrameCounts[primitiveProperties.primitiveType]];
     if (pooledObject === undefined) {
@@ -69,20 +72,6 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
       };
       newGeometricObjectCreated = true;
       objectPool[primitiveProperties.primitiveType].push(pooledObject);
-    }
-    var applyDefaultNormalColor = false;
-    if (!strokeTime) {
-      if (defaultNormalFill) {
-        applyDefaultNormalColor = true;
-      } else {
-        applyDefaultNormalColor = false;
-      }
-    } else {
-      if (defaultNormalStroke) {
-        applyDefaultNormalColor = true;
-      } else {
-        applyDefaultNormalColor = false;
-      }
     }
 
     if (primitiveProperties.primitiveType === GEOM_TYPE_LINE) {
