@@ -1,22 +1,28 @@
 var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
 
-  // simple case - if there is no fill and
-  // no stroke then there is nothing to do.
   var startIndex = 0;
   var endIndex = 0;
 
+  // Simple case - if there is no fill and
+  // no stroke then there is nothing to do.
+  // Also, even if we aren'd under a noFill command spell, some geometries
+  // inherently don't have a fill, so we return if there is no stroke either.
+  // (right now that applies only lines).
   if (!doStroke && (!doFill || !primitiveProperties.thisGometryCanFill)) {
     return;
   }
-  // if the wireframe is not going to be visible on top of the
+  // if we are under the influence of a noFill command OR
+  // the wireframe is not going to be visible on top of the
   // fill then don't draw it
   else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
-    //if (doStroke) logger('smart optimisation, was supposed to do the stroke but not doing it!!');
     startIndex = 0;
     endIndex = 1;
-  } else if (!doFill && doStroke) {
+  }
+  // only doing the stroke
+  else if (!doFill && doStroke) {
     startIndex = 1;
     endIndex = 2;
+  // doing both the fill and the stroke
   } else {
     startIndex = 0;
     endIndex = 2;
