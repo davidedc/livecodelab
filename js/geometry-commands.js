@@ -67,7 +67,6 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
         // the user will ever want to use it.
         // Another workaround would be to create a mesh
         // for each different type of material
-        neverUsed: true,
         mesh: undefined
       };
       newGeometricObjectCreated = true;
@@ -75,7 +74,6 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
     }
 
     if (primitiveProperties.primitiveType === GEOM_TYPE_LINE) {
-      pooledObject.neverUsed = false;
       if (pooledObject.lineMaterial === undefined) {
         logger("creating line material");
         pooledObject.lineMaterial = new THREE.LineBasicMaterial({
@@ -106,14 +104,13 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
 			}
 
     }
-    else if (pooledObject.neverUsed || (colorToBeUsed === angleColor || applyDefaultNormalColor)) {
+    else if (newGeometricObjectCreated || (colorToBeUsed === angleColor || applyDefaultNormalColor)) {
       // the first time we render a mesh we need to
       // render it with the material that takes the
       // bigger buffer space, see:
       // https://github.com/mrdoob/three.js/issues/1051
       // Another workaround would be to create a mesh
       // for each different type of material
-      pooledObject.neverUsed = false;
       if (pooledObject.normalMaterial === undefined) {
         logger("creating normal material");
         pooledObject.normalMaterial = new THREE.MeshNormalMaterial({
