@@ -67,8 +67,12 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
         // the user will ever want to use it.
         // Another workaround would be to create a mesh
         // for each different type of material
-        mesh: undefined
+        mesh: new primitiveProperties.THREEConstructor(
+           geometriesBank[primitiveProperties.primitiveType]
+        ),
+        startCountdown: SPINFRAMES
       };
+      
       newObjectToBeAddedToTheScene = true;
       objectPool[primitiveProperties.primitiveType].push(pooledObject);
     }
@@ -85,13 +89,8 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
 				pooledObject.lineMaterial.opacity = currentStrokeAlpha;
 				pooledObject.lineMaterial.linewidth = currentStrokeSize;
       }
-      if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new primitiveProperties.THREEConstructor(geometriesBank[primitiveProperties.primitiveType], pooledObject.lineMaterial);
-        pooledObject.startCountdown = SPINFRAMES;
-      } else {
-////        logger("associating normal material to existing mesh");
-        pooledObject.mesh.material = pooledObject.lineMaterial;
-      }
+    ////        logger("associating normal material to existing mesh");
+    pooledObject.mesh.material = pooledObject.lineMaterial;
 		// setting the color after the geometry has been dealt with
 		// because in case we use the angleColor then we
 		// need to know the geometry.
@@ -124,13 +123,7 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
         pooledObject.normalMaterial.wireframeLinewidth = currentStrokeSize;
         pooledObject.normalMaterial.doubleSided = primitiveProperties.doubleSided;
       }
-      if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new primitiveProperties.THREEConstructor(geometriesBank[primitiveProperties.primitiveType], pooledObject.normalMaterial);
-        pooledObject.startCountdown = SPINFRAMES;
-      } else {
-////        logger("associating normal material to existing mesh");
-        pooledObject.mesh.material = pooledObject.normalMaterial;
-      }
+      pooledObject.mesh.material = pooledObject.normalMaterial;
     } else if (!lightsAreOn) {
       if (pooledObject.basicMaterial === undefined) {
         pooledObject.basicMaterial = new THREE.MeshBasicMaterial({
@@ -146,12 +139,7 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
         pooledObject.basicMaterial.wireframeLinewidth = currentStrokeSize;
         pooledObject.basicMaterial.doubleSided = primitiveProperties.doubleSided;
       }
-      if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new primitiveProperties.THREEConstructor(geometriesBank[primitiveProperties.primitiveType], pooledObject.basicMaterial);
-        pooledObject.startCountdown = SPINFRAMES;
-      } else {
-        pooledObject.mesh.material = pooledObject.basicMaterial;
-      }
+      pooledObject.mesh.material = pooledObject.basicMaterial;
 
     }
     // lights are on
@@ -177,12 +165,7 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
         pooledObject.lambertMaterial.reflectivity = reflectValue;
         pooledObject.lambertMaterial.refractionRatio = refractValue;
       }
-      if (pooledObject.mesh === undefined) {
-        pooledObject.mesh = new primitiveProperties.THREEConstructor(geometriesBank[primitiveProperties.primitiveType], pooledObject.lambertMaterial);
-        pooledObject.startCountdown = SPINFRAMES;
-      } else {
-        pooledObject.mesh.material = pooledObject.lambertMaterial;
-      }
+      pooledObject.mesh.material = pooledObject.lambertMaterial;
     }
 
     if (resetTheSpinThingy) {
