@@ -75,7 +75,7 @@ function animate() {
         }
 
         animationStyleValue = normal;
-        resetGradientStack();
+        BackgroundPainter.resetGradientStack();
         //bpm(0);
 
         // Now here there is another try/catch check when the draw function is ran.
@@ -121,7 +121,7 @@ function animate() {
         }
         if (anyCodeReactingTobpm) changeUpdatesPerMinuteIfNeeded();
         animationStyleUpdateIfChanged();
-        simpleGradientUpdateIfChanged();
+        BackgroundPainter.simpleGradientUpdateIfChanged();
         changeUpdatesPerMinuteIfNeeded();
         frame++;
         consecutiveFramesWithoutRunTimeError++;
@@ -215,7 +215,7 @@ function render() {
 
 
 function triggerReset() {
-    pickRandomDefaultGradient();
+    BackgroundPainter.pickRandomDefaultGradient();
     if (autocoder.active) toggleAutocodeAndUpdateButtonAndBlinking();
     editor.setValue('');
     $("#resetButtonContainer").css("background-color", '#FF0000');

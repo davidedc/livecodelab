@@ -1,112 +1,133 @@
-<!DOCTYPE html>  <html> <head>   <title>background-painting.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="geometry-commands.html">                 geometry-commands.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="menu.html">                 menu.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               background-painting.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> gradStack = [];
-<span class="keyword">var</span> defaultGradientColor1 = orange;
-<span class="keyword">var</span> defaultGradientColor2 = red;
-<span class="keyword">var</span> defaultGradientColor3 = black;
-<span class="keyword">var</span> whichDefaultBackground;
+<!DOCTYPE html>  <html> <head>   <title>background-painting.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="geometry-commands.html">                 geometry-commands.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="menu.html">                 menu.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               background-painting.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true, devel: true */</span>
+<span class="comment">/*global $, color, logger, backgroundSceneContext, scaledBackgroundHeight, scaledBackgroundWidth */</span>
 
-<span class="keyword">var</span> pickRandomDefaultGradient = <span class="keyword">function</span>() {
-  <span class="keyword">if</span> (whichDefaultBackground === <span class="literal">undefined</span>) {
-    whichDefaultBackground = Math.floor(Math.random() * <span class="number">5</span>);
-  } <span class="keyword">else</span> {
-    whichDefaultBackground = (whichDefaultBackground + <span class="number">1</span>) % <span class="number">5</span>;
-  }
+<span class="keyword">var</span> createBackgroundPainter = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
 
-  <span class="keyword">if</span> (whichDefaultBackground === <span class="number">0</span>) {
-    defaultGradientColor1 = orange;
-    defaultGradientColor2 = red;
-    defaultGradientColor3 = black;
-    $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'white'</span>);
-  } <span class="keyword">else</span> <span class="keyword">if</span> (whichDefaultBackground === <span class="number">1</span>) {
-    defaultGradientColor1 = white;
-    defaultGradientColor2 = khaki;
-    defaultGradientColor3 = peachpuff;
-    $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'LightPink'</span>);
-  } <span class="keyword">else</span> <span class="keyword">if</span> (whichDefaultBackground === <span class="number">2</span>) {
-    defaultGradientColor1 = lightsteelblue;
-    defaultGradientColor2 = lightcyan;
-    defaultGradientColor3 = paleturquoise;
-    $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'CadetBlue'</span>);
-  } <span class="keyword">else</span> <span class="keyword">if</span> (whichDefaultBackground === <span class="number">3</span>) {
-    defaultGradientColor1 = silver;
-    defaultGradientColor2 = lightgrey;
-    defaultGradientColor3 = gainsboro;
-    $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'white'</span>);
-  } <span class="keyword">else</span> <span class="keyword">if</span> (whichDefaultBackground === <span class="number">4</span>) {
-    defaultGradientColor1 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
-    defaultGradientColor2 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
-    defaultGradientColor3 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
-    $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'DarkOliveGreen'</span>);
-  }
-}
+    <span class="string">'use strict'</span>;
 
-<span class="keyword">var</span> resetGradientStack = <span class="keyword">function</span>() {
-  currentGradientStackValue = <span class="string">""</span>;
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>we could be more efficient and
-reuse the previous stack elements
-but I don't think it matters here</p>             </td>             <td class="code">               <div class="highlight"><pre>  gradStack = [];
+    <span class="keyword">var</span> gradStack = [],
+        defaultGradientColor1 = orange,
+        defaultGradientColor2 = red,
+        defaultGradientColor3 = black,
+        whichDefaultBackground,
+        currentGradientStackValue = <span class="string">''</span>,
+        previousGradientStackValue = <span class="number">0</span>,
+        BackgroundPainter = {};
 
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>simpleGradient(color(70),color(30),color(0),1);</p>             </td>             <td class="code">               <div class="highlight"><pre>  simpleGradient(defaultGradientColor1, defaultGradientColor2, defaultGradientColor3);
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    BackgroundPainter.simpleGradient = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c, d)</span> {</span>
 
-}
+        currentGradientStackValue = currentGradientStackValue + <span class="string">" "</span> + a + <span class="string">""</span> + b + <span class="string">""</span> + c + <span class="string">""</span> + d + <span class="string">"null "</span>;
+        gradStack.push({
+            gradStacka: a,
+            gradStackb: b,
+            gradStackc: c,
+            gradStackd: d,
+            solid: <span class="literal">null</span>
+        });
 
-<span class="keyword">var</span> background = <span class="keyword">function</span>() {
+    };
+
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    BackgroundPainter.background = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
 
 </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>[todo] should the screen be cleared when you invoke
 the background command? (In processing it's not)</p>             </td>             <td class="code">               <div class="highlight"><pre>
-  <span class="keyword">var</span> a = color(arguments[<span class="number">0</span>], arguments[<span class="number">1</span>], arguments[<span class="number">2</span>], arguments[<span class="number">3</span>]);
+        <span class="keyword">var</span> a = color(arguments[<span class="number">0</span>], arguments[<span class="number">1</span>], arguments[<span class="number">2</span>], arguments[<span class="number">3</span>]);
 </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>logger("adding solid background to stack");
-if (a===undefined) a = color(0);</p>             </td>             <td class="code">               <div class="highlight"><pre>  currentGradientStackValue = currentGradientStackValue + <span class="string">" null null null null "</span> + a + <span class="string">" "</span>;
-  gradStack.push({
-    gradStacka: <span class="literal">undefined</span>,
-    gradStackb: <span class="literal">undefined</span>,
-    gradStackc: <span class="literal">undefined</span>,
-    gradStackd: <span class="literal">undefined</span>,
-    solid: a
-  });
-}
+if (a===undefined) a = color(0);</p>             </td>             <td class="code">               <div class="highlight"><pre>        currentGradientStackValue = currentGradientStackValue + <span class="string">" null null null null "</span> + a + <span class="string">" "</span>;
+        gradStack.push({
+            gradStacka: <span class="literal">undefined</span>,
+            gradStackb: <span class="literal">undefined</span>,
+            gradStackc: <span class="literal">undefined</span>,
+            gradStackd: <span class="literal">undefined</span>,
+            solid: a
+        });
+    };
 
-<span class="keyword">var</span> simpleGradient = <span class="keyword">function</span>(a, b, c, d) {
-  currentGradientStackValue = currentGradientStackValue + <span class="string">" "</span> + a + <span class="string">""</span> + b + <span class="string">""</span> + c + <span class="string">""</span> + d + <span class="string">"null "</span>;
-  gradStack.push({
-    gradStacka: a,
-    gradStackb: b,
-    gradStackc: c,
-    gradStackd: d,
-    solid: <span class="literal">null</span>
-  });
+    BackgroundPainter.pickRandomDefaultGradient = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
 
-}
-
-<span class="keyword">var</span> simpleGradientUpdateIfChanged = <span class="keyword">function</span>() {
-
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>alert('simpleGradientUpdateIfChanged curr '+currentGradientStackValue + " prev " +previousGradientStackValue );</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> ((currentGradientStackValue === previousGradientStackValue)) {
-      <span class="keyword">return</span>;
-    } <span class="keyword">else</span> {
-
-      previousGradientStackValue = currentGradientStackValue;
-      logger(<span class="string">'repainting background'</span>);
-      <span class="keyword">var</span> diagonal = Math.sqrt(Math.pow(scaledBackgroundWidth / <span class="number">2</span>, <span class="number">2</span>) + Math.pow(scaledBackgroundHeight / <span class="number">2</span>, <span class="number">2</span>));
-      <span class="keyword">var</span> radgrad;
-      <span class="keyword">for</span> (<span class="keyword">var</span> scanningGradStack = <span class="number">0</span>; scanningGradStack &lt; gradStack.length; scanningGradStack++) {
-
-        <span class="keyword">if</span> (gradStack[scanningGradStack].gradStacka !== <span class="literal">undefined</span>) {
-          radgrad = backgroundSceneContext.createLinearGradient(scaledBackgroundWidth / <span class="number">2</span>, <span class="number">0</span>, scaledBackgroundWidth / <span class="number">2</span>, scaledBackgroundHeight);
-          radgrad.addColorStop(<span class="number">0</span>, color.toString(gradStack[scanningGradStack].gradStacka));
-          radgrad.addColorStop(<span class="number">0.5</span>, color.toString(gradStack[scanningGradStack].gradStackb));
-          radgrad.addColorStop(<span class="number">1</span>, color.toString(gradStack[scanningGradStack].gradStackc));
-
-          backgroundSceneContext.globalAlpha = <span class="number">1.0</span>;
-          backgroundSceneContext.fillStyle = radgrad;
-          backgroundSceneContext.fillRect(<span class="number">0</span>, <span class="number">0</span>, scaledBackgroundWidth, scaledBackgroundHeight);
+        <span class="keyword">if</span> (whichDefaultBackground === <span class="literal">undefined</span>) {
+            whichDefaultBackground = Math.floor(Math.random() * <span class="number">5</span>);
         } <span class="keyword">else</span> {
-          logger(<span class="string">"solid background: "</span>+ gradStack[scanningGradStack].solid);
-          backgroundSceneContext.globalAlpha = <span class="number">1.0</span>;
-          backgroundSceneContext.fillStyle = color.toString(gradStack[scanningGradStack].solid);
-          backgroundSceneContext.fillRect(<span class="number">0</span>, <span class="number">0</span>, scaledBackgroundWidth, scaledBackgroundHeight);
+            whichDefaultBackground = (whichDefaultBackground + <span class="number">1</span>) % <span class="number">5</span>;
         }
-      }
-    }
 
-  }
+        <span class="keyword">if</span> (whichDefaultBackground === <span class="number">0</span>) {
+            defaultGradientColor1 = orange;
+            defaultGradientColor2 = red;
+            defaultGradientColor3 = black;
+            $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'white'</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (whichDefaultBackground === <span class="number">1</span>) {
+            defaultGradientColor1 = white;
+            defaultGradientColor2 = khaki;
+            defaultGradientColor3 = peachpuff;
+            $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'LightPink'</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (whichDefaultBackground === <span class="number">2</span>) {
+            defaultGradientColor1 = lightsteelblue;
+            defaultGradientColor2 = lightcyan;
+            defaultGradientColor3 = paleturquoise;
+            $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'CadetBlue'</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (whichDefaultBackground === <span class="number">3</span>) {
+            defaultGradientColor1 = silver;
+            defaultGradientColor2 = lightgrey;
+            defaultGradientColor3 = gainsboro;
+            $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'white'</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (whichDefaultBackground === <span class="number">4</span>) {
+            defaultGradientColor1 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
+            defaultGradientColor2 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
+            defaultGradientColor3 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
+            $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'DarkOliveGreen'</span>);
+        }
+    };
+
+    BackgroundPainter.resetGradientStack = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+        currentGradientStackValue = <span class="string">""</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>we could be more efficient and
+reuse the previous stack elements
+but I don't think it matters here</p>             </td>             <td class="code">               <div class="highlight"><pre>        gradStack = [];
+
+        BackgroundPainter.simpleGradient(defaultGradientColor1, defaultGradientColor2, defaultGradientColor3);
+    };
+
+    BackgroundPainter.simpleGradientUpdateIfChanged = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+        <span class="keyword">var</span> diagonal, radgrad, scanningGradStack;
+        <span class="keyword">if</span> ((currentGradientStackValue !== previousGradientStackValue)) {
+
+            previousGradientStackValue = currentGradientStackValue;
+            logger(<span class="string">'repainting background'</span>);
+            diagonal = Math.sqrt(Math.pow(scaledBackgroundWidth / <span class="number">2</span>, <span class="number">2</span>) + Math.pow(scaledBackgroundHeight / <span class="number">2</span>, <span class="number">2</span>));
+
+            <span class="keyword">for</span> (scanningGradStack = <span class="number">0</span>; scanningGradStack &lt; gradStack.length; scanningGradStack++) {
+
+                <span class="keyword">if</span> (gradStack[scanningGradStack].gradStacka !== <span class="literal">undefined</span>) {
+                    radgrad = backgroundSceneContext.createLinearGradient(scaledBackgroundWidth / <span class="number">2</span>, <span class="number">0</span>, scaledBackgroundWidth / <span class="number">2</span>, scaledBackgroundHeight);
+                    radgrad.addColorStop(<span class="number">0</span>, color.toString(gradStack[scanningGradStack].gradStacka));
+                    radgrad.addColorStop(<span class="number">0.5</span>, color.toString(gradStack[scanningGradStack].gradStackb));
+                    radgrad.addColorStop(<span class="number">1</span>, color.toString(gradStack[scanningGradStack].gradStackc));
+
+                    backgroundSceneContext.globalAlpha = <span class="number">1.0</span>;
+                    backgroundSceneContext.fillStyle = radgrad;
+                    backgroundSceneContext.fillRect(<span class="number">0</span>, <span class="number">0</span>, scaledBackgroundWidth, scaledBackgroundHeight);
+                } <span class="keyword">else</span> {
+                    logger(<span class="string">"solid background: "</span> + gradStack[scanningGradStack].solid);
+                    backgroundSceneContext.globalAlpha = <span class="number">1.0</span>;
+                    backgroundSceneContext.fillStyle = color.toString(gradStack[scanningGradStack].solid);
+                    backgroundSceneContext.fillRect(<span class="number">0</span>, <span class="number">0</span>, scaledBackgroundWidth, scaledBackgroundHeight);
+                }
+            }
+        }
+
+    };
+
+    <span class="keyword">return</span> BackgroundPainter;
+
+};
+
+<span class="keyword">var</span> BackgroundPainter = createBackgroundPainter();
+
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> simpleGradient = BackgroundPainter.simpleGradient;
+
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> background = BackgroundPainter.background;
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
