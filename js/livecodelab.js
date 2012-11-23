@@ -6,7 +6,7 @@ var frame = 0;
 var doLNOnce = [];
 var loopInterval;
 var time;
-var timeAtStart;
+var timeAtStartresetGradientStack;
 // if there isn't any code using the bpm setting then we can save a timer, so
 // worth tracking with this variable
 var anyCodeReactingTobpm;
@@ -209,72 +209,6 @@ function render() {
         // clear the renderer's canvas to transparent black
         sceneRenderingCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-    }
-}
-
-
-
-function triggerReset() {
-    BackgroundPainter.pickRandomDefaultGradient();
-    if (autocoder.active) toggleAutocodeAndUpdateButtonAndBlinking();
-    editor.setValue('');
-    $("#resetButtonContainer").css("background-color", '#FF0000');
-    setTimeout('$("#resetButtonContainer").css("background-color","");', 200);
-}
-
-
-
-// resizing the text area is necessary otherwise
-// as the user types to the end of it, instead of just scrolling
-// the content leaving all the other parts of the page where
-// they are, it expands and it pushes down
-// the view of the page, meaning that the canvas goes up and
-// the menu disappears
-// so we have to resize it at launch and also every time the window
-// is resized.
-
-function adjustCodeMirrorHeight() {
-    $('.CodeMirror-scroll').css('height', window.innerHeight - $('#theMenu').height());
-}
-
-
-function fullscreenify(canvas) {
-    var style = canvas.getAttribute('style') || '';
-    window.addEventListener('resize', function () {
-        adjustCodeMirrorHeight();
-        resize(canvas);
-    }, false);
-
-    resize(canvas);
-
-    function resize(canvas) {
-        var scale = {
-            x: 1,
-            y: 1
-        };
-        scale.x = (window.innerWidth + 40) / canvas.width;
-        scale.y = (window.innerHeight + 40) / canvas.height;
-
-        scale = scale.x + ', ' + scale.y;
-
-        // this code below is if one wants to keep the aspect ratio
-        // but I mean one doesn't necessarily resize the window
-        // keeping the same aspect ratio.
-
-        // if (scale.x < 1 || scale.y < 1) {
-        //     scale = '1, 1';
-        // } else if (scale.x < scale.y) {
-        //     scale = scale.x + ', ' + scale.x;
-        // } else {
-        //     scale = scale.y + ', ' + scale.y;
-        // }
-
-        canvas.setAttribute('style', style + ' ' + '-ms-transform-origin: left top; -webkit-transform-origin: left top; -moz-transform-origin: left top; -o-transform-origin: left top; transform-origin: left top; -ms-transform: scale(' + scale + '); -webkit-transform: scale3d(' + scale + ', 1); -moz-transform: scale(' + scale + '); -o-transform: scale(' + scale + '); transform: scale(' + scale + ');');
-
-        // TODO In theory we want to re-draw the background because the
-        // aspect ration might have changed.
-        // But for the time being we only have vertical
-        // gradients so that's not going to be a problem.
     }
 }
 
