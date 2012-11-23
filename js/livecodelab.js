@@ -109,7 +109,7 @@ function animate() {
             // mark the program as flawed and register the previous stable one.
             consecutiveFramesWithoutRunTimeError = 0;
             out = lastStableProgram;
-            window.eval(lastStableProgram);
+            draw = new Function(out);
 
             return;
         }
@@ -239,3 +239,4 @@ function combDisplayList() {
         }
     }
 }
+
