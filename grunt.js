@@ -8,8 +8,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         lint: {
             all: ['js/**/*.js'],
-            grunt: ['grunt.js'],
-            test: ['js/menu.js']
+            grunt: ['grunt.js']
         },
         recess: {
             lint: {
@@ -71,7 +70,7 @@ module.exports = function (grunt) {
                     'js/init-threejs.js',
                     'js/editor/mousewheel.js',
                     'js/big-cursor-animation.js',
-                    'js/menu.js'
+                    'js/ui.js'
                 ],
                 dest: 'dist/built.js'
             }
