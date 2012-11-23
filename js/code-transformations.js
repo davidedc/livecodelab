@@ -286,7 +286,6 @@ function registerCode() {
     }
 
 
-    // indent the code
     var elaboratedSource = editorContent;
 
     // we make it so some common command forms can be used in postfix notation, e.g.
@@ -341,12 +340,12 @@ function registerCode() {
       //alert('splitting: ' + elaboratedSourceByLine.length );
       for (var iteratingOverSource = 0; iteratingOverSource < elaboratedSourceByLine.length; iteratingOverSource++) {
         //alert('iterating: ' + iteratingOverSource );
-        elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/gm, "$1;doLNOnce.push(" + (iteratingOverSource - 1) + "); (1+0).times -> $2");
+        elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/gm, "$1;doLNOnce.push(" + iteratingOverSource + "); (1+0).times -> $2");
 
         if (elaboratedSourceByLine[iteratingOverSource].match(/^(\s*)doOnce[ ]*\->[ ]*$/gm)) {
           //alert('doOnce multiline!');
           elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*$/gm, "$1(1+0).times ->");
-          elaboratedSourceByLine[iteratingOverSource + 1] = elaboratedSourceByLine[iteratingOverSource + 1].replace(/^(\s*)(.+)$/gm, "$1;doLNOnce.push(" + (iteratingOverSource - 1) + "); $2");
+          elaboratedSourceByLine[iteratingOverSource + 1] = elaboratedSourceByLine[iteratingOverSource + 1].replace(/^(\s*)(.+)$/gm, "$1;doLNOnce.push(" + iteratingOverSource + "); $2");
         }
 
       }
