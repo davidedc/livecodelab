@@ -6,7 +6,7 @@ var frame = 0;
 var doLNOnce = [];
 var loopInterval;
 var time;
-var timeAtStart;
+var timeAtStartresetGradientStack;
 // if there isn't any code using the bpm setting then we can save a timer, so
 // worth tracking with this variable
 var anyCodeReactingTobpm;
@@ -75,7 +75,7 @@ function animate() {
         }
 
         animationStyleValue = normal;
-        resetGradientStack();
+        BackgroundPainter.resetGradientStack();
         //bpm(0);
 
         // Now here there is another try/catch check when the draw function is ran.
@@ -121,7 +121,7 @@ function animate() {
         }
         if (anyCodeReactingTobpm) changeUpdatesPerMinuteIfNeeded();
         animationStyleUpdateIfChanged();
-        simpleGradientUpdateIfChanged();
+        BackgroundPainter.simpleGradientUpdateIfChanged();
         changeUpdatesPerMinuteIfNeeded();
         frame++;
         consecutiveFramesWithoutRunTimeError++;
