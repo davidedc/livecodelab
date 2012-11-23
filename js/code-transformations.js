@@ -142,7 +142,7 @@ function registerCode() {
     //        fill 255,0,0
     //      //doOnce -> ball
     editorContent = editorContent.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false");
-    editorContent = editorContent.replace("\u2713", "//");
+    editorContent = editorContent.replace(/\u2713/g, "//");
 
     // according to jsperf, this is the fastest way to count for
     // occurrences of a character. We count apostrophes
@@ -625,8 +625,9 @@ function putTicksNextToDoOnceBlocksThatHaveBeenRun() {
 		var elaboratedSourceByLine = elaboratedSource.split("\n");
 		//alert('splitting: ' + elaboratedSourceByLine.length );
 		for (var iteratingOverSource = 0; iteratingOverSource < doOnceOccurrencesLineNumbers.length; iteratingOverSource++) {
-				//alert('iterating: ' + iteratingOverSource );
+				//alert('doOnce run at line number: ' + doOnceOccurrencesLineNumbers[iteratingOverSource] );
 				elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]] = elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*.*)$/gm, "$1\u2713doOnce$2");
+				//alert('...after the fix: ' + elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]] );
 		}
 		elaboratedSource = elaboratedSourceByLine.join("\n");
 
