@@ -17,8 +17,8 @@ French version : http://sketchpatch.net/livecodelab/indexFR.html
 
 LiveCodeLab has been used by several groups/people for:
 
-*Teaching programming*:
-it's a great way to interest kids and adult in code, as it allows for instant feedback and easy pair programming. It helps introduce simple concept like loops, and much more complex like transform matrices!
+*Education*:
+it's a great way to get kids and adults interested in code, as it allows for instant feedback and easy pair programming. It helps introduce simple concept like loops, and much more complex like transform matrices!
 
 *Showcasing modern browser features*:
 it's a nice showcase of what browsers can do with the latest 3D and javascript implementations.
