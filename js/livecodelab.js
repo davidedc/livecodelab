@@ -3,7 +3,10 @@
 
 
 var frame = 0;
-var doLNOnce = [];
+// this array is used to keep track of all the instances of "doOnce" in the code
+// we need to keep this so we can put the ticks next to doOnce once that doOnce
+// block has run.
+var doOnceOccurrencesLineNumbers = [];
 var loopInterval;
 var time;
 var timeAtStartresetGradientStack;
@@ -53,7 +56,7 @@ function animate() {
         } else {
             time = d.getTime() - timeAtStart;
         }
-        doLNOnce = [];
+        doOnceOccurrencesLineNumbers = [];
         anyCodeReactingTobpm = false;
         fill(0xFFFFFFFF);
         stroke(0xFF000000);
@@ -136,40 +139,8 @@ function animate() {
     render();
     // update stats
     stats.update();
-
-
-    if (doLNOnce.length !== 0) {
-        //alert("a doOnce has been ran");
-        var elaboratedSource = editor.getValue();
-
-        var elaboratedSourceByLine = elaboratedSource.split("\n");
-        //alert('splitting: ' + elaboratedSourceByLine.length );
-        for (var iteratingOverSource = 0; iteratingOverSource < doLNOnce.length; iteratingOverSource++) {
-            //alert('iterating: ' + iteratingOverSource );
-            elaboratedSourceByLine[doLNOnce[iteratingOverSource]] = elaboratedSourceByLine[doLNOnce[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*.+)$/gm, "$1\u2713doOnce$2");
-            elaboratedSourceByLine[doLNOnce[iteratingOverSource]] = elaboratedSourceByLine[doLNOnce[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*)$/gm, "$1\u2713doOnce$2");
-        }
-        elaboratedSource = elaboratedSourceByLine.join("\n");
-
-        var cursorPositionBeforeAddingCheckMark = editor.getCursor();
-        cursorPositionBeforeAddingCheckMark.ch = cursorPositionBeforeAddingCheckMark.ch + 1;
-
-        editor.setValue(elaboratedSource);
-        editor.setCursor(cursorPositionBeforeAddingCheckMark);
-
-        // we want to avoid that another frame is run with the old
-        // code, as this would mean that the
-        // runOnce code is run more than once,
-        // so we need to register the new code.
-        // TODO: ideally we don't want to register the
-        // new code by getting the code from codemirror again
-        // because we don't know what that entails. We should
-        // just pass the code we already have.
-        // Also registerCode() may split the source code by line, so we can
-        // avoid that since we've just split it, we could pass
-        // the already split code.
-        registerCode();
-    }
+    
+    putTicksNextToDoOnceBlocksThatHaveBeenRun();
 
 }
 

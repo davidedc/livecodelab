@@ -128,10 +128,19 @@ function registerCode() {
     var characterBeingExamined;
     var nextCharacterBeingExamined;
 
-    // a check mark is added to the left of
-    // doOnce statements that have been executed
-    // but in reality those check marks
-    // are just single-line comments, so replace here.
+    // doOnce statements which have a tick mark next to them
+    // are not run. This is achieved by replacing the line with
+    // the "doOnce" with "if false" or "//" depending on whether
+    // the doOnce is a multiline or an inline one, like so:
+    //      ✓doOnce ->
+    //        background 255
+    //        fill 255,0,0
+    //      ✓doOnce -> ball
+    // becomes:
+    //      if false ->
+    //        background 255
+    //        fill 255,0,0
+    //      //doOnce -> ball
     editorContent = editorContent.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false");
     editorContent = editorContent.replace("\u2713", "//");
 
@@ -329,10 +338,31 @@ function registerCode() {
     elaboratedSource = elaboratedSource.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->");
 
 
-    // if there is at least one doOnce:
-    // split the source in lines
-    // add all the line numbers info
-    // regroup the lines into a single string again
+    
+    // ADDING TRACING INSTRUCTION TO THE DOONCE BLOCKS
+    // each doOnce block is made to start with an instruction that traces whether
+    // the block has been run or not. This allows us to put back the tick where
+    // necessary, so the doOnce block is not run again.
+    // Example - let's say one pastes in this code:
+    //      doOnce ->
+    //        background 255
+    //        fill 255,0,0
+    //
+    //      doOnce -> ball
+    //
+    // it becomes:
+    //      (1+0).times ->
+    //        doOnceOccurrencesLineNumbers.push(1); background 255
+    //        fill 255,0,0
+    //
+    //      ;doOnceOccurrencesLineNumbers.push(4);
+    //      (1+0).times -> ball
+    //    
+    // So: if there is at least one doOnce
+    //   split the source in lines
+    //   add line numbers tracing instructions so we can track which ones have been run
+    //   regroup the lines into a single string again
+    //
     //alert('soon before replacing doOnces'+elaboratedSource);
     if (elaboratedSource.indexOf('doOnce') > -1) {
       //alert("a doOnce is potentially executable");
@@ -340,12 +370,15 @@ function registerCode() {
       //alert('splitting: ' + elaboratedSourceByLine.length );
       for (var iteratingOverSource = 0; iteratingOverSource < elaboratedSourceByLine.length; iteratingOverSource++) {
         //alert('iterating: ' + iteratingOverSource );
-        elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/gm, "$1;doLNOnce.push(" + iteratingOverSource + "); (1+0).times -> $2");
 
+        // add the line number tracing instruction to inline case
+        elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/gm, "$1;doOnceOccurrencesLineNumbers.push(" + iteratingOverSource + "); (1+0).times -> $2");
+
+        // add the line number tracing instruction to multiline case
         if (elaboratedSourceByLine[iteratingOverSource].match(/^(\s*)doOnce[ ]*\->[ ]*$/gm)) {
           //alert('doOnce multiline!');
           elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*$/gm, "$1(1+0).times ->");
-          elaboratedSourceByLine[iteratingOverSource + 1] = elaboratedSourceByLine[iteratingOverSource + 1].replace(/^(\s*)(.+)$/gm, "$1;doLNOnce.push(" + iteratingOverSource + "); $2");
+          elaboratedSourceByLine[iteratingOverSource + 1] = elaboratedSourceByLine[iteratingOverSource + 1].replace(/^(\s*)(.+)$/gm, "$1;doOnceOccurrencesLineNumbers.push(" + iteratingOverSource + "); $2");
         }
 
       }
@@ -567,4 +600,52 @@ function registerCode() {
 
     draw = new Function(out);
 
+}
+
+function putTicksNextToDoOnceBlocksThatHaveBeenRun() {
+
+    if (doOnceOccurrencesLineNumbers.length === 0) return;
+
+		// if we are here, the following has happened: someone has added an element
+		// to the doOnceOccurrencesLineNumbers array. This can only have happened
+		// when a doOnce block is run, because we manipulate each doOnce block
+		// so that in its first line the line number of the block is pushed into
+		// the doOnceOccurrencesLineNumbers array.
+		// So, the doOnceOccurrencesLineNumbers array contains all and only the lines
+		// of each doOnce block that has been run. Which could be more than one, because
+		// when we start the program we could have more than one doOnce that has
+		// to run.
+		
+		//alert("a doOnce has been ran");
+		var elaboratedSource = editor.getValue();
+
+		// we know the line number of each doOnce block that has been run
+		// so we go there and add a tick next to each doOnce to indicate
+		// that it has been run.
+		var elaboratedSourceByLine = elaboratedSource.split("\n");
+		//alert('splitting: ' + elaboratedSourceByLine.length );
+		for (var iteratingOverSource = 0; iteratingOverSource < doOnceOccurrencesLineNumbers.length; iteratingOverSource++) {
+				//alert('iterating: ' + iteratingOverSource );
+				elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]] = elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*.*)$/gm, "$1\u2713doOnce$2");
+		}
+		elaboratedSource = elaboratedSourceByLine.join("\n");
+
+		var cursorPositionBeforeAddingCheckMark = editor.getCursor();
+		cursorPositionBeforeAddingCheckMark.ch = cursorPositionBeforeAddingCheckMark.ch + 1;
+
+		editor.setValue(elaboratedSource);
+		editor.setCursor(cursorPositionBeforeAddingCheckMark);
+
+		// we want to avoid that another frame is run with the old
+		// code, as this would mean that the
+		// runOnce code is run more than once,
+		// so we need to register the new code.
+		// TODO: ideally we don't want to register the
+		// new code by getting the code from codemirror again
+		// because we don't know what that entails. We should
+		// just pass the code we already have.
+		// Also registerCode() may split the source code by line, so we can
+		// avoid that since we've just split it, we could pass
+		// the already split code.
+		registerCode();
 }
