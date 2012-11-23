@@ -90,7 +90,7 @@ function registerCode() {
     var editorContent = editor.getValue();
 
     if (editorContent !== '' && fakeText === true) {
-      shrinkFakeText();
+      BigCursor.shrinkFakeText();
     }
 
     if (editorContent === '' && !fakeText) {
@@ -117,7 +117,7 @@ function registerCode() {
       }, "fast", function() {
         $('#caption').html('');
         $('#fakeStartingBlinkingCursor').html('|');
-        //fakeCursorInterval = setInterval ( "fakeCursorBlinking()", 800 );
+        //BigCursor.toggleBlink(true);
       });
 
     }
