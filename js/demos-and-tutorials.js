@@ -1,5 +1,5 @@
 /*jslint browser: true, nomen: true, devel: true */
-/*global frenchVersion, $, Detector, forceCanvasRenderer, userWarnedAboutWebglExamples: true, fakeText, undimEditor, editor, doTheSpinThingy: true, shrinkFakeText*/
+/*global frenchVersion, $, Detector, forceCanvasRenderer, userWarnedAboutWebglExamples: true, fakeText, undimEditor, editor, doTheSpinThingy: true, BigCursor */
 
 'use strict';
 
@@ -587,7 +587,7 @@ function loadDemoOrTutorial(whichDemo) {
     window.location.hash = 'bookmark=' + whichDemo;
 
     if (fakeText) {
-        shrinkFakeText();
+        BigCursor.shrinkFakeText();
     }
 
     undimEditor();

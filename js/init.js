@@ -54,7 +54,7 @@ var startEnvironment = function () {
 
         setTimeout("startingSound.play();", 650);
     }
-    fakeCursorInterval = setInterval("fakeCursorBlinking()", 800);
+    BigCursor.toggleBlink(true);
 
 
     // Init of the dim code toggle.
