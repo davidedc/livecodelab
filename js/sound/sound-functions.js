@@ -12,7 +12,19 @@ var endedFirstPlay = 0;
 var soundBank = {};
 var soundFiles = {};
 
-
+var chosenSoundPlayingMethod;
+if (navigator.userAgent.toLowerCase().indexOf('safari/') > -1) {
+	chosenSoundPlayingMethod = 2;
+}
+else if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)) {
+	chosenSoundPlayingMethod = 2;
+}
+else if (navigator.userAgent.indexOf("Firefox")!=-1) {
+	chosenSoundPlayingMethod = 3;
+}
+else if (navigator.userAgent.toLowerCase().indexOf('chrome') != -1) {
+	chosenSoundPlayingMethod = 3;
+}
 
 
 
@@ -84,9 +96,21 @@ var soundLoop = function () {
 
     //logger('about to loop in '+soundLoops.soundIDs+" of length "+soundLoops.soundIDs.length);
     for (loopingTheSoundIDs = 0; loopingTheSoundIDs < soundLoops.soundIDs.length; loopingTheSoundIDs++) {
+
+
         var loopedSoundID = soundLoops.soundIDs[loopingTheSoundIDs];
+        
+        // When the user modifies the name of a sample,
+        // while she is not done finishing typing, the sample name is "incomplete"
+        // or anyways it doesn't map to anything until it's complete,
+        // doesn't index any actual sound. So we check for that here.
+        if (!(loopedSoundID in soundFiles)) continue;
+        
+        
         var playOrNoPlay;
-        playOrNoPlay = soundLoops.beatStrings[loopingTheSoundIDs].charAt(beatNumber);
+        var beatString = soundLoops.beatStrings[loopingTheSoundIDs];
+        // the beat string can be any length, we just wrap around if needed.
+        playOrNoPlay = beatString.charAt(beatNumber%(beatString.length));
         //logger('checking sound loop '+soundLoops.beatStrings[loopingTheSoundIDs]+" beat "+beatNumber+" : "+playOrNoPlay);
         if (playOrNoPlay === 'x') {
             // OK so this is what we do here:
@@ -100,6 +124,7 @@ var soundLoop = function () {
             //    a file needs playing, scan them and find one that is free,
             //    then associate that to the file one wants to play
             //    this works well in IE and Chrome but really bad in Safari
+            //    The problem here is the potentially heavy switching of sound files.
             // 2) for each file, give it a queue of audio objects.
             //    This is more complicated but seems to work
             //    about right in all browsers. Only caveat is that Safari
@@ -108,34 +133,74 @@ var soundLoop = function () {
             //    because they have a limit of 35 or so sounds.
             // So here we went for 2), and we preload the sounds only for
             // browsers other than Chrome and IE.
-            var relevantSoundBank = soundBank[loopedSoundID];
-            var lengthOfSoundBank = relevantSoundBank.length;
-            var availableSoundBank = undefined;
-            //logger('playing  '+loopedSoundID+" length: "+lengthOfSoundBank);
-            for (checkingAvailableSoundBank = 0; checkingAvailableSoundBank < lengthOfSoundBank; checkingAvailableSoundBank++) {
-                var checkingSoundBank = relevantSoundBank[checkingAvailableSoundBank];
-                if (checkingSoundBank.isEnded()) {
-                    availableSoundBank = checkingSoundBank;
-                    logger('sound bank ' + checkingAvailableSoundBank + " is available ");
-                    break;
-                } else {
-                    logger('sound bank ' + checkingAvailableSoundBank + " has not ended ");
-                }
+                        
+            if (chosenSoundPlayingMethod === 1) {
+							// This method is the simplest and entails just using buzz.js fire and forget.
+							// Each "playing" beat a new object is created.
+							
+							//if (availableSoundBank === undefined) {
+							  availableSoundBank = new buzz.sound(soundFiles[loopedSoundID]);
+							  //availableSoundBank.load();
+							//}
+							//nextAvailableSoundPlayerMethod1++;
+              availableSoundBank.play();
             }
-            if (availableSoundBank === undefined) {
-                logger('creating new sound object ');
-                if (totalCreatedSoundObjects > 31) {
-                    soundSystemIsMangled = true;
-                    $('#soundSystemIsMangledMessage').modal();
-                    $('#simplemodal-container').height(250);
-                }
-                availableSoundBank = new buzz.sound(soundFiles[loopedSoundID]);
-                soundBank[loopedSoundID].push(availableSoundBank);
-                totalCreatedSoundObjects++;
+            else if (chosenSoundPlayingMethod === 3) {
+              // This method is quite "raw" and involves using the
+              // audio object directly.
+							var audioElement = document.createElement('audio');
+							audioElement.setAttribute("preload", "auto");
+							audioElement.autobuffer = true;
+							
+							var source1 = document.createElement('source');
+							source1.type= 'audio/ogg';
+							source1.src= soundFiles[loopedSoundID];
+							audioElement.appendChild(source1);
+							audioElement.addEventListener("load", function() { 
+								audioElement.play(); 
+								//$(".duration span").html(audioElement.duration);
+								$(".filename span").html(audioElement.src);
+							}, true);
+
+							audioElement.addEventListener("ended", function() { 
+								source1.parentNode.removeChild(source1);
+								//alert("removing"+source1)
+							}, true);
+							audioElement.play();
+
+            }
+            else if (chosenSoundPlayingMethod === 2) {
+							var relevantSoundBank = soundBank[loopedSoundID];
+							var lengthOfSoundBank = relevantSoundBank.length;
+							var availableSoundBank = undefined;
+							//logger('playing  '+loopedSoundID+" length: "+lengthOfSoundBank);
+							for (checkingAvailableSoundBank = 0; checkingAvailableSoundBank < lengthOfSoundBank; checkingAvailableSoundBank++) {
+									var checkingSoundBank = relevantSoundBank[checkingAvailableSoundBank];
+									if (checkingSoundBank.isEnded()) {
+											availableSoundBank = checkingSoundBank;
+											logger('sound bank ' + checkingAvailableSoundBank + " is available ");
+											break;
+									} else {
+											logger('sound bank ' + checkingAvailableSoundBank + " has not ended ");
+									}
+							}
+							if (availableSoundBank === undefined) {
+									logger('creating new sound object ');
+									if (totalCreatedSoundObjects > 31) {
+											soundSystemIsMangled = true;
+											$('#soundSystemIsMangledMessage').modal();
+											$('#simplemodal-container').height(250);
+									}
+									availableSoundBank = new buzz.sound(soundFiles[loopedSoundID]);
+									// loading the sound here doesn't seem to matter
+									//availableSoundBank.load();
+									soundBank[loopedSoundID].push(availableSoundBank);
+									totalCreatedSoundObjects++;
+							}
+              availableSoundBank.play();
             }
 
 
-            availableSoundBank.play();
             //soundBank[soundLoops.soundIDs[i]]['lastUsed'] = (soundBank[soundLoops.soundIDs[i]]['lastUsed']+1)%CHANNELSPERSOUND;
         }
     }
@@ -192,7 +257,7 @@ var loadAndTestAllTheSounds = function (callback) {
         // so fast - it crashes.
         // At the opposite end, Safari doesn't like loading sound dynamically
         // and instead works fine by loading sound all at the beginning.
-        if (navigator.userAgent.toLowerCase().indexOf('chrome') === -1 && !(/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
+        if (navigator.userAgent.indexOf("Firefox")===-1 && navigator.userAgent.toLowerCase().indexOf('chrome') === -1 && !(/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
 
             for (preloadSounds = 0; preloadSounds < CHANNELSPERSOUND; preloadSounds++) {
                 logger("checking sound " + soundInfo.name);
@@ -208,10 +273,9 @@ var loadAndTestAllTheSounds = function (callback) {
 
     // if this is chrome, fire the callback immediately
     // otherwise wait untill all the sounds have been tested
-    if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || (/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
-        callback();
-    }
-
+     if (navigator.userAgent.indexOf("Firefox")!=-1 || navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || (/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
+         callback();
+     }
 };
 
 // Called from loadAndTestAllTheSounds
