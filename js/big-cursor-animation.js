@@ -65,4 +65,6 @@ var createBigCursor = function () {
         }
     };
 
+    return BigCursor;
+
 };
