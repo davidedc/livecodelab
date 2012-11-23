@@ -39,6 +39,7 @@ module.exports = function (grunt) {
             dist: {
                 src: [
                     'js/logger.js',
+                    'js/big-cursor-animation.js',
                     'js/autocoder/mclexer.js',
                     'js/vendor/three.js/Detector.js',
                     'js/vendor/three.js/Stats.js',
@@ -69,7 +70,6 @@ module.exports = function (grunt) {
                     'js/lights-functions.js',
                     'js/init-threejs.js',
                     'js/editor/mousewheel.js',
-                    'js/big-cursor-animation.js',
                     'js/ui.js'
                 ],
                 dest: 'dist/built.js'
