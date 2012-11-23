@@ -564,7 +564,7 @@ function registerCode() {
   // coffeescript to javascript translator inserts.
   out = out.replace(/var frame/, ";");
 
-  console.log(out);
+  logger(out);
 
     draw = new Function(out);
 
