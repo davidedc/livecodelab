@@ -287,9 +287,7 @@ function registerCode() {
 
 
     // indent the code
-    var elaboratedSource = "\t" + editorContent.replace(
-    new RegExp("\\n", "g"), "\n\t");
-    elaboratedSource = "draw = ->\n" + elaboratedSource;
+    var elaboratedSource = editorContent;
 
     // we make it so some common command forms can be used in postfix notation, e.g.
     //   60 bpm
@@ -566,8 +564,8 @@ function registerCode() {
   // coffeescript to javascript translator inserts.
   out = out.replace(/var frame/, ";");
 
-  //alert("out:"+out);
-  window.eval(out);
+  logger(out);
 
+    draw = new Function(out);
 
 }
