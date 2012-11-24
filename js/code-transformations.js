@@ -598,7 +598,8 @@ function registerCode() {
 
   logger(out);
 
-    draw = new Function(out);
+  console.log("code transform set draw");
+  LiveCodeLab.setDrawFunction(new Function(out));
 
 }
 
