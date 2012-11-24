@@ -1,0 +1,156 @@
+<!DOCTYPE html>  <html> <head>   <title>ui.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="geometry-commands.html">                 geometry-commands.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               ui.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true, devel: true */</span>
+<span class="comment">/*global $, autocoder, pickRandomDefaultGradient, toggleAutocodeAndUpdateButtonAndBlinking, editor, loadDemoOrTutorial, toggleDimCode */</span>
+
+<span class="keyword">var</span> triggerReset = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+    <span class="string">'use strict'</span>;
+
+    pickRandomDefaultGradient();
+    <span class="keyword">if</span> (autocoder.active) {
+        toggleAutocodeAndUpdateButtonAndBlinking();
+    }
+    editor.setValue(<span class="string">''</span>);
+    $(<span class="string">"#resetButtonContainer"</span>).css(<span class="string">"background-color"</span>, <span class="string">'#FF0000'</span>);
+    setTimeout(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        $(<span class="string">"#resetButtonContainer"</span>).css(<span class="string">"background-color"</span>, <span class="string">""</span>);
+    }, <span class="number">200</span>);
+};
+
+<span class="keyword">var</span> checkErrorAndReport = <span class="function"><span class="keyword">function</span> <span class="params">(e)</span> {</span>
+
+    <span class="string">'use strict'</span>;
+
+    $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);
+
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>don't need to convert entire object to string
+can just get the message, or a blank string if there is no message</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> errorMessage = e.message || <span class="string">""</span>;
+
+    <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'INDENT'"</span>) &gt; -<span class="number">1</span>) {
+        errorMessage = <span class="string">"weird indentation"</span>;
+    } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'TERMINATOR'"</span>) &gt; -<span class="number">1</span>) {
+        errorMessage = <span class="string">"line not complete"</span>;
+    } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'CALL_END'"</span>) &gt; -<span class="number">1</span>) {
+        errorMessage = <span class="string">"line not complete"</span>;
+    } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected '}'"</span>) &gt; -<span class="number">1</span>) {
+        errorMessage = <span class="string">"something wrong"</span>;
+    } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'MATH'"</span>) &gt; -<span class="number">1</span>) {
+        errorMessage = <span class="string">"weird arithmetic there"</span>;
+    } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'LOGIC'"</span>) &gt; -<span class="number">1</span>) {
+        errorMessage = <span class="string">"odd expression thingy"</span>;
+    } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'NUMBER'"</span>) &gt; -<span class="number">1</span>) {
+        errorMessage = <span class="string">"lost number?"</span>;
+    } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'NUMBER'"</span>) &gt; -<span class="number">1</span>) {
+        errorMessage = <span class="string">"lost number?"</span>;
+    } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"ReferenceError"</span>) &gt; -<span class="number">1</span>) {
+        errorMessage = errorMessage.replace(<span class="regexp">/ReferenceError:\s/gm</span>, <span class="string">""</span>);
+    }
+
+    $(<span class="string">'#errorMessageText'</span>).text(errorMessage);
+
+};
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>resizing the text area is necessary otherwise
+as the user types to the end of it, instead of just scrolling
+the content leaving all the other parts of the page where
+they are, it expands and it pushes down
+the view of the page, meaning that the canvas goes up and
+the menu disappears
+so we have to resize it at launch and also every time the window
+is resized.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+<span class="keyword">var</span> adjustCodeMirrorHeight = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+    <span class="string">'use strict'</span>;
+
+    $(<span class="string">'.CodeMirror-scroll'</span>).css(<span class="string">'height'</span>, window.innerHeight - $(<span class="string">'#theMenu'</span>).height());
+};
+
+
+<span class="keyword">var</span> resizeCanvas = <span class="function"><span class="keyword">function</span> <span class="params">(canvas, style)</span> {</span>
+
+    <span class="string">'use strict'</span>;
+
+    <span class="keyword">var</span> scale = {
+        x: <span class="number">1</span>,
+        y: <span class="number">1</span>
+    };
+    scale.x = (window.innerWidth + <span class="number">40</span>) / canvas.width;
+    scale.y = (window.innerHeight + <span class="number">40</span>) / canvas.height;
+
+    scale = scale.x + <span class="string">', '</span> + scale.y;
+
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>this code below is if one wants to keep the aspect ratio
+but I mean one doesn't necessarily resize the window
+keeping the same aspect ratio.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>if (scale.x &lt; 1 || scale.y &lt; 1) {
+    scale = '1, 1';
+} else if (scale.x &lt; scale.y) {
+    scale = scale.x + ', ' + scale.x;
+} else {
+    scale = scale.y + ', ' + scale.y;
+}</p>             </td>             <td class="code">               <div class="highlight"><pre>
+    canvas.setAttribute(<span class="string">'style'</span>, style + <span class="string">' '</span> + <span class="string">'-ms-transform-origin: left top; -webkit-transform-origin: left top; -moz-transform-origin: left top; -o-transform-origin: left top; transform-origin: left top; -ms-transform: scale('</span> + scale + <span class="string">'); -webkit-transform: scale3d('</span> + scale + <span class="string">', 1); -moz-transform: scale('</span> + scale + <span class="string">'); -o-transform: scale('</span> + scale + <span class="string">'); transform: scale('</span> + scale + <span class="string">');'</span>);
+
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>TODO In theory we want to re-draw the background because the
+aspect ration might have changed.
+But for the time being we only have vertical
+gradients so that's not going to be a problem.</p>             </td>             <td class="code">               <div class="highlight"><pre>};
+
+
+<span class="keyword">var</span> fullscreenify = <span class="function"><span class="keyword">function</span> <span class="params">(canvas)</span> {</span>
+
+    <span class="string">'use strict'</span>;
+
+    <span class="keyword">var</span> style = canvas.getAttribute(<span class="string">'style'</span>) || <span class="string">''</span>;
+    window.addEventListener(<span class="string">'resize'</span>, <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        adjustCodeMirrorHeight();
+        resizeCanvas(canvas, style);
+    }, <span class="literal">false</span>);
+
+    resizeCanvas(canvas, style);
+};
+
+$(document).ready(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+    <span class="string">'use strict'</span>;
+
+    $(<span class="string">'#aboutMenu'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+        $(<span class="string">'#aboutWindow'</span>).modal();
+        $(<span class="string">'#simplemodal-container'</span>).height(<span class="number">250</span>);
+
+        <span class="keyword">return</span> <span class="literal">false</span>;
+    });
+
+
+    $(<span class="string">'#demos li a'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        loadDemoOrTutorial($(<span class="keyword">this</span>).attr(<span class="string">'id'</span>));
+        <span class="keyword">return</span> <span class="literal">false</span>;
+    });
+
+    $(<span class="string">'#tutorials li a'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        loadDemoOrTutorial($(<span class="keyword">this</span>).attr(<span class="string">'id'</span>));
+        <span class="keyword">return</span> <span class="literal">false</span>;
+    });
+
+
+
+    $(<span class="string">'#autocodeIndicatorContainer'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        autocoder.toggle();
+        <span class="keyword">return</span> <span class="literal">false</span>;
+    });
+
+    $(<span class="string">'#dimCodeButtonContainer'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        toggleDimCode();
+        <span class="keyword">return</span> <span class="literal">false</span>;
+    });
+
+    $(<span class="string">'#resetButtonContainer'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        triggerReset();
+        <span class="keyword">return</span> <span class="literal">false</span>;
+    });
+
+
+});
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
