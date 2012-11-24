@@ -16,7 +16,8 @@ var anyCodeReactingTobpm;
 var createLiveCodeLab = function () {
 
     var LiveCodeLab = {},
-        loopInterval;
+        loopInterval,
+        timeAtStart;
 
     LiveCodeLab.drawFunction = "";
 
@@ -119,7 +120,7 @@ var createLiveCodeLab = function () {
                 // mark the program as flawed and register the previous stable one.
                 consecutiveFramesWithoutRunTimeError = 0;
                 out = lastStableProgram;
-                draw = new Function(out);
+                LiveCodeLab.drawFunction = new Function(out);
 
                 return;
             }
