@@ -59,7 +59,7 @@ var createLiveCodeLab = function () {
         //rootObject = new THREE.Object3D();
         //scene.add(rootObject);
         //parentObject = rootObject;
-        if (typeof (LiveCodeLab.drawFunction) !== "") {
+        if (LiveCodeLab.drawFunction !== "") {
             var d = new Date();
             if (frame === 0) {
                 timeAtStart = d.getTime();
