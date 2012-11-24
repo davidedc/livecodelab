@@ -4,8 +4,11 @@ var camera;
 var editor;
 var autocoder;
 
+var composer;
+
 var logger = createDebugger();
 var BigCursor = createBigCursor();
+var LiveCodeLab = createLiveCodeLab();
 
 // creating a geometry is expensive
 // so we need to create ONE cube of dimensions 1,1,1

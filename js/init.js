@@ -9,8 +9,14 @@ var startEnvironment = function () {
 
     BackgroundPainter.pickRandomDefaultGradient();
 
+    //create autocoder here
+    autocoder = createAutocoder(editor);
+
+
     logger("startEnvironment");
-    if (!initThreeJs()) animate();
+    if (!initThreeJs()) {
+        LiveCodeLab.animate();
+    }
 
     if (!Detector.webgl || forceCanvasRenderer) {
         //$('#noWebGLMessage').modal()
@@ -36,9 +42,6 @@ var startEnvironment = function () {
 
     editor.focus();
     adjustCodeMirrorHeight();
-
-    //create autocoder here
-    autocoder = createAutocoder(editor);
 
     // check if the url points to a particular demo,
     // in which case we load the demo directly.
