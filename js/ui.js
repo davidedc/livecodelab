@@ -20,9 +20,6 @@ var checkErrorAndReport = function (e) {
 
     'use strict';
 
-    console.log("hello");
-    console.log(e);
-
     $('#dangerSignText').css('color', 'red');
 
     // don't need to convert entire object to string

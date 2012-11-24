@@ -750,8 +750,8 @@ function loadDemoOrTutorial(whichDemo) {
     // combing the display list now means that all items in the
     // display list are set to hidden because no draw() code has been ran
     // to put items in it.
-    combDisplayList();
+    LiveCodeLab.combDisplayList();
     // render the empty frame
-    render();
+    LiveCodeLab.render();
 
 }
