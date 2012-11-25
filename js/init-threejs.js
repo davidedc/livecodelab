@@ -2,6 +2,9 @@
 //
 //
 
+var composer;
+var backGroundFraction = 15;
+
 var initThreeJs = function() {
 
   scaledBackgroundWidth = Math.floor(window.innerWidth / backGroundFraction);

@@ -1,6 +1,12 @@
 /*jslint browser: true, devel: true */
 /*global $ */
 
+// if you put to -1 then it means that
+// requestAnimationFrame will try to go as fast as it
+// can.
+var wantedFramesPerSecond = -1;
+
+var useRequestAnimationFrame = true;
 
 var frame = 0;
 // this array is used to keep track of all the instances of "doOnce" in the code
@@ -17,7 +23,8 @@ var createLiveCodeLab = function () {
 
     var LiveCodeLab = {},
         loopInterval,
-        timeAtStart;
+        timeAtStart,
+        lastStableProgram;
 
     LiveCodeLab.drawFunction = "";
 
@@ -79,7 +86,6 @@ var createLiveCodeLab = function () {
             noLights();
 
             usedAmbientLights = 0;
-            usedPointLights = 0;
             objectsUsedInFrameCounts[GEOM_TYPE_LINE] = 0;
             objectsUsedInFrameCounts[GEOM_TYPE_RECT] = 0;
             objectsUsedInFrameCounts[GEOM_TYPE_BOX] = 0;
@@ -119,8 +125,7 @@ var createLiveCodeLab = function () {
 
                 // mark the program as flawed and register the previous stable one.
                 consecutiveFramesWithoutRunTimeError = 0;
-                out = lastStableProgram;
-                LiveCodeLab.drawFunction = new Function(out);
+                LiveCodeLab.drawFunction = new Function(lastStableProgram);
 
                 return;
             }
@@ -140,7 +145,7 @@ var createLiveCodeLab = function () {
             frame++;
             consecutiveFramesWithoutRunTimeError++;
             if (consecutiveFramesWithoutRunTimeError == 5) {
-                lastStableProgram = out;
+                lastStableProgram = LiveCodeLab.drawFunction;
                 //chromeHackUncaughtReferenceName = '';
             }
         } // if typeof draw

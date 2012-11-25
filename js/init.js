@@ -9,6 +9,8 @@ var startEnvironment = function () {
 
     BackgroundPainter.pickRandomDefaultGradient();
 
+    editor = createEditor();
+
     //create autocoder here
     autocoder = createAutocoder(editor);
 
@@ -37,8 +39,6 @@ var startEnvironment = function () {
 
     $('#startingCourtainScreen').fadeOut();
     $("#formCode").css('opacity', 0);
-
-    editor = createEditor();
 
     editor.focus();
     adjustCodeMirrorHeight();

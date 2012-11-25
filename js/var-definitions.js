@@ -1,11 +1,17 @@
-var stats, scene, renderer;
+// All used by Three.js
+var stats;
+var scene;
+var renderer;
 var camera;
 
+// The CodeMirror editor
 var editor;
+
+// The Autocoder
 var autocoder;
 
-var composer;
 
+// All used globally
 var logger = createDebugger();
 var BigCursor = createBigCursor();
 var LiveCodeLab = createLiveCodeLab();
@@ -18,6 +24,9 @@ var LiveCodeLab = createLiveCodeLab();
 // and then go up a node.
 var isWebGLUsed = false;
 
+
+// The following variables are mostly all used in
+// geometry commands and live codelab js files
 var minimumBallDetail = 2;
 var maximumBallDetail = 30;
 
@@ -33,7 +42,6 @@ var GEOM_TYPE_SPHERE = 4;
 // This is so that we can go through the scene graph and hide the unused objects.
 var objectsUsedInFrameCounts = [];
 var usedAmbientLights = 0;
-var usedPointLights = 0;
 
 
 var ballDefaultDetLevel;
@@ -58,18 +66,15 @@ var previousRenderForBlending;
 var previousRenderForBlendingContext;
 var finalRenderWithSceneAndBlend;
 var finalRenderWithSceneAndBlendContext;
-var useRequestAnimationFrame = true;
-// if you put to -1 then it means that
-// requestAnimationFrame will try to go as fast as it
-// can.
-var wantedFramesPerSecond = -1;
-var backGroundFraction = 15;
+
+
+
 var scaledBackgroundWidth;
 var scaledBackgroundHeight;
 var repaintBackroundEveryFrame = true;
 var fullScreenifyBackground = true;
 var animationStyleValue = 0;
-var previousanimationStyleValue = 0;
+
 var blendAmount = 0;
 var normal = 0;
 var paintOver = 1;
@@ -91,11 +96,6 @@ var consecutiveFramesWithoutRunTimeError = 0;
 var doTheSpinThingy = true;
 var resetTheSpinThingy = false;
 var SPINFRAMES = 30;
-
-var userWarnedAboutWebglExamples = false;
-
-
-var dimIntervalID;
 
 
 

@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, devel: true */
 /*global frenchVersion, $, Detector, forceCanvasRenderer, userWarnedAboutWebglExamples: true, fakeText, undimEditor, editor, doTheSpinThingy: true, BigCursor */
 
-'use strict';
+    'use strict';
 
 var roseDemo = [
     "// 'A rose' by Guy John",
@@ -570,6 +570,8 @@ var autocodeTutorial = [
     "// if you see that things got",
     "// boring down a particular path of changes."].join("\n").replace(/\u25B6/g, "\t");
 
+var userWarnedAboutWebglExamples = false;
+
 function loadDemoOrTutorial(whichDemo) {
 
     if ((!Detector.webgl || forceCanvasRenderer) && !userWarnedAboutWebglExamples && whichDemo.indexOf('webgl') === 0) {
@@ -602,132 +604,132 @@ function loadDemoOrTutorial(whichDemo) {
     }
 
     switch (whichDemo) {
-    case 'roseDemo':
-        editor.setValue(prependMessage + roseDemo);
-        break;
-    case 'cheeseAndOlivesDemo':
-        editor.setValue(prependMessage + cheeseAndOlivesDemo);
-        break;
-    case 'simpleCubeDemo':
-        editor.setValue(prependMessage + simpleCubeDemo);
-        break;
-    case 'webgltwocubesDemo':
-        editor.setValue(prependMessage + webgltwocubesDemo);
-        break;
-    case 'cubesAndSpikes':
-        editor.setValue(prependMessage + cubesAndSpikes);
-        break;
-    case 'webglturbineDemo':
-        editor.setValue(prependMessage + webglturbineDemo);
-        break;
-    case 'webglzfightartDemo':
-        editor.setValue(prependMessage + webglzfightartDemo);
-        break;
-    case 'littleSpiralOfCubes':
-        editor.setValue(prependMessage + littleSpiralOfCubes);
-        break;
-    case 'tentacleDemo':
-        editor.setValue(prependMessage + tentacleDemo);
-        break;
-    case 'lampDemo':
-        editor.setValue(prependMessage + lampDemo);
-        break;
-    case 'trillionfeathersDemo':
-        editor.setValue(prependMessage + trillionfeathersDemo);
-        break;
-    case 'monsterblobDemo':
-        editor.setValue(prependMessage + monsterblobDemo);
-        break;
-    case 'industrialMusicDemo':
-        editor.setValue(prependMessage + industrialMusicDemo);
-        break;
-    case 'trySoundsDemo':
-        editor.setValue(prependMessage + trySoundsDemo);
-        break;
-    case 'springysquaresDemo':
-        editor.setValue(prependMessage + springysquaresDemo);
-        break;
-    case 'diceDemo':
-        editor.setValue(prependMessage + diceDemo);
-        break;
-    case 'webglalmostvoronoiDemo':
-        editor.setValue(prependMessage + webglalmostvoronoiDemo);
-        break;
-    case 'webglshardsDemo':
-        editor.setValue(prependMessage + webglshardsDemo);
-        break;
-    case 'webglredthreadsDemo':
-        editor.setValue(prependMessage + webglredthreadsDemo);
-        break;
-    case 'webglnuclearOctopusDemo':
-        editor.setValue(prependMessage + webglnuclearOctopusDemo);
-        break;
-    case 'introTutorial':
-        editor.setValue(prependMessage + introTutorial);
-        break;
-    case 'helloworldTutorial':
-        editor.setValue(prependMessage + helloworldTutorial);
-        break;
-    case 'somenotesTutorial':
-        editor.setValue(prependMessage + somenotesTutorial);
-        break;
-    case 'rotateTutorial':
-        editor.setValue(prependMessage + rotateTutorial);
-        break;
-    case 'frameTutorial':
-        editor.setValue(prependMessage + frameTutorial);
-        break;
-    case 'timeTutorial':
-        editor.setValue(prependMessage + timeTutorial);
-        break;
-    case 'moveTutorial':
-        editor.setValue(prependMessage + moveTutorial);
-        break;
-    case 'scaleTutorial':
-        editor.setValue(prependMessage + scaleTutorial);
-        break;
-    case 'timesTutorial':
-        editor.setValue(prependMessage + timesTutorial);
-        break;
-    case 'fillTutorial':
-        editor.setValue(prependMessage + fillTutorial);
-        break;
-    case 'strokeTutorial':
-        editor.setValue(prependMessage + strokeTutorial);
-        break;
-    case 'colornamesTutorial':
-        editor.setValue(prependMessage + colornamesTutorial);
-        break;
-    case 'lightsTutorial':
-        editor.setValue(prependMessage + lightsTutorial);
-        break;
-    case 'backgroundTutorial':
-        editor.setValue(prependMessage + backgroundTutorial);
-        break;
-    case 'gradientTutorial':
-        editor.setValue(prependMessage + gradientTutorial);
-        break;
-    case 'lineTutorial':
-        editor.setValue(prependMessage + lineTutorial);
-        break;
-    case 'ballTutorial':
-        editor.setValue(prependMessage + ballTutorial);
-        break;
-    case 'pushpopMatrixTutorial':
-        editor.setValue(prependMessage + pushpopMatrixTutorial);
-        break;
-    case 'animationstyleTutorial':
-        editor.setValue(prependMessage + animationstyleTutorial);
-        break;
-    case 'doonceTutorial':
-        editor.setValue(prependMessage + doonceTutorial);
-        break;
-    case 'conditionalsTutorial':
-        editor.setValue(prependMessage + conditionalsTutorial);
-        break;
-    case 'autocodeTutorial':
-        editor.setValue(prependMessage + autocodeTutorial);
-        break;
+        case 'roseDemo':
+            editor.setValue(prependMessage + roseDemo);
+            break;
+        case 'cheeseAndOlivesDemo':
+            editor.setValue(prependMessage + cheeseAndOlivesDemo);
+            break;
+        case 'simpleCubeDemo':
+            editor.setValue(prependMessage + simpleCubeDemo);
+            break;
+        case 'webgltwocubesDemo':
+            editor.setValue(prependMessage + webgltwocubesDemo);
+            break;
+        case 'cubesAndSpikes':
+            editor.setValue(prependMessage + cubesAndSpikes);
+            break;
+        case 'webglturbineDemo':
+            editor.setValue(prependMessage + webglturbineDemo);
+            break;
+        case 'webglzfightartDemo':
+            editor.setValue(prependMessage + webglzfightartDemo);
+            break;
+        case 'littleSpiralOfCubes':
+            editor.setValue(prependMessage + littleSpiralOfCubes);
+            break;
+        case 'tentacleDemo':
+            editor.setValue(prependMessage + tentacleDemo);
+            break;
+        case 'lampDemo':
+            editor.setValue(prependMessage + lampDemo);
+            break;
+        case 'trillionfeathersDemo':
+            editor.setValue(prependMessage + trillionfeathersDemo);
+            break;
+        case 'monsterblobDemo':
+            editor.setValue(prependMessage + monsterblobDemo);
+            break;
+        case 'industrialMusicDemo':
+            editor.setValue(prependMessage + industrialMusicDemo);
+            break;
+        case 'trySoundsDemo':
+            editor.setValue(prependMessage + trySoundsDemo);
+            break;
+        case 'springysquaresDemo':
+            editor.setValue(prependMessage + springysquaresDemo);
+            break;
+        case 'diceDemo':
+            editor.setValue(prependMessage + diceDemo);
+            break;
+        case 'webglalmostvoronoiDemo':
+            editor.setValue(prependMessage + webglalmostvoronoiDemo);
+            break;
+        case 'webglshardsDemo':
+            editor.setValue(prependMessage + webglshardsDemo);
+            break;
+        case 'webglredthreadsDemo':
+            editor.setValue(prependMessage + webglredthreadsDemo);
+            break;
+        case 'webglnuclearOctopusDemo':
+            editor.setValue(prependMessage + webglnuclearOctopusDemo);
+            break;
+        case 'introTutorial':
+            editor.setValue(prependMessage + introTutorial);
+            break;
+        case 'helloworldTutorial':
+            editor.setValue(prependMessage + helloworldTutorial);
+            break;
+        case 'somenotesTutorial':
+            editor.setValue(prependMessage + somenotesTutorial);
+            break;
+        case 'rotateTutorial':
+            editor.setValue(prependMessage + rotateTutorial);
+            break;
+        case 'frameTutorial':
+            editor.setValue(prependMessage + frameTutorial);
+            break;
+        case 'timeTutorial':
+            editor.setValue(prependMessage + timeTutorial);
+            break;
+        case 'moveTutorial':
+            editor.setValue(prependMessage + moveTutorial);
+            break;
+        case 'scaleTutorial':
+            editor.setValue(prependMessage + scaleTutorial);
+            break;
+        case 'timesTutorial':
+            editor.setValue(prependMessage + timesTutorial);
+            break;
+        case 'fillTutorial':
+            editor.setValue(prependMessage + fillTutorial);
+            break;
+        case 'strokeTutorial':
+            editor.setValue(prependMessage + strokeTutorial);
+            break;
+        case 'colornamesTutorial':
+            editor.setValue(prependMessage + colornamesTutorial);
+            break;
+        case 'lightsTutorial':
+            editor.setValue(prependMessage + lightsTutorial);
+            break;
+        case 'backgroundTutorial':
+            editor.setValue(prependMessage + backgroundTutorial);
+            break;
+        case 'gradientTutorial':
+            editor.setValue(prependMessage + gradientTutorial);
+            break;
+        case 'lineTutorial':
+            editor.setValue(prependMessage + lineTutorial);
+            break;
+        case 'ballTutorial':
+            editor.setValue(prependMessage + ballTutorial);
+            break;
+        case 'pushpopMatrixTutorial':
+            editor.setValue(prependMessage + pushpopMatrixTutorial);
+            break;
+        case 'animationstyleTutorial':
+            editor.setValue(prependMessage + animationstyleTutorial);
+            break;
+        case 'doonceTutorial':
+            editor.setValue(prependMessage + doonceTutorial);
+            break;
+        case 'conditionalsTutorial':
+            editor.setValue(prependMessage + conditionalsTutorial);
+            break;
+        case 'autocodeTutorial':
+            editor.setValue(prependMessage + autocodeTutorial);
+            break;
     }
 
     // bring the cursor to the top

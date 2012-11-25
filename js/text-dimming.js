@@ -74,6 +74,7 @@ function dimIfNoCursorActivity() {
 // a function to toggle code diming on and off -- julien 
 
 var dimcodeOn = false;
+var dimIntervalID;
 
 function toggleDimCode() {
   dimcodeOn = !dimcodeOn;
