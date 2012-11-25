@@ -1,7 +1,7 @@
-<!DOCTYPE html>  <html> <head>   <title>demos-and-tutorials.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="geometry-commands.html">                 geometry-commands.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               demos-and-tutorials.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true, nomen: true, devel: true */</span>
+<!DOCTYPE html>  <html> <head>   <title>demos-and-tutorials.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colours.html">                 colours.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="geometry-commands.html">                 geometry-commands.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               demos-and-tutorials.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true, nomen: true, devel: true */</span>
 <span class="comment">/*global frenchVersion, $, Detector, forceCanvasRenderer, userWarnedAboutWebglExamples: true, fakeText, undimEditor, editor, doTheSpinThingy: true, BigCursor */</span>
 
-<span class="string">'use strict'</span>;
+    <span class="string">'use strict'</span>;
 
 <span class="keyword">var</span> roseDemo = [
     <span class="string">"// 'A rose' by Guy John"</span>,
@@ -570,6 +570,8 @@
     <span class="string">"// if you see that things got"</span>,
     <span class="string">"// boring down a particular path of changes."</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
 
+<span class="keyword">var</span> userWarnedAboutWebglExamples = <span class="literal">false</span>;
+
 <span class="function"><span class="keyword">function</span> <span class="title">loadDemoOrTutorial</span><span class="params">(whichDemo)</span> {</span>
 
     <span class="keyword">if</span> ((!Detector.webgl || forceCanvasRenderer) &amp;&amp; !userWarnedAboutWebglExamples &amp;&amp; whichDemo.indexOf(<span class="string">'webgl'</span>) === <span class="number">0</span>) {
@@ -601,132 +603,132 @@ this hash value and load the correct demo)</p>             </td>             <td
     }
 
     <span class="keyword">switch</span> (whichDemo) {
-    <span class="keyword">case</span> <span class="string">'roseDemo'</span>:
-        editor.setValue(prependMessage + roseDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'cheeseAndOlivesDemo'</span>:
-        editor.setValue(prependMessage + cheeseAndOlivesDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'simpleCubeDemo'</span>:
-        editor.setValue(prependMessage + simpleCubeDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'webgltwocubesDemo'</span>:
-        editor.setValue(prependMessage + webgltwocubesDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'cubesAndSpikes'</span>:
-        editor.setValue(prependMessage + cubesAndSpikes);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'webglturbineDemo'</span>:
-        editor.setValue(prependMessage + webglturbineDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'webglzfightartDemo'</span>:
-        editor.setValue(prependMessage + webglzfightartDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'littleSpiralOfCubes'</span>:
-        editor.setValue(prependMessage + littleSpiralOfCubes);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'tentacleDemo'</span>:
-        editor.setValue(prependMessage + tentacleDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'lampDemo'</span>:
-        editor.setValue(prependMessage + lampDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'trillionfeathersDemo'</span>:
-        editor.setValue(prependMessage + trillionfeathersDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'monsterblobDemo'</span>:
-        editor.setValue(prependMessage + monsterblobDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'industrialMusicDemo'</span>:
-        editor.setValue(prependMessage + industrialMusicDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'trySoundsDemo'</span>:
-        editor.setValue(prependMessage + trySoundsDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'springysquaresDemo'</span>:
-        editor.setValue(prependMessage + springysquaresDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'diceDemo'</span>:
-        editor.setValue(prependMessage + diceDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'webglalmostvoronoiDemo'</span>:
-        editor.setValue(prependMessage + webglalmostvoronoiDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'webglshardsDemo'</span>:
-        editor.setValue(prependMessage + webglshardsDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'webglredthreadsDemo'</span>:
-        editor.setValue(prependMessage + webglredthreadsDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'webglnuclearOctopusDemo'</span>:
-        editor.setValue(prependMessage + webglnuclearOctopusDemo);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'introTutorial'</span>:
-        editor.setValue(prependMessage + introTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'helloworldTutorial'</span>:
-        editor.setValue(prependMessage + helloworldTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'somenotesTutorial'</span>:
-        editor.setValue(prependMessage + somenotesTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'rotateTutorial'</span>:
-        editor.setValue(prependMessage + rotateTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'frameTutorial'</span>:
-        editor.setValue(prependMessage + frameTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'timeTutorial'</span>:
-        editor.setValue(prependMessage + timeTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'moveTutorial'</span>:
-        editor.setValue(prependMessage + moveTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'scaleTutorial'</span>:
-        editor.setValue(prependMessage + scaleTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'timesTutorial'</span>:
-        editor.setValue(prependMessage + timesTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'fillTutorial'</span>:
-        editor.setValue(prependMessage + fillTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'strokeTutorial'</span>:
-        editor.setValue(prependMessage + strokeTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'colornamesTutorial'</span>:
-        editor.setValue(prependMessage + colornamesTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'lightsTutorial'</span>:
-        editor.setValue(prependMessage + lightsTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'backgroundTutorial'</span>:
-        editor.setValue(prependMessage + backgroundTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'gradientTutorial'</span>:
-        editor.setValue(prependMessage + gradientTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'lineTutorial'</span>:
-        editor.setValue(prependMessage + lineTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'ballTutorial'</span>:
-        editor.setValue(prependMessage + ballTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'pushpopMatrixTutorial'</span>:
-        editor.setValue(prependMessage + pushpopMatrixTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'animationstyleTutorial'</span>:
-        editor.setValue(prependMessage + animationstyleTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'doonceTutorial'</span>:
-        editor.setValue(prependMessage + doonceTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'conditionalsTutorial'</span>:
-        editor.setValue(prependMessage + conditionalsTutorial);
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="string">'autocodeTutorial'</span>:
-        editor.setValue(prependMessage + autocodeTutorial);
-        <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'roseDemo'</span>:
+            editor.setValue(prependMessage + roseDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'cheeseAndOlivesDemo'</span>:
+            editor.setValue(prependMessage + cheeseAndOlivesDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'simpleCubeDemo'</span>:
+            editor.setValue(prependMessage + simpleCubeDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'webgltwocubesDemo'</span>:
+            editor.setValue(prependMessage + webgltwocubesDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'cubesAndSpikes'</span>:
+            editor.setValue(prependMessage + cubesAndSpikes);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'webglturbineDemo'</span>:
+            editor.setValue(prependMessage + webglturbineDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'webglzfightartDemo'</span>:
+            editor.setValue(prependMessage + webglzfightartDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'littleSpiralOfCubes'</span>:
+            editor.setValue(prependMessage + littleSpiralOfCubes);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'tentacleDemo'</span>:
+            editor.setValue(prependMessage + tentacleDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'lampDemo'</span>:
+            editor.setValue(prependMessage + lampDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'trillionfeathersDemo'</span>:
+            editor.setValue(prependMessage + trillionfeathersDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'monsterblobDemo'</span>:
+            editor.setValue(prependMessage + monsterblobDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'industrialMusicDemo'</span>:
+            editor.setValue(prependMessage + industrialMusicDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'trySoundsDemo'</span>:
+            editor.setValue(prependMessage + trySoundsDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'springysquaresDemo'</span>:
+            editor.setValue(prependMessage + springysquaresDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'diceDemo'</span>:
+            editor.setValue(prependMessage + diceDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'webglalmostvoronoiDemo'</span>:
+            editor.setValue(prependMessage + webglalmostvoronoiDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'webglshardsDemo'</span>:
+            editor.setValue(prependMessage + webglshardsDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'webglredthreadsDemo'</span>:
+            editor.setValue(prependMessage + webglredthreadsDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'webglnuclearOctopusDemo'</span>:
+            editor.setValue(prependMessage + webglnuclearOctopusDemo);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'introTutorial'</span>:
+            editor.setValue(prependMessage + introTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'helloworldTutorial'</span>:
+            editor.setValue(prependMessage + helloworldTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'somenotesTutorial'</span>:
+            editor.setValue(prependMessage + somenotesTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'rotateTutorial'</span>:
+            editor.setValue(prependMessage + rotateTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'frameTutorial'</span>:
+            editor.setValue(prependMessage + frameTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'timeTutorial'</span>:
+            editor.setValue(prependMessage + timeTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'moveTutorial'</span>:
+            editor.setValue(prependMessage + moveTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'scaleTutorial'</span>:
+            editor.setValue(prependMessage + scaleTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'timesTutorial'</span>:
+            editor.setValue(prependMessage + timesTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'fillTutorial'</span>:
+            editor.setValue(prependMessage + fillTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'strokeTutorial'</span>:
+            editor.setValue(prependMessage + strokeTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'colornamesTutorial'</span>:
+            editor.setValue(prependMessage + colornamesTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'lightsTutorial'</span>:
+            editor.setValue(prependMessage + lightsTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'backgroundTutorial'</span>:
+            editor.setValue(prependMessage + backgroundTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'gradientTutorial'</span>:
+            editor.setValue(prependMessage + gradientTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'lineTutorial'</span>:
+            editor.setValue(prependMessage + lineTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'ballTutorial'</span>:
+            editor.setValue(prependMessage + ballTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'pushpopMatrixTutorial'</span>:
+            editor.setValue(prependMessage + pushpopMatrixTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'animationstyleTutorial'</span>:
+            editor.setValue(prependMessage + animationstyleTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'doonceTutorial'</span>:
+            editor.setValue(prependMessage + doonceTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'conditionalsTutorial'</span>:
+            editor.setValue(prependMessage + conditionalsTutorial);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'autocodeTutorial'</span>:
+            editor.setValue(prependMessage + autocodeTutorial);
+            <span class="keyword">break</span>;
     }
 
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>bring the cursor to the top</p>             </td>             <td class="code">               <div class="highlight"><pre>    editor.setCursor(<span class="number">0</span>, <span class="number">0</span>);
