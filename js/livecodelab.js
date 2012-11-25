@@ -19,7 +19,7 @@ var time;
 // worth tracking with this variable
 var anyCodeReactingTobpm;
 
-var createLiveCodeLab = function () {
+var createLiveCodeLab = function (CodeTransformer) {
 
     var LiveCodeLab = {},
         loopInterval,
@@ -156,7 +156,7 @@ var createLiveCodeLab = function () {
         // update stats
         stats.update();
 
-        putTicksNextToDoOnceBlocksThatHaveBeenRun();
+        CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(editor);
 
     };
 
