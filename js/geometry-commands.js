@@ -1,3 +1,45 @@
+
+// Since you can't change the mesh of an object once it's created, we keep around
+// a pool of objects for each mesh type. There is one pool for lines, one for rectangles, one
+// for boxes. There is one pool for each detail level of spheres (since they are different)
+// meshes. For the time being there is no detail level for cylinders so there is only
+// one pool for cylinders.
+
+// For how the mechanism works now, all pooled objects end up in the scene graph.
+// The scene graph is traversed at each frame and only the used objects are marked as
+// visible, the other unused objects are hidden. This is because adding/removing
+// objects from the scene is expensive. Note that this might have changed with more
+// recent versions of Three.js of the past 4 months.
+
+// All object pools start empty. Note that each sphere detail level must have
+// its own pool, because you can't easily change the mesh of an object.
+// If one doesn't like the idea of creating dozens of empty arrays that won't ever be
+// used (since probably only a few sphere detail levels will be used in a session)
+// then one could leave all these arrays undefined and define them at runtime
+// only when needed.
+var objectPool = [];
+objectPool[GEOM_TYPE_LINE] = [];
+objectPool[GEOM_TYPE_RECT] = [];
+objectPool[GEOM_TYPE_BOX] = [];
+objectPool[GEOM_TYPE_CYLINDER] = [];
+var creatingSpherePools;
+for (creatingSpherePools = 0; creatingSpherePools < (maximumBallDetail - minimumBallDetail + 1); creatingSpherePools++) {
+    objectPool[GEOM_TYPE_SPHERE + creatingSpherePools] = [];
+}
+
+
+var geometriesBank = [];
+geometriesBank[GEOM_TYPE_LINE] = new THREE.Geometry();
+geometriesBank[GEOM_TYPE_LINE].vertices.push(new THREE.Vertex(new THREE.Vector3(0, -0.5, 0)));
+geometriesBank[GEOM_TYPE_LINE].vertices.push(new THREE.Vertex(new THREE.Vector3(0, 0.5, 0)));
+geometriesBank[GEOM_TYPE_RECT] = new THREE.PlaneGeometry(1, 1);
+geometriesBank[GEOM_TYPE_BOX] = new THREE.CubeGeometry(1, 1, 1);
+geometriesBank[GEOM_TYPE_CYLINDER] = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
+var creatingSphereGeometries;
+for (creatingSphereGeometries = 0; creatingSphereGeometries < (maximumBallDetail - minimumBallDetail + 1); creatingSphereGeometries++) {
+    geometriesBank[GEOM_TYPE_SPHERE + creatingSphereGeometries] = new THREE.SphereGeometry(1, minimumBallDetail + creatingSphereGeometries, minimumBallDetail + creatingSphereGeometries);
+}
+
 var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
 
   var startIndex = 0;

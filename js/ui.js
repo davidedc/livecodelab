@@ -1,6 +1,13 @@
 /*jslint browser: true, devel: true */
 /*global $, autocoder, pickRandomDefaultGradient, toggleAutocodeAndUpdateButtonAndBlinking, editor, loadDemoOrTutorial, toggleDimCode */
 
+
+var isCanvasSupported = function () {
+    'use strict';
+    var elem = document.createElement('canvas');
+    return !!(elem.getContext && elem.getContext('2d'));
+};
+
 var triggerReset = function () {
 
     'use strict';
