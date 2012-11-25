@@ -7,9 +7,11 @@ To get setup with Grunt should be pretty easy.
 
  * Make sure you have NodeJS and NPM installed
  * Install Grunt globally ```npm install -g grunt```
+ * Install targethtml globally ```npm install -g grunt-targethtml```
  * use npm to get all the dependencies ```npm install```
 
 #### Use ####
 
- * From your livecodelab directory run ```grunt compile``` . A fresh new indexforLivecodelabMinified.html is baked for you.
- * ...or run ```grunt docs``` for new docs.
+ * From your livecodelab directory run ```grunt compile``` . A fresh new indexforLivecodelabMinified.html is baked for you,
+ * ...or run ```grunt docs``` for new docs,
+ * ...or run ```grunt clean``` to clean the build files.

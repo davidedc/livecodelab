@@ -82,7 +82,13 @@ module.exports = function (grunt) {
         },
         clean: {
             docs: ['docs/'],
-            build: ['dist/*']
+            build: ['dist/', 'indexMinified.html']
+        },
+        targethtml: {
+						compile: {
+									src: 'index.html',
+									dest: 'indexMinified.html'
+								}
         },
         'closure-compiler': {
             frontend: {
@@ -111,12 +117,13 @@ module.exports = function (grunt) {
     grunt.registerTask('docs', 'doccoh');
 
     // Compilation task
-    grunt.registerTask('compile', 'clean:build concat closure-compiler recess:compile');
+    grunt.registerTask('compile', 'clean:build concat closure-compiler recess:compile targethtml:compile');
 
     // Load NPM Task modules
     grunt.loadNpmTasks('grunt-closure-compiler');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-doccoh');
     grunt.loadNpmTasks('grunt-recess');
+    grunt.loadNpmTasks('grunt-targethtml');
 
 };

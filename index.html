@@ -5,80 +5,102 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-        <link rel="stylesheet" href="css/main.css"/>
-        <link rel="stylesheet" href="css/codemirror.css">
-        <link rel="stylesheet" href="css/night.css">
-        <link rel="stylesheet" href="css/dropdownmenu.css">
-        
-        <!-- Start simple modal CSS-->
-        <!-- Page styles -->
-        <link type='text/css' href='css/simpleModal.css' rel='stylesheet' media='screen' />			
-        <!-- end simple modal CSS-->
+				<!--(if target dummy)><!-->
+				<link rel="stylesheet" href="css/main.css"/>
+				<link rel="stylesheet" href="css/codemirror.css">
+				<link rel="stylesheet" href="css/night.css">
+				<link rel="stylesheet" href="css/dropdownmenu.css">
+				<!--<!(endif)-->
+					
+					
+				<!--(if target compile)>
+					<link type='text/css' href='css_compiled/main.css' rel='stylesheet' media='screen' />
+				<!(endif)-->
 
+				<script src="js_compiled/vendor/three.js/Three.js"></script>
 
-        <script src="js_compiled/vendor/three.js/Three.js"></script>
-        <script src="js/vendor/three.js/Detector.js"></script>
-        <script src="js/vendor/three.js/Stats.js"></script>
+				<!--(if target dummy)><!-->
+					<script src="js/vendor/three.js/Detector.js"></script>
+					<script src="js/vendor/three.js/Stats.js"></script>
+        	<script src="js/vendor/threex/THREEx.WindowResize.js"></script>
+				<!--<!(endif)-->
 
-        <script src="js/vendor/threex/THREEx.WindowResize.js"></script>
         <script src="js_compiled/coffee-script.js"></script>
 
-        <script src="js/vendor/three.js/ShaderExtras.js"></script>
-        <script src="js/vendor/three.js/postprocessing/EffectComposer.js"></script>
-        <script src="js/vendor/three.js/postprocessing/RenderPass.js"></script>
-        <script src="js/vendor/three.js/postprocessing/ShaderPass.js"></script>
-        <!--
-             surprisingly MaskPass.js is needed even though masks are not
-             explicitely used
-        -->
-        <script src="js/vendor/three.js/postprocessing/MaskPass.js"></script>
-        <script src="js/vendor/three.js/postprocessing/SavePass.js"></script>
+				<!--(if target dummy)><!-->
+						<script src="js/vendor/three.js/ShaderExtras.js"></script>
+						<script src="js/vendor/three.js/postprocessing/EffectComposer.js"></script>
+						<script src="js/vendor/three.js/postprocessing/RenderPass.js"></script>
+						<script src="js/vendor/three.js/postprocessing/ShaderPass.js"></script>
+				<!--<!(endif)-->
 
+					<!--
+							 surprisingly MaskPass.js is needed even though masks are not
+							 explicitely used
+					-->
 
-        <script src="js/autocoder/mclexer.js"></script>
+				<!--(if target dummy)><!-->
+					<script src="js/vendor/three.js/postprocessing/MaskPass.js"></script>
+					<script src="js/vendor/three.js/postprocessing/SavePass.js"></script>
+	
+	
+					<script src="js/autocoder/mclexer.js"></script>
+	
+					<script  src="js_compiled/codemirror.js"></script>
+					<script  src="js/editor/coffeescript-livecodelab-mode.js"></script>
+					<script  src="js_compiled/jquery.min.js"></script>
+				<!--<!(endif)-->
+	
+	
+					<!-- start simple modal Scripts-->
+					<!-- Scripts -->
 
-        <script  src="js_compiled/codemirror.js"></script>
-        <script  src="js/editor/coffeescript-livecodelab-mode.js"></script>
-        <script  src="js_compiled/jquery.min.js"></script>
-
-
-        <!-- start simple modal Scripts-->
-        <!-- Scripts -->
+        <!--(if target compile)>
+					<script src="js_compiled/codemirror.js"></script>
+					<script src="js_compiled/jquery.min.js"></script>
+        <!(endif)-->
+        
         <script src='js_compiled/jquery.simplemodal.js'></script>
-        <!-- end simple modal Scripts-->
+					<!-- end simple modal Scripts-->
+	
+	
+					<!-- Slicing the code in js files -->
+	
+				<!--(if target dummy)><!-->
+					<script src="js/logger.js"></script>
+					<script src="js/big-cursor-animation.js"></script>
+					<script src="js/livecodelab.js"></script>
+					<script src="js/colours.js"></script>
+					<script src="js/var-definitions.js"></script>
+					<script src="js/background-painting.js"></script>
+					<script src="js/editor/editor.js"></script>
+	
+					<script src="js/from-processing.js"></script>
+	
+	
+					<script src="js/sound/sounddef.js"></script>
+					<script src="js/sound/sound-functions.js"></script>
+					<script src="js/sound/buzz.js"></script>
+	
+					<script src="js/init.js"></script>
+	
+					<script src="js/matrix-commands.js"></script>
+					<script src="js/geometry-commands.js"></script>
+					<script src="js/math.js"></script>
+					<script src="js/code-transformations.js"></script>
+					<script src="js/demos-and-tutorials.js"></script>
+					<script src="js/autocoder/autocode.js"></script>
+					<script src="js/text-dimming.js"></script>
+					<script src="js/lights-functions.js"></script>
+					<script src="js/init-threejs.js"></script>
+					<script src="js/editor/mousewheel.js"></script>
+	
+					<script src="js/ui.js"></script>
+				<!--<!(endif)-->
 
-
-        <!-- Slicing the code in js files -->
-
-        <script src="js/logger.js"></script>
-        <script src="js/big-cursor-animation.js"></script>
-        <script src="js/livecodelab.js"></script>
-        <script src="js/colours.js"></script>
-        <script src="js/var-definitions.js"></script>
-        <script src="js/background-painting.js"></script>
-        <script src="js/editor/editor.js"></script>
-
-        <script src="js/from-processing.js"></script>
-
-
-        <script src="js/sound/sounddef.js"></script>
-        <script src="js/sound/sound-functions.js"></script>
-        <script src="js/sound/buzz.js"></script>
-
-        <script src="js/init.js"></script>
-
-        <script src="js/matrix-commands.js"></script>
-        <script src="js/geometry-commands.js"></script>
-        <script src="js/math.js"></script>
-        <script src="js/code-transformations.js"></script>
-        <script src="js/demos-and-tutorials.js"></script>
-        <script src="js/autocoder/autocode.js"></script>
-        <script src="js/text-dimming.js"></script>
-        <script src="js/lights-functions.js"></script>
-        <script src="js/init-threejs.js"></script>
-        <script src="js/editor/mousewheel.js"></script>
-
-        <script src="js/ui.js"></script>
+        <!--(if target compile)>
+					<script src="js_compiled/Livecodelab-minified.js"></script>
+        <!(endif)-->
 
     </head>
     <body>
