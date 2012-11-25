@@ -42,6 +42,7 @@ module.exports = function (grunt) {
                     'js/big-cursor-animation.js',
                     'js/autocoder/mclexer.js',
                     'js/livecodelab.js',
+                    'js/colours.js',
                     'js/vendor/three.js/Detector.js',
                     'js/vendor/three.js/Stats.js',
                     'js/vendor/threex/THREEx.WindowResize.js',
