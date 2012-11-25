@@ -81,7 +81,10 @@ function toggleDimCode() {
 
   if (!dimcodeOn) {
     clearInterval(dimIntervalID);
-    undimEditor();
+    // don't un-dim if the giant cursor is blinking
+    if (!fakeText && editor.getValue() !== '') {
+      undimEditor();
+    }
     $("#dimCodeIndicator").html("Hide Code: off");
 
   } else {
