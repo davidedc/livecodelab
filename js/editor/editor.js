@@ -1,7 +1,7 @@
 /*jslint browser: true, devel: true */
-/*global CodeMirror, registerCode, suspendDimmingAndCheckIfLink */
+/*global CodeMirror, suspendDimmingAndCheckIfLink */
 
-var createEditor = function () {
+var createEditor = function (CodeTransformer) {
     var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
         lineNumbers: false,
         indentWithTabs: true,
@@ -16,9 +16,10 @@ var createEditor = function () {
         onBlur: (function () {
             setTimeout('editor.focus()', 30);
         }),
-        onChange: (function () {
-            registerCode();
-        }),
+        // the onChange function of CodeMirror will pass in
+        // the "editor" instance as the first argument to the
+        // function callback
+        onChange: (CodeTransformer.registerCode),
         mode: "livecodelab",
         onCursorActivity: (function () {
             suspendDimmingAndCheckIfLink();
