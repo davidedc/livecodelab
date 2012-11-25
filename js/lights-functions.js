@@ -1,3 +1,7 @@
+
+var previousanimationStyleValue = 0;
+var ambientLightsPool = [];
+
 // ambientColor is always white
 // because it needs to reflect what the
 // ambient light color is
