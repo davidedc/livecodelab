@@ -12,7 +12,7 @@ var triggerReset = function () {
 
     'use strict';
 
-    pickRandomDefaultGradient();
+    BackgroundPainter.pickRandomDefaultGradient();
     if (autocoder.active) {
         toggleAutocodeAndUpdateButtonAndBlinking();
     }
