@@ -509,10 +509,12 @@ function registerCode() {
 
 
     //alert(elaboratedSource );
-    out = CoffeeScript.compile(elaboratedSource, {
+
+    var compiledOutput;
+    compiledOutput = CoffeeScript.compile(elaboratedSource, {
       bare: "on"
     });
-    logger("in javascript: " + out);
+    logger("in javascript: " + compiledOutput);
   } catch (e) {
 
     if (autocoder.active) {
@@ -531,20 +533,19 @@ function registerCode() {
   var matchDeclaredMethod = /([a-z]+[a-zA-Z0-9]*) = function/;
   var declaredMethods = [];
   var mc;
-  var copyOfOut = out;
-  while ((mc = copyOfOut.match(matchDeclaredMethod))) {
+  var copyOfCompiledOutput = compiledOutput;
+  while ((mc = copyOfCompiledOutput.match(matchDeclaredMethod))) {
     declaredMethods.push(mc[1]);
-    copyOfOut = RegExp.rightContext;
+    copyOfCompiledOutput = RegExp.rightContext;
   }
   //alert("found declared methods " + declaredMethods.length);
-  //alert("out:"+out)
 
   var usedMethods = [];
   var md;
-  copyOfOut = out;
-  while ((md = copyOfOut.match(/\s([a-z]+[a-zA-Z0-9]*)\(/))) {
+  copyOfCompiledOutput = compiledOutput;
+  while ((md = copyOfCompiledOutput.match(/\s([a-z]+[a-zA-Z0-9]*)\(/))) {
     usedMethods.push(md[1]);
-    copyOfOut = RegExp.rightContext;
+    copyOfCompiledOutput = RegExp.rightContext;
   }
   //alert("found used methods " + usedMethods.length);
   var error = false;
@@ -594,12 +595,12 @@ function registerCode() {
   // some variables as global, for the time being let's put
   // the cheap hack in place i.e. remove any local declaration that the
   // coffeescript to javascript translator inserts.
-  out = out.replace(/var frame/, ";");
+  compiledOutput = compiledOutput.replace(/var frame/, ";");
 
-  logger(out);
+  logger(compiledOutput);
 
   console.log("code transform set draw");
-  LiveCodeLab.setDrawFunction(new Function(out));
+  LiveCodeLab.setDrawFunction(new Function(compiledOutput));
 
 }
 

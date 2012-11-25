@@ -79,11 +79,10 @@ var soundLoops = [];
 soundLoops.soundIDs = [];
 soundLoops.beatStrings = [];
 
+// Used between livecodelab.js and code-transformation.js
 var programHasBasicError = false;
 var reasonOfBasicError = "";
 var consecutiveFramesWithoutRunTimeError = 0;
-var out;
-var lastStableProgram;
 
 // the "spinthingy" is because we want
 // users who type "box" to see that it's actually
