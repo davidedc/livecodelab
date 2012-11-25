@@ -76,11 +76,13 @@ just to make sure that this is not the case.</p>             </td>             <
 
   <span class="keyword">if</span> (!dimcodeOn) {
     clearInterval(dimIntervalID);
-    undimEditor();
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>don't un-dim if the giant cursor is blinking</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (!fakeText &amp;&amp; editor.getValue() !== <span class="string">''</span>) {
+      undimEditor();
+    }
     $(<span class="string">"#dimCodeIndicator"</span>).html(<span class="string">"Hide Code: off"</span>);
 
   } <span class="keyword">else</span> {
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>we restart a setInterval</p>             </td>             <td class="code">               <div class="highlight"><pre>    dimIntervalID = setInterval(<span class="string">"dimIfNoCursorActivity()"</span>, <span class="number">5000</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>we restart a setInterval</p>             </td>             <td class="code">               <div class="highlight"><pre>    dimIntervalID = setInterval(<span class="string">"dimIfNoCursorActivity()"</span>, <span class="number">5000</span>);
     $(<span class="string">"#dimCodeIndicator"</span>).html(<span class="string">"Hide Code: on"</span>);
   }
 }

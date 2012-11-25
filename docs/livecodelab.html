@@ -16,7 +16,7 @@ block has run.</p>             </td>             <td class="code">              
 </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>if there isn't any code using the bpm setting then we can save a timer, so
 worth tracking with this variable</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> anyCodeReactingTobpm;
 
-<span class="keyword">var</span> createLiveCodeLab = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+<span class="keyword">var</span> createLiveCodeLab = <span class="function"><span class="keyword">function</span> <span class="params">(CodeTransformer)</span> {</span>
 
     <span class="keyword">var</span> LiveCodeLab = {},
         loopInterval,
@@ -138,7 +138,7 @@ after the program has executed</p>             </td>             <td class="code
         LiveCodeLab.render();
 </pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>update stats</p>             </td>             <td class="code">               <div class="highlight"><pre>        stats.update();
 
-        putTicksNextToDoOnceBlocksThatHaveBeenRun();
+        CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(editor);
 
     };
 
