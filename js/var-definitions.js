@@ -1,3 +1,21 @@
+
+
+
+/**
+ * Extend the Number prototype
+ * This needs to stay globally defined
+ * @param func
+ * @param scope [optional]
+ */
+Number.prototype.times = function (func, scope) {
+    var v = this.valueOf();
+    for (var i = 0; i < v; i++) {
+        func.call(scope || window, i);
+    }
+};
+
+
+
 // All used by Three.js
 var stats;
 var scene;
@@ -14,7 +32,7 @@ var autocoder;
 // All used globally
 var logger = createDebugger();
 var BigCursor = createBigCursor();
-var LiveCodeLab = createLiveCodeLab();
+var LiveCodeLab;
 
 // creating a geometry is expensive
 // so we need to create ONE cube of dimensions 1,1,1

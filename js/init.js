@@ -9,10 +9,16 @@ var startEnvironment = function () {
 
     BackgroundPainter.pickRandomDefaultGradient();
 
-    editor = createEditor();
+    // Thisis the beginnings of the dependency injection section
+    // Preferably this
+    var CoffeeCompiler = CoffeeScript;
+    var CodeTransformer = createCodeTransformer(CoffeeCompiler);
+    editor = createEditor(CodeTransformer);
 
     //create autocoder here
     autocoder = createAutocoder(editor);
+
+    LiveCodeLab = createLiveCodeLab(CodeTransformer);
 
 
     logger("startEnvironment");
