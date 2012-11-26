@@ -13,7 +13,12 @@ var soundBank = {};
 var soundFiles = {};
 
 var chosenSoundPlayingMethod;
-if (navigator.userAgent.toLowerCase().indexOf('safari/') > -1) {
+// note that chrome user agent contains the string "safari/"
+// so the chrome check needs to go first.
+if (navigator.userAgent.toLowerCase().indexOf('chrome') != -1) {
+	chosenSoundPlayingMethod = 3;
+}
+else if (navigator.userAgent.toLowerCase().indexOf('safari/') > -1) {
 	chosenSoundPlayingMethod = 2;
 }
 else if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)) {
@@ -22,10 +27,6 @@ else if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)) {
 else if (navigator.userAgent.indexOf("Firefox")!=-1) {
 	chosenSoundPlayingMethod = 3;
 }
-else if (navigator.userAgent.toLowerCase().indexOf('chrome') != -1) {
-	chosenSoundPlayingMethod = 3;
-}
-
 
 
 // sets BPM
