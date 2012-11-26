@@ -121,7 +121,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs) {
                 checkErrorAndReport(e);
 
                 // mark the program as flawed and register the previous stable one.
-                consecutiveFramesWithoutRunTimeError = 0;                
+                CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;                
                 LiveCodeLab.drawFunction = lastStableProgram;
 
                 return;
@@ -140,8 +140,8 @@ var createLiveCodeLab = function (CodeTransformer, threejs) {
             BackgroundPainter.simpleGradientUpdateIfChanged();
             changeUpdatesPerMinuteIfNeeded();
             frame++;
-            consecutiveFramesWithoutRunTimeError++;
-            if (consecutiveFramesWithoutRunTimeError == 5) {
+            CodeTransformer.consecutiveFramesWithoutRunTimeError++;
+            if (CodeTransformer.consecutiveFramesWithoutRunTimeError == 5) {
                 lastStableProgram = LiveCodeLab.drawFunction;
                 //chromeHackUncaughtReferenceName = '';
             }

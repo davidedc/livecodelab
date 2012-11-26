@@ -12,6 +12,11 @@ var endedFirstPlay = 0;
 var soundBank = {};
 var soundFiles = {};
 
+var soundLoops = [];
+soundLoops.soundIDs = [];
+soundLoops.beatStrings = [];
+
+
 var chosenSoundPlayingMethod;
 // note that chrome user agent contains the string "safari/"
 // so the chrome check needs to go first.
