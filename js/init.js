@@ -7,6 +7,16 @@ var startEnvironment = function () {
 
     'use strict';
 
+    ThreeJs = createThreeJs(Detector, THREE, THREEx);
+    BigCursor = createBigCursor();
+
+
+    BackgroundPainter = createBackgroundPainter(ThreeJs);
+    // This needs to be global so it can be run by the draw function
+    simpleGradient = BackgroundPainter.simpleGradient;
+    // This needs to be global so it can be run by the draw function
+    background = BackgroundPainter.background;
+
     BackgroundPainter.pickRandomDefaultGradient();
 
     // Thisis the beginnings of the dependency injection section
@@ -18,15 +28,17 @@ var startEnvironment = function () {
     //create autocoder here
     autocoder = createAutocoder(editor);
 
-    LiveCodeLab = createLiveCodeLab(CodeTransformer);
+    LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs);
+
+    ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs);
 
 
     logger("startEnvironment");
-    if (!initThreeJs()) {
+    if (ThreeJs) {
         LiveCodeLab.animate();
     }
 
-    if (!Detector.webgl || forceCanvasRenderer) {
+    if (!Detector.webgl || ThreeJs.forceCanvasRenderer) {
         //$('#noWebGLMessage').modal()
         $('#noWebGLMessage').modal({
             onClose: closeAndCheckAudio
@@ -54,8 +66,7 @@ var startEnvironment = function () {
     // otherwise we do as usual.
     if (window.location.hash.indexOf("bookmark") !== -1) {
         var demoToLoad = window.location.hash.substring("bookmark".length + 2);
-        //setTimeout ( "loadDemoOrTutorial('"+demoToLoad+"');",500);
-        loadDemoOrTutorial(demoToLoad);
+        ProgramLoader.loadDemoOrTutorial(demoToLoad);
     } else {
         startingSound = new buzz.sound("./sound/audioFiles/start_bing", {
             formats: ["ogg", "mp3"]

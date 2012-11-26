@@ -18,8 +18,8 @@ function suspendDimmingAndCheckIfLink() {
     if (currentLineContent.indexOf('// next-tutorial:') === 0) {
       currentLineContent = currentLineContent.substring(17);
       currentLineContent = currentLineContent.replace("_", "");
-      //alert(""+url);
-      setTimeout('loadDemoOrTutorial("' + currentLineContent + 'Tutorial");', 200);
+      var tutorialName = currentLineContent + 'Tutorial';
+      setTimeout(ProgramLoader.loadDemoOrTutorial, 200, tutorialName);
     }
   }
 

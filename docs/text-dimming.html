@@ -17,7 +17,8 @@ the link and nothing would happen.</p>             </td>             <td class="
     <span class="keyword">if</span> (currentLineContent.indexOf(<span class="string">'// next-tutorial:'</span>) === <span class="number">0</span>) {
       currentLineContent = currentLineContent.substring(<span class="number">17</span>);
       currentLineContent = currentLineContent.replace(<span class="string">"_"</span>, <span class="string">""</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>alert(""+url);</p>             </td>             <td class="code">               <div class="highlight"><pre>      setTimeout(<span class="string">'loadDemoOrTutorial("'</span> + currentLineContent + <span class="string">'Tutorial");'</span>, <span class="number">200</span>);
+      <span class="keyword">var</span> tutorialName = currentLineContent + <span class="string">'Tutorial'</span>;
+      setTimeout(ProgramLoader.loadDemoOrTutorial, <span class="number">200</span>, tutorialName);
     }
   }
 
@@ -37,12 +38,12 @@ the link and nothing would happen.</p>             </td>             <td class="
   }
 }
 
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Now that there is a manual switch to toggle it off and on
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Now that there is a manual switch to toggle it off and on
 the dimming goes to full INvisibility
 see toggleDimCode() 
 not sure about that, want to try it on people -- julien </p>             </td>             <td class="code">               <div class="highlight"><pre>
 <span class="function"><span class="keyword">function</span> <span class="title">dimEditor</span><span class="params">()</span> {</span>
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>TODO there is a chance that the animation library
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>TODO there is a chance that the animation library
 doesn't bring the opacity completely to zero
 but rather to a value close to it.
 Make the animation step to print something
@@ -67,7 +68,7 @@ just to make sure that this is not the case.</p>             </td>             <
 }
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>a function to toggle code diming on and off -- julien </p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>a function to toggle code diming on and off -- julien </p>             </td>             <td class="code">               <div class="highlight"><pre>
 <span class="keyword">var</span> dimcodeOn = <span class="literal">false</span>;
 <span class="keyword">var</span> dimIntervalID;
 
@@ -76,13 +77,13 @@ just to make sure that this is not the case.</p>             </td>             <
 
   <span class="keyword">if</span> (!dimcodeOn) {
     clearInterval(dimIntervalID);
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>don't un-dim if the giant cursor is blinking</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (!fakeText &amp;&amp; editor.getValue() !== <span class="string">''</span>) {
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>don't un-dim if the giant cursor is blinking</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (!fakeText &amp;&amp; editor.getValue() !== <span class="string">''</span>) {
       undimEditor();
     }
     $(<span class="string">"#dimCodeIndicator"</span>).html(<span class="string">"Hide Code: off"</span>);
 
   } <span class="keyword">else</span> {
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>we restart a setInterval</p>             </td>             <td class="code">               <div class="highlight"><pre>    dimIntervalID = setInterval(<span class="string">"dimIfNoCursorActivity()"</span>, <span class="number">5000</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>we restart a setInterval</p>             </td>             <td class="code">               <div class="highlight"><pre>    dimIntervalID = setInterval(<span class="string">"dimIfNoCursorActivity()"</span>, <span class="number">5000</span>);
     $(<span class="string">"#dimCodeIndicator"</span>).html(<span class="string">"Hide Code: on"</span>);
   }
 }

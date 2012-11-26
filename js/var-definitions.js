@@ -1,6 +1,3 @@
-
-
-
 /**
  * Extend the Number prototype
  * This needs to stay globally defined
@@ -17,10 +14,17 @@ Number.prototype.times = function (func, scope) {
 
 
 // All used by Three.js
-var stats;
-var scene;
-var renderer;
-var camera;
+// add Stats.js - https://github.com/mrdoob/stats.js
+var stats = new Stats();
+// Align bottom-left
+stats.getDomElement().style.position = 'absolute';
+stats.getDomElement().style.right = '0px';
+stats.getDomElement().style.top = '0px';
+$(document).ready(function () {
+    document.body.appendChild(stats.getDomElement());
+});
+
+
 
 // The CodeMirror editor
 var editor;
@@ -31,8 +35,18 @@ var autocoder;
 
 // All used globally
 var logger = createDebugger();
-var BigCursor = createBigCursor();
+var ThreeJs;
+var BigCursor;
 var LiveCodeLab;
+var ProgramLoader;
+
+var BackgroundPainter;
+
+// This needs to be global so it can be run by the draw function
+var simpleGradient;
+
+// This needs to be global so it can be run by the draw function
+var background;
 
 // creating a geometry is expensive
 // so we need to create ONE cube of dimensions 1,1,1
@@ -40,7 +54,6 @@ var LiveCodeLab;
 // scale it. Note that the scale for the specific cube shouldn't
 // influence the stack, so we need to create a scale node,
 // and then go up a node.
-var isWebGLUsed = false;
 
 
 // The following variables are mostly all used in
@@ -62,7 +75,6 @@ var objectsUsedInFrameCounts = [];
 var usedAmbientLights = 0;
 
 
-var ballDefaultDetLevel;
 var ballDetLevel;
 var currentStrokeSize = 1;
 
@@ -75,20 +87,11 @@ var currentStrokeSize = 1;
 // loads identity matrix
 var worldMatrix = new THREE.Matrix4();
 
-var forceCanvasRenderer = false;
-var backgroundScene;
-var backgroundSceneContext;
-var sceneRenderingCanvas;
-var sceneRenderingCanvasContext;
-var previousRenderForBlending;
-var previousRenderForBlendingContext;
 var finalRenderWithSceneAndBlend;
 var finalRenderWithSceneAndBlendContext;
 
 
 
-var scaledBackgroundWidth;
-var scaledBackgroundHeight;
 var repaintBackroundEveryFrame = true;
 var fullScreenifyBackground = true;
 var animationStyleValue = 0;
@@ -114,6 +117,3 @@ var consecutiveFramesWithoutRunTimeError = 0;
 var doTheSpinThingy = true;
 var resetTheSpinThingy = false;
 var SPINFRAMES = 30;
-
-
-

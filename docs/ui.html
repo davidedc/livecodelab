@@ -131,12 +131,12 @@ $(document).ready(<span class="function"><span class="keyword">function</span> <
 
 
     $(<span class="string">'#demos li a'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
-        loadDemoOrTutorial($(<span class="keyword">this</span>).attr(<span class="string">'id'</span>));
+        ProgramLoader.loadDemoOrTutorial($(<span class="keyword">this</span>).attr(<span class="string">'id'</span>));
         <span class="keyword">return</span> <span class="literal">false</span>;
     });
 
     $(<span class="string">'#tutorials li a'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
-        loadDemoOrTutorial($(<span class="keyword">this</span>).attr(<span class="string">'id'</span>));
+        ProgramLoader.loadDemoOrTutorial($(<span class="keyword">this</span>).attr(<span class="string">'id'</span>));
         <span class="keyword">return</span> <span class="literal">false</span>;
     });
 

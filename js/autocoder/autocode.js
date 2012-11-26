@@ -492,7 +492,7 @@ var createAutocoder = function (editor) {
             (window.location.hash.indexOf("bookmark") !== -1) && (window.location.hash.indexOf("autocodeTutorial") !== -1))
 
             ) {
-                loadDemoOrTutorial('cubesAndSpikes');
+                ProgramLoader.loadDemoOrTutorial('cubesAndSpikes');
             }
         }
     };

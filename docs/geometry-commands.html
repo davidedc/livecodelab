@@ -237,7 +237,7 @@ constant 0.001 below is to avoid z-fighting</p>             </td>             <t
       <span class="keyword">else</span> pooledObject.mesh.matrix.scale(<span class="keyword">new</span> THREE.Vector3(a + <span class="number">0.001</span>, b + <span class="number">0.001</span>, c + <span class="number">0.001</span>));
     }
 
-    <span class="keyword">if</span> (newObjectToBeAddedToTheScene) scene.add(pooledObject.mesh);
+    <span class="keyword">if</span> (newObjectToBeAddedToTheScene) ThreeJs.scene.add(pooledObject.mesh);
   }
 }
 
