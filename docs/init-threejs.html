@@ -1,136 +1,143 @@
-<!DOCTYPE html>  <html> <head>   <title>init-threejs.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colours.html">                 colours.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="geometry-commands.html">                 geometry-commands.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               init-threejs.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre>
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre>
-<span class="keyword">var</span> composer;
-<span class="keyword">var</span> backGroundFraction = <span class="number">15</span>;
+<!DOCTYPE html>  <html> <head>   <title>init-threejs.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colours.html">                 colours.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="geometry-commands.html">                 geometry-commands.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               init-threejs.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true, devel: true */</span>
 
-<span class="keyword">var</span> initThreeJs = <span class="keyword">function</span>() {
+<span class="keyword">var</span> createThreeJs = <span class="function"><span class="keyword">function</span> <span class="params">(Detector, THREE, THREEx)</span> {</span>
 
-  scaledBackgroundWidth = Math.floor(window.innerWidth / backGroundFraction);
-  scaledBackgroundHeight = Math.floor(window.innerHeight / backGroundFraction);
+    <span class="string">'use strict'</span>;
 
-  <span class="keyword">if</span> (!forceCanvasRenderer &amp;&amp; Detector.webgl &amp;&amp; !forceCanvasRenderer) {
+    <span class="keyword">var</span> ThreeJs = {},
+        backgroundScene,
+        backGroundFraction = <span class="number">15</span>,
+        pointLight;
 
-    ballDefaultDetLevel = <span class="number">16</span>;
-    sceneRenderingCanvas = document.createElement(<span class="string">'canvas'</span>);
+    ThreeJs.isWebGLUsed = <span class="literal">false</span>;
 
-    renderer = <span class="keyword">new</span> THREE.WebGLRenderer({
-      canvas: sceneRenderingCanvas,
-      preserveDrawingBuffer: <span class="literal">false</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>to allow screenshot</p>             </td>             <td class="code">               <div class="highlight"><pre>      antialias: <span class="literal">false</span>,
-      premultipliedAlpha: <span class="literal">false</span>
-    });
+    ThreeJs.composer = {};
 
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>renderer.autoClearColor = false;
-renderer.autoClear = false;</p>             </td>             <td class="code">               <div class="highlight"><pre>    isWebGLUsed = <span class="literal">true</span>;
+    ThreeJs.sceneRenderingCanvas = {};
 
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>this is really a bad hack, but chrome goes twice
-as fast with this, while safari doesn't work,
-and firefox is the fastest no matter what</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (navigator.userAgent.toLowerCase().indexOf(<span class="string">'chrome'</span>) &gt; -<span class="number">1</span>) {
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>renderer.autoClear = false;</p>             </td>             <td class="code">               <div class="highlight"><pre>    }
+    ThreeJs.forceCanvasRenderer = <span class="literal">false</span>;
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById(<span class="string">'container'</span>).appendChild(sceneRenderingCanvas);
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>document.getElementById('finalRenderWithSceneAndBlendCanvas').appendChild(finalRenderWithSceneAndBlend);</p>             </td>             <td class="code">               <div class="highlight"><pre>
-  } <span class="keyword">else</span> {
+    ThreeJs.scaledBackgroundWidth = Math.floor(window.innerWidth / backGroundFraction);
+    ThreeJs.scaledBackgroundHeight = Math.floor(window.innerHeight / backGroundFraction);
 
+    <span class="keyword">if</span> (!ThreeJs.forceCanvasRenderer &amp;&amp; Detector.webgl) {
 
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>we always draw the 3d scene off-screen</p>             </td>             <td class="code">               <div class="highlight"><pre>    ballDefaultDetLevel = <span class="number">6</span>;
-    sceneRenderingCanvas = document.createElement(<span class="string">'canvas'</span>);
-    sceneRenderingCanvasContext = sceneRenderingCanvas.getContext(<span class="string">'2d'</span>);
-    renderer = <span class="keyword">new</span> THREE.CanvasRenderer({
-      canvas: sceneRenderingCanvas,
-      antialias: <span class="literal">true</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>to get smoother output</p>             </td>             <td class="code">               <div class="highlight"><pre>      preserveDrawingBuffer: <span class="literal">false</span> <span class="comment">// to allow screenshot</span>
-    });
+        ThreeJs.ballDefaultDetLevel = <span class="number">16</span>;
+        ThreeJs.sceneRenderingCanvas = document.createElement(<span class="string">'canvas'</span>);
 
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>renderer.autoClear = true;
-renderer.setClearColorHex( 0x000000, 1 );</p>             </td>             <td class="code">               <div class="highlight"><pre>
-    previousRenderForBlending = document.createElement(<span class="string">'canvas'</span>);
-    previousRenderForBlending.width = window.innerWidth;
-    previousRenderForBlending.height = window.innerHeight;
-    previousRenderForBlendingContext = previousRenderForBlending.getContext(<span class="string">'2d'</span>);
+        ThreeJs.renderer = <span class="keyword">new</span> THREE.WebGLRenderer({
+            canvas: ThreeJs.sceneRenderingCanvas,
+            preserveDrawingBuffer: <span class="literal">false</span>, <span class="comment">// to allow screenshot</span>
+            antialias: <span class="literal">false</span>,
+            premultipliedAlpha: <span class="literal">false</span>
+        });
 
-    finalRenderWithSceneAndBlend = document.getElementById(<span class="string">'finalRenderWithSceneAndBlendCanvas'</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>finalRenderWithSceneAndBlend.width = scaledBackgroundWidth;
-finalRenderWithSceneAndBlend.height = scaledBackgroundHeight;</p>             </td>             <td class="code">               <div class="highlight"><pre>    finalRenderWithSceneAndBlend.width = window.innerWidth;
-    finalRenderWithSceneAndBlend.height = window.innerWidth;
-    finalRenderWithSceneAndBlendContext = finalRenderWithSceneAndBlend.getContext(<span class="string">'2d'</span>);
+        ThreeJs.isWebGLUsed = <span class="literal">true</span>;
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>document.getElementById('container').appendChild(sceneRenderingCanvas);</p>             </td>             <td class="code">               <div class="highlight"><pre>  }
+        ThreeJs.renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById(<span class="string">'container'</span>).appendChild(ThreeJs.sceneRenderingCanvas);
+
+    } <span class="keyword">else</span> {
 
 
-  backgroundScene = document.getElementById(<span class="string">'backGroundCanvas'</span>);
-  backgroundScene.width = scaledBackgroundWidth;
-  backgroundScene.height = scaledBackgroundHeight;
-  backgroundSceneContext = backgroundScene.getContext(<span class="string">'2d'</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>we always draw the 3d scene off-screen</p>             </td>             <td class="code">               <div class="highlight"><pre>        ThreeJs.ballDefaultDetLevel = <span class="number">6</span>;
+        ThreeJs.sceneRenderingCanvas = document.createElement(<span class="string">'canvas'</span>);
+        ThreeJs.sceneRenderingCanvasContext = ThreeJs.sceneRenderingCanvas.getContext(<span class="string">'2d'</span>);
+        ThreeJs.renderer = <span class="keyword">new</span> THREE.CanvasRenderer({
+            canvas: ThreeJs.sceneRenderingCanvas,
+            antialias: <span class="literal">true</span>, <span class="comment">// to get smoother output</span>
+            preserveDrawingBuffer: <span class="literal">false</span> <span class="comment">// to allow screenshot</span>
+        });
 
 
+        ThreeJs.previousRenderForBlending = document.createElement(<span class="string">'canvas'</span>);
+        ThreeJs.previousRenderForBlending.width = window.innerWidth;
+        ThreeJs.previousRenderForBlending.height = window.innerHeight;
+        ThreeJs.previousRenderForBlendingContext = ThreeJs.previousRenderForBlending.getContext(<span class="string">'2d'</span>);
 
-</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>add Stats.js - https://github.com/mrdoob/stats.js</p>             </td>             <td class="code">               <div class="highlight"><pre>  stats = <span class="keyword">new</span> Stats();
-</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Align bottom-left</p>             </td>             <td class="code">               <div class="highlight"><pre>  stats.getDomElement().style.position = <span class="string">'absolute'</span>;
-  stats.getDomElement().style.right = <span class="string">'0px'</span>;
-  stats.getDomElement().style.top = <span class="string">'0px'</span>;
-  document.body.appendChild(stats.getDomElement());
+        ThreeJs.finalRenderWithSceneAndBlend = document.getElementById(<span class="string">'finalRenderWithSceneAndBlendCanvas'</span>);
+        ThreeJs.finalRenderWithSceneAndBlend.width = window.innerWidth;
+        ThreeJs.finalRenderWithSceneAndBlend.height = window.innerWidth;
+        ThreeJs.finalRenderWithSceneAndBlendContext = ThreeJs.finalRenderWithSceneAndBlend.getContext(<span class="string">'2d'</span>);
 
-  scene = <span class="keyword">new</span> THREE.Scene();
-  scene.matrixAutoUpdate = <span class="literal">false</span>;
+        ThreeJs.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>put a camera in the scene</p>             </td>             <td class="code">               <div class="highlight"><pre>  camera = <span class="keyword">new</span> THREE.PerspectiveCamera(<span class="number">35</span>, window.innerWidth / window.innerHeight, <span class="number">1</span>, <span class="number">10000</span>);
-  camera.position.set(<span class="number">0</span>, <span class="number">0</span>, <span class="number">5</span>);
-  scene.add(camera);
+    backgroundScene = document.getElementById(<span class="string">'backGroundCanvas'</span>);
+    backgroundScene.width = ThreeJs.scaledBackgroundWidth;
+    backgroundScene.height = ThreeJs.scaledBackgroundHeight;
+    ThreeJs.backgroundSceneContext = backgroundScene.getContext(<span class="string">'2d'</span>);
 
-</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>temporarily, add a light
+
+    ThreeJs.scene = <span class="keyword">new</span> THREE.Scene();
+    ThreeJs.scene.matrixAutoUpdate = <span class="literal">false</span>;
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>put a camera in the scene</p>             </td>             <td class="code">               <div class="highlight"><pre>    ThreeJs.camera = <span class="keyword">new</span> THREE.PerspectiveCamera(<span class="number">35</span>, window.innerWidth / window.innerHeight, <span class="number">1</span>, <span class="number">10000</span>);
+    ThreeJs.camera.position.set(<span class="number">0</span>, <span class="number">0</span>, <span class="number">5</span>);
+    ThreeJs.scene.add(ThreeJs.camera);
+
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>temporarily, add a light
 add subtle ambient lighting
 var ambientLight = new THREE.AmbientLight(0xFF0000);
 scene.add(ambientLight);
-create a point light</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="keyword">var</span> pointLight = <span class="keyword">new</span> THREE.PointLight(<span class="number">0xFFFFFF</span>);
+create a point light</p>             </td>             <td class="code">               <div class="highlight"><pre>    pointLight = <span class="keyword">new</span> THREE.PointLight(<span class="number">0xFFFFFF</span>);
 
-</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>set its position</p>             </td>             <td class="code">               <div class="highlight"><pre>  pointLight.position.x = <span class="number">10</span>;
-  pointLight.position.y = <span class="number">50</span>;
-  pointLight.position.z = <span class="number">130</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>set its position</p>             </td>             <td class="code">               <div class="highlight"><pre>    pointLight.position.x = <span class="number">10</span>;
+    pointLight.position.y = <span class="number">50</span>;
+    pointLight.position.z = <span class="number">130</span>;
 
-</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>add to the scene</p>             </td>             <td class="code">               <div class="highlight"><pre>  scene.add(pointLight);
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>add to the scene</p>             </td>             <td class="code">               <div class="highlight"><pre>    ThreeJs.scene.add(pointLight);
 
-</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>transparently support window resize</p>             </td>             <td class="code">               <div class="highlight"><pre>  THREEx.WindowResize.bind(renderer, camera);
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>transparently support window resize</p>             </td>             <td class="code">               <div class="highlight"><pre>    THREEx.WindowResize.bind(ThreeJs.renderer, ThreeJs.camera);
 
-  <span class="keyword">if</span> (isWebGLUsed) {
-    buildPostprocessingChain();
-  }
+    ThreeJs.buildPostprocessingChain = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        <span class="keyword">var</span> renderTargetParameters,
+            renderTarget,
+            effectSaveTarget,
+            fxaaPass,
+            screenPass,
+            renderModel;
 
-}
+        renderTargetParameters = {
+            format: THREE.RGBAFormat,
+            stencilBuffer: <span class="literal">true</span>
+        };
 
-<span class="keyword">var</span> effectBlend;
+        renderTarget = <span class="keyword">new</span> THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters);
+        effectSaveTarget = <span class="keyword">new</span> THREE.SavePass(<span class="keyword">new</span> THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters));
+        effectSaveTarget.clear = <span class="literal">false</span>;
 
-<span class="keyword">var</span> buildPostprocessingChain = <span class="keyword">function</span>() {
-  <span class="keyword">var</span> renderTargetParameters = {
-    format: THREE.RGBAFormat,
-    stencilBuffer: <span class="literal">true</span>
-  };
+        fxaaPass = <span class="keyword">new</span> THREE.ShaderPass(THREE.ShaderExtras.fxaa);
+        fxaaPass.uniforms.resolution.value.set(<span class="number">1</span> / window.innerWidth, <span class="number">1</span> / window.innerHeight);
 
-  <span class="keyword">var</span> renderTarget = <span class="keyword">new</span> THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters);
-  <span class="keyword">var</span> effectSaveTarget = <span class="keyword">new</span> THREE.SavePass(<span class="keyword">new</span> THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters));
-  effectSaveTarget.clear = <span class="literal">false</span>;
+        ThreeJs.effectBlend = <span class="keyword">new</span> THREE.ShaderPass(THREE.ShaderExtras.blend, <span class="string">"tDiffuse1"</span>);
+        screenPass = <span class="keyword">new</span> THREE.ShaderPass(THREE.ShaderExtras.screen);
 
-  <span class="keyword">var</span> fxaaPass = <span class="keyword">new</span> THREE.ShaderPass(THREE.ShaderExtras[<span class="string">"fxaa"</span>]);
-  fxaaPass.uniforms[<span class="string">'resolution'</span>].value.set(<span class="number">1</span> / window.innerWidth, <span class="number">1</span> / window.innerHeight);
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>motion blur</p>             </td>             <td class="code">               <div class="highlight"><pre>        ThreeJs.effectBlend.uniforms.tDiffuse2.texture = effectSaveTarget.renderTarget;
+        ThreeJs.effectBlend.uniforms.mixRatio.value = <span class="number">0</span>;
 
-  effectBlend = <span class="keyword">new</span> THREE.ShaderPass(THREE.ShaderExtras[<span class="string">"blend"</span>], <span class="string">"tDiffuse1"</span>);
-  <span class="keyword">var</span> screenPass = <span class="keyword">new</span> THREE.ShaderPass(THREE.ShaderExtras[<span class="string">"screen"</span>]);
+        renderModel = <span class="keyword">new</span> THREE.RenderPass(ThreeJs.scene, ThreeJs.camera);
 
-</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>motion blur</p>             </td>             <td class="code">               <div class="highlight"><pre>  effectBlend.uniforms[<span class="string">'tDiffuse2'</span>].texture = effectSaveTarget.renderTarget;
-  effectBlend.uniforms[<span class="string">'mixRatio'</span>].value = <span class="number">0</span>;
+        ThreeJs.composer = <span class="keyword">new</span> THREE.EffectComposer(ThreeJs.renderer, renderTarget);
 
-  <span class="keyword">var</span> renderModel = <span class="keyword">new</span> THREE.RenderPass(scene, camera);
+        ThreeJs.composer.addPass(renderModel);
+        ThreeJs.composer.addPass(ThreeJs.effectBlend);
+        ThreeJs.composer.addPass(effectSaveTarget);
+        ThreeJs.composer.addPass(screenPass);
+        screenPass.renderToScreen = <span class="literal">true</span>;
+    };
 
-  composer = <span class="keyword">new</span> THREE.EffectComposer(renderer, renderTarget);
+    <span class="keyword">if</span> (ThreeJs.isWebGLUsed) {
+        ThreeJs.buildPostprocessingChain();
+    }
 
-  composer.addPass(renderModel);
-</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>composer.addPass( fxaaPass );</p>             </td>             <td class="code">               <div class="highlight"><pre>  composer.addPass(effectBlend);
-  composer.addPass(effectSaveTarget);
-  composer.addPass(screenPass);
-  screenPass.renderToScreen = <span class="literal">true</span>;
-}
+
+
+
+    <span class="keyword">return</span> ThreeJs;
+
+};
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

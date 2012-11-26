@@ -74,7 +74,7 @@ var ambientLight = function() {
   pooledAmbientLight.matrix.copy(worldMatrix);
   pooledAmbientLight.matrixWorldNeedsUpdate = true;
 
-  if (newLightCreated) scene.add(pooledAmbientLight);
+  if (newLightCreated) ThreeJs.scene.add(pooledAmbientLight);
 
 
 }
@@ -99,23 +99,23 @@ var animationStyleUpdateIfChanged = function() {
 
   previousanimationStyleValue = animationStyleValue;
 
-  if (isWebGLUsed && animationStyleValue === motionBlur) {
-    effectBlend.uniforms['mixRatio'].value = 0.7;
-  } else if (!isWebGLUsed && animationStyleValue === motionBlur) {
+  if (ThreeJs.isWebGLUsed && animationStyleValue === motionBlur) {
+    ThreeJs.effectBlend.uniforms['mixRatio'].value = 0.7;
+  } else if (!ThreeJs.isWebGLUsed && animationStyleValue === motionBlur) {
     blendAmount = 0.6;
     //alert('motion blur canvas');
   }
 
-  if (isWebGLUsed && animationStyleValue === paintOver) {
-    effectBlend.uniforms['mixRatio'].value = 1;
-  } else if (!isWebGLUsed && animationStyleValue === paintOver) {
+  if (ThreeJs.isWebGLUsed && animationStyleValue === paintOver) {
+    ThreeJs.effectBlend.uniforms['mixRatio'].value = 1;
+  } else if (!ThreeJs.isWebGLUsed && animationStyleValue === paintOver) {
     blendAmount = 1;
     //alert('paintOver canvas');
   }
 
-  if (isWebGLUsed && animationStyleValue === normal) {
-    effectBlend.uniforms['mixRatio'].value = 0;
-  } else if (!isWebGLUsed && animationStyleValue === normal) {
+  if (ThreeJs.isWebGLUsed && animationStyleValue === normal) {
+    ThreeJs.effectBlend.uniforms['mixRatio'].value = 0;
+  } else if (!ThreeJs.isWebGLUsed && animationStyleValue === normal) {
     blendAmount = 0;
     //alert('normal canvas');
   }

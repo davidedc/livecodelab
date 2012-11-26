@@ -7,31 +7,41 @@
 
     <span class="string">'use strict'</span>;
 
+    ThreeJs = createThreeJs(Detector, THREE, THREEx);
+    BigCursor = createBigCursor();
+
+
+    BackgroundPainter = createBackgroundPainter(ThreeJs);
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    simpleGradient = BackgroundPainter.simpleGradient;
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    background = BackgroundPainter.background;
+
     BackgroundPainter.pickRandomDefaultGradient();
 
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Thisis the beginnings of the dependency injection section
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Thisis the beginnings of the dependency injection section
 Preferably this</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> CoffeeCompiler = CoffeeScript;
     <span class="keyword">var</span> CodeTransformer = createCodeTransformer(CoffeeCompiler);
     editor = createEditor(CodeTransformer);
 
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>create autocoder here</p>             </td>             <td class="code">               <div class="highlight"><pre>    autocoder = createAutocoder(editor);
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>create autocoder here</p>             </td>             <td class="code">               <div class="highlight"><pre>    autocoder = createAutocoder(editor);
 
-    LiveCodeLab = createLiveCodeLab(CodeTransformer);
+    LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs);
+
+    ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs);
 
 
     logger(<span class="string">"startEnvironment"</span>);
-    <span class="keyword">if</span> (!initThreeJs()) {
+    <span class="keyword">if</span> (ThreeJs) {
         LiveCodeLab.animate();
     }
 
-    <span class="keyword">if</span> (!Detector.webgl || forceCanvasRenderer) {
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>$('#noWebGLMessage').modal()</p>             </td>             <td class="code">               <div class="highlight"><pre>        $(<span class="string">'#noWebGLMessage'</span>).modal({
+    <span class="keyword">if</span> (!Detector.webgl || ThreeJs.forceCanvasRenderer) {
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>$('#noWebGLMessage').modal()</p>             </td>             <td class="code">               <div class="highlight"><pre>        $(<span class="string">'#noWebGLMessage'</span>).modal({
             onClose: closeAndCheckAudio
         });
         $(<span class="string">'#simplemodal-container'</span>).height(<span class="number">200</span>);
     }
 
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>alert('resizing canvas');</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> canvas = document.getElementById(<span class="string">'backGroundCanvas'</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>alert('resizing canvas');</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> canvas = document.getElementById(<span class="string">'backGroundCanvas'</span>);
 
     <span class="keyword">if</span> (fullScreenifyBackground) {
         fullscreenify(canvas);
@@ -45,11 +55,11 @@ Preferably this</p>             </td>             <td class="code">             
     editor.focus();
     adjustCodeMirrorHeight();
 
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>check if the url points to a particular demo,
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>check if the url points to a particular demo,
 in which case we load the demo directly.
 otherwise we do as usual.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (window.location.hash.indexOf(<span class="string">"bookmark"</span>) !== -<span class="number">1</span>) {
         <span class="keyword">var</span> demoToLoad = window.location.hash.substring(<span class="string">"bookmark"</span>.length + <span class="number">2</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>setTimeout ( "loadDemoOrTutorial('"+demoToLoad+"');",500);</p>             </td>             <td class="code">               <div class="highlight"><pre>        loadDemoOrTutorial(demoToLoad);
+        ProgramLoader.loadDemoOrTutorial(demoToLoad);
     } <span class="keyword">else</span> {
         startingSound = <span class="keyword">new</span> buzz.sound(<span class="string">"./sound/audioFiles/start_bing"</span>, {
             formats: [<span class="string">"ogg"</span>, <span class="string">"mp3"</span>]
@@ -60,7 +70,7 @@ otherwise we do as usual.</p>             </td>             <td class="code">   
     BigCursor.toggleBlink(<span class="literal">true</span>);
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Init of the dim code toggle.
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Init of the dim code toggle.
 set it to false, then immediatly toggle it to true with the managing function
 that way we can easily invert the default: just change false to true -- julien</p>             </td>             <td class="code">               <div class="highlight"><pre>    dimcodeOn = <span class="literal">false</span>;
     toggleDimCode();
@@ -80,7 +90,7 @@ $(document).ready(<span class="function"><span class="keyword">function</span> <
         <span class="keyword">return</span>;
     }
 
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>pass startEnvironment function in to be used as a callback
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>pass startEnvironment function in to be used as a callback
 once the sounds are loaded it's fire and starts the app up</p>             </td>             <td class="code">               <div class="highlight"><pre>    loadAndTestAllTheSounds(startEnvironment);
 
 });

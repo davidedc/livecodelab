@@ -19,7 +19,7 @@ var time;
 // worth tracking with this variable
 var anyCodeReactingTobpm;
 
-var createLiveCodeLab = function (CodeTransformer) {
+var createLiveCodeLab = function (CodeTransformer, threejs) {
 
     var LiveCodeLab = {},
         loopInterval,
@@ -63,9 +63,6 @@ var createLiveCodeLab = function (CodeTransformer) {
         soundLoops.beatStrings = [];
 
 
-        //rootObject = new THREE.Object3D();
-        //scene.add(rootObject);
-        //parentObject = rootObject;
         if (LiveCodeLab.drawFunction !== "") {
             var d = new Date();
             if (frame === 0) {
@@ -81,7 +78,7 @@ var createLiveCodeLab = function (CodeTransformer) {
             currentStrokeSize = 1;
             defaultNormalFill = true;
             defaultNormalStroke = true;
-            ballDetLevel = ballDefaultDetLevel;
+            ballDetLevel = threejs.ballDefaultDetLevel;
             updatesPerMinute = 60 * 4;
             noLights();
 
@@ -162,37 +159,30 @@ var createLiveCodeLab = function (CodeTransformer) {
 
     LiveCodeLab.render = function () {
 
-        // need a light for the meshlambert material
-        // var light = new THREE.PointLight( 0xFFFFFF );
-        // light.position.set( 10, 0, 10 );
-        // scene.add( light );
-
-        if (isWebGLUsed) {
-            composer.render();
-            //renderer.render(scene,camera);
+        if (threejs.isWebGLUsed) {
+            threejs.composer.render();
         } else {
 
             // the renderer draws into an offscreen canvas called sceneRenderingCanvas
-            renderer.render(scene, camera);
+            threejs.renderer.render(threejs.scene, threejs.camera);
 
             // clear the final render context
-            finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
-            finalRenderWithSceneAndBlendContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            threejs.finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
+            threejs.finalRenderWithSceneAndBlendContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
             // draw the rendering of the scene on the final render
             // clear the final render context
-            finalRenderWithSceneAndBlendContext.globalAlpha = blendAmount;
-            finalRenderWithSceneAndBlendContext.drawImage(previousRenderForBlending, 0, 0);
+            threejs.finalRenderWithSceneAndBlendContext.globalAlpha = blendAmount;
+            threejs.finalRenderWithSceneAndBlendContext.drawImage(threejs.previousRenderForBlending, 0, 0);
 
-            finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
-            finalRenderWithSceneAndBlendContext.drawImage(sceneRenderingCanvas, 0, 0);
+            threejs.finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
+            threejs.finalRenderWithSceneAndBlendContext.drawImage(threejs.sceneRenderingCanvas, 0, 0);
 
-            //previousRenderForBlendingContext.clearRect(0, 0, window.innerWidth,window.innerHeight)
-            previousRenderForBlendingContext.globalCompositeOperation = 'copy';
-            previousRenderForBlendingContext.drawImage(finalRenderWithSceneAndBlend, 0, 0);
+            threejs.previousRenderForBlendingContext.globalCompositeOperation = 'copy';
+            threejs.previousRenderForBlendingContext.drawImage(threejs.finalRenderWithSceneAndBlend, 0, 0);
 
             // clear the renderer's canvas to transparent black
-            sceneRenderingCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            threejs.sceneRenderingCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
         }
     };
@@ -220,8 +210,8 @@ var createLiveCodeLab = function (CodeTransformer) {
 
     LiveCodeLab.combDisplayList = function () {
         // scan all the objects in the display list
-        for (var i = 0; i < scene.objects.length; ++i) {
-            var sceneObject = scene.objects[i];
+        for (var i = 0; i < threejs.scene.objects.length; ++i) {
+            var sceneObject = threejs.scene.objects[i];
 
             // check the type of object. Each type has one pool. Go through each object in the
             // pool and set to visible the number of used objects in this frame, set the
