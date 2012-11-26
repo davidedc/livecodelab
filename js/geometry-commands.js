@@ -253,7 +253,7 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
       else pooledObject.mesh.matrix.scale(new THREE.Vector3(a + 0.001, b + 0.001, c + 0.001));
     }
 
-    if (newObjectToBeAddedToTheScene) scene.add(pooledObject.mesh);
+    if (newObjectToBeAddedToTheScene) ThreeJs.scene.add(pooledObject.mesh);
   }
 }
 

@@ -1,5 +1,5 @@
 /*jslint browser: true, devel: true */
-/*global $, color, logger, backgroundSceneContext, scaledBackgroundHeight, scaledBackgroundWidth */
+/*global $, color, logger */
 
 // The user can issue multiple solid fill and gradient fill commands
 // and they are all painted on top of each other according to the
@@ -36,7 +36,7 @@
 // elements of the array, so we could discard those when such
 // a command is issued.
 
-var createBackgroundPainter = function () {
+var createBackgroundPainter = function (threejs) {
 
     'use strict';
 
@@ -136,24 +136,24 @@ var createBackgroundPainter = function () {
 
             previousGradientStackValue = currentGradientStackValue;
             logger('repainting background');
-            diagonal = Math.sqrt(Math.pow(scaledBackgroundWidth / 2, 2) + Math.pow(scaledBackgroundHeight / 2, 2));
+            diagonal = Math.sqrt(Math.pow(threejs.scaledBackgroundWidth / 2, 2) + Math.pow(threejs.scaledBackgroundHeight / 2, 2));
 
             for (scanningGradStack = 0; scanningGradStack < gradStack.length; scanningGradStack++) {
 
                 if (gradStack[scanningGradStack].gradStacka !== undefined) {
-                    radgrad = backgroundSceneContext.createLinearGradient(scaledBackgroundWidth / 2, 0, scaledBackgroundWidth / 2, scaledBackgroundHeight);
+                    radgrad = threejs.backgroundSceneContext.createLinearGradient(threejs.scaledBackgroundWidth / 2, 0, threejs.scaledBackgroundWidth / 2, threejs.scaledBackgroundHeight);
                     radgrad.addColorStop(0, color.toString(gradStack[scanningGradStack].gradStacka));
                     radgrad.addColorStop(0.5, color.toString(gradStack[scanningGradStack].gradStackb));
                     radgrad.addColorStop(1, color.toString(gradStack[scanningGradStack].gradStackc));
 
-                    backgroundSceneContext.globalAlpha = 1.0;
-                    backgroundSceneContext.fillStyle = radgrad;
-                    backgroundSceneContext.fillRect(0, 0, scaledBackgroundWidth, scaledBackgroundHeight);
+                    threejs.backgroundSceneContext.globalAlpha = 1.0;
+                    threejs.backgroundSceneContext.fillStyle = radgrad;
+                    threejs.backgroundSceneContext.fillRect(0, 0, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
                 } else {
                     logger("solid background: " + gradStack[scanningGradStack].solid);
-                    backgroundSceneContext.globalAlpha = 1.0;
-                    backgroundSceneContext.fillStyle = color.toString(gradStack[scanningGradStack].solid);
-                    backgroundSceneContext.fillRect(0, 0, scaledBackgroundWidth, scaledBackgroundHeight);
+                    threejs.backgroundSceneContext.globalAlpha = 1.0;
+                    threejs.backgroundSceneContext.fillStyle = color.toString(gradStack[scanningGradStack].solid);
+                    threejs.backgroundSceneContext.fillRect(0, 0, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
                 }
             }
         }
@@ -164,10 +164,3 @@ var createBackgroundPainter = function () {
 
 };
 
-var BackgroundPainter = createBackgroundPainter();
-
-// This needs to be global so it can be run by the draw function
-var simpleGradient = BackgroundPainter.simpleGradient;
-
-// This needs to be global so it can be run by the draw function
-var background = BackgroundPainter.background;
