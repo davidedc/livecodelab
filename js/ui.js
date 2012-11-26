@@ -1,5 +1,5 @@
 /*jslint browser: true, devel: true */
-/*global $, autocoder, pickRandomDefaultGradient, toggleAutocodeAndUpdateButtonAndBlinking, editor, loadDemoOrTutorial, toggleDimCode */
+/*global $, autocoder, pickRandomDefaultGradient, editor, loadDemoOrTutorial, toggleDimCode */
 
 
 var isCanvasSupported = function () {
@@ -14,7 +14,7 @@ var triggerReset = function () {
 
     BackgroundPainter.pickRandomDefaultGradient();
     if (autocoder.active) {
-        toggleAutocodeAndUpdateButtonAndBlinking();
+        autocoder.toggle(false);
     }
     editor.setValue('');
     $("#resetButtonContainer").css("background-color", '#FF0000');
