@@ -71,8 +71,7 @@ module.exports = function (grunt) {
                     'js/text-dimming.js',
                     'js/lights-functions.js',
                     'js/editor/mousewheel.js',
-                    'js/ui.js'
-                ],
+                    'js/ui.js'],
                 dest: 'dist/built.js'
             }
         },
@@ -85,10 +84,10 @@ module.exports = function (grunt) {
             build: ['dist/', 'indexMinified.html']
         },
         targethtml: {
-						compile: {
-									src: 'index.html',
-									dest: 'indexMinified.html'
-								}
+            compile: {
+                src: 'index.html',
+                dest: 'indexMinified.html'
+            }
         },
         'closure-compiler': {
             frontend: {
@@ -99,12 +98,10 @@ module.exports = function (grunt) {
                 options: {
                     jscomp_off: [
                         'globalThis',
-                        'checkTypes'
-                    ],
+                        'checkTypes'],
                     language_in: 'ECMASCRIPT5_STRICT',
                     externs: [
-                        'buildSystem/externs_common.js'
-                    ]
+                        'buildSystem/externs_common.js']
                 }
             }
         }
