@@ -163,10 +163,6 @@ var soundLoop = function () {
 								$(".filename span").html(audioElement.src);
 							}, true);
 
-							audioElement.addEventListener("ended", function() { 
-								source1.parentNode.removeChild(source1);
-								//alert("removing"+source1)
-							}, true);
 							audioElement.play();
 
             }
