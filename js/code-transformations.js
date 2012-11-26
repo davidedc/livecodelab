@@ -6,6 +6,10 @@ var createCodeTransformer = function (CoffeeCompiler) {
 
     var CodeTransformer = {};
 
+    var programHasBasicError = false;
+    var reasonOfBasicError = "";
+    CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
+
     CodeTransformer.compiler = CoffeeCompiler;
 
     var listOfPossibleFunctions = [
@@ -555,7 +559,7 @@ var createCodeTransformer = function (CoffeeCompiler) {
         // see here for the deepest examination ever of "eval"
         // http://perfectionkills.com/global-eval-what-are-the-options/
         // note that exceptions are caught by the window.onerror callback
-        consecutiveFramesWithoutRunTimeError = 0;
+        CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
 
         // You might want to change the frame count from the program
         // just like you can in Processing, but it turns out that when

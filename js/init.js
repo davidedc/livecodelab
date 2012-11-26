@@ -12,10 +12,6 @@ var startEnvironment = function () {
 
 
     BackgroundPainter = createBackgroundPainter(ThreeJs);
-    // This needs to be global so it can be run by the draw function
-    simpleGradient = BackgroundPainter.simpleGradient;
-    // This needs to be global so it can be run by the draw function
-    background = BackgroundPainter.background;
 
     BackgroundPainter.pickRandomDefaultGradient();
 
@@ -49,9 +45,8 @@ var startEnvironment = function () {
     //alert('resizing canvas');
     var canvas = document.getElementById('backGroundCanvas');
 
-    if (fullScreenifyBackground) {
-        fullscreenify(canvas);
-    }
+    fullscreenify(canvas);
+
     BackgroundPainter.resetGradientStack();
     BackgroundPainter.simpleGradientUpdateIfChanged();
 
