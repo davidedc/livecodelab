@@ -124,8 +124,8 @@ var createLiveCodeLab = function (CodeTransformer) {
                 checkErrorAndReport(e);
 
                 // mark the program as flawed and register the previous stable one.
-                consecutiveFramesWithoutRunTimeError = 0;
-                LiveCodeLab.drawFunction = new Function(lastStableProgram);
+                consecutiveFramesWithoutRunTimeError = 0;                
+                LiveCodeLab.drawFunction = lastStableProgram;
 
                 return;
             }
