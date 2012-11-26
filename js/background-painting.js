@@ -160,6 +160,12 @@ var createBackgroundPainter = function (threejs) {
 
     };
 
+    // This needs to be global so it can be run by the draw function
+    window.simpleGradient = BackgroundPainter.simpleGradient;
+
+    // This needs to be global so it can be run by the draw function
+    window.background = BackgroundPainter.background;
+
     return BackgroundPainter;
 
 };

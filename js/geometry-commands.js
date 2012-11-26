@@ -17,6 +17,22 @@
 // used (since probably only a few sphere detail levels will be used in a session)
 // then one could leave all these arrays undefined and define them at runtime
 // only when needed.
+
+
+
+// The following variables are mostly all used in
+// geometry commands and live codelab js files
+var minimumBallDetail = 2;
+var maximumBallDetail = 30;
+
+var GEOM_TYPE_LINE = 0;
+var GEOM_TYPE_RECT = 1;
+var GEOM_TYPE_BOX = 2;
+var GEOM_TYPE_CYLINDER = 3;
+var GEOM_TYPE_SPHERE = 4;
+
+
+
 var objectPool = [];
 objectPool[GEOM_TYPE_LINE] = [];
 objectPool[GEOM_TYPE_RECT] = [];
@@ -39,6 +55,23 @@ var creatingSphereGeometries;
 for (creatingSphereGeometries = 0; creatingSphereGeometries < (maximumBallDetail - minimumBallDetail + 1); creatingSphereGeometries++) {
     geometriesBank[GEOM_TYPE_SPHERE + creatingSphereGeometries] = new THREE.SphereGeometry(1, minimumBallDetail + creatingSphereGeometries, minimumBallDetail + creatingSphereGeometries);
 }
+
+var ballDetLevel;
+var currentStrokeSize = 1;
+
+
+// the "spinthingy" is because we want
+// users who type "box" to see that it's actually
+// a 3d environment. So the first few primitives
+// spin for a few moments when they are created.
+var doTheSpinThingy = true;
+var resetTheSpinThingy = false;
+var SPINFRAMES = 30;
+
+// For each pool we have a count of how many of those entries
+// are actually used in the current frame.
+// This is so that we can go through the scene graph and hide the unused objects.
+var objectsUsedInFrameCounts = [];
 
 var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
 

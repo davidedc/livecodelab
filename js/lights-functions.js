@@ -28,6 +28,16 @@ var noLights = function() {
   lightsAreOn = false;
 }
 
+var animationStyleValue = 0;
+
+var usedAmbientLights = 0;
+
+var blendAmount = 0;
+var normal = 0;
+var paintOver = 1;
+var motionBlur = 2;
+
+
 
 var ambientLight = function() {
 
