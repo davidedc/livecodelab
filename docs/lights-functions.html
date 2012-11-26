@@ -69,7 +69,7 @@ default white fill</p>             </td>             <td class="code">          
   pooledAmbientLight.matrix.copy(worldMatrix);
   pooledAmbientLight.matrixWorldNeedsUpdate = <span class="literal">true</span>;
 
-  <span class="keyword">if</span> (newLightCreated) scene.add(pooledAmbientLight);
+  <span class="keyword">if</span> (newLightCreated) ThreeJs.scene.add(pooledAmbientLight);
 
 
 }
@@ -90,21 +90,21 @@ are sent as "false"</p>             </td>             <td class="code">         
 
   previousanimationStyleValue = animationStyleValue;
 
-  <span class="keyword">if</span> (isWebGLUsed &amp;&amp; animationStyleValue === motionBlur) {
-    effectBlend.uniforms[<span class="string">'mixRatio'</span>].value = <span class="number">0.7</span>;
-  } <span class="keyword">else</span> <span class="keyword">if</span> (!isWebGLUsed &amp;&amp; animationStyleValue === motionBlur) {
+  <span class="keyword">if</span> (ThreeJs.isWebGLUsed &amp;&amp; animationStyleValue === motionBlur) {
+    ThreeJs.effectBlend.uniforms[<span class="string">'mixRatio'</span>].value = <span class="number">0.7</span>;
+  } <span class="keyword">else</span> <span class="keyword">if</span> (!ThreeJs.isWebGLUsed &amp;&amp; animationStyleValue === motionBlur) {
     blendAmount = <span class="number">0.6</span>;
 </pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>alert('motion blur canvas');</p>             </td>             <td class="code">               <div class="highlight"><pre>  }
 
-  <span class="keyword">if</span> (isWebGLUsed &amp;&amp; animationStyleValue === paintOver) {
-    effectBlend.uniforms[<span class="string">'mixRatio'</span>].value = <span class="number">1</span>;
-  } <span class="keyword">else</span> <span class="keyword">if</span> (!isWebGLUsed &amp;&amp; animationStyleValue === paintOver) {
+  <span class="keyword">if</span> (ThreeJs.isWebGLUsed &amp;&amp; animationStyleValue === paintOver) {
+    ThreeJs.effectBlend.uniforms[<span class="string">'mixRatio'</span>].value = <span class="number">1</span>;
+  } <span class="keyword">else</span> <span class="keyword">if</span> (!ThreeJs.isWebGLUsed &amp;&amp; animationStyleValue === paintOver) {
     blendAmount = <span class="number">1</span>;
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>alert('paintOver canvas');</p>             </td>             <td class="code">               <div class="highlight"><pre>  }
 
-  <span class="keyword">if</span> (isWebGLUsed &amp;&amp; animationStyleValue === normal) {
-    effectBlend.uniforms[<span class="string">'mixRatio'</span>].value = <span class="number">0</span>;
-  } <span class="keyword">else</span> <span class="keyword">if</span> (!isWebGLUsed &amp;&amp; animationStyleValue === normal) {
+  <span class="keyword">if</span> (ThreeJs.isWebGLUsed &amp;&amp; animationStyleValue === normal) {
+    ThreeJs.effectBlend.uniforms[<span class="string">'mixRatio'</span>].value = <span class="number">0</span>;
+  } <span class="keyword">else</span> <span class="keyword">if</span> (!ThreeJs.isWebGLUsed &amp;&amp; animationStyleValue === normal) {
     blendAmount = <span class="number">0</span>;
 </pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>alert('normal canvas');</p>             </td>             <td class="code">               <div class="highlight"><pre>  }
 
