@@ -110,8 +110,8 @@ situation we have in livecodelab</p>             </td>             <td class="co
 
 </pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>highlight the error</p>             </td>             <td class="code">               <div class="highlight"><pre>                checkErrorAndReport(e);
 
-</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>mark the program as flawed and register the previous stable one.</p>             </td>             <td class="code">               <div class="highlight"><pre>                consecutiveFramesWithoutRunTimeError = <span class="number">0</span>;
-                LiveCodeLab.drawFunction = <span class="keyword">new</span> Function(lastStableProgram);
+</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>mark the program as flawed and register the previous stable one.</p>             </td>             <td class="code">               <div class="highlight"><pre>                consecutiveFramesWithoutRunTimeError = <span class="number">0</span>;                
+                LiveCodeLab.drawFunction = lastStableProgram;
 
                 <span class="keyword">return</span>;
             }
