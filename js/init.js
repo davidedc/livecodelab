@@ -12,10 +12,6 @@ var startEnvironment = function () {
 
 
     BackgroundPainter = createBackgroundPainter(ThreeJs);
-    // This needs to be global so it can be run by the draw function
-    simpleGradient = BackgroundPainter.simpleGradient;
-    // This needs to be global so it can be run by the draw function
-    background = BackgroundPainter.background;
 
     BackgroundPainter.pickRandomDefaultGradient();
 

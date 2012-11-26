@@ -42,11 +42,6 @@ var ProgramLoader;
 
 var BackgroundPainter;
 
-// This needs to be global so it can be run by the draw function
-var simpleGradient;
-
-// This needs to be global so it can be run by the draw function
-var background;
 
 //var geometriesBank[primitiveType];
 //var planeGeometry;
