@@ -54,6 +54,15 @@
 // animate. Without spinning, all those queues need to be further explained and demonstra
 // ted.
 
+var doFill = true,
+  doStroke = true,
+  fillStyle = [1.0, 1.0, 1.0, 1.0],
+  isFillDirty = true,
+  strokeStyle = [0.0, 0.0, 0.0, 1.0],
+  isStrokeDirty = true,
+  lineWidth = 1;
+
+
 // Since you can't change the mesh of an object once it's created, we keep around
 // a pool of objects for each mesh type. There is one pool for lines, one for rectangles, one
 // for boxes. There is one pool for each detail level of spheres (since they are different)
@@ -72,8 +81,6 @@
 // used (since probably only a few sphere detail levels will be used in a session)
 // then one could leave all these arrays undefined and define them at runtime
 // only when needed.
-
-
 
 // The following variables are mostly all used in
 // geometry commands and live codelab js files
@@ -468,3 +475,138 @@ var ball = function(a,b,c) {
 
 	commonPrimitiveDrawingLogic(a,b,c,primitiveProperties);
 }
+
+
+// Modified fro Processing.js
+
+var currentFillAlpha = 1;
+var currentFillColor = 0xFFFFFF;
+var defaultNormalFill = true;
+var defaultNormalStroke = true;
+// lowest than any 32 bit color is a special
+// color that paints based on normals.
+var angleColor = -16777217;
+var fill = function() {
+  defaultNormalFill = false;
+  var c = color(arguments[0], arguments[1], arguments[2], arguments[3]);
+  var crgb;
+  var ca;
+  //logger("fillColor: "+c);
+  if (c === angleColor) {
+    // this is so we can do a smart optimisation later
+    // and not draw the wireframe is it happens to be the same color as
+    // the fill
+    defaultNormalFill = true;
+    //logger("yes it's normal color ");
+    crgb = c;
+    if (arguments[1] !== undefined) {
+      //logger("passed alpha: " + arguments[1]);
+      ca = arguments[1] / colorModeA;
+      //logger("calculated alpha: " + ca);
+    } else {
+      ca = 1;
+    }
+  } else {
+    crgb = color(redF(c), greenF(c), blueF(c));
+    ca = alphaZeroToOne(c);
+  }
+  //logger("crgb ca "+crgb + " " + ca);
+  if (crgb === currentFillColor && ca === currentFillAlpha && doFill) {
+    return;
+  }
+  doFill = true;
+  currentFillColor = crgb;
+  currentFillAlpha = ca;
+};
+
+/**
+ * The noFill() function disables filling geometry. If both <b>noStroke()</b> and <b>noFill()</b>
+ * are called, no shapes will be drawn to the screen.
+ *
+ * @see #fill()
+ *
+ */
+var noFill = function() {
+  doFill = false;
+  defaultNormalFill = false;
+};
+
+/**
+ * The stroke() function sets the color used to draw lines and borders around shapes. This color
+ * is either specified in terms of the RGB or HSB color depending on the
+ * current <b>colorMode()</b> (the default color space is RGB, with each
+ * value in the range from 0 to 255).
+ * <br><br>When using hexadecimal notation to specify a color, use "#" or
+ * "0x" before the values (e.g. #CCFFAA, 0xFFCCFFAA). The # syntax uses six
+ * digits to specify a color (the way colors are specified in HTML and CSS).
+ * When using the hexadecimal notation starting with "0x", the hexadecimal
+ * value must be specified with eight characters; the first two characters
+ * define the alpha component and the remainder the red, green, and blue
+ * components.
+ * <br><br>The value for the parameter "gray" must be less than or equal
+ * to the current maximum value as specified by <b>colorMode()</b>.
+ * The default maximum value is 255.
+ *
+ * @param {int|float} gray    number specifying value between white and black
+ * @param {int|float} value1  red or hue value
+ * @param {int|float} value2  green or saturation value
+ * @param {int|float} value3  blue or brightness value
+ * @param {int|float} alpha   opacity of the stroke
+ * @param {Color} color       any value of the color datatype
+ * @param {int} hex           color value in hexadecimal notation (i.e. #FFCC00 or 0xFFFFCC00)
+ *
+ * @see #fill()
+ * @see #noStroke()
+ * @see #tint()
+ * @see #background()
+ * @see #colorMode()
+ */
+var currentStrokeAlpha = 1;
+var currentStrokeColor = 0x000000;
+var stroke = function() {
+    defaultNormalStroke = false;
+    var c = color(arguments[0], arguments[1], arguments[2], arguments[3]);
+    var crgb;
+    var ca;
+    if (c === angleColor) {
+      // this is so we can do a smart optimisation later
+      // and not draw the wireframe is it happens to be the same color as
+      // the fill
+      defaultNormalStroke = true;
+      //logger("yes it's normal color ");
+      crgb = c;
+      if (arguments[1] !== undefined) {
+        //logger("passed alpha: " + arguments[1]);
+        ca = arguments[1] / colorModeA;
+        //logger("calculated alpha: " + ca);
+      } else {
+        ca = 1;
+      }
+    } else {
+      crgb = color(redF(c), greenF(c), blueF(c));
+      ca = alphaZeroToOne(c);
+    }
+    //logger("crgb ca "+crgb + " " + ca);
+    if (crgb === currentStrokeColor && ca === currentStrokeAlpha && doStroke) {
+      return;
+    }
+    doStroke = true;
+    currentStrokeColor = crgb;
+    currentStrokeAlpha = ca;
+  };
+
+/**
+ * The noStroke() function disables drawing the stroke (outline). If both <b>noStroke()</b> and
+ * <b>noFill()</b> are called, no shapes will be drawn to the screen.
+ *
+ * @see #stroke()
+ */
+var noStroke = function() {
+  doStroke = false;
+};
+
+var strokeSize = function(a) {
+  if (a === undefined) a = 1;
+  else if (a < 0) a = 0;
+  currentStrokeSize = a;
+};
