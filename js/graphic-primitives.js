@@ -218,9 +218,7 @@ var createObjectIfNeededAndDressWithCorrectMaterial = function(a,b,c,primitivePr
     if (primitiveProperties.primitiveType === GEOM_TYPE_LINE) {
 			if (pooledObject.lineMaterial === undefined) {
 				logger("creating line material");
-				pooledObject.lineMaterial = new THREE.LineBasicMaterial({
-					color: currentStrokeColor
-				});
+				pooledObject.lineMaterial = new THREE.LineBasicMaterial();
 			}
 	
 			// associating normal material to the mesh
@@ -245,33 +243,22 @@ var createObjectIfNeededAndDressWithCorrectMaterial = function(a,b,c,primitivePr
       // for each different type of material
       if (pooledObject.normalMaterial === undefined) {
         logger("creating normal material");
-        pooledObject.normalMaterial = new THREE.MeshNormalMaterial({
-          opacity: alphaToBeUsed,
-          wireframe: strokeTime,
-          wireframeLinewidth: currentStrokeSize
-        });
-      } else {
-        pooledObject.normalMaterial.opacity = alphaToBeUsed;
-        pooledObject.normalMaterial.wireframe = strokeTime;
-        pooledObject.normalMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.normalMaterial.doubleSided = primitiveProperties.doubleSided;
+        pooledObject.normalMaterial = new THREE.MeshNormalMaterial();
       }
+			pooledObject.normalMaterial.opacity = alphaToBeUsed;
+			pooledObject.normalMaterial.wireframe = strokeTime;
+			pooledObject.normalMaterial.wireframeLinewidth = currentStrokeSize;
+			pooledObject.normalMaterial.doubleSided = primitiveProperties.doubleSided;
       pooledObject.mesh.material = pooledObject.normalMaterial;
     } else if (!lightsAreOn) {
       if (pooledObject.basicMaterial === undefined) {
-        pooledObject.basicMaterial = new THREE.MeshBasicMaterial({
-          color: colorToBeUsed,
-          opacity: alphaToBeUsed,
-          wireframe: strokeTime,
-          wireframeLinewidth: currentStrokeSize
-        });
-      } else {
-        pooledObject.basicMaterial.color.setHex(colorToBeUsed);
-        pooledObject.basicMaterial.opacity = alphaToBeUsed;
-        pooledObject.basicMaterial.wireframe = strokeTime;
-        pooledObject.basicMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.basicMaterial.doubleSided = primitiveProperties.doubleSided;
+        pooledObject.basicMaterial = new THREE.MeshBasicMaterial();
       }
+			pooledObject.basicMaterial.color.setHex(colorToBeUsed);
+			pooledObject.basicMaterial.opacity = alphaToBeUsed;
+			pooledObject.basicMaterial.wireframe = strokeTime;
+			pooledObject.basicMaterial.wireframeLinewidth = currentStrokeSize;
+			pooledObject.basicMaterial.doubleSided = primitiveProperties.doubleSided;
       pooledObject.mesh.material = pooledObject.basicMaterial;
 
     }
@@ -279,25 +266,16 @@ var createObjectIfNeededAndDressWithCorrectMaterial = function(a,b,c,primitivePr
     else {
       if (pooledObject.lambertMaterial === undefined) {
         logger("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
-        pooledObject.lambertMaterial = new THREE.MeshLambertMaterial({
-          color: colorToBeUsed,
-          opacity: alphaToBeUsed,
-          ambient: ambientColor,
-          reflectivity: reflectValue,
-          refractionRatio: refractValue,
-          wireframe: strokeTime,
-          wireframeLinewidth: currentStrokeSize
-        });
-      } else {
-        pooledObject.lambertMaterial.color.setHex(colorToBeUsed);
-        pooledObject.lambertMaterial.opacity = alphaToBeUsed;
-        pooledObject.lambertMaterial.wireframe = strokeTime;
-        pooledObject.lambertMaterial.wireframeLinewidth = currentStrokeSize;
-        pooledObject.lambertMaterial.doubleSided = primitiveProperties.doubleSided;
-        pooledObject.lambertMaterial.ambient.setHex(ambientColor);
-        pooledObject.lambertMaterial.reflectivity = reflectValue;
-        pooledObject.lambertMaterial.refractionRatio = refractValue;
+        pooledObject.lambertMaterial = new THREE.MeshLambertMaterial();
       }
+			pooledObject.lambertMaterial.color.setHex(colorToBeUsed);
+			pooledObject.lambertMaterial.opacity = alphaToBeUsed;
+			pooledObject.lambertMaterial.wireframe = strokeTime;
+			pooledObject.lambertMaterial.wireframeLinewidth = currentStrokeSize;
+			pooledObject.lambertMaterial.doubleSided = primitiveProperties.doubleSided;
+			pooledObject.lambertMaterial.ambient.setHex(ambientColor);
+			pooledObject.lambertMaterial.reflectivity = reflectValue;
+			pooledObject.lambertMaterial.refractionRatio = refractValue;
       pooledObject.mesh.material = pooledObject.lambertMaterial;
     }
 
