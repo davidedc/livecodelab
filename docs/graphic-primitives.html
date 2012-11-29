@@ -1,4 +1,5 @@
-<!DOCTYPE html>  <html> <head>   <title>graphic-primitives.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colours.html">                 colours.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               graphic-primitives.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre>
+<!DOCTYPE html>  <html> <head>   <title>graphic-primitives.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="css-colour-definitions.html">                 css-colour-definitions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               graphic-primitives.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>Please reference the colour-functions.js file for all colour-related
+functions.</p>             </td>             <td class="code">               <div class="highlight"><pre>
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h1>Fundamentals</h1>
 
 <p>There are a couple of fundamentals of LiveCodeLab and a couple of
@@ -56,6 +57,15 @@ square that appears without animation. Spinning gives many more cues: the enviro
 is 3d, the lighting is special by default and all faces have primary colors, things
 animate. Without spinning, all those queues need to be further explained and demonstra
 ted.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+<span class="keyword">var</span> doFill = <span class="literal">true</span>,
+  doStroke = <span class="literal">true</span>,
+  fillStyle = [<span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>],
+  isFillDirty = <span class="literal">true</span>,
+  strokeStyle = [<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>],
+  isStrokeDirty = <span class="literal">true</span>,
+  lineWidth = <span class="number">1</span>;
+
+
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Since you can't change the mesh of an object once it's created, we keep around
 a pool of objects for each mesh type. There is one pool for lines, one for rectangles, one
 for boxes. There is one pool for each detail level of spheres (since they are different)
@@ -72,8 +82,6 @@ If one doesn't like the idea of creating dozens of empty arrays that won't ever 
 used (since probably only a few sphere detail levels will be used in a session)
 then one could leave all these arrays undefined and define them at runtime
 only when needed.</p>             </td>             <td class="code">               <div class="highlight"><pre>
-
-
 </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>The following variables are mostly all used in
 geometry commands and live codelab js files</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> minimumBallDetail = <span class="number">2</span>;
 <span class="keyword">var</span> maximumBallDetail = <span class="number">30</span>;
@@ -441,5 +449,127 @@ is more than one?)</p>             </td>             <td class="code">          
 </pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>end of primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>
 	commonPrimitiveDrawingLogic(a,b,c,primitiveProperties);
 }
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>Modified fro Processing.js</p>             </td>             <td class="code">               <div class="highlight"><pre>
+<span class="keyword">var</span> currentFillAlpha = <span class="number">1</span>;
+<span class="keyword">var</span> currentFillColor = <span class="number">0xFFFFFF</span>;
+<span class="keyword">var</span> defaultNormalFill = <span class="literal">true</span>;
+<span class="keyword">var</span> defaultNormalStroke = <span class="literal">true</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>lowest than any 32 bit color is a special
+color that paints based on normals.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> angleColor = -<span class="number">16777217</span>;
+<span class="keyword">var</span> fill = <span class="keyword">function</span>() {
+  defaultNormalFill = <span class="literal">false</span>;
+  <span class="keyword">var</span> c = color(arguments[<span class="number">0</span>], arguments[<span class="number">1</span>], arguments[<span class="number">2</span>], arguments[<span class="number">3</span>]);
+  <span class="keyword">var</span> crgb;
+  <span class="keyword">var</span> ca;
+</pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>logger("fillColor: "+c);</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="keyword">if</span> (c === angleColor) {
+</pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>this is so we can do a smart optimisation later
+and not draw the wireframe is it happens to be the same color as
+the fill</p>             </td>             <td class="code">               <div class="highlight"><pre>    defaultNormalFill = <span class="literal">true</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <p>logger("yes it's normal color ");</p>             </td>             <td class="code">               <div class="highlight"><pre>    crgb = c;
+    <span class="keyword">if</span> (arguments[<span class="number">1</span>] !== <span class="literal">undefined</span>) {
+</pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>logger("passed alpha: " + arguments[1]);</p>             </td>             <td class="code">               <div class="highlight"><pre>      ca = arguments[<span class="number">1</span>] / colorModeA;
+</pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>logger("calculated alpha: " + ca);</p>             </td>             <td class="code">               <div class="highlight"><pre>    } <span class="keyword">else</span> {
+      ca = <span class="number">1</span>;
+    }
+  } <span class="keyword">else</span> {
+    crgb = color(redF(c), greenF(c), blueF(c));
+    ca = alphaZeroToOne(c);
+  }
+</pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>logger("crgb ca "+crgb + " " + ca);</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="keyword">if</span> (crgb === currentFillColor &amp;&amp; ca === currentFillAlpha &amp;&amp; doFill) {
+    <span class="keyword">return</span>;
+  }
+  doFill = <span class="literal">true</span>;
+  currentFillColor = crgb;
+  currentFillAlpha = ca;
+};
+
+<span class="comment">/**
+ * The noFill() function disables filling geometry. If both &lt;b&gt;noStroke()&lt;/b&gt; and &lt;b&gt;noFill()&lt;/b&gt;
+ * are called, no shapes will be drawn to the screen.
+ *
+ * @see #fill()
+ *
+ */</span>
+<span class="keyword">var</span> noFill = <span class="keyword">function</span>() {
+  doFill = <span class="literal">false</span>;
+  defaultNormalFill = <span class="literal">false</span>;
+};
+
+<span class="comment">/**
+ * The stroke() function sets the color used to draw lines and borders around shapes. This color
+ * is either specified in terms of the RGB or HSB color depending on the
+ * current &lt;b&gt;colorMode()&lt;/b&gt; (the default color space is RGB, with each
+ * value in the range from 0 to 255).
+ * &lt;br&gt;&lt;br&gt;When using hexadecimal notation to specify a color, use "#" or
+ * "0x" before the values (e.g. #CCFFAA, 0xFFCCFFAA). The # syntax uses six
+ * digits to specify a color (the way colors are specified in HTML and CSS).
+ * When using the hexadecimal notation starting with "0x", the hexadecimal
+ * value must be specified with eight characters; the first two characters
+ * define the alpha component and the remainder the red, green, and blue
+ * components.
+ * &lt;br&gt;&lt;br&gt;The value for the parameter "gray" must be less than or equal
+ * to the current maximum value as specified by &lt;b&gt;colorMode()&lt;/b&gt;.
+ * The default maximum value is 255.
+ *
+ * @param {int|float} gray    number specifying value between white and black
+ * @param {int|float} value1  red or hue value
+ * @param {int|float} value2  green or saturation value
+ * @param {int|float} value3  blue or brightness value
+ * @param {int|float} alpha   opacity of the stroke
+ * @param {Color} color       any value of the color datatype
+ * @param {int} hex           color value in hexadecimal notation (i.e. #FFCC00 or 0xFFFFCC00)
+ *
+ * @see #fill()
+ * @see #noStroke()
+ * @see #tint()
+ * @see #background()
+ * @see #colorMode()
+ */</span>
+<span class="keyword">var</span> currentStrokeAlpha = <span class="number">1</span>;
+<span class="keyword">var</span> currentStrokeColor = <span class="number">0x000000</span>;
+<span class="keyword">var</span> stroke = <span class="keyword">function</span>() {
+    defaultNormalStroke = <span class="literal">false</span>;
+    <span class="keyword">var</span> c = color(arguments[<span class="number">0</span>], arguments[<span class="number">1</span>], arguments[<span class="number">2</span>], arguments[<span class="number">3</span>]);
+    <span class="keyword">var</span> crgb;
+    <span class="keyword">var</span> ca;
+    <span class="keyword">if</span> (c === angleColor) {
+</pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>this is so we can do a smart optimisation later
+and not draw the wireframe is it happens to be the same color as
+the fill</p>             </td>             <td class="code">               <div class="highlight"><pre>      defaultNormalStroke = <span class="literal">true</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>logger("yes it's normal color ");</p>             </td>             <td class="code">               <div class="highlight"><pre>      crgb = c;
+      <span class="keyword">if</span> (arguments[<span class="number">1</span>] !== <span class="literal">undefined</span>) {
+</pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>logger("passed alpha: " + arguments[1]);</p>             </td>             <td class="code">               <div class="highlight"><pre>        ca = arguments[<span class="number">1</span>] / colorModeA;
+</pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <p>logger("calculated alpha: " + ca);</p>             </td>             <td class="code">               <div class="highlight"><pre>      } <span class="keyword">else</span> {
+        ca = <span class="number">1</span>;
+      }
+    } <span class="keyword">else</span> {
+      crgb = color(redF(c), greenF(c), blueF(c));
+      ca = alphaZeroToOne(c);
+    }
+</pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <p>logger("crgb ca "+crgb + " " + ca);</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (crgb === currentStrokeColor &amp;&amp; ca === currentStrokeAlpha &amp;&amp; doStroke) {
+      <span class="keyword">return</span>;
+    }
+    doStroke = <span class="literal">true</span>;
+    currentStrokeColor = crgb;
+    currentStrokeAlpha = ca;
+  };
+
+<span class="comment">/**
+ * The noStroke() function disables drawing the stroke (outline). If both &lt;b&gt;noStroke()&lt;/b&gt; and
+ * &lt;b&gt;noFill()&lt;/b&gt; are called, no shapes will be drawn to the screen.
+ *
+ * @see #stroke()
+ */</span>
+<span class="keyword">var</span> noStroke = <span class="keyword">function</span>() {
+  doStroke = <span class="literal">false</span>;
+};
+
+<span class="keyword">var</span> strokeSize = <span class="keyword">function</span>(a) {
+  <span class="keyword">if</span> (a === <span class="literal">undefined</span>) a = <span class="number">1</span>;
+  <span class="keyword">else</span> <span class="keyword">if</span> (a &lt; <span class="number">0</span>) a = <span class="number">0</span>;
+  currentStrokeSize = a;
+};
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
