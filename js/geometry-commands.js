@@ -66,7 +66,7 @@ var currentStrokeSize = 1;
 // spin for a few moments when they are created.
 var doTheSpinThingy = true;
 var resetTheSpinThingy = false;
-var SPINFRAMES = 30;
+var SPIN_DURATION_IN_FRAMES = 30;
 
 // For each pool we have a count of how many of those entries
 // are actually used in the current frame.
@@ -130,7 +130,7 @@ var createObjectIfNeededAndDressWithCorrectMaterial = function(a,b,c,primitivePr
         mesh: new primitiveProperties.THREEConstructor(
            geometriesBank[primitiveProperties.primitiveType]
         ),
-        startCountdown: SPINFRAMES
+        initialSpinCountdown: SPIN_DURATION_IN_FRAMES
       };
       
       newObjectToBeAddedToTheScene = true;
@@ -224,12 +224,12 @@ var createObjectIfNeededAndDressWithCorrectMaterial = function(a,b,c,primitivePr
     }
 
     if (resetTheSpinThingy) {
-      pooledObject.startCountdown = SPINFRAMES;
+      pooledObject.initialSpinCountdown = SPIN_DURATION_IN_FRAMES;
       resetTheSpinThingy = false;
       doTheSpinThingy = true;
     }
-    if (doTheSpinThingy) pooledObject.startCountdown--;
-    if (pooledObject.startCountdown === -1) doTheSpinThingy = false;
+    if (doTheSpinThingy) pooledObject.initialSpinCountdown--;
+    if (pooledObject.initialSpinCountdown === -1) doTheSpinThingy = false;
 
     pooledObject.mesh.isLine = primitiveProperties.isLine;
     pooledObject.mesh.isRectangle = primitiveProperties.isRectangle;
@@ -243,17 +243,17 @@ var createObjectIfNeededAndDressWithCorrectMaterial = function(a,b,c,primitivePr
 
     objectsUsedInFrameCounts[primitiveProperties.primitiveType]++;
 
-    if (doTheSpinThingy && pooledObject.startCountdown > 0) {
+    if (doTheSpinThingy && pooledObject.initialSpinCountdown > 0) {
       pushMatrix();
-      rotate(pooledObject.startCountdown / 50);
-      logger(""+pooledObject.startCountdown);      
+      rotate(pooledObject.initialSpinCountdown / 50);
+      logger(""+pooledObject.initialSpinCountdown);      
     }
 
     pooledObject.mesh.matrixAutoUpdate = false;
     pooledObject.mesh.matrix.copy(worldMatrix);
     pooledObject.mesh.matrixWorldNeedsUpdate = true;
 
-    if (doTheSpinThingy && pooledObject.startCountdown > 0) {
+    if (doTheSpinThingy && pooledObject.initialSpinCountdown > 0) {
       popMatrix();
     }
 
