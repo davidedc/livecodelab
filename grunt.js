@@ -61,7 +61,6 @@ module.exports = function (grunt) {
                     'js/background-painting.js',
                     'js/editor/editor.js',
                     'js/colour-functions.js',
-                    'js/init.js',
                     'js/matrix-commands.js',
                     'js/graphic-primitives.js',
                     'js/math.js',
@@ -71,7 +70,8 @@ module.exports = function (grunt) {
                     'js/text-dimming.js',
                     'js/lights-functions.js',
                     'js/editor/mousewheel.js',
-                    'js/ui.js'],
+                    'js/ui.js',
+                    'js/init.js'],
                 dest: 'dist/built.js'
             }
         },
