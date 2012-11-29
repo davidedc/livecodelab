@@ -42,6 +42,8 @@ var ProgramLoader;
 
 var BackgroundPainter;
 
+var EditorDimmer;
+
 
 //var geometriesBank[primitiveType];
 //var planeGeometry;

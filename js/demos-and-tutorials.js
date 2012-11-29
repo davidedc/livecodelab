@@ -598,7 +598,7 @@ var createProgramLoader = function (texteditor, bigcursor, livecodelab, threejs)
             bigcursor.shrinkFakeText();
         }
 
-        undimEditor();
+        EditorDimmer.undimEditor();
 
         doTheSpinThingy = false;
 

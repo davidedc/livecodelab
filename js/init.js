@@ -28,6 +28,8 @@ var startEnvironment = function () {
 
     ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs);
 
+    EditorDimmer = createEditorDimmer(editor, ProgramLoader);
+
 
     logger("startEnvironment");
     if (ThreeJs) {
@@ -75,8 +77,8 @@ var startEnvironment = function () {
     // Init of the dim code toggle.
     // set it to false, then immediatly toggle it to true with the managing function
     // that way we can easily invert the default: just change false to true -- julien
-    dimcodeOn = false;
-    toggleDimCode();
+    EditorDimmer.dimCodeOn = false;
+    EditorDimmer.toggleDimCode();
 
 }
 
