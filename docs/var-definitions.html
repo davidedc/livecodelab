@@ -1,4 +1,4 @@
-<!DOCTYPE html>  <html> <head>   <title>var-definitions.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colours.html">                 colours.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="geometry-commands.html">                 geometry-commands.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               var-definitions.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/**
+<!DOCTYPE html>  <html> <head>   <title>var-definitions.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colours.html">                 colours.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="from-processing.html">                 from-processing.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               var-definitions.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/**
  * Extend the Number prototype
  * This needs to stay globally defined
  * @param func
@@ -37,71 +37,13 @@ $(document).ready(<span class="function"><span class="keyword">function</span> <
 
 <span class="keyword">var</span> BackgroundPainter;
 
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> simpleGradient;
 
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> background;
-
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>creating a geometry is expensive
-so we need to create ONE cube of dimensions 1,1,1
-if we need a cube of different size, then we need to
-scale it. Note that the scale for the specific cube shouldn't
-influence the stack, so we need to create a scale node,
-and then go up a node.</p>             </td>             <td class="code">               <div class="highlight"><pre>
-
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>The following variables are mostly all used in
-geometry commands and live codelab js files</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> minimumBallDetail = <span class="number">2</span>;
-<span class="keyword">var</span> maximumBallDetail = <span class="number">30</span>;
-
-<span class="keyword">var</span> GEOM_TYPE_LINE = <span class="number">0</span>;
-<span class="keyword">var</span> GEOM_TYPE_RECT = <span class="number">1</span>;
-<span class="keyword">var</span> GEOM_TYPE_BOX = <span class="number">2</span>;
-<span class="keyword">var</span> GEOM_TYPE_CYLINDER = <span class="number">3</span>;
-<span class="keyword">var</span> GEOM_TYPE_SPHERE = <span class="number">4</span>;
-
-
-</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>For each pool we have a count of how many of those entries
-are actually used in the current frame.
-This is so that we can go through the scene graph and hide the unused objects.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> objectsUsedInFrameCounts = [];
-<span class="keyword">var</span> usedAmbientLights = <span class="number">0</span>;
-
-
-<span class="keyword">var</span> ballDetLevel;
-<span class="keyword">var</span> currentStrokeSize = <span class="number">1</span>;
-
-
-</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>var geometriesBank[primitiveType];
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>var geometriesBank[primitiveType];
 var planeGeometry;
 var geometriesBank[primitiveType];
 var geometriesBank[primitiveType];</p>             </td>             <td class="code">               <div class="highlight"><pre>
-</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>loads identity matrix</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> worldMatrix = <span class="keyword">new</span> THREE.Matrix4();
-
-<span class="keyword">var</span> finalRenderWithSceneAndBlend;
-<span class="keyword">var</span> finalRenderWithSceneAndBlendContext;
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>loads identity matrix</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> worldMatrix = <span class="keyword">new</span> THREE.Matrix4();
 
 
-
-<span class="keyword">var</span> repaintBackroundEveryFrame = <span class="literal">true</span>;
-<span class="keyword">var</span> fullScreenifyBackground = <span class="literal">true</span>;
-<span class="keyword">var</span> animationStyleValue = <span class="number">0</span>;
-
-<span class="keyword">var</span> blendAmount = <span class="number">0</span>;
-<span class="keyword">var</span> normal = <span class="number">0</span>;
-<span class="keyword">var</span> paintOver = <span class="number">1</span>;
-<span class="keyword">var</span> motionBlur = <span class="number">2</span>;
-
-<span class="keyword">var</span> soundLoops = [];
-soundLoops.soundIDs = [];
-soundLoops.beatStrings = [];
-
-</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Used between livecodelab.js and code-transformation.js</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> programHasBasicError = <span class="literal">false</span>;
-<span class="keyword">var</span> reasonOfBasicError = <span class="string">""</span>;
-<span class="keyword">var</span> consecutiveFramesWithoutRunTimeError = <span class="number">0</span>;
-
-</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>the "spinthingy" is because we want
-users who type "box" to see that it's actually
-a 3d environment. So the first few primitives
-spin for a few moments when they are created.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> doTheSpinThingy = <span class="literal">true</span>;
-<span class="keyword">var</span> resetTheSpinThingy = <span class="literal">false</span>;
-<span class="keyword">var</span> SPINFRAMES = <span class="number">30</span>;
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
