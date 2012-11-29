@@ -163,12 +163,12 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
   }
   // if we are under the influence of a noFill command OR
   // the wireframe is not going to be visible on top of the
-  // fill then don't draw it
-  else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
+  // fill then don't draw the stroke, only draw the fill
+  else if ((primitiveProperties.thisGometryCanFill && doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
     createObjectIfNeededAndDressWithCorrectMaterial(a,b,c,primitiveProperties,false, currentFillColor, currentFillAlpha, defaultNormalFill);
   }
   // only doing the stroke
-  else if (!doFill && doStroke) {
+  else if ((!doFill || !primitiveProperties.thisGometryCanFill) && doStroke) {
     createObjectIfNeededAndDressWithCorrectMaterial(a,b,c,primitiveProperties,true, currentStrokeColor, currentStrokeAlpha, defaultNormalStroke);
   // doing both the fill and the stroke
   } else {
