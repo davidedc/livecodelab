@@ -63,7 +63,7 @@ module.exports = function (grunt) {
                     'js/from-processing.js',
                     'js/init.js',
                     'js/matrix-commands.js',
-                    'js/geometry-commands.js',
+                    'js/graphic-primitives.js',
                     'js/math.js',
                     'js/code-transformations.js',
                     'js/demos-and-tutorials.js',
