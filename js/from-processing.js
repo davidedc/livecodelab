@@ -42,65 +42,6 @@ var colorModeA = 255,
   colorModeZ = 255,
   curColorMode = Constants.RGB;
 
-/**
- * Determines the largest value in a sequence of numbers.
- *
- * @param {int|float} value1         int or float
- * @param {int|float} value2         int or float
- * @param {int|float} value3         int or float
- * @param {int|float} array          int or float array
- *
- * @returns {int|float}
- *
- * @see min
- */
-var max = function() {
-  if (arguments.length === 2) {
-    return arguments[0] < arguments[1] ? arguments[1] : arguments[0];
-  }
-  var numbers = arguments.length === 1 ? arguments[0] : arguments; // if single argument, array is used
-  if (!("length" in numbers && numbers.length > 0)) {
-    throw "Non-empty array is expected";
-  }
-  var max = numbers[0],
-    count = numbers.length;
-  for (var i = 1; i < count; ++i) {
-    if (max < numbers[i]) {
-      max = numbers[i];
-    }
-  }
-  return max;
-};
-
-/**
- * Determines the smallest value in a sequence of numbers.
- *
- * @param {int|float} value1         int or float
- * @param {int|float} value2         int or float
- * @param {int|float} value3         int or float
- * @param {int|float} array          int or float array
- *
- * @returns {int|float}
- *
- * @see max
- */
-var min = function() {
-  if (arguments.length === 2) {
-    return arguments[0] < arguments[1] ? arguments[0] : arguments[1];
-  }
-  var numbers = arguments.length === 1 ? arguments[0] : arguments; // if single argument, array is used
-  if (!("length" in numbers && numbers.length > 0)) {
-    throw "Non-empty array is expected";
-  }
-  var min = numbers[0],
-    count = numbers.length;
-  for (var i = 1; i < count; ++i) {
-    if (min > numbers[i]) {
-      min = numbers[i];
-    }
-  }
-  return min;
-};
 
 function color$4(aValue1, aValue2, aValue3, aValue4) {
   var r, g, b, a;
