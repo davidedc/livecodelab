@@ -81,7 +81,7 @@ module.exports = function (grunt) {
         },
         clean: {
             docs: ['docs/'],
-            build: ['dist/', 'indexMinified.html']
+            build: ['dist/', 'indexMinified.html', 'js_compiled/Livecodelab-minified.js']
         },
         targethtml: {
             compile: {
