@@ -75,9 +75,6 @@ var objectsUsedInFrameCounts = [];
 
 var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
 
-  var startIndex = 0;
-  var endIndex = 0;
-
   // Simple case - if there is no fill and
   // no stroke then there is nothing to do.
   // Also, even if we aren'd under a noFill command spell, some geometries
@@ -90,38 +87,26 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
   // the wireframe is not going to be visible on top of the
   // fill then don't draw it
   else if ((doFill && (currentStrokeSize === 0 || !doStroke || (currentStrokeSize <= 1 && !defaultNormalFill && !defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (currentStrokeSize <= 1 && defaultNormalFill && defaultNormalStroke)) {
-    startIndex = 0;
-    endIndex = 1;
+    createObjectIfNeededAndDressWithCorrectMaterial(a,b,c,primitiveProperties,false, currentFillColor, currentFillAlpha, defaultNormalFill);
   }
   // only doing the stroke
   else if (!doFill && doStroke) {
-    startIndex = 1;
-    endIndex = 2;
+    createObjectIfNeededAndDressWithCorrectMaterial(a,b,c,primitiveProperties,true, currentStrokeColor, currentStrokeAlpha, defaultNormalStroke);
   // doing both the fill and the stroke
   } else {
-    startIndex = 0;
-    endIndex = 2;
+    createObjectIfNeededAndDressWithCorrectMaterial(a,b,c,primitiveProperties,true, currentStrokeColor, currentStrokeAlpha, defaultNormalStroke);
+    createObjectIfNeededAndDressWithCorrectMaterial(a,b,c,primitiveProperties,false, currentFillColor, currentFillAlpha, defaultNormalFill);
   }
 
-  var strokeTime = false;
-  var colorToBeUsed;
-  var alphaToBeUsed;
-  var newObjectToBeAddedToTheScene = false;
+}
+
+var createObjectIfNeededAndDressWithCorrectMaterial = function(a,b,c,primitiveProperties,strokeTime, colorToBeUsed, alphaToBeUsed, applyDefaultNormalColor) {
 
   // this is to run the code twice. This should be neater
   // and turned into a function call really.
-  for (var fillAndStroke = startIndex; fillAndStroke < endIndex; fillAndStroke++) {
-    var applyDefaultNormalColor = false;
-    if (fillAndStroke === 1) {
-      strokeTime = true;
-      colorToBeUsed = currentStrokeColor;
-      alphaToBeUsed = currentStrokeAlpha;
-      applyDefaultNormalColor = defaultNormalStroke;
-    } else {
-      colorToBeUsed = currentFillColor;
-      alphaToBeUsed = currentFillAlpha;
-      applyDefaultNormalColor = defaultNormalFill;
-    }
+
+  var newObjectToBeAddedToTheScene = false;
+  
     var pooledObject = objectPool[primitiveProperties.primitiveType][objectsUsedInFrameCounts[primitiveProperties.primitiveType]];
     if (pooledObject === undefined) {
       // each pooled object contains a geometry,
@@ -287,7 +272,7 @@ var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
     }
 
     if (newObjectToBeAddedToTheScene) ThreeJs.scene.add(pooledObject.mesh);
-  }
+  
 }
 
 
