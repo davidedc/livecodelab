@@ -60,7 +60,7 @@ module.exports = function (grunt) {
                     'js/var-definitions.js',
                     'js/background-painting.js',
                     'js/editor/editor.js',
-                    'js/from-processing.js',
+                    'js/colour-functions.js',
                     'js/init.js',
                     'js/matrix-commands.js',
                     'js/graphic-primitives.js',

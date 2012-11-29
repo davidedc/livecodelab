@@ -1,3 +1,5 @@
+// Please reference the colour-functions.js file for all colour-related
+// functions.
 
 // Fundamentals
 // ============

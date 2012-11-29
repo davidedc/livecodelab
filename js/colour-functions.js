@@ -1,4 +1,5 @@
-// Functions taken from processing.js
+// Code adapted from processing.js
+
 /**
  * NOTE: in releases we replace symbolic Constants.* names with their values.
  * Using Constants.* in code below is fine.  See tools/rewrite-Constants.js.
