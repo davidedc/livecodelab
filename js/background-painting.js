@@ -54,10 +54,10 @@ var createBackgroundPainter = function (threejs) {
 
         currentGradientStackValue = currentGradientStackValue + " " + a + "" + b + "" + c + "" + d + "null ";
         gradStack.push({
-            gradStacka: a,
-            gradStackb: b,
-            gradStackc: c,
-            gradStackd: d,
+            gradStacka: color(a),
+            gradStackb: color(b),
+            gradStackc: color(c),
+            gradStackd: color(d),
             solid: null
         });
 
