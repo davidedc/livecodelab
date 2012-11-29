@@ -109,7 +109,7 @@ var createObjectIfNeededAndDressWithCorrectMaterial = function(a,b,c,primitivePr
   
     var pooledObject = objectPool[primitiveProperties.primitiveType][objectsUsedInFrameCounts[primitiveProperties.primitiveType]];
     if (pooledObject === undefined) {
-      // each pooled object contains a geometry,
+      // each pooled object contains a geometry, a line material,
       // a basic material and a lambert material.
       pooledObject = {
         lineMaterial: undefined,
@@ -138,30 +138,25 @@ var createObjectIfNeededAndDressWithCorrectMaterial = function(a,b,c,primitivePr
     }
 
     if (primitiveProperties.primitiveType === GEOM_TYPE_LINE) {
-      if (pooledObject.lineMaterial === undefined) {
-        logger("creating line material");
-        pooledObject.lineMaterial = new THREE.LineBasicMaterial({
-					color: currentStrokeColor,
-					opacity: currentStrokeAlpha,
-					linewidth: currentStrokeSize
+			if (pooledObject.lineMaterial === undefined) {
+				logger("creating line material");
+				pooledObject.lineMaterial = new THREE.LineBasicMaterial({
+					color: currentStrokeColor
 				});
-      } else {
-				pooledObject.lineMaterial.opacity = currentStrokeAlpha;
-				pooledObject.lineMaterial.linewidth = currentStrokeSize;
-      }
-    ////        logger("associating normal material to existing mesh");
-    pooledObject.mesh.material = pooledObject.lineMaterial;
-		// setting the color after the geometry has been dealt with
-		// because in case we use the angleColor then we
-		// need to know the geometry.
-			if (currentStrokeColor === angleColor || defaultNormalStroke) {
-				var sasaas = pooledObject.mesh.matrix.multiplyVector3(new THREE.Vector3(0, 1, 0)).normalize();
-				//logger(sasaas.x+ " " + sasaas.y + " " + sasaas.z);
-				pooledObject.mesh.material.color.setHex(color(((sasaas.x + 1) / 2) * 255, ((sasaas.y + 1) / 2) * 255, ((sasaas.z + 1) / 2) * 255));
-			} else {
-				pooledObject.mesh.material.color.setHex(currentStrokeColor);
 			}
-
+	
+			// associating normal material to the mesh
+			pooledObject.lineMaterial.opacity = currentStrokeAlpha;
+			pooledObject.lineMaterial.linewidth = currentStrokeSize;
+	
+			if (currentStrokeColor === angleColor || defaultNormalStroke) {
+				var theAngle = pooledObject.mesh.matrix.multiplyVector3(new THREE.Vector3(0, 1, 0)).normalize();
+				pooledObject.lineMaterial.color.setHex(color(((theAngle.x + 1) / 2) * 255, ((theAngle.y + 1) / 2) * 255, ((theAngle.z + 1) / 2) * 255));
+			} else {
+				pooledObject.lineMaterial.color.setHex(currentStrokeColor);
+			}
+	
+			pooledObject.mesh.material = pooledObject.lineMaterial;
     }
     else if (newObjectToBeAddedToTheScene || (colorToBeUsed === angleColor || applyDefaultNormalColor)) {
       // the first time we render a mesh we need to
