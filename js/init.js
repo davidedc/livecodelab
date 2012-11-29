@@ -18,7 +18,7 @@ var startEnvironment = function () {
     // Thisis the beginnings of the dependency injection section
     // Preferably this
     var CoffeeCompiler = CoffeeScript;
-    var CodeTransformer = createCodeTransformer(CoffeeCompiler);
+    var CodeTransformer = createCodeTransformer(CoffeeCompiler, BigCursor);
     editor = createEditor(CodeTransformer);
 
     //create autocoder here
@@ -28,7 +28,7 @@ var startEnvironment = function () {
 
     ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs);
 
-    EditorDimmer = createEditorDimmer(editor, ProgramLoader);
+    EditorDimmer = createEditorDimmer(editor, ProgramLoader, BigCursor);
 
 
     logger("startEnvironment");

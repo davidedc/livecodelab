@@ -1,5 +1,5 @@
 /*jslint browser: true, nomen: true, devel: true */
-/*global $, Detector, fakeText, undimEditor, doTheSpinThingy: true, animationStyle, normal, animationStyleUpdateIfChanged */
+/*global $, Detector, undimEditor, doTheSpinThingy: true, animationStyle, normal, animationStyleUpdateIfChanged */
 
 var createProgramLoader = function (texteditor, bigcursor, livecodelab, threejs) {
 
@@ -594,7 +594,7 @@ var createProgramLoader = function (texteditor, bigcursor, livecodelab, threejs)
         // this hash value and load the correct demo)
         window.location.hash = 'bookmark=' + demoName;
 
-        if (fakeText) {
+        if (bigcursor.show) {
             bigcursor.shrinkFakeText();
         }
 

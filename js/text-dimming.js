@@ -1,7 +1,7 @@
-/*jslint browser: true, devel: true */
-/*global $, fakeText */
+/*jslint */
+/*global $ */
 
-var createEditorDimmer = function (Editor, ProgramLoader) {
+var createEditorDimmer = function (Editor, ProgramLoader, BigCursor) {
 
     'use strict';
 
@@ -12,7 +12,7 @@ var createEditorDimmer = function (Editor, ProgramLoader) {
     EditorDimmer.dimCodeOn = false;
 
     EditorDimmer.undimEditor = function () {
-        if (fakeText || Editor.getValue() === '') {
+        if (BigCursor.show || Editor.getValue() === '') {
             $("#formCode").css('opacity', 0);
         }
         if ($("#formCode").css('opacity') < 0.99) {
@@ -45,7 +45,7 @@ var createEditorDimmer = function (Editor, ProgramLoader) {
             }
         }
 
-        if (fakeText || Editor.getValue() === '') {
+        if (BigCursor.show || Editor.getValue() === '') {
             return;
         }
         cursorActivity = true;
@@ -75,7 +75,7 @@ var createEditorDimmer = function (Editor, ProgramLoader) {
 
 
     EditorDimmer.dimIfNoCursorActivity = function () {
-        if (fakeText || Editor.getValue() === '') {
+        if (BigCursor.show || Editor.getValue() === '') {
             return;
         }
         if (cursorActivity) {
@@ -94,7 +94,7 @@ var createEditorDimmer = function (Editor, ProgramLoader) {
         if (!EditorDimmer.dimCodeOn) {
             clearInterval(dimIntervalID);
             // don't un-dim if the giant cursor is blinking
-            if (!fakeText && Editor.getValue() !== '') {
+            if (!BigCursor.show && Editor.getValue() !== '') {
                 EditorDimmer.undimEditor();
             }
             $("#dimCodeIndicator").html("Hide Code: off");

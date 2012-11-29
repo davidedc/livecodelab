@@ -2,7 +2,7 @@
 /*global $ */
 
 
-var createCodeTransformer = function (CoffeeCompiler) {
+var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
 
     var CodeTransformer = {};
 
@@ -91,13 +91,13 @@ var createCodeTransformer = function (CoffeeCompiler) {
 
             var editorContent = editor.getValue();
 
-            if (editorContent !== '' && fakeText === true) {
+            if (editorContent !== '' && BigCursor.show) {
                 BigCursor.shrinkFakeText();
             }
 
-            if (editorContent === '' && !fakeText) {
+            if (editorContent === '' && !BigCursor.show) {
                 resetTheSpinThingy = true;
-                fakeText = true;
+                BigCursor.show = true;
                 window.location.hash = '';
 
                 $("#formCode").animate({
