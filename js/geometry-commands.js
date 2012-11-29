@@ -75,6 +75,20 @@ var objectsUsedInFrameCounts = [];
 
 var commonPrimitiveDrawingLogic = function(a,b,c,primitiveProperties) {
 
+  // b and c are not functional in some geometric
+  // primitives, but we handle them here in all cases
+  // to make the code uniform and unifiable
+  if (a === undefined) {
+    a = 1;
+    b = 1;
+    c = 1;
+  } else if (b === undefined) {
+    b = a;
+    c = a;
+  } else if (c === undefined) {
+    c = 1;
+  }
+
   // Simple case - if there is no fill and
   // no stroke then there is nothing to do.
   // Also, even if we aren'd under a noFill command spell, some geometries
@@ -298,21 +312,7 @@ var line = function(a,b,c) {
 	}
   // end of primitive-specific initialisations:
 
-  // b and c are not functional in some geometric
-  // primitives, but we handle them here in all cases
-  // to make the code uniform and unifiable
-  if (a === undefined) {
-    a = 1;
-    b = 1;
-    c = 1;
-  } else if (arguments.length === 1) {
-    b = a;
-    c = a;
-  }
-
 	commonPrimitiveDrawingLogic(a,b,c,primitiveProperties);
-
-
 }
 
 
@@ -335,20 +335,7 @@ var rect = function(a,b,c) {
 	}
   // end of primitive-specific initialisations:
 
-  // b and c are not functional in some geometric
-  // primitives, but we handle them here in all cases
-  // to make the code uniform and unifiable
-  if (a === undefined) {
-    a = 1;
-    b = 1;
-    c = 1;
-  } else if (arguments.length === 1) {
-    b = a;
-    c = a;
-  }
-
 	commonPrimitiveDrawingLogic(a,b,c,primitiveProperties);
-
 }
 
 
@@ -370,18 +357,6 @@ var box = function(a,b,c) {
 		THREEConstructor: THREE.Mesh
 	}
   // end of primitive-specific initialisations:
-
-	  // b and c are not functional in some geometric
-  // primitives, but we handle them here in all cases
-  // to make the code uniform and unifiable
-  if (a === undefined) {
-    a = 1;
-    b = 1;
-    c = 1;
-  } else if (arguments.length === 1) {
-    b = a;
-    c = a;
-  }
 
 	commonPrimitiveDrawingLogic(a,b,c,primitiveProperties);
 }
@@ -406,20 +381,7 @@ var peg = function(a,b,c) {
 	}
   // end of primitive-specific initialisations:
 
-	  // b and c are not functional in some geometric
-  // primitives, but we handle them here in all cases
-  // to make the code uniform and unifiable
-  if (a === undefined) {
-    a = 1;
-    b = 1;
-    c = 1;
-  } else if (arguments.length === 1) {
-    b = a;
-    c = a;
-  }
-
 	commonPrimitiveDrawingLogic(a,b,c,primitiveProperties);
-
 }
 
 
@@ -449,18 +411,5 @@ var ball = function(a,b,c) {
 	}
   // end of primitive-specific initialisations:
 
-	  // b and c are not functional in some geometric
-  // primitives, but we handle them here in all cases
-  // to make the code uniform and unifiable
-  if (a === undefined) {
-    a = 1;
-    b = 1;
-    c = 1;
-  } else if (arguments.length === 1) {
-    b = a;
-    c = a;
-  }
-
 	commonPrimitiveDrawingLogic(a,b,c,primitiveProperties);
-
 }
