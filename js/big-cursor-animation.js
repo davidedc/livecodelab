@@ -1,19 +1,21 @@
 /*jslint browser: true, devel: true */
 /*global $, editor */
 
-
-var fakeText = true;
-
 var createBigCursor = function () {
 
     'use strict';
 
     var BigCursor = {};
 
+    // Do we show the big cursor or not
+    // If there's any text in the editor
+    // then we shouldn't be showing it
+    BigCursor.show = true;
+
     BigCursor.fakeCursorInterval = -1;
 
     document.onkeypress = function (e) {
-        if (fakeText && editor.getValue() !== "") {
+        if (BigCursor.show && editor.getValue() !== "") {
             BigCursor.shrinkFakeText(e);
         }
     };
@@ -44,8 +46,7 @@ var createBigCursor = function () {
         setTimeout('$("#formCode").animate({opacity: 1}, "fast");', 120);
         setTimeout('$("#justForFakeCursor").hide();', 200);
         setTimeout('$("#toMove").hide();', 200);
-        //setTimeout(BigCursor.toggleBlink,200, false);
-        fakeText = false;
+        BigCursor.show = false;
 
     };
 
