@@ -1,4 +1,59 @@
 
+// Fundamentals
+// ============
+// There are a couple of fundamentals of LiveCodeLab and a couple of
+// complications of Three.js that shape the way
+// graphic primitives work in this file.
+// LiveCodeLab uses immediate mode graphics
+// ----------------------
+// First off, like Processing, LiveCodeLab shies away from "retained" graphics
+// and instead uses "immediate mode" graphics.
+// Practically, this means that when the user uses a graphic primitive, he is
+// NOT given a handle that he can use to modify properties of that element at a
+// later stage. For example flash, DOM, CSS, openGL and Three.JS work that way
+// (to different degrees).
+// Retained graphic modes keep structures in memory that make easy for example
+// to do event handling (which object did I click?), hierarchy management
+// (parent/child relationships, container/content, etc), property tweaking
+// (change property X of object Y), and sometimes animation ( CoreAnimation from
+// Apple for example), collision/overlap detection. Note that openGL is retained
+// in that there are handles to meshes and textures, but little else is given
+// (no events, no input, no physics/overlap/collision/animation).
+// Also, retained graphics mode usually is smart about updating
+// only minimal parts of the screen that need updating rather than redrawing the
+// whole screen (again, openGL doesn't do that apart from basic frustum culling, but
+// for example there is nothing to detect occlusions and avoid painting occluded
+// objects).
+// There are a few drawbacks about retained modes: a) programs that manage
+// handles are more lengthy than programs that don't to manage handles
+// b) they are often not needed for example in
+// 2d sprites-based videogames c) most importantly,
+// they require deeper understanding of the underlying
+// model (e.g. which property can I change? What are those called? How to I change
+// parent/child relationship? How do events bubble up?).
+// Processing and LiveCodeLab go for immediate mode. Once the primitive is invoked, it
+// becomes pixels and there is no built-in way to do input/event/hierarchies...
+// Rather, there are a few properties that are set as a global state and apply to all
+// objects. Examples are "fill" and stroke.
+// Strokes are managed via separately painting the stroke and then paining the fill
+// ----------------------
+// There is a particular material in Three.js for drawing wireframes. But materials
+// cannot be combined, i.e. only one is associated at any time with a mesh. Also,
+// wireframes draw ALL the edges, i.e. both the edges normally visible and "in front"
+// and the occluded edges at the back. So the solution is to draw two disting objects.
+// One for the fills and one, slightly "larger", for the strokes. In that way, the
+// strokes are visible "in front" of the fills, and the fills cover the strokes "at
+// the back"
+// "Spinning"
+// ----------------------
+// "Spinning" applies to all objects added to an empty frame: it makes all objects spin
+// for a few frames. This has been implemented for two reasons a) cosmetic b) the user
+// is likely to first use "box", and without spinning that would look like a boring
+// square that appears without animation. Spinning gives many more cues: the environment
+// is 3d, the lighting is special by default and all faces have primary colors, things
+// animate. Without spinning, all those queues need to be further explained and demonstra
+// ted.
+
 // Since you can't change the mesh of an object once it's created, we keep around
 // a pool of objects for each mesh type. There is one pool for lines, one for rectangles, one
 // for boxes. There is one pool for each detail level of spheres (since they are different)
