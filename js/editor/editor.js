@@ -1,5 +1,5 @@
 /*jslint browser: true, devel: true */
-/*global CodeMirror, suspendDimmingAndCheckIfLink */
+/*global CodeMirror, EditorDimmer */
 
 var createEditor = function (CodeTransformer) {
     var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
@@ -22,7 +22,7 @@ var createEditor = function (CodeTransformer) {
         onChange: (CodeTransformer.registerCode),
         mode: "livecodelab",
         onCursorActivity: (function () {
-            suspendDimmingAndCheckIfLink();
+            EditorDimmer.suspendDimmingAndCheckIfLink();
         }),
         theme: 'night'
     });

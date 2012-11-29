@@ -1,5 +1,5 @@
 /*jslint browser: true, devel: true */
-/*global $, autocoder, pickRandomDefaultGradient, editor, loadDemoOrTutorial, toggleDimCode */
+/*global $, autocoder, BackgroundPainter, editor, ProgramLoader, EditorDimmer */
 
 
 var isCanvasSupported = function () {
@@ -153,7 +153,7 @@ $(document).ready(function () {
     });
 
     $('#dimCodeButtonContainer').click(function () {
-        toggleDimCode();
+        EditorDimmer.toggleDimCode();
         return false;
     });
 
