@@ -575,7 +575,7 @@ var createCodeTransformer = function (CoffeeCompiler) {
 
         logger(compiledOutput);
 
-        console.log("code transform set draw");
+        logger("code transform set draw");
         LiveCodeLab.setDrawFunction(new Function(compiledOutput));
 
     };
