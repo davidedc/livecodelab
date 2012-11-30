@@ -54,8 +54,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs) {
             setTimeout(LiveCodeLab.animate, 1000 / wantedFramesPerSecond);
         }
 
-        matrixStack = [];
-        worldMatrix.identity();
+        MatrixCommands.resetMatrixStack();
 
         // the sound list needs to be cleaned
         // so that the user program can create its own from scratch
