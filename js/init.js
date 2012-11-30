@@ -7,6 +7,8 @@ var startEnvironment = function () {
 
     'use strict';
 
+    MatrixCommands = createMatrixCommands(THREE);
+
     ThreeJs = createThreeJs(Detector, THREE, THREEx);
     BigCursor = createBigCursor();
 
