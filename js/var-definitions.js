@@ -41,18 +41,9 @@ var LiveCodeLab;
 var ProgramLoader;
 var LightSystem;
 var BlendControls;
+var MatrixCommands;
 
 var BackgroundPainter;
 
 var EditorDimmer;
-
-
-//var geometriesBank[primitiveType];
-//var planeGeometry;
-//var geometriesBank[primitiveType];
-//var geometriesBank[primitiveType];
-
-// loads identity matrix
-var worldMatrix = new THREE.Matrix4();
-
 

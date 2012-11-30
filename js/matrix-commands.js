@@ -1,98 +1,102 @@
-var parentObject, rootObject;
-parentObject = 0;
-rootObject = 0;
-var currentObject;
+/*jslint browser: true */
+/*global time */
 
-var matrixStack = [];
+var createMatrixCommands = function (three) {
 
-var pushMatrix = function() {
-  matrixStack.push(worldMatrix);
-  worldMatrix = (new THREE.Matrix4()).copy(worldMatrix);
-}
+    'use strict';
 
-var popMatrix = function() {
-  if (matrixStack.length !== 0) worldMatrix = matrixStack.pop();
-  else worldMatrix.identity();
-}
+    var MatrixCommands = {},
+        parentObject = 0,
+        rootObject = 0,
+        currentObject,
+        matrixStack = [],
+        worldMatrix = new three.Matrix4();
 
-var resetMatrix = function() {
-  worldMatrix.identity();
-}
+    MatrixCommands.getWorldMatrix = function () {
+        return worldMatrix;
+    };
 
-var move = function(a, b, c) {
-  if (arguments.length === 0) {
-    a = Math.sin(time / 500);
-    b = Math.cos(time / 500);
-    c = a;
-  } else if (arguments.length == 1) {
-    b = a;
-    c = a;
-  } else if (arguments.length == 2) {
-    c = 0;
-  }
+    MatrixCommands.resetMatrixStack = function () {
+        matrixStack = [];
+        worldMatrix.identity();
+    };
 
-  /*
-  currentObject = new THREE.Object3D();
-  currentObject.position.x = a;
-  currentObject.position.y = b;
-  currentObject.position.z = c;
-  parentObject.add(currentObject);
-  parentObject = currentObject;
-  */
-  worldMatrix.translate(new THREE.Vector3(a, b, c));
-};
+    window.pushMatrix = MatrixCommands.pushMatrix = function () {
+        matrixStack.push(worldMatrix);
+        worldMatrix = (new three.Matrix4()).copy(worldMatrix);
+    };
 
-function rotate(a, b, c) {
+    window.popMatrix = MatrixCommands.popMatrix = function () {
+        if (matrixStack.length !== 0) {
+            worldMatrix = matrixStack.pop();
+        } else {
+            worldMatrix.identity();
+        }
+    };
 
-  if (arguments.length === 0) {
-    a = time / 1000;
-    b = a;
-    c = a;
-  } else if (arguments.length == 1) {
-    b = a;
-    c = a;
-  } else if (arguments.length == 2) {
-    c = 0;
-  }
+    window.resetMatrix = MatrixCommands.resetMatrix = function () {
+        worldMatrix.identity();
+    };
 
-  /*
-  currentObject = new THREE.Object3D();
-  currentObject.rotation.x = a;
-  currentObject.rotation.y = b;
-  currentObject.rotation.z = c;
-  parentObject.add(currentObject);
-  parentObject = currentObject;
-  */
-  //worldMatrix.setRotationFromEuler(new THREE.Vector3(a,b,c));
-  worldMatrix.rotateX(a).rotateY(b).rotateZ(c);
 
-};
+    window.move = MatrixCommands.move = function (a, b, c) {
+        if (arguments.length === 0) {
+            a = Math.sin(time / 500);
+            b = Math.cos(time / 500);
+            c = a;
+        } else if (arguments.length === 1) {
+            b = a;
+            c = a;
+        } else if (arguments.length === 2) {
+            c = 0;
+        }
 
-var scale = function(a, b, c) {
-  if (arguments.length === 0) {
-    a = 1 + Math.sin(time / 500) / 4;
-    b = a;
-    c = a;
-  } else if (arguments.length == 1) {
-    b = a;
-    c = a;
-  } else if (arguments.length == 2) {
-    c = 1;
-  }
+        worldMatrix.translate(new three.Vector3(a, b, c));
+    };
 
-  // odd things happen setting scale to zero
-  if (a > -0.000000001 && a < 0.000000001) a = 0.000000001;
-  if (b > -0.000000001 && b < 0.000000001) b = 0.000000001;
-  if (c > -0.000000001 && c < 0.000000001) c = 0.000000001;
+    window.rotate = MatrixCommands.rotate = function (a, b, c) {
 
-  /*
-  currentObject = new THREE.Object3D();
-  currentObject.scale.x = a;
-  currentObject.scale.y = b;
-  currentObject.scale.z = c;
-  parentObject.add(currentObject);
-  parentObject = currentObject;
-  */
-  worldMatrix.scale(new THREE.Vector3(a, b, c));
+        if (arguments.length === 0) {
+            a = time / 1000;
+            b = a;
+            c = a;
+        } else if (arguments.length === 1) {
+            b = a;
+            c = a;
+        } else if (arguments.length === 2) {
+            c = 0;
+        }
 
+        worldMatrix.rotateX(a).rotateY(b).rotateZ(c);
+
+    };
+
+    window.scale = MatrixCommands.scale = function (a, b, c) {
+        if (arguments.length === 0) {
+            a = 1 + Math.sin(time / 500) / 4;
+            b = a;
+            c = a;
+        } else if (arguments.length === 1) {
+            b = a;
+            c = a;
+        } else if (arguments.length === 2) {
+            c = 1;
+        }
+
+        // odd things happen setting scale to zero
+        if (a > -0.000000001 && a < 0.000000001) {
+            a = 0.000000001;
+        }
+        if (b > -0.000000001 && b < 0.000000001) {
+            b = 0.000000001;
+        }
+        if (c > -0.000000001 && c < 0.000000001) {
+            c = 0.000000001;
+        }
+
+        worldMatrix.scale(new three.Vector3(a, b, c));
+
+    };
+
+    return MatrixCommands;
 };

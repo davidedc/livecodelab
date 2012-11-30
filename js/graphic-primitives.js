@@ -310,7 +310,7 @@ var createObjectIfNeededAndDressWithCorrectMaterial = function(a,b,c,primitivePr
     }
 
     pooledObject.mesh.matrixAutoUpdate = false;
-    pooledObject.mesh.matrix.copy(worldMatrix);
+    pooledObject.mesh.matrix.copy(MatrixCommands.getWorldMatrix());
     pooledObject.mesh.matrixWorldNeedsUpdate = true;
 
     if (doTheSpinThingy && pooledObject.initialSpinCountdown > 0) {
