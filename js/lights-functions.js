@@ -7,13 +7,10 @@ var createLightSystem = function (threejs, three) {
     'use strict';
 
     var LightSystem = {},
-        previousanimationStyleValue = 0,
-        ambientLightsPool = [],
-        animationStyleValue = 0;
+        ambientLightsPool = [];
 
 
     LightSystem.usedAmbientLights = 0;
-
 
     LightSystem.lightsAreOn = false;
 
@@ -23,11 +20,6 @@ var createLightSystem = function (threejs, three) {
     window.noLights = LightSystem.noLights = function () {
         LightSystem.lightsAreOn = false;
     };
-
-
-    // Used for setting how much blending there is between frames
-    LightSystem.blendAmount = 0;
-
 
     // ambientColor is always white
     // because it needs to reflect what the
@@ -92,53 +84,6 @@ var createLightSystem = function (threejs, three) {
         if (newLightCreated) {
             threejs.scene.add(pooledAmbientLight);
         }
-    };
-
-
-
-    // Just an object to hold the animation style variables
-    LightSystem.animationStyles = {};
-    // These all need to be made global so they can be used by sketches
-    window.normal = LightSystem.animationStyles.normal = 0;
-    window.paintOver = LightSystem.animationStyles.paintOver = 1;
-    window.motionBlur = LightSystem.animationStyles.motionBlur = 2;
-
-    window.animationStyle = LightSystem.animationStyle = function (a) {
-        // turns out when you type normal that the first two letters "no"
-        // are sent as "false"
-        if (a === false || a === undefined) {
-            return;
-        }
-        animationStyleValue = a;
-    };
-
-    LightSystem.animationStyleUpdateIfChanged = function () {
-
-        if (animationStyleValue === previousanimationStyleValue) {
-            // Animation Style hasn't changed so we don't need to do anything
-            return;
-        }
-
-        previousanimationStyleValue = animationStyleValue;
-
-        if (threejs.isWebGLUsed && animationStyleValue === LightSystem.animationStyles.motionBlur) {
-            threejs.effectBlend.uniforms.mixRatio.value = 0.7;
-        } else if (!threejs.isWebGLUsed && animationStyleValue === LightSystem.animationStyles.motionBlur) {
-            LightSystem.blendAmount = 0.6;
-        }
-
-        if (threejs.isWebGLUsed && animationStyleValue === LightSystem.animationStyles.paintOver) {
-            threejs.effectBlend.uniforms.mixRatio.value = 1;
-        } else if (!threejs.isWebGLUsed && animationStyleValue === LightSystem.animationStyles.paintOver) {
-            LightSystem.blendAmount = 1;
-        }
-
-        if (threejs.isWebGLUsed && animationStyleValue === LightSystem.animationStyles.normal) {
-            threejs.effectBlend.uniforms.mixRatio.value = 0;
-        } else if (!threejs.isWebGLUsed && animationStyleValue === LightSystem.animationStyles.normal) {
-            LightSystem.blendAmount = 0;
-        }
-
     };
 
     return LightSystem;
