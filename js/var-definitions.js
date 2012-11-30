@@ -40,6 +40,7 @@ var BigCursor;
 var LiveCodeLab;
 var ProgramLoader;
 var LightSystem;
+var BlendControls;
 
 var BackgroundPainter;
 

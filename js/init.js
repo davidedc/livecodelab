@@ -10,6 +10,7 @@ var startEnvironment = function () {
     ThreeJs = createThreeJs(Detector, THREE, THREEx);
     BigCursor = createBigCursor();
 
+    BlendControls = createBlendControls(ThreeJs);
     LightSystem = createLightSystem(ThreeJs, THREE);
 
     BackgroundPainter = createBackgroundPainter(ThreeJs);

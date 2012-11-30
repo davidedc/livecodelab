@@ -91,7 +91,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs) {
                 objectsUsedInFrameCounts[GEOM_TYPE_SPHERE + initialisingSphereCounts] = 0;
             }
 
-            LightSystem.animationStyle(LightSystem.animationStyles.normal);
+            BlendControls.animationStyle(BlendControls.animationStyles.normal);
             BackgroundPainter.resetGradientStack();
             //bpm(0);
 
@@ -136,7 +136,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs) {
                 time = 0;
             }
             if (anyCodeReactingTobpm) changeUpdatesPerMinuteIfNeeded();
-            LightSystem.animationStyleUpdateIfChanged();
+            BlendControls.animationStyleUpdateIfChanged();
             BackgroundPainter.simpleGradientUpdateIfChanged();
             changeUpdatesPerMinuteIfNeeded();
             frame++;
@@ -172,7 +172,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs) {
 
             // draw the rendering of the scene on the final render
             // clear the final render context
-            threejs.finalRenderWithSceneAndBlendContext.globalAlpha = LightSystem.blendAmount;
+            threejs.finalRenderWithSceneAndBlendContext.globalAlpha = BlendControls.blendAmount;
             threejs.finalRenderWithSceneAndBlendContext.drawImage(threejs.previousRenderForBlending, 0, 0);
 
             threejs.finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
