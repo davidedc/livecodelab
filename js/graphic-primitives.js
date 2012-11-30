@@ -65,6 +65,10 @@ var doFill = true,
   lineWidth = 1;
 
 
+
+var reflectValue = 1;
+var refractValue = 0.98;
+
 // Since you can't change the mesh of an object once it's created, we keep around
 // a pool of objects for each mesh type. There is one pool for lines, one for rectangles, one
 // for boxes. There is one pool for each detail level of spheres (since they are different)
@@ -250,7 +254,7 @@ var createObjectIfNeededAndDressWithCorrectMaterial = function(a,b,c,primitivePr
 			pooledObject.normalMaterial.wireframeLinewidth = currentStrokeSize;
 			pooledObject.normalMaterial.doubleSided = primitiveProperties.doubleSided;
       pooledObject.mesh.material = pooledObject.normalMaterial;
-    } else if (!lightsAreOn) {
+    } else if (!LightSystem.lightsAreOn) {
       if (pooledObject.basicMaterial === undefined) {
         pooledObject.basicMaterial = new THREE.MeshBasicMaterial();
       }
@@ -265,7 +269,7 @@ var createObjectIfNeededAndDressWithCorrectMaterial = function(a,b,c,primitivePr
     // lights are on
     else {
       if (pooledObject.lambertMaterial === undefined) {
-        logger("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+ambientColor+" "+reflectValue+" "+refractValue);
+        logger("creating lambert:"+currentFillColor+" "+currentFillAlpha+" "+LightSystem.ambientColor+" "+reflectValue+" "+refractValue);
         pooledObject.lambertMaterial = new THREE.MeshLambertMaterial();
       }
 			pooledObject.lambertMaterial.color.setHex(colorToBeUsed);
@@ -273,7 +277,7 @@ var createObjectIfNeededAndDressWithCorrectMaterial = function(a,b,c,primitivePr
 			pooledObject.lambertMaterial.wireframe = strokeTime;
 			pooledObject.lambertMaterial.wireframeLinewidth = currentStrokeSize;
 			pooledObject.lambertMaterial.doubleSided = primitiveProperties.doubleSided;
-			pooledObject.lambertMaterial.ambient.setHex(ambientColor);
+			pooledObject.lambertMaterial.ambient.setHex(LightSystem.ambientColor);
 			pooledObject.lambertMaterial.reflectivity = reflectValue;
 			pooledObject.lambertMaterial.refractionRatio = refractValue;
       pooledObject.mesh.material = pooledObject.lambertMaterial;

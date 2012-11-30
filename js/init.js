@@ -10,18 +10,16 @@ var startEnvironment = function () {
     ThreeJs = createThreeJs(Detector, THREE, THREEx);
     BigCursor = createBigCursor();
 
+    LightSystem = createLightSystem(ThreeJs, THREE);
 
     BackgroundPainter = createBackgroundPainter(ThreeJs);
 
     BackgroundPainter.pickRandomDefaultGradient();
 
-    // Thisis the beginnings of the dependency injection section
-    // Preferably this
     var CoffeeCompiler = CoffeeScript;
     var CodeTransformer = createCodeTransformer(CoffeeCompiler, BigCursor);
     editor = createEditor(CodeTransformer);
 
-    //create autocoder here
     autocoder = createAutocoder(editor);
 
     LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs);

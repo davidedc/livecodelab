@@ -39,6 +39,7 @@ var ThreeJs;
 var BigCursor;
 var LiveCodeLab;
 var ProgramLoader;
+var LightSystem;
 
 var BackgroundPainter;
 
