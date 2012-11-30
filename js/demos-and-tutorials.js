@@ -1,5 +1,5 @@
 /*jslint browser: true, nomen: true, devel: true */
-/*global $, Detector, undimEditor, doTheSpinThingy: true, animationStyle, normal, animationStyleUpdateIfChanged */
+/*global $, Detector, BlendControls, EditorDimmer, doTheSpinThingy: true */
 
 var createProgramLoader = function (texteditor, bigcursor, livecodelab, threejs) {
 
@@ -629,9 +629,9 @@ var createProgramLoader = function (texteditor, bigcursor, livecodelab, threejs)
         // of the previous code.
         // So basically we draw an empty frame.
         // a) make sure that animationStyle
-        animationStyle(normal);
+        BlendControls.animationStyle(BlendControls.animationStyles.normal);
         // b) apply the potentially new animationStyle
-        animationStyleUpdateIfChanged();
+        BlendControls.animationStyleUpdateIfChanged();
         // combing the display list now means that all items in the
         // display list are set to hidden because no draw() code has been ran
         // to put items in it.
