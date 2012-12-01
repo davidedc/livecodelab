@@ -42,6 +42,7 @@ var ProgramLoader;
 var LightSystem;
 var BlendControls;
 var MatrixCommands;
+var TimeKeeper;
 
 var BackgroundPainter;
 

@@ -13,17 +13,15 @@ var frame = 0;
 // we need to keep this so we can put the ticks next to doOnce once that doOnce
 // block has run.
 var doOnceOccurrencesLineNumbers = [];
-var time;
 
 // if there isn't any code using the bpm setting then we can save a timer, so
 // worth tracking with this variable
 var anyCodeReactingTobpm;
 
-var createLiveCodeLab = function (CodeTransformer, threejs) {
+var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper) {
 
     var LiveCodeLab = {},
         loopInterval,
-        timeAtStart,
         lastStableProgram;
 
     LiveCodeLab.drawFunction = "";
@@ -63,12 +61,10 @@ var createLiveCodeLab = function (CodeTransformer, threejs) {
 
 
         if (LiveCodeLab.drawFunction !== "") {
-            var d = new Date();
             if (frame === 0) {
-                timeAtStart = d.getTime();
-                time = 0;
+                timekeeper.resetTime();
             } else {
-                time = d.getTime() - timeAtStart;
+                timekeeper.updateTime();
             }
             doOnceOccurrencesLineNumbers = [];
             anyCodeReactingTobpm = false;
@@ -131,8 +127,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs) {
             // then we have to catch that case here
             // after the program has executed
             if (frame === 0) {
-                timeAtStart = d.getTime();
-                time = 0;
+                timekeeper.resetTime();
             }
             if (anyCodeReactingTobpm) changeUpdatesPerMinuteIfNeeded();
             BlendControls.animationStyleUpdateIfChanged();
