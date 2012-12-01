@@ -68,6 +68,7 @@ module.exports = function (grunt) {
                     'js/demos-and-tutorials.js',
                     'js/autocoder/autocode.js',
                     'js/text-dimming.js',
+                    'js/time-keeper.js',
                     'js/blend-style.js',
                     'js/lights-functions.js',
                     'js/editor/mousewheel.js',
