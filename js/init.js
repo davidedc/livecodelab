@@ -11,6 +11,7 @@ var startEnvironment = function () {
 
     ThreeJs = createThreeJs(Detector, THREE, THREEx);
     BigCursor = createBigCursor();
+    TimeKeeper = createTimeKeeper();
 
     BlendControls = createBlendControls(ThreeJs);
     LightSystem = createLightSystem(ThreeJs, THREE);
@@ -25,7 +26,7 @@ var startEnvironment = function () {
 
     autocoder = createAutocoder(editor);
 
-    LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs);
+    LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper);
 
     ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs);
 
