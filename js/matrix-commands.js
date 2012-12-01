@@ -1,7 +1,7 @@
 /*jslint browser: true */
-/*global time */
+/*global */
 
-var createMatrixCommands = function (three) {
+var createMatrixCommands = function (three, timekeeper) {
 
     'use strict';
 
@@ -41,8 +41,8 @@ var createMatrixCommands = function (three) {
 
     window.move = MatrixCommands.move = function (a, b, c) {
         if (arguments.length === 0) {
-            a = Math.sin(time / 500);
-            b = Math.cos(time / 500);
+            a = Math.sin(timekeeper.getTime() / 500);
+            b = Math.cos(timekeeper.getTime() / 500);
             c = a;
         } else if (arguments.length === 1) {
             b = a;
@@ -57,7 +57,7 @@ var createMatrixCommands = function (three) {
     window.rotate = MatrixCommands.rotate = function (a, b, c) {
 
         if (arguments.length === 0) {
-            a = time / 1000;
+            a = timekeeper.getTime() / 1000;
             b = a;
             c = a;
         } else if (arguments.length === 1) {
@@ -73,7 +73,7 @@ var createMatrixCommands = function (three) {
 
     window.scale = MatrixCommands.scale = function (a, b, c) {
         if (arguments.length === 0) {
-            a = 1 + Math.sin(time / 500) / 4;
+            a = 1 + Math.sin(timekeeper.getTime() / 500) / 4;
             b = a;
             c = a;
         } else if (arguments.length === 1) {
