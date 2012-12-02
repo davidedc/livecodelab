@@ -1,39 +1,43 @@
-/*jslint browser: true, devel: true */
-/*global $ */
+/*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
+/*global $, logger, resetTheSpinThingy: true, autocoder, checkErrorAndReport, LiveCodeLab, doOnceOccurrencesLineNumbers */
 
 
 var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
 
-    var CodeTransformer = {};
+    'use strict';
 
-    var programHasBasicError = false;
-    var reasonOfBasicError = "";
+    var CodeTransformer = {},
+        programHasBasicError = false,
+        reasonOfBasicError = "",
+        compiledOutput,
+        listOfPossibleFunctions;
+
     CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
 
     CodeTransformer.compiler = CoffeeCompiler;
 
-    var listOfPossibleFunctions = [
+    listOfPossibleFunctions = [
         "function",
         "alert",
     // Geometry
-    "rect",
+        "rect",
         "line",
         "box",
         "ball",
         "ballDetail",
         "peg",
     // Matrix manipulation
-    "rotate",
+        "rotate",
         "move",
         "scale",
         "pushMatrix",
         "popMatrix",
         "resetMatrix",
     // Sound
-    "bpm",
+        "bpm",
         "play",
     // Color and drawing styles
-    "fill",
+        "fill",
         "noFill",
         "stroke",
         "noStroke",
@@ -49,7 +53,7 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
         "ambientLight",
         "pointLight",
     // Calculations
-    "abs",
+        "abs",
         "ceil",
         "constrain",
         "dist",
@@ -67,7 +71,7 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
         "sq",
         "sqrt",
     // Trigonometry
-    "acos",
+        "acos",
         "asin",
         "atan",
         "atan2",
@@ -77,7 +81,7 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
         "sin",
         "tan",
     // Random
-    "random",
+        "random",
         "randomSeed",
         "noise",
         "noiseDetail",
@@ -89,7 +93,20 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
 
         try {
 
-            var editorContent = editor.getValue();
+            var editorContent = editor.getValue(),
+                copyOfEditorContent,
+                programIsMangled = false,
+                programContainsStringsOrComments = false,
+                characterBeingExamined,
+                nextCharacterBeingExamined,
+                aposCount,
+                quoteCount,
+                roundBrackCount,
+                curlyBrackCount,
+                squareBrackCount,
+                elaboratedSource,
+                elaboratedSourceByLine,
+                iteratingOverSource;
 
             if (editorContent !== '' && BigCursor.show) {
                 BigCursor.shrinkFakeText();
@@ -124,11 +141,6 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
 
             }
 
-            var copyOfEditorContent;
-            var programIsMangled = false;
-            var programContainsStringsOrComments = false;
-            var characterBeingExamined;
-            var nextCharacterBeingExamined;
 
             // doOnce statements which have a tick mark next to them
             // are not run. This is achieved by replacing the line with
@@ -160,8 +172,9 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
             while (copyOfEditorContent.length) {
                 characterBeingExamined = copyOfEditorContent.charAt(0);
                 nextCharacterBeingExamined = copyOfEditorContent.charAt(1);
-                if (characterBeingExamined === "'" || characterBeingExamined === '"' || (characterBeingExamined === "/" && (
-                nextCharacterBeingExamined === "*" || nextCharacterBeingExamined === "/"))) {
+                if (characterBeingExamined === "'" || characterBeingExamined === '"' || (characterBeingExamined === "/" &&
+                        (nextCharacterBeingExamined === "*" || nextCharacterBeingExamined === "/"))
+                        ) {
                     programContainsStringsOrComments = true;
                     //alert('program contains strings or comments');
                     break;
@@ -190,28 +203,29 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
                 // is a string, not half a string with a quote in a comment
                 // get rid of the comments for good.
                 editorContent = editorContent.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')|(\/\/[^\n]*\n)|(\/\*(?:(?!\*\/)(?:.|\n))*\*\/)/g, function (all, quoted, aposed, singleComment, comment) {
+                    var numberOfLinesInMultilineComment,
+                        rebuiltNewLines,
+                        cycleToRebuildNewLines;
                     // strings are kept as they are
                     if (quoted) {
                         return quoted;
-                    } else if (aposed) {
+                    }
+                    if (aposed) {
                         return aposed;
-                    } else if (singleComment) {
+                    }
+                    if (singleComment) {
                         // preserve the line because
                         // the doOnce mechanism needs to retrieve
                         // the line where it was
                         return "\n";
                     }
                     // eliminate multiline comments preserving the lines
-                    else {
-                        var numberOfLinesInMultilineComment = comment.split("\n").length - 1;
-                        //alert('rebuilding multilines: '+ numberOfLinesInMultilineComment);
-                        var rebuiltNewLines = '';
-                        for (var cycleToRebuildNewLines = 0; cycleToRebuildNewLines < numberOfLinesInMultilineComment; cycleToRebuildNewLines++) {
-                            rebuiltNewLines = rebuiltNewLines + "\n";
-                        }
-                        //alert('rebuilding multilines: '+ rebuiltNewLines);
-                        return rebuiltNewLines;
+                    numberOfLinesInMultilineComment = comment.split("\n").length - 1;
+                    rebuiltNewLines = '';
+                    for (cycleToRebuildNewLines = 0; cycleToRebuildNewLines < numberOfLinesInMultilineComment; cycleToRebuildNewLines += 1) {
+                        rebuiltNewLines = rebuiltNewLines + "\n";
                     }
+                    return rebuiltNewLines;
                 });
 
                 // ok now in the version we use for syntax checking we delete all the strings
@@ -221,11 +235,11 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
                 copyOfEditorContent = editorContent;
             }
 
-            var aposCount = 0;
-            var quoteCount = 0;
-            var roundBrackCount = 0;
-            var curlyBrackCount = 0;
-            var squareBrackCount = 0;
+            aposCount = 0;
+            quoteCount = 0;
+            roundBrackCount = 0;
+            curlyBrackCount = 0;
+            squareBrackCount = 0;
 
             while (copyOfEditorContent.length) {
                 characterBeingExamined = copyOfEditorContent.charAt(0);
@@ -245,8 +259,7 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
             }
 
             // according to jsperf, the fastest way to check if number is even/odd
-            if (
-            aposCount & 1 || quoteCount & 1 || roundBrackCount & 1 || curlyBrackCount & 1 || squareBrackCount & 1) {
+            if (aposCount & 1 || quoteCount & 1 || roundBrackCount & 1 || curlyBrackCount & 1 || squareBrackCount & 1) {
                 if (autocoder.active) {
                     editor.undo();
                     //alert("did an undo");
@@ -258,11 +271,21 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
                 //alert("p:" + $('#dangerSignText').css('color'));
                 $('#dangerSignText').css('color', 'red');
 
-                if (aposCount & 1) reasonOfBasicError = "Missing '";
-                if (quoteCount & 1) reasonOfBasicError = 'Missing "';
-                if (roundBrackCount & 1) reasonOfBasicError = "Unbalanced ()";
-                if (curlyBrackCount & 1) reasonOfBasicError = "Unbalanced {}";
-                if (squareBrackCount & 1) reasonOfBasicError = "Unbalanced []";
+                if (aposCount & 1) {
+                    reasonOfBasicError = "Missing '";
+                }
+                if (quoteCount & 1) {
+                    reasonOfBasicError = 'Missing "';
+                }
+                if (roundBrackCount & 1) {
+                    reasonOfBasicError = "Unbalanced ()";
+                }
+                if (curlyBrackCount & 1) {
+                    reasonOfBasicError = "Unbalanced {}";
+                }
+                if (squareBrackCount & 1) {
+                    reasonOfBasicError = "Unbalanced []";
+                }
 
                 $('#errorMessageText').text(reasonOfBasicError);
 
@@ -271,7 +294,7 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
             }
 
 
-            var elaboratedSource = editorContent;
+            elaboratedSource = editorContent;
 
             // we make it so some common command forms can be used in postfix notation, e.g.
             //   60 bpm
@@ -342,9 +365,9 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
             //alert('soon before replacing doOnces'+elaboratedSource);
             if (elaboratedSource.indexOf('doOnce') > -1) {
                 //alert("a doOnce is potentially executable");
-                var elaboratedSourceByLine = elaboratedSource.split("\n");
+                elaboratedSourceByLine = elaboratedSource.split("\n");
                 //alert('splitting: ' + elaboratedSourceByLine.length );
-                for (var iteratingOverSource = 0; iteratingOverSource < elaboratedSourceByLine.length; iteratingOverSource++) {
+                for (iteratingOverSource = 0; iteratingOverSource < elaboratedSourceByLine.length; iteratingOverSource += 1) {
                     //alert('iterating: ' + iteratingOverSource );
 
                     // add the line number tracing instruction to inline case
@@ -381,8 +404,7 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
             // why should he/she call it?
             // TODO: call draw() something else that the user is not
             // likely to use by mistake and take away this check.
-            if (
-            elaboratedSource.match(/[\s\+\;]+draw\s*\(/) || false) {
+            if (elaboratedSource.match(/[\s\+\;]+draw\s*\(/) || false) {
                 if (autocoder.active) {
                     editor.undo();
                     //alert("did an undo");
@@ -484,9 +506,6 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
             elaboratedSource = elaboratedSource.replace(/(\s);(else.*\s*);/g, "$1$2");
 
 
-            //alert(elaboratedSource );
-
-            var compiledOutput;
             compiledOutput = CodeTransformer.compiler.compile(elaboratedSource, {
                 bare: "on"
             });
@@ -514,7 +533,6 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
             declaredMethods.push(mc[1]);
             copyOfCompiledOutput = RegExp.rightContext;
         }
-        //alert("found declared methods " + declaredMethods.length);
 
         var usedMethods = [];
         var md;
@@ -523,26 +541,24 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
             usedMethods.push(md[1]);
             copyOfCompiledOutput = RegExp.rightContext;
         }
-        //alert("found used methods " + usedMethods.length);
         var error = false;
-        for (var scanningUsedMethods = 0; scanningUsedMethods < usedMethods.length; scanningUsedMethods++) {
-            if (listOfPossibleFunctions.indexOf(usedMethods[scanningUsedMethods]) != -1) {
+        var scanningUsedMethods;
+        for (scanningUsedMethods = 0; scanningUsedMethods < usedMethods.length; scanningUsedMethods += 1) {
+            if (listOfPossibleFunctions.indexOf(usedMethods[scanningUsedMethods]) !== -1) {
                 continue;
             }
             if (declaredMethods.length === 0) {
                 error = true;
-                //alert("used method not declared: " + usedMethods[scanningUsedMethods]);
                 $('#dangerSignText').css('color', 'red');
                 $('#errorMessageText').text(usedMethods[scanningUsedMethods] + " doesn't exist");
                 return;
             }
-            for (var scanningDeclaredMethods = 0; scanningDeclaredMethods < declaredMethods.length; scanningDeclaredMethods++) {
-                //alert ("comparing >" + usedMethods[scanningUsedMethods]  + "< , >" + declaredMethods[scanningDeclaredMethods] +"<");
+            var scanningDeclaredMethods;
+            for (scanningDeclaredMethods = 0; scanningDeclaredMethods < declaredMethods.length; scanningDeclaredMethods += 1) {
                 if (usedMethods[scanningUsedMethods] === declaredMethods[scanningDeclaredMethods]) {
                     break;
-                } else if (scanningDeclaredMethods == declaredMethods.length - 1) {
+                } else if (scanningDeclaredMethods === declaredMethods.length - 1) {
                     error = true;
-                    //alert("used method not declared: " + usedMethods[scanningUsedMethods]);
                     $('#dangerSignText').css('color', 'red');
                     $('#errorMessageText').text(usedMethods[scanningUsedMethods] + " doesn't exist");
                     return;
@@ -582,7 +598,14 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
 
     CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun = function (editor) {
 
-        if (doOnceOccurrencesLineNumbers.length === 0) return;
+        var elaboratedSource,
+            elaboratedSourceByLine,
+            iteratingOverSource,
+            cursorPositionBeforeAddingCheckMark;
+
+        if (doOnceOccurrencesLineNumbers.length === 0) {
+            return;
+        }
 
         // if we are here, the following has happened: someone has added an element
         // to the doOnceOccurrencesLineNumbers array. This can only have happened
@@ -594,22 +617,18 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
         // when we start the program we could have more than one doOnce that has
         // to run.
 
-        //alert("a doOnce has been ran");
-        var elaboratedSource = editor.getValue();
+        elaboratedSource = editor.getValue();
 
         // we know the line number of each doOnce block that has been run
         // so we go there and add a tick next to each doOnce to indicate
         // that it has been run.
-        var elaboratedSourceByLine = elaboratedSource.split("\n");
-        //alert('splitting: ' + elaboratedSourceByLine.length );
-        for (var iteratingOverSource = 0; iteratingOverSource < doOnceOccurrencesLineNumbers.length; iteratingOverSource++) {
-            //alert('doOnce run at line number: ' + doOnceOccurrencesLineNumbers[iteratingOverSource] );
+        elaboratedSourceByLine = elaboratedSource.split("\n");
+        for (iteratingOverSource = 0; iteratingOverSource < doOnceOccurrencesLineNumbers.length; iteratingOverSource += 1) {
             elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]] = elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*.*)$/gm, "$1\u2713doOnce$2");
-            //alert('...after the fix: ' + elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]] );
         }
         elaboratedSource = elaboratedSourceByLine.join("\n");
 
-        var cursorPositionBeforeAddingCheckMark = editor.getCursor();
+        cursorPositionBeforeAddingCheckMark = editor.getCursor();
         cursorPositionBeforeAddingCheckMark.ch = cursorPositionBeforeAddingCheckMark.ch + 1;
 
         editor.setValue(elaboratedSource);

@@ -7,22 +7,22 @@ var startEnvironment = function () {
 
     'use strict';
 
-    MatrixCommands = createMatrixCommands(THREE);
 
     ThreeJs = createThreeJs(Detector, THREE, THREEx);
     BigCursor = createBigCursor();
     TimeKeeper = createTimeKeeper();
 
+    MatrixCommands = createMatrixCommands(THREE, TimeKeeper);
+
     BlendControls = createBlendControls(ThreeJs);
-    LightSystem = createLightSystem(ThreeJs, THREE);
+    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands);
 
     BackgroundPainter = createBackgroundPainter(ThreeJs);
 
     BackgroundPainter.pickRandomDefaultGradient();
 
-    var CoffeeCompiler = CoffeeScript;
-    var CodeTransformer = createCodeTransformer(CoffeeCompiler, BigCursor);
-    editor = createEditor(CodeTransformer);
+    CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor);
+    editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer);
 
     autocoder = createAutocoder(editor);
 
@@ -82,7 +82,7 @@ var startEnvironment = function () {
     EditorDimmer.dimCodeOn = false;
     EditorDimmer.toggleDimCode();
 
-}
+};
 
 $(document).ready(function () {
     logger("document ready");
