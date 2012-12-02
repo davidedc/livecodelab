@@ -21,9 +21,8 @@ var startEnvironment = function () {
 
     BackgroundPainter.pickRandomDefaultGradient();
 
-    var CoffeeCompiler = CoffeeScript;
-    var CodeTransformer = createCodeTransformer(CoffeeCompiler, BigCursor);
-    editor = createEditor(CodeTransformer);
+    CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor);
+    editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer);
 
     autocoder = createAutocoder(editor);
 
@@ -83,7 +82,7 @@ var startEnvironment = function () {
     EditorDimmer.dimCodeOn = false;
     EditorDimmer.toggleDimCode();
 
-}
+};
 
 $(document).ready(function () {
     logger("document ready");
