@@ -1,5 +1,5 @@
-/*jslint browser: true, devel: true, maxerr: 200 */
-/*global $, requestAnimationFrame, MatrixCommands, soundLoops: true, updatesPerMinute: true, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, checkErrorAndReport, changeUpdatesPerMinuteIfNeeded, stats */
+/*jslint browser: true */
+/*global $, MatrixCommands, soundLoops: true, updatesPerMinute: true, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, checkErrorAndReport, changeUpdatesPerMinuteIfNeeded, stats */
 
 
 var frame = 0;
@@ -39,7 +39,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
         // I rather prefer to have a slower framerate but steadier.
         if (LiveCodeLab.useRequestAnimationFrame) {
             if (LiveCodeLab.wantedFramesPerSecond === -1) {
-                requestAnimationFrame(LiveCodeLab.animate);
+                window.requestAnimationFrame(LiveCodeLab.animate);
             } else {
                 if (loopInterval === undefined) {
                     loopInterval = setInterval("window.requestAnimationFrame(LiveCodeLab.animate)", 1000 / LiveCodeLab.wantedFramesPerSecond);
