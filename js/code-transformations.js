@@ -1,5 +1,5 @@
 /*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
-/*global $, logger, autocoder, checkErrorAndReport, LiveCodeLab, doOnceOccurrencesLineNumbers */
+/*global $, logger, autocoder, checkErrorAndReport, LiveCodeLab */
 
 
 var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
@@ -11,6 +11,7 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
         reasonOfBasicError = "",
         compiledOutput,
         listOfPossibleFunctions;
+
 
     CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
 
@@ -86,7 +87,20 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
         "noise",
         "noiseDetail",
         "noiseSeed",
+    // do once
+        "addDoOnce",
         ""];
+
+
+    // this array is used to keep track of all the instances of "doOnce" in the code
+    // we need to keep this so we can put the ticks next to doOnce once that doOnce
+    // block has run.
+    CodeTransformer.doOnceOccurrencesLineNumbers = [];
+
+    // This is the function called from the compiled code to add the doOnce line
+    window.addDoOnce = CodeTransformer.addDoOnce = function (lineNum) {
+        CodeTransformer.doOnceOccurrencesLineNumbers.push(lineNum);
+    };
 
 
     CodeTransformer.registerCode = function (editor) {
@@ -120,8 +134,6 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
                 $("#formCode").animate({
                     opacity: 0
                 }, "fast");
-                //$("#formCode").css('opacity',0);
-                //setTimeout('if (editor.getValue() !== "") $("#formCode").css("opacity",0);',10);
                 logger('unshrinking');
                 $("#justForFakeCursor").show();
                 $("#toMove").show();
@@ -262,13 +274,10 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
             if (aposCount & 1 || quoteCount & 1 || roundBrackCount & 1 || curlyBrackCount & 1 || squareBrackCount & 1) {
                 if (autocoder.active) {
                     editor.undo();
-                    //alert("did an undo");
                     return;
                 }
 
                 programHasBasicError = true;
-                //alert("basic error");
-                //alert("p:" + $('#dangerSignText').css('color'));
                 $('#dangerSignText').css('color', 'red');
 
                 if (aposCount & 1) {
@@ -351,10 +360,10 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
             //
             // it becomes:
             //      (1+0).times ->
-            //        doOnceOccurrencesLineNumbers.push(1); background 255
+            //        addDoOnce(1); background 255
             //        fill 255,0,0
             //
-            //      ;doOnceOccurrencesLineNumbers.push(4);
+            //      ;addDoOnce(4);
             //      (1+0).times -> ball
             //    
             // So: if there is at least one doOnce
@@ -362,7 +371,6 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
             //   add line numbers tracing instructions so we can track which ones have been run
             //   regroup the lines into a single string again
             //
-            //alert('soon before replacing doOnces'+elaboratedSource);
             if (elaboratedSource.indexOf('doOnce') > -1) {
                 //alert("a doOnce is potentially executable");
                 elaboratedSourceByLine = elaboratedSource.split("\n");
@@ -371,13 +379,13 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
                     //alert('iterating: ' + iteratingOverSource );
 
                     // add the line number tracing instruction to inline case
-                    elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/gm, "$1;doOnceOccurrencesLineNumbers.push(" + iteratingOverSource + "); (1+0).times -> $2");
+                    elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/gm, "$1;addDoOnce(" + iteratingOverSource + "); (1+0).times -> $2");
 
                     // add the line number tracing instruction to multiline case
                     if (elaboratedSourceByLine[iteratingOverSource].match(/^(\s*)doOnce[ ]*\->[ ]*$/gm)) {
                         //alert('doOnce multiline!');
                         elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*$/gm, "$1(1+0).times ->");
-                        elaboratedSourceByLine[iteratingOverSource + 1] = elaboratedSourceByLine[iteratingOverSource + 1].replace(/^(\s*)(.+)$/gm, "$1;doOnceOccurrencesLineNumbers.push(" + iteratingOverSource + "); $2");
+                        elaboratedSourceByLine[iteratingOverSource + 1] = elaboratedSourceByLine[iteratingOverSource + 1].replace(/^(\s*)(.+)$/gm, "$1;addDoOnce(" + iteratingOverSource + "); $2");
                     }
 
                 }
@@ -603,7 +611,7 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
             iteratingOverSource,
             cursorPositionBeforeAddingCheckMark;
 
-        if (doOnceOccurrencesLineNumbers.length === 0) {
+        if (CodeTransformer.doOnceOccurrencesLineNumbers.length === 0) {
             return;
         }
 
@@ -623,8 +631,8 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
         // so we go there and add a tick next to each doOnce to indicate
         // that it has been run.
         elaboratedSourceByLine = elaboratedSource.split("\n");
-        for (iteratingOverSource = 0; iteratingOverSource < doOnceOccurrencesLineNumbers.length; iteratingOverSource += 1) {
-            elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]] = elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*.*)$/gm, "$1\u2713doOnce$2");
+        for (iteratingOverSource = 0; iteratingOverSource < CodeTransformer.doOnceOccurrencesLineNumbers.length; iteratingOverSource += 1) {
+            elaboratedSourceByLine[CodeTransformer.doOnceOccurrencesLineNumbers[iteratingOverSource]] = elaboratedSourceByLine[CodeTransformer.doOnceOccurrencesLineNumbers[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*.*)$/gm, "$1\u2713doOnce$2");
         }
         elaboratedSource = elaboratedSourceByLine.join("\n");
 

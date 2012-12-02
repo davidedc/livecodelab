@@ -3,10 +3,7 @@
 
 
 var frame = 0;
-// this array is used to keep track of all the instances of "doOnce" in the code
-// we need to keep this so we can put the ticks next to doOnce once that doOnce
-// block has run.
-var doOnceOccurrencesLineNumbers = [];
+
 
 // if there isn't any code using the bpm setting then we can save a timer, so
 // worth tracking with this variable
@@ -66,7 +63,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
             } else {
                 timekeeper.updateTime();
             }
-            doOnceOccurrencesLineNumbers = [];
+            CodeTransformer.doOnceOccurrencesLineNumbers = [];
             anyCodeReactingTobpm = false;
             graphics.fill(0xFFFFFFFF);
             graphics.stroke(0xFF000000);
