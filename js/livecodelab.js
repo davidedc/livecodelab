@@ -1,12 +1,6 @@
-/*jslint browser: true, devel: true */
-/*global $ */
+/*jslint browser: true, devel: true, maxerr: 200 */
+/*global $, requestAnimationFrame, MatrixCommands, soundLoops: true, fill, stroke, currentStrokeSize: true, defaultNormalFill: true, defaultNormalStroke: true, ballDetLevel: true, updatesPerMinute: true, LightSystem, objectsUsedInFrameCounts, GEOM_TYPE_LINE, GEOM_TYPE_RECT, GEOM_TYPE_BOX, GEOM_TYPE_CYLINDER, GEOM_TYPE_SPHERE, maximumBallDetail, minimumBallDetail, autocoder, BlendControls, BackgroundPainter, editor, checkErrorAndReport, changeUpdatesPerMinuteIfNeeded, stats */
 
-// if you put to -1 then it means that
-// requestAnimationFrame will try to go as fast as it
-// can.
-var wantedFramesPerSecond = -1;
-
-var useRequestAnimationFrame = true;
 
 var frame = 0;
 // this array is used to keep track of all the instances of "doOnce" in the code
@@ -20,9 +14,17 @@ var anyCodeReactingTobpm;
 
 var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper) {
 
+    'use strict';
+
     var LiveCodeLab = {},
         loopInterval,
         lastStableProgram;
+
+    // if you put to -1 then it means that
+    // requestAnimationFrame will try to go as fast as it
+    // can.
+    LiveCodeLab.wantedFramesPerSecond = -1;
+    LiveCodeLab.useRequestAnimationFrame = true;
 
     LiveCodeLab.drawFunction = "";
 
@@ -38,18 +40,16 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper) {
         // - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
         // requestAnimationFrame seems to only do 60 fps, which in my case is too much,
         // I rather prefer to have a slower framerate but steadier.
-        if (useRequestAnimationFrame) {
-            if (wantedFramesPerSecond === -1) {
+        if (LiveCodeLab.useRequestAnimationFrame) {
+            if (LiveCodeLab.wantedFramesPerSecond === -1) {
                 requestAnimationFrame(LiveCodeLab.animate);
             } else {
-                //setTimeout("window.requestAnimationFrame(LiveCodeLab.animate)",
-                //       1000 / wantedFramesPerSecond);
                 if (loopInterval === undefined) {
-                    loopInterval = setInterval("window.requestAnimationFrame(LiveCodeLab.animate)", 1000 / wantedFramesPerSecond);
+                    loopInterval = setInterval("window.requestAnimationFrame(LiveCodeLab.animate)", 1000 / LiveCodeLab.wantedFramesPerSecond);
                 }
             }
         } else {
-            setTimeout(LiveCodeLab.animate, 1000 / wantedFramesPerSecond);
+            setTimeout(LiveCodeLab.animate, 1000 / LiveCodeLab.wantedFramesPerSecond);
         }
 
         MatrixCommands.resetMatrixStack();
@@ -75,20 +75,20 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper) {
             defaultNormalStroke = true;
             ballDetLevel = threejs.ballDefaultDetLevel;
             updatesPerMinute = 60 * 4;
-            noLights();
+            LightSystem.noLights();
 
             LightSystem.usedAmbientLights = 0;
             objectsUsedInFrameCounts[GEOM_TYPE_LINE] = 0;
             objectsUsedInFrameCounts[GEOM_TYPE_RECT] = 0;
             objectsUsedInFrameCounts[GEOM_TYPE_BOX] = 0;
             objectsUsedInFrameCounts[GEOM_TYPE_CYLINDER] = 0;
-            for (var initialisingSphereCounts = 0; initialisingSphereCounts < (maximumBallDetail - minimumBallDetail + 1); initialisingSphereCounts++) {
+            var initialisingSphereCounts;
+            for (initialisingSphereCounts = 0; initialisingSphereCounts < (maximumBallDetail - minimumBallDetail + 1); initialisingSphereCounts += 1) {
                 objectsUsedInFrameCounts[GEOM_TYPE_SPHERE + initialisingSphereCounts] = 0;
             }
 
             BlendControls.animationStyle(BlendControls.animationStyles.normal);
             BackgroundPainter.resetGradientStack();
-            //bpm(0);
 
             // Now here there is another try/catch check when the draw function is ran.
             // The reason is that there might be references to uninitialised or inexistent
@@ -108,7 +108,6 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper) {
                 // situation we have in livecodelab
                 if (autocoder.active) {
                     editor.undo();
-                    //alert("did an undo");
                     return;
                 }
 
@@ -116,7 +115,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper) {
                 checkErrorAndReport(e);
 
                 // mark the program as flawed and register the previous stable one.
-                CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;                
+                CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
                 LiveCodeLab.drawFunction = lastStableProgram;
 
                 return;
@@ -129,15 +128,16 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper) {
             if (frame === 0) {
                 timekeeper.resetTime();
             }
-            if (anyCodeReactingTobpm) changeUpdatesPerMinuteIfNeeded();
+            if (anyCodeReactingTobpm) {
+                changeUpdatesPerMinuteIfNeeded();
+            }
             BlendControls.animationStyleUpdateIfChanged();
             BackgroundPainter.simpleGradientUpdateIfChanged();
             changeUpdatesPerMinuteIfNeeded();
-            frame++;
-            CodeTransformer.consecutiveFramesWithoutRunTimeError++;
-            if (CodeTransformer.consecutiveFramesWithoutRunTimeError == 5) {
+            frame += 1;
+            CodeTransformer.consecutiveFramesWithoutRunTimeError += 1;
+            if (CodeTransformer.consecutiveFramesWithoutRunTimeError === 5) {
                 lastStableProgram = LiveCodeLab.drawFunction;
-                //chromeHackUncaughtReferenceName = '';
             }
         } // if typeof draw
 
@@ -203,25 +203,33 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper) {
     //       it could be the case that this mechanism is not needed anymore.
 
     LiveCodeLab.combDisplayList = function () {
+        var i,
+            sceneObject,
+            primitiveType;
         // scan all the objects in the display list
-        for (var i = 0; i < threejs.scene.objects.length; ++i) {
-            var sceneObject = threejs.scene.objects[i];
+        for (i = 0; i < threejs.scene.objects.length; i += 1) {
+            sceneObject = threejs.scene.objects[i];
 
             // check the type of object. Each type has one pool. Go through each object in the
             // pool and set to visible the number of used objects in this frame, set the
             // others to hidden.
             // Only tiny exception is that the sphere has one pool for each detail level.
-            var primitiveType;
-            if (sceneObject.isLine) primitiveType = GEOM_TYPE_LINE;
-            else if (sceneObject.isRectangle) primitiveType = GEOM_TYPE_RECT;
-            else if (sceneObject.isBox) primitiveType = GEOM_TYPE_BOX;
-            else if (sceneObject.isCylinder) primitiveType = GEOM_TYPE_CYLINDER;
-            else if (sceneObject.isSphere !== 0) primitiveType = GEOM_TYPE_SPHERE + sceneObject.isSphere - minimumBallDetail;
+            if (sceneObject.isLine) {
+                primitiveType = GEOM_TYPE_LINE;
+            } else if (sceneObject.isRectangle) {
+                primitiveType = GEOM_TYPE_RECT;
+            } else if (sceneObject.isBox) {
+                primitiveType = GEOM_TYPE_BOX;
+            } else if (sceneObject.isCylinder) {
+                primitiveType = GEOM_TYPE_CYLINDER;
+            } else if (sceneObject.isSphere !== 0) {
+                primitiveType = GEOM_TYPE_SPHERE + sceneObject.isSphere - minimumBallDetail;
+            }
 
             // set the first "used*****" objects to visible...
             if (objectsUsedInFrameCounts[primitiveType] > 0) {
                 sceneObject.visible = true;
-                objectsUsedInFrameCounts[primitiveType]--;
+                objectsUsedInFrameCounts[primitiveType] -= 1;
             } else {
                 // ... and the others to invisible
                 sceneObject.visible = false;
@@ -230,7 +238,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper) {
             if (sceneObject.isAmbientLight) {
                 if (LightSystem.usedAmbientLights > 0) {
                     sceneObject.visible = true;
-                    LightSystem.usedAmbientLights--;
+                    LightSystem.usedAmbientLights -= 1;
                 } else {
                     sceneObject.visible = false;
                 }
@@ -240,5 +248,4 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper) {
 
     return LiveCodeLab;
 
-}
-
+};
