@@ -7,14 +7,15 @@ var startEnvironment = function () {
 
     'use strict';
 
-    MatrixCommands = createMatrixCommands(THREE);
 
     ThreeJs = createThreeJs(Detector, THREE, THREEx);
     BigCursor = createBigCursor();
     TimeKeeper = createTimeKeeper();
 
+    MatrixCommands = createMatrixCommands(THREE, TimeKeeper);
+
     BlendControls = createBlendControls(ThreeJs);
-    LightSystem = createLightSystem(ThreeJs, THREE);
+    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands);
 
     BackgroundPainter = createBackgroundPainter(ThreeJs);
 
