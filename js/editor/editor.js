@@ -1,8 +1,11 @@
 /*jslint browser: true, devel: true */
-/*global CodeMirror, EditorDimmer */
+/*global EditorDimmer, CodeTransformer */
 
-var createEditor = function (CodeTransformer) {
-    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+var createEditor = function (codemirror, codetransformer) {
+
+    'use strict';
+
+    var editor = codemirror.fromTextArea(document.getElementById("code"), {
         lineNumbers: false,
         indentWithTabs: true,
         tabSize: 1,
@@ -13,17 +16,17 @@ var createEditor = function (CodeTransformer) {
         // One of those little wonders: you have to pause a little
         // before giving the editor focus, otherwise for some reason
         // the focus is not regained. Go figure.
-        onBlur: (function () {
-            setTimeout('editor.focus()', 30);
-        }),
+        onBlur: function () {
+            setTimeout(editor.focus, 30);
+        },
         // the onChange function of CodeMirror will pass in
         // the "editor" instance as the first argument to the
         // function callback
-        onChange: (CodeTransformer.registerCode),
+        onChange: CodeTransformer.registerCode,
         mode: "livecodelab",
-        onCursorActivity: (function () {
+        onCursorActivity: function () {
             EditorDimmer.suspendDimmingAndCheckIfLink();
-        }),
+        },
         theme: 'night'
     });
     return editor;
