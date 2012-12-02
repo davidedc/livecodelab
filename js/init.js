@@ -12,23 +12,25 @@ var startEnvironment = function () {
     BigCursor = createBigCursor();
     TimeKeeper = createTimeKeeper();
 
+    GraphicsCommands = createGraphicsCommands();
+
     MatrixCommands = createMatrixCommands(THREE, TimeKeeper);
 
     BlendControls = createBlendControls(ThreeJs);
-    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands);
+    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands);
 
     BackgroundPainter = createBackgroundPainter(ThreeJs);
 
     BackgroundPainter.pickRandomDefaultGradient();
 
-    CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor);
+    CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands);
     editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer);
 
     autocoder = createAutocoder(editor);
 
-    LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper);
+    LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands);
 
-    ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs);
+    ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs, GraphicsCommands);
 
     EditorDimmer = createEditorDimmer(editor, ProgramLoader, BigCursor);
 

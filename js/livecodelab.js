@@ -1,5 +1,5 @@
 /*jslint browser: true, devel: true, maxerr: 200 */
-/*global $, requestAnimationFrame, MatrixCommands, soundLoops: true, fill, stroke, currentStrokeSize: true, defaultNormalFill: true, defaultNormalStroke: true, ballDetLevel: true, updatesPerMinute: true, LightSystem, objectsUsedInFrameCounts, GEOM_TYPE_LINE, GEOM_TYPE_RECT, GEOM_TYPE_BOX, GEOM_TYPE_CYLINDER, GEOM_TYPE_SPHERE, maximumBallDetail, minimumBallDetail, autocoder, BlendControls, BackgroundPainter, editor, checkErrorAndReport, changeUpdatesPerMinuteIfNeeded, stats */
+/*global $, requestAnimationFrame, MatrixCommands, soundLoops: true, updatesPerMinute: true, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, checkErrorAndReport, changeUpdatesPerMinuteIfNeeded, stats */
 
 
 var frame = 0;
@@ -12,7 +12,7 @@ var doOnceOccurrencesLineNumbers = [];
 // worth tracking with this variable
 var anyCodeReactingTobpm;
 
-var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper) {
+var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics) {
 
     'use strict';
 
@@ -68,23 +68,25 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper) {
             }
             doOnceOccurrencesLineNumbers = [];
             anyCodeReactingTobpm = false;
-            fill(0xFFFFFFFF);
-            stroke(0xFF000000);
-            currentStrokeSize = 1;
-            defaultNormalFill = true;
-            defaultNormalStroke = true;
-            ballDetLevel = threejs.ballDefaultDetLevel;
+            graphics.fill(0xFFFFFFFF);
+            graphics.stroke(0xFF000000);
+            graphics.currentStrokeSize = 1;
+            graphics.defaultNormalFill = true;
+            graphics.defaultNormalStroke = true;
+            graphics.ballDetLevel = threejs.ballDefaultDetLevel;
             updatesPerMinute = 60 * 4;
             LightSystem.noLights();
 
             LightSystem.usedAmbientLights = 0;
-            objectsUsedInFrameCounts[GEOM_TYPE_LINE] = 0;
-            objectsUsedInFrameCounts[GEOM_TYPE_RECT] = 0;
-            objectsUsedInFrameCounts[GEOM_TYPE_BOX] = 0;
-            objectsUsedInFrameCounts[GEOM_TYPE_CYLINDER] = 0;
-            var initialisingSphereCounts;
-            for (initialisingSphereCounts = 0; initialisingSphereCounts < (maximumBallDetail - minimumBallDetail + 1); initialisingSphereCounts += 1) {
-                objectsUsedInFrameCounts[GEOM_TYPE_SPHERE + initialisingSphereCounts] = 0;
+
+            graphics.objectsUsedInFrameCounts[graphics.geometries.line] = 0;
+            graphics.objectsUsedInFrameCounts[graphics.geometries.rect] = 0;
+            graphics.objectsUsedInFrameCounts[graphics.geometries.box] = 0;
+            graphics.objectsUsedInFrameCounts[graphics.geometries.cylinder] = 0;
+            // initialising sphere counts
+            var i;
+            for (i = 0; i < (graphics.maximumBallDetail - graphics.minimumBallDetail + 1); i += 1) {
+                graphics.objectsUsedInFrameCounts[graphics.geometries.sphere + i] = 0;
             }
 
             BlendControls.animationStyle(BlendControls.animationStyles.normal);
@@ -215,21 +217,21 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper) {
             // others to hidden.
             // Only tiny exception is that the sphere has one pool for each detail level.
             if (sceneObject.isLine) {
-                primitiveType = GEOM_TYPE_LINE;
+                primitiveType = graphics.geometries.line;
             } else if (sceneObject.isRectangle) {
-                primitiveType = GEOM_TYPE_RECT;
+                primitiveType = graphics.geometries.rect;
             } else if (sceneObject.isBox) {
-                primitiveType = GEOM_TYPE_BOX;
+                primitiveType = graphics.geometries.box;
             } else if (sceneObject.isCylinder) {
-                primitiveType = GEOM_TYPE_CYLINDER;
+                primitiveType = graphics.geometries.cylinder;
             } else if (sceneObject.isSphere !== 0) {
-                primitiveType = GEOM_TYPE_SPHERE + sceneObject.isSphere - minimumBallDetail;
+                primitiveType = graphics.geometries.sphere + sceneObject.isSphere - graphics.minimumBallDetail;
             }
 
             // set the first "used*****" objects to visible...
-            if (objectsUsedInFrameCounts[primitiveType] > 0) {
+            if (graphics.objectsUsedInFrameCounts[primitiveType] > 0) {
                 sceneObject.visible = true;
-                objectsUsedInFrameCounts[primitiveType] -= 1;
+                graphics.objectsUsedInFrameCounts[primitiveType] -= 1;
             } else {
                 // ... and the others to invisible
                 sceneObject.visible = false;
