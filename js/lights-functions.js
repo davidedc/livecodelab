@@ -1,8 +1,8 @@
 /*jslint browser: true */
-/*global logger, color, defaultNormalFill: true, defaultNormalStroke: true, MatrixCommands */
+/*global logger, color, defaultNormalFill: true, defaultNormalStroke: true */
 
 
-var createLightSystem = function (threejs, three) {
+var createLightSystem = function (threejs, three, matrixcommands) {
 
     'use strict';
 
@@ -78,7 +78,7 @@ var createLightSystem = function (threejs, three) {
 
         LightSystem.usedAmbientLights += 1;
         pooledAmbientLight.matrixAutoUpdate = false;
-        pooledAmbientLight.matrix.copy(MatrixCommands.getWorldMatrix());
+        pooledAmbientLight.matrix.copy(matrixcommands.getWorldMatrix());
         pooledAmbientLight.matrixWorldNeedsUpdate = true;
 
         if (newLightCreated) {
