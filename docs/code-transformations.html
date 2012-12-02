@@ -1,35 +1,39 @@
-<!DOCTYPE html>  <html> <head>   <title>code-transformations.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="css-colour-definitions.html">                 css-colour-definitions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               code-transformations.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true, devel: true */</span>
-<span class="comment">/*global $ */</span>
+<!DOCTYPE html>  <html> <head>   <title>code-transformations.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="css-colour-definitions.html">                 css-colour-definitions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               code-transformations.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint maxerr: 200, browser: true, devel: true, bitwise: true */</span>
+<span class="comment">/*global $, logger, autocoder, checkErrorAndReport, LiveCodeLab, doOnceOccurrencesLineNumbers */</span>
 
 
-<span class="keyword">var</span> createCodeTransformer = <span class="function"><span class="keyword">function</span> <span class="params">(CoffeeCompiler)</span> {</span>
+<span class="keyword">var</span> createCodeTransformer = <span class="function"><span class="keyword">function</span> <span class="params">(CoffeeCompiler, BigCursor, graphics)</span> {</span>
 
-    <span class="keyword">var</span> CodeTransformer = {};
+    <span class="string">'use strict'</span>;
 
-    <span class="keyword">var</span> programHasBasicError = <span class="literal">false</span>;
-    <span class="keyword">var</span> reasonOfBasicError = <span class="string">""</span>;
+    <span class="keyword">var</span> CodeTransformer = {},
+        programHasBasicError = <span class="literal">false</span>,
+        reasonOfBasicError = <span class="string">""</span>,
+        compiledOutput,
+        listOfPossibleFunctions;
+
     CodeTransformer.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>;
 
     CodeTransformer.compiler = CoffeeCompiler;
 
-    <span class="keyword">var</span> listOfPossibleFunctions = [
+    listOfPossibleFunctions = [
         <span class="string">"function"</span>,
         <span class="string">"alert"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Geometry</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"rect"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Geometry</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="string">"rect"</span>,
         <span class="string">"line"</span>,
         <span class="string">"box"</span>,
         <span class="string">"ball"</span>,
         <span class="string">"ballDetail"</span>,
         <span class="string">"peg"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Matrix manipulation</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"rotate"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Matrix manipulation</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="string">"rotate"</span>,
         <span class="string">"move"</span>,
         <span class="string">"scale"</span>,
         <span class="string">"pushMatrix"</span>,
         <span class="string">"popMatrix"</span>,
         <span class="string">"resetMatrix"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Sound</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"bpm"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Sound</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="string">"bpm"</span>,
         <span class="string">"play"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Color and drawing styles</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"fill"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Color and drawing styles</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="string">"fill"</span>,
         <span class="string">"noFill"</span>,
         <span class="string">"stroke"</span>,
         <span class="string">"noStroke"</span>,
@@ -43,7 +47,7 @@
         <span class="string">"noLights"</span>,
         <span class="string">"ambientLight"</span>,
         <span class="string">"pointLight"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Calculations</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"abs"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Calculations</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="string">"abs"</span>,
         <span class="string">"ceil"</span>,
         <span class="string">"constrain"</span>,
         <span class="string">"dist"</span>,
@@ -60,7 +64,7 @@
         <span class="string">"round"</span>,
         <span class="string">"sq"</span>,
         <span class="string">"sqrt"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Trigonometry</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"acos"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Trigonometry</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="string">"acos"</span>,
         <span class="string">"asin"</span>,
         <span class="string">"atan"</span>,
         <span class="string">"atan2"</span>,
@@ -69,7 +73,7 @@
         <span class="string">"radians"</span>,
         <span class="string">"sin"</span>,
         <span class="string">"tan"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Random</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"random"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Random</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="string">"random"</span>,
         <span class="string">"randomSeed"</span>,
         <span class="string">"noise"</span>,
         <span class="string">"noiseDetail"</span>,
@@ -81,15 +85,28 @@
 
         <span class="keyword">try</span> {
 
-            <span class="keyword">var</span> editorContent = editor.getValue();
+            <span class="keyword">var</span> editorContent = editor.getValue(),
+                copyOfEditorContent,
+                programIsMangled = <span class="literal">false</span>,
+                programContainsStringsOrComments = <span class="literal">false</span>,
+                characterBeingExamined,
+                nextCharacterBeingExamined,
+                aposCount,
+                quoteCount,
+                roundBrackCount,
+                curlyBrackCount,
+                squareBrackCount,
+                elaboratedSource,
+                elaboratedSourceByLine,
+                iteratingOverSource;
 
-            <span class="keyword">if</span> (editorContent !== <span class="string">''</span> &amp;&amp; fakeText === <span class="literal">true</span>) {
+            <span class="keyword">if</span> (editorContent !== <span class="string">''</span> &amp;&amp; BigCursor.show) {
                 BigCursor.shrinkFakeText();
             }
 
-            <span class="keyword">if</span> (editorContent === <span class="string">''</span> &amp;&amp; !fakeText) {
-                resetTheSpinThingy = <span class="literal">true</span>;
-                fakeText = <span class="literal">true</span>;
+            <span class="keyword">if</span> (editorContent === <span class="string">''</span> &amp;&amp; !BigCursor.show) {
+                graphics.resetTheSpinThingy = <span class="literal">true</span>;
+                BigCursor.show = <span class="literal">true</span>;
                 window.location.hash = <span class="string">''</span>;
 
                 $(<span class="string">"#formCode"</span>).animate({
@@ -114,11 +131,6 @@ setTimeout('if (editor.getValue() !== "") $("#formCode").css("opacity",0);',10);
 
             }
 
-            <span class="keyword">var</span> copyOfEditorContent;
-            <span class="keyword">var</span> programIsMangled = <span class="literal">false</span>;
-            <span class="keyword">var</span> programContainsStringsOrComments = <span class="literal">false</span>;
-            <span class="keyword">var</span> characterBeingExamined;
-            <span class="keyword">var</span> nextCharacterBeingExamined;
 
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>doOnce statements which have a tick mark next to them
 are not run. This is achieved by replacing the line with
@@ -147,8 +159,9 @@ coffescript to javascript translation</p>             </td>             <td clas
             <span class="keyword">while</span> (copyOfEditorContent.length) {
                 characterBeingExamined = copyOfEditorContent.charAt(<span class="number">0</span>);
                 nextCharacterBeingExamined = copyOfEditorContent.charAt(<span class="number">1</span>);
-                <span class="keyword">if</span> (characterBeingExamined === <span class="string">"'"</span> || characterBeingExamined === <span class="string">'"'</span> || (characterBeingExamined === <span class="string">"/"</span> &amp;&amp; (
-                nextCharacterBeingExamined === <span class="string">"*"</span> || nextCharacterBeingExamined === <span class="string">"/"</span>))) {
+                <span class="keyword">if</span> (characterBeingExamined === <span class="string">"'"</span> || characterBeingExamined === <span class="string">'"'</span> || (characterBeingExamined === <span class="string">"/"</span> &amp;&amp;
+                        (nextCharacterBeingExamined === <span class="string">"*"</span> || nextCharacterBeingExamined === <span class="string">"/"</span>))
+                        ) {
                     programContainsStringsOrComments = <span class="literal">true</span>;
 </pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>alert('program contains strings or comments');</p>             </td>             <td class="code">               <div class="highlight"><pre>                    <span class="keyword">break</span>;
                 }
@@ -174,36 +187,39 @@ the difference is that here I don't treat regular expressions.
 Note that string take precedence over comments i.e.
 is a string, not half a string with a quote in a comment
 get rid of the comments for good.</p>             </td>             <td class="code">               <div class="highlight"><pre>                editorContent = editorContent.replace(<span class="regexp">/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')|(\/\/[^\n]*\n)|(\/\*(?:(?!\*\/)(?:.|\n))*\*\/)/g</span>, <span class="function"><span class="keyword">function</span> <span class="params">(all, quoted, aposed, singleComment, comment)</span> {</span>
+                    <span class="keyword">var</span> numberOfLinesInMultilineComment,
+                        rebuiltNewLines,
+                        cycleToRebuildNewLines;
 </pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>strings are kept as they are</p>             </td>             <td class="code">               <div class="highlight"><pre>                    <span class="keyword">if</span> (quoted) {
                         <span class="keyword">return</span> quoted;
-                    } <span class="keyword">else</span> <span class="keyword">if</span> (aposed) {
+                    }
+                    <span class="keyword">if</span> (aposed) {
                         <span class="keyword">return</span> aposed;
-                    } <span class="keyword">else</span> <span class="keyword">if</span> (singleComment) {
+                    }
+                    <span class="keyword">if</span> (singleComment) {
 </pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>preserve the line because
 the doOnce mechanism needs to retrieve
 the line where it was</p>             </td>             <td class="code">               <div class="highlight"><pre>                        <span class="keyword">return</span> <span class="string">"\n"</span>;
                     }
-</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>eliminate multiline comments preserving the lines</p>             </td>             <td class="code">               <div class="highlight"><pre>                    <span class="keyword">else</span> {
-                        <span class="keyword">var</span> numberOfLinesInMultilineComment = comment.split(<span class="string">"\n"</span>).length - <span class="number">1</span>;
-</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>alert('rebuilding multilines: '+ numberOfLinesInMultilineComment);</p>             </td>             <td class="code">               <div class="highlight"><pre>                        <span class="keyword">var</span> rebuiltNewLines = <span class="string">''</span>;
-                        <span class="keyword">for</span> (<span class="keyword">var</span> cycleToRebuildNewLines = <span class="number">0</span>; cycleToRebuildNewLines &lt; numberOfLinesInMultilineComment; cycleToRebuildNewLines++) {
-                            rebuiltNewLines = rebuiltNewLines + <span class="string">"\n"</span>;
-                        }
-</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>alert('rebuilding multilines: '+ rebuiltNewLines);</p>             </td>             <td class="code">               <div class="highlight"><pre>                        <span class="keyword">return</span> rebuiltNewLines;
+</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>eliminate multiline comments preserving the lines</p>             </td>             <td class="code">               <div class="highlight"><pre>                    numberOfLinesInMultilineComment = comment.split(<span class="string">"\n"</span>).length - <span class="number">1</span>;
+                    rebuiltNewLines = <span class="string">''</span>;
+                    <span class="keyword">for</span> (cycleToRebuildNewLines = <span class="number">0</span>; cycleToRebuildNewLines &lt; numberOfLinesInMultilineComment; cycleToRebuildNewLines += <span class="number">1</span>) {
+                        rebuiltNewLines = rebuiltNewLines + <span class="string">"\n"</span>;
                     }
+                    <span class="keyword">return</span> rebuiltNewLines;
                 });
 
-</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>ok now in the version we use for syntax checking we delete all the strings</p>             </td>             <td class="code">               <div class="highlight"><pre>                copyOfEditorContent = editorContent.replace(<span class="regexp">/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')/g</span>, <span class="string">""</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>ok now in the version we use for syntax checking we delete all the strings</p>             </td>             <td class="code">               <div class="highlight"><pre>                copyOfEditorContent = editorContent.replace(<span class="regexp">/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')/g</span>, <span class="string">""</span>);
 
             } <span class="keyword">else</span> {
                 copyOfEditorContent = editorContent;
             }
 
-            <span class="keyword">var</span> aposCount = <span class="number">0</span>;
-            <span class="keyword">var</span> quoteCount = <span class="number">0</span>;
-            <span class="keyword">var</span> roundBrackCount = <span class="number">0</span>;
-            <span class="keyword">var</span> curlyBrackCount = <span class="number">0</span>;
-            <span class="keyword">var</span> squareBrackCount = <span class="number">0</span>;
+            aposCount = <span class="number">0</span>;
+            quoteCount = <span class="number">0</span>;
+            roundBrackCount = <span class="number">0</span>;
+            curlyBrackCount = <span class="number">0</span>;
+            squareBrackCount = <span class="number">0</span>;
 
             <span class="keyword">while</span> (copyOfEditorContent.length) {
                 characterBeingExamined = copyOfEditorContent.charAt(<span class="number">0</span>);
@@ -222,22 +238,31 @@ the line where it was</p>             </td>             <td class="code">       
                 copyOfEditorContent = copyOfEditorContent.slice(<span class="number">1</span>);
             }
 
-</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>according to jsperf, the fastest way to check if number is even/odd</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (
-            aposCount &amp; <span class="number">1</span> || quoteCount &amp; <span class="number">1</span> || roundBrackCount &amp; <span class="number">1</span> || curlyBrackCount &amp; <span class="number">1</span> || squareBrackCount &amp; <span class="number">1</span>) {
+</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>according to jsperf, the fastest way to check if number is even/odd</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (aposCount &amp; <span class="number">1</span> || quoteCount &amp; <span class="number">1</span> || roundBrackCount &amp; <span class="number">1</span> || curlyBrackCount &amp; <span class="number">1</span> || squareBrackCount &amp; <span class="number">1</span>) {
                 <span class="keyword">if</span> (autocoder.active) {
                     editor.undo();
-</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>alert("did an undo");</p>             </td>             <td class="code">               <div class="highlight"><pre>                    <span class="keyword">return</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>alert("did an undo");</p>             </td>             <td class="code">               <div class="highlight"><pre>                    <span class="keyword">return</span>;
                 }
 
                 programHasBasicError = <span class="literal">true</span>;
-</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>alert("basic error");
+</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>alert("basic error");
 alert("p:" + $('#dangerSignText').css('color'));</p>             </td>             <td class="code">               <div class="highlight"><pre>                $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);
 
-                <span class="keyword">if</span> (aposCount &amp; <span class="number">1</span>) reasonOfBasicError = <span class="string">"Missing '"</span>;
-                <span class="keyword">if</span> (quoteCount &amp; <span class="number">1</span>) reasonOfBasicError = <span class="string">'Missing "'</span>;
-                <span class="keyword">if</span> (roundBrackCount &amp; <span class="number">1</span>) reasonOfBasicError = <span class="string">"Unbalanced ()"</span>;
-                <span class="keyword">if</span> (curlyBrackCount &amp; <span class="number">1</span>) reasonOfBasicError = <span class="string">"Unbalanced {}"</span>;
-                <span class="keyword">if</span> (squareBrackCount &amp; <span class="number">1</span>) reasonOfBasicError = <span class="string">"Unbalanced []"</span>;
+                <span class="keyword">if</span> (aposCount &amp; <span class="number">1</span>) {
+                    reasonOfBasicError = <span class="string">"Missing '"</span>;
+                }
+                <span class="keyword">if</span> (quoteCount &amp; <span class="number">1</span>) {
+                    reasonOfBasicError = <span class="string">'Missing "'</span>;
+                }
+                <span class="keyword">if</span> (roundBrackCount &amp; <span class="number">1</span>) {
+                    reasonOfBasicError = <span class="string">"Unbalanced ()"</span>;
+                }
+                <span class="keyword">if</span> (curlyBrackCount &amp; <span class="number">1</span>) {
+                    reasonOfBasicError = <span class="string">"Unbalanced {}"</span>;
+                }
+                <span class="keyword">if</span> (squareBrackCount &amp; <span class="number">1</span>) {
+                    reasonOfBasicError = <span class="string">"Unbalanced []"</span>;
+                }
 
                 $(<span class="string">'#errorMessageText'</span>).text(reasonOfBasicError);
 
@@ -246,9 +271,9 @@ alert("p:" + $('#dangerSignText').css('color'));</p>             </td>          
             }
 
 
-            <span class="keyword">var</span> elaboratedSource = editorContent;
+            elaboratedSource = editorContent;
 
-</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>we make it so some common command forms can be used in postfix notation, e.g.
+</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>we make it so some common command forms can be used in postfix notation, e.g.
   60 bpm
   red fill
   yellow stroke
@@ -257,7 +282,7 @@ alert("p:" + $('#dangerSignText').css('color'));</p>             </td>          
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([a-zA-Z]+)[ ]+stroke(\s)/g</span>, <span class="string">"stroke $1$2"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([a-zA-Z]+)[ ]+background(\s)/g</span>, <span class="string">"background $1$2"</span>);
 
-</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>little trick. This is mangled up in the translation from coffeescript
+</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>little trick. This is mangled up in the translation from coffeescript
 (1).times ->
 But this isn't:
 (1+0).times ->
@@ -265,7 +290,7 @@ So here is the little replace.
 TODO: you should be a little smarter about the substitution of the draw method
 You can tell a method declaration because the line below is indented
 so you should check that.</p>             </td>             <td class="code">               <div class="highlight"><pre>
-</pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>elaboratedSource =  elaboratedSource.replace(/^([a-z]+[a-zA-Z0-9]+)\s*$/gm, "$1 = ->" );
+</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>elaboratedSource =  elaboratedSource.replace(/^([a-z]+[a-zA-Z0-9]+)\s*$/gm, "$1 = ->" );
 some replacements add a semicolon for the
 following reason: coffeescript allows you to split arguments
 over multiple lines.
@@ -287,7 +312,7 @@ Instead, all is good if rotate is prepended with a semicolon.</p>             </
 
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>ADDING TRACING INSTRUCTION TO THE DOONCE BLOCKS
+</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>ADDING TRACING INSTRUCTION TO THE DOONCE BLOCKS
 each doOnce block is made to start with an instruction that traces whether
 the block has been run or not. This allows us to put back the tick where
 necessary, so the doOnce block is not run again.
@@ -314,41 +339,40 @@ Example - let's say one pastes in this code:
   regroup the lines into a single string again</p>
 
 <p>alert('soon before replacing doOnces'+elaboratedSource);</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (elaboratedSource.indexOf(<span class="string">'doOnce'</span>) &gt; -<span class="number">1</span>) {
-</pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>alert("a doOnce is potentially executable");</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="keyword">var</span> elaboratedSourceByLine = elaboratedSource.split(<span class="string">"\n"</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>alert('splitting: ' + elaboratedSourceByLine.length );</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="keyword">for</span> (<span class="keyword">var</span> iteratingOverSource = <span class="number">0</span>; iteratingOverSource &lt; elaboratedSourceByLine.length; iteratingOverSource++) {
-</pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>alert('iterating: ' + iteratingOverSource );</p>             </td>             <td class="code">               <div class="highlight"><pre>
-</pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>add the line number tracing instruction to inline case</p>             </td>             <td class="code">               <div class="highlight"><pre>                    elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(<span class="regexp">/^(\s*)doOnce[ ]*\-&gt;[ ]*(.+)$/gm</span>, <span class="string">"$1;doOnceOccurrencesLineNumbers.push("</span> + iteratingOverSource + <span class="string">"); (1+0).times -&gt; $2"</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>alert("a doOnce is potentially executable");</p>             </td>             <td class="code">               <div class="highlight"><pre>                elaboratedSourceByLine = elaboratedSource.split(<span class="string">"\n"</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>alert('splitting: ' + elaboratedSourceByLine.length );</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="keyword">for</span> (iteratingOverSource = <span class="number">0</span>; iteratingOverSource &lt; elaboratedSourceByLine.length; iteratingOverSource += <span class="number">1</span>) {
+</pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>alert('iterating: ' + iteratingOverSource );</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>add the line number tracing instruction to inline case</p>             </td>             <td class="code">               <div class="highlight"><pre>                    elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(<span class="regexp">/^(\s*)doOnce[ ]*\-&gt;[ ]*(.+)$/gm</span>, <span class="string">"$1;doOnceOccurrencesLineNumbers.push("</span> + iteratingOverSource + <span class="string">"); (1+0).times -&gt; $2"</span>);
 
-</pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>add the line number tracing instruction to multiline case</p>             </td>             <td class="code">               <div class="highlight"><pre>                    <span class="keyword">if</span> (elaboratedSourceByLine[iteratingOverSource].match(<span class="regexp">/^(\s*)doOnce[ ]*\-&gt;[ ]*$/gm</span>)) {
-</pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <p>alert('doOnce multiline!');</p>             </td>             <td class="code">               <div class="highlight"><pre>                        elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(<span class="regexp">/^(\s*)doOnce[ ]*\-&gt;[ ]*$/gm</span>, <span class="string">"$1(1+0).times -&gt;"</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>add the line number tracing instruction to multiline case</p>             </td>             <td class="code">               <div class="highlight"><pre>                    <span class="keyword">if</span> (elaboratedSourceByLine[iteratingOverSource].match(<span class="regexp">/^(\s*)doOnce[ ]*\-&gt;[ ]*$/gm</span>)) {
+</pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>alert('doOnce multiline!');</p>             </td>             <td class="code">               <div class="highlight"><pre>                        elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(<span class="regexp">/^(\s*)doOnce[ ]*\-&gt;[ ]*$/gm</span>, <span class="string">"$1(1+0).times -&gt;"</span>);
                         elaboratedSourceByLine[iteratingOverSource + <span class="number">1</span>] = elaboratedSourceByLine[iteratingOverSource + <span class="number">1</span>].replace(<span class="regexp">/^(\s*)(.+)$/gm</span>, <span class="string">"$1;doOnceOccurrencesLineNumbers.push("</span> + iteratingOverSource + <span class="string">"); $2"</span>);
                     }
 
                 }
                 elaboratedSource = elaboratedSourceByLine.join(<span class="string">"\n"</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>alert('soon after replacing doOnces'+elaboratedSource);</p>             </td>             <td class="code">               <div class="highlight"><pre>            }
+</pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>alert('soon after replacing doOnces'+elaboratedSource);</p>             </td>             <td class="code">               <div class="highlight"><pre>            }
 
 
 
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/^(\s*)([a-z]+[a-zA-Z0-9]*)[ ]*$/gm</span>, <span class="string">"$1;$2()"</span>);
 
-</pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>this takes care of when a token that it's supposed to be
+</pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <p>this takes care of when a token that it's supposed to be
 a function is inlined with something else e.g.
 doOnce frame = 0; box
 2 times -> box</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/;\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g</span>, <span class="string">";$1()$2"</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>this takes care of when a token that it's supposed to be
+</pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>this takes care of when a token that it's supposed to be
 a function is inlined like so:
 2 times -> box</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/\-&gt;\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g</span>, <span class="string">";$1()$2"</span>);
 
-</pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>draw() could just be called by mistake and it's likely
+</pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>draw() could just be called by mistake and it's likely
 to be disastrous. User doesn't even have visibility of such method,
 why should he/she call it?
 TODO: call draw() something else that the user is not
-likely to use by mistake and take away this check.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (
-            elaboratedSource.match(<span class="regexp">/[\s\+\;]+draw\s*\(/</span>) || <span class="literal">false</span>) {
+likely to use by mistake and take away this check.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (elaboratedSource.match(<span class="regexp">/[\s\+\;]+draw\s*\(/</span>) || <span class="literal">false</span>) {
                 <span class="keyword">if</span> (autocoder.active) {
                     editor.undo();
-</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>alert("did an undo");</p>             </td>             <td class="code">               <div class="highlight"><pre>                    <span class="keyword">return</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>alert("did an undo");</p>             </td>             <td class="code">               <div class="highlight"><pre>                    <span class="keyword">return</span>;
                 }
                 programHasBasicError = <span class="literal">true</span>;
                 $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);
@@ -357,13 +381,13 @@ likely to use by mistake and take away this check.</p>             </td>        
             }
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>we don't want if and for to undergo the same tratment as, say, box
+</pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>we don't want if and for to undergo the same tratment as, say, box
 so put those back to normal.</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/;(if)\(\)/g</span>, <span class="string">";$1"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/;(else)\(\)/g</span>, <span class="string">";$1"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/;(for)\(\)/g</span>, <span class="string">";$1"</span>);
 
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/\/\//g</span>, <span class="string">"#"</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <p>Why do we have to match a non-digit non-letter?
+</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>Why do we have to match a non-digit non-letter?
 because we have to make sure that the keyword is "on its own"
 otherwise for example we interfere the replacements of "background" and "round"
 Checking whether the keyword is "on its own" avoid those interferences.</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(scale)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
@@ -385,7 +409,7 @@ Checking whether the keyword is "on its own" avoid those interferences.</p>     
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(simpleGradient)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(background)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(color)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <p>elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(ambient)(\s)+/g, "$1;$2$3" );
+</pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(ambient)(\s)+/g, "$1;$2$3" );
 elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(reflect)(\s)+/g, "$1;$2$3" );
 elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(refract)(\s)+/g, "$1;$2$3" );</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(lights)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(noLights)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
@@ -395,7 +419,7 @@ elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(refract)(\s)+/g, "$
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(ballDetail)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(peg)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
 
-</pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-45">&#182;</a>               </div>               <p>Calculation</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(abs)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <p>Calculation</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(abs)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(ceil)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(constrain)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(dist)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
@@ -412,7 +436,7 @@ elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(refract)(\s)+/g, "$
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(round)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(sq)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(sqrt)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-46">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-46">&#182;</a>               </div>               <p>Trigonometry</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(acos)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <p>Trigonometry</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(acos)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(asin)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(atan)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(atan2)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
@@ -421,23 +445,21 @@ elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(refract)(\s)+/g, "$
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(radians)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(sin)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(tan)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-47">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-47">&#182;</a>               </div>               <p>Random</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(random)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-45">&#182;</a>               </div>               <p>Random</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(random)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(randomSeed)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(noise)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(noiseDetail)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
             elaboratedSource = elaboratedSource.replace(<span class="regexp">/([^a-zA-Z0-9])(noiseSeed)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>);
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-48">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-48">&#182;</a>               </div>               <p>you'd think that semicolons are OK anywhere before any command
+</pre></div>             </td>           </tr>                               <tr id="section-46">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-46">&#182;</a>               </div>               <p>you'd think that semicolons are OK anywhere before any command
 but coffee-script doesn't like some particular configurations - fixing those:
 the semicolon mangles the first line of the function definitions:</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/-&gt;(\s+);/g</span>, <span class="string">"-&gt;$1"</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-49">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-49">&#182;</a>               </div>               <p>the semicolon mangles the first line of if statements</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/(\sif\s*.*\s*);/g</span>, <span class="string">"$1"</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-50">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-50">&#182;</a>               </div>               <p>the semicolon mangles the first line of else if statements</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/(\s);(else\s*if\s*.*\s*);/g</span>, <span class="string">"$1$2"</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-51">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-51">&#182;</a>               </div>               <p>the semicolon mangles the first line of else statements</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/(\s);(else.*\s*);/g</span>, <span class="string">"$1$2"</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-47">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-47">&#182;</a>               </div>               <p>the semicolon mangles the first line of if statements</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/(\sif\s*.*\s*);/g</span>, <span class="string">"$1"</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-48">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-48">&#182;</a>               </div>               <p>the semicolon mangles the first line of else if statements</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/(\s);(else\s*if\s*.*\s*);/g</span>, <span class="string">"$1$2"</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-49">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-49">&#182;</a>               </div>               <p>the semicolon mangles the first line of else statements</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/(\s);(else.*\s*);/g</span>, <span class="string">"$1$2"</span>);
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-52">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-52">&#182;</a>               </div>               <p>alert(elaboratedSource );</p>             </td>             <td class="code">               <div class="highlight"><pre>
-            <span class="keyword">var</span> compiledOutput;
             compiledOutput = CodeTransformer.compiler.compile(elaboratedSource, {
                 bare: <span class="string">"on"</span>
             });
@@ -446,7 +468,7 @@ the semicolon mangles the first line of the function definitions:</p>           
 
             <span class="keyword">if</span> (autocoder.active) {
                 editor.undo();
-</pre></div>             </td>           </tr>                               <tr id="section-53">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-53">&#182;</a>               </div>               <p>alert("did an undo");</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="keyword">return</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-50">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-50">&#182;</a>               </div>               <p>alert("did an undo");</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="keyword">return</span>;
             }
 
             checkErrorAndReport(e);
@@ -455,7 +477,7 @@ the semicolon mangles the first line of the function definitions:</p>           
         }
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-54">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-54">&#182;</a>               </div>               <p>FINDS USED METHODS WHICH ARE NOT DECLARED</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> matchDeclaredMethod = <span class="regexp">/([a-z]+[a-zA-Z0-9]*) = function/</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-51">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-51">&#182;</a>               </div>               <p>FINDS USED METHODS WHICH ARE NOT DECLARED</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> matchDeclaredMethod = <span class="regexp">/([a-z]+[a-zA-Z0-9]*) = function/</span>;
         <span class="keyword">var</span> declaredMethods = [];
         <span class="keyword">var</span> mc;
         <span class="keyword">var</span> copyOfCompiledOutput = compiledOutput;
@@ -463,7 +485,7 @@ the semicolon mangles the first line of the function definitions:</p>           
             declaredMethods.push(mc[<span class="number">1</span>]);
             copyOfCompiledOutput = RegExp.rightContext;
         }
-</pre></div>             </td>           </tr>                               <tr id="section-55">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-55">&#182;</a>               </div>               <p>alert("found declared methods " + declaredMethods.length);</p>             </td>             <td class="code">               <div class="highlight"><pre>
+
         <span class="keyword">var</span> usedMethods = [];
         <span class="keyword">var</span> md;
         copyOfCompiledOutput = compiledOutput;
@@ -471,23 +493,25 @@ the semicolon mangles the first line of the function definitions:</p>           
             usedMethods.push(md[<span class="number">1</span>]);
             copyOfCompiledOutput = RegExp.rightContext;
         }
-</pre></div>             </td>           </tr>                               <tr id="section-56">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-56">&#182;</a>               </div>               <p>alert("found used methods " + usedMethods.length);</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> error = <span class="literal">false</span>;
-        <span class="keyword">for</span> (<span class="keyword">var</span> scanningUsedMethods = <span class="number">0</span>; scanningUsedMethods &lt; usedMethods.length; scanningUsedMethods++) {
-            <span class="keyword">if</span> (listOfPossibleFunctions.indexOf(usedMethods[scanningUsedMethods]) != -<span class="number">1</span>) {
+        <span class="keyword">var</span> error = <span class="literal">false</span>;
+        <span class="keyword">var</span> scanningUsedMethods;
+        <span class="keyword">for</span> (scanningUsedMethods = <span class="number">0</span>; scanningUsedMethods &lt; usedMethods.length; scanningUsedMethods += <span class="number">1</span>) {
+            <span class="keyword">if</span> (listOfPossibleFunctions.indexOf(usedMethods[scanningUsedMethods]) !== -<span class="number">1</span>) {
                 <span class="keyword">continue</span>;
             }
             <span class="keyword">if</span> (declaredMethods.length === <span class="number">0</span>) {
                 error = <span class="literal">true</span>;
-</pre></div>             </td>           </tr>                               <tr id="section-57">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-57">&#182;</a>               </div>               <p>alert("used method not declared: " + usedMethods[scanningUsedMethods]);</p>             </td>             <td class="code">               <div class="highlight"><pre>                $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);
+                $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);
                 $(<span class="string">'#errorMessageText'</span>).text(usedMethods[scanningUsedMethods] + <span class="string">" doesn't exist"</span>);
                 <span class="keyword">return</span>;
             }
-            <span class="keyword">for</span> (<span class="keyword">var</span> scanningDeclaredMethods = <span class="number">0</span>; scanningDeclaredMethods &lt; declaredMethods.length; scanningDeclaredMethods++) {
-</pre></div>             </td>           </tr>                               <tr id="section-58">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-58">&#182;</a>               </div>               <p>alert ("comparing >" + usedMethods[scanningUsedMethods]  + "&lt; , >" + declaredMethods[scanningDeclaredMethods] +"&lt;");</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="keyword">if</span> (usedMethods[scanningUsedMethods] === declaredMethods[scanningDeclaredMethods]) {
+            <span class="keyword">var</span> scanningDeclaredMethods;
+            <span class="keyword">for</span> (scanningDeclaredMethods = <span class="number">0</span>; scanningDeclaredMethods &lt; declaredMethods.length; scanningDeclaredMethods += <span class="number">1</span>) {
+                <span class="keyword">if</span> (usedMethods[scanningUsedMethods] === declaredMethods[scanningDeclaredMethods]) {
                     <span class="keyword">break</span>;
-                } <span class="keyword">else</span> <span class="keyword">if</span> (scanningDeclaredMethods == declaredMethods.length - <span class="number">1</span>) {
+                } <span class="keyword">else</span> <span class="keyword">if</span> (scanningDeclaredMethods === declaredMethods.length - <span class="number">1</span>) {
                     error = <span class="literal">true</span>;
-</pre></div>             </td>           </tr>                               <tr id="section-59">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-59">&#182;</a>               </div>               <p>alert("used method not declared: " + usedMethods[scanningUsedMethods]);</p>             </td>             <td class="code">               <div class="highlight"><pre>                    $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);
+                    $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);
                     $(<span class="string">'#errorMessageText'</span>).text(usedMethods[scanningUsedMethods] + <span class="string">" doesn't exist"</span>);
                     <span class="keyword">return</span>;
                 }
@@ -500,11 +524,11 @@ the semicolon mangles the first line of the function definitions:</p>           
         $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'#000000'</span>);
         $(<span class="string">'#errorMessageText'</span>).text(reasonOfBasicError);
 
-</pre></div>             </td>           </tr>                               <tr id="section-60">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-60">&#182;</a>               </div>               <p>see here for the deepest examination ever of "eval"
+</pre></div>             </td>           </tr>                               <tr id="section-52">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-52">&#182;</a>               </div>               <p>see here for the deepest examination ever of "eval"
 http://perfectionkills.com/global-eval-what-are-the-options/
 note that exceptions are caught by the window.onerror callback</p>             </td>             <td class="code">               <div class="highlight"><pre>        CodeTransformer.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>;
 
-</pre></div>             </td>           </tr>                               <tr id="section-61">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-61">&#182;</a>               </div>               <p>You might want to change the frame count from the program
+</pre></div>             </td>           </tr>                               <tr id="section-53">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-53">&#182;</a>               </div>               <p>You might want to change the frame count from the program
 just like you can in Processing, but it turns out that when
 you ASSIGN a value to the frame variable inside
 the coffeescript code, the coffeescript to javascript translator
@@ -524,9 +548,16 @@ coffeescript to javascript translator inserts.</p>             </td>            
 
     CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun = <span class="function"><span class="keyword">function</span> <span class="params">(editor)</span> {</span>
 
-        <span class="keyword">if</span> (doOnceOccurrencesLineNumbers.length === <span class="number">0</span>) <span class="keyword">return</span>;
+        <span class="keyword">var</span> elaboratedSource,
+            elaboratedSourceByLine,
+            iteratingOverSource,
+            cursorPositionBeforeAddingCheckMark;
 
-</pre></div>             </td>           </tr>                               <tr id="section-62">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-62">&#182;</a>               </div>               <p>if we are here, the following has happened: someone has added an element
+        <span class="keyword">if</span> (doOnceOccurrencesLineNumbers.length === <span class="number">0</span>) {
+            <span class="keyword">return</span>;
+        }
+
+</pre></div>             </td>           </tr>                               <tr id="section-54">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-54">&#182;</a>               </div>               <p>if we are here, the following has happened: someone has added an element
 to the doOnceOccurrencesLineNumbers array. This can only have happened
 when a doOnce block is run, because we manipulate each doOnce block
 so that in its first line the line number of the block is pushed into
@@ -535,23 +566,23 @@ So, the doOnceOccurrencesLineNumbers array contains all and only the lines
 of each doOnce block that has been run. Which could be more than one, because
 when we start the program we could have more than one doOnce that has
 to run.</p>             </td>             <td class="code">               <div class="highlight"><pre>
-</pre></div>             </td>           </tr>                               <tr id="section-63">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-63">&#182;</a>               </div>               <p>alert("a doOnce has been ran");</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> elaboratedSource = editor.getValue();
+        elaboratedSource = editor.getValue();
 
-</pre></div>             </td>           </tr>                               <tr id="section-64">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-64">&#182;</a>               </div>               <p>we know the line number of each doOnce block that has been run
+</pre></div>             </td>           </tr>                               <tr id="section-55">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-55">&#182;</a>               </div>               <p>we know the line number of each doOnce block that has been run
 so we go there and add a tick next to each doOnce to indicate
-that it has been run.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> elaboratedSourceByLine = elaboratedSource.split(<span class="string">"\n"</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-65">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-65">&#182;</a>               </div>               <p>alert('splitting: ' + elaboratedSourceByLine.length );</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">for</span> (<span class="keyword">var</span> iteratingOverSource = <span class="number">0</span>; iteratingOverSource &lt; doOnceOccurrencesLineNumbers.length; iteratingOverSource++) {
-</pre></div>             </td>           </tr>                               <tr id="section-66">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-66">&#182;</a>               </div>               <p>alert('doOnce run at line number: ' + doOnceOccurrencesLineNumbers[iteratingOverSource] );</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]] = elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]].replace(<span class="regexp">/^(\s*)doOnce([ ]*\-&gt;[ ]*.*)$/gm</span>, <span class="string">"$1\u2713doOnce$2"</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-67">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-67">&#182;</a>               </div>               <p>alert('...after the fix: ' + elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]] );</p>             </td>             <td class="code">               <div class="highlight"><pre>        }
+that it has been run.</p>             </td>             <td class="code">               <div class="highlight"><pre>        elaboratedSourceByLine = elaboratedSource.split(<span class="string">"\n"</span>);
+        <span class="keyword">for</span> (iteratingOverSource = <span class="number">0</span>; iteratingOverSource &lt; doOnceOccurrencesLineNumbers.length; iteratingOverSource += <span class="number">1</span>) {
+            elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]] = elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]].replace(<span class="regexp">/^(\s*)doOnce([ ]*\-&gt;[ ]*.*)$/gm</span>, <span class="string">"$1\u2713doOnce$2"</span>);
+        }
         elaboratedSource = elaboratedSourceByLine.join(<span class="string">"\n"</span>);
 
-        <span class="keyword">var</span> cursorPositionBeforeAddingCheckMark = editor.getCursor();
+        cursorPositionBeforeAddingCheckMark = editor.getCursor();
         cursorPositionBeforeAddingCheckMark.ch = cursorPositionBeforeAddingCheckMark.ch + <span class="number">1</span>;
 
         editor.setValue(elaboratedSource);
         editor.setCursor(cursorPositionBeforeAddingCheckMark);
 
-</pre></div>             </td>           </tr>                               <tr id="section-68">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-68">&#182;</a>               </div>               <p>we want to avoid that another frame is run with the old
+</pre></div>             </td>           </tr>                               <tr id="section-56">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-56">&#182;</a>               </div>               <p>we want to avoid that another frame is run with the old
 code, as this would mean that the
 runOnce code is run more than once,
 so we need to register the new code.

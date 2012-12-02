@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, devel: true */
-/*global $, Detector, BlendControls, EditorDimmer, doTheSpinThingy: true */
+/*global $, Detector, BlendControls, EditorDimmer */
 
-var createProgramLoader = function (texteditor, bigcursor, livecodelab, threejs) {
+var createProgramLoader = function (texteditor, bigcursor, livecodelab, threejs, graphics) {
 
     'use strict';
 
@@ -600,7 +600,7 @@ var createProgramLoader = function (texteditor, bigcursor, livecodelab, threejs)
 
         EditorDimmer.undimEditor();
 
-        doTheSpinThingy = false;
+        graphics.doTheSpinThingy = false;
 
         var prependMessage = "";
         if ((!Detector.webgl || threejs.forceCanvasRenderer) && demoName.indexOf('webgl') === 0) {
