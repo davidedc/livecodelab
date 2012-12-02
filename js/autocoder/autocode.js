@@ -9,7 +9,6 @@ var createAutocoder = function (editor) {
         blinkingAutocoderTimeout,
         numberOfResults = 0,
         whichOneToChange = 0,
-        autocoder,
         scanningAllColors;
 
     var autocoder = {};
