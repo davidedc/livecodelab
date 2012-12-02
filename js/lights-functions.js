@@ -1,8 +1,8 @@
 /*jslint browser: true */
-/*global logger, color, defaultNormalFill: true, defaultNormalStroke: true */
+/*global logger, color */
 
 
-var createLightSystem = function (threejs, three, matrixcommands) {
+var createLightSystem = function (threejs, three, matrixcommands, graphics) {
 
     'use strict';
 
@@ -50,10 +50,10 @@ var createLightSystem = function (threejs, three, matrixcommands) {
         LightSystem.lightsAreOn = true;
 
         // used by graphic-primitives
-        defaultNormalFill = false;
+        graphics.defaultNormalFill = false;
 
         // used by graphic-primitives
-        defaultNormalStroke = false;
+        graphics.defaultNormalStroke = false;
 
         pooledAmbientLight = ambientLightsPool[LightSystem.usedAmbientLights];
         if (pooledAmbientLight === undefined) {

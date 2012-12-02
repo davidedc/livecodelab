@@ -75,7 +75,10 @@ function color$4(aValue1, aValue2, aValue3, aValue4) {
 }
 
 function color$2(aValue1, aValue2) {
-  var a;
+  var a,
+      // lowest than any 32 bit color is a special
+      // color that paints based on normals.
+      angleColor = -16777217;
 
   if (aValue1 === angleColor) return angleColor;
 

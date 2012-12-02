@@ -1,8 +1,8 @@
 /*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
-/*global $, logger, resetTheSpinThingy: true, autocoder, checkErrorAndReport, LiveCodeLab, doOnceOccurrencesLineNumbers */
+/*global $, logger, autocoder, checkErrorAndReport, LiveCodeLab, doOnceOccurrencesLineNumbers */
 
 
-var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
+var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
 
     'use strict';
 
@@ -113,7 +113,7 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor) {
             }
 
             if (editorContent === '' && !BigCursor.show) {
-                resetTheSpinThingy = true;
+                graphics.resetTheSpinThingy = true;
                 BigCursor.show = true;
                 window.location.hash = '';
 
