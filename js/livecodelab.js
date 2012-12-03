@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*global $, MatrixCommands, soundLoops: true, updatesPerMinute: true, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, checkErrorAndReport, changeUpdatesPerMinuteIfNeeded, stats */
+/*global $, MatrixCommands, soundLoops: true, updatesPerMinute: true, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, Ui, changeUpdatesPerMinuteIfNeeded, stats */
 
 
 var frame = 0;
@@ -111,7 +111,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
                 }
 
                 // highlight the error
-                checkErrorAndReport(e);
+                Ui.checkErrorAndReport(e);
 
                 // mark the program as flawed and register the previous stable one.
                 CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
