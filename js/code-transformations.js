@@ -1,5 +1,5 @@
 /*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
-/*global $, logger, autocoder, checkErrorAndReport, LiveCodeLab */
+/*global $, logger, autocoder, Ui, LiveCodeLab */
 
 
 var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
@@ -526,7 +526,7 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
                 return;
             }
 
-            checkErrorAndReport(e);
+            Ui.checkErrorAndReport(e);
 
             return;
         }
