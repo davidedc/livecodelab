@@ -56,10 +56,7 @@ var startEnvironment = function () {
         $('#simplemodal-container').height(200);
     }
 
-    //alert('resizing canvas');
-    var canvas = document.getElementById('backGroundCanvas');
-
-    Ui.fullscreenify(canvas);
+    Ui.fullscreenify('#backGroundCanvas');
 
     BackgroundPainter.resetGradientStack();
     BackgroundPainter.simpleGradientUpdateIfChanged();

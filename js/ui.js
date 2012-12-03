@@ -8,7 +8,6 @@ var createUi = function () {
     var Ui = {},
         triggerReset,
         resizeCanvas,
-        fullscreenify,
         adjustCodeMirrorHeight;
 
 
@@ -27,14 +26,18 @@ var createUi = function () {
 
 
 
-    resizeCanvas = function (canvas, style) {
+    resizeCanvas = function (canvasId) {
+        var canvas, scale;
 
-        var scale = {
+        canvas = $(canvasId);
+
+        scale = {
             x: 1,
             y: 1
         };
-        scale.x = (window.innerWidth + 40) / canvas.width;
-        scale.y = (window.innerHeight + 40) / canvas.height;
+
+        scale.x = (window.innerWidth + 40) / canvas.width();
+        scale.y = (window.innerHeight + 40) / canvas.height();
 
         scale = scale.x + ', ' + scale.y;
 
@@ -50,13 +53,28 @@ var createUi = function () {
         //     scale = scale.y + ', ' + scale.y;
         // }
 
-        canvas.setAttribute('style', style + ' ' + '-ms-transform-origin: left top; -webkit-transform-origin: left top; -moz-transform-origin: left top; -o-transform-origin: left top; transform-origin: left top; -ms-transform: scale(' + scale + '); -webkit-transform: scale3d(' + scale + ', 1); -moz-transform: scale(' + scale + '); -o-transform: scale(' + scale + '); transform: scale(' + scale + ');');
+        canvas.css('-ms-transform-origin', 'left top')
+              .css('-webkit-transform-origin', 'left top')
+              .css('-moz-transform-origin', 'left top')
+              .css('-o-transform-origin', 'left top')
+              .css('transform-origin', 'left top')
+              .css('-ms-transform', 'scale(' + scale + ')')
+              .css('-webkit-transform', 'scale3d(' + scale + ', 1)')
+              .css('-moz-transform', 'scale(' + scale + ')')
+              .css('-o-transform', 'scale(' + scale + ')')
+              .css('transform', 'scale(' + scale + ')');
 
         // TODO In theory we want to re-draw the background because the
         // aspect ration might have changed.
         // But for the time being we only have vertical
         // gradients so that's not going to be a problem.
     };
+
+    Ui.adjustCodeMirrorHeight = function () {
+        $('.CodeMirror-scroll').css('height', window.innerHeight - $('#theMenu').height());
+    };
+
+
     // resizing the text area is necessary otherwise
     // as the user types to the end of it, instead of just scrolling
     // the content leaving all the other parts of the page where
@@ -66,23 +84,13 @@ var createUi = function () {
     // so we have to resize it at launch and also every time the window
     // is resized.
 
-    Ui.adjustCodeMirrorHeight = function () {
-
-        $('.CodeMirror-scroll').css('height', window.innerHeight - $('#theMenu').height());
-    };
-
-
-
-
-    Ui.fullscreenify = function (canvas) {
-
-        var style = canvas.getAttribute('style') || '';
+    Ui.fullscreenify = function (canvasId) {
         window.addEventListener('resize', function () {
             Ui.adjustCodeMirrorHeight();
-            resizeCanvas(canvas, style);
+            resizeCanvas(canvasId);
         }, false);
 
-        resizeCanvas(canvas, style);
+        resizeCanvas(canvasId);
     };
 
 
