@@ -40,6 +40,8 @@ var startEnvironment = function () {
 
     EditorDimmer = createEditorDimmer(editor, ProgramLoader, BigCursor);
 
+    Ui = createUi();
+
 
     logger("startEnvironment");
     if (ThreeJs) {
@@ -57,7 +59,7 @@ var startEnvironment = function () {
     //alert('resizing canvas');
     var canvas = document.getElementById('backGroundCanvas');
 
-    fullscreenify(canvas);
+    Ui.fullscreenify(canvas);
 
     BackgroundPainter.resetGradientStack();
     BackgroundPainter.simpleGradientUpdateIfChanged();
@@ -66,7 +68,7 @@ var startEnvironment = function () {
     $("#formCode").css('opacity', 0);
 
     editor.focus();
-    adjustCodeMirrorHeight();
+    Ui.adjustCodeMirrorHeight();
 
     // check if the url points to a particular demo,
     // in which case we load the demo directly.
@@ -89,6 +91,8 @@ var startEnvironment = function () {
     // that way we can easily invert the default: just change false to true -- julien
     EditorDimmer.dimCodeOn = false;
     EditorDimmer.toggleDimCode();
+
+    Ui.setup();
 
 };
 

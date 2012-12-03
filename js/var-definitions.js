@@ -45,8 +45,7 @@ var MatrixCommands;
 var TimeKeeper;
 var CodeTransformer;
 var GraphicsCommands;
-
 var BackgroundPainter;
-
 var EditorDimmer;
+var Ui;
 
