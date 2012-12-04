@@ -1,4 +1,4 @@
-/*jslint browser: true, devel: true */
+/*jslint browser: true */
 /*global $, logger, buzz, autocoder, createSoundDef */
 
 var createSoundSystem = function () {
@@ -19,7 +19,8 @@ var createSoundSystem = function () {
         soundLoops = [],
         soundLoop,
         checkSound,
-        updatesPerMinute;
+        updatesPerMinute,
+        playingMethods = {};
 
     soundLoops.soundIDs = [];
     soundLoops.beatStrings = [];
@@ -84,108 +85,128 @@ var createSoundSystem = function () {
     };
 
 
+    playingMethods.basic = function (soundFile) {
+        // This method is the simplest and entails just using buzz.js fire and forget.
+        // Each "playing" beat a new object is created.
+        var availableSoundBank = new buzz.sound(soundFile);
+        availableSoundBank.play();
+    };
+
+    playingMethods.createAudioTag = function (soundFile) {
+
+        var audioElement, source1;
+
+        // This method is quite "raw" and involves using the
+        // audio object directly.
+        audioElement = document.createElement('audio');
+        audioElement.setAttribute("preload", "auto");
+        audioElement.autobuffer = true;
+
+        source1 = document.createElement('source');
+        source1.type = 'audio/ogg';
+        source1.src = soundFile;
+
+        audioElement.appendChild(source1);
+        audioElement.addEventListener("load", function () {
+            audioElement.play();
+            $(".filename span").html(audioElement.src);
+        }, true);
+
+        audioElement.play();
+    };
+
+    playingMethods.buzzPlay = function (loopedSoundID) {
+        var availableSoundBank,
+            relevantSoundBank = soundBank[loopedSoundID],
+            lengthOfSoundBank = relevantSoundBank.length,
+            i,
+            checkingSoundBank;
+
+        for (i = 0; i < lengthOfSoundBank; i += 1) {
+            checkingSoundBank = relevantSoundBank[i];
+            if (checkingSoundBank.isEnded()) {
+                availableSoundBank = checkingSoundBank;
+                logger('sound bank ' + i + " is available ");
+                break;
+            } else {
+                logger('sound bank ' + i + " has not ended ");
+            }
+        }
+        if (availableSoundBank === undefined) {
+            logger('creating new sound object ');
+            if (totalCreatedSoundObjects > 31) {
+                soundSystemIsMangled = true;
+                $('#soundSystemIsMangledMessage').modal();
+                $('#simplemodal-container').height(250);
+            }
+            availableSoundBank = new buzz.sound(soundFiles[loopedSoundID]);
+            soundBank[loopedSoundID].push(availableSoundBank);
+            totalCreatedSoundObjects += 1;
+        }
+        availableSoundBank.play();
+    };
+
     // Called from changeUpdatesPerMinuteIfNeeded
     soundLoop = function () {
 
-        var availableSoundBank;
-        var loopingTheSoundIDs, checkingAvailableSoundBank;
+        var loopingTheSoundIDs,
+            loopedSoundID,
+            playOrNoPlay,
+            beatString;
 
-        if (soundSystemIsMangled) return;
+        if (soundSystemIsMangled) {
+            return;
+        }
 
-        beatNumber++;
+        beatNumber += 1;
         beatNumber = beatNumber % 16;
 
-        for (loopingTheSoundIDs = 0; loopingTheSoundIDs < soundLoops.soundIDs.length; loopingTheSoundIDs++) {
+        for (loopingTheSoundIDs = 0; loopingTheSoundIDs < soundLoops.soundIDs.length; loopingTheSoundIDs += 1) {
 
 
-            var loopedSoundID = soundLoops.soundIDs[loopingTheSoundIDs];
+            loopedSoundID = soundLoops.soundIDs[loopingTheSoundIDs];
 
             // When the user modifies the name of a sample,
             // while she is not done finishing typing, the sample name is "incomplete"
             // or anyways it doesn't map to anything until it's complete,
             // doesn't index any actual sound. So we check for that here.
-            if (!(loopedSoundID in soundFiles)) continue;
+            if (soundFiles[loopedSoundID]) {
+                beatString = soundLoops.beatStrings[loopingTheSoundIDs];
+                // the beat string can be any length, we just wrap around if needed.
+                playOrNoPlay = beatString.charAt(beatNumber % (beatString.length));
+                if (playOrNoPlay === 'x') {
+                    // OK so this is what we do here:
+                    // when each Audio object plays, it plays from start to end
+                    // and you can't get it to re-start until it's completely done
+                    // playing.
+                    // This is bad because some sounds last a second or so, and they
+                    // need to play more often than one time per second.
+                    // So there are two possible solutions:
+                    // 1) to have 20 or so sound objects, and all the times that
+                    //    a file needs playing, scan them and find one that is free,
+                    //    then associate that to the file one wants to play
+                    //    this works well in IE and Chrome but really bad in Safari
+                    //    The problem here is the potentially heavy switching of sound files.
+                    // 2) for each file, give it a queue of audio objects.
+                    //    This is more complicated but seems to work
+                    //    about right in all browsers. Only caveat is that Safari
+                    //    needs the audio objects to be preloaded because otherwise
+                    //    it jams. Conversely, IE and Chrome don't like them preloaded
+                    //    because they have a limit of 35 or so sounds.
+                    // So here we went for 2), and we preload the sounds only for
+                    // browsers other than Chrome and IE.
 
-
-            var playOrNoPlay;
-            var beatString = soundLoops.beatStrings[loopingTheSoundIDs];
-            // the beat string can be any length, we just wrap around if needed.
-            playOrNoPlay = beatString.charAt(beatNumber % (beatString.length));
-            if (playOrNoPlay === 'x') {
-                // OK so this is what we do here:
-                // when each Audio object plays, it plays from start to end
-                // and you can't get it to re-start until it's completely done
-                // playing.
-                // This is bad because some sounds last a second or so, and they
-                // need to play more often than one time per second.
-                // So there are two possible solutions:
-                // 1) to have 20 or so sound objects, and all the times that
-                //    a file needs playing, scan them and find one that is free,
-                //    then associate that to the file one wants to play
-                //    this works well in IE and Chrome but really bad in Safari
-                //    The problem here is the potentially heavy switching of sound files.
-                // 2) for each file, give it a queue of audio objects.
-                //    This is more complicated but seems to work
-                //    about right in all browsers. Only caveat is that Safari
-                //    needs the audio objects to be preloaded because otherwise
-                //    it jams. Conversely, IE and Chrome don't like them preloaded
-                //    because they have a limit of 35 or so sounds.
-                // So here we went for 2), and we preload the sounds only for
-                // browsers other than Chrome and IE.
-
-                if (chosenSoundPlayingMethod === 1) {
-                    // This method is the simplest and entails just using buzz.js fire and forget.
-                    // Each "playing" beat a new object is created.
-
-                    availableSoundBank = new buzz.sound(soundFiles[loopedSoundID]);
-                    availableSoundBank.play();
-                } else if (chosenSoundPlayingMethod === 3) {
-                    // This method is quite "raw" and involves using the
-                    // audio object directly.
-                    var audioElement = document.createElement('audio');
-                    audioElement.setAttribute("preload", "auto");
-                    audioElement.autobuffer = true;
-
-                    var source1 = document.createElement('source');
-                    source1.type = 'audio/ogg';
-                    source1.src = soundFiles[loopedSoundID];
-                    audioElement.appendChild(source1);
-                    audioElement.addEventListener("load", function () {
-                        audioElement.play();
-                        $(".filename span").html(audioElement.src);
-                    }, true);
-
-                    audioElement.play();
-
-                } else if (chosenSoundPlayingMethod === 2) {
-                    var relevantSoundBank = soundBank[loopedSoundID];
-                    var lengthOfSoundBank = relevantSoundBank.length;
-                    availableSoundBank = undefined;
-                    for (checkingAvailableSoundBank = 0; checkingAvailableSoundBank < lengthOfSoundBank; checkingAvailableSoundBank++) {
-                        var checkingSoundBank = relevantSoundBank[checkingAvailableSoundBank];
-                        if (checkingSoundBank.isEnded()) {
-                            availableSoundBank = checkingSoundBank;
-                            logger('sound bank ' + checkingAvailableSoundBank + " is available ");
-                            break;
-                        } else {
-                            logger('sound bank ' + checkingAvailableSoundBank + " has not ended ");
-                        }
+                    if (chosenSoundPlayingMethod === 1) {
+                        playingMethods.basic(soundFiles[loopedSoundID]);
+                    } else if (chosenSoundPlayingMethod === 3) {
+                        playingMethods.createAudioTag(soundFiles[loopedSoundID]);
+                    } else if (chosenSoundPlayingMethod === 2) {
+                        playingMethods.buzzPlay(soundBank[loopedSoundID]);
                     }
-                    if (availableSoundBank === undefined) {
-                        logger('creating new sound object ');
-                        if (totalCreatedSoundObjects > 31) {
-                            soundSystemIsMangled = true;
-                            $('#soundSystemIsMangledMessage').modal();
-                            $('#simplemodal-container').height(250);
-                        }
-                        availableSoundBank = new buzz.sound(soundFiles[loopedSoundID]);
-                        soundBank[loopedSoundID].push(availableSoundBank);
-                        totalCreatedSoundObjects++;
-                    }
-                    availableSoundBank.play();
+
                 }
-
             }
+
         }
     };
 
@@ -228,8 +249,10 @@ var createSoundSystem = function () {
         newSound.bind("ended", function (e) {
             newSound.unbind("ended");
             newSound.unmute();
-            endedFirstPlay++;
-            if (endedFirstPlay % 10 === 0) $('#loading').append('/');
+            endedFirstPlay += 1;
+            if (endedFirstPlay % 10 === 0) {
+                $('#loading').append('/');
+            }
             logger("tested " + endedFirstPlay + " sounds");
             if (endedFirstPlay === soundDef.sounds.length * CHANNELSPERSOUND) {
                 logger("tested all sounds");
@@ -253,9 +276,9 @@ var createSoundSystem = function () {
             return;
         }
 
-        for (cycleSoundDefs = 0; cycleSoundDefs < soundDef.sounds.length; cycleSoundDefs++) {
+        for (cycleSoundDefs = 0; cycleSoundDefs < soundDef.sounds.length; cycleSoundDefs += 1) {
 
-            soundInfo = soundDef.getByNumber(cycleSoundDefs)
+            soundInfo = soundDef.getByNumber(cycleSoundDefs);
 
             soundBank[soundInfo.name] = [];
             soundFiles[soundInfo.name] = soundInfo.path;
@@ -269,7 +292,7 @@ var createSoundSystem = function () {
             // and instead works fine by loading sound all at the beginning.
             if (navigator.userAgent.indexOf("Firefox") === -1 && navigator.userAgent.toLowerCase().indexOf('chrome') === -1 && !(/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
 
-                for (preloadSounds = 0; preloadSounds < CHANNELSPERSOUND; preloadSounds++) {
+                for (preloadSounds = 0; preloadSounds < CHANNELSPERSOUND; preloadSounds += 1) {
                     logger("checking sound " + soundInfo.name);
                     // if you load and play all the channels of all the sounds all together
                     // the browser freezes, and the OS doesn't feel too well either
@@ -283,7 +306,7 @@ var createSoundSystem = function () {
 
         // if this is chrome, fire the callback immediately
         // otherwise wait untill all the sounds have been tested
-        if (navigator.userAgent.indexOf("Firefox") != -1 || navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || (/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
+        if (navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || (/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
             callback();
         }
     };
