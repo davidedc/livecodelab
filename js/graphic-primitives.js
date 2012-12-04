@@ -205,8 +205,6 @@ var createGraphicsCommands = function () {
             }
 
             // associating normal material to the mesh
-            pooledObject.lineMaterial.opacity = currentStrokeAlpha;
-            pooledObject.lineMaterial.linewidth = GraphicsCommands.currentStrokeSize;
 
             if (currentStrokeColor === angleColor || GraphicsCommands.defaultNormalStroke) {
                 theAngle = pooledObject.mesh.matrix.multiplyVector3(new THREE.Vector3(0, 1, 0)).normalize();
@@ -227,20 +225,12 @@ var createGraphicsCommands = function () {
                 logger("creating normal material");
                 pooledObject.normalMaterial = new THREE.MeshNormalMaterial();
             }
-            pooledObject.normalMaterial.opacity = alphaToBeUsed;
-            pooledObject.normalMaterial.wireframe = strokeTime;
-            pooledObject.normalMaterial.wireframeLinewidth = GraphicsCommands.currentStrokeSize;
-            pooledObject.normalMaterial.doubleSided = primitiveProperties.doubleSided;
             pooledObject.mesh.material = pooledObject.normalMaterial;
         } else if (!LightSystem.lightsAreOn) {
             if (pooledObject.basicMaterial === undefined) {
                 pooledObject.basicMaterial = new THREE.MeshBasicMaterial();
             }
             pooledObject.basicMaterial.color.setHex(colorToBeUsed);
-            pooledObject.basicMaterial.opacity = alphaToBeUsed;
-            pooledObject.basicMaterial.wireframe = strokeTime;
-            pooledObject.basicMaterial.wireframeLinewidth = GraphicsCommands.currentStrokeSize;
-            pooledObject.basicMaterial.doubleSided = primitiveProperties.doubleSided;
             pooledObject.mesh.material = pooledObject.basicMaterial;
 
         } else {
@@ -250,15 +240,17 @@ var createGraphicsCommands = function () {
                 pooledObject.lambertMaterial = new THREE.MeshLambertMaterial();
             }
             pooledObject.lambertMaterial.color.setHex(colorToBeUsed);
-            pooledObject.lambertMaterial.opacity = alphaToBeUsed;
-            pooledObject.lambertMaterial.wireframe = strokeTime;
-            pooledObject.lambertMaterial.wireframeLinewidth = GraphicsCommands.currentStrokeSize;
-            pooledObject.lambertMaterial.doubleSided = primitiveProperties.doubleSided;
-            pooledObject.lambertMaterial.ambient.setHex(LightSystem.ambientColor);
-            pooledObject.lambertMaterial.reflectivity = reflectValue;
-            pooledObject.lambertMaterial.refractionRatio = refractValue;
+				    pooledObject.lambertMaterial.ambient.setHex(LightSystem.ambientColor);
             pooledObject.mesh.material = pooledObject.lambertMaterial;
         }
+
+				pooledObject.mesh.material.opacity = alphaToBeUsed;
+				pooledObject.mesh.material.wireframe = strokeTime;
+				pooledObject.mesh.material.wireframeLinewidth = GraphicsCommands.currentStrokeSize;
+				pooledObject.mesh.material.doubleSided = primitiveProperties.doubleSided;
+				pooledObject.mesh.material.reflectivity = reflectValue;
+				pooledObject.mesh.material.refractionRatio = refractValue;
+
 
         if (GraphicsCommands.resetTheSpinThingy) {
             pooledObject.initialSpinCountdown = SPIN_DURATION_IN_FRAMES;
