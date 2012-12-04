@@ -301,14 +301,14 @@ var createGraphicsCommands = function () {
                 pooledObject.mesh.matrix.scale(new THREE.Vector3(0));
         }
         else if (a !== 1 || b !== 1 || c !== 1) {
-            if (!strokeTime) {
-                pooledObject.mesh.matrix.scale(new THREE.Vector3(a, b, c));
-            } else {
+            if (strokeTime) {
                 // meshes should be built from geometries that are
                 // ever so slight larger than the "fill" mesh so there
                 // is no z-fighting...
                 // constant 0.001 below is to avoid z-fighting
                 pooledObject.mesh.matrix.scale(new THREE.Vector3(a + 0.001, b + 0.001, c + 0.001));
+            } else {
+                pooledObject.mesh.matrix.scale(new THREE.Vector3(a, b, c));
             }
         }
 
