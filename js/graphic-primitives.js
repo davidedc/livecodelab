@@ -298,14 +298,24 @@ var createGraphicsCommands = function () {
             MatrixCommands.popMatrix();
         }
 
-        // TODO: meshes should be built from geometries that are
-        // ever so slight larger than the "fill" mesh so there
-        // is no z-fighting...
-        // constant 0.001 below is to avoid z-fighting
-        if (a !== 1 || b !== 1 || c !== 1) {
+        if (newObjectToBeAddedToTheScene) {
+                // if the object is new it means that the normal material
+                // is applied to it, no matter what the current settings of fill
+                // and lights are. So we make objects invisible in their very first
+                // frame to avoid it flashing briefly in completely the wrong colour
+                // by setting the scale to zero. The object will still go through the
+                // rendering step, so the memory for the material is initialised
+                // correctly.
+                pooledObject.mesh.matrix.scale(new THREE.Vector3(0));
+        }
+        else if (a !== 1 || b !== 1 || c !== 1) {
             if (!strokeTime) {
                 pooledObject.mesh.matrix.scale(new THREE.Vector3(a, b, c));
             } else {
+                // meshes should be built from geometries that are
+                // ever so slight larger than the "fill" mesh so there
+                // is no z-fighting...
+                // constant 0.001 below is to avoid z-fighting
                 pooledObject.mesh.matrix.scale(new THREE.Vector3(a + 0.001, b + 0.001, c + 0.001));
             }
         }
