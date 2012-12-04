@@ -20,8 +20,6 @@ var startEnvironment = function () {
 
     GraphicsCommands = createGraphicsCommands();
 
-    SoundSystem = createSoundSystem();
-
     MatrixCommands = createMatrixCommands(THREE, TimeKeeper);
 
     BlendControls = createBlendControls(ThreeJs);
@@ -107,6 +105,8 @@ $(document).ready(function () {
         $('#simplemodal-container').height(200);
         return;
     }
+
+    SoundSystem = createSoundSystem();
 
     // pass startEnvironment function in to be used as a callback
     // once the sounds are loaded it's fire and starts the app up
