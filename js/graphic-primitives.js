@@ -166,7 +166,7 @@ var createGraphicsCommands = function () {
         // this is to run the code twice. This should be neater
         // and turned into a function call really.
 
-        var newObjectToBeAddedToTheScene = false,
+        var objectIsNew = false,
             pooledObject,
             theAngle;
 
@@ -194,7 +194,7 @@ var createGraphicsCommands = function () {
                 initialSpinCountdown: SPIN_DURATION_IN_FRAMES
             };
 
-            newObjectToBeAddedToTheScene = true;
+            objectIsNew = true;
             objectPool[primitiveProperties.primitiveType].push(pooledObject);
         }
 
@@ -214,7 +214,7 @@ var createGraphicsCommands = function () {
             }
 
             pooledObject.mesh.material = pooledObject.lineMaterial;
-        } else if (newObjectToBeAddedToTheScene || (colorToBeUsed === angleColor || applyDefaultNormalColor)) {
+        } else if (objectIsNew || (colorToBeUsed === angleColor || applyDefaultNormalColor)) {
             // the first time we render a mesh we need to
             // render it with the material that takes the
             // bigger buffer space, see:
@@ -290,7 +290,7 @@ var createGraphicsCommands = function () {
             MatrixCommands.popMatrix();
         }
 
-        if (newObjectToBeAddedToTheScene) {
+        if (objectIsNew) {
                 // if the object is new it means that the normal material
                 // is applied to it, no matter what the current settings of fill
                 // and lights are. So we make objects invisible in their very first
@@ -312,7 +312,7 @@ var createGraphicsCommands = function () {
             }
         }
 
-        if (newObjectToBeAddedToTheScene) {
+        if (objectIsNew) {
             ThreeJs.scene.add(pooledObject.mesh);
         }
 
