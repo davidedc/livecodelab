@@ -6,8 +6,7 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
 
     'use strict';
 
-    var LightSystem = {},
-        ambientLightsPool = [];
+    var LightSystem = {};
 
     graphics.objectPools[graphics.primitiveTypes.ambientLight] = [];
     graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight] = 0;
@@ -54,18 +53,20 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
         // used by graphic-primitives
         graphics.defaultNormalStroke = false;
 
-        var pooledAmbientLight = graphics.objectPools[graphics.primitiveTypes.ambientLight] [graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
+        var ambientLightsPool = graphics.objectPools[graphics.primitiveTypes.ambientLight];
+        var pooledAmbientLight =  ambientLightsPool[graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
+        //logger("how many ambient lights: " + graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]);
         if (pooledAmbientLight === undefined) {
-            logger('no ambientLight in pool, creating one');
+            //logger('no ambientLight in pool, creating one - ambientLightsPool length: ' + ambientLightsPool.length);
             pooledAmbientLight = new three.AmbientLight(colorToBeUsed);
             newLightCreated = true;
             ambientLightsPool.push(pooledAmbientLight);
             pooledAmbientLight.detailLevel = 0;
             pooledAmbientLight.primitiveType = graphics.primitiveTypes.ambientLight;
-            logger("graphics.primitiveTypes.ambientLight" + graphics.primitiveTypes.ambientLight);
+            //logger("graphics.primitiveTypes.ambientLight" + graphics.primitiveTypes.ambientLight);
         } else {
             pooledAmbientLight.color.setHex(colorToBeUsed);
-            logger('existing ambientLight in pool, setting color: ' + pooledAmbientLight.color.r + ' ' + pooledAmbientLight.color.g + ' ' + pooledAmbientLight.color.b);
+            //logger('existing ambientLight in pool, setting color: ' + pooledAmbientLight.color.r + ' ' + pooledAmbientLight.color.g + ' ' + pooledAmbientLight.color.b);
         }
 
 

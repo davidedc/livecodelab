@@ -69,8 +69,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
             SoundSystem.SetUpdatesPerMinute(60 * 4);
             LightSystem.noLights();
 
-            LightSystem.usedAmbientLights = 0;
-
+            graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight] = 0;
             graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.line] = 0;
             graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.rect] = 0;
             graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.box] = 0;
