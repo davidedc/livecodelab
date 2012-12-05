@@ -112,3 +112,21 @@ a:hover {
     padding-top: 0px;
     visibility: visible
 }
+
+
+.dd_menu li span {
+    padding:8px 20px;
+    display:block; color:#fff;
+    text-decoration:none;
+    font:12px arial, verdana, sans-serif;
+    font-weight: bold;
+    background-color: #000;
+}
+.dd_menu li span {
+    color: red;
+}
+.dd_menu li span {
+    color: green;
+}
+
+

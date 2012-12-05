@@ -122,6 +122,10 @@ can just get the message, or a blank string if there is no message</p>          
 
     };
 
+    Ui.soundSystemOk = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        console.log(<span class="string">"sound system ok"</span>);
+        $(<span class="string">"#soundSystemStatus"</span>).text(<span class="string">"Sound System On"</span>).removeClass(<span class="string">'off'</span>).addClass(<span class="string">'on'</span>);
+    };
 
 
 

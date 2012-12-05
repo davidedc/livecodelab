@@ -48,4 +48,5 @@ var GraphicsCommands;
 var BackgroundPainter;
 var EditorDimmer;
 var Ui;
+var SoundSystem;
 
