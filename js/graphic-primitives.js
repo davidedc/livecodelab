@@ -124,8 +124,8 @@ var createGraphicsCommands = function () {
         angleColor = -16777217;
 
 
-    var objectPool = [];
-    GraphicsCommands.objectPool = objectPool;
+    var objectPools = [];
+    GraphicsCommands.objectPools = objectPools;
     GraphicsCommands.ballDetLevel = 8;
     GraphicsCommands.currentStrokeSize = 1;
 
@@ -143,13 +143,13 @@ var createGraphicsCommands = function () {
 
     GraphicsCommands.primitiveTypes = primitiveTypes;
 
-    objectPool[primitiveTypes.line] = [];
-    objectPool[primitiveTypes.rect] = [];
-    objectPool[primitiveTypes.box] = [];
-    objectPool[primitiveTypes.peg] = [];
+    objectPools[primitiveTypes.line] = [];
+    objectPools[primitiveTypes.rect] = [];
+    objectPools[primitiveTypes.box] = [];
+    objectPools[primitiveTypes.peg] = [];
     // creating ball pools
     for (i = 0; i < (maximumBallDetail - minimumBallDetail + 1); i += 1) {
-        objectPool[primitiveTypes.ball + i] = [];
+        objectPools[primitiveTypes.ball + i] = [];
     }
 
 
@@ -186,7 +186,8 @@ var createGraphicsCommands = function () {
     // For each pool we have a count of how many of those entries
     // are actually used in the current frame.
     // This is so that we can go through the scene graph and hide the unused objects.
-    GraphicsCommands.objectsUsedInFrameCounts = [];
+    var objectsUsedInFrameCounts = [];
+    GraphicsCommands.objectsUsedInFrameCounts = objectsUsedInFrameCounts;
 
 
     // the "spinthingy" is because we want
@@ -207,7 +208,15 @@ var createGraphicsCommands = function () {
             pooledObjectWithMaterials,
             theAngle;
 
-        pooledObjectWithMaterials = objectPool[primitiveProperties.primitiveType + primitiveProperties.detailLevel][GraphicsCommands.objectsUsedInFrameCounts[primitiveProperties.primitiveType  + primitiveProperties.detailLevel]];
+        // the primitiveID is used to index three arrays:
+        //   array of caches (pools) of objects
+        //   array of caches (pools) of geometries
+        //   counters of how many objects of that type have been used in the current frame.
+        // Note that primitives that have an associated detail level span across
+        // multiple IDs, because geometries at different details levels are different.
+        var primitiveID = primitiveProperties.primitiveType + primitiveProperties.detailLevel;
+        var objectPool = objectPools[primitiveID];
+        pooledObjectWithMaterials = objectPool[objectsUsedInFrameCounts[primitiveID]];
         if (pooledObjectWithMaterials === undefined) {
             // each pooled object contains a geometry, and all the materials it could
             // ever need.
@@ -239,17 +248,17 @@ var createGraphicsCommands = function () {
                 // Another workaround would be to create an object
                 // for each different type of material.
                 normalMaterial: undefined,
-                threejsObject3D: new primitiveProperties.THREEObjectConstructor(geometriesBank[primitiveProperties.primitiveType  + primitiveProperties.detailLevel]),
+                threejsObject3D: new primitiveProperties.THREEObjectConstructor(geometriesBank[primitiveID]),
                 initialSpinCountdown: SPIN_DURATION_IN_FRAMES
             };
 
             objectIsNew = true;
-            objectPool[primitiveProperties.primitiveType  + primitiveProperties.detailLevel].push(pooledObjectWithMaterials);
+            objectPool.push(pooledObjectWithMaterials);
             //console.log("creating new object");
             //console.log("primitive type: " + primitiveProperties.primitiveType  );
             //console.log("level of detail: " + primitiveProperties.detailLevel);
-            //console.log("pool id: " + (primitiveProperties.primitiveType  + primitiveProperties.detailLevel));
-            //console.log("  length: " + objectPool[primitiveProperties.primitiveType  + primitiveProperties.detailLevel].length);
+            //console.log("pool id: " + (primitiveID));
+            //console.log("  length: " + objectPool.length);
         }
 
         if (primitiveProperties.primitiveType === primitiveTypes.line) {
@@ -325,7 +334,7 @@ var createGraphicsCommands = function () {
         pooledObjectWithMaterials.threejsObject3D.primitiveType = primitiveProperties.primitiveType;
         pooledObjectWithMaterials.threejsObject3D.detailLevel = primitiveProperties.detailLevel;
 
-        GraphicsCommands.objectsUsedInFrameCounts[primitiveProperties.primitiveType  + primitiveProperties.detailLevel] += 1;
+        objectsUsedInFrameCounts[primitiveID] += 1;
 
         if (GraphicsCommands.doTheSpinThingy && pooledObjectWithMaterials.initialSpinCountdown > 0) {
             MatrixCommands.pushMatrix();

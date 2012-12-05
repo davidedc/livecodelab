@@ -9,7 +9,7 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
     var LightSystem = {},
         ambientLightsPool = [];
 
-    graphics.objectPool[graphics.primitiveTypes.ambientLight] = [];
+    graphics.objectPools[graphics.primitiveTypes.ambientLight] = [];
     graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight] = 0;
 
     LightSystem.lightsAreOn = false;
@@ -54,7 +54,7 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
         // used by graphic-primitives
         graphics.defaultNormalStroke = false;
 
-        var pooledAmbientLight = graphics.objectPool[graphics.primitiveTypes.ambientLight] [graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
+        var pooledAmbientLight = graphics.objectPools[graphics.primitiveTypes.ambientLight] [graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
         if (pooledAmbientLight === undefined) {
             logger('no ambientLight in pool, creating one');
             pooledAmbientLight = new three.AmbientLight(colorToBeUsed);
