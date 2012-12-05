@@ -115,8 +115,15 @@ var createThreeJs = function (Detector, THREE, THREEx) {
         effectSaveTarget = new THREE.SavePass(new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters));
         effectSaveTarget.clear = false;
 
-        fxaaPass = new THREE.ShaderPass(THREE.ShaderExtras.fxaa);
-        fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);
+        // Uncomment the three lines containing "fxaaPass" below to try a fast
+        // antialiasing filter. Commented below because of two reasons: a) it's slow
+        // b) it blends in some black pixels, so it only looks good in dark backgrounds
+        // The problem of blending with black pixels is the same problem of the
+        // motionBlur leaving a black trail - tracked in github with
+        // https://github.com/davidedc/livecodelab/issues/22
+        
+        //fxaaPass = new THREE.ShaderPass(THREE.ShaderExtras.fxaa);
+        //fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);
 
         ThreeJs.effectBlend = new THREE.ShaderPass(THREE.ShaderExtras.blend, "tDiffuse1");
         screenPass = new THREE.ShaderPass(THREE.ShaderExtras.screen);
@@ -130,6 +137,7 @@ var createThreeJs = function (Detector, THREE, THREEx) {
         ThreeJs.composer = new THREE.EffectComposer(ThreeJs.renderer, renderTarget);
 
         ThreeJs.composer.addPass(renderModel);
+        //ThreeJs.composer.addPass(fxaaPass);
         ThreeJs.composer.addPass(ThreeJs.effectBlend);
         ThreeJs.composer.addPass(effectSaveTarget);
         ThreeJs.composer.addPass(screenPass);
