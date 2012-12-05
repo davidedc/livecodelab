@@ -9,8 +9,8 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
     var LightSystem = {},
         ambientLightsPool = [];
 
-
-    LightSystem.usedAmbientLights = 0;
+    graphics.objectPool[graphics.primitiveTypes.ambientLight] = [];
+    graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight] = 0;
 
     LightSystem.lightsAreOn = false;
 
@@ -33,8 +33,7 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
     window.ambientLight = LightSystem.ambientLight = function (r, g, b, a) {
 
         var colorToBeUsed,
-            newLightCreated = false,
-            pooledAmbientLight;
+            newLightCreated = false;
 
         if (r === undefined) {
             // empty arguments gives some sort
@@ -55,33 +54,31 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
         // used by graphic-primitives
         graphics.defaultNormalStroke = false;
 
-        pooledAmbientLight = ambientLightsPool[LightSystem.usedAmbientLights];
+        var pooledAmbientLight = graphics.objectPool[graphics.primitiveTypes.ambientLight] [graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
         if (pooledAmbientLight === undefined) {
             logger('no ambientLight in pool, creating one');
             pooledAmbientLight = new three.AmbientLight(colorToBeUsed);
             newLightCreated = true;
             ambientLightsPool.push(pooledAmbientLight);
+            pooledAmbientLight.detailLevel = 0;
+            pooledAmbientLight.primitiveType = graphics.primitiveTypes.ambientLight;
+            logger("graphics.primitiveTypes.ambientLight" + graphics.primitiveTypes.ambientLight);
         } else {
             pooledAmbientLight.color.setHex(colorToBeUsed);
             logger('existing ambientLight in pool, setting color: ' + pooledAmbientLight.color.r + ' ' + pooledAmbientLight.color.g + ' ' + pooledAmbientLight.color.b);
         }
 
 
-        pooledAmbientLight.isLine = false;
-        pooledAmbientLight.isRectangle = false;
-        pooledAmbientLight.isBox = false;
-        pooledAmbientLight.isCylinder = false;
-        pooledAmbientLight.isAmbientLight = true;
-        pooledAmbientLight.isPointLight = false;
-        pooledAmbientLight.isSphere = 0;
 
 
-        LightSystem.usedAmbientLights += 1;
+        graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight] += 1;
         pooledAmbientLight.matrixAutoUpdate = false;
         pooledAmbientLight.matrix.copy(matrixcommands.getWorldMatrix());
         pooledAmbientLight.matrixWorldNeedsUpdate = true;
 
         if (newLightCreated) {
+            // NOTE that an ambient light is not actually added as an object.
+            // i.e. if you navigate the objects you don't find it.
             threejs.scene.add(pooledAmbientLight);
         }
     };

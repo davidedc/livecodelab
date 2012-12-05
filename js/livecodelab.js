@@ -213,35 +213,21 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
             // pool and set to visible the number of used objects in this frame, set the
             // others to hidden.
             // Only tiny exception is that the ball has one pool for each detail level.
-            if (sceneObject.isLine) {
-                primitiveType = graphics.primitiveTypes.line;
-            } else if (sceneObject.isRectangle) {
-                primitiveType = graphics.primitiveTypes.rect;
-            } else if (sceneObject.isBox) {
-                primitiveType = graphics.primitiveTypes.box;
-            } else if (sceneObject.isCylinder) {
-                primitiveType = graphics.primitiveTypes.peg;
-            } else if (sceneObject.isSphere !== 0) {
-                primitiveType = graphics.primitiveTypes.ball + sceneObject.isSphere - graphics.minimumBallDetail;
-            }
+
 
             // set the first "used*****" objects to visible...
-            if (graphics.objectsUsedInFrameCounts[primitiveType] > 0) {
+            		//logger('combing display list objects: ' + (i+1) + " of " + threejs.scene.objects.length);
+            		//logger('prim type' + sceneObject.primitiveType);
+            		//logger('det level' + sceneObject.detailLevel);
+            if (graphics.objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] > 0) {
+            		//logger('object visible');
                 sceneObject.visible = true;
-                graphics.objectsUsedInFrameCounts[primitiveType] -= 1;
+                graphics.objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] -= 1;
             } else {
                 // ... and the others to invisible
                 sceneObject.visible = false;
             }
 
-            if (sceneObject.isAmbientLight) {
-                if (LightSystem.usedAmbientLights > 0) {
-                    sceneObject.visible = true;
-                    LightSystem.usedAmbientLights -= 1;
-                } else {
-                    sceneObject.visible = false;
-                }
-            }
         }
     };
 

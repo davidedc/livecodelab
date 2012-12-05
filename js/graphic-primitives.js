@@ -85,7 +85,6 @@ var createGraphicsCommands = function () {
         currentStrokeAlpha = 1,
         currentStrokeColor = 0x000000,
         i,
-        objectPool = [],
         geometriesBank = [],
         createObjectIfNeededAndDressWithCorrectMaterial,
         commonPrimitiveDrawingLogic,
@@ -97,6 +96,8 @@ var createGraphicsCommands = function () {
         angleColor = -16777217;
 
 
+    var objectPool = [];
+    GraphicsCommands.objectPool = objectPool;
     GraphicsCommands.ballDetLevel = 8;
     GraphicsCommands.currentStrokeSize = 1;
 
@@ -105,11 +106,12 @@ var createGraphicsCommands = function () {
     GraphicsCommands.maximumBallDetail = maximumBallDetail = 30;
 
 
-    primitiveTypes.line = 0;
-    primitiveTypes.rect = 1;
-    primitiveTypes.box = 2;
-    primitiveTypes.peg = 3;
-    primitiveTypes.ball = 4;
+    primitiveTypes.ambientLight = 0;
+    primitiveTypes.line = 1;
+    primitiveTypes.rect = 2;
+    primitiveTypes.box = 3;
+    primitiveTypes.peg = 4;
+    primitiveTypes.ball = 5;
 
     GraphicsCommands.primitiveTypes = primitiveTypes;
 
@@ -180,7 +182,7 @@ var createGraphicsCommands = function () {
             pooledObjectWithMaterials,
             theAngle;
 
-        pooledObjectWithMaterials = objectPool[primitiveProperties.primitiveType][GraphicsCommands.objectsUsedInFrameCounts[primitiveProperties.primitiveType]];
+        pooledObjectWithMaterials = objectPool[primitiveProperties.primitiveType + primitiveProperties.detailLevel][GraphicsCommands.objectsUsedInFrameCounts[primitiveProperties.primitiveType  + primitiveProperties.detailLevel]];
         if (pooledObjectWithMaterials === undefined) {
             // each pooled object contains a geometry, and all the materials it could
             // ever need.
@@ -212,12 +214,17 @@ var createGraphicsCommands = function () {
                 // Another workaround would be to create an object
                 // for each different type of material.
                 normalMaterial: undefined,
-                threejsObject3D: new primitiveProperties.THREEObjectConstructor(geometriesBank[primitiveProperties.primitiveType]),
+                threejsObject3D: new primitiveProperties.THREEObjectConstructor(geometriesBank[primitiveProperties.primitiveType  + primitiveProperties.detailLevel]),
                 initialSpinCountdown: SPIN_DURATION_IN_FRAMES
             };
 
             objectIsNew = true;
-            objectPool[primitiveProperties.primitiveType].push(pooledObjectWithMaterials);
+            objectPool[primitiveProperties.primitiveType  + primitiveProperties.detailLevel].push(pooledObjectWithMaterials);
+            //console.log("creating new object");
+            //console.log("primitive type: " + primitiveProperties.primitiveType  );
+            //console.log("level of detail: " + primitiveProperties.detailLevel);
+            //console.log("pool id: " + (primitiveProperties.primitiveType  + primitiveProperties.detailLevel));
+            //console.log("  length: " + objectPool[primitiveProperties.primitiveType  + primitiveProperties.detailLevel].length);
         }
 
         if (primitiveProperties.primitiveType === primitiveTypes.line) {
@@ -289,17 +296,11 @@ var createGraphicsCommands = function () {
             GraphicsCommands.doTheSpinThingy = false;
         }
 
-        pooledObjectWithMaterials.threejsObject3D.isLine = primitiveProperties.isLine;
-        pooledObjectWithMaterials.threejsObject3D.isRectangle = primitiveProperties.isRectangle;
-        pooledObjectWithMaterials.threejsObject3D.isBox = primitiveProperties.isBox;
-        pooledObjectWithMaterials.threejsObject3D.isCylinder = primitiveProperties.isCylinder;
-        pooledObjectWithMaterials.threejsObject3D.isAmbientLight = primitiveProperties.isAmbientLight;
-        pooledObjectWithMaterials.threejsObject3D.isPointLight = primitiveProperties.isPointLight;
-        pooledObjectWithMaterials.threejsObject3D.isSphere = primitiveProperties.isSphere;
-        pooledObjectWithMaterials.threejsObject3D.doubleSided = primitiveProperties.doubleSided;
 
+        pooledObjectWithMaterials.threejsObject3D.primitiveType = primitiveProperties.primitiveType;
+        pooledObjectWithMaterials.threejsObject3D.detailLevel = primitiveProperties.detailLevel;
 
-        GraphicsCommands.objectsUsedInFrameCounts[primitiveProperties.primitiveType] += 1;
+        GraphicsCommands.objectsUsedInFrameCounts[primitiveProperties.primitiveType  + primitiveProperties.detailLevel] += 1;
 
         if (GraphicsCommands.doTheSpinThingy && pooledObjectWithMaterials.initialSpinCountdown > 0) {
             MatrixCommands.pushMatrix();
@@ -402,15 +403,9 @@ var createGraphicsCommands = function () {
             thisGometryCanFill: false,
             thisGometryCanStroke: true,
             primitiveType: primitiveTypes.line,
-            isLine: true,
-            isRectangle: false,
-            isBox: false,
-            isCylinder: false,
-            isAmbientLight: false,
-            isPointLight: false,
-            isSphere: 0,
             doubleSided: false,
-            THREEObjectConstructor: THREE.Line
+            THREEObjectConstructor: THREE.Line,
+            detailLevel: 0
         };
         // end of primitive-specific initialisations:
 
@@ -425,15 +420,9 @@ var createGraphicsCommands = function () {
             thisGometryCanFill: true,
             thisGometryCanStroke: true,
             primitiveType: primitiveTypes.rect,
-            isLine: false,
-            isRectangle: true,
-            isBox: false,
-            isCylinder: false,
-            isAmbientLight: false,
-            isPointLight: false,
-            isSphere: 0,
             doubleSided: true,
-            THREEObjectConstructor: THREE.Mesh
+            THREEObjectConstructor: THREE.Mesh,
+            detailLevel: 0
         };
         // end of primitive-specific initialisations:
 
@@ -448,15 +437,9 @@ var createGraphicsCommands = function () {
             thisGometryCanFill: true,
             thisGometryCanStroke: true,
             primitiveType: primitiveTypes.box,
-            isLine: false,
-            isRectangle: false,
-            isBox: true,
-            isCylinder: false,
-            isAmbientLight: false,
-            isPointLight: false,
-            isSphere: 0,
             doubleSided: false,
-            THREEObjectConstructor: THREE.Mesh
+            THREEObjectConstructor: THREE.Mesh,
+            detailLevel: 0
         };
         // end of primitive-specific initialisations:
 
@@ -471,15 +454,9 @@ var createGraphicsCommands = function () {
             thisGometryCanFill: true,
             thisGometryCanStroke: true,
             primitiveType: primitiveTypes.peg,
-            isLine: false,
-            isRectangle: false,
-            isBox: false,
-            isCylinder: true,
-            isAmbientLight: false,
-            isPointLight: false,
-            isSphere: 0,
             doubleSided: false,
-            THREEObjectConstructor: THREE.Mesh
+            THREEObjectConstructor: THREE.Mesh,
+            detailLevel: 0
         };
         // end of primitive-specific initialisations:
 
@@ -506,16 +483,10 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             thisGometryCanFill: true,
             thisGometryCanStroke: true,
-            primitiveType: primitiveTypes.ball + GraphicsCommands.ballDetLevel - minimumBallDetail,
-            isLine: false,
-            isRectangle: false,
-            isBox: false,
-            isCylinder: false,
-            isAmbientLight: false,
-            isPointLight: false,
-            isSphere: GraphicsCommands.ballDetLevel,
+            primitiveType: primitiveTypes.ball,
             doubleSided: false,
-            THREEObjectConstructor: THREE.Mesh
+            THREEObjectConstructor: THREE.Mesh,
+            detailLevel: GraphicsCommands.ballDetLevel - minimumBallDetail
         };
         // end of primitive-specific initialisations:
 
