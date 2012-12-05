@@ -366,15 +366,15 @@ var createGraphicsCommands = function () {
         // Also, even if we aren'd under a noFill command spell, some geometries
         // inherently don't have a fill, so we return if there is no stroke either.
         // (right now that applies only lines).
-        if (!doStroke && (!doFill || !primitiveProperties.thisGometryCanFill)) {
+        if (!doStroke && (!doFill || !primitiveProperties.canFill)) {
             return;
         }
         // if we are under the influence of a noFill command OR
         // the wireframe is not going to be visible on top of the
         // fill then don't draw the stroke, only draw the fill
-        if ((primitiveProperties.thisGometryCanFill && doFill && (GraphicsCommands.currentStrokeSize === 0 || !doStroke || (GraphicsCommands.currentStrokeSize <= 1 && !GraphicsCommands.defaultNormalFill && !GraphicsCommands.defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (GraphicsCommands.currentStrokeSize <= 1 && GraphicsCommands.defaultNormalFill && GraphicsCommands.defaultNormalStroke)) {
+        if ((primitiveProperties.canFill && doFill && (GraphicsCommands.currentStrokeSize === 0 || !doStroke || (GraphicsCommands.currentStrokeSize <= 1 && !GraphicsCommands.defaultNormalFill && !GraphicsCommands.defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (GraphicsCommands.currentStrokeSize <= 1 && GraphicsCommands.defaultNormalFill && GraphicsCommands.defaultNormalStroke)) {
             createObjectIfNeededAndDressWithCorrectMaterial(a, b, c, primitiveProperties, false, currentFillColor, currentFillAlpha, GraphicsCommands.defaultNormalFill);
-        } else if ((!doFill || !primitiveProperties.thisGometryCanFill) && doStroke) {
+        } else if ((!doFill || !primitiveProperties.canFill) && doStroke) {
             // only doing the stroke
             createObjectIfNeededAndDressWithCorrectMaterial(a, b, c, primitiveProperties, true, currentStrokeColor, currentStrokeAlpha, GraphicsCommands.defaultNormalStroke);
             // doing both the fill and the stroke
@@ -400,7 +400,7 @@ var createGraphicsCommands = function () {
 
         // primitive-specific initialisations:
         var primitiveProperties = {
-            thisGometryCanFill: false,
+            canFill: false,
             primitiveType: primitiveTypes.line,
             doubleSided: false,
             THREEObjectConstructor: THREE.Line,
@@ -416,7 +416,7 @@ var createGraphicsCommands = function () {
 
         // primitive-specific initialisations:
         var primitiveProperties = {
-            thisGometryCanFill: true,
+            canFill: true,
             primitiveType: primitiveTypes.rect,
             doubleSided: true,
             THREEObjectConstructor: THREE.Mesh,
@@ -432,7 +432,7 @@ var createGraphicsCommands = function () {
 
         // primitive-specific initialisations:
         var primitiveProperties = {
-            thisGometryCanFill: true,
+            canFill: true,
             primitiveType: primitiveTypes.box,
             doubleSided: false,
             THREEObjectConstructor: THREE.Mesh,
@@ -448,7 +448,7 @@ var createGraphicsCommands = function () {
 
         // primitive-specific initialisations:
         var primitiveProperties = {
-            thisGometryCanFill: true,
+            canFill: true,
             primitiveType: primitiveTypes.peg,
             doubleSided: false,
             THREEObjectConstructor: THREE.Mesh,
@@ -477,7 +477,7 @@ var createGraphicsCommands = function () {
 
         // primitive-specific initialisations:
         var primitiveProperties = {
-            thisGometryCanFill: true,
+            canFill: true,
             primitiveType: primitiveTypes.ball,
             doubleSided: false,
             THREEObjectConstructor: THREE.Mesh,
