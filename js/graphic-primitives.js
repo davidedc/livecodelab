@@ -203,9 +203,6 @@ var createGraphicsCommands = function () {
 
     createObjectIfNeededAndDressWithCorrectMaterial = function (a, b, c, primitiveProperties, strokeTime, colorToBeUsed, alphaToBeUsed, applyDefaultNormalColor) {
 
-        // this is to run the code twice. This should be neater
-        // and turned into a function call really.
-
         var objectIsNew = false,
             pooledObjectWithMaterials,
             theAngle;
