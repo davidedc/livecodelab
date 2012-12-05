@@ -401,7 +401,6 @@ var createGraphicsCommands = function () {
         // primitive-specific initialisations:
         var primitiveProperties = {
             thisGometryCanFill: false,
-            thisGometryCanStroke: true,
             primitiveType: primitiveTypes.line,
             doubleSided: false,
             THREEObjectConstructor: THREE.Line,
@@ -418,7 +417,6 @@ var createGraphicsCommands = function () {
         // primitive-specific initialisations:
         var primitiveProperties = {
             thisGometryCanFill: true,
-            thisGometryCanStroke: true,
             primitiveType: primitiveTypes.rect,
             doubleSided: true,
             THREEObjectConstructor: THREE.Mesh,
@@ -435,7 +433,6 @@ var createGraphicsCommands = function () {
         // primitive-specific initialisations:
         var primitiveProperties = {
             thisGometryCanFill: true,
-            thisGometryCanStroke: true,
             primitiveType: primitiveTypes.box,
             doubleSided: false,
             THREEObjectConstructor: THREE.Mesh,
@@ -452,7 +449,6 @@ var createGraphicsCommands = function () {
         // primitive-specific initialisations:
         var primitiveProperties = {
             thisGometryCanFill: true,
-            thisGometryCanStroke: true,
             primitiveType: primitiveTypes.peg,
             doubleSided: false,
             THREEObjectConstructor: THREE.Mesh,
@@ -482,7 +478,6 @@ var createGraphicsCommands = function () {
         // primitive-specific initialisations:
         var primitiveProperties = {
             thisGometryCanFill: true,
-            thisGometryCanStroke: true,
             primitiveType: primitiveTypes.ball,
             doubleSided: false,
             THREEObjectConstructor: THREE.Mesh,
