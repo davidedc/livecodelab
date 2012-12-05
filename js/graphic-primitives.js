@@ -9,6 +9,7 @@
 // There are a couple of fundamentals of LiveCodeLab and a couple of
 // complications of Three.js that shape the way
 // graphic primitives work in this file.
+//
 // LiveCodeLab uses immediate mode graphics
 // ----------------------
 // First off, like Processing, LiveCodeLab shies away from "retained" graphics
@@ -22,7 +23,7 @@
 // (parent/child relationships, container/content, etc), property tweaking
 // (change property X of object Y), and sometimes animation ( CoreAnimation from
 // Apple for example), collision/overlap detection. Note that openGL is retained
-// in that there are handles to meshes and textures, but little else is given
+// in that there are handles to geometry and textures, but little else is given
 // (no events, no input, no physics/overlap/collision/animation).
 // Also, retained graphics mode usually is smart about updating
 // only minimal parts of the screen that need updating rather than redrawing the
@@ -40,15 +41,24 @@
 // becomes pixels and there is no built-in way to do input/event/hierarchies...
 // Rather, there are a few properties that are set as a global state and apply to all
 // objects. Examples are "fill" and stroke.
+//
+// Relationship between objects, meshes, geometry, materials...
+// ----------------------
+// A Three.js object (or to be more precise, Object3D) can be a line or a mesh. A line
+// is a line, a mesh can be anything else depending on what the geometry of the mesh
+// is. There are more possible types such as particles, etc. but they are not currently
+// used in LiveCodeLab. An object needs one more thing: a material.
+//
 // Strokes are managed via separately painting the stroke and then paining the fill
 // ----------------------
 // There is a particular material in Three.js for drawing wireframes. But materials
-// cannot be combined, i.e. only one is associated at any time with a mesh. Also,
+// cannot be combined, i.e. only one is associated at any time with a geometry. Also,
 // wireframes draw ALL the edges, i.e. both the edges normally visible and "in front"
 // and the occluded edges at the back. So the solution is to draw two disting objects.
 // One for the fills and one, slightly "larger", for the strokes. In that way, the
 // strokes are visible "in front" of the fills, and the fills cover the strokes "at
 // the back"
+//
 // "Spinning"
 // ----------------------
 // "Spinning" applies to all objects added to an empty frame: it makes all objects spin
@@ -65,7 +75,7 @@ var createGraphicsCommands = function () {
     'use strict';
 
     var GraphicsCommands = {},
-        geometries = {},
+        primitiveTypes = {},
         minimumBallDetail,
         maximumBallDetail,
         doFill = true,
@@ -95,27 +105,27 @@ var createGraphicsCommands = function () {
     GraphicsCommands.maximumBallDetail = maximumBallDetail = 30;
 
 
-    geometries.line = 0;
-    geometries.rect = 1;
-    geometries.box = 2;
-    geometries.cyclinder = 3;
-    geometries.sphere = 4;
+    primitiveTypes.line = 0;
+    primitiveTypes.rect = 1;
+    primitiveTypes.box = 2;
+    primitiveTypes.peg = 3;
+    primitiveTypes.ball = 4;
 
-    GraphicsCommands.geometries = geometries;
+    GraphicsCommands.primitiveTypes = primitiveTypes;
 
-    objectPool[geometries.line] = [];
-    objectPool[geometries.rect] = [];
-    objectPool[geometries.box] = [];
-    objectPool[geometries.cyclinder] = [];
-    // creating sphere pools
+    objectPool[primitiveTypes.line] = [];
+    objectPool[primitiveTypes.rect] = [];
+    objectPool[primitiveTypes.box] = [];
+    objectPool[primitiveTypes.peg] = [];
+    // creating ball pools
     for (i = 0; i < (maximumBallDetail - minimumBallDetail + 1); i += 1) {
-        objectPool[geometries.sphere + i] = [];
+        objectPool[primitiveTypes.ball + i] = [];
     }
 
 
-    // Since you can't change the mesh of an object once it's created, we keep around
+    // Since you can't change the geometry of an object once it's created, we keep around
     // a pool of objects for each mesh type. There is one pool for lines, one for rectangles, one
-    // for boxes. There is one pool for each detail level of spheres (since they are different)
+    // for boxes. There is one pool for each detail level of balls (since they are different)
     // meshes. For the time being there is no detail level for cylinders so there is only
     // one pool for cylinders.
 
@@ -125,21 +135,21 @@ var createGraphicsCommands = function () {
     // objects from the scene is expensive. Note that this might have changed with more
     // recent versions of Three.js of the past 4 months.
 
-    // All object pools start empty. Note that each sphere detail level must have
-    // its own pool, because you can't easily change the mesh of an object.
+    // All object pools start empty. Note that each ball detail level must have
+    // its own pool, because you can't change the geometry of an object.
     // If one doesn't like the idea of creating dozens of empty arrays that won't ever be
-    // used (since probably only a few sphere detail levels will be used in a session)
+    // used (since probably only a few ball detail levels will be used in a session)
     // then one could leave all these arrays undefined and define them at runtime
     // only when needed.
-    geometriesBank[geometries.line] = new THREE.Geometry();
-    geometriesBank[geometries.line].vertices.push(new THREE.Vertex(new THREE.Vector3(0, -0.5, 0)));
-    geometriesBank[geometries.line].vertices.push(new THREE.Vertex(new THREE.Vector3(0, 0.5, 0)));
-    geometriesBank[geometries.rect] = new THREE.PlaneGeometry(1, 1);
-    geometriesBank[geometries.box] = new THREE.CubeGeometry(1, 1, 1);
-    geometriesBank[geometries.cyclinder] = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
-    // creating sphere geometries
+    geometriesBank[primitiveTypes.line] = new THREE.Geometry();
+    geometriesBank[primitiveTypes.line].vertices.push(new THREE.Vertex(new THREE.Vector3(0, -0.5, 0)));
+    geometriesBank[primitiveTypes.line].vertices.push(new THREE.Vertex(new THREE.Vector3(0, 0.5, 0)));
+    geometriesBank[primitiveTypes.rect] = new THREE.PlaneGeometry(1, 1);
+    geometriesBank[primitiveTypes.box] = new THREE.CubeGeometry(1, 1, 1);
+    geometriesBank[primitiveTypes.peg] = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
+    // creating ball geometries
     for (i = 0; i < (maximumBallDetail - minimumBallDetail + 1); i += 1) {
-        geometriesBank[geometries.sphere + i] = new THREE.SphereGeometry(1, minimumBallDetail + i, minimumBallDetail + i);
+        geometriesBank[primitiveTypes.ball + i] = new THREE.SphereGeometry(1, minimumBallDetail + i, minimumBallDetail + i);
     }
 
 
@@ -167,126 +177,141 @@ var createGraphicsCommands = function () {
         // and turned into a function call really.
 
         var objectIsNew = false,
-            pooledObject,
+            pooledObjectWithMaterials,
             theAngle;
 
-        pooledObject = objectPool[primitiveProperties.primitiveType][GraphicsCommands.objectsUsedInFrameCounts[primitiveProperties.primitiveType]];
-        if (pooledObject === undefined) {
-            // each pooled object contains a geometry, a line material,
-            // a basic material and a lambert material.
-            pooledObject = {
+        pooledObjectWithMaterials = objectPool[primitiveProperties.primitiveType][GraphicsCommands.objectsUsedInFrameCounts[primitiveProperties.primitiveType]];
+        if (pooledObjectWithMaterials === undefined) {
+            // each pooled object contains a geometry, and all the materials it could
+            // ever need.
+            pooledObjectWithMaterials = {
+                // The line material is specifically made for lines. So for lines
+                // we have to simulate manually the effect that the other materials
+                // have on the solids.
+                // Note that we can tell here whether the lineMaterial (or all the
+                // others) will ever be needed for this object, because as mentioned
+                // lines will ever only have the lineMaterial for example, and cubes
+                // won't ever have the lineMaterial, but this initialisation costs
+                // nothing and makes the code cleaner.
                 lineMaterial: undefined,
+                // The basic material is for simple solid fill without lighting
                 basicMaterial: undefined,
+                // The Lambert material is for fill with lighting
                 lambertMaterial: undefined,
-                normalMaterial: undefined,
-                // the first time we render a mesh we need to
+                // The normalMaterial is the trippy fill with each side of the cube
+                // being a bright color (the default one).
+                // Note that the first time we render an object we need to
                 // render it with the material that takes the
                 // bigger buffer space, otherwise the
                 // more complicated materials won't show
                 // up, see:
                 // https://github.com/mrdoob/three.js/issues/1051
-                // so we always need to create a normalmaterial
+                // so we always need to create a normal material
                 // and render that material first, in case
                 // the user will ever want to use it.
-                // Another workaround would be to create a mesh
-                // for each different type of material
-                mesh: new primitiveProperties.THREEConstructor(geometriesBank[primitiveProperties.primitiveType]),
+                // Another workaround would be to create an object
+                // for each different type of material.
+                normalMaterial: undefined,
+                threejsObject3D: new primitiveProperties.THREEObjectConstructor(geometriesBank[primitiveProperties.primitiveType]),
                 initialSpinCountdown: SPIN_DURATION_IN_FRAMES
             };
 
             objectIsNew = true;
-            objectPool[primitiveProperties.primitiveType].push(pooledObject);
+            objectPool[primitiveProperties.primitiveType].push(pooledObjectWithMaterials);
         }
 
-        if (primitiveProperties.primitiveType === geometries.line) {
-            if (pooledObject.lineMaterial === undefined) {
+        if (primitiveProperties.primitiveType === primitiveTypes.line) {
+            if (pooledObjectWithMaterials.lineMaterial === undefined) {
                 logger("creating line material");
-                pooledObject.lineMaterial = new THREE.LineBasicMaterial();
+                pooledObjectWithMaterials.lineMaterial = new THREE.LineBasicMaterial();
             }
 
-            // associating normal material to the mesh
+            // associating normal material to threejs' Object3D
 
             if (currentStrokeColor === angleColor || GraphicsCommands.defaultNormalStroke) {
-                theAngle = pooledObject.mesh.matrix.multiplyVector3(new THREE.Vector3(0, 1, 0)).normalize();
-                pooledObject.lineMaterial.color.setHex(color(((theAngle.x + 1) / 2) * 255, ((theAngle.y + 1) / 2) * 255, ((theAngle.z + 1) / 2) * 255));
+                theAngle = pooledObjectWithMaterials.threejsObject3D.matrix.multiplyVector3(new THREE.Vector3(0, 1, 0)).normalize();
+                pooledObjectWithMaterials.lineMaterial.color.setHex(color(((theAngle.x + 1) / 2) * 255, ((theAngle.y + 1) / 2) * 255, ((theAngle.z + 1) / 2) * 255));
             } else {
-                pooledObject.lineMaterial.color.setHex(currentStrokeColor);
+                pooledObjectWithMaterials.lineMaterial.color.setHex(currentStrokeColor);
             }
 
-            pooledObject.mesh.material = pooledObject.lineMaterial;
+            pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.lineMaterial;
         } else if (objectIsNew || (colorToBeUsed === angleColor || applyDefaultNormalColor)) {
-            // the first time we render a mesh we need to
+            // the first time we render a an object we need to
             // render it with the material that takes the
             // bigger buffer space, see:
             // https://github.com/mrdoob/three.js/issues/1051
-            // Another workaround would be to create a mesh
-            // for each different type of material
-            if (pooledObject.normalMaterial === undefined) {
+            // Another workaround would be to create a pooled object
+            // for each different type of material.
+            if (pooledObjectWithMaterials.normalMaterial === undefined) {
                 logger("creating normal material");
-                pooledObject.normalMaterial = new THREE.MeshNormalMaterial();
+                pooledObjectWithMaterials.normalMaterial = new THREE.MeshNormalMaterial();
             }
-            pooledObject.mesh.material = pooledObject.normalMaterial;
+            pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.normalMaterial;
         } else if (!LightSystem.lightsAreOn) {
-            if (pooledObject.basicMaterial === undefined) {
-                pooledObject.basicMaterial = new THREE.MeshBasicMaterial();
+            if (pooledObjectWithMaterials.basicMaterial === undefined) {
+                pooledObjectWithMaterials.basicMaterial = new THREE.MeshBasicMaterial();
             }
-            pooledObject.basicMaterial.color.setHex(colorToBeUsed);
-            pooledObject.mesh.material = pooledObject.basicMaterial;
+            pooledObjectWithMaterials.basicMaterial.color.setHex(colorToBeUsed);
+            pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.basicMaterial;
 
         } else {
             // lights are on
-            if (pooledObject.lambertMaterial === undefined) {
+            if (pooledObjectWithMaterials.lambertMaterial === undefined) {
                 logger("creating lambert:" + currentFillColor + " " + currentFillAlpha + " " + LightSystem.ambientColor + " " + reflectValue + " " + refractValue);
-                pooledObject.lambertMaterial = new THREE.MeshLambertMaterial();
+                pooledObjectWithMaterials.lambertMaterial = new THREE.MeshLambertMaterial();
             }
-            pooledObject.lambertMaterial.color.setHex(colorToBeUsed);
-				    pooledObject.lambertMaterial.ambient.setHex(LightSystem.ambientColor);
-            pooledObject.mesh.material = pooledObject.lambertMaterial;
+            pooledObjectWithMaterials.lambertMaterial.color.setHex(colorToBeUsed);
+				    pooledObjectWithMaterials.lambertMaterial.ambient.setHex(LightSystem.ambientColor);
+            pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.lambertMaterial;
         }
 
-				pooledObject.mesh.material.opacity = alphaToBeUsed;
-				pooledObject.mesh.material.wireframe = strokeTime;
-				pooledObject.mesh.material.wireframeLinewidth = GraphicsCommands.currentStrokeSize;
-				pooledObject.mesh.material.doubleSided = primitiveProperties.doubleSided;
-				pooledObject.mesh.material.reflectivity = reflectValue;
-				pooledObject.mesh.material.refractionRatio = refractValue;
-
+				// not all of these properties apply in all cases (for example doublesided
+				// doesn't apply to lines), but setting these properties in those cases
+				// has no ill effect and we are factoring out here as many initialisations
+				// as possible to make the code cleaner.
+				pooledObjectWithMaterials.threejsObject3D.material.opacity = alphaToBeUsed;
+				pooledObjectWithMaterials.threejsObject3D.material.wireframe = strokeTime;
+				pooledObjectWithMaterials.threejsObject3D.material.wireframeLinewidth = GraphicsCommands.currentStrokeSize;
+				pooledObjectWithMaterials.threejsObject3D.material.doubleSided = primitiveProperties.doubleSided;
+				pooledObjectWithMaterials.threejsObject3D.material.reflectivity = reflectValue;
+				pooledObjectWithMaterials.threejsObject3D.material.refractionRatio = refractValue;
 
         if (GraphicsCommands.resetTheSpinThingy) {
-            pooledObject.initialSpinCountdown = SPIN_DURATION_IN_FRAMES;
+            pooledObjectWithMaterials.initialSpinCountdown = SPIN_DURATION_IN_FRAMES;
             GraphicsCommands.resetTheSpinThingy = false;
             GraphicsCommands.doTheSpinThingy = true;
         }
         if (GraphicsCommands.doTheSpinThingy) {
-            pooledObject.initialSpinCountdown -= 1;
+            pooledObjectWithMaterials.initialSpinCountdown -= 1;
         }
-        if (pooledObject.initialSpinCountdown === -1) {
+        if (pooledObjectWithMaterials.initialSpinCountdown === -1) {
             GraphicsCommands.doTheSpinThingy = false;
         }
 
-        pooledObject.mesh.isLine = primitiveProperties.isLine;
-        pooledObject.mesh.isRectangle = primitiveProperties.isRectangle;
-        pooledObject.mesh.isBox = primitiveProperties.isBox;
-        pooledObject.mesh.isCylinder = primitiveProperties.isCylinder;
-        pooledObject.mesh.isAmbientLight = primitiveProperties.isAmbientLight;
-        pooledObject.mesh.isPointLight = primitiveProperties.isPointLight;
-        pooledObject.mesh.isSphere = primitiveProperties.isSphere;
-        pooledObject.mesh.doubleSided = primitiveProperties.doubleSided;
+        pooledObjectWithMaterials.threejsObject3D.isLine = primitiveProperties.isLine;
+        pooledObjectWithMaterials.threejsObject3D.isRectangle = primitiveProperties.isRectangle;
+        pooledObjectWithMaterials.threejsObject3D.isBox = primitiveProperties.isBox;
+        pooledObjectWithMaterials.threejsObject3D.isCylinder = primitiveProperties.isCylinder;
+        pooledObjectWithMaterials.threejsObject3D.isAmbientLight = primitiveProperties.isAmbientLight;
+        pooledObjectWithMaterials.threejsObject3D.isPointLight = primitiveProperties.isPointLight;
+        pooledObjectWithMaterials.threejsObject3D.isSphere = primitiveProperties.isSphere;
+        pooledObjectWithMaterials.threejsObject3D.doubleSided = primitiveProperties.doubleSided;
 
 
         GraphicsCommands.objectsUsedInFrameCounts[primitiveProperties.primitiveType] += 1;
 
-        if (GraphicsCommands.doTheSpinThingy && pooledObject.initialSpinCountdown > 0) {
+        if (GraphicsCommands.doTheSpinThingy && pooledObjectWithMaterials.initialSpinCountdown > 0) {
             MatrixCommands.pushMatrix();
-            MatrixCommands.rotate(pooledObject.initialSpinCountdown / 50);
-            logger(pooledObject.initialSpinCountdown);
+            MatrixCommands.rotate(pooledObjectWithMaterials.initialSpinCountdown / 50);
+            logger(pooledObjectWithMaterials.initialSpinCountdown);
         }
 
-        pooledObject.mesh.matrixAutoUpdate = false;
-        pooledObject.mesh.matrix.copy(MatrixCommands.getWorldMatrix());
-        pooledObject.mesh.matrixWorldNeedsUpdate = true;
+        pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = false;
+        pooledObjectWithMaterials.threejsObject3D.matrix.copy(MatrixCommands.getWorldMatrix());
+        pooledObjectWithMaterials.threejsObject3D.matrixWorldNeedsUpdate = true;
 
-        if (GraphicsCommands.doTheSpinThingy && pooledObject.initialSpinCountdown > 0) {
+        if (GraphicsCommands.doTheSpinThingy && pooledObjectWithMaterials.initialSpinCountdown > 0) {
             MatrixCommands.popMatrix();
         }
 
@@ -298,22 +323,22 @@ var createGraphicsCommands = function () {
                 // by setting the scale to zero. The object will still go through the
                 // rendering step, so the memory for the material is initialised
                 // correctly.
-                pooledObject.mesh.matrix.scale(new THREE.Vector3(0));
+                pooledObjectWithMaterials.threejsObject3D.matrix.scale(new THREE.Vector3(0));
         }
         else if (a !== 1 || b !== 1 || c !== 1) {
             if (strokeTime) {
-                // meshes should be built from geometries that are
-                // ever so slight larger than the "fill" mesh so there
-                // is no z-fighting...
+                // wireframes are built via separate objects with geometries that are
+                // ever so slight larger than the "fill" object, so there
+                // is no z-fighting and the stroke is drawn neatly on top of the fill
                 // constant 0.001 below is to avoid z-fighting
-                pooledObject.mesh.matrix.scale(new THREE.Vector3(a + 0.001, b + 0.001, c + 0.001));
+                pooledObjectWithMaterials.threejsObject3D.matrix.scale(new THREE.Vector3(a + 0.001, b + 0.001, c + 0.001));
             } else {
-                pooledObject.mesh.matrix.scale(new THREE.Vector3(a, b, c));
+                pooledObjectWithMaterials.threejsObject3D.matrix.scale(new THREE.Vector3(a, b, c));
             }
         }
 
         if (objectIsNew) {
-            ThreeJs.scene.add(pooledObject.mesh);
+            ThreeJs.scene.add(pooledObjectWithMaterials.threejsObject3D);
         }
 
     };
@@ -376,7 +401,7 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             thisGometryCanFill: false,
             thisGometryCanStroke: true,
-            primitiveType: geometries.line,
+            primitiveType: primitiveTypes.line,
             isLine: true,
             isRectangle: false,
             isBox: false,
@@ -385,7 +410,7 @@ var createGraphicsCommands = function () {
             isPointLight: false,
             isSphere: 0,
             doubleSided: false,
-            THREEConstructor: THREE.Line
+            THREEObjectConstructor: THREE.Line
         };
         // end of primitive-specific initialisations:
 
@@ -399,7 +424,7 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             thisGometryCanFill: true,
             thisGometryCanStroke: true,
-            primitiveType: geometries.rect,
+            primitiveType: primitiveTypes.rect,
             isLine: false,
             isRectangle: true,
             isBox: false,
@@ -408,7 +433,7 @@ var createGraphicsCommands = function () {
             isPointLight: false,
             isSphere: 0,
             doubleSided: true,
-            THREEConstructor: THREE.Mesh
+            THREEObjectConstructor: THREE.Mesh
         };
         // end of primitive-specific initialisations:
 
@@ -422,7 +447,7 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             thisGometryCanFill: true,
             thisGometryCanStroke: true,
-            primitiveType: geometries.box,
+            primitiveType: primitiveTypes.box,
             isLine: false,
             isRectangle: false,
             isBox: true,
@@ -431,7 +456,7 @@ var createGraphicsCommands = function () {
             isPointLight: false,
             isSphere: 0,
             doubleSided: false,
-            THREEConstructor: THREE.Mesh
+            THREEObjectConstructor: THREE.Mesh
         };
         // end of primitive-specific initialisations:
 
@@ -445,7 +470,7 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             thisGometryCanFill: true,
             thisGometryCanStroke: true,
-            primitiveType: geometries.cylinder,
+            primitiveType: primitiveTypes.peg,
             isLine: false,
             isRectangle: false,
             isBox: false,
@@ -454,7 +479,7 @@ var createGraphicsCommands = function () {
             isPointLight: false,
             isSphere: 0,
             doubleSided: false,
-            THREEConstructor: THREE.Mesh
+            THREEObjectConstructor: THREE.Mesh
         };
         // end of primitive-specific initialisations:
 
@@ -481,7 +506,7 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             thisGometryCanFill: true,
             thisGometryCanStroke: true,
-            primitiveType: geometries.sphere + GraphicsCommands.ballDetLevel - minimumBallDetail,
+            primitiveType: primitiveTypes.ball + GraphicsCommands.ballDetLevel - minimumBallDetail,
             isLine: false,
             isRectangle: false,
             isBox: false,
@@ -490,7 +515,7 @@ var createGraphicsCommands = function () {
             isPointLight: false,
             isSphere: GraphicsCommands.ballDetLevel,
             doubleSided: false,
-            THREEConstructor: THREE.Mesh
+            THREEObjectConstructor: THREE.Mesh
         };
         // end of primitive-specific initialisations:
 

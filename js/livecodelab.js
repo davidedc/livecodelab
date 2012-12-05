@@ -76,14 +76,14 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
 
             LightSystem.usedAmbientLights = 0;
 
-            graphics.objectsUsedInFrameCounts[graphics.geometries.line] = 0;
-            graphics.objectsUsedInFrameCounts[graphics.geometries.rect] = 0;
-            graphics.objectsUsedInFrameCounts[graphics.geometries.box] = 0;
-            graphics.objectsUsedInFrameCounts[graphics.geometries.cylinder] = 0;
-            // initialising sphere counts
+            graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.line] = 0;
+            graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.rect] = 0;
+            graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.box] = 0;
+            graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.peg] = 0;
+            // initialising ball counts
             var i;
             for (i = 0; i < (graphics.maximumBallDetail - graphics.minimumBallDetail + 1); i += 1) {
-                graphics.objectsUsedInFrameCounts[graphics.geometries.sphere + i] = 0;
+                graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ball + i] = 0;
             }
 
             BlendControls.animationStyle(BlendControls.animationStyles.normal);
@@ -212,17 +212,17 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
             // check the type of object. Each type has one pool. Go through each object in the
             // pool and set to visible the number of used objects in this frame, set the
             // others to hidden.
-            // Only tiny exception is that the sphere has one pool for each detail level.
+            // Only tiny exception is that the ball has one pool for each detail level.
             if (sceneObject.isLine) {
-                primitiveType = graphics.geometries.line;
+                primitiveType = graphics.primitiveTypes.line;
             } else if (sceneObject.isRectangle) {
-                primitiveType = graphics.geometries.rect;
+                primitiveType = graphics.primitiveTypes.rect;
             } else if (sceneObject.isBox) {
-                primitiveType = graphics.geometries.box;
+                primitiveType = graphics.primitiveTypes.box;
             } else if (sceneObject.isCylinder) {
-                primitiveType = graphics.geometries.cylinder;
+                primitiveType = graphics.primitiveTypes.peg;
             } else if (sceneObject.isSphere !== 0) {
-                primitiveType = graphics.geometries.sphere + sceneObject.isSphere - graphics.minimumBallDetail;
+                primitiveType = graphics.primitiveTypes.ball + sceneObject.isSphere - graphics.minimumBallDetail;
             }
 
             // set the first "used*****" objects to visible...
