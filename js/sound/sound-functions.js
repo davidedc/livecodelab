@@ -250,9 +250,6 @@ var createSoundSystem = function () {
             newSound.unbind("ended");
             newSound.unmute();
             endedFirstPlay += 1;
-            if (endedFirstPlay % 10 === 0) {
-                $('#loading').append('/');
-            }
             logger("tested " + endedFirstPlay + " sounds");
             if (endedFirstPlay === soundDef.sounds.length * CHANNELSPERSOUND) {
                 logger("tested all sounds");
