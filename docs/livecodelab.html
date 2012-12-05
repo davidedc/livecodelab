@@ -1,12 +1,9 @@
 <!DOCTYPE html>  <html> <head>   <title>livecodelab.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="css-colour-definitions.html">                 css-colour-definitions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               livecodelab.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true */</span>
-<span class="comment">/*global $, MatrixCommands, soundLoops: true, updatesPerMinute: true, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, Ui, changeUpdatesPerMinuteIfNeeded, stats */</span>
+<span class="comment">/*global $, MatrixCommands, SoundSystem: true, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, Ui, stats */</span>
 
 
 <span class="keyword">var</span> frame = <span class="number">0</span>;
 
-
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>if there isn't any code using the bpm setting then we can save a timer, so
-worth tracking with this variable</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> anyCodeReactingTobpm;
 
 <span class="keyword">var</span> createLiveCodeLab = <span class="function"><span class="keyword">function</span> <span class="params">(CodeTransformer, threejs, timekeeper, graphics)</span> {</span>
 
@@ -16,7 +13,7 @@ worth tracking with this variable</p>             </td>             <td class="c
         loopInterval,
         lastStableProgram;
 
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>if you put to -1 then it means that
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>if you put to -1 then it means that
 requestAnimationFrame will try to go as fast as it
 can.</p>             </td>             <td class="code">               <div class="highlight"><pre>    LiveCodeLab.wantedFramesPerSecond = -<span class="number">1</span>;
     LiveCodeLab.useRequestAnimationFrame = <span class="literal">true</span>;
@@ -27,9 +24,9 @@ can.</p>             </td>             <td class="code">               <div clas
         LiveCodeLab.drawFunction = drawFunc;
     };
 
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>animation loop</p>             </td>             <td class="code">               <div class="highlight"><pre>    LiveCodeLab.animate = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>animation loop</p>             </td>             <td class="code">               <div class="highlight"><pre>    LiveCodeLab.animate = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>loop on request animation loop
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>loop on request animation loop
 - it has to be at the begining of the function
 - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
 requestAnimationFrame seems to only do 60 fps, which in my case is too much,
@@ -47,9 +44,8 @@ I rather prefer to have a slower framerate but steadier.</p>             </td>  
 
         MatrixCommands.resetMatrixStack();
 
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>the sound list needs to be cleaned
-so that the user program can create its own from scratch</p>             </td>             <td class="code">               <div class="highlight"><pre>        soundLoops.soundIDs = [];
-        soundLoops.beatStrings = [];
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>the sound list needs to be cleaned
+so that the user program can create its own from scratch</p>             </td>             <td class="code">               <div class="highlight"><pre>        SoundSystem.resetLoops();
 
 
         <span class="keyword">if</span> (LiveCodeLab.drawFunction !== <span class="string">""</span>) {
@@ -59,14 +55,14 @@ so that the user program can create its own from scratch</p>             </td>  
                 timekeeper.updateTime();
             }
             CodeTransformer.doOnceOccurrencesLineNumbers = [];
-            anyCodeReactingTobpm = <span class="literal">false</span>;
+            SoundSystem.anyCodeReactingTobpm = <span class="literal">false</span>;
             graphics.fill(<span class="number">0xFFFFFFFF</span>);
             graphics.stroke(<span class="number">0xFF000000</span>);
             graphics.currentStrokeSize = <span class="number">1</span>;
             graphics.defaultNormalFill = <span class="literal">true</span>;
             graphics.defaultNormalStroke = <span class="literal">true</span>;
             graphics.ballDetLevel = threejs.ballDefaultDetLevel;
-            updatesPerMinute = <span class="number">60</span> * <span class="number">4</span>;
+            SoundSystem.SetUpdatesPerMinute(<span class="number">60</span> * <span class="number">4</span>);
             LightSystem.noLights();
 
             LightSystem.usedAmbientLights = <span class="number">0</span>;
@@ -75,7 +71,7 @@ so that the user program can create its own from scratch</p>             </td>  
             graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.rect] = <span class="number">0</span>;
             graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.box] = <span class="number">0</span>;
             graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.peg] = <span class="number">0</span>;
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>initialising ball counts</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">var</span> i;
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>initialising ball counts</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">var</span> i;
             <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; (graphics.maximumBallDetail - graphics.minimumBallDetail + <span class="number">1</span>); i += <span class="number">1</span>) {
                 graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ball + i] = <span class="number">0</span>;
             }
@@ -83,7 +79,7 @@ so that the user program can create its own from scratch</p>             </td>  
             BlendControls.animationStyle(BlendControls.animationStyles.normal);
             BackgroundPainter.resetGradientStack();
 
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Now here there is another try/catch check when the draw function is ran.
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Now here there is another try/catch check when the draw function is ran.
 The reason is that there might be references to uninitialised or inexistent
 variables. For example:
   box
@@ -95,33 +91,33 @@ known good program.</p>             </td>             <td class="code">         
                 LiveCodeLab.drawFunction();
             } <span class="keyword">catch</span> (e) {
 
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>I'm not sure that this type of error should occur during autocoding
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>I'm not sure that this type of error should occur during autocoding
 but this can't hurt and it's symmetrical to the other try/catch
 situation we have in livecodelab</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="keyword">if</span> (autocoder.active) {
                     editor.undo();
                     <span class="keyword">return</span>;
                 }
 
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>highlight the error</p>             </td>             <td class="code">               <div class="highlight"><pre>                Ui.checkErrorAndReport(e);
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>highlight the error</p>             </td>             <td class="code">               <div class="highlight"><pre>                Ui.checkErrorAndReport(e);
 
-</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>mark the program as flawed and register the previous stable one.</p>             </td>             <td class="code">               <div class="highlight"><pre>                CodeTransformer.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>mark the program as flawed and register the previous stable one.</p>             </td>             <td class="code">               <div class="highlight"><pre>                CodeTransformer.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>;
                 LiveCodeLab.drawFunction = lastStableProgram;
 
                 <span class="keyword">return</span>;
             }
 
-</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>we have to repeat this check because in the case
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>we have to repeat this check because in the case
 the user has set frame = 0,
 then we have to catch that case here
 after the program has executed</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (frame === <span class="number">0</span>) {
                 timekeeper.resetTime();
             }
-            <span class="keyword">if</span> (anyCodeReactingTobpm) {
-                changeUpdatesPerMinuteIfNeeded();
+            <span class="keyword">if</span> (SoundSystem.anyCodeReactingTobpm) {
+                SoundSystem.changeUpdatesPerMinuteIfNeeded();
             }
             BlendControls.animationStyleUpdateIfChanged();
             BackgroundPainter.simpleGradientUpdateIfChanged();
-            changeUpdatesPerMinuteIfNeeded();
+            SoundSystem.changeUpdatesPerMinuteIfNeeded();
             frame += <span class="number">1</span>;
             CodeTransformer.consecutiveFramesWithoutRunTimeError += <span class="number">1</span>;
             <span class="keyword">if</span> (CodeTransformer.consecutiveFramesWithoutRunTimeError === <span class="number">5</span>) {
@@ -129,9 +125,9 @@ after the program has executed</p>             </td>             <td class="code
             }
         } <span class="comment">// if typeof draw</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>do the render</p>             </td>             <td class="code">               <div class="highlight"><pre>        LiveCodeLab.combDisplayList();
+</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>do the render</p>             </td>             <td class="code">               <div class="highlight"><pre>        LiveCodeLab.combDisplayList();
         LiveCodeLab.render();
-</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>update stats</p>             </td>             <td class="code">               <div class="highlight"><pre>        stats.update();
+</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>update stats</p>             </td>             <td class="code">               <div class="highlight"><pre>        stats.update();
 
         CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(editor);
 
@@ -143,12 +139,12 @@ after the program has executed</p>             </td>             <td class="code
             threejs.composer.render();
         } <span class="keyword">else</span> {
 
-</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>the renderer draws into an offscreen canvas called sceneRenderingCanvas</p>             </td>             <td class="code">               <div class="highlight"><pre>            threejs.renderer.render(threejs.scene, threejs.camera);
+</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>the renderer draws into an offscreen canvas called sceneRenderingCanvas</p>             </td>             <td class="code">               <div class="highlight"><pre>            threejs.renderer.render(threejs.scene, threejs.camera);
 
-</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>clear the final render context</p>             </td>             <td class="code">               <div class="highlight"><pre>            threejs.finalRenderWithSceneAndBlendContext.globalAlpha = <span class="number">1.0</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>clear the final render context</p>             </td>             <td class="code">               <div class="highlight"><pre>            threejs.finalRenderWithSceneAndBlendContext.globalAlpha = <span class="number">1.0</span>;
             threejs.finalRenderWithSceneAndBlendContext.clearRect(<span class="number">0</span>, <span class="number">0</span>, window.innerWidth, window.innerHeight);
 
-</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>draw the rendering of the scene on the final render
+</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>draw the rendering of the scene on the final render
 clear the final render context</p>             </td>             <td class="code">               <div class="highlight"><pre>            threejs.finalRenderWithSceneAndBlendContext.globalAlpha = BlendControls.blendAmount;
             threejs.finalRenderWithSceneAndBlendContext.drawImage(threejs.previousRenderForBlending, <span class="number">0</span>, <span class="number">0</span>);
 
@@ -158,12 +154,12 @@ clear the final render context</p>             </td>             <td class="code
             threejs.previousRenderForBlendingContext.globalCompositeOperation = <span class="string">'copy'</span>;
             threejs.previousRenderForBlendingContext.drawImage(threejs.finalRenderWithSceneAndBlend, <span class="number">0</span>, <span class="number">0</span>);
 
-</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>clear the renderer's canvas to transparent black</p>             </td>             <td class="code">               <div class="highlight"><pre>            threejs.sceneRenderingCanvasContext.clearRect(<span class="number">0</span>, <span class="number">0</span>, window.innerWidth, window.innerHeight);
+</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>clear the renderer's canvas to transparent black</p>             </td>             <td class="code">               <div class="highlight"><pre>            threejs.sceneRenderingCanvasContext.clearRect(<span class="number">0</span>, <span class="number">0</span>, window.innerWidth, window.innerHeight);
 
         }
     };
 
-</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>By doing some profiling it is apparent that
+</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>By doing some profiling it is apparent that
 adding and removing objects has a big cost.
 So instead of adding/removing objects every frame,
 objects are only added at creation and they are
@@ -187,22 +183,22 @@ Note: Mr Doob said that the new scene destruction/creation primitives of Three.j
         <span class="keyword">var</span> i,
             sceneObject,
             primitiveType;
-</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>scan all the objects in the display list</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; threejs.scene.objects.length; i += <span class="number">1</span>) {
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>scan all the objects in the display list</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; threejs.scene.objects.length; i += <span class="number">1</span>) {
             sceneObject = threejs.scene.objects[i];
 
-</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>check the type of object. Each type has one pool. Go through each object in the
+</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>check the type of object. Each type has one pool. Go through each object in the
 pool and set to visible the number of used objects in this frame, set the
 others to hidden.
 Only tiny exception is that the ball has one pool for each detail level.</p>             </td>             <td class="code">               <div class="highlight"><pre>
 
-</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>set the first "used<strong>*</strong>" objects to visible...
+</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>set the first "used<strong>*</strong>" objects to visible...
 logger('combing display list objects: ' + (i+1) + " of " + threejs.scene.objects.length);
 logger('prim type' + sceneObject.primitiveType);
 logger('det level' + sceneObject.detailLevel);</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (graphics.objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] &gt; <span class="number">0</span>) {
-</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>logger('object visible');</p>             </td>             <td class="code">               <div class="highlight"><pre>                sceneObject.visible = <span class="literal">true</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>logger('object visible');</p>             </td>             <td class="code">               <div class="highlight"><pre>                sceneObject.visible = <span class="literal">true</span>;
                 graphics.objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] -= <span class="number">1</span>;
             } <span class="keyword">else</span> {
-</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>... and the others to invisible</p>             </td>             <td class="code">               <div class="highlight"><pre>                sceneObject.visible = <span class="literal">false</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>... and the others to invisible</p>             </td>             <td class="code">               <div class="highlight"><pre>                sceneObject.visible = <span class="literal">false</span>;
             }
 
         }

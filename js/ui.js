@@ -127,6 +127,10 @@ var createUi = function () {
 
     };
 
+    Ui.soundSystemOk = function () {
+        console.log("sound system ok");
+        $("#soundSystemStatus").text("Sound System On").removeClass('off').addClass('on');
+    };
 
 
 

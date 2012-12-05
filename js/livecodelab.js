@@ -1,13 +1,9 @@
 /*jslint browser: true */
-/*global $, MatrixCommands, soundLoops: true, updatesPerMinute: true, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, Ui, changeUpdatesPerMinuteIfNeeded, stats */
+/*global $, MatrixCommands, SoundSystem: true, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, Ui, stats */
 
 
 var frame = 0;
 
-
-// if there isn't any code using the bpm setting then we can save a timer, so
-// worth tracking with this variable
-var anyCodeReactingTobpm;
 
 var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics) {
 
@@ -53,8 +49,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
 
         // the sound list needs to be cleaned
         // so that the user program can create its own from scratch
-        soundLoops.soundIDs = [];
-        soundLoops.beatStrings = [];
+        SoundSystem.resetLoops();
 
 
         if (LiveCodeLab.drawFunction !== "") {
@@ -64,14 +59,14 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
                 timekeeper.updateTime();
             }
             CodeTransformer.doOnceOccurrencesLineNumbers = [];
-            anyCodeReactingTobpm = false;
+            SoundSystem.anyCodeReactingTobpm = false;
             graphics.fill(0xFFFFFFFF);
             graphics.stroke(0xFF000000);
             graphics.currentStrokeSize = 1;
             graphics.defaultNormalFill = true;
             graphics.defaultNormalStroke = true;
             graphics.ballDetLevel = threejs.ballDefaultDetLevel;
-            updatesPerMinute = 60 * 4;
+            SoundSystem.SetUpdatesPerMinute(60 * 4);
             LightSystem.noLights();
 
             LightSystem.usedAmbientLights = 0;
@@ -127,12 +122,12 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
             if (frame === 0) {
                 timekeeper.resetTime();
             }
-            if (anyCodeReactingTobpm) {
-                changeUpdatesPerMinuteIfNeeded();
+            if (SoundSystem.anyCodeReactingTobpm) {
+                SoundSystem.changeUpdatesPerMinuteIfNeeded();
             }
             BlendControls.animationStyleUpdateIfChanged();
             BackgroundPainter.simpleGradientUpdateIfChanged();
-            changeUpdatesPerMinuteIfNeeded();
+            SoundSystem.changeUpdatesPerMinuteIfNeeded();
             frame += 1;
             CodeTransformer.consecutiveFramesWithoutRunTimeError += 1;
             if (CodeTransformer.consecutiveFramesWithoutRunTimeError === 5) {

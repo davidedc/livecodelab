@@ -18,6 +18,8 @@
     BigCursor = createBigCursor();
     TimeKeeper = createTimeKeeper();
 
+    SoundSystem = createSoundSystem();
+
     GraphicsCommands = createGraphicsCommands();
 
     MatrixCommands = createMatrixCommands(THREE, TimeKeeper);
@@ -42,6 +44,7 @@
 
     Ui = createUi();
 
+    SoundSystem.loadAndTestAllTheSounds(Ui.soundSystemOk);
 
     logger(<span class="string">"startEnvironment"</span>);
     <span class="keyword">if</span> (ThreeJs) {
@@ -50,7 +53,7 @@
 
     <span class="keyword">if</span> (!Detector.webgl || ThreeJs.forceCanvasRenderer) {
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>$('#noWebGLMessage').modal()</p>             </td>             <td class="code">               <div class="highlight"><pre>        $(<span class="string">'#noWebGLMessage'</span>).modal({
-            onClose: closeAndCheckAudio
+            onClose: SoundSystem.closeAndCheckAudio
         });
         $(<span class="string">'#simplemodal-container'</span>).height(<span class="number">200</span>);
     }
@@ -103,8 +106,7 @@ $(document).ready(<span class="function"><span class="keyword">function</span> <
         <span class="keyword">return</span>;
     }
 
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>pass startEnvironment function in to be used as a callback
-once the sounds are loaded it's fire and starts the app up</p>             </td>             <td class="code">               <div class="highlight"><pre>    loadAndTestAllTheSounds(startEnvironment);
+    startEnvironment();
 
 });
 
