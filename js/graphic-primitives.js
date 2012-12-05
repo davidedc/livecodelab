@@ -16,7 +16,7 @@
 // and instead uses "immediate mode" graphics.
 // Practically, this means that when the user uses a graphic primitive, he is
 // NOT given a handle that he can use to modify properties of that element at a
-// later stage. For example flash, DOM, CSS, openGL and Three.JS work that way
+// later stage, contrarily to flash, DOM, CSS, openGL and Three.JS
 // (to different degrees).
 // Retained graphic modes keep structures in memory that make easy for example
 // to do event handling (which object did I click?), hierarchy management
@@ -30,13 +30,13 @@
 // whole screen (again, openGL doesn't do that apart from basic frustum culling, but
 // for example there is nothing to detect occlusions and avoid painting occluded
 // objects).
-// There are a few drawbacks about retained modes: a) programs that manage
-// handles are more lengthy than programs that don't to manage handles
+// There are a few drawbacks in retained modes: a) programs that manage
+// handles are more lengthy than programs that don't
 // b) they are often not needed for example in
 // 2d sprites-based videogames c) most importantly,
 // they require deeper understanding of the underlying
-// model (e.g. which property can I change? What are those called? How to I change
-// parent/child relationship? How do events bubble up?).
+// model (e.g. which property can I change? What are those called? How do I change
+// parent/child relationship? How do events bubble up and where should I catch them?).
 // Processing and LiveCodeLab go for immediate mode. Once the primitive is invoked, it
 // becomes pixels and there is no built-in way to do input/event/hierarchies...
 // Rather, there are a few properties that are set as a global state and apply to all
@@ -49,9 +49,9 @@
 // is. There are more possible types such as particles, etc. but they are not currently
 // used in LiveCodeLab. An object needs one more thing: a material.
 //
-// Strokes are managed via separately painting the stroke and then paining the fill
+// Strokes are managed via separate objects for stroke and fill
 // ----------------------
-// There is a particular material in Three.js for drawing wireframes. But materials
+// There is a particular flag in Three.js materials for drawing wireframes. But materials
 // cannot be combined, i.e. only one is associated at any time with a geometry. Also,
 // wireframes draw ALL the edges, i.e. both the edges normally visible and "in front"
 // and the occluded edges at the back. So the solution is to draw two disting objects.
