@@ -71,13 +71,13 @@ so that the user program can create its own from scratch</p>             </td>  
 
             LightSystem.usedAmbientLights = <span class="number">0</span>;
 
-            graphics.objectsUsedInFrameCounts[graphics.geometries.line] = <span class="number">0</span>;
-            graphics.objectsUsedInFrameCounts[graphics.geometries.rect] = <span class="number">0</span>;
-            graphics.objectsUsedInFrameCounts[graphics.geometries.box] = <span class="number">0</span>;
-            graphics.objectsUsedInFrameCounts[graphics.geometries.cylinder] = <span class="number">0</span>;
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>initialising sphere counts</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">var</span> i;
+            graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.line] = <span class="number">0</span>;
+            graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.rect] = <span class="number">0</span>;
+            graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.box] = <span class="number">0</span>;
+            graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.peg] = <span class="number">0</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>initialising ball counts</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">var</span> i;
             <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; (graphics.maximumBallDetail - graphics.minimumBallDetail + <span class="number">1</span>); i += <span class="number">1</span>) {
-                graphics.objectsUsedInFrameCounts[graphics.geometries.sphere + i] = <span class="number">0</span>;
+                graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ball + i] = <span class="number">0</span>;
             }
 
             BlendControls.animationStyle(BlendControls.animationStyles.normal);
@@ -193,33 +193,18 @@ Note: Mr Doob said that the new scene destruction/creation primitives of Three.j
 </pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>check the type of object. Each type has one pool. Go through each object in the
 pool and set to visible the number of used objects in this frame, set the
 others to hidden.
-Only tiny exception is that the sphere has one pool for each detail level.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (sceneObject.isLine) {
-                primitiveType = graphics.geometries.line;
-            } <span class="keyword">else</span> <span class="keyword">if</span> (sceneObject.isRectangle) {
-                primitiveType = graphics.geometries.rect;
-            } <span class="keyword">else</span> <span class="keyword">if</span> (sceneObject.isBox) {
-                primitiveType = graphics.geometries.box;
-            } <span class="keyword">else</span> <span class="keyword">if</span> (sceneObject.isCylinder) {
-                primitiveType = graphics.geometries.cylinder;
-            } <span class="keyword">else</span> <span class="keyword">if</span> (sceneObject.isSphere !== <span class="number">0</span>) {
-                primitiveType = graphics.geometries.sphere + sceneObject.isSphere - graphics.minimumBallDetail;
-            }
+Only tiny exception is that the ball has one pool for each detail level.</p>             </td>             <td class="code">               <div class="highlight"><pre>
 
-</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>set the first "used<strong>*</strong>" objects to visible...</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (graphics.objectsUsedInFrameCounts[primitiveType] &gt; <span class="number">0</span>) {
-                sceneObject.visible = <span class="literal">true</span>;
-                graphics.objectsUsedInFrameCounts[primitiveType] -= <span class="number">1</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>set the first "used<strong>*</strong>" objects to visible...
+logger('combing display list objects: ' + (i+1) + " of " + threejs.scene.objects.length);
+logger('prim type' + sceneObject.primitiveType);
+logger('det level' + sceneObject.detailLevel);</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (graphics.objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] &gt; <span class="number">0</span>) {
+</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>logger('object visible');</p>             </td>             <td class="code">               <div class="highlight"><pre>                sceneObject.visible = <span class="literal">true</span>;
+                graphics.objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] -= <span class="number">1</span>;
             } <span class="keyword">else</span> {
-</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>... and the others to invisible</p>             </td>             <td class="code">               <div class="highlight"><pre>                sceneObject.visible = <span class="literal">false</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>... and the others to invisible</p>             </td>             <td class="code">               <div class="highlight"><pre>                sceneObject.visible = <span class="literal">false</span>;
             }
 
-            <span class="keyword">if</span> (sceneObject.isAmbientLight) {
-                <span class="keyword">if</span> (LightSystem.usedAmbientLights &gt; <span class="number">0</span>) {
-                    sceneObject.visible = <span class="literal">true</span>;
-                    LightSystem.usedAmbientLights -= <span class="number">1</span>;
-                } <span class="keyword">else</span> {
-                    sceneObject.visible = <span class="literal">false</span>;
-                }
-            }
         }
     };
 

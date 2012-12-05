@@ -9,8 +9,8 @@
     <span class="keyword">var</span> LightSystem = {},
         ambientLightsPool = [];
 
-
-    LightSystem.usedAmbientLights = <span class="number">0</span>;
+    graphics.objectPool[graphics.primitiveTypes.ambientLight] = [];
+    graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight] = <span class="number">0</span>;
 
     LightSystem.lightsAreOn = <span class="literal">false</span>;
 
@@ -31,8 +31,7 @@ that the tint of the ambientLight is shown. </p>             </td>             <
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>ambientLight needs to be global</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.ambientLight = LightSystem.ambientLight = <span class="function"><span class="keyword">function</span> <span class="params">(r, g, b, a)</span> {</span>
 
         <span class="keyword">var</span> colorToBeUsed,
-            newLightCreated = <span class="literal">false</span>,
-            pooledAmbientLight;
+            newLightCreated = <span class="literal">false</span>;
 
         <span class="keyword">if</span> (r === <span class="literal">undefined</span>) {
 </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>empty arguments gives some sort
@@ -50,34 +49,31 @@ default white fill</p>             </td>             <td class="code">          
 
 </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>used by graphic-primitives</p>             </td>             <td class="code">               <div class="highlight"><pre>        graphics.defaultNormalStroke = <span class="literal">false</span>;
 
-        pooledAmbientLight = ambientLightsPool[LightSystem.usedAmbientLights];
+        <span class="keyword">var</span> pooledAmbientLight = graphics.objectPool[graphics.primitiveTypes.ambientLight] [graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
         <span class="keyword">if</span> (pooledAmbientLight === <span class="literal">undefined</span>) {
             logger(<span class="string">'no ambientLight in pool, creating one'</span>);
             pooledAmbientLight = <span class="keyword">new</span> three.AmbientLight(colorToBeUsed);
             newLightCreated = <span class="literal">true</span>;
             ambientLightsPool.push(pooledAmbientLight);
+            pooledAmbientLight.detailLevel = <span class="number">0</span>;
+            pooledAmbientLight.primitiveType = graphics.primitiveTypes.ambientLight;
+            logger(<span class="string">"graphics.primitiveTypes.ambientLight"</span> + graphics.primitiveTypes.ambientLight);
         } <span class="keyword">else</span> {
             pooledAmbientLight.color.setHex(colorToBeUsed);
             logger(<span class="string">'existing ambientLight in pool, setting color: '</span> + pooledAmbientLight.color.r + <span class="string">' '</span> + pooledAmbientLight.color.g + <span class="string">' '</span> + pooledAmbientLight.color.b);
         }
 
 
-        pooledAmbientLight.isLine = <span class="literal">false</span>;
-        pooledAmbientLight.isRectangle = <span class="literal">false</span>;
-        pooledAmbientLight.isBox = <span class="literal">false</span>;
-        pooledAmbientLight.isCylinder = <span class="literal">false</span>;
-        pooledAmbientLight.isAmbientLight = <span class="literal">true</span>;
-        pooledAmbientLight.isPointLight = <span class="literal">false</span>;
-        pooledAmbientLight.isSphere = <span class="number">0</span>;
 
 
-        LightSystem.usedAmbientLights += <span class="number">1</span>;
+        graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight] += <span class="number">1</span>;
         pooledAmbientLight.matrixAutoUpdate = <span class="literal">false</span>;
         pooledAmbientLight.matrix.copy(matrixcommands.getWorldMatrix());
         pooledAmbientLight.matrixWorldNeedsUpdate = <span class="literal">true</span>;
 
         <span class="keyword">if</span> (newLightCreated) {
-            threejs.scene.add(pooledAmbientLight);
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>NOTE that an ambient light is not actually added as an object.
+i.e. if you navigate the objects you don't find it.</p>             </td>             <td class="code">               <div class="highlight"><pre>            threejs.scene.add(pooledAmbientLight);
         }
     };
 
