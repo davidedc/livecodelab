@@ -523,7 +523,7 @@ var createGraphicsCommands = function () {
     };
 
 
-    // Modified fro Processing.js
+    // Modified from Processing.js
 
 
     window.fill = GraphicsCommands.fill = function (r, g, b, a) {
