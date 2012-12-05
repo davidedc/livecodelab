@@ -49,6 +49,21 @@
 // is. There are more possible types such as particles, etc. but they are not currently
 // used in LiveCodeLab. An object needs one more thing: a material.
 //
+// Caching of objects
+// ----------------------
+// Once created, objects are kept cached together with all possible materials that can be
+// associated with it. Each object has to have its own set of materials because
+// one can decide to draw one object in solid fill, one in normal color, one with
+// an ambient light (i.e. lambert material), etc.
+// 
+// Objects are kept in the scene
+// ----------------------
+// Once an object is added to the scene, it's never removed. Rather, it's hidden if it's
+// not used, but it's never removed. This is because adding/removing objects from the
+// scene is rather expensive. Note that Mr Doob mentioned via email that subsequent
+// versions of three.js have improved performance a lot, so it's worth trying another
+// approach.
+//
 // Strokes are managed via separate objects for stroke and fill
 // ----------------------
 // There is a particular flag in Three.js materials for drawing wireframes. But materials
@@ -63,6 +78,14 @@
 // One for the fills and one, slightly "larger", for the strokes. In that way, the
 // strokes are visible "in front" of the fills, and the fills cover the strokes "at
 // the back"
+//
+// The order of materials matters
+// ----------------------
+// When an object is created, it must be first rendered with the most complex material,
+// because internally in Three.js/WebGL memory is allocated only once. So a special
+// mechanism is put in place by which new objects are drawn with the normalMaterial
+// with scale 0, so they are rendered but they are invisible. In the next frame (i.e.
+// after the first render) the correct material is used.
 //
 // "Spinning"
 // ----------------------
