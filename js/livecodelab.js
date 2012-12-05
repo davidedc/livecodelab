@@ -189,9 +189,17 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
     //            and the other 2 boxes are set to hidden
     // So there is a pool of objects for each primitive. It starts empty, new objects are
     // added to the scene only if the ones available from previous draws are not sufficient.
-    // TODO a way to shrink the scene if it's been a
-    // long time that only a handful of lines/meshes
-    // have been used.
+    // Note that in theory we could be smarter, instead of combing the whole scene
+    // we could pack all the similar primitives together (because the order in the
+    // display list doesn't matter, because there are no "matrix" nodes, each
+    // primitive contains a fully calculated matrix) and keep indexes of where each
+    // group is, so we could for example have 100 boxes and 100 balls, and we could
+    // scan the first two boxes and set those two visible, then jump to the balls
+    // avoiding to scan all the other 98 boxes, and set the correct amount of balls
+    // visible. In practice, it's not clear whether a lot of time is spend in this
+    // function, so that should be determined first.
+    // TODO a way to shrink the scene and delete from the scene objects that have
+    // not been used for a long time.
     // Note: Mr Doob said that the new scene destruction/creation primitives of Three.js
     //       are much faster. Also the objects of the scene are harder to reach, so
     //       it could be the case that this mechanism is not needed anymore.
