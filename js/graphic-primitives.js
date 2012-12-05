@@ -52,9 +52,14 @@
 // Strokes are managed via separate objects for stroke and fill
 // ----------------------
 // There is a particular flag in Three.js materials for drawing wireframes. But materials
-// cannot be combined, i.e. only one is associated at any time with a geometry. Also,
-// wireframes draw ALL the edges, i.e. both the edges normally visible and "in front"
-// and the occluded edges at the back. So the solution is to draw two disting objects.
+// cannot be combined, i.e. only one is associated at any time with a geometry. So one
+// can either draw a wireframe or a fill. In previous versions of Three.js more than
+// one material could be associated, but that has been deprecated, see
+// https://github.com/mrdoob/three.js/issues/751 and instead a
+// createMultiMaterialObject utility was put in place, which basically creates multiple
+// objects one for each material, see
+// https://github.com/mrdoob/three.js/blob/dev/src/extras/SceneUtils.js#L29
+// So the solution here is to create two disting objects.
 // One for the fills and one, slightly "larger", for the strokes. In that way, the
 // strokes are visible "in front" of the fills, and the fills cover the strokes "at
 // the back"
