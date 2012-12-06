@@ -174,8 +174,8 @@ var createGraphicsCommands = function () {
     // then one could leave all these arrays undefined and define them at runtime
     // only when needed.
     geometriesBank[primitiveTypes.line] = new THREE.Geometry();
-    geometriesBank[primitiveTypes.line].vertices.push(new THREE.Vertex(new THREE.Vector3(0, -0.5, 0)));
-    geometriesBank[primitiveTypes.line].vertices.push(new THREE.Vertex(new THREE.Vector3(0, 0.5, 0)));
+    geometriesBank[primitiveTypes.line].vertices.push(new THREE.Vector3(0, -0.5, 0));
+    geometriesBank[primitiveTypes.line].vertices.push(new THREE.Vector3(0, 0.5, 0));
     geometriesBank[primitiveTypes.rect] = new THREE.PlaneGeometry(1, 1);
     geometriesBank[primitiveTypes.box] = new THREE.CubeGeometry(1, 1, 1);
     geometriesBank[primitiveTypes.peg] = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
@@ -361,10 +361,10 @@ var createGraphicsCommands = function () {
                 // is applied to it, no matter what the current settings of fill
                 // and lights are. So we make objects invisible in their very first
                 // frame to avoid it flashing briefly in completely the wrong colour
-                // by setting the scale to zero. The object will still go through the
-                // rendering step, so the memory for the material is initialised
+                // by setting the scale to almost zero. The object will still go through
+                // the rendering step, so the memory for the material is initialised
                 // correctly.
-                pooledObjectWithMaterials.threejsObject3D.matrix.scale(new THREE.Vector3(0));
+                pooledObjectWithMaterials.threejsObject3D.matrix.scale(new THREE.Vector3(0.0001,0.0001,0.0001));
         }
         else if (a !== 1 || b !== 1 || c !== 1) {
             if (strokeTime) {
