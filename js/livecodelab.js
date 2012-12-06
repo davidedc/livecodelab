@@ -208,8 +208,8 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
             sceneObject,
             primitiveType;
         // scan all the objects in the display list
-        for (i = 0; i < threejs.scene.objects.length; i += 1) {
-            sceneObject = threejs.scene.objects[i];
+        for (i = 0; i < threejs.scene.children.length; i += 1) {
+            sceneObject = threejs.scene.children[i];
 
             // check the type of object. Each type has one pool. Go through each object in the
             // pool and set to visible the number of used objects in this frame, set the
