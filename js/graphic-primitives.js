@@ -2,7 +2,8 @@
 /*global THREE, logger, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne  */
 
 // Please reference the colour-functions.js file for all colour-related
-// functions.
+// functions and lights-functions.js for lights, which use a similar
+// structure for caching and counting of light instances.
 
 // Fundamentals
 // ============
@@ -14,7 +15,8 @@
 // ----------------------
 // First off, like Processing, LiveCodeLab shies away from "retained" graphics
 // and instead uses "immediate mode" graphics.
-// Practically, this means that when the user uses a graphic primitive, he is
+// For context, "immediate mode" graphics means that when the user uses a graphic
+// primitive, he is
 // NOT given a handle that he can use to modify properties of that element at a
 // later stage, contrarily to flash, DOM, CSS, openGL and Three.JS
 // (to different degrees).
@@ -40,7 +42,7 @@
 // Processing and LiveCodeLab go for immediate mode. Once the primitive is invoked, it
 // becomes pixels and there is no built-in way to do input/event/hierarchies...
 // Rather, there are a few properties that are set as a global state and apply to all
-// objects. Examples are "fill" and stroke.
+// objects. Examples are "fill" and "stroke".
 //
 // Relationship between objects, meshes, geometry, materials...
 // ----------------------
@@ -94,7 +96,7 @@
 // is likely to first use "box", and without spinning that would look like a boring
 // square that appears without animation. Spinning gives many more cues: the environment
 // is 3d, the lighting is special by default and all faces have primary colors, things
-// animate. Without spinning, all those queues need to be further explained and demonstra
+// animate. Without spinning, all those cues need to be further explained and demonstra
 // ted.
 
 
