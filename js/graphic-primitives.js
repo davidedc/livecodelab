@@ -254,11 +254,6 @@ var createGraphicsCommands = function () {
                 initialSpinCountdown: SPIN_DURATION_IN_FRAMES
             };
 
-            // one might think that the double-sidedness of an object might be a flag of
-            // the material but it's actually a property of the entire Object3D.
-            // So we set it here once and for all. This line basically has the effect to
-            // set the property to true for all rectangles.
-            pooledObjectWithMaterials.threejsObject3D.doubleSided = primitiveProperties.doubleSided;
             objectIsNew = true;
             objectPool.push(pooledObjectWithMaterials);
             //console.log("creating new object");
@@ -314,10 +309,11 @@ var createGraphicsCommands = function () {
             pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.lambertMaterial;
         }
 
-				// not all of these properties apply in all cases (for example doublesided
+				// not all of these properties apply in all cases (for example sidedness
 				// doesn't apply to lines), but setting these properties in those cases
 				// has no ill effect and we are factoring out here as many initialisations
 				// as possible to make the code cleaner.
+        pooledObjectWithMaterials.threejsObject3D.material.side = primitiveProperties.sidedness;
 				pooledObjectWithMaterials.threejsObject3D.material.opacity = alphaToBeUsed;
 				pooledObjectWithMaterials.threejsObject3D.material.wireframe = strokeTime;
 				pooledObjectWithMaterials.threejsObject3D.material.wireframeLinewidth = GraphicsCommands.currentStrokeSize;
@@ -442,7 +438,7 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             canFill: false,
             primitiveType: primitiveTypes.line,
-            doubleSided: false,
+            sidedness: THREE.FrontSide,
             THREEObjectConstructor: THREE.Line,
             detailLevel: 0
         };
@@ -458,7 +454,7 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             canFill: true,
             primitiveType: primitiveTypes.rect,
-            doubleSided: true,
+            sidedness: THREE.DoubleSide,
             THREEObjectConstructor: THREE.Mesh,
             detailLevel: 0
         };
@@ -474,7 +470,7 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             canFill: true,
             primitiveType: primitiveTypes.box,
-            doubleSided: false,
+            sidedness: THREE.FrontSide,
             THREEObjectConstructor: THREE.Mesh,
             detailLevel: 0
         };
@@ -490,7 +486,7 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             canFill: true,
             primitiveType: primitiveTypes.peg,
-            doubleSided: false,
+            sidedness: THREE.FrontSide,
             THREEObjectConstructor: THREE.Mesh,
             detailLevel: 0
         };
@@ -519,7 +515,7 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             canFill: true,
             primitiveType: primitiveTypes.ball,
-            doubleSided: false,
+            sidedness: THREE.FrontSide,
             THREEObjectConstructor: THREE.Mesh,
             detailLevel: GraphicsCommands.ballDetLevel - minimumBallDetail
         };
