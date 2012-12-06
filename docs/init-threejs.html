@@ -120,7 +120,7 @@ fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHe
         ThreeJs.effectBlend = <span class="keyword">new</span> THREE.ShaderPass(THREE.ShaderExtras.blend, <span class="string">"tDiffuse1"</span>);
         screenPass = <span class="keyword">new</span> THREE.ShaderPass(THREE.ShaderExtras.screen);
 
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>motion blur</p>             </td>             <td class="code">               <div class="highlight"><pre>        ThreeJs.effectBlend.uniforms.tDiffuse2.texture = effectSaveTarget.renderTarget;
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>motion blur</p>             </td>             <td class="code">               <div class="highlight"><pre>        ThreeJs.effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget;
         ThreeJs.effectBlend.uniforms.mixRatio.value = <span class="number">0</span>;
 
         renderModel = <span class="keyword">new</span> THREE.RenderPass(ThreeJs.scene, ThreeJs.camera);

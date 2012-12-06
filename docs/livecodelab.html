@@ -190,8 +190,8 @@ Note: Mr Doob said that the new scene destruction/creation primitives of Three.j
         <span class="keyword">var</span> i,
             sceneObject,
             primitiveType;
-</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>scan all the objects in the display list</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; threejs.scene.objects.length; i += <span class="number">1</span>) {
-            sceneObject = threejs.scene.objects[i];
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>scan all the objects in the display list</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; threejs.scene.children.length; i += <span class="number">1</span>) {
+            sceneObject = threejs.scene.children[i];
 
 </pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>check the type of object. Each type has one pool. Go through each object in the
 pool and set to visible the number of used objects in this frame, set the
