@@ -129,7 +129,7 @@ var createThreeJs = function (Detector, THREE, THREEx) {
         screenPass = new THREE.ShaderPass(THREE.ShaderExtras.screen);
 
         // motion blur
-        ThreeJs.effectBlend.uniforms.tDiffuse2.texture = effectSaveTarget.renderTarget;
+        ThreeJs.effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget;
         ThreeJs.effectBlend.uniforms.mixRatio.value = 0;
 
         renderModel = new THREE.RenderPass(ThreeJs.scene, ThreeJs.camera);
