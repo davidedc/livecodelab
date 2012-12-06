@@ -85,31 +85,37 @@ if (a===undefined) a = color(0);</p>             </td>             <td class="co
             whichDefaultBackground = (whichDefaultBackground + <span class="number">1</span>) % <span class="number">5</span>;
         }
 
-        <span class="keyword">if</span> (whichDefaultBackground === <span class="number">0</span>) {
-            defaultGradientColor1 = orange;
-            defaultGradientColor2 = red;
-            defaultGradientColor3 = black;
-            $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'white'</span>);
-        } <span class="keyword">else</span> <span class="keyword">if</span> (whichDefaultBackground === <span class="number">1</span>) {
-            defaultGradientColor1 = white;
-            defaultGradientColor2 = khaki;
-            defaultGradientColor3 = peachpuff;
-            $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'LightPink'</span>);
-        } <span class="keyword">else</span> <span class="keyword">if</span> (whichDefaultBackground === <span class="number">2</span>) {
-            defaultGradientColor1 = lightsteelblue;
-            defaultGradientColor2 = lightcyan;
-            defaultGradientColor3 = paleturquoise;
-            $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'CadetBlue'</span>);
-        } <span class="keyword">else</span> <span class="keyword">if</span> (whichDefaultBackground === <span class="number">3</span>) {
-            defaultGradientColor1 = silver;
-            defaultGradientColor2 = lightgrey;
-            defaultGradientColor3 = gainsboro;
-            $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'white'</span>);
-        } <span class="keyword">else</span> <span class="keyword">if</span> (whichDefaultBackground === <span class="number">4</span>) {
-            defaultGradientColor1 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
-            defaultGradientColor2 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
-            defaultGradientColor3 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
-            $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'DarkOliveGreen'</span>);
+        <span class="keyword">switch</span> (whichDefaultBackground) {
+					<span class="keyword">case</span> <span class="number">0</span>:
+							defaultGradientColor1 = orange;
+							defaultGradientColor2 = red;
+							defaultGradientColor3 = black;
+							$(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'white'</span>);
+							<span class="keyword">break</span>;
+					<span class="keyword">case</span> <span class="number">1</span>:
+							defaultGradientColor1 = white;
+							defaultGradientColor2 = khaki;
+							defaultGradientColor3 = peachpuff;
+							$(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'LightPink'</span>);
+							<span class="keyword">break</span>;
+					<span class="keyword">case</span> <span class="number">2</span>:
+							defaultGradientColor1 = lightsteelblue;
+							defaultGradientColor2 = lightcyan;
+							defaultGradientColor3 = paleturquoise;
+							$(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'CadetBlue'</span>);
+							<span class="keyword">break</span>;
+					<span class="keyword">case</span> <span class="number">3</span>:
+							defaultGradientColor1 = silver;
+							defaultGradientColor2 = lightgrey;
+							defaultGradientColor3 = gainsboro;
+							$(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'white'</span>);
+							<span class="keyword">break</span>;
+					<span class="keyword">case</span> <span class="number">4</span>:
+							defaultGradientColor1 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
+							defaultGradientColor2 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
+							defaultGradientColor3 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
+							$(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'DarkOliveGreen'</span>);
+							<span class="keyword">break</span>;
         }
     };
 
