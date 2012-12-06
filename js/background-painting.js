@@ -90,31 +90,37 @@ var createBackgroundPainter = function (threejs) {
             whichDefaultBackground = (whichDefaultBackground + 1) % 5;
         }
 
-        if (whichDefaultBackground === 0) {
-            defaultGradientColor1 = orange;
-            defaultGradientColor2 = red;
-            defaultGradientColor3 = black;
-            $("#fakeStartingBlinkingCursor").css('color', 'white');
-        } else if (whichDefaultBackground === 1) {
-            defaultGradientColor1 = white;
-            defaultGradientColor2 = khaki;
-            defaultGradientColor3 = peachpuff;
-            $("#fakeStartingBlinkingCursor").css('color', 'LightPink');
-        } else if (whichDefaultBackground === 2) {
-            defaultGradientColor1 = lightsteelblue;
-            defaultGradientColor2 = lightcyan;
-            defaultGradientColor3 = paleturquoise;
-            $("#fakeStartingBlinkingCursor").css('color', 'CadetBlue');
-        } else if (whichDefaultBackground === 3) {
-            defaultGradientColor1 = silver;
-            defaultGradientColor2 = lightgrey;
-            defaultGradientColor3 = gainsboro;
-            $("#fakeStartingBlinkingCursor").css('color', 'white');
-        } else if (whichDefaultBackground === 4) {
-            defaultGradientColor1 = color(155, 255, 155);
-            defaultGradientColor2 = color(155, 255, 155);
-            defaultGradientColor3 = color(155, 255, 155);
-            $("#fakeStartingBlinkingCursor").css('color', 'DarkOliveGreen');
+        switch (whichDefaultBackground) {
+					case 0:
+							defaultGradientColor1 = orange;
+							defaultGradientColor2 = red;
+							defaultGradientColor3 = black;
+							$("#fakeStartingBlinkingCursor").css('color', 'white');
+							break;
+					case 1:
+							defaultGradientColor1 = white;
+							defaultGradientColor2 = khaki;
+							defaultGradientColor3 = peachpuff;
+							$("#fakeStartingBlinkingCursor").css('color', 'LightPink');
+							break;
+					case 2:
+							defaultGradientColor1 = lightsteelblue;
+							defaultGradientColor2 = lightcyan;
+							defaultGradientColor3 = paleturquoise;
+							$("#fakeStartingBlinkingCursor").css('color', 'CadetBlue');
+							break;
+					case 3:
+							defaultGradientColor1 = silver;
+							defaultGradientColor2 = lightgrey;
+							defaultGradientColor3 = gainsboro;
+							$("#fakeStartingBlinkingCursor").css('color', 'white');
+							break;
+					case 4:
+							defaultGradientColor1 = color(155, 255, 155);
+							defaultGradientColor2 = color(155, 255, 155);
+							defaultGradientColor3 = color(155, 255, 155);
+							$("#fakeStartingBlinkingCursor").css('color', 'DarkOliveGreen');
+							break;
         }
     };
 
