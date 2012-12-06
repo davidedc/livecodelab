@@ -27,14 +27,18 @@ var startEnvironment = function () {
     BlendControls = createBlendControls(ThreeJs);
     LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands);
 
-    BackgroundPainter = createBackgroundPainter(ThreeJs);
-
-    BackgroundPainter.pickRandomDefaultGradient();
 
     CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands);
     editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer);
 
-    autocoder = createAutocoder(editor);
+    CSSColourNames = createCSSColours();
+
+    BackgroundPainter = createBackgroundPainter(ThreeJs);
+
+    BackgroundPainter.pickRandomDefaultGradient();
+
+    autocoder = createAutocoder(editor, CSSColourNames);
+
 
     LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands);
 

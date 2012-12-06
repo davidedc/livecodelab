@@ -1,7 +1,7 @@
 /*jslint devel: true */
 /*global $, editor, McLexer */
 
-var createAutocoder = function (editor) {
+var createAutocoder = function (editor, CSSColourNames) {
 
     'use strict';
 
@@ -21,12 +21,6 @@ var createAutocoder = function (editor) {
 
     // Lexing states. There are no particular states so far.
     var INIT = new McLexer.State();
-
-    // We keep an array of colours as they can be mutated too!
-    // TODO this is duplicated somewhere else in livecodelab.
-    var colours = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black", "blanchedalmond", "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate", "coral", "cornflowerblue", "cornsilk", "crimson", "cyan", "darkblue", "darkcyan", "darkgoldenrod", "darkgray", "darkgrey", "darkgreen", "darkkhaki", "darkmagenta", "darkolivegreen", "darkorange", "darkorchid", "darkred", "darksalmon", "darkseagreen", "darkslateblue", "darkslategray", "darkslategrey", "darkturquoise", "darkviolet", "deeppink", "deepskyblue", "dimgray", "dimgrey", "dodgerblue", "firebrick", "floralwhite", "forestgreen", "fuchsia", "gainsboro", "ghostwhite", "gold", "goldenrod", "gray", "grey", "green", "greenyellow", "honeydew", "hotpink", "indianred", "indigo", "ivory", "khaki", "lavender", "lavenderblush", "lawngreen", "lemonchiffon", "lightblue", "lightcoral", "lightcyan", "lightgoldenrodyellow", "lightgrey", "lightgray", "lightgreen", "lightpink", "lightsalmon", "lightseagreen", "lightskyblue", "lightslategray", "lightslategrey", "lightsteelblue", "lightyellow", "lime", "limegreen", "linen", "magenta", "maroon", "mediumaquamarine", "mediumblue", "mediumorchid", "mediumpurple", "mediumseagreen", "mediumslateblue", "mediumspringgreen", "mediumturquoise", "mediumvioletred", "midnightblue", "mintcream", "mistyrose", "moccasin", "navajowhite", "navy", "oldlace", "olive", "olivedrab", "orange", "orangered", "orchid", "palegoldenrod", "palegreen", "paleturquoise", "palevioletred", "papayawhip", "peachpuff", "peru", "pink", "plum", "powderblue", "purple", "red", "rosybrown", "royalblue", "saddlebrown", "salmon", "sandybrown", "seagreen", "seashell", "sienna", "silver", "skyblue", "slateblue", "slategray", "slategrey", "snow", "springgreen", "steelblue", "tan", "teal", "thistle", "tomato", "turquoise", "violet", "wheat", "white", "whitesmoke", "yellow", "yellowgreen"];
-
-
 
     // Token types. If they contain a mutate() function, then they can be mutated.
     var COMMENT = function (string) {
@@ -135,14 +129,14 @@ var createAutocoder = function (editor) {
         };
 
         this.mutate = function () {
-            var idx = Math.floor(Math.random() * colours.length);
+            var idx = Math.floor(Math.random() * CSSColourNames.length);
 
-            while (this.string == colours[idx]) {
-                idx = Math.floor(Math.random() * colours.length);
+            while (this.string == CSSColourNames[idx]) {
+                idx = Math.floor(Math.random() * CSSColourNames.length);
             }
 
-            console.log("mutate colour " + this.string + " -> " + colours[idx]);
-            this.string = colours[idx];
+            console.log("mutate colour " + this.string + " -> " + CSSColourNames[idx]);
+            this.string = CSSColourNames[idx];
         };
     };
 
@@ -253,8 +247,8 @@ var createAutocoder = function (editor) {
     });
 
     // colour
-    for (scanningAllColors = 0; scanningAllColors < colours.length; scanningAllColors++) {
-        INIT(new RegExp(colours[scanningAllColors]))(function (match, rest, state) {
+    for (scanningAllColors = 0; scanningAllColors < CSSColourNames.length; scanningAllColors++) {
+        INIT(new RegExp(CSSColourNames[scanningAllColors]))(function (match, rest, state) {
             Tokens.push(new COLOUR(match[0]));
             return state.continuation(rest);
         });
