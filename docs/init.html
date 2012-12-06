@@ -27,16 +27,30 @@
     BlendControls = createBlendControls(ThreeJs);
     LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands);
 
-    BackgroundPainter = createBackgroundPainter(ThreeJs);
-
-    BackgroundPainter.pickRandomDefaultGradient();
 
     CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands);
     editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer);
 
-    autocoder = createAutocoder(editor);
+    CSSColourNames = createCSSColours();
+
+    BackgroundPainter = createBackgroundPainter(ThreeJs);
+
+    BackgroundPainter.pickRandomDefaultGradient();
+
+    autocoder = createAutocoder(editor, CSSColourNames);
+
 
     LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands);
+    
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>I'm going to put this here, difficult to say where it belongs. In Firefox there
+is a window.back() function that takes you back to the previous page. The effect
+is that when one types "background", in the middle of the sentence the browser
+changes page. Re-defining it so that it causes no harm. This can be probably
+fixed a bit better once we'll have a scope dedicated to livecodelab code
+execution.
+Same applies to other functions below, to avoid tripping on them in the future.</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.back = <span class="keyword">function</span>() {};
+    window.forward = <span class="keyword">function</span>() {};
+    window.close = <span class="keyword">function</span>() {};
 
     ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs, GraphicsCommands);
 
@@ -52,7 +66,7 @@
     }
 
     <span class="keyword">if</span> (!Detector.webgl || ThreeJs.forceCanvasRenderer) {
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>$('#noWebGLMessage').modal()</p>             </td>             <td class="code">               <div class="highlight"><pre>        $(<span class="string">'#noWebGLMessage'</span>).modal({
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>$('#noWebGLMessage').modal()</p>             </td>             <td class="code">               <div class="highlight"><pre>        $(<span class="string">'#noWebGLMessage'</span>).modal({
             onClose: SoundSystem.closeAndCheckAudio
         });
         $(<span class="string">'#simplemodal-container'</span>).height(<span class="number">200</span>);
@@ -69,7 +83,7 @@
     editor.focus();
     Ui.adjustCodeMirrorHeight();
 
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>check if the url points to a particular demo,
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>check if the url points to a particular demo,
 in which case we load the demo directly.
 otherwise we do as usual.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (window.location.hash.indexOf(<span class="string">"bookmark"</span>) !== -<span class="number">1</span>) {
         <span class="keyword">var</span> demoToLoad = window.location.hash.substring(<span class="string">"bookmark"</span>.length + <span class="number">2</span>);
@@ -84,7 +98,7 @@ otherwise we do as usual.</p>             </td>             <td class="code">   
     BigCursor.toggleBlink(<span class="literal">true</span>);
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Init of the dim code toggle.
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Init of the dim code toggle.
 set it to false, then immediatly toggle it to true with the managing function
 that way we can easily invert the default: just change false to true -- julien</p>             </td>             <td class="code">               <div class="highlight"><pre>    EditorDimmer.dimCodeOn = <span class="literal">false</span>;
     EditorDimmer.toggleDimCode();

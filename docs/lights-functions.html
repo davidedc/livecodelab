@@ -6,10 +6,9 @@
 
     <span class="string">'use strict'</span>;
 
-    <span class="keyword">var</span> LightSystem = {},
-        ambientLightsPool = [];
+    <span class="keyword">var</span> LightSystem = {};
 
-    graphics.objectPool[graphics.primitiveTypes.ambientLight] = [];
+    graphics.objectPools[graphics.primitiveTypes.ambientLight] = [];
     graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight] = <span class="number">0</span>;
 
     LightSystem.lightsAreOn = <span class="literal">false</span>;
@@ -49,19 +48,17 @@ default white fill</p>             </td>             <td class="code">          
 
 </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>used by graphic-primitives</p>             </td>             <td class="code">               <div class="highlight"><pre>        graphics.defaultNormalStroke = <span class="literal">false</span>;
 
-        <span class="keyword">var</span> pooledAmbientLight = graphics.objectPool[graphics.primitiveTypes.ambientLight] [graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
-        <span class="keyword">if</span> (pooledAmbientLight === <span class="literal">undefined</span>) {
-            logger(<span class="string">'no ambientLight in pool, creating one'</span>);
-            pooledAmbientLight = <span class="keyword">new</span> three.AmbientLight(colorToBeUsed);
+        <span class="keyword">var</span> ambientLightsPool = graphics.objectPools[graphics.primitiveTypes.ambientLight];
+        <span class="keyword">var</span> pooledAmbientLight =  ambientLightsPool[graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>logger("how many ambient lights: " + graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]);</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (pooledAmbientLight === <span class="literal">undefined</span>) {
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>logger('no ambientLight in pool, creating one - ambientLightsPool length: ' + ambientLightsPool.length);</p>             </td>             <td class="code">               <div class="highlight"><pre>            pooledAmbientLight = <span class="keyword">new</span> three.AmbientLight(colorToBeUsed);
             newLightCreated = <span class="literal">true</span>;
             ambientLightsPool.push(pooledAmbientLight);
             pooledAmbientLight.detailLevel = <span class="number">0</span>;
             pooledAmbientLight.primitiveType = graphics.primitiveTypes.ambientLight;
-            logger(<span class="string">"graphics.primitiveTypes.ambientLight"</span> + graphics.primitiveTypes.ambientLight);
-        } <span class="keyword">else</span> {
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>logger("graphics.primitiveTypes.ambientLight" + graphics.primitiveTypes.ambientLight);</p>             </td>             <td class="code">               <div class="highlight"><pre>        } <span class="keyword">else</span> {
             pooledAmbientLight.color.setHex(colorToBeUsed);
-            logger(<span class="string">'existing ambientLight in pool, setting color: '</span> + pooledAmbientLight.color.r + <span class="string">' '</span> + pooledAmbientLight.color.g + <span class="string">' '</span> + pooledAmbientLight.color.b);
-        }
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>logger('existing ambientLight in pool, setting color: ' + pooledAmbientLight.color.r + ' ' + pooledAmbientLight.color.g + ' ' + pooledAmbientLight.color.b);</p>             </td>             <td class="code">               <div class="highlight"><pre>        }
 
 
 
@@ -72,7 +69,7 @@ default white fill</p>             </td>             <td class="code">          
         pooledAmbientLight.matrixWorldNeedsUpdate = <span class="literal">true</span>;
 
         <span class="keyword">if</span> (newLightCreated) {
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>NOTE that an ambient light is not actually added as an object.
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>NOTE that an ambient light is not actually added as an object.
 i.e. if you navigate the objects you don't find it.</p>             </td>             <td class="code">               <div class="highlight"><pre>            threejs.scene.add(pooledAmbientLight);
         }
     };

@@ -15,7 +15,7 @@ graphic primitives work in this file.</p>
 and instead uses "immediate mode" graphics.
 Practically, this means that when the user uses a graphic primitive, he is
 NOT given a handle that he can use to modify properties of that element at a
-later stage. For example flash, DOM, CSS, openGL and Three.JS work that way
+later stage, contrarily to flash, DOM, CSS, openGL and Three.JS
 (to different degrees).
 Retained graphic modes keep structures in memory that make easy for example
 to do event handling (which object did I click?), hierarchy management
@@ -29,13 +29,13 @@ only minimal parts of the screen that need updating rather than redrawing the
 whole screen (again, openGL doesn't do that apart from basic frustum culling, but
 for example there is nothing to detect occlusions and avoid painting occluded
 objects).
-There are a few drawbacks about retained modes: a) programs that manage
-handles are more lengthy than programs that don't to manage handles
+There are a few drawbacks in retained modes: a) programs that manage
+handles are more lengthy than programs that don't
 b) they are often not needed for example in
 2d sprites-based videogames c) most importantly,
 they require deeper understanding of the underlying
-model (e.g. which property can I change? What are those called? How to I change
-parent/child relationship? How do events bubble up?).
+model (e.g. which property can I change? What are those called? How do I change
+parent/child relationship? How do events bubble up and where should I catch them?).
 Processing and LiveCodeLab go for immediate mode. Once the primitive is invoked, it
 becomes pixels and there is no built-in way to do input/event/hierarchies...
 Rather, there are a few properties that are set as a global state and apply to all
@@ -48,15 +48,43 @@ is a line, a mesh can be anything else depending on what the geometry of the mes
 is. There are more possible types such as particles, etc. but they are not currently
 used in LiveCodeLab. An object needs one more thing: a material.</p>
 
-<h2>Strokes are managed via separately painting the stroke and then paining the fill</h2>
+<h2>Caching of objects</h2>
 
-<p>There is a particular material in Three.js for drawing wireframes. But materials
-cannot be combined, i.e. only one is associated at any time with a geometry. Also,
-wireframes draw ALL the edges, i.e. both the edges normally visible and "in front"
-and the occluded edges at the back. So the solution is to draw two disting objects.
+<p>Once created, objects are kept cached together with all possible materials that can be
+associated with it. Each object has to have its own set of materials because
+one can decide to draw one object in solid fill, one in normal color, one with
+an ambient light (i.e. lambert material), etc.</p>
+
+<h2>Objects are kept in the scene</h2>
+
+<p>Once an object is added to the scene, it's never removed. Rather, it's hidden if it's
+not used, but it's never removed. This is because adding/removing objects from the
+scene is rather expensive. Note that Mr Doob mentioned via email that subsequent
+versions of three.js have improved performance a lot, so it's worth trying another
+approach.</p>
+
+<h2>Strokes are managed via separate objects for stroke and fill</h2>
+
+<p>There is a particular flag in Three.js materials for drawing wireframes. But materials
+cannot be combined, i.e. only one is associated at any time with a geometry. So one
+can either draw a wireframe or a fill. In previous versions of Three.js more than
+one material could be associated, but that has been deprecated, see
+https://github.com/mrdoob/three.js/issues/751 and instead a
+createMultiMaterialObject utility was put in place, which basically creates multiple
+objects one for each material, see
+https://github.com/mrdoob/three.js/blob/dev/src/extras/SceneUtils.js#L29
+So the solution here is to create two disting objects.
 One for the fills and one, slightly "larger", for the strokes. In that way, the
 strokes are visible "in front" of the fills, and the fills cover the strokes "at
 the back"</p>
+
+<h2>The order of materials matters</h2>
+
+<p>When an object is created, it must be first rendered with the most complex material,
+because internally in Three.js/WebGL memory is allocated only once. So a special
+mechanism is put in place by which new objects are drawn with the normalMaterial
+with scale 0, so they are rendered but they are invisible. In the next frame (i.e.
+after the first render) the correct material is used.</p>
 
 <h2>"Spinning"</h2>
 
@@ -93,8 +121,8 @@ ted.</p>             </td>             <td class="code">               <div clas
 color that paints based on normals.</p>             </td>             <td class="code">               <div class="highlight"><pre>        angleColor = -<span class="number">16777217</span>;
 
 
-    <span class="keyword">var</span> objectPool = [];
-    GraphicsCommands.objectPool = objectPool;
+    <span class="keyword">var</span> objectPools = [];
+    GraphicsCommands.objectPools = objectPools;
     GraphicsCommands.ballDetLevel = <span class="number">8</span>;
     GraphicsCommands.currentStrokeSize = <span class="number">1</span>;
 
@@ -112,12 +140,12 @@ color that paints based on normals.</p>             </td>             <td class=
 
     GraphicsCommands.primitiveTypes = primitiveTypes;
 
-    objectPool[primitiveTypes.line] = [];
-    objectPool[primitiveTypes.rect] = [];
-    objectPool[primitiveTypes.box] = [];
-    objectPool[primitiveTypes.peg] = [];
+    objectPools[primitiveTypes.line] = [];
+    objectPools[primitiveTypes.rect] = [];
+    objectPools[primitiveTypes.box] = [];
+    objectPools[primitiveTypes.peg] = [];
 </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>creating ball pools</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; (maximumBallDetail - minimumBallDetail + <span class="number">1</span>); i += <span class="number">1</span>) {
-        objectPool[primitiveTypes.ball + i] = [];
+        objectPools[primitiveTypes.ball + i] = [];
     }
 
 
@@ -149,7 +177,8 @@ only when needed.</p>             </td>             <td class="code">           
 
 </pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>For each pool we have a count of how many of those entries
 are actually used in the current frame.
-This is so that we can go through the scene graph and hide the unused objects.</p>             </td>             <td class="code">               <div class="highlight"><pre>    GraphicsCommands.objectsUsedInFrameCounts = [];
+This is so that we can go through the scene graph and hide the unused objects.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> objectsUsedInFrameCounts = [];
+    GraphicsCommands.objectsUsedInFrameCounts = objectsUsedInFrameCounts;
 
 
 </pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>the "spinthingy" is because we want
@@ -165,13 +194,18 @@ spin for a few moments when they are created.</p>             </td>             
 
     createObjectIfNeededAndDressWithCorrectMaterial = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c, primitiveProperties, strokeTime, colorToBeUsed, alphaToBeUsed, applyDefaultNormalColor)</span> {</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>this is to run the code twice. This should be neater
-and turned into a function call really.</p>             </td>             <td class="code">               <div class="highlight"><pre>
         <span class="keyword">var</span> objectIsNew = <span class="literal">false</span>,
             pooledObjectWithMaterials,
             theAngle;
 
-        pooledObjectWithMaterials = objectPool[primitiveProperties.primitiveType + primitiveProperties.detailLevel][GraphicsCommands.objectsUsedInFrameCounts[primitiveProperties.primitiveType  + primitiveProperties.detailLevel]];
+</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>the primitiveID is used to index three arrays:
+  array of caches (pools) of objects
+  array of caches (pools) of geometries
+  counters of how many objects of that type have been used in the current frame.
+Note that primitives that have an associated detail level span across
+multiple IDs, because geometries at different details levels are different.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveID = primitiveProperties.primitiveType + primitiveProperties.detailLevel;
+        <span class="keyword">var</span> objectPool = objectPools[primitiveID];
+        pooledObjectWithMaterials = objectPool[objectsUsedInFrameCounts[primitiveID]];
         <span class="keyword">if</span> (pooledObjectWithMaterials === <span class="literal">undefined</span>) {
 </pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>each pooled object contains a geometry, and all the materials it could
 ever need.</p>             </td>             <td class="code">               <div class="highlight"><pre>            pooledObjectWithMaterials = {
@@ -198,17 +232,17 @@ and render that material first, in case
 the user will ever want to use it.
 Another workaround would be to create an object
 for each different type of material.</p>             </td>             <td class="code">               <div class="highlight"><pre>                normalMaterial: <span class="literal">undefined</span>,
-                threejsObject3D: <span class="keyword">new</span> primitiveProperties.THREEObjectConstructor(geometriesBank[primitiveProperties.primitiveType  + primitiveProperties.detailLevel]),
+                threejsObject3D: <span class="keyword">new</span> primitiveProperties.THREEObjectConstructor(geometriesBank[primitiveID]),
                 initialSpinCountdown: SPIN_DURATION_IN_FRAMES
             };
 
             objectIsNew = <span class="literal">true</span>;
-            objectPool[primitiveProperties.primitiveType  + primitiveProperties.detailLevel].push(pooledObjectWithMaterials);
+            objectPool.push(pooledObjectWithMaterials);
 </pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>console.log("creating new object");
 console.log("primitive type: " + primitiveProperties.primitiveType  );
 console.log("level of detail: " + primitiveProperties.detailLevel);
-console.log("pool id: " + (primitiveProperties.primitiveType  + primitiveProperties.detailLevel));
-console.log("  length: " + objectPool[primitiveProperties.primitiveType  + primitiveProperties.detailLevel].length);</p>             </td>             <td class="code">               <div class="highlight"><pre>        }
+console.log("pool id: " + (primitiveID));
+console.log("  length: " + objectPool.length);</p>             </td>             <td class="code">               <div class="highlight"><pre>        }
 
         <span class="keyword">if</span> (primitiveProperties.primitiveType === primitiveTypes.line) {
             <span class="keyword">if</span> (pooledObjectWithMaterials.lineMaterial === <span class="literal">undefined</span>) {
@@ -279,7 +313,7 @@ as possible to make the code cleaner.</p>             </td>             <td clas
         pooledObjectWithMaterials.threejsObject3D.primitiveType = primitiveProperties.primitiveType;
         pooledObjectWithMaterials.threejsObject3D.detailLevel = primitiveProperties.detailLevel;
 
-        GraphicsCommands.objectsUsedInFrameCounts[primitiveProperties.primitiveType  + primitiveProperties.detailLevel] += <span class="number">1</span>;
+        objectsUsedInFrameCounts[primitiveID] += <span class="number">1</span>;
 
         <span class="keyword">if</span> (GraphicsCommands.doTheSpinThingy &amp;&amp; pooledObjectWithMaterials.initialSpinCountdown &gt; <span class="number">0</span>) {
             MatrixCommands.pushMatrix();
@@ -341,14 +375,14 @@ to make the code uniform and unifiable</p>             </td>             <td cla
 no stroke then there is nothing to do.
 Also, even if we aren'd under a noFill command spell, some geometries
 inherently don't have a fill, so we return if there is no stroke either.
-(right now that applies only lines).</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (!doStroke &amp;&amp; (!doFill || !primitiveProperties.thisGometryCanFill)) {
+(right now that applies only lines).</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (!doStroke &amp;&amp; (!doFill || !primitiveProperties.canFill)) {
             <span class="keyword">return</span>;
         }
 </pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>if we are under the influence of a noFill command OR
 the wireframe is not going to be visible on top of the
-fill then don't draw the stroke, only draw the fill</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> ((primitiveProperties.thisGometryCanFill &amp;&amp; doFill &amp;&amp; (GraphicsCommands.currentStrokeSize === <span class="number">0</span> || !doStroke || (GraphicsCommands.currentStrokeSize &lt;= <span class="number">1</span> &amp;&amp; !GraphicsCommands.defaultNormalFill &amp;&amp; !GraphicsCommands.defaultNormalStroke &amp;&amp; currentStrokeColor === currentFillColor &amp;&amp; currentFillAlpha === <span class="number">1</span> &amp;&amp; currentStrokeAlpha === <span class="number">1</span>))) || (GraphicsCommands.currentStrokeSize &lt;= <span class="number">1</span> &amp;&amp; GraphicsCommands.defaultNormalFill &amp;&amp; GraphicsCommands.defaultNormalStroke)) {
+fill then don't draw the stroke, only draw the fill</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> ((primitiveProperties.canFill &amp;&amp; doFill &amp;&amp; (GraphicsCommands.currentStrokeSize === <span class="number">0</span> || !doStroke || (GraphicsCommands.currentStrokeSize &lt;= <span class="number">1</span> &amp;&amp; !GraphicsCommands.defaultNormalFill &amp;&amp; !GraphicsCommands.defaultNormalStroke &amp;&amp; currentStrokeColor === currentFillColor &amp;&amp; currentFillAlpha === <span class="number">1</span> &amp;&amp; currentStrokeAlpha === <span class="number">1</span>))) || (GraphicsCommands.currentStrokeSize &lt;= <span class="number">1</span> &amp;&amp; GraphicsCommands.defaultNormalFill &amp;&amp; GraphicsCommands.defaultNormalStroke)) {
             createObjectIfNeededAndDressWithCorrectMaterial(a, b, c, primitiveProperties, <span class="literal">false</span>, currentFillColor, currentFillAlpha, GraphicsCommands.defaultNormalFill);
-        } <span class="keyword">else</span> <span class="keyword">if</span> ((!doFill || !primitiveProperties.thisGometryCanFill) &amp;&amp; doStroke) {
+        } <span class="keyword">else</span> <span class="keyword">if</span> ((!doFill || !primitiveProperties.canFill) &amp;&amp; doStroke) {
 </pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>only doing the stroke</p>             </td>             <td class="code">               <div class="highlight"><pre>            createObjectIfNeededAndDressWithCorrectMaterial(a, b, c, primitiveProperties, <span class="literal">true</span>, currentStrokeColor, currentStrokeAlpha, GraphicsCommands.defaultNormalStroke);
 </pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>doing both the fill and the stroke</p>             </td>             <td class="code">               <div class="highlight"><pre>        } <span class="keyword">else</span> {
             createObjectIfNeededAndDressWithCorrectMaterial(a, b, c, primitiveProperties, <span class="literal">true</span>, currentStrokeColor, currentStrokeAlpha, GraphicsCommands.defaultNormalStroke);
@@ -370,8 +404,7 @@ an ambient light to the color of the stroke
 is more than one?)</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.line = GraphicsCommands.line = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c)</span> {</span>
 
 </pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
-            thisGometryCanFill: <span class="literal">false</span>,
-            thisGometryCanStroke: <span class="literal">true</span>,
+            canFill: <span class="literal">false</span>,
             primitiveType: primitiveTypes.line,
             doubleSided: <span class="literal">false</span>,
             THREEObjectConstructor: THREE.Line,
@@ -385,8 +418,7 @@ is more than one?)</p>             </td>             <td class="code">          
     window.rect = GraphicsCommands.rect = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c)</span> {</span>
 
 </pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
-            thisGometryCanFill: <span class="literal">true</span>,
-            thisGometryCanStroke: <span class="literal">true</span>,
+            canFill: <span class="literal">true</span>,
             primitiveType: primitiveTypes.rect,
             doubleSided: <span class="literal">true</span>,
             THREEObjectConstructor: THREE.Mesh,
@@ -400,8 +432,7 @@ is more than one?)</p>             </td>             <td class="code">          
     window.box = GraphicsCommands.box = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c)</span> {</span>
 
 </pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
-            thisGometryCanFill: <span class="literal">true</span>,
-            thisGometryCanStroke: <span class="literal">true</span>,
+            canFill: <span class="literal">true</span>,
             primitiveType: primitiveTypes.box,
             doubleSided: <span class="literal">false</span>,
             THREEObjectConstructor: THREE.Mesh,
@@ -415,8 +446,7 @@ is more than one?)</p>             </td>             <td class="code">          
     window.peg = GraphicsCommands.peg = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c)</span> {</span>
 
 </pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
-            thisGometryCanFill: <span class="literal">true</span>,
-            thisGometryCanStroke: <span class="literal">true</span>,
+            canFill: <span class="literal">true</span>,
             primitiveType: primitiveTypes.peg,
             doubleSided: <span class="literal">false</span>,
             THREEObjectConstructor: THREE.Mesh,
@@ -443,8 +473,7 @@ is more than one?)</p>             </td>             <td class="code">          
     window.ball = GraphicsCommands.ball = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c)</span> {</span>
 
 </pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
-            thisGometryCanFill: <span class="literal">true</span>,
-            thisGometryCanStroke: <span class="literal">true</span>,
+            canFill: <span class="literal">true</span>,
             primitiveType: primitiveTypes.ball,
             doubleSided: <span class="literal">false</span>,
             THREEObjectConstructor: THREE.Mesh,
@@ -455,7 +484,7 @@ is more than one?)</p>             </td>             <td class="code">          
     };
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>Modified fro Processing.js</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>Modified from Processing.js</p>             </td>             <td class="code">               <div class="highlight"><pre>
 
     window.fill = GraphicsCommands.fill = <span class="function"><span class="keyword">function</span> <span class="params">(r, g, b, a)</span> {</span>
         GraphicsCommands.defaultNormalFill = <span class="literal">false</span>;
