@@ -315,6 +315,9 @@ var createGraphicsCommands = function () {
 				// as possible to make the code cleaner.
         pooledObjectWithMaterials.threejsObject3D.material.side = primitiveProperties.sidedness;
 				pooledObjectWithMaterials.threejsObject3D.material.opacity = alphaToBeUsed;
+				if (alphaToBeUsed < 1) {
+					pooledObjectWithMaterials.threejsObject3D.material.transparent = true;
+				}
 				pooledObjectWithMaterials.threejsObject3D.material.wireframe = strokeTime;
 				pooledObjectWithMaterials.threejsObject3D.material.wireframeLinewidth = GraphicsCommands.currentStrokeSize;
 				pooledObjectWithMaterials.threejsObject3D.material.reflectivity = reflectValue;
