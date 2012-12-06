@@ -254,6 +254,11 @@ var createGraphicsCommands = function () {
                 initialSpinCountdown: SPIN_DURATION_IN_FRAMES
             };
 
+            // one might think that the double-sidedness of an object might be a flag of
+            // the material but it's actually a property of the entire Object3D.
+            // So we set it here once and for all. This line basically has the effect to
+            // set the property to true for all rectangles.
+            pooledObjectWithMaterials.threejsObject3D.doubleSided = primitiveProperties.doubleSided;
             objectIsNew = true;
             objectPool.push(pooledObjectWithMaterials);
             //console.log("creating new object");
@@ -316,7 +321,6 @@ var createGraphicsCommands = function () {
 				pooledObjectWithMaterials.threejsObject3D.material.opacity = alphaToBeUsed;
 				pooledObjectWithMaterials.threejsObject3D.material.wireframe = strokeTime;
 				pooledObjectWithMaterials.threejsObject3D.material.wireframeLinewidth = GraphicsCommands.currentStrokeSize;
-				pooledObjectWithMaterials.threejsObject3D.material.doubleSided = primitiveProperties.doubleSided;
 				pooledObjectWithMaterials.threejsObject3D.material.reflectivity = reflectValue;
 				pooledObjectWithMaterials.threejsObject3D.material.refractionRatio = refractValue;
 
