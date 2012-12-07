@@ -1,9 +1,11 @@
-var createCSSColours = function (autocoder){
+var createColours = function (autocoder){
 
 	// Color constants, modified from processing.js
 	// with added the missing ones from the CSS standard,
 	// which includes the spelling "grey" on top of "gray"
-	var csscolourNamesValues = [
+	// and also "angleColor", used to dress objects
+	// with the normal material.
+	var colourNamesValues = [
 		"aliceblue", "0xfff0f8ff",
 		"antiquewhite", "0xfffaebd7",
 		"aqua", "0xff00ffff",
@@ -158,12 +160,12 @@ var createCSSColours = function (autocoder){
 		"angleColor", "-16777217"
 	];
 	
-	var CSSColourNames = [];
-	for (var cssColourIteration = 0; cssColourIteration < csscolourNamesValues.length; cssColourIteration += 2) {
+	var ColourNames = [];
+	for (var ColourIteration = 0; ColourIteration < colourNamesValues.length; ColourIteration += 2) {
 			// this eval is avoidable once we have a "scope" object in which the code will be executed, then
 			// we can just dynamically add fields that scope without using eval.
-			eval("window." + csscolourNamesValues[cssColourIteration] +" = "+ csscolourNamesValues[cssColourIteration+1] + ";");
-			CSSColourNames.push(csscolourNamesValues[cssColourIteration]);
+			eval("window." + colourNamesValues[ColourIteration] +" = "+ colourNamesValues[ColourIteration+1] + ";");
+			ColourNames.push(colourNamesValues[ColourIteration]);
 	}
-	return CSSColourNames;
+	return ColourNames;
 }

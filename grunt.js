@@ -46,7 +46,7 @@ module.exports = function (grunt) {
                     'js/sound/buzz.js',
                     'js/livecodelab.js',
                     'js/init-threejs.js',
-                    'js/css-colour-definitions.js',
+                    'js/colour-definitions.js',
                     'js/three.js/Detector.js',
                     'js/three.js/Stats.js',
                     'js/threex/THREEx.WindowResize.js',

@@ -31,13 +31,13 @@ var startEnvironment = function () {
     CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands);
     editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer);
 
-    CSSColourNames = createCSSColours();
+    ColourNames = createColours();
 
     BackgroundPainter = createBackgroundPainter(ThreeJs);
 
     BackgroundPainter.pickRandomDefaultGradient();
 
-    autocoder = createAutocoder(editor, CSSColourNames);
+    autocoder = createAutocoder(editor, ColourNames);
 
 
     LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands);

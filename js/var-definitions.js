@@ -49,5 +49,5 @@ var BackgroundPainter;
 var EditorDimmer;
 var Ui;
 var SoundSystem;
-var CSSColourNames;
+var ColourNames;
 

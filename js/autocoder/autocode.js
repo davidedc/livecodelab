@@ -1,7 +1,7 @@
 /*jslint devel: true */
 /*global $, editor, McLexer */
 
-var createAutocoder = function (editor, CSSColourNames) {
+var createAutocoder = function (editor, ColourNames) {
 
     'use strict';
 
@@ -129,14 +129,14 @@ var createAutocoder = function (editor, CSSColourNames) {
         };
 
         this.mutate = function () {
-            var idx = Math.floor(Math.random() * CSSColourNames.length);
+            var idx = Math.floor(Math.random() * ColourNames.length);
 
-            while (this.string == CSSColourNames[idx]) {
-                idx = Math.floor(Math.random() * CSSColourNames.length);
+            while (this.string == ColourNames[idx]) {
+                idx = Math.floor(Math.random() * ColourNames.length);
             }
 
-            console.log("mutate colour " + this.string + " -> " + CSSColourNames[idx]);
-            this.string = CSSColourNames[idx];
+            console.log("mutate colour " + this.string + " -> " + ColourNames[idx]);
+            this.string = ColourNames[idx];
         };
     };
 
@@ -247,8 +247,8 @@ var createAutocoder = function (editor, CSSColourNames) {
     });
 
     // colour
-    for (scanningAllColors = 0; scanningAllColors < CSSColourNames.length; scanningAllColors++) {
-        INIT(new RegExp(CSSColourNames[scanningAllColors]))(function (match, rest, state) {
+    for (scanningAllColors = 0; scanningAllColors < ColourNames.length; scanningAllColors++) {
+        INIT(new RegExp(ColourNames[scanningAllColors]))(function (match, rest, state) {
             Tokens.push(new COLOUR(match[0]));
             return state.continuation(rest);
         });
