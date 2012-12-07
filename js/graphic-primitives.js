@@ -112,15 +112,15 @@ var createGraphicsCommands = function () {
         doStroke = true,
         reflectValue = 1,
         refractValue = 0.98,
-        currentStrokeAlpha = 1,
-        currentStrokeColor = 0x000000,
+        currentStrokeAlpha,
+        currentStrokeColor,
         i,
         geometriesBank = [],
         createObjectIfNeededAndDressWithCorrectMaterial,
         commonPrimitiveDrawingLogic,
         SPIN_DURATION_IN_FRAMES = 30,
-        currentFillAlpha = 1,
-        currentFillColor = 0xFFFFFF;
+        currentFillAlpha,
+        currentFillColor;
 
     var objectPools = [];
     GraphicsCommands.objectPools = objectPools;
@@ -205,7 +205,6 @@ var createGraphicsCommands = function () {
         var objectIsNew = false,
             pooledObjectWithMaterials,
             theAngle;
-
 
         // the primitiveID is used to index three arrays:
         //   array of caches (pools) of objects

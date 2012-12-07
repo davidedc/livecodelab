@@ -61,7 +61,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
             CodeTransformer.doOnceOccurrencesLineNumbers = [];
             SoundSystem.anyCodeReactingTobpm = false;
             graphics.fill(0xFFFFFFFF);
-            graphics.stroke(0xFF000000);
+            graphics.stroke(0xFFFFFFFF);
             graphics.currentStrokeSize = 1;
             graphics.defaultNormalFill = true;
             graphics.defaultNormalStroke = true;
