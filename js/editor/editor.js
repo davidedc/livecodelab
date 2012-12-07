@@ -1,7 +1,7 @@
 /*jslint browser: true, devel: true */
 /*global EditorDimmer, CodeTransformer */
 
-var createEditor = function (codemirror, codetransformer) {
+var createEditor = function (codemirror, codetransformer, bigcursor) {
 
     'use strict';
 
@@ -29,5 +29,12 @@ var createEditor = function (codemirror, codetransformer) {
         },
         theme: 'night'
     });
+
+    document.onkeypress = function (e) {
+        if (bigcursor.show && editor.getValue() !== "") {
+            bigcursor.shrinkFakeText(e);
+        }
+    };
+
     return editor;
 };

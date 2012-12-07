@@ -1,5 +1,5 @@
 /*jslint browser: true, devel: true */
-/*global $, editor */
+/*global $ */
 
 var createBigCursor = function () {
 
@@ -13,12 +13,6 @@ var createBigCursor = function () {
     BigCursor.show = true;
 
     BigCursor.fakeCursorInterval = -1;
-
-    document.onkeypress = function (e) {
-        if (BigCursor.show && editor.getValue() !== "") {
-            BigCursor.shrinkFakeText(e);
-        }
-    };
 
     BigCursor.shrinkFakeText = function (e) {
         var theEvent, key, currentCaption, shorterCaption;

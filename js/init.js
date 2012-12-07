@@ -26,7 +26,7 @@ var startEnvironment = function () {
 
 
     CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands);
-    editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer);
+    editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer, BigCursor);
 
     ColourNames = createColours();
 
