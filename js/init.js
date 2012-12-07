@@ -1,9 +1,6 @@
 /*jslint devel: true */
 /*global $, autocoder, logger, BackgroundPainter, initThreeJs, buzz */
 
-var startingSound;
-
-
 var isCanvasSupported = function () {
     var elem = document.createElement('canvas');
     return !!(elem.getContext && elem.getContext('2d'));
@@ -92,11 +89,13 @@ var startEnvironment = function () {
         var demoToLoad = window.location.hash.substring("bookmark".length + 2);
         ProgramLoader.loadDemoOrTutorial(demoToLoad);
     } else {
-        startingSound = new buzz.sound("./sound/audioFiles/start_bing", {
+        var startingSound = new buzz.sound("./sound/audioFiles/start_bing", {
             formats: ["ogg", "mp3"]
         });
 
-        setTimeout("startingSound.play();", 650);
+        setTimeout(function () {
+            startingSound.play();
+        }, 650);
     }
     BigCursor.toggleBlink(true);
 
