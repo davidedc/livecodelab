@@ -15,7 +15,7 @@ var startEnvironment = function () {
     BigCursor = createBigCursor();
     TimeKeeper = createTimeKeeper();
 
-    SoundSystem = createSoundSystem();
+    SoundSystem = createSoundSystem(buzz);
 
     GraphicsCommands = createGraphicsCommands();
 

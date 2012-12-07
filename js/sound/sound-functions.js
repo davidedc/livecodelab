@@ -1,7 +1,7 @@
 /*jslint browser: true */
-/*global $, logger, buzz, autocoder, createSoundDef */
+/*global $, logger, createSoundDef */
 
-var createSoundSystem = function () {
+var createSoundSystem = function (buzz) {
 
     'use strict';
 
