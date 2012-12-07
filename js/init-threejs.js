@@ -80,21 +80,6 @@ var createThreeJs = function (Detector, THREE, THREEx) {
     ThreeJs.camera.position.set(0, 0, 5);
     ThreeJs.scene.add(ThreeJs.camera);
 
-    // temporarily, add a light
-    // add subtle ambient lighting
-    //var ambientLight = new THREE.AmbientLight(0xFF0000);
-    //scene.add(ambientLight);
-    // create a point light
-    pointLight = new THREE.PointLight(0xFFFFFF);
-
-    // set its position
-    pointLight.position.x = 10;
-    pointLight.position.y = 50;
-    pointLight.position.z = 130;
-
-    // add to the scene
-    ThreeJs.scene.add(pointLight);
-
     // transparently support window resize
     THREEx.WindowResize.bind(ThreeJs.renderer, ThreeJs.camera);
 

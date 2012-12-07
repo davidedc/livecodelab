@@ -301,11 +301,10 @@ var createGraphicsCommands = function () {
         } else {
             // lights are on
             if (pooledObjectWithMaterials.lambertMaterial === undefined) {
-                logger("creating lambert:" + currentFillColor + " " + currentFillAlpha + " " + LightSystem.ambientColor + " " + reflectValue + " " + refractValue);
+                logger("creating lambert:" + currentFillColor + " " + currentFillAlpha + " " + reflectValue + " " + refractValue);
                 pooledObjectWithMaterials.lambertMaterial = new THREE.MeshLambertMaterial();
             }
             pooledObjectWithMaterials.lambertMaterial.color.setHex(colorToBeUsed);
-				    pooledObjectWithMaterials.lambertMaterial.ambient.setHex(LightSystem.ambientColor);
             pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.lambertMaterial;
         }
 

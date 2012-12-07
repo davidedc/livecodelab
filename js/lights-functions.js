@@ -20,14 +20,6 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
         LightSystem.lightsAreOn = false;
     };
 
-    // ambientColor is always white
-    // because it needs to reflect what the
-    // ambient light color is
-    // I tried to set the ambientColor directly
-    // but it doesn't work. It needs to be white so
-    // that the tint of the ambientLight is shown. 
-    LightSystem.ambientColor = color(255, 255, 255);
-
     // ambientLight needs to be global
     window.ambientLight = LightSystem.ambientLight = function (r, g, b, a) {
 
@@ -40,7 +32,7 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
             // black is too stark and white
             // doesn't show the effect with the
             // default white fill
-            colorToBeUsed = color(125);
+            colorToBeUsed = color(255);
         } else {
             colorToBeUsed = color(r, g, b, a);
         }
@@ -58,7 +50,16 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
         //logger("how many ambient lights: " + graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]);
         if (pooledAmbientLight === undefined) {
             //logger('no ambientLight in pool, creating one - ambientLightsPool length: ' + ambientLightsPool.length);
-            pooledAmbientLight = new three.AmbientLight(colorToBeUsed);
+            
+            // So here is the thing, the command is currently called AmbientLight but
+            // in reality we are creating a PointLight in a specific position.
+            // AmbientLight just fills the whole scene,
+            // so the faces of the cube would all be of the same
+            // exact color. Note that in Three.js versions before r50 the AmbientLight
+            // would work like a PointLight does now.
+            pooledAmbientLight = new THREE.PointLight(colorToBeUsed);
+            pooledAmbientLight.position.set( 10, 50, 130 );
+            
             newLightCreated = true;
             ambientLightsPool.push(pooledAmbientLight);
             pooledAmbientLight.detailLevel = 0;
@@ -73,9 +74,6 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
 
 
         graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight] += 1;
-        pooledAmbientLight.matrixAutoUpdate = false;
-        pooledAmbientLight.matrix.copy(matrixcommands.getWorldMatrix());
-        pooledAmbientLight.matrixWorldNeedsUpdate = true;
 
         if (newLightCreated) {
             // NOTE that an ambient light is not actually added as an object.
