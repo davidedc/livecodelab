@@ -150,7 +150,12 @@ var createCSSColours = function (autocoder){
 		"white", "0xffffffff",
 		"whitesmoke", "0xfff5f5f5",
 		"yellow", "0xffffff00",
-		"yellowgreen", "0xff9acd32"
+		"yellowgreen", "0xff9acd32",
+      // anglecolor is a number
+      // lower than any 32 bit color and is a special
+      // color that tells the engine to use the
+      // normal material.
+		"angleColor", "-16777217"
 	];
 	
 	var CSSColourNames = [];

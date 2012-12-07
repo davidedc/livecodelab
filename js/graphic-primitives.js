@@ -120,11 +120,7 @@ var createGraphicsCommands = function () {
         commonPrimitiveDrawingLogic,
         SPIN_DURATION_IN_FRAMES = 30,
         currentFillAlpha = 1,
-        currentFillColor = 0xFFFFFF,
-        // lowest than any 32 bit color is a special
-        // color that paints based on normals.
-        angleColor = -16777217;
-
+        currentFillColor = 0xFFFFFF;
 
     var objectPools = [];
     GraphicsCommands.objectPools = objectPools;
@@ -209,6 +205,7 @@ var createGraphicsCommands = function () {
         var objectIsNew = false,
             pooledObjectWithMaterials,
             theAngle;
+
 
         // the primitiveID is used to index three arrays:
         //   array of caches (pools) of objects
@@ -410,6 +407,7 @@ var createGraphicsCommands = function () {
         // if we are under the influence of a noFill command OR
         // the wireframe is not going to be visible on top of the
         // fill then don't draw the stroke, only draw the fill
+
         if ((primitiveProperties.canFill && doFill && (GraphicsCommands.currentStrokeSize === 0 || !doStroke || (GraphicsCommands.currentStrokeSize <= 1 && !GraphicsCommands.defaultNormalFill && !GraphicsCommands.defaultNormalStroke && currentStrokeColor === currentFillColor && currentFillAlpha === 1 && currentStrokeAlpha === 1))) || (GraphicsCommands.currentStrokeSize <= 1 && GraphicsCommands.defaultNormalFill && GraphicsCommands.defaultNormalStroke)) {
             createObjectIfNeededAndDressWithCorrectMaterial(a, b, c, primitiveProperties, false, currentFillColor, currentFillAlpha, GraphicsCommands.defaultNormalFill);
         } else if ((!doFill || !primitiveProperties.canFill) && doStroke) {
@@ -536,14 +534,14 @@ var createGraphicsCommands = function () {
             crgb,
             ca;
 
-        if (c === angleColor) {
+        if (r === angleColor) {
             // this is so we can do a smart optimisation later
             // and not draw the wireframe is it happens to be the same color as
             // the fill
             GraphicsCommands.defaultNormalFill = true;
-            crgb = c;
-            if (r !== undefined) {
-                ca = r / colorModeA;
+            crgb = angleColor;
+            if (b=== undefined && g !== undefined) {
+                ca = g / colorModeA;
             } else {
                 ca = 1;
             }
@@ -551,9 +549,7 @@ var createGraphicsCommands = function () {
             crgb = color(redF(c), greenF(c), blueF(c));
             ca = alphaZeroToOne(c);
         }
-        if (crgb === currentFillColor && ca === currentFillAlpha && doFill) {
-            return;
-        }
+
         doFill = true;
         currentFillColor = crgb;
         currentFillAlpha = ca;
@@ -607,14 +603,14 @@ var createGraphicsCommands = function () {
         var c = color(r, g, b, a),
             crgb,
             ca;
-        if (c === angleColor) {
+        if (r === angleColor) {
             // this is so we can do a smart optimisation later
             // and not draw the wireframe is it happens to be the same color as
             // the fill
             GraphicsCommands.defaultNormalStroke = true;
-            crgb = c;
-            if (r !== undefined) {
-                ca = r / colorModeA;
+            crgb = angleColor;
+            if (b=== undefined && g !== undefined) {
+                ca = g / colorModeA;
             } else {
                 ca = 1;
             }
@@ -622,9 +618,7 @@ var createGraphicsCommands = function () {
             crgb = color(redF(c), greenF(c), blueF(c));
             ca = alphaZeroToOne(c);
         }
-        if (crgb === currentStrokeColor && ca === currentStrokeAlpha && doStroke) {
-            return;
-        }
+
         doStroke = true;
         currentStrokeColor = crgb;
         currentStrokeAlpha = ca;
