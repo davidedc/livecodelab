@@ -529,30 +529,44 @@ var createGraphicsCommands = function () {
 
 
     window.fill = GraphicsCommands.fill = function (r, g, b, a) {
-        GraphicsCommands.defaultNormalFill = false;
-        var c = color(r, g, b, a),
-            crgb,
-            ca;
+        // Three.js needs two integers to define an RGBA: the rgb as a 24 bit integer
+        // and the alpha (from zero to one).
+        // Now the thing is that the color gan be given in different
+        // shapes:
+        //   red, green, blue, alpha
+        //   integerOfColor, alpha
+        //   integerForGreyScale, alpha
+        //   the three abobe without the alpha
+        // So the helper functions color and alphaZeroToOne, taken from Processing.js
+        // take care of that disambiguation.
+        // The only complication is that there is a special color called
+        // angleColor that is used to dress the geometries with the normal material.
+        // So in that case, again, there are two forms of invokation
+        //   angleColor
+        //   angleColor, alpha
+        
+        doFill = true;
 
-        if (r === angleColor) {
-            // this is so we can do a smart optimisation later
+        if (r !== angleColor) {
+            GraphicsCommands.defaultNormalFill = false;
+            currentFillColor = color(r, g, b);
+            currentFillAlpha = alphaZeroToOne(color(r, g, b, a));
+        }
+        else {
+            // we keep track of the "normal fill" flag and the fill color
+            // separately because
+            // we can do some smart optimisation later
             // and not draw the wireframe is it happens to be the same color as
             // the fill
             GraphicsCommands.defaultNormalFill = true;
-            crgb = angleColor;
+            currentFillColor = angleColor;
             if (b=== undefined && g !== undefined) {
-                ca = g / colorModeA;
+                currentFillAlpha = g / colorModeA;
             } else {
-                ca = 1;
+                currentFillAlpha = 1;
             }
-        } else {
-            crgb = color(redF(c), greenF(c), blueF(c));
-            ca = alphaZeroToOne(c);
         }
 
-        doFill = true;
-        currentFillColor = crgb;
-        currentFillAlpha = ca;
     };
 
     /**
@@ -599,29 +613,30 @@ var createGraphicsCommands = function () {
      */
 
     window.stroke = GraphicsCommands.stroke = function (r, g, b, a) {
-        GraphicsCommands.defaultNormalStroke = false;
-        var c = color(r, g, b, a),
-            crgb,
-            ca;
-        if (r === angleColor) {
-            // this is so we can do a smart optimisation later
+        // see comment on fill method above
+        // for some comments on how this method works.
+        
+        doStroke = true;
+
+        if (r !== angleColor) {
+            GraphicsCommands.defaultNormalStroke = false;
+            currentStrokeColor = color(r, g, b);
+            currentStrokeAlpha = alphaZeroToOne(color(r, g, b, a));
+        }
+        else {
+            // we keep track of the "normal stroke" flag and the stroke color
+            // separately because
+            // we can do some smart optimisation later
             // and not draw the wireframe is it happens to be the same color as
             // the fill
             GraphicsCommands.defaultNormalStroke = true;
-            crgb = angleColor;
+            currentStrokeColor = angleColor;
             if (b=== undefined && g !== undefined) {
-                ca = g / colorModeA;
+                currentStrokeAlpha = g / colorModeA;
             } else {
-                ca = 1;
+                currentStrokeAlpha = 1;
             }
-        } else {
-            crgb = color(redF(c), greenF(c), blueF(c));
-            ca = alphaZeroToOne(c);
         }
-
-        doStroke = true;
-        currentStrokeColor = crgb;
-        currentStrokeAlpha = ca;
     };
 
     /**
