@@ -10,6 +10,9 @@ var createUi = function () {
         resizeCanvas,
         adjustCodeMirrorHeight;
 
+    // All used by Three.js
+    // add Stats.js - https://github.com/mrdoob/stats.js
+    Ui.stats = new Stats();
 
     triggerReset = function () {
 
@@ -23,8 +26,6 @@ var createUi = function () {
             $("#resetButtonContainer").css("background-color", "");
         }, 200);
     };
-
-
 
     resizeCanvas = function (canvasId) {
         var canvas, scale;
@@ -146,7 +147,6 @@ var createUi = function () {
                 return false;
             });
 
-
             $('#demos li a').click(function () {
                 ProgramLoader.loadDemoOrTutorial($(this).attr('id'));
                 return false;
@@ -156,8 +156,6 @@ var createUi = function () {
                 ProgramLoader.loadDemoOrTutorial($(this).attr('id'));
                 return false;
             });
-
-
 
             $('#autocodeIndicatorContainer').click(function () {
                 autocoder.toggle();
@@ -174,6 +172,11 @@ var createUi = function () {
                 return false;
             });
 
+            // Align bottom-left
+            Ui.stats.getDomElement().style.position = 'absolute';
+            Ui.stats.getDomElement().style.right = '0px';
+            Ui.stats.getDomElement().style.top = '0px';
+            document.body.appendChild(Ui.stats.getDomElement());
 
         });
     };

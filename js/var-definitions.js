@@ -12,20 +12,6 @@ Number.prototype.times = function (func, scope) {
 };
 
 
-
-// All used by Three.js
-// add Stats.js - https://github.com/mrdoob/stats.js
-var stats = new Stats();
-// Align bottom-left
-stats.getDomElement().style.position = 'absolute';
-stats.getDomElement().style.right = '0px';
-stats.getDomElement().style.top = '0px';
-$(document).ready(function () {
-    document.body.appendChild(stats.getDomElement());
-});
-
-
-
 // The CodeMirror editor
 var editor;
 

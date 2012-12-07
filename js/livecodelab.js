@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*global $, MatrixCommands, SoundSystem: true, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, Ui, stats */
+/*global $, MatrixCommands, SoundSystem: true, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, Ui */
 
 
 var frame = 0;
@@ -138,7 +138,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
         LiveCodeLab.combDisplayList();
         LiveCodeLab.render();
         // update stats
-        stats.update();
+        Ui.stats.update();
 
         CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(editor);
 
