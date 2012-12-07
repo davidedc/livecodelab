@@ -38,7 +38,7 @@ var startEnvironment = function () {
 
     EditorDimmer = createEditorDimmer(editor, ProgramLoader, BigCursor); // $
 
-    Ui = createUi(); // $, autocoder, BackgroundPainter, editor, ProgramLoader, EditorDimmer
+    Ui = createUi(autocoder, BackgroundPainter, editor, ProgramLoader, EditorDimmer); // $, Stats
 
 
 

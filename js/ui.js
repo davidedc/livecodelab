@@ -1,7 +1,7 @@
 /*jslint browser: true */
-/*global $, autocoder, BackgroundPainter, editor, ProgramLoader, EditorDimmer */
+/*global $, Stats */
 
-var createUi = function () {
+var createUi = function (autocoder, backgroundpainter, editor, programloader, editordimmer) {
 
     'use strict';
 
@@ -16,7 +16,7 @@ var createUi = function () {
 
     triggerReset = function () {
 
-        BackgroundPainter.pickRandomDefaultGradient();
+        backgroundpainter.pickRandomDefaultGradient();
         if (autocoder.active) {
             autocoder.toggle(false);
         }
@@ -148,12 +148,12 @@ var createUi = function () {
             });
 
             $('#demos li a').click(function () {
-                ProgramLoader.loadDemoOrTutorial($(this).attr('id'));
+                programloader.loadDemoOrTutorial($(this).attr('id'));
                 return false;
             });
 
             $('#tutorials li a').click(function () {
-                ProgramLoader.loadDemoOrTutorial($(this).attr('id'));
+                programloader.loadDemoOrTutorial($(this).attr('id'));
                 return false;
             });
 
@@ -163,7 +163,7 @@ var createUi = function () {
             });
 
             $('#dimCodeButtonContainer').click(function () {
-                EditorDimmer.toggleDimCode();
+                editordimmer.toggleDimCode();
                 return false;
             });
 
