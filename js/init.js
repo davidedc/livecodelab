@@ -11,40 +11,39 @@ var startEnvironment = function () {
     'use strict';
 
 
-    ThreeJs = createThreeJs(Detector, THREE, THREEx);
-    BigCursor = createBigCursor();
-    TimeKeeper = createTimeKeeper();
-
-    SoundSystem = createSoundSystem(buzz);
-
-    GraphicsCommands = createGraphicsCommands();
-
-    MatrixCommands = createMatrixCommands(THREE, TimeKeeper);
-
-    BlendControls = createBlendControls(ThreeJs);
-    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands);
+    CSSColourNames = createCSSColours(); // no global dependencies
+    TimeKeeper = createTimeKeeper(); // no global dependencies
+    MatrixCommands = createMatrixCommands(THREE, TimeKeeper);  // no global dependencies
+    ThreeJs = createThreeJs(Detector, THREE, THREEx); // no global dependencies
+    BlendControls = createBlendControls(ThreeJs);  // logger
+    SoundSystem = createSoundSystem(buzz); // $, logger, createSoundDef
+    BigCursor = createBigCursor(); // $
+    BackgroundPainter = createBackgroundPainter(ThreeJs); // $, color, logger
 
 
-    CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands);
-    editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer, BigCursor);
 
-    ColourNames = createColours();
+    GraphicsCommands = createGraphicsCommands(); // THREE, logger, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne
+    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands); // logger, color
 
-    BackgroundPainter = createBackgroundPainter(ThreeJs);
+
+
+
+    CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands); // $, logger, autocoder, Ui, LiveCodeLab
+    editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer, BigCursor); // EditorDimmer
+    autocoder = createAutocoder(editor, CSSColourNames); // $, editor, McLexer
+
+    LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, Ui
+
+    ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
+
+    EditorDimmer = createEditorDimmer(editor, ProgramLoader, BigCursor); // $
+
+    Ui = createUi(); // $, autocoder, BackgroundPainter, editor, ProgramLoader, EditorDimmer
+
+
+
 
     BackgroundPainter.pickRandomDefaultGradient();
-
-    autocoder = createAutocoder(editor, ColourNames);
-
-
-    LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands);
-
-    ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs, GraphicsCommands);
-
-    EditorDimmer = createEditorDimmer(editor, ProgramLoader, BigCursor);
-
-    Ui = createUi();
-
     SoundSystem.loadAndTestAllTheSounds(Ui.soundSystemOk);
 
     logger("startEnvironment");
