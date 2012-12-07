@@ -78,19 +78,7 @@
     ThreeJs.camera.position.set(<span class="number">0</span>, <span class="number">0</span>, <span class="number">5</span>);
     ThreeJs.scene.add(ThreeJs.camera);
 
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>temporarily, add a light
-add subtle ambient lighting
-var ambientLight = new THREE.AmbientLight(0xFF0000);
-scene.add(ambientLight);
-create a point light</p>             </td>             <td class="code">               <div class="highlight"><pre>    pointLight = <span class="keyword">new</span> THREE.PointLight(<span class="number">0xFFFFFF</span>);
-
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>set its position</p>             </td>             <td class="code">               <div class="highlight"><pre>    pointLight.position.x = <span class="number">10</span>;
-    pointLight.position.y = <span class="number">50</span>;
-    pointLight.position.z = <span class="number">130</span>;
-
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>add to the scene</p>             </td>             <td class="code">               <div class="highlight"><pre>    ThreeJs.scene.add(pointLight);
-
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>transparently support window resize</p>             </td>             <td class="code">               <div class="highlight"><pre>    THREEx.WindowResize.bind(ThreeJs.renderer, ThreeJs.camera);
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>transparently support window resize</p>             </td>             <td class="code">               <div class="highlight"><pre>    THREEx.WindowResize.bind(ThreeJs.renderer, ThreeJs.camera);
 
     ThreeJs.buildPostprocessingChain = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
         <span class="keyword">var</span> renderTargetParameters,
@@ -109,18 +97,18 @@ create a point light</p>             </td>             <td class="code">        
         effectSaveTarget = <span class="keyword">new</span> THREE.SavePass(<span class="keyword">new</span> THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters));
         effectSaveTarget.clear = <span class="literal">false</span>;
 
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Uncomment the three lines containing "fxaaPass" below to try a fast
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Uncomment the three lines containing "fxaaPass" below to try a fast
 antialiasing filter. Commented below because of two reasons: a) it's slow
 b) it blends in some black pixels, so it only looks good in dark backgrounds
 The problem of blending with black pixels is the same problem of the
 motionBlur leaving a black trail - tracked in github with
 https://github.com/davidedc/livecodelab/issues/22</p>             </td>             <td class="code">               <div class="highlight"><pre>        
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>fxaaPass = new THREE.ShaderPass(THREE.ShaderExtras.fxaa);
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>fxaaPass = new THREE.ShaderPass(THREE.ShaderExtras.fxaa);
 fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);</p>             </td>             <td class="code">               <div class="highlight"><pre>
         ThreeJs.effectBlend = <span class="keyword">new</span> THREE.ShaderPass(THREE.ShaderExtras.blend, <span class="string">"tDiffuse1"</span>);
         screenPass = <span class="keyword">new</span> THREE.ShaderPass(THREE.ShaderExtras.screen);
 
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>motion blur</p>             </td>             <td class="code">               <div class="highlight"><pre>        ThreeJs.effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget;
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>motion blur</p>             </td>             <td class="code">               <div class="highlight"><pre>        ThreeJs.effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget;
         ThreeJs.effectBlend.uniforms.mixRatio.value = <span class="number">0</span>;
 
         renderModel = <span class="keyword">new</span> THREE.RenderPass(ThreeJs.scene, ThreeJs.camera);
@@ -128,7 +116,7 @@ fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHe
         ThreeJs.composer = <span class="keyword">new</span> THREE.EffectComposer(ThreeJs.renderer, renderTarget);
 
         ThreeJs.composer.addPass(renderModel);
-</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>ThreeJs.composer.addPass(fxaaPass);</p>             </td>             <td class="code">               <div class="highlight"><pre>        ThreeJs.composer.addPass(ThreeJs.effectBlend);
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>ThreeJs.composer.addPass(fxaaPass);</p>             </td>             <td class="code">               <div class="highlight"><pre>        ThreeJs.composer.addPass(ThreeJs.effectBlend);
         ThreeJs.composer.addPass(effectSaveTarget);
         ThreeJs.composer.addPass(screenPass);
         screenPass.renderToScreen = <span class="literal">true</span>;

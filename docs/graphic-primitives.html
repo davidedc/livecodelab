@@ -281,11 +281,10 @@ for each different type of material.</p>             </td>             <td class
 
         } <span class="keyword">else</span> {
 </pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>lights are on</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (pooledObjectWithMaterials.lambertMaterial === <span class="literal">undefined</span>) {
-                logger(<span class="string">"creating lambert:"</span> + currentFillColor + <span class="string">" "</span> + currentFillAlpha + <span class="string">" "</span> + LightSystem.ambientColor + <span class="string">" "</span> + reflectValue + <span class="string">" "</span> + refractValue);
+                logger(<span class="string">"creating lambert:"</span> + currentFillColor + <span class="string">" "</span> + currentFillAlpha + <span class="string">" "</span> + reflectValue + <span class="string">" "</span> + refractValue);
                 pooledObjectWithMaterials.lambertMaterial = <span class="keyword">new</span> THREE.MeshLambertMaterial();
             }
             pooledObjectWithMaterials.lambertMaterial.color.setHex(colorToBeUsed);
-				    pooledObjectWithMaterials.lambertMaterial.ambient.setHex(LightSystem.ambientColor);
             pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.lambertMaterial;
         }
 
@@ -294,6 +293,9 @@ doesn't apply to lines), but setting these properties in those cases
 has no ill effect and we are factoring out here as many initialisations
 as possible to make the code cleaner.</p>             </td>             <td class="code">               <div class="highlight"><pre>        pooledObjectWithMaterials.threejsObject3D.material.side = primitiveProperties.sidedness;
 				pooledObjectWithMaterials.threejsObject3D.material.opacity = alphaToBeUsed;
+				<span class="keyword">if</span> (alphaToBeUsed &lt; <span class="number">1</span>) {
+					pooledObjectWithMaterials.threejsObject3D.material.transparent = <span class="literal">true</span>;
+				}
 				pooledObjectWithMaterials.threejsObject3D.material.wireframe = strokeTime;
 				pooledObjectWithMaterials.threejsObject3D.material.wireframeLinewidth = GraphicsCommands.currentStrokeSize;
 				pooledObjectWithMaterials.threejsObject3D.material.reflectivity = reflectValue;

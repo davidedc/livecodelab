@@ -20,38 +20,39 @@
         LightSystem.lightsAreOn = <span class="literal">false</span>;
     };
 
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>ambientColor is always white
-because it needs to reflect what the
-ambient light color is
-I tried to set the ambientColor directly
-but it doesn't work. It needs to be white so
-that the tint of the ambientLight is shown. </p>             </td>             <td class="code">               <div class="highlight"><pre>    LightSystem.ambientColor = color(<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>);
-
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>ambientLight needs to be global</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.ambientLight = LightSystem.ambientLight = <span class="function"><span class="keyword">function</span> <span class="params">(r, g, b, a)</span> {</span>
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>ambientLight needs to be global</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.ambientLight = LightSystem.ambientLight = <span class="function"><span class="keyword">function</span> <span class="params">(r, g, b, a)</span> {</span>
 
         <span class="keyword">var</span> colorToBeUsed,
             newLightCreated = <span class="literal">false</span>;
 
         <span class="keyword">if</span> (r === <span class="literal">undefined</span>) {
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>empty arguments gives some sort
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>empty arguments gives some sort
 of grey ambient light.
 black is too stark and white
 doesn't show the effect with the
-default white fill</p>             </td>             <td class="code">               <div class="highlight"><pre>            colorToBeUsed = color(<span class="number">125</span>);
+default white fill</p>             </td>             <td class="code">               <div class="highlight"><pre>            colorToBeUsed = color(<span class="number">255</span>);
         } <span class="keyword">else</span> {
             colorToBeUsed = color(r, g, b, a);
         }
 
         LightSystem.lightsAreOn = <span class="literal">true</span>;
 
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>used by graphic-primitives</p>             </td>             <td class="code">               <div class="highlight"><pre>        graphics.defaultNormalFill = <span class="literal">false</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>used by graphic-primitives</p>             </td>             <td class="code">               <div class="highlight"><pre>        graphics.defaultNormalFill = <span class="literal">false</span>;
 
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>used by graphic-primitives</p>             </td>             <td class="code">               <div class="highlight"><pre>        graphics.defaultNormalStroke = <span class="literal">false</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>used by graphic-primitives</p>             </td>             <td class="code">               <div class="highlight"><pre>        graphics.defaultNormalStroke = <span class="literal">false</span>;
 
         <span class="keyword">var</span> ambientLightsPool = graphics.objectPools[graphics.primitiveTypes.ambientLight];
         <span class="keyword">var</span> pooledAmbientLight =  ambientLightsPool[graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>logger("how many ambient lights: " + graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]);</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (pooledAmbientLight === <span class="literal">undefined</span>) {
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>logger('no ambientLight in pool, creating one - ambientLightsPool length: ' + ambientLightsPool.length);</p>             </td>             <td class="code">               <div class="highlight"><pre>            pooledAmbientLight = <span class="keyword">new</span> three.AmbientLight(colorToBeUsed);
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>logger("how many ambient lights: " + graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]);</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (pooledAmbientLight === <span class="literal">undefined</span>) {
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>logger('no ambientLight in pool, creating one - ambientLightsPool length: ' + ambientLightsPool.length);</p>             </td>             <td class="code">               <div class="highlight"><pre>            
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>So here is the thing, the command is currently called AmbientLight but
+in reality we are creating a PointLight in a specific position.
+AmbientLight just fills the whole scene,
+so the faces of the cube would all be of the same
+exact color. Note that in Three.js versions before r50 the AmbientLight
+would work like a PointLight does now.</p>             </td>             <td class="code">               <div class="highlight"><pre>            pooledAmbientLight = <span class="keyword">new</span> THREE.PointLight(colorToBeUsed);
+            pooledAmbientLight.position.set( <span class="number">10</span>, <span class="number">50</span>, <span class="number">130</span> );
+            
             newLightCreated = <span class="literal">true</span>;
             ambientLightsPool.push(pooledAmbientLight);
             pooledAmbientLight.detailLevel = <span class="number">0</span>;
@@ -64,9 +65,6 @@ default white fill</p>             </td>             <td class="code">          
 
 
         graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight] += <span class="number">1</span>;
-        pooledAmbientLight.matrixAutoUpdate = <span class="literal">false</span>;
-        pooledAmbientLight.matrix.copy(matrixcommands.getWorldMatrix());
-        pooledAmbientLight.matrixWorldNeedsUpdate = <span class="literal">true</span>;
 
         <span class="keyword">if</span> (newLightCreated) {
 </pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>NOTE that an ambient light is not actually added as an object.
