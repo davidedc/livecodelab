@@ -274,6 +274,7 @@ var createGraphicsCommands = function () {
                 pooledObjectWithMaterials.lineMaterial.color.setHex(currentStrokeColor);
             }
 
+            pooledObjectWithMaterials.lineMaterial.linewidth = GraphicsCommands.currentStrokeSize;
             pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.lineMaterial;
         } else if (objectIsNew || (colorToBeUsed === angleColor || applyDefaultNormalColor)) {
             // the first time we render a an object we need to
@@ -649,6 +650,13 @@ var createGraphicsCommands = function () {
     };
 
     window.strokeSize = GraphicsCommands.strokeSize = function (a) {
+        // note that either Three.js of the graphic card limit the size
+        // of the stroke. This is because openGL strokes are VERY crude
+        // (the cap is not even square, it's worse than that:
+        // http://twolivesleft.com/Codea/LineCapShear.png )
+        // So it's limited to 10. In some graphic cards this doesn't even have
+        // any effect.
+        
         if (a === undefined) {
             a = 1;
         } else if (a < 0) {
