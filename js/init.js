@@ -1,5 +1,5 @@
 /*jslint devel: true */
-/*global $, autocoder, logger, BackgroundPainter, initThreeJs, buzz */
+/*global LiveCodeLab, $, autocoder, logger, BackgroundPainter, initThreeJs, buzz */
 
 var isCanvasSupported = function () {
     var elem = document.createElement('canvas');
@@ -10,10 +10,12 @@ var startEnvironment = function () {
 
     'use strict';
 
+    LiveCodeLab.events = createEventRouter();
 
     ColourNames = createColours(); // no global dependencies
     TimeKeeper = createTimeKeeper(); // no global dependencies
     MatrixCommands = createMatrixCommands(THREE, TimeKeeper);  // no global dependencies
+
     ThreeJs = createThreeJs(Detector, THREE, THREEx); // no global dependencies
     BlendControls = createBlendControls(ThreeJs);  // logger
     SoundSystem = createSoundSystem(buzz); // $, logger, createSoundDef
@@ -100,14 +102,17 @@ var startEnvironment = function () {
 };
 
 $(document).ready(function () {
-    logger("document ready");
+
+
     if (!isCanvasSupported) {
+
         $('#noCanvasMessage').modal({
             onClose: function () {
                 $('#loading').text('sorry :-(');
                 $.modal.close();
             }
         });
+
         $('#simplemodal-container').height(200);
         return;
     }
