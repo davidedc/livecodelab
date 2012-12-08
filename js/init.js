@@ -24,7 +24,7 @@ var startEnvironment = function () {
     ThreeJs = createThreeJs(Detector, THREE, THREEx); // no global dependencies
     BlendControls = createBlendControls(ThreeJs);  // logger
     SoundSystem = createSoundSystem(buzz); // $, logger, createSoundDef
-    BigCursor = createBigCursor(); // $
+    BigCursor = createBigCursor(LiveCodeLab.events); // $
     BackgroundPainter = createBackgroundPainter(LiveCodeLab.events, ThreeJs); // $, color, logger
 
 
@@ -35,17 +35,17 @@ var startEnvironment = function () {
 
 
 
-    CodeTransformer = createCodeTransformer(LiveCodeLab.events, CoffeeScript, BigCursor, GraphicsCommands); // $, logger, autocoder
+    CodeTransformer = createCodeTransformer(LiveCodeLab.events, CoffeeScript, GraphicsCommands); // $, logger, autocoder
 
     AnimationController = createAnimationController(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands, stats); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter
-    editor = createEditor(LiveCodeLab.events, CodeMirror, BigCursor); // EditorDimmer
+    editor = createEditor(LiveCodeLab.events, CodeMirror); // EditorDimmer
 
     autocoder = createAutocoder(LiveCodeLab.events, editor, ColourNames); // McLexer
 
     // EditorDimmer functions should probablly be rolled into the editor itself
-    EditorDimmer = createEditorDimmer(editor, BigCursor); // $
+    EditorDimmer = createEditorDimmer(editor); // $
 
-    ProgramLoader = createProgramLoader(LiveCodeLab.events, editor, BigCursor, AnimationController, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
+    ProgramLoader = createProgramLoader(LiveCodeLab.events, editor, AnimationController, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
 
     Ui = createUi(LiveCodeLab.events, EditorDimmer, stats); // $
 

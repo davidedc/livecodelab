@@ -2,7 +2,7 @@
 /*global $, logger, autocoder */
 
 
-var createCodeTransformer = function (events, CoffeeCompiler, BigCursor, graphics) {
+var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
 
     'use strict';
 
@@ -122,35 +122,15 @@ var createCodeTransformer = function (events, CoffeeCompiler, BigCursor, graphic
                 elaboratedSourceByLine,
                 iteratingOverSource;
 
-            if (editorContent !== '' && BigCursor.show) {
-                BigCursor.shrinkFakeText();
+            if (editorContent !== '') {
+                events.trigger('cursor-hide');
             }
 
-            if (editorContent === '' && !BigCursor.show) {
+            if (editorContent === '') {
                 graphics.resetTheSpinThingy = true;
-                BigCursor.show = true;
                 window.location.hash = '';
 
-                $("#formCode").animate({
-                    opacity: 0
-                }, "fast");
-                logger('unshrinking');
-                $("#justForFakeCursor").show();
-                $("#toMove").show();
-                $('#caption').html('|');
-
-
-                $("#toMove").animate({
-                    opacity: 1,
-                    margin: 0,
-                    fontSize: 350,
-                    left: 0
-                }, "fast", function () {
-                    $('#caption').html('');
-                    $('#fakeStartingBlinkingCursor').html('|');
-                    //BigCursor.toggleBlink(true);
-                });
-
+                events.trigger('cursor-show');
             }
 
 

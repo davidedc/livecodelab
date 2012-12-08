@@ -1,7 +1,7 @@
 /*jslint browser: true, devel: true */
 /*global EditorDimmer */
 
-var createEditor = function (events, codemirror, bigcursor) {
+var createEditor = function (events, codemirror) {
 
     'use strict';
 
@@ -33,7 +33,7 @@ var createEditor = function (events, codemirror, bigcursor) {
             }
         }
 
-        if (bigcursor.show || editor.getValue() === '') {
+        if (editor.getValue() === '') {
             return;
         }
         EditorDimmer.undimEditor();
@@ -64,13 +64,6 @@ var createEditor = function (events, codemirror, bigcursor) {
         },
         onCursorActivity: suspendDimmingAndCheckIfLink
     });
-
-
-    document.onkeypress = function (e) {
-        if (bigcursor.show && Editor.getValue() !== "") {
-            bigcursor.shrinkFakeText(e);
-        }
-    };
 
 
     // Setup Event Listeners

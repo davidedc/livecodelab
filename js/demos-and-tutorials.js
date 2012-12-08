@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, devel: true */
 /*global $, Detector, BlendControls, EditorDimmer */
 
-var createProgramLoader = function (events, texteditor, bigcursor, animationController, threejs, graphics) {
+var createProgramLoader = function (events, texteditor, animationController, threejs, graphics) {
 
     'use strict';
 
@@ -594,9 +594,7 @@ var createProgramLoader = function (events, texteditor, bigcursor, animationCont
         // this hash value and load the correct demo)
         window.location.hash = 'bookmark=' + demoName;
 
-        if (bigcursor.show) {
-            bigcursor.shrinkFakeText();
-        }
+        events.trigger('cursor-hide');
 
         EditorDimmer.undimEditor();
 
