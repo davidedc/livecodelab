@@ -434,6 +434,21 @@ var createGraphicsCommands = function () {
     // is more than one?)
     window.line = GraphicsCommands.line = function (a, b, c) {
 
+        // lines can only have one material, which is LineBasicMaterial
+        // which doesn't react to lights (as opposed to MeshLambertMaterial, which
+        // only applies to meshes).
+        // So in order to get lights to react to light we have to actually draw the
+        // wireframe of a rectangle with one of the sides being zero length.
+        // Since the stroke and the fill are drawn with two different objects and the
+        // fill is not needed, we temporarily switch off the fill and then put it back
+        // to whichever value it was.
+        if (LightSystem.lightsAreOn) {
+        	var rememberIfThereWasAFill = doFill;
+        	rect(0,a,0);
+        	doFill = rememberIfThereWasAFill;        	
+        	return;
+        }
+        
         // primitive-specific initialisations:
         var primitiveProperties = {
             canFill: false,
