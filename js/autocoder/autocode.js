@@ -553,8 +553,12 @@ var createAutocoder = function (events, editor, ColourNames) {
         }
     };
 
-    var toggleAutocodeAndUpdateButtonAndBlinking = function () {
-        autocoder.active = !autocoder.active;
+    var toggle = function (active) {
+        if (active === undefined) {
+            autocoder.active = !autocoder.active;
+        } else {
+            autocoder.active = active;
+        }
 
         if (!autocoder.active) {
             $("#autocodeIndicator").html("Autocode: off");
@@ -573,18 +577,14 @@ var createAutocoder = function (events, editor, ColourNames) {
         }
     };
 
-    autocoder.toggle = toggleAutocodeAndUpdateButtonAndBlinking;
-
-
-
     // Setup Event Listeners
     events.bind('reset', function () {
-        if (autocoder.active) {
-            autocoder.toggle(false);
-        }
+        toggle(false);
     });
 
-
+    events.bind('toggle-autocoder', function () {
+        toggle();
+    });
 
     return autocoder;
 

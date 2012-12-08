@@ -1,7 +1,7 @@
 /*jslint browser: true */
 /*global $, Stats */
 
-var createUi = function (events, autocoder, backgroundpainter, editor, editordimmer) {
+var createUi = function (events, backgroundpainter, editor, editordimmer) {
 
     'use strict';
 
@@ -145,7 +145,7 @@ var createUi = function (events, autocoder, backgroundpainter, editor, editordim
             });
 
             $('#autocodeIndicatorContainer').click(function () {
-                autocoder.toggle();
+                events.trigger('toggle-autocoder');
                 return false;
             });
 
