@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, devel: true */
 /*global $, Detector, BlendControls, EditorDimmer */
 
-var createProgramLoader = function (texteditor, bigcursor, livecodelab, threejs, graphics) {
+var createProgramLoader = function (texteditor, bigcursor, animationController, threejs, graphics) {
 
     'use strict';
 
@@ -635,9 +635,9 @@ var createProgramLoader = function (texteditor, bigcursor, livecodelab, threejs,
         // combing the display list now means that all items in the
         // display list are set to hidden because no draw() code has been ran
         // to put items in it.
-        livecodelab.combDisplayList();
+        animationController.combDisplayList();
         // render the empty frame
-        livecodelab.render();
+        animationController.render();
 
     };
 

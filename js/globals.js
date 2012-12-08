@@ -35,7 +35,7 @@ var autocoder;
 var logger = createDebugger();
 var ThreeJs;
 var BigCursor;
-var LiveCodeLab;
+var AnimationController;
 var ProgramLoader;
 var LightSystem;
 var BlendControls;
