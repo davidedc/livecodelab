@@ -1,9 +1,6 @@
 /*jslint devel: true */
 /*global $, autocoder, logger, BackgroundPainter, initThreeJs, buzz */
 
-var startingSound;
-
-
 var isCanvasSupported = function () {
     var elem = document.createElement('canvas');
     return !!(elem.getContext && elem.getContext('2d'));
@@ -14,51 +11,39 @@ var startEnvironment = function () {
     'use strict';
 
 
-    ThreeJs = createThreeJs(Detector, THREE, THREEx);
-    BigCursor = createBigCursor();
-    TimeKeeper = createTimeKeeper();
-
-    SoundSystem = createSoundSystem();
-
-    GraphicsCommands = createGraphicsCommands();
-
-    MatrixCommands = createMatrixCommands(THREE, TimeKeeper);
-
-    BlendControls = createBlendControls(ThreeJs);
-    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands);
+    ColourNames = createColours(); // no global dependencies
+    TimeKeeper = createTimeKeeper(); // no global dependencies
+    MatrixCommands = createMatrixCommands(THREE, TimeKeeper);  // no global dependencies
+    ThreeJs = createThreeJs(Detector, THREE, THREEx); // no global dependencies
+    BlendControls = createBlendControls(ThreeJs);  // logger
+    SoundSystem = createSoundSystem(buzz); // $, logger, createSoundDef
+    BigCursor = createBigCursor(); // $
+    BackgroundPainter = createBackgroundPainter(ThreeJs); // $, color, logger
 
 
-    CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands);
-    editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer);
 
-    ColourNames = createColours();
+    GraphicsCommands = createGraphicsCommands(); // THREE, logger, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne
+    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands); // logger, color
 
-    BackgroundPainter = createBackgroundPainter(ThreeJs);
+
+
+
+    CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands); // $, logger, autocoder, Ui, LiveCodeLab
+    editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer, BigCursor); // EditorDimmer
+    autocoder = createAutocoder(editor, ColourNames); // $, editor, McLexer
+
+    LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, Ui
+
+    ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
+
+    EditorDimmer = createEditorDimmer(editor, ProgramLoader, BigCursor); // $
+
+    Ui = createUi(autocoder, BackgroundPainter, editor, ProgramLoader, EditorDimmer); // $, Stats
+
+
+
 
     BackgroundPainter.pickRandomDefaultGradient();
-
-    autocoder = createAutocoder(editor, ColourNames);
-
-
-    LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands);
-    
-    // I'm going to put this here, difficult to say where it belongs. In Firefox there
-    // is a window.back() function that takes you back to the previous page. The effect
-    // is that when one types "background", in the middle of the sentence the browser
-    // changes page. Re-defining it so that it causes no harm. This can be probably
-    // fixed a bit better once we'll have a scope dedicated to livecodelab code
-    // execution.
-    // Same applies to other functions below, to avoid tripping on them in the future.
-    window.back = function() {};
-    window.forward = function() {};
-    window.close = function() {};
-
-    ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs, GraphicsCommands);
-
-    EditorDimmer = createEditorDimmer(editor, ProgramLoader, BigCursor);
-
-    Ui = createUi();
-
     SoundSystem.loadAndTestAllTheSounds(Ui.soundSystemOk);
 
     logger("startEnvironment");
@@ -92,11 +77,13 @@ var startEnvironment = function () {
         var demoToLoad = window.location.hash.substring("bookmark".length + 2);
         ProgramLoader.loadDemoOrTutorial(demoToLoad);
     } else {
-        startingSound = new buzz.sound("./sound/audioFiles/start_bing", {
+        var startingSound = new buzz.sound("./sound/audioFiles/start_bing", {
             formats: ["ogg", "mp3"]
         });
 
-        setTimeout("startingSound.play();", 650);
+        setTimeout(function () {
+            startingSound.play();
+        }, 650);
     }
     BigCursor.toggleBlink(true);
 
