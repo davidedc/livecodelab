@@ -1,7 +1,7 @@
 /*jslint browser: true, devel: true */
 /*global EditorDimmer */
 
-var createEditor = function (codemirror, codetransformer, bigcursor) {
+var createEditor = function (livecodelab, codemirror, codetransformer, bigcursor) {
 
     'use strict';
 
@@ -22,7 +22,7 @@ var createEditor = function (codemirror, codetransformer, bigcursor) {
         // the onChange function of CodeMirror will pass in
         // the "editor" instance as the first argument to the
         // function callback
-        onChange: codetransformer.registerCode,
+        onChange: livecodelab.registerCode,
         mode: "livecodelab",
         onCursorActivity: function () {
             EditorDimmer.suspendDimmingAndCheckIfLink();
