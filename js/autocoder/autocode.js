@@ -1,12 +1,12 @@
 /*jslint devel: true */
-/*global $, McLexer */
+/*global McLexer */
 
 var createAutocoder = function (events, editor, ColourNames) {
 
     'use strict';
 
     var blinkingAutocoderStatus = false,
-        blinkingAutocoderTimeout,
+        autocoderMutateTimeout,
         numberOfResults = 0,
         whichOneToChange = 0,
         scanningAllColors;
@@ -543,14 +543,9 @@ var createAutocoder = function (events, editor, ColourNames) {
         editor.setValue(newContent);
     };
 
-    var blinkAutocodeIndicator = function () {
-        blinkingAutocoderStatus = !blinkingAutocoderStatus;
-        if (blinkingAutocoderStatus) {
-            $("#autocodeIndicatorContainer").css("background-color", '');
-        } else {
-            $("#autocodeIndicatorContainer").css("background-color", '#FF0000');
-            mutate();
-        }
+    var autocoderMutate = function () {
+        events.trigger('autocoderbutton-flash');
+        mutate();
     };
 
     var toggle = function (active) {
@@ -561,17 +556,12 @@ var createAutocoder = function (events, editor, ColourNames) {
         }
 
         if (!autocoder.active) {
-            $("#autocodeIndicator").html("Autocode: off");
-            clearInterval(blinkingAutocoderTimeout);
-            $("#autocodeIndicatorContainer").css("background-color", '');
+            events.trigger('autocoderbutton-off');
+            clearInterval(autocoderMutateTimeout);
         } else {
-            $("#autocodeIndicator").html("Autocode: on");
-            blinkingAutocoderTimeout = setInterval(blinkAutocodeIndicator, 500);
-            $("#autocodeIndicatorContainer").css("background-color", '#FF0000');
-            if (editor.getValue() === '' || (
-            (window.location.hash.indexOf("bookmark") !== -1) && (window.location.hash.indexOf("autocodeTutorial") !== -1))
-
-            ) {
+            events.trigger('autocoderbutton-on');
+            autocoderMutateTimeout = setInterval(autocoderMutate, 1000);
+            if (editor.getValue() === '' || ((window.location.hash.indexOf("bookmark") !== -1) && (window.location.hash.indexOf("autocodeTutorial") !== -1))) {
                 events.trigger('load-program', 'cubesAndSpikes');
             }
         }

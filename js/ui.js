@@ -155,7 +155,6 @@ var createUi = function (events, backgroundpainter, editor, editordimmer) {
             });
 
             $('#resetButtonContainer').click(function () {
-                var originalBG = $(this).css("background-color");
                 events.trigger('reset');
                 $(this).stop().fadeOut(100).fadeIn(100);
                 return false;
@@ -174,6 +173,17 @@ var createUi = function (events, backgroundpainter, editor, editordimmer) {
     // Setup Event Listeners
     events.bind('display-error', Ui.checkErrorAndReport, Ui);
 
+    events.bind('autocoderbutton-on', function () {
+        $("#autocodeIndicator").html("Autocode: on").css("background-color", '#FF0000');
+    });
+
+    events.bind('autocoderbutton-off', function () {
+        $("#autocodeIndicator").html("Autocode: off").css("background-color", '');
+    });
+
+    events.bind('autocoderbutton-flash', function () {
+        $("#autocodeIndicator").fadeOut(100).fadeIn(100);
+    });
 
 
     return Ui;
