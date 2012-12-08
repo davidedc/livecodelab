@@ -30,11 +30,11 @@ var startEnvironment = function () {
 
     CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands); // $, logger, autocoder, Ui
 
-    LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter, Ui
-    editor = createEditor(LiveCodeLab, CodeMirror, CodeTransformer, BigCursor); // EditorDimmer
+    AnimationController = createAnimationController(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter, Ui
+    editor = createEditor(AnimationController, CodeMirror, CodeTransformer, BigCursor); // EditorDimmer
     autocoder = createAutocoder(editor, ColourNames); // $, editor, McLexer
 
-    ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
+    ProgramLoader = createProgramLoader(editor, BigCursor, AnimationController, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
 
     // EditorDimmer functions should probablly be rolled into the editor itself
     EditorDimmer = createEditorDimmer(editor, ProgramLoader, BigCursor); // $
@@ -49,7 +49,7 @@ var startEnvironment = function () {
 
     logger("startEnvironment");
     if (ThreeJs) {
-        LiveCodeLab.animate(editor);
+        AnimationController.animate(editor);
     }
 
     if (!Detector.webgl || ThreeJs.forceCanvasRenderer) {

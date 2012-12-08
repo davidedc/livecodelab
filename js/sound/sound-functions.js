@@ -212,7 +212,7 @@ var createSoundSystem = function (buzz) {
 
 
 
-    // Called from animate function in livecodelab.js
+    // Called from animate function in animation-controls.js
     SoundSystem.changeUpdatesPerMinuteIfNeeded = function () {
 
         if (oldupdatesPerMinute !== updatesPerMinute) {
