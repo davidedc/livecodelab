@@ -21,14 +21,14 @@ var startEnvironment = function () {
     BackgroundPainter = createBackgroundPainter(ThreeJs); // $, color, logger
 
 
-
+    // There's a tricky cyclic dependency here between LightSystem and GraphicsCommands
     GraphicsCommands = createGraphicsCommands(); // THREE, logger, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne
     LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands); // logger, color
 
 
 
 
-    CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands); // $, logger, autocoder, Ui, LiveCodeLab
+    CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands); // $, logger, autocoder, Ui
     autocoder = createAutocoder(editor, ColourNames); // $, editor, McLexer
 
     LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter, Ui
@@ -36,6 +36,7 @@ var startEnvironment = function () {
 
     ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
 
+    // EditorDimmer functions should probablly be rolled into the editor itself
     EditorDimmer = createEditorDimmer(editor, ProgramLoader, BigCursor); // $
 
     Ui = createUi(autocoder, BackgroundPainter, editor, ProgramLoader, EditorDimmer); // $, Stats
