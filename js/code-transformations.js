@@ -1,5 +1,5 @@
 /*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
-/*global $, logger, autocoder, Ui, LiveCodeLab */
+/*global $, logger, autocoder, Ui */
 
 
 var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
@@ -600,7 +600,7 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
         logger(compiledOutput);
 
         logger("code transform set draw");
-        LiveCodeLab.setDrawFunction(new Function(compiledOutput));
+        return new Function(compiledOutput);
 
     };
 
@@ -609,7 +609,8 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
         var elaboratedSource,
             elaboratedSourceByLine,
             iteratingOverSource,
-            cursorPositionBeforeAddingCheckMark;
+            cursorPositionBeforeAddingCheckMark,
+            drawFunction;
 
         if (CodeTransformer.doOnceOccurrencesLineNumbers.length === 0) {
             return;
@@ -653,7 +654,8 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
         // Also registerCode() may split the source code by line, so we can
         // avoid that since we've just split it, we could pass
         // the already split code.
-        CodeTransformer.registerCode(editor);
+        drawFunction = CodeTransformer.registerCode(editor);
+        return drawFunction;
     };
 
     return CodeTransformer;

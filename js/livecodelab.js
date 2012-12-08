@@ -25,8 +25,15 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
         LiveCodeLab.drawFunction = drawFunc;
     };
 
+    LiveCodeLab.registerCode = function (editor) {
+        var drawFunction = CodeTransformer.registerCode(editor);
+        LiveCodeLab.setDrawFunction(drawFunction);
+    };
+
     // animation loop
     LiveCodeLab.animate = function () {
+
+        var drawFunction;
 
         // loop on request animation loop
         // - it has to be at the begining of the function
@@ -53,6 +60,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
 
 
         if (LiveCodeLab.drawFunction !== "") {
+
             if (frame === 0) {
                 timekeeper.resetTime();
             } else {
@@ -140,7 +148,10 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
         // update stats
         Ui.stats.update();
 
-        CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(editor);
+        drawFunction = CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(editor);
+        if (drawFunction) {
+            LiveCodeLab.setDrawFunction(drawFunction);
+        }
 
     };
 

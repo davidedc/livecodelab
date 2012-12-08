@@ -29,10 +29,10 @@ var startEnvironment = function () {
 
 
     CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands); // $, logger, autocoder, Ui, LiveCodeLab
-    editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer, BigCursor); // EditorDimmer
     autocoder = createAutocoder(editor, ColourNames); // $, editor, McLexer
 
     LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, Ui
+    editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer, BigCursor); // EditorDimmer, LiveCodeLab
 
     ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
 
