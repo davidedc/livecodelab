@@ -10,6 +10,11 @@ var startEnvironment = function () {
 
     'use strict';
 
+    // Used by Three.js
+    // add Stats.js - https://github.com/mrdoob/stats.js
+    var stats = new Stats();
+
+
     LiveCodeLab.events = createEventRouter();
 
     ColourNames = createColours(); // no global dependencies
@@ -32,17 +37,17 @@ var startEnvironment = function () {
 
     CodeTransformer = createCodeTransformer(LiveCodeLab.events, CoffeeScript, BigCursor, GraphicsCommands); // $, logger, autocoder
 
-    AnimationController = createAnimationController(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter, Ui
+    AnimationController = createAnimationController(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands, stats); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter
     editor = createEditor(LiveCodeLab.events, CodeMirror, BigCursor); // EditorDimmer
 
     autocoder = createAutocoder(LiveCodeLab.events, editor, ColourNames); // McLexer
 
-    ProgramLoader = createProgramLoader(LiveCodeLab.events, editor, BigCursor, AnimationController, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
-
     // EditorDimmer functions should probablly be rolled into the editor itself
     EditorDimmer = createEditorDimmer(editor, BigCursor); // $
 
-    Ui = createUi(LiveCodeLab.events, EditorDimmer); // $, Stats
+    ProgramLoader = createProgramLoader(LiveCodeLab.events, editor, BigCursor, AnimationController, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
+
+    Ui = createUi(LiveCodeLab.events, EditorDimmer, stats); // $
 
 
 

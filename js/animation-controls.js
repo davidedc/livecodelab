@@ -1,11 +1,11 @@
 /*jslint browser: true */
-/*global $, MatrixCommands, SoundSystem: true, LightSystem, autocoder, BlendControls, BackgroundPainter, Ui */
+/*global $, MatrixCommands, SoundSystem: true, LightSystem, autocoder, BlendControls, BackgroundPainter */
 
 
 var frame = 0;
 
 
-var createAnimationController = function (events, CodeTransformer, threejs, timekeeper, graphics) {
+var createAnimationController = function (events, CodeTransformer, threejs, timekeeper, graphics, stats) {
 
     'use strict';
 
@@ -154,7 +154,7 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
         AnimationController.combDisplayList();
         AnimationController.render();
         // update stats
-        Ui.stats.update();
+        stats.update();
 
         drawFunction = CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(Editor);
         if (drawFunction) {

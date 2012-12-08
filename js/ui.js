@@ -1,18 +1,13 @@
 /*jslint browser: true */
-/*global $, Stats */
+/*global $ */
 
-var createUi = function (events, editordimmer) {
+var createUi = function (events, editordimmer, stats) {
 
     'use strict';
 
     var Ui = {},
         resizeCanvas,
         adjustCodeMirrorHeight;
-
-    // All used by Three.js
-    // add Stats.js - https://github.com/mrdoob/stats.js
-    Ui.stats = new Stats();
-
 
     resizeCanvas = function (canvasId) {
         var canvas, scale;
@@ -161,10 +156,10 @@ var createUi = function (events, editordimmer) {
             });
 
             // Align bottom-left
-            Ui.stats.getDomElement().style.position = 'absolute';
-            Ui.stats.getDomElement().style.right = '0px';
-            Ui.stats.getDomElement().style.top = '0px';
-            document.body.appendChild(Ui.stats.getDomElement());
+            stats.getDomElement().style.position = 'absolute';
+            stats.getDomElement().style.right = '0px';
+            stats.getDomElement().style.top = '0px';
+            document.body.appendChild(stats.getDomElement());
 
         });
     };
