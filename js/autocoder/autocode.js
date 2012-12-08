@@ -219,7 +219,11 @@ var createAutocoder = function (editor, ColourNames) {
         Tokens.push(new NUM(match[0]));
         return state.continuation(rest);
     });
-    INIT(/[*|\/|+|-]/)(function (match, rest, state) {
+    INIT(/-?\.[0-9]*/)(function (match, rest, state) {
+        Tokens.push(new NUM(match[0]));
+        return state.continuation(rest);
+    });
+    INIT(/[*|\/|+|\-|=]/)(function (match, rest, state) {
         Tokens.push(new OP(match[0]));
         return state.continuation(rest);
     });
@@ -283,6 +287,10 @@ var createAutocoder = function (editor, ColourNames) {
         Tokens.push(new MESH(match[0]));
         return state.continuation(rest);
     });
+    INIT(/peg/)(function (match, rest, state) {
+        Tokens.push(new MESH(match[0]));
+        return state.continuation(rest);
+    });
     INIT(/rect/)(function (match, rest, state) {
         Tokens.push(new MESH(match[0]));
         return state.continuation(rest);
@@ -293,6 +301,16 @@ var createAutocoder = function (editor, ColourNames) {
     });
 
     // state changes?
+    INIT(/ambientLight/)(function (match, rest, state) {
+        Tokens.push(new STATEFUN(match[0]));
+        return state.continuation(rest);
+    });
+
+    INIT(/noStroke/)(function (match, rest, state) {
+        Tokens.push(new STATEFUN(match[0]));
+        return state.continuation(rest);
+    });
+
     INIT(/ballDetail/)(function (match, rest, state) {
         Tokens.push(new STATEFUN(match[0]));
         return state.continuation(rest);
@@ -335,6 +353,55 @@ var createAutocoder = function (editor, ColourNames) {
 
 
     // The bad stuff
+
+    // string delimiters
+    INIT(/'/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
+    INIT(/[✓]?doOnce\s+\->?/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
+    INIT(/==/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
+    INIT(/else/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
+    // this is for the links at the bottom of the tutorials
+    // e.g. next-tutorial:frame
+    INIT(/next-tutorial:\w+/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
+    // this is for all variable names
+    INIT(/\w+/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
+    INIT(/if/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
+    INIT(/pushMatrix/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
+    INIT(/popMatrix/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
+    INIT(/play/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
+    INIT(/bpm/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
     INIT(/color\s*\(.+\)/)(function (match, rest, state) {
         Tokens.push(new UNKNOWN(match[0]));
         return state.continuation(rest);
@@ -343,7 +410,23 @@ var createAutocoder = function (editor, ColourNames) {
         Tokens.push(new UNKNOWN(match[0]));
         return state.continuation(rest);
     });
+    INIT(/frame/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
     INIT(/strokeSize/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
+    INIT(/\(/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
+    INIT(/\)/)(function (match, rest, state) {
+        Tokens.push(new UNKNOWN(match[0]));
+        return state.continuation(rest);
+    });
+    INIT(/%/)(function (match, rest, state) {
         Tokens.push(new UNKNOWN(match[0]));
         return state.continuation(rest);
     });
