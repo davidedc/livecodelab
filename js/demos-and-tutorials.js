@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, devel: true */
 /*global $, Detector, BlendControls, EditorDimmer */
 
-var createProgramLoader = function (texteditor, bigcursor, animationController, threejs, graphics) {
+var createProgramLoader = function (events, texteditor, bigcursor, animationController, threejs, graphics) {
 
     'use strict';
 
@@ -640,6 +640,11 @@ var createProgramLoader = function (texteditor, bigcursor, animationController, 
         animationController.render();
 
     };
+
+
+    // Setup Event Listeners
+    events.bind('load-program', ProgramLoader.loadDemoOrTutorial, ProgramLoader);
+
 
     return ProgramLoader;
 

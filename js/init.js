@@ -33,11 +33,11 @@ var startEnvironment = function () {
     CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands); // $, logger, autocoder, Ui
 
     AnimationController = createAnimationController(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter, Ui
-    editor = createEditor(AnimationController, CodeMirror, BigCursor); // EditorDimmer
+    editor = createEditor(LiveCodeLab.events, AnimationController, CodeMirror, BigCursor); // EditorDimmer
 
     autocoder = createAutocoder(editor, ColourNames); // $, editor, McLexer
 
-    ProgramLoader = createProgramLoader(editor, BigCursor, AnimationController, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
+    ProgramLoader = createProgramLoader(LiveCodeLab.events, editor, BigCursor, AnimationController, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
 
     // EditorDimmer functions should probablly be rolled into the editor itself
     EditorDimmer = createEditorDimmer(editor, ProgramLoader, BigCursor); // $

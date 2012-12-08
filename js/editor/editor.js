@@ -1,7 +1,7 @@
 /*jslint browser: true, devel: true */
-/*global EditorDimmer, ProgramLoader */
+/*global EditorDimmer */
 
-var createEditor = function (animationControls, codemirror, bigcursor) {
+var createEditor = function (events, animationControls, codemirror, bigcursor) {
 
     'use strict';
 
@@ -10,8 +10,6 @@ var createEditor = function (animationControls, codemirror, bigcursor) {
 
 
     suspendDimmingAndCheckIfLink = function (editor) {
-
-        console.log(editor);
 
         var cursorP, currentLineContent, tutorialName;
 
@@ -28,7 +26,9 @@ var createEditor = function (animationControls, codemirror, bigcursor) {
                 currentLineContent = currentLineContent.substring(17);
                 currentLineContent = currentLineContent.replace("_", "");
                 tutorialName = currentLineContent + 'Tutorial';
-                setTimeout(ProgramLoader.loadDemoOrTutorial, 200, tutorialName);
+                setTimeout(function () {
+                    events.trigger('load-program', tutorialName);
+                }, 200);
             }
         }
 
