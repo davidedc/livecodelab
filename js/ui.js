@@ -1,7 +1,7 @@
 /*jslint browser: true */
 /*global $, Stats */
 
-var createUi = function (events, backgroundpainter, editor, editordimmer) {
+var createUi = function (events, editordimmer) {
 
     'use strict';
 

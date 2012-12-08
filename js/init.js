@@ -40,9 +40,9 @@ var startEnvironment = function () {
     ProgramLoader = createProgramLoader(LiveCodeLab.events, editor, BigCursor, AnimationController, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
 
     // EditorDimmer functions should probablly be rolled into the editor itself
-    EditorDimmer = createEditorDimmer(editor, ProgramLoader, BigCursor); // $
+    EditorDimmer = createEditorDimmer(editor, BigCursor); // $
 
-    Ui = createUi(LiveCodeLab.events, BackgroundPainter, editor, EditorDimmer); // $, Stats
+    Ui = createUi(LiveCodeLab.events, EditorDimmer); // $, Stats
 
 
 

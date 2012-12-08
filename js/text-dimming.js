@@ -1,7 +1,7 @@
 /*jslint */
 /*global $ */
 
-var createEditorDimmer = function (Editor, ProgramLoader, BigCursor) {
+var createEditorDimmer = function (Editor, BigCursor) {
 
     'use strict';
 
