@@ -11,7 +11,7 @@ var startEnvironment = function () {
     'use strict';
 
 
-    CSSColourNames = createCSSColours(); // no global dependencies
+    ColourNames = createColours(); // no global dependencies
     TimeKeeper = createTimeKeeper(); // no global dependencies
     MatrixCommands = createMatrixCommands(THREE, TimeKeeper);  // no global dependencies
     ThreeJs = createThreeJs(Detector, THREE, THREEx); // no global dependencies
@@ -30,7 +30,7 @@ var startEnvironment = function () {
 
     CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands); // $, logger, autocoder, Ui, LiveCodeLab
     editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer, BigCursor); // EditorDimmer
-    autocoder = createAutocoder(editor, CSSColourNames); // $, editor, McLexer
+    autocoder = createAutocoder(editor, ColourNames); // $, editor, McLexer
 
     LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, Ui
 
