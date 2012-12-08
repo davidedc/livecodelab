@@ -1,7 +1,7 @@
 /*jslint browser: true, devel: true */
 /*global EditorDimmer */
 
-var createEditor = function (events, animationControls, codemirror, bigcursor) {
+var createEditor = function (events, codemirror, bigcursor) {
 
     'use strict';
 
@@ -58,7 +58,9 @@ var createEditor = function (events, animationControls, codemirror, bigcursor) {
         // the onChange and onCursorActivity functions of CodeMirror
         // will pass in the "editor" instance as the first
         // argument to the function callback
-        onChange: animationControls.registerCode,
+        onChange: function (editor) {
+            events.trigger('editor-change', editor);
+        },
         onCursorActivity: suspendDimmingAndCheckIfLink
     });
 

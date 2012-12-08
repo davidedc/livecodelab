@@ -5,7 +5,7 @@
 var frame = 0;
 
 
-var createAnimationController = function (CodeTransformer, threejs, timekeeper, graphics) {
+var createAnimationController = function (events, CodeTransformer, threejs, timekeeper, graphics) {
 
     'use strict';
 
@@ -251,6 +251,12 @@ var createAnimationController = function (CodeTransformer, threejs, timekeeper, 
 
         }
     };
+
+
+    // Setup Event Listeners
+    events.bind('editor-change', AnimationController.registerCode, AnimationController);
+
+
 
     return AnimationController;
 
