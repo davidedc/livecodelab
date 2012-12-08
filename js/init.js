@@ -32,7 +32,7 @@ var startEnvironment = function () {
     autocoder = createAutocoder(editor, ColourNames); // $, editor, McLexer
 
     LiveCodeLab = createLiveCodeLab(CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter, Ui
-    editor = createEditor(CodeMirror, CodeTransformer, EditorDimmer, BigCursor); // EditorDimmer, LiveCodeLab
+    editor = createEditor(LiveCodeLab, CodeMirror, CodeTransformer, BigCursor); // EditorDimmer
 
     ProgramLoader = createProgramLoader(editor, BigCursor, LiveCodeLab, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
 
