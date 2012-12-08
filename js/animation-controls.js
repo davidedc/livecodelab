@@ -5,33 +5,33 @@
 var frame = 0;
 
 
-var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics) {
+var createAnimationController = function (CodeTransformer, threejs, timekeeper, graphics) {
 
     'use strict';
 
-    var LiveCodeLab = {},
+    var AnimationController = {},
         loopInterval,
         lastStableProgram;
 
     // if you put to -1 then it means that
     // requestAnimationFrame will try to go as fast as it
     // can.
-    LiveCodeLab.wantedFramesPerSecond = -1;
-    LiveCodeLab.useRequestAnimationFrame = true;
+    AnimationController.wantedFramesPerSecond = -1;
+    AnimationController.useRequestAnimationFrame = true;
 
-    LiveCodeLab.drawFunction = "";
+    AnimationController.drawFunction = "";
 
-    LiveCodeLab.setDrawFunction = function (drawFunc) {
-        LiveCodeLab.drawFunction = drawFunc;
+    AnimationController.setDrawFunction = function (drawFunc) {
+        AnimationController.drawFunction = drawFunc;
     };
 
-    LiveCodeLab.registerCode = function (Editor) {
+    AnimationController.registerCode = function (Editor) {
         var drawFunction = CodeTransformer.registerCode(Editor);
-        LiveCodeLab.setDrawFunction(drawFunction);
+        AnimationController.setDrawFunction(drawFunction);
     };
 
     // animation loop
-    LiveCodeLab.animate = function (Editor) {
+    AnimationController.animate = function (Editor) {
 
         var drawFunction;
 
@@ -40,24 +40,24 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
         // - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
         // requestAnimationFrame seems to only do 60 fps, which in my case is too much,
         // I rather prefer to have a slower framerate but steadier.
-        if (LiveCodeLab.useRequestAnimationFrame) {
-            if (LiveCodeLab.wantedFramesPerSecond === -1) {
+        if (AnimationController.useRequestAnimationFrame) {
+            if (AnimationController.wantedFramesPerSecond === -1) {
                 window.requestAnimationFrame(function () {
-                    LiveCodeLab.animate(Editor);
+                    AnimationController.animate(Editor);
                 });
             } else {
                 if (loopInterval === undefined) {
                     loopInterval = setInterval(function () {
                         window.requestAnimationFrame(function () {
-                            LiveCodeLab.animate(Editor)
+                            AnimationController.animate(Editor)
                         });
-                    }, 1000 / LiveCodeLab.wantedFramesPerSecond);
+                    }, 1000 / AnimationController.wantedFramesPerSecond);
                 }
             }
         } else {
             setTimeout(function () {
-                LiveCodeLab.animate(Editor)
-            }, 1000 / LiveCodeLab.wantedFramesPerSecond);
+                AnimationController.animate(Editor)
+            }, 1000 / AnimationController.wantedFramesPerSecond);
         }
 
         MatrixCommands.resetMatrixStack();
@@ -67,7 +67,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
         SoundSystem.resetLoops();
 
 
-        if (LiveCodeLab.drawFunction !== "") {
+        if (AnimationController.drawFunction !== "") {
 
             if (frame === 0) {
                 timekeeper.resetTime();
@@ -109,7 +109,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
             // So in that case we need to a) highlight the error and b) run the previously
             // known good program.
             try {
-                LiveCodeLab.drawFunction();
+                AnimationController.drawFunction();
             } catch (e) {
 
                 // I'm not sure that this type of error should occur during autocoding
@@ -125,7 +125,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
 
                 // mark the program as flawed and register the previous stable one.
                 CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
-                LiveCodeLab.drawFunction = lastStableProgram;
+                AnimationController.drawFunction = lastStableProgram;
 
                 return;
             }
@@ -146,24 +146,24 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
             frame += 1;
             CodeTransformer.consecutiveFramesWithoutRunTimeError += 1;
             if (CodeTransformer.consecutiveFramesWithoutRunTimeError === 5) {
-                lastStableProgram = LiveCodeLab.drawFunction;
+                lastStableProgram = AnimationController.drawFunction;
             }
         } // if typeof draw
 
         // do the render
-        LiveCodeLab.combDisplayList();
-        LiveCodeLab.render();
+        AnimationController.combDisplayList();
+        AnimationController.render();
         // update stats
         Ui.stats.update();
 
         drawFunction = CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(Editor);
         if (drawFunction) {
-            LiveCodeLab.setDrawFunction(drawFunction);
+            AnimationController.setDrawFunction(drawFunction);
         }
 
     };
 
-    LiveCodeLab.render = function () {
+    AnimationController.render = function () {
 
         if (threejs.isWebGLUsed) {
             threejs.composer.render();
@@ -222,7 +222,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
     //       are much faster. Also the objects of the scene are harder to reach, so
     //       it could be the case that this mechanism is not needed anymore.
 
-    LiveCodeLab.combDisplayList = function () {
+    AnimationController.combDisplayList = function () {
         var i,
             sceneObject,
             primitiveType;
@@ -252,6 +252,6 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
         }
     };
 
-    return LiveCodeLab;
+    return AnimationController;
 
 };

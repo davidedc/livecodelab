@@ -44,7 +44,7 @@ module.exports = function (grunt) {
                     'js/sound/sounddef.js',
                     'js/sound/sound-functions.js',
                     'js/sound/buzz.js',
-                    'js/livecodelab.js',
+                    'js/animation-controls.js',
                     'js/init-threejs.js',
                     'js/colour-definitions.js',
                     'js/three.js/Detector.js',
