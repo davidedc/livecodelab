@@ -35,7 +35,7 @@ var startEnvironment = function () {
     AnimationController = createAnimationController(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter, Ui
     editor = createEditor(LiveCodeLab.events, CodeMirror, BigCursor); // EditorDimmer
 
-    autocoder = createAutocoder(editor, ColourNames); // $, editor, McLexer
+    autocoder = createAutocoder(LiveCodeLab.events, editor, ColourNames); // $, editor, McLexer
 
     ProgramLoader = createProgramLoader(LiveCodeLab.events, editor, BigCursor, AnimationController, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
 
@@ -79,7 +79,7 @@ var startEnvironment = function () {
     // otherwise we do as usual.
     if (window.location.hash.indexOf("bookmark") !== -1) {
         var demoToLoad = window.location.hash.substring("bookmark".length + 2);
-        ProgramLoader.loadDemoOrTutorial(demoToLoad);
+        LiveCodeLab.events.trigger('load-program', demoToLoad);
     } else {
         var startingSound = new buzz.sound("./sound/audioFiles/start_bing", {
             formats: ["ogg", "mp3"]

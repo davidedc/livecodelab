@@ -1,7 +1,7 @@
 /*jslint devel: true */
-/*global $, editor, McLexer */
+/*global $, McLexer */
 
-var createAutocoder = function (editor, ColourNames) {
+var createAutocoder = function (events, editor, ColourNames) {
 
     'use strict';
 
@@ -568,7 +568,7 @@ var createAutocoder = function (editor, ColourNames) {
             (window.location.hash.indexOf("bookmark") !== -1) && (window.location.hash.indexOf("autocodeTutorial") !== -1))
 
             ) {
-                ProgramLoader.loadDemoOrTutorial('cubesAndSpikes');
+                events.trigger('load-program', 'cubesAndSpikes');
             }
         }
     };
