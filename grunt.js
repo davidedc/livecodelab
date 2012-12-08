@@ -57,7 +57,7 @@ module.exports = function (grunt) {
                     'js/three.js/postprocessing/MaskPass.js',
                     'js/three.js/postprocessing/SavePass.js',
                     'js/editor/coffeescript-livecodelab-mode.js',
-                    'js/var-definitions.js',
+                    'js/globals.js',
                     'js/background-painting.js',
                     'js/editor/editor.js',
                     'js/colour-functions.js',
