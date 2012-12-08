@@ -115,7 +115,7 @@ var createSoundSystem = function (buzz) {
         audioElement.play();
     };
 
-    playingMethods.buzzPlay = function (loopedSoundID) {
+    playingMethods.buzzPlay = function (soundBank, loopedSoundID) {
         var availableSoundBank,
             relevantSoundBank = soundBank[loopedSoundID],
             lengthOfSoundBank = relevantSoundBank.length,
@@ -201,7 +201,7 @@ var createSoundSystem = function (buzz) {
                     } else if (chosenSoundPlayingMethod === 3) {
                         playingMethods.createAudioTag(soundFiles[loopedSoundID]);
                     } else if (chosenSoundPlayingMethod === 2) {
-                        playingMethods.buzzPlay(soundBank[loopedSoundID]);
+                        playingMethods.buzzPlay(soundBank, loopedSoundID);
                     }
 
                 }
@@ -272,7 +272,7 @@ var createSoundSystem = function (buzz) {
         } else {
             return;
         }
-
+        
         for (cycleSoundDefs = 0; cycleSoundDefs < soundDef.sounds.length; cycleSoundDefs += 1) {
 
             soundInfo = soundDef.getByNumber(cycleSoundDefs);
