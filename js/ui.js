@@ -6,7 +6,6 @@ var createUi = function (events, autocoder, backgroundpainter, editor, editordim
     'use strict';
 
     var Ui = {},
-        triggerReset,
         resizeCanvas,
         adjustCodeMirrorHeight;
 
@@ -14,18 +13,6 @@ var createUi = function (events, autocoder, backgroundpainter, editor, editordim
     // add Stats.js - https://github.com/mrdoob/stats.js
     Ui.stats = new Stats();
 
-    triggerReset = function () {
-
-        backgroundpainter.pickRandomDefaultGradient();
-        if (autocoder.active) {
-            autocoder.toggle(false);
-        }
-        editor.setValue('');
-        $("#resetButtonContainer").css("background-color", '#FF0000');
-        setTimeout(function () {
-            $("#resetButtonContainer").css("background-color", "");
-        }, 200);
-    };
 
     resizeCanvas = function (canvasId) {
         var canvas, scale;
@@ -168,7 +155,9 @@ var createUi = function (events, autocoder, backgroundpainter, editor, editordim
             });
 
             $('#resetButtonContainer').click(function () {
-                triggerReset();
+                var originalBG = $(this).css("background-color");
+                events.trigger('reset');
+                $(this).stop().fadeOut(100).fadeIn(100);
                 return false;
             });
 

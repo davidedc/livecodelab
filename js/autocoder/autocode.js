@@ -575,6 +575,17 @@ var createAutocoder = function (events, editor, ColourNames) {
 
     autocoder.toggle = toggleAutocodeAndUpdateButtonAndBlinking;
 
+
+
+    // Setup Event Listeners
+    events.bind('reset', function () {
+        if (autocoder.active) {
+            autocoder.toggle(false);
+        }
+    });
+
+
+
     return autocoder;
 
 };

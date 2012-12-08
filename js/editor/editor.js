@@ -6,7 +6,8 @@ var createEditor = function (events, codemirror, bigcursor) {
     'use strict';
 
     var Editor,
-        suspendDimmingAndCheckIfLink;
+        suspendDimmingAndCheckIfLink,
+        resetEditor;
 
 
     suspendDimmingAndCheckIfLink = function (editor) {
@@ -64,11 +65,20 @@ var createEditor = function (events, codemirror, bigcursor) {
         onCursorActivity: suspendDimmingAndCheckIfLink
     });
 
+
     document.onkeypress = function (e) {
         if (bigcursor.show && Editor.getValue() !== "") {
             bigcursor.shrinkFakeText(e);
         }
     };
+
+
+    // Setup Event Listeners
+    events.bind('reset', function () {
+        Editor.setValue('');
+    });
+
+
 
     return Editor;
 };

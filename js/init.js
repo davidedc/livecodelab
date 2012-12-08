@@ -20,7 +20,7 @@ var startEnvironment = function () {
     BlendControls = createBlendControls(ThreeJs);  // logger
     SoundSystem = createSoundSystem(buzz); // $, logger, createSoundDef
     BigCursor = createBigCursor(); // $
-    BackgroundPainter = createBackgroundPainter(ThreeJs); // $, color, logger
+    BackgroundPainter = createBackgroundPainter(LiveCodeLab.events, ThreeJs); // $, color, logger
 
 
     // There's a tricky cyclic dependency here between LightSystem and GraphicsCommands
