@@ -12,18 +12,16 @@ Number.prototype.times = function (func, scope) {
 };
 
 
-
-// All used by Three.js
-// add Stats.js - https://github.com/mrdoob/stats.js
-var stats = new Stats();
-// Align bottom-left
-stats.getDomElement().style.position = 'absolute';
-stats.getDomElement().style.right = '0px';
-stats.getDomElement().style.top = '0px';
-$(document).ready(function () {
-    document.body.appendChild(stats.getDomElement());
-});
-
+// I'm going to put this here, difficult to say where it belongs. In Firefox there
+// is a window.back() function that takes you back to the previous page. The effect
+// is that when one types "background", in the middle of the sentence the browser
+// changes page. Re-defining it so that it causes no harm. This can be probably
+// fixed a bit better once we'll have a scope dedicated to livecodelab code
+// execution.
+// Same applies to other functions below, to avoid tripping on them in the future.
+window.back = function() {};
+window.forward = function() {};
+window.close = function() {};
 
 
 // The CodeMirror editor

@@ -1,7 +1,7 @@
 /*jslint browser: true */
-/*global $, autocoder, BackgroundPainter, editor, ProgramLoader, EditorDimmer */
+/*global $, Stats */
 
-var createUi = function () {
+var createUi = function (autocoder, backgroundpainter, editor, programloader, editordimmer) {
 
     'use strict';
 
@@ -10,10 +10,13 @@ var createUi = function () {
         resizeCanvas,
         adjustCodeMirrorHeight;
 
+    // All used by Three.js
+    // add Stats.js - https://github.com/mrdoob/stats.js
+    Ui.stats = new Stats();
 
     triggerReset = function () {
 
-        BackgroundPainter.pickRandomDefaultGradient();
+        backgroundpainter.pickRandomDefaultGradient();
         if (autocoder.active) {
             autocoder.toggle(false);
         }
@@ -23,8 +26,6 @@ var createUi = function () {
             $("#resetButtonContainer").css("background-color", "");
         }, 200);
     };
-
-
 
     resizeCanvas = function (canvasId) {
         var canvas, scale;
@@ -146,18 +147,15 @@ var createUi = function () {
                 return false;
             });
 
-
             $('#demos li a').click(function () {
-                ProgramLoader.loadDemoOrTutorial($(this).attr('id'));
+                programloader.loadDemoOrTutorial($(this).attr('id'));
                 return false;
             });
 
             $('#tutorials li a').click(function () {
-                ProgramLoader.loadDemoOrTutorial($(this).attr('id'));
+                programloader.loadDemoOrTutorial($(this).attr('id'));
                 return false;
             });
-
-
 
             $('#autocodeIndicatorContainer').click(function () {
                 autocoder.toggle();
@@ -165,7 +163,7 @@ var createUi = function () {
             });
 
             $('#dimCodeButtonContainer').click(function () {
-                EditorDimmer.toggleDimCode();
+                editordimmer.toggleDimCode();
                 return false;
             });
 
@@ -174,6 +172,11 @@ var createUi = function () {
                 return false;
             });
 
+            // Align bottom-left
+            Ui.stats.getDomElement().style.position = 'absolute';
+            Ui.stats.getDomElement().style.right = '0px';
+            Ui.stats.getDomElement().style.top = '0px';
+            document.body.appendChild(Ui.stats.getDomElement());
 
         });
     };

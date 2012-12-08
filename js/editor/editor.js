@@ -1,7 +1,7 @@
 /*jslint browser: true, devel: true */
-/*global EditorDimmer, CodeTransformer */
+/*global EditorDimmer */
 
-var createEditor = function (codemirror, codetransformer) {
+var createEditor = function (codemirror, codetransformer, bigcursor) {
 
     'use strict';
 
@@ -22,12 +22,19 @@ var createEditor = function (codemirror, codetransformer) {
         // the onChange function of CodeMirror will pass in
         // the "editor" instance as the first argument to the
         // function callback
-        onChange: CodeTransformer.registerCode,
+        onChange: codetransformer.registerCode,
         mode: "livecodelab",
         onCursorActivity: function () {
             EditorDimmer.suspendDimmingAndCheckIfLink();
         },
         theme: 'night'
     });
+
+    document.onkeypress = function (e) {
+        if (bigcursor.show && editor.getValue() !== "") {
+            bigcursor.shrinkFakeText(e);
+        }
+    };
+
     return editor;
 };
