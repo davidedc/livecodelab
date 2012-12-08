@@ -444,8 +444,13 @@ var createGraphicsCommands = function () {
         // to whichever value it was.
         if (LightSystem.lightsAreOn) {
         	var rememberIfThereWasAFill = doFill;
+        	var rememberPreviousStrokeSize = GraphicsCommands.currentStrokeSize;
+        	if (GraphicsCommands.currentStrokeSize < 2) {
+	        	GraphicsCommands.currentStrokeSize = 2;
+        	}
         	rect(0,a,0);
-        	doFill = rememberIfThereWasAFill;        	
+        	doFill = rememberIfThereWasAFill;  
+        	GraphicsCommands.currentStrokeSize = rememberPreviousStrokeSize;
         	return;
         }
         
