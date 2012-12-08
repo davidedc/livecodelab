@@ -448,6 +448,9 @@ var createGraphicsCommands = function () {
         	if (GraphicsCommands.currentStrokeSize < 2) {
 	        	GraphicsCommands.currentStrokeSize = 2;
         	}
+        	if (a == undefined) {
+        		a=1;
+        	}
         	rect(0,a,0);
         	doFill = rememberIfThereWasAFill;  
         	GraphicsCommands.currentStrokeSize = rememberPreviousStrokeSize;
