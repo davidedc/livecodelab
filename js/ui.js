@@ -1,7 +1,7 @@
 /*jslint browser: true */
 /*global $, Stats */
 
-var createUi = function (autocoder, backgroundpainter, editor, programloader, editordimmer) {
+var createUi = function (events, autocoder, backgroundpainter, editor, editordimmer) {
 
     'use strict';
 
@@ -148,12 +148,12 @@ var createUi = function (autocoder, backgroundpainter, editor, programloader, ed
             });
 
             $('#demos li a').click(function () {
-                programloader.loadDemoOrTutorial($(this).attr('id'));
+                events.trigger('load-program', $(this).attr('id'));
                 return false;
             });
 
             $('#tutorials li a').click(function () {
-                programloader.loadDemoOrTutorial($(this).attr('id'));
+                events.trigger('load-program', $(this).attr('id'));
                 return false;
             });
 

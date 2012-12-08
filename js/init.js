@@ -42,7 +42,7 @@ var startEnvironment = function () {
     // EditorDimmer functions should probablly be rolled into the editor itself
     EditorDimmer = createEditorDimmer(editor, ProgramLoader, BigCursor); // $
 
-    Ui = createUi(autocoder, BackgroundPainter, editor, ProgramLoader, EditorDimmer); // $, Stats
+    Ui = createUi(LiveCodeLab.events, autocoder, BackgroundPainter, editor, EditorDimmer); // $, Stats
 
 
 
