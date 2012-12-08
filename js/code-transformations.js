@@ -1,8 +1,8 @@
 /*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
-/*global $, logger, autocoder, Ui */
+/*global $, logger, autocoder */
 
 
-var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
+var createCodeTransformer = function (events, CoffeeCompiler, BigCursor, graphics) {
 
     'use strict';
 
@@ -526,7 +526,7 @@ var createCodeTransformer = function (CoffeeCompiler, BigCursor, graphics) {
                 return;
             }
 
-            Ui.checkErrorAndReport(e);
+            events.trigger('display-error', e);
 
             return;
         }

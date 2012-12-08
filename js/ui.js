@@ -170,5 +170,11 @@ var createUi = function (events, autocoder, backgroundpainter, editor, editordim
         });
     };
 
+
+    // Setup Event Listeners
+    events.bind('display-error', Ui.checkErrorAndReport, Ui);
+
+
+
     return Ui;
 };

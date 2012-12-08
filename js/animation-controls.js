@@ -121,7 +121,7 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
                 }
 
                 // highlight the error
-                Ui.checkErrorAndReport(e);
+                events.trigger('display-error', e);
 
                 // mark the program as flawed and register the previous stable one.
                 CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;

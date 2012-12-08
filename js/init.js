@@ -30,7 +30,7 @@ var startEnvironment = function () {
 
 
 
-    CodeTransformer = createCodeTransformer(CoffeeScript, BigCursor, GraphicsCommands); // $, logger, autocoder, Ui
+    CodeTransformer = createCodeTransformer(LiveCodeLab.events, CoffeeScript, BigCursor, GraphicsCommands); // $, logger, autocoder
 
     AnimationController = createAnimationController(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter, Ui
     editor = createEditor(LiveCodeLab.events, CodeMirror, BigCursor); // EditorDimmer
@@ -42,7 +42,7 @@ var startEnvironment = function () {
     // EditorDimmer functions should probablly be rolled into the editor itself
     EditorDimmer = createEditorDimmer(editor, ProgramLoader, BigCursor); // $
 
-    Ui = createUi(LiveCodeLab.events, autocoder, BackgroundPainter, editor, EditorDimmer); // $, Stats
+    Ui = createUi(LiveCodeLab.events, BackgroundPainter, editor, EditorDimmer); // $, Stats
 
 
 
