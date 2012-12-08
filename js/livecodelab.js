@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*global $, MatrixCommands, SoundSystem: true, LightSystem, autocoder, BlendControls, BackgroundPainter, editor, Ui */
+/*global $, MatrixCommands, SoundSystem: true, LightSystem, autocoder, BlendControls, BackgroundPainter, Ui */
 
 
 var frame = 0;
@@ -25,8 +25,15 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
         LiveCodeLab.drawFunction = drawFunc;
     };
 
+    LiveCodeLab.registerCode = function (Editor) {
+        var drawFunction = CodeTransformer.registerCode(Editor);
+        LiveCodeLab.setDrawFunction(drawFunction);
+    };
+
     // animation loop
-    LiveCodeLab.animate = function () {
+    LiveCodeLab.animate = function (Editor) {
+
+        var drawFunction;
 
         // loop on request animation loop
         // - it has to be at the begining of the function
@@ -35,14 +42,22 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
         // I rather prefer to have a slower framerate but steadier.
         if (LiveCodeLab.useRequestAnimationFrame) {
             if (LiveCodeLab.wantedFramesPerSecond === -1) {
-                window.requestAnimationFrame(LiveCodeLab.animate);
+                window.requestAnimationFrame(function () {
+                    LiveCodeLab.animate(Editor);
+                });
             } else {
                 if (loopInterval === undefined) {
-                    loopInterval = setInterval("window.requestAnimationFrame(LiveCodeLab.animate)", 1000 / LiveCodeLab.wantedFramesPerSecond);
+                    loopInterval = setInterval(function () {
+                        window.requestAnimationFrame(function () {
+                            LiveCodeLab.animate(Editor)
+                        });
+                    }, 1000 / LiveCodeLab.wantedFramesPerSecond);
                 }
             }
         } else {
-            setTimeout(LiveCodeLab.animate, 1000 / LiveCodeLab.wantedFramesPerSecond);
+            setTimeout(function () {
+                LiveCodeLab.animate(Editor)
+            }, 1000 / LiveCodeLab.wantedFramesPerSecond);
         }
 
         MatrixCommands.resetMatrixStack();
@@ -53,6 +68,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
 
 
         if (LiveCodeLab.drawFunction !== "") {
+
             if (frame === 0) {
                 timekeeper.resetTime();
             } else {
@@ -100,7 +116,7 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
                 // but this can't hurt and it's symmetrical to the other try/catch
                 // situation we have in livecodelab
                 if (autocoder.active) {
-                    editor.undo();
+                    Editor.undo();
                     return;
                 }
 
@@ -140,7 +156,10 @@ var createLiveCodeLab = function (CodeTransformer, threejs, timekeeper, graphics
         // update stats
         Ui.stats.update();
 
-        CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(editor);
+        drawFunction = CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(Editor);
+        if (drawFunction) {
+            LiveCodeLab.setDrawFunction(drawFunction);
+        }
 
     };
 
