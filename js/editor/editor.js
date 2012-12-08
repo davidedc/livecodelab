@@ -11,7 +11,7 @@ var createEditor = function (events, codemirror, bigcursor) {
 
     suspendDimmingAndCheckIfLink = function (editor) {
 
-        var cursorP, currentLineContent, tutorialName;
+        var cursorP, currentLineContent, program;
 
         // Now this is kind of a nasty hack: we check where the
         // cursor is, and if it's over a line containing the
@@ -25,9 +25,9 @@ var createEditor = function (events, codemirror, bigcursor) {
             if (currentLineContent.indexOf('// next-tutorial:') === 0) {
                 currentLineContent = currentLineContent.substring(17);
                 currentLineContent = currentLineContent.replace("_", "");
-                tutorialName = currentLineContent + 'Tutorial';
+                program = currentLineContent + 'Tutorial';
                 setTimeout(function () {
-                    events.trigger('load-program', tutorialName);
+                    events.trigger('load-program', program);
                 }, 200);
             }
         }
