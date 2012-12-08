@@ -1,11 +1,47 @@
 /*jslint browser: true, devel: true */
-/*global EditorDimmer */
+/*global EditorDimmer, ProgramLoader */
 
-var createEditor = function (animationControls, codemirror, codetransformer, bigcursor) {
+var createEditor = function (animationControls, codemirror, bigcursor) {
 
     'use strict';
 
-    var editor = codemirror.fromTextArea(document.getElementById("code"), {
+    var Editor,
+        suspendDimmingAndCheckIfLink;
+
+
+    suspendDimmingAndCheckIfLink = function (editor) {
+
+        console.log(editor);
+
+        var cursorP, currentLineContent, tutorialName;
+
+        // Now this is kind of a nasty hack: we check where the
+        // cursor is, and if it's over a line containing the
+        // link then we follow it.
+        // There was no better way, for some reason some onClick
+        // events are lost, so what happened is that one would click on
+        // the link and nothing would happen.
+        cursorP = editor.getCursor(true);
+        if (cursorP.ch > 2) {
+            currentLineContent = editor.getLine(cursorP.line);
+            if (currentLineContent.indexOf('// next-tutorial:') === 0) {
+                currentLineContent = currentLineContent.substring(17);
+                currentLineContent = currentLineContent.replace("_", "");
+                tutorialName = currentLineContent + 'Tutorial';
+                setTimeout(ProgramLoader.loadDemoOrTutorial, 200, tutorialName);
+            }
+        }
+
+        if (bigcursor.show || editor.getValue() === '') {
+            return;
+        }
+        EditorDimmer.undimEditor();
+    };
+
+
+    Editor = codemirror.fromTextArea(document.getElementById("code"), {
+        mode: "livecodelab",
+        theme: 'night',
         lineNumbers: false,
         indentWithTabs: true,
         tabSize: 1,
@@ -17,24 +53,20 @@ var createEditor = function (animationControls, codemirror, codetransformer, big
         // before giving the editor focus, otherwise for some reason
         // the focus is not regained. Go figure.
         onBlur: function () {
-            setTimeout(editor.focus, 30);
+            setTimeout(Editor.focus, 30);
         },
-        // the onChange function of CodeMirror will pass in
-        // the "editor" instance as the first argument to the
-        // function callback
+        // the onChange and onCursorActivity functions of CodeMirror
+        // will pass in the "editor" instance as the first
+        // argument to the function callback
         onChange: animationControls.registerCode,
-        mode: "livecodelab",
-        onCursorActivity: function () {
-            EditorDimmer.suspendDimmingAndCheckIfLink();
-        },
-        theme: 'night'
+        onCursorActivity: suspendDimmingAndCheckIfLink
     });
 
     document.onkeypress = function (e) {
-        if (bigcursor.show && editor.getValue() !== "") {
+        if (bigcursor.show && Editor.getValue() !== "") {
             bigcursor.shrinkFakeText(e);
         }
     };
 
-    return editor;
+    return Editor;
 };

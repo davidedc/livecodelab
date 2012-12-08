@@ -12,6 +12,7 @@ var createEditorDimmer = function (Editor, ProgramLoader, BigCursor) {
     EditorDimmer.dimCodeOn = false;
 
     EditorDimmer.undimEditor = function () {
+        cursorActivity = true;
         if (BigCursor.show || Editor.getValue() === '') {
             $("#formCode").css('opacity', 0);
         }
@@ -22,35 +23,6 @@ var createEditorDimmer = function (Editor, ProgramLoader, BigCursor) {
         }
     };
 
-
-
-    EditorDimmer.suspendDimmingAndCheckIfLink = function () {
-
-        var cursorP, currentLineContent, tutorialName;
-
-        // Now this is kind of a nasty hack: we check where the
-        // cursor is, and if it's over a line containing the
-        // link then we follow it.
-        // There was no better way, for some reason some onClick
-        // events are lost, so what happened is that one would click on
-        // the link and nothing would happen.
-        cursorP = Editor.getCursor(true);
-        if (cursorP.ch > 2) {
-            currentLineContent = Editor.getLine(cursorP.line);
-            if (currentLineContent.indexOf('// next-tutorial:') === 0) {
-                currentLineContent = currentLineContent.substring(17);
-                currentLineContent = currentLineContent.replace("_", "");
-                tutorialName = currentLineContent + 'Tutorial';
-                setTimeout(ProgramLoader.loadDemoOrTutorial, 200, tutorialName);
-            }
-        }
-
-        if (BigCursor.show || Editor.getValue() === '') {
-            return;
-        }
-        cursorActivity = true;
-        EditorDimmer.undimEditor();
-    };
 
 
 
