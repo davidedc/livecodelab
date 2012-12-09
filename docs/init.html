@@ -16,19 +16,21 @@ add Stats.js - https://github.com/mrdoob/stats.js</p>             </td>         
 
     LiveCodeLab.events = createEventRouter();
 
-    ColourNames = createColours(); <span class="comment">// no global dependencies</span>
-    TimeKeeper = createTimeKeeper(); <span class="comment">// no global dependencies</span>
-    MatrixCommands = createMatrixCommands(THREE, TimeKeeper);  <span class="comment">// no global dependencies</span>
+    ColourNames = createColours();
+    ColourFunctions = createColourFunctions();
+    TimeKeeper = createTimeKeeper();
+    MatrixCommands = createMatrixCommands(THREE, TimeKeeper);
 
-    ThreeJs = createThreeJs(Detector, THREE, THREEx); <span class="comment">// no global dependencies</span>
+    ThreeJs = createThreeJs(Detector, THREE, THREEx);
     BlendControls = createBlendControls(ThreeJs);
-    SoundSystem = createSoundSystem(buzz); <span class="comment">// $, createSoundDef</span>
+    Bowser = createBowser();
+    SoundSystem = createSoundSystem(buzz, Bowser); <span class="comment">// $, createSoundDef</span>
     BigCursor = createBigCursor(LiveCodeLab.events); <span class="comment">// $</span>
-    BackgroundPainter = createBackgroundPainter(LiveCodeLab.events, ThreeJs); <span class="comment">// $, color</span>
+    BackgroundPainter = createBackgroundPainter(LiveCodeLab.events, ThreeJs, ColourFunctions); <span class="comment">// $</span>
 
 
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>There's a tricky cyclic dependency here between LightSystem and GraphicsCommands</p>             </td>             <td class="code">               <div class="highlight"><pre>    GraphicsCommands = createGraphicsCommands(); <span class="comment">// THREE, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne</span>
-    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands); <span class="comment">// color</span>
+    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands, ColourFunctions);
 
 
 

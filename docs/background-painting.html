@@ -1,5 +1,5 @@
 <!DOCTYPE html>  <html> <head>   <title>background-painting.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-controls.html">                 animation-controls.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="events.html">                 events.js               </a>                                           <a class="source" href="globals.html">                 globals.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               background-painting.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true, devel: true */</span>
-<span class="comment">/*global $, color */</span>
+<span class="comment">/*global $ */</span>
 
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>The user can issue multiple solid fill and gradient fill commands
 and they are all painted on top of each other according to the
@@ -35,7 +35,7 @@ and each background/gradient is painted anew.</p>
 a solid fill effectively invalidates the contents of the previous
 elements of the array, so we could discard those when such
 a command is issued.</p>             </td>             <td class="code">               <div class="highlight"><pre>
-<span class="keyword">var</span> createBackgroundPainter = <span class="function"><span class="keyword">function</span> <span class="params">(events, threejs)</span> {</span>
+<span class="keyword">var</span> createBackgroundPainter = <span class="function"><span class="keyword">function</span> <span class="params">(events, threejs, colourfuncs)</span> {</span>
 
     <span class="string">'use strict'</span>;
 
@@ -52,10 +52,10 @@ a command is issued.</p>             </td>             <td class="code">        
 
         currentGradientStackValue = currentGradientStackValue + <span class="string">" "</span> + a + <span class="string">""</span> + b + <span class="string">""</span> + c + <span class="string">""</span> + d + <span class="string">"null "</span>;
         gradStack.push({
-            gradStacka: color(a),
-            gradStackb: color(b),
-            gradStackc: color(c),
-            gradStackd: color(d),
+            gradStacka: colourfuncs.color(a),
+            gradStackb: colourfuncs.color(b),
+            gradStackc: colourfuncs.color(c),
+            gradStackd: colourfuncs.color(d),
             solid: <span class="literal">null</span>
         });
 
@@ -65,8 +65,8 @@ a command is issued.</p>             </td>             <td class="code">        
 
 </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>[todo] should the screen be cleared when you invoke
 the background command? (In processing it's not)</p>             </td>             <td class="code">               <div class="highlight"><pre>
-        <span class="keyword">var</span> a = color(arguments[<span class="number">0</span>], arguments[<span class="number">1</span>], arguments[<span class="number">2</span>], arguments[<span class="number">3</span>]);
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>if (a===undefined) a = color(0);</p>             </td>             <td class="code">               <div class="highlight"><pre>        currentGradientStackValue = currentGradientStackValue + <span class="string">" null null null null "</span> + a + <span class="string">" "</span>;
+        <span class="keyword">var</span> a = colourfuncs.color(arguments[<span class="number">0</span>], arguments[<span class="number">1</span>], arguments[<span class="number">2</span>], arguments[<span class="number">3</span>]);
+        currentGradientStackValue = currentGradientStackValue + <span class="string">" null null null null "</span> + a + <span class="string">" "</span>;
         gradStack.push({
             gradStacka: <span class="literal">undefined</span>,
             gradStackb: <span class="literal">undefined</span>,
@@ -110,9 +110,9 @@ the background command? (In processing it's not)</p>             </td>          
 							$(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'white'</span>);
 							<span class="keyword">break</span>;
 					<span class="keyword">case</span> <span class="number">4</span>:
-							defaultGradientColor1 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
-							defaultGradientColor2 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
-							defaultGradientColor3 = color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
+							defaultGradientColor1 = colourfuncs.color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
+							defaultGradientColor2 = colourfuncs.color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
+							defaultGradientColor3 = colourfuncs.color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
 							$(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'DarkOliveGreen'</span>);
 							<span class="keyword">break</span>;
         }
@@ -121,7 +121,7 @@ the background command? (In processing it's not)</p>             </td>          
     BackgroundPainter.resetGradientStack = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
 
         currentGradientStackValue = <span class="string">""</span>;
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>we could be more efficient and
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>we could be more efficient and
 reuse the previous stack elements
 but I don't think it matters here</p>             </td>             <td class="code">               <div class="highlight"><pre>        gradStack = [];
 
@@ -140,16 +140,16 @@ but I don't think it matters here</p>             </td>             <td class="c
 
                 <span class="keyword">if</span> (gradStack[scanningGradStack].gradStacka !== <span class="literal">undefined</span>) {
                     radgrad = threejs.backgroundSceneContext.createLinearGradient(threejs.scaledBackgroundWidth / <span class="number">2</span>, <span class="number">0</span>, threejs.scaledBackgroundWidth / <span class="number">2</span>, threejs.scaledBackgroundHeight);
-                    radgrad.addColorStop(<span class="number">0</span>, color.toString(gradStack[scanningGradStack].gradStacka));
-                    radgrad.addColorStop(<span class="number">0.5</span>, color.toString(gradStack[scanningGradStack].gradStackb));
-                    radgrad.addColorStop(<span class="number">1</span>, color.toString(gradStack[scanningGradStack].gradStackc));
+                    radgrad.addColorStop(<span class="number">0</span>, colourfuncs.color.toString(gradStack[scanningGradStack].gradStacka));
+                    radgrad.addColorStop(<span class="number">0.5</span>, colourfuncs.color.toString(gradStack[scanningGradStack].gradStackb));
+                    radgrad.addColorStop(<span class="number">1</span>, colourfuncs.color.toString(gradStack[scanningGradStack].gradStackc));
 
                     threejs.backgroundSceneContext.globalAlpha = <span class="number">1.0</span>;
                     threejs.backgroundSceneContext.fillStyle = radgrad;
                     threejs.backgroundSceneContext.fillRect(<span class="number">0</span>, <span class="number">0</span>, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
                 } <span class="keyword">else</span> {
                     threejs.backgroundSceneContext.globalAlpha = <span class="number">1.0</span>;
-                    threejs.backgroundSceneContext.fillStyle = color.toString(gradStack[scanningGradStack].solid);
+                    threejs.backgroundSceneContext.fillStyle = colourfuncs.color.toString(gradStack[scanningGradStack].solid);
                     threejs.backgroundSceneContext.fillRect(<span class="number">0</span>, <span class="number">0</span>, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
                 }
             }
@@ -157,12 +157,12 @@ but I don't think it matters here</p>             </td>             <td class="c
 
     };
 
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.simpleGradient = BackgroundPainter.simpleGradient;
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.simpleGradient = BackgroundPainter.simpleGradient;
 
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.background = BackgroundPainter.background;
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.background = BackgroundPainter.background;
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>    events.bind(<span class="string">'reset'</span>, BackgroundPainter.pickRandomDefaultGradient, BackgroundPainter);
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>    events.bind(<span class="string">'reset'</span>, BackgroundPainter.pickRandomDefaultGradient, BackgroundPainter);
 
 
 

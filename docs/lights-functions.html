@@ -1,8 +1,7 @@
 <!DOCTYPE html>  <html> <head>   <title>lights-functions.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-controls.html">                 animation-controls.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="events.html">                 events.js               </a>                                           <a class="source" href="globals.html">                 globals.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               lights-functions.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true */</span>
-<span class="comment">/*global color */</span>
 
 
-<span class="keyword">var</span> createLightSystem = <span class="function"><span class="keyword">function</span> <span class="params">(threejs, three, matrixcommands, graphics)</span> {</span>
+<span class="keyword">var</span> createLightSystem = <span class="function"><span class="keyword">function</span> <span class="params">(threejs, three, matrixcommands, graphics, colourfuncs)</span> {</span>
 
     <span class="string">'use strict'</span>;
 
@@ -23,16 +22,18 @@
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>ambientLight needs to be global</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.ambientLight = LightSystem.ambientLight = <span class="function"><span class="keyword">function</span> <span class="params">(r, g, b, a)</span> {</span>
 
         <span class="keyword">var</span> colorToBeUsed,
-            newLightCreated = <span class="literal">false</span>;
+            newLightCreated = <span class="literal">false</span>,
+            ambientLightsPool,
+            pooledAmbientLight;
 
         <span class="keyword">if</span> (r === <span class="literal">undefined</span>) {
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>empty arguments gives some sort
 of grey ambient light.
 black is too stark and white
 doesn't show the effect with the
-default white fill</p>             </td>             <td class="code">               <div class="highlight"><pre>            colorToBeUsed = color(<span class="number">255</span>);
+default white fill</p>             </td>             <td class="code">               <div class="highlight"><pre>            colorToBeUsed = colourfuncs.color(<span class="number">255</span>);
         } <span class="keyword">else</span> {
-            colorToBeUsed = color(r, g, b, a);
+            colorToBeUsed = colourfuncs.color(r, g, b, a);
         }
 
         LightSystem.lightsAreOn = <span class="literal">true</span>;
@@ -41,18 +42,17 @@ default white fill</p>             </td>             <td class="code">          
 
 </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>used by graphic-primitives</p>             </td>             <td class="code">               <div class="highlight"><pre>        graphics.defaultNormalStroke = <span class="literal">false</span>;
 
-        <span class="keyword">var</span> ambientLightsPool = graphics.objectPools[graphics.primitiveTypes.ambientLight];
-        <span class="keyword">var</span> pooledAmbientLight =  ambientLightsPool[graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
+        ambientLightsPool = graphics.objectPools[graphics.primitiveTypes.ambientLight];
+        pooledAmbientLight =  ambientLightsPool[graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
         <span class="keyword">if</span> (pooledAmbientLight === <span class="literal">undefined</span>) {
-            
 </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>So here is the thing, the command is currently called AmbientLight but
 in reality we are creating a PointLight in a specific position.
 AmbientLight just fills the whole scene,
 so the faces of the cube would all be of the same
 exact color. Note that in Three.js versions before r50 the AmbientLight
-would work like a PointLight does now.</p>             </td>             <td class="code">               <div class="highlight"><pre>            pooledAmbientLight = <span class="keyword">new</span> THREE.PointLight(colorToBeUsed);
-            pooledAmbientLight.position.set( <span class="number">10</span>, <span class="number">50</span>, <span class="number">130</span> );
-            
+would work like a PointLight does now.</p>             </td>             <td class="code">               <div class="highlight"><pre>            pooledAmbientLight = <span class="keyword">new</span> three.PointLight(colorToBeUsed);
+            pooledAmbientLight.position.set(<span class="number">10</span>, <span class="number">50</span>, <span class="number">130</span>);
+
             newLightCreated = <span class="literal">true</span>;
             ambientLightsPool.push(pooledAmbientLight);
             pooledAmbientLight.detailLevel = <span class="number">0</span>;
