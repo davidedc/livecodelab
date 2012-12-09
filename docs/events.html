@@ -1,0 +1,40 @@
+<!DOCTYPE html>  <html> <head>   <title>events.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-controls.html">                 animation-controls.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="events.html">                 events.js               </a>                                           <a class="source" href="globals.html">                 globals.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               events.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre>
+<span class="keyword">var</span> createEventRouter = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+    <span class="string">'use strict'</span>;
+
+    <span class="keyword">var</span> EventRouter = {},
+        events = {};
+
+    EventRouter.bind = <span class="function"><span class="keyword">function</span> <span class="params">(name, callback, context)</span> {</span>
+        <span class="keyword">var</span> listenerInfo = {
+            callback: callback,
+            context: context
+        };
+
+        <span class="keyword">if</span> (!events[name]) {
+            events[name] = [];
+        }
+        events[name].push(listenerInfo);
+    };
+
+    EventRouter.trigger = <span class="function"><span class="keyword">function</span> <span class="params">(name)</span> {</span>
+        <span class="keyword">var</span> args, callbacks, i, listenerInfo;
+
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>convert the arguments object into an array</p>             </td>             <td class="code">               <div class="highlight"><pre>        args = Array.prototype.slice.call(arguments);
+
+        <span class="keyword">if</span> (events[name]) {
+            args = args.slice(<span class="number">1</span>);
+            callbacks = events[name];
+            <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; callbacks.length; i += <span class="number">1</span>) {
+                <span class="keyword">var</span> listenerInfo = callbacks[i];
+                listenerInfo.callback.apply(listenerInfo.context, args);
+            }
+        }
+    };
+
+    <span class="keyword">return</span> EventRouter;
+};
+
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

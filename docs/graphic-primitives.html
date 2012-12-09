@@ -1,5 +1,5 @@
-<!DOCTYPE html>  <html> <head>   <title>graphic-primitives.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               graphic-primitives.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true */</span>
-<span class="comment">/*global THREE, logger, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne  */</span>
+<!DOCTYPE html>  <html> <head>   <title>graphic-primitives.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-controls.html">                 animation-controls.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="events.html">                 events.js               </a>                                           <a class="source" href="globals.html">                 globals.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               graphic-primitives.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true */</span>
+<span class="comment">/*global THREE, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne  */</span>
 
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Please reference the colour-functions.js file for all colour-related
 functions and lights-functions.js for lights, which use a similar
@@ -237,19 +237,14 @@ for each different type of material.</p>             </td>             <td class
 
             objectIsNew = <span class="literal">true</span>;
             objectPool.push(pooledObjectWithMaterials);
-</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>console.log("creating new object");
-console.log("primitive type: " + primitiveProperties.primitiveType  );
-console.log("level of detail: " + primitiveProperties.detailLevel);
-console.log("pool id: " + (primitiveID));
-console.log("  length: " + objectPool.length);</p>             </td>             <td class="code">               <div class="highlight"><pre>        }
+        }
 
         <span class="keyword">if</span> (primitiveProperties.primitiveType === primitiveTypes.line) {
             <span class="keyword">if</span> (pooledObjectWithMaterials.lineMaterial === <span class="literal">undefined</span>) {
-                logger(<span class="string">"creating line material"</span>);
                 pooledObjectWithMaterials.lineMaterial = <span class="keyword">new</span> THREE.LineBasicMaterial();
             }
 
-</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>associating normal material to threejs' Object3D</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>associating normal material to threejs' Object3D</p>             </td>             <td class="code">               <div class="highlight"><pre>
             <span class="keyword">if</span> (currentStrokeColor === angleColor || GraphicsCommands.defaultNormalStroke) {
                 theAngle = pooledObjectWithMaterials.threejsObject3D.matrix.multiplyVector3(<span class="keyword">new</span> THREE.Vector3(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)).normalize();
                 pooledObjectWithMaterials.lineMaterial.color.setHex(color(((theAngle.x + <span class="number">1</span>) / <span class="number">2</span>) * <span class="number">255</span>, ((theAngle.y + <span class="number">1</span>) / <span class="number">2</span>) * <span class="number">255</span>, ((theAngle.z + <span class="number">1</span>) / <span class="number">2</span>) * <span class="number">255</span>));
@@ -260,13 +255,12 @@ console.log("  length: " + objectPool.length);</p>             </td>            
             pooledObjectWithMaterials.lineMaterial.linewidth = GraphicsCommands.currentStrokeSize;
             pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.lineMaterial;
         } <span class="keyword">else</span> <span class="keyword">if</span> (objectIsNew || (colorToBeUsed === angleColor || applyDefaultNormalColor)) {
-</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>the first time we render a an object we need to
+</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>the first time we render a an object we need to
 render it with the material that takes the
 bigger buffer space, see:
 https://github.com/mrdoob/three.js/issues/1051
 Another workaround would be to create a pooled object
 for each different type of material.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (pooledObjectWithMaterials.normalMaterial === <span class="literal">undefined</span>) {
-                logger(<span class="string">"creating normal material"</span>);
                 pooledObjectWithMaterials.normalMaterial = <span class="keyword">new</span> THREE.MeshNormalMaterial();
             }
             pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.normalMaterial;
@@ -278,15 +272,14 @@ for each different type of material.</p>             </td>             <td class
             pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.basicMaterial;
 
         } <span class="keyword">else</span> {
-</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>lights are on</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (pooledObjectWithMaterials.lambertMaterial === <span class="literal">undefined</span>) {
-                logger(<span class="string">"creating lambert:"</span> + currentFillColor + <span class="string">" "</span> + currentFillAlpha + <span class="string">" "</span> + reflectValue + <span class="string">" "</span> + refractValue);
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>lights are on</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (pooledObjectWithMaterials.lambertMaterial === <span class="literal">undefined</span>) {
                 pooledObjectWithMaterials.lambertMaterial = <span class="keyword">new</span> THREE.MeshLambertMaterial();
             }
             pooledObjectWithMaterials.lambertMaterial.color.setHex(colorToBeUsed);
             pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.lambertMaterial;
         }
 
-</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>not all of these properties apply in all cases (for example sidedness
+</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>not all of these properties apply in all cases (for example sidedness
 doesn't apply to lines), but setting these properties in those cases
 has no ill effect and we are factoring out here as many initialisations
 as possible to make the code cleaner.</p>             </td>             <td class="code">               <div class="highlight"><pre>        pooledObjectWithMaterials.threejsObject3D.material.side = primitiveProperties.sidedness;
@@ -320,7 +313,6 @@ as possible to make the code cleaner.</p>             </td>             <td clas
         <span class="keyword">if</span> (GraphicsCommands.doTheSpinThingy &amp;&amp; pooledObjectWithMaterials.initialSpinCountdown &gt; <span class="number">0</span>) {
             MatrixCommands.pushMatrix();
             MatrixCommands.rotate(pooledObjectWithMaterials.initialSpinCountdown / <span class="number">50</span>);
-            logger(pooledObjectWithMaterials.initialSpinCountdown);
         }
 
         pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = <span class="literal">false</span>;
@@ -332,7 +324,7 @@ as possible to make the code cleaner.</p>             </td>             <td clas
         }
 
         <span class="keyword">if</span> (objectIsNew) {
-</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>if the object is new it means that the normal material
+</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>if the object is new it means that the normal material
 is applied to it, no matter what the current settings of fill
 and lights are. So we make objects invisible in their very first
 frame to avoid it flashing briefly in completely the wrong colour
@@ -342,7 +334,7 @@ correctly.</p>             </td>             <td class="code">               <di
         }
         <span class="keyword">else</span> <span class="keyword">if</span> (a !== <span class="number">1</span> || b !== <span class="number">1</span> || c !== <span class="number">1</span>) {
             <span class="keyword">if</span> (strokeTime) {
-</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>wireframes are built via separate objects with geometries that are
+</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>wireframes are built via separate objects with geometries that are
 ever so slight larger than the "fill" object, so there
 is no z-fighting and the stroke is drawn neatly on top of the fill
 constant 0.001 below is to avoid z-fighting</p>             </td>             <td class="code">               <div class="highlight"><pre>                pooledObjectWithMaterials.threejsObject3D.matrix.scale(<span class="keyword">new</span> THREE.Vector3(a + <span class="number">0.001</span>, b + <span class="number">0.001</span>, c + <span class="number">0.001</span>));
@@ -360,7 +352,7 @@ constant 0.001 below is to avoid z-fighting</p>             </td>             <t
 
     commonPrimitiveDrawingLogic = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c, primitiveProperties)</span> {</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>b and c are not functional in some geometric
+</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>b and c are not functional in some geometric
 primitives, but we handle them here in all cases
 to make the code uniform and unifiable</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (a === <span class="literal">undefined</span>) {
             a = <span class="number">1</span>;
@@ -373,21 +365,21 @@ to make the code uniform and unifiable</p>             </td>             <td cla
             c = <span class="number">1</span>;
         }
 
-</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>Simple case - if there is no fill and
+</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>Simple case - if there is no fill and
 no stroke then there is nothing to do.
 Also, even if we aren'd under a noFill command spell, some geometries
 inherently don't have a fill, so we return if there is no stroke either.
 (right now that applies only lines).</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (!doStroke &amp;&amp; (!doFill || !primitiveProperties.canFill)) {
             <span class="keyword">return</span>;
         }
-</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>if we are under the influence of a noFill command OR
+</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>if we are under the influence of a noFill command OR
 the wireframe is not going to be visible on top of the
 fill then don't draw the stroke, only draw the fill</p>             </td>             <td class="code">               <div class="highlight"><pre>
         <span class="keyword">if</span> ((primitiveProperties.canFill &amp;&amp; doFill &amp;&amp; (GraphicsCommands.currentStrokeSize === <span class="number">0</span> || !doStroke || (GraphicsCommands.currentStrokeSize &lt;= <span class="number">1</span> &amp;&amp; !GraphicsCommands.defaultNormalFill &amp;&amp; !GraphicsCommands.defaultNormalStroke &amp;&amp; currentStrokeColor === currentFillColor &amp;&amp; currentFillAlpha === <span class="number">1</span> &amp;&amp; currentStrokeAlpha === <span class="number">1</span>))) || (GraphicsCommands.currentStrokeSize &lt;= <span class="number">1</span> &amp;&amp; GraphicsCommands.defaultNormalFill &amp;&amp; GraphicsCommands.defaultNormalStroke)) {
             createObjectIfNeededAndDressWithCorrectMaterial(a, b, c, primitiveProperties, <span class="literal">false</span>, currentFillColor, currentFillAlpha, GraphicsCommands.defaultNormalFill);
         } <span class="keyword">else</span> <span class="keyword">if</span> ((!doFill || !primitiveProperties.canFill) &amp;&amp; doStroke) {
-</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>only doing the stroke</p>             </td>             <td class="code">               <div class="highlight"><pre>            createObjectIfNeededAndDressWithCorrectMaterial(a, b, c, primitiveProperties, <span class="literal">true</span>, currentStrokeColor, currentStrokeAlpha, GraphicsCommands.defaultNormalStroke);
-</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>doing both the fill and the stroke</p>             </td>             <td class="code">               <div class="highlight"><pre>        } <span class="keyword">else</span> {
+</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>only doing the stroke</p>             </td>             <td class="code">               <div class="highlight"><pre>            createObjectIfNeededAndDressWithCorrectMaterial(a, b, c, primitiveProperties, <span class="literal">true</span>, currentStrokeColor, currentStrokeAlpha, GraphicsCommands.defaultNormalStroke);
+</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>doing both the fill and the stroke</p>             </td>             <td class="code">               <div class="highlight"><pre>        } <span class="keyword">else</span> {
             createObjectIfNeededAndDressWithCorrectMaterial(a, b, c, primitiveProperties, <span class="literal">true</span>, currentStrokeColor, currentStrokeAlpha, GraphicsCommands.defaultNormalStroke);
             createObjectIfNeededAndDressWithCorrectMaterial(a, b, c, primitiveProperties, <span class="literal">false</span>, currentFillColor, currentFillAlpha, GraphicsCommands.defaultNormalFill);
         }
@@ -395,7 +387,24 @@ fill then don't draw the stroke, only draw the fill</p>             </td>       
     };
 
 
+    GraphicsCommands.reset = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        GraphicsCommands.fill(<span class="number">0xFFFFFFFF</span>);
+        GraphicsCommands.stroke(<span class="number">0xFFFFFFFF</span>);
+        GraphicsCommands.currentStrokeSize = <span class="number">1</span>;
+        GraphicsCommands.defaultNormalFill = <span class="literal">true</span>;
+        GraphicsCommands.defaultNormalStroke = <span class="literal">true</span>;
+        GraphicsCommands.ballDetLevel = ThreeJs.ballDefaultDetLevel;
 
+        GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.ambientLight] = <span class="number">0</span>;
+        GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.line] = <span class="number">0</span>;
+        GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.rect] = <span class="number">0</span>;
+        GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.box] = <span class="number">0</span>;
+        GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.peg] = <span class="number">0</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>initialising ball counts</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> i;
+        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; (GraphicsCommands.maximumBallDetail - GraphicsCommands.minimumBallDetail + <span class="number">1</span>); i += <span class="number">1</span>) {
+            GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.ball + i] = <span class="number">0</span>;
+        }
+    };
 
 </pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>TODO Note that lines have a "solid fill" mode
 and something similar to the normalMaterial mode
@@ -406,56 +415,78 @@ an ambient light to the color of the stroke
 (although which ambient light do you pick if there
 is more than one?)</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.line = GraphicsCommands.line = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c)</span> {</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
+</pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>lines can only have one material, which is LineBasicMaterial
+which doesn't react to lights (as opposed to MeshLambertMaterial, which
+only applies to meshes).
+So in order to get lights to react to light we have to actually draw the
+wireframe of a rectangle with one of the sides being zero length.
+Since the stroke and the fill are drawn with two different objects and the
+fill is not needed, we temporarily switch off the fill and then put it back
+to whichever value it was.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (LightSystem.lightsAreOn) {
+            <span class="keyword">var</span> rememberIfThereWasAFill = doFill;
+            <span class="keyword">var</span> rememberPreviousStrokeSize = GraphicsCommands.currentStrokeSize;
+            <span class="keyword">if</span> (GraphicsCommands.currentStrokeSize &lt; <span class="number">2</span>) {
+                GraphicsCommands.currentStrokeSize = <span class="number">2</span>;
+            }
+            <span class="keyword">if</span> (a == <span class="literal">undefined</span>) {
+                a=<span class="number">1</span>;
+            }
+            rect(<span class="number">0</span>,a,<span class="number">0</span>);
+            doFill = rememberIfThereWasAFill;
+            GraphicsCommands.currentStrokeSize = rememberPreviousStrokeSize;
+            <span class="keyword">return</span>;
+        }
+        
+</pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
             canFill: <span class="literal">false</span>,
             primitiveType: primitiveTypes.line,
             sidedness: THREE.FrontSide,
             THREEObjectConstructor: THREE.Line,
             detailLevel: <span class="number">0</span>
         };
-</pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>end of primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>end of primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>
         commonPrimitiveDrawingLogic(a, b, c, primitiveProperties);
     };
 
 
     window.rect = GraphicsCommands.rect = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c)</span> {</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
+</pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
             canFill: <span class="literal">true</span>,
             primitiveType: primitiveTypes.rect,
             sidedness: THREE.DoubleSide,
             THREEObjectConstructor: THREE.Mesh,
             detailLevel: <span class="number">0</span>
         };
-</pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>end of primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>end of primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>
         commonPrimitiveDrawingLogic(a, b, c, primitiveProperties);
     };
 
 
     window.box = GraphicsCommands.box = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c)</span> {</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
+</pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
             canFill: <span class="literal">true</span>,
             primitiveType: primitiveTypes.box,
             sidedness: THREE.FrontSide,
             THREEObjectConstructor: THREE.Mesh,
             detailLevel: <span class="number">0</span>
         };
-</pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>end of primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <p>end of primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>
         commonPrimitiveDrawingLogic(a, b, c, primitiveProperties);
     };
 
 
     window.peg = GraphicsCommands.peg = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c)</span> {</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
+</pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
             canFill: <span class="literal">true</span>,
             primitiveType: primitiveTypes.peg,
             sidedness: THREE.FrontSide,
             THREEObjectConstructor: THREE.Mesh,
             detailLevel: <span class="number">0</span>
         };
-</pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>end of primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>end of primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>
         commonPrimitiveDrawingLogic(a, b, c, primitiveProperties);
     };
 
@@ -475,22 +506,22 @@ is more than one?)</p>             </td>             <td class="code">          
 
     window.ball = GraphicsCommands.ball = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c)</span> {</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
+</pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> primitiveProperties = {
             canFill: <span class="literal">true</span>,
             primitiveType: primitiveTypes.ball,
             sidedness: THREE.FrontSide,
             THREEObjectConstructor: THREE.Mesh,
             detailLevel: GraphicsCommands.ballDetLevel - minimumBallDetail
         };
-</pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>end of primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>end of primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>
         commonPrimitiveDrawingLogic(a, b, c, primitiveProperties);
     };
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>Modified from Processing.js</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>Modified from Processing.js</p>             </td>             <td class="code">               <div class="highlight"><pre>
 
     window.fill = GraphicsCommands.fill = <span class="function"><span class="keyword">function</span> <span class="params">(r, g, b, a)</span> {</span>
-</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>Three.js needs two integers to define an RGBA: the rgb as a 24 bit integer
+</pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>Three.js needs two integers to define an RGBA: the rgb as a 24 bit integer
 and the alpha (from zero to one).
 Now the thing is that the color gan be given in different
 shapes:
@@ -513,7 +544,7 @@ So in that case, again, there are two forms of invokation
             currentFillAlpha = alphaZeroToOne(color(r, g, b, a));
         }
         <span class="keyword">else</span> {
-</pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>we keep track of the "normal fill" flag and the fill color
+</pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <p>we keep track of the "normal fill" flag and the fill color
 separately because
 we can do some smart optimisation later
 and not draw the wireframe is it happens to be the same color as
@@ -572,7 +603,7 @@ the fill</p>             </td>             <td class="code">               <div 
      */</span>
 
     window.stroke = GraphicsCommands.stroke = <span class="function"><span class="keyword">function</span> <span class="params">(r, g, b, a)</span> {</span>
-</pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <p>see comment on fill method above
+</pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <p>see comment on fill method above
 for some comments on how this method works.</p>             </td>             <td class="code">               <div class="highlight"><pre>        
         doStroke = <span class="literal">true</span>;
 
@@ -582,7 +613,7 @@ for some comments on how this method works.</p>             </td>             <t
             currentStrokeAlpha = alphaZeroToOne(color(r, g, b, a));
         }
         <span class="keyword">else</span> {
-</pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <p>we keep track of the "normal stroke" flag and the stroke color
+</pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-45">&#182;</a>               </div>               <p>we keep track of the "normal stroke" flag and the stroke color
 separately because
 we can do some smart optimisation later
 and not draw the wireframe is it happens to be the same color as
@@ -607,7 +638,7 @@ the fill</p>             </td>             <td class="code">               <div 
     };
 
     window.strokeSize = GraphicsCommands.strokeSize = <span class="function"><span class="keyword">function</span> <span class="params">(a)</span> {</span>
-</pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-45">&#182;</a>               </div>               <p>note that either Three.js of the graphic card limit the size
+</pre></div>             </td>           </tr>                               <tr id="section-46">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-46">&#182;</a>               </div>               <p>note that either Three.js of the graphic card limit the size
 of the stroke. This is because openGL strokes are VERY crude
 (the cap is not even square, it's worse than that:
 http://twolivesleft.com/Codea/LineCapShear.png )
