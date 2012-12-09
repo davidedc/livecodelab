@@ -37,7 +37,7 @@ var startEnvironment = function () {
 
     CodeTransformer = createCodeTransformer(LiveCodeLab.events, CoffeeScript, GraphicsCommands); // $, logger, autocoder
 
-    AnimationController = createAnimationController(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands, stats); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter
+    AnimationController = createAnimationController(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter); // $
     editor = createEditor(LiveCodeLab.events, CodeMirror);
 
     autocoder = createAutocoder(LiveCodeLab.events, editor, ColourNames); // McLexer

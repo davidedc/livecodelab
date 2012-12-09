@@ -1,11 +1,11 @@
 /*jslint browser: true */
-/*global $, MatrixCommands, SoundSystem: true, LightSystem, autocoder, BlendControls, BackgroundPainter */
+/*global $ */
 
 
 var frame = 0;
 
 
-var createAnimationController = function (events, CodeTransformer, threejs, timekeeper, graphics, stats) {
+var createAnimationController = function (events, CodeTransformer, threejs, timekeeper, graphics, stats, matrixcommands, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
 
     'use strict';
 
@@ -49,22 +49,22 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
                 if (loopInterval === undefined) {
                     loopInterval = setInterval(function () {
                         window.requestAnimationFrame(function () {
-                            AnimationController.animate(Editor)
+                            AnimationController.animate(Editor);
                         });
                     }, 1000 / AnimationController.wantedFramesPerSecond);
                 }
             }
         } else {
             setTimeout(function () {
-                AnimationController.animate(Editor)
+                AnimationController.animate(Editor);
             }, 1000 / AnimationController.wantedFramesPerSecond);
         }
 
-        MatrixCommands.resetMatrixStack();
+        matrixcommands.resetMatrixStack();
 
         // the sound list needs to be cleaned
         // so that the user program can create its own from scratch
-        SoundSystem.resetLoops();
+        soundsystem.resetLoops();
 
 
         if (AnimationController.drawFunction !== "") {
@@ -75,29 +75,15 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
                 timekeeper.updateTime();
             }
             CodeTransformer.doOnceOccurrencesLineNumbers = [];
-            SoundSystem.anyCodeReactingTobpm = false;
-            graphics.fill(0xFFFFFFFF);
-            graphics.stroke(0xFFFFFFFF);
-            graphics.currentStrokeSize = 1;
-            graphics.defaultNormalFill = true;
-            graphics.defaultNormalStroke = true;
-            graphics.ballDetLevel = threejs.ballDefaultDetLevel;
-            SoundSystem.SetUpdatesPerMinute(60 * 4);
-            LightSystem.noLights();
+            soundsystem.anyCodeReactingTobpm = false;
 
-            graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight] = 0;
-            graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.line] = 0;
-            graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.rect] = 0;
-            graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.box] = 0;
-            graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.peg] = 0;
-            // initialising ball counts
-            var i;
-            for (i = 0; i < (graphics.maximumBallDetail - graphics.minimumBallDetail + 1); i += 1) {
-                graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ball + i] = 0;
-            }
+            soundsystem.SetUpdatesPerMinute(60 * 4);
+            lightsystem.noLights();
 
-            BlendControls.animationStyle(BlendControls.animationStyles.normal);
-            BackgroundPainter.resetGradientStack();
+            graphics.reset();
+
+            blendcontrols.animationStyle(blendcontrols.animationStyles.normal);
+            backgroundpainter.resetGradientStack();
 
             // Now here there is another try/catch check when the draw function is ran.
             // The reason is that there might be references to uninitialised or inexistent
@@ -111,14 +97,6 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
             try {
                 AnimationController.drawFunction();
             } catch (e) {
-
-                // I'm not sure that this type of error should occur during autocoding
-                // but this can't hurt and it's symmetrical to the other try/catch
-                // situation we have in livecodelab
-                if (autocoder.active) {
-                    Editor.undo();
-                    return;
-                }
 
                 // highlight the error
                 events.trigger('display-error', e);
@@ -137,13 +115,12 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
             if (frame === 0) {
                 timekeeper.resetTime();
             }
-            if (SoundSystem.anyCodeReactingTobpm) {
-                SoundSystem.changeUpdatesPerMinuteIfNeeded();
-            }
-            BlendControls.animationStyleUpdateIfChanged();
-            BackgroundPainter.simpleGradientUpdateIfChanged();
-            SoundSystem.changeUpdatesPerMinuteIfNeeded();
+            blendcontrols.animationStyleUpdateIfChanged();
+            backgroundpainter.simpleGradientUpdateIfChanged();
+            soundsystem.changeUpdatesPerMinuteIfNeeded();
+
             frame += 1;
+
             CodeTransformer.consecutiveFramesWithoutRunTimeError += 1;
             if (CodeTransformer.consecutiveFramesWithoutRunTimeError === 5) {
                 lastStableProgram = AnimationController.drawFunction;
@@ -178,7 +155,7 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
 
             // draw the rendering of the scene on the final render
             // clear the final render context
-            threejs.finalRenderWithSceneAndBlendContext.globalAlpha = BlendControls.blendAmount;
+            threejs.finalRenderWithSceneAndBlendContext.globalAlpha = blendcontrols.blendAmount;
             threejs.finalRenderWithSceneAndBlendContext.drawImage(threejs.previousRenderForBlending, 0, 0);
 
             threejs.finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
@@ -237,11 +214,11 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
 
 
             // set the first "used*****" objects to visible...
-            		//logger('combing display list objects: ' + (i+1) + " of " + threejs.scene.objects.length);
-            		//logger('prim type' + sceneObject.primitiveType);
-            		//logger('det level' + sceneObject.detailLevel);
+            //logger('combing display list objects: ' + (i+1) + " of " + threejs.scene.objects.length);
+            //logger('prim type' + sceneObject.primitiveType);
+            //logger('det level' + sceneObject.detailLevel);
             if (graphics.objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] > 0) {
-            		//logger('object visible');
+                //logger('object visible');
                 sceneObject.visible = true;
                 graphics.objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] -= 1;
             } else {
