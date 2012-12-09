@@ -1,5 +1,4 @@
 /*jslint browser: true */
-/*global logger  */
 
 
 var createBlendControls = function (threejs) {

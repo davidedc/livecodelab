@@ -32,7 +32,6 @@ var autocoder;
 
 
 // All used globally
-var logger = createDebugger();
 var ThreeJs;
 var BigCursor;
 var AnimationController;

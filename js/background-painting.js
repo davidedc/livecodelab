@@ -1,5 +1,5 @@
 /*jslint browser: true, devel: true */
-/*global $, color, logger */
+/*global $, color */
 
 // The user can issue multiple solid fill and gradient fill commands
 // and they are all painted on top of each other according to the
@@ -70,7 +70,6 @@ var createBackgroundPainter = function (events, threejs) {
         // the background command? (In processing it's not)
 
         var a = color(arguments[0], arguments[1], arguments[2], arguments[3]);
-        //  logger("adding solid background to stack");
         //if (a===undefined) a = color(0);
         currentGradientStackValue = currentGradientStackValue + " null null null null " + a + " ";
         gradStack.push({
@@ -141,7 +140,6 @@ var createBackgroundPainter = function (events, threejs) {
         if ((currentGradientStackValue !== previousGradientStackValue)) {
 
             previousGradientStackValue = currentGradientStackValue;
-            logger('repainting background');
             diagonal = Math.sqrt(Math.pow(threejs.scaledBackgroundWidth / 2, 2) + Math.pow(threejs.scaledBackgroundHeight / 2, 2));
 
             for (scanningGradStack = 0; scanningGradStack < gradStack.length; scanningGradStack++) {
@@ -156,7 +154,6 @@ var createBackgroundPainter = function (events, threejs) {
                     threejs.backgroundSceneContext.fillStyle = radgrad;
                     threejs.backgroundSceneContext.fillRect(0, 0, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
                 } else {
-                    logger("solid background: " + gradStack[scanningGradStack].solid);
                     threejs.backgroundSceneContext.globalAlpha = 1.0;
                     threejs.backgroundSceneContext.fillStyle = color.toString(gradStack[scanningGradStack].solid);
                     threejs.backgroundSceneContext.fillRect(0, 0, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);

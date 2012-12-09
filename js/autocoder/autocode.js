@@ -82,7 +82,6 @@ var createAutocoder = function (events, editor, ColourNames) {
             num += offset;
             num = num.toFixed(2);
 
-            console.log("mutate number " + this.string + " -> " + num.toString());
             this.string = num.toString();
         };
     };
@@ -135,7 +134,6 @@ var createAutocoder = function (events, editor, ColourNames) {
                 idx = Math.floor(Math.random() * ColourNames.length);
             }
 
-            console.log("mutate colour " + this.string + " -> " + ColourNames[idx]);
             this.string = ColourNames[idx];
         };
     };
@@ -181,7 +179,6 @@ var createAutocoder = function (events, editor, ColourNames) {
             var pat = /\d/;
             var num = pat.exec(this.string);
 
-            console.log("ITER NUM: " + num);
             if (Math.random() > 0.5) {
                 num++;
             } else {
@@ -465,11 +462,8 @@ var createAutocoder = function (events, editor, ColourNames) {
         }
 
         if (0 == mutatableTokens.length) {
-            console.log('no possible mutations');
             return;
         }
-
-        console.log(mutatableTokens);
 
         idx = Math.floor(Math.random() * mutatableTokens.length);
 
