@@ -38,16 +38,16 @@ var startEnvironment = function () {
     CodeTransformer = createCodeTransformer(LiveCodeLab.events, CoffeeScript, GraphicsCommands); // $, logger, autocoder
 
     AnimationController = createAnimationController(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands, stats); // $, MatrixCommands, SoundSystem, LightSystem, autocoder, BlendControls, BackgroundPainter
-    editor = createEditor(LiveCodeLab.events, CodeMirror); // EditorDimmer
+    editor = createEditor(LiveCodeLab.events, CodeMirror);
 
     autocoder = createAutocoder(LiveCodeLab.events, editor, ColourNames); // McLexer
 
     // EditorDimmer functions should probablly be rolled into the editor itself
-    EditorDimmer = createEditorDimmer(editor); // $
+    EditorDimmer = createEditorDimmer(LiveCodeLab.events); // $
 
-    ProgramLoader = createProgramLoader(LiveCodeLab.events, editor, AnimationController, ThreeJs, GraphicsCommands); // $, Detector, BlendControls, EditorDimmer
+    ProgramLoader = createProgramLoader(LiveCodeLab.events, editor, AnimationController, ThreeJs, GraphicsCommands); // $, Detector, BlendControls
 
-    Ui = createUi(LiveCodeLab.events, EditorDimmer, stats); // $
+    Ui = createUi(LiveCodeLab.events, stats); // $
 
 
 
@@ -97,11 +97,8 @@ var startEnvironment = function () {
     BigCursor.toggleBlink(true);
 
 
-    // Init of the dim code toggle.
-    // set it to false, then immediatly toggle it to true with the managing function
-    // that way we can easily invert the default: just change false to true -- julien
-    EditorDimmer.dimCodeOn = false;
-    EditorDimmer.toggleDimCode();
+    // Turn dimming on by default
+    LiveCodeLab.events.trigger('editor-toggle-dim', true);
 
     Ui.setup();
 

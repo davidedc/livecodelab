@@ -1,5 +1,4 @@
 /*jslint browser: true, devel: true */
-/*global EditorDimmer */
 
 var createEditor = function (events, codemirror) {
 
@@ -36,7 +35,7 @@ var createEditor = function (events, codemirror) {
         if (editor.getValue() === '') {
             return;
         }
-        EditorDimmer.undimEditor();
+        events.trigger('editor-undim');
     };
 
 

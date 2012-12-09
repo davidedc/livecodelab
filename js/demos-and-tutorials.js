@@ -1,5 +1,5 @@
 /*jslint browser: true, nomen: true, devel: true */
-/*global $, Detector, BlendControls, EditorDimmer */
+/*global $, Detector, BlendControls */
 
 var createProgramLoader = function (events, texteditor, animationController, threejs, graphics) {
 
@@ -596,7 +596,7 @@ var createProgramLoader = function (events, texteditor, animationController, thr
 
         events.trigger('cursor-hide');
 
-        EditorDimmer.undimEditor();
+        events.trigger('editor-undim');
 
         graphics.doTheSpinThingy = false;
 

@@ -1,7 +1,7 @@
 /*jslint browser: true */
 /*global $ */
 
-var createUi = function (events, editordimmer, stats) {
+var createUi = function (events, stats) {
 
     'use strict';
 
@@ -145,7 +145,7 @@ var createUi = function (events, editordimmer, stats) {
             });
 
             $('#dimCodeButtonContainer').click(function () {
-                editordimmer.toggleDimCode();
+                events.trigger('editor-toggle-dim');
                 return false;
             });
 
@@ -178,6 +178,14 @@ var createUi = function (events, editordimmer, stats) {
 
     events.bind('autocoderbutton-flash', function () {
         $("#autocodeIndicator").fadeOut(100).fadeIn(100);
+    });
+
+    events.bind('editor-dimmer-state', function (state) {
+        if (state === true) {
+            $("#dimCodeIndicator").html("Hide Code: on");
+        } else {
+            $("#dimCodeIndicator").html("Hide Code: off");
+        }
     });
 
 
