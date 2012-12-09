@@ -1,30 +1,13 @@
-<!DOCTYPE html>  <html> <head>   <title>ui.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab.html">                 livecodelab.js               </a>                                           <a class="source" href="logger.html">                 logger.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="var-definitions.html">                 var-definitions.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               ui.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true */</span>
-<span class="comment">/*global $, autocoder, BackgroundPainter, editor, ProgramLoader, EditorDimmer */</span>
+<!DOCTYPE html>  <html> <head>   <title>ui.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-controls.html">                 animation-controls.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="events.html">                 events.js               </a>                                           <a class="source" href="globals.html">                 globals.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               ui.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true */</span>
+<span class="comment">/*global $ */</span>
 
-<span class="keyword">var</span> createUi = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+<span class="keyword">var</span> createUi = <span class="function"><span class="keyword">function</span> <span class="params">(events, stats)</span> {</span>
 
     <span class="string">'use strict'</span>;
 
     <span class="keyword">var</span> Ui = {},
-        triggerReset,
         resizeCanvas,
         adjustCodeMirrorHeight;
-
-
-    triggerReset = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
-
-        BackgroundPainter.pickRandomDefaultGradient();
-        <span class="keyword">if</span> (autocoder.active) {
-            autocoder.toggle(<span class="literal">false</span>);
-        }
-        editor.setValue(<span class="string">''</span>);
-        $(<span class="string">"#resetButtonContainer"</span>).css(<span class="string">"background-color"</span>, <span class="string">'#FF0000'</span>);
-        setTimeout(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
-            $(<span class="string">"#resetButtonContainer"</span>).css(<span class="string">"background-color"</span>, <span class="string">""</span>);
-        }, <span class="number">200</span>);
-    };
-
-
 
     resizeCanvas = <span class="function"><span class="keyword">function</span> <span class="params">(canvasId)</span> {</span>
         <span class="keyword">var</span> canvas, scale;
@@ -123,7 +106,6 @@ can just get the message, or a blank string if there is no message</p>          
     };
 
     Ui.soundSystemOk = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
-        console.log(<span class="string">"sound system ok"</span>);
         $(<span class="string">"#soundSystemStatus"</span>).text(<span class="string">"Sound System On"</span>).removeClass(<span class="string">'off'</span>).addClass(<span class="string">'on'</span>);
     };
 
@@ -141,37 +123,63 @@ can just get the message, or a blank string if there is no message</p>          
                 <span class="keyword">return</span> <span class="literal">false</span>;
             });
 
-
             $(<span class="string">'#demos li a'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
-                ProgramLoader.loadDemoOrTutorial($(<span class="keyword">this</span>).attr(<span class="string">'id'</span>));
+                events.trigger(<span class="string">'load-program'</span>, $(<span class="keyword">this</span>).attr(<span class="string">'id'</span>));
                 <span class="keyword">return</span> <span class="literal">false</span>;
             });
 
             $(<span class="string">'#tutorials li a'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
-                ProgramLoader.loadDemoOrTutorial($(<span class="keyword">this</span>).attr(<span class="string">'id'</span>));
+                events.trigger(<span class="string">'load-program'</span>, $(<span class="keyword">this</span>).attr(<span class="string">'id'</span>));
                 <span class="keyword">return</span> <span class="literal">false</span>;
             });
 
-
-
             $(<span class="string">'#autocodeIndicatorContainer'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
-                autocoder.toggle();
+                events.trigger(<span class="string">'toggle-autocoder'</span>);
                 <span class="keyword">return</span> <span class="literal">false</span>;
             });
 
             $(<span class="string">'#dimCodeButtonContainer'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
-                EditorDimmer.toggleDimCode();
+                events.trigger(<span class="string">'editor-toggle-dim'</span>);
                 <span class="keyword">return</span> <span class="literal">false</span>;
             });
 
             $(<span class="string">'#resetButtonContainer'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
-                triggerReset();
+                events.trigger(<span class="string">'reset'</span>);
+                $(<span class="keyword">this</span>).stop().fadeOut(<span class="number">100</span>).fadeIn(<span class="number">100</span>);
                 <span class="keyword">return</span> <span class="literal">false</span>;
             });
 
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Align bottom-left</p>             </td>             <td class="code">               <div class="highlight"><pre>            stats.getDomElement().style.position = <span class="string">'absolute'</span>;
+            stats.getDomElement().style.right = <span class="string">'0px'</span>;
+            stats.getDomElement().style.top = <span class="string">'0px'</span>;
+            document.body.appendChild(stats.getDomElement());
 
         });
     };
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>    events.bind(<span class="string">'display-error'</span>, Ui.checkErrorAndReport, Ui);
+
+    events.bind(<span class="string">'autocoder-state'</span>, <span class="function"><span class="keyword">function</span> <span class="params">(state)</span> {</span>
+        <span class="keyword">if</span> (state === <span class="literal">true</span>) {
+            $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: on"</span>).css(<span class="string">"background-color"</span>, <span class="string">'#FF0000'</span>);
+        } <span class="keyword">else</span> {
+            $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: off"</span>).css(<span class="string">"background-color"</span>, <span class="string">''</span>);
+        }
+    });
+
+    events.bind(<span class="string">'autocoderbutton-flash'</span>, <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        $(<span class="string">"#autocodeIndicator"</span>).fadeOut(<span class="number">100</span>).fadeIn(<span class="number">100</span>);
+    });
+
+    events.bind(<span class="string">'editor-dimmer-state'</span>, <span class="function"><span class="keyword">function</span> <span class="params">(state)</span> {</span>
+        <span class="keyword">if</span> (state === <span class="literal">true</span>) {
+            $(<span class="string">"#dimCodeIndicator"</span>).html(<span class="string">"Hide Code: on"</span>);
+        } <span class="keyword">else</span> {
+            $(<span class="string">"#dimCodeIndicator"</span>).html(<span class="string">"Hide Code: off"</span>);
+        }
+    });
+
 
     <span class="keyword">return</span> Ui;
 };
