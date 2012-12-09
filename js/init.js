@@ -1,5 +1,5 @@
 /*jslint devel: true */
-/*global LiveCodeLab, $, autocoder, logger, BackgroundPainter, initThreeJs, buzz */
+/*global LiveCodeLab, $, autocoder, BackgroundPainter, initThreeJs, buzz */
 
 var isCanvasSupported = function () {
     var elem = document.createElement('canvas');
@@ -22,20 +22,20 @@ var startEnvironment = function () {
     MatrixCommands = createMatrixCommands(THREE, TimeKeeper);  // no global dependencies
 
     ThreeJs = createThreeJs(Detector, THREE, THREEx); // no global dependencies
-    BlendControls = createBlendControls(ThreeJs);  // logger
-    SoundSystem = createSoundSystem(buzz); // $, logger, createSoundDef
+    BlendControls = createBlendControls(ThreeJs);
+    SoundSystem = createSoundSystem(buzz); // $, createSoundDef
     BigCursor = createBigCursor(LiveCodeLab.events); // $
-    BackgroundPainter = createBackgroundPainter(LiveCodeLab.events, ThreeJs); // $, color, logger
+    BackgroundPainter = createBackgroundPainter(LiveCodeLab.events, ThreeJs); // $, color
 
 
     // There's a tricky cyclic dependency here between LightSystem and GraphicsCommands
-    GraphicsCommands = createGraphicsCommands(); // THREE, logger, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne
-    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands); // logger, color
+    GraphicsCommands = createGraphicsCommands(); // THREE, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne
+    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands); // color
 
 
 
 
-    CodeTransformer = createCodeTransformer(LiveCodeLab.events, CoffeeScript, GraphicsCommands); // $, logger, autocoder
+    CodeTransformer = createCodeTransformer(LiveCodeLab.events, CoffeeScript, GraphicsCommands); // $, autocoder
 
     AnimationController = createAnimationController(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter); // $
     editor = createEditor(LiveCodeLab.events, CodeMirror);
@@ -55,7 +55,6 @@ var startEnvironment = function () {
     BackgroundPainter.pickRandomDefaultGradient();
     SoundSystem.loadAndTestAllTheSounds(Ui.soundSystemOk);
 
-    logger("startEnvironment");
     if (ThreeJs) {
         AnimationController.animate(editor);
     }
