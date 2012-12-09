@@ -1,5 +1,5 @@
 /*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
-/*global $, autocoder */
+/*global autocoder */
 
 
 var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
@@ -258,7 +258,6 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
                 }
 
                 programHasBasicError = true;
-                $('#dangerSignText').css('color', 'red');
 
                 if (aposCount & 1) {
                     reasonOfBasicError = "Missing '";
@@ -276,7 +275,7 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
                     reasonOfBasicError = "Unbalanced []";
                 }
 
-                $('#errorMessageText').text(reasonOfBasicError);
+                events.trigger('display-error', reasonOfBasicError);
 
 
                 return;
@@ -399,8 +398,7 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
                     return;
                 }
                 programHasBasicError = true;
-                $('#dangerSignText').css('color', 'red');
-                $('#errorMessageText').text("You can't call draw()");
+                events.trigger('display-error', "You can't call draw()");
                 return;
             }
 
@@ -536,8 +534,7 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
             }
             if (declaredMethods.length === 0) {
                 error = true;
-                $('#dangerSignText').css('color', 'red');
-                $('#errorMessageText').text(usedMethods[scanningUsedMethods] + " doesn't exist");
+                events.trigger('display-error', usedMethods[scanningUsedMethods] + " doesn't exist");
                 return;
             }
             var scanningDeclaredMethods;
@@ -546,8 +543,7 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
                     break;
                 } else if (scanningDeclaredMethods === declaredMethods.length - 1) {
                     error = true;
-                    $('#dangerSignText').css('color', 'red');
-                    $('#errorMessageText').text(usedMethods[scanningUsedMethods] + " doesn't exist");
+                    events.trigger('display-error', usedMethods[scanningUsedMethods] + " doesn't exist");
                     return;
                 }
             }
@@ -556,8 +552,7 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
 
         programHasBasicError = false;
         reasonOfBasicError = "";
-        $('#dangerSignText').css('color', '#000000');
-        $('#errorMessageText').text(reasonOfBasicError);
+        events.trigger('clear-error');
 
         // see here for the deepest examination ever of "eval"
         // http://perfectionkills.com/global-eval-what-are-the-options/

@@ -82,9 +82,9 @@ var createUi = function (events, stats) {
 
         $('#dangerSignText').css('color', 'red');
 
-        // don't need to convert entire object to string
-        // can just get the message, or a blank string if there is no message
-        var errorMessage = e.message || "";
+        // if the object is an exception then get the message
+        // otherwise e should just be a string
+        var errorMessage = e.message || e;
 
         if (errorMessage.indexOf("Unexpected 'INDENT'") > -1) {
             errorMessage = "weird indentation";
@@ -108,6 +108,11 @@ var createUi = function (events, stats) {
 
         $('#errorMessageText').text(errorMessage);
 
+    };
+
+    Ui.clearError = function () {
+        $('#dangerSignText').css('color', '#000000');
+        $('#errorMessageText').text("");
     };
 
     Ui.soundSystemOk = function () {
@@ -166,6 +171,7 @@ var createUi = function (events, stats) {
 
     // Setup Event Listeners
     events.bind('display-error', Ui.checkErrorAndReport, Ui);
+    events.bind('clear-error', Ui.clearError, Ui);
 
     events.bind('autocoder-state', function (state) {
         if (state === true) {
