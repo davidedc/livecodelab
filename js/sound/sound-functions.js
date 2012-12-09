@@ -6,7 +6,6 @@ var createSoundSystem = function (buzz, Bowser) {
     'use strict';
 
     var SoundSystem = {},
-        chosenSoundPlayingMethod,
         oldupdatesPerMinute = 0,
         soundLoopTimer,
         beatNumber = 0,
@@ -20,13 +19,9 @@ var createSoundSystem = function (buzz, Bowser) {
         soundLoop,
         checkSound,
         updatesPerMinute,
-        playingMethod,
-        BUZZ_JS_FIRE_AND_FORGET = 0,
-        DYNAMICALLY_CREATE_AUDIO_TAG = 1,
-        BUZZJS_WITH_SOUNDBANKS = 2,
-        playBy_BUZZ_JS_FIRE_AND_FORGET,
-        playBy_DYNAMICALLY_CREATE_AUDIO_TAG,
-        playBy_BUZZJS_WITH_SOUNDBANKS,
+        play_using_BUZZ_JS_FIRE_AND_FORGET,
+        play_using_DYNAMICALLY_CREATE_AUDIO_TAG,
+        play_using_BUZZJS_WITH_SOUNDBANKS,
         play;
 
     soundLoops.soundIDs = [];
@@ -81,7 +76,7 @@ var createSoundSystem = function (buzz, Bowser) {
     };
 
 
-    playBy_BUZZ_JS_FIRE_AND_FORGET = function  (soundFilesPaths, loopedSoundID, soundBank) {
+    play_using_BUZZ_JS_FIRE_AND_FORGET = function  (soundFilesPaths, loopedSoundID, soundBank) {
         var soundFilePath = soundFilesPaths[loopedSoundID];
         // This method is the simplest and entails just using buzz.js fire and forget.
         // Each "playing" beat a new object is created.
@@ -89,7 +84,7 @@ var createSoundSystem = function (buzz, Bowser) {
         availableSoundBank.play();
     };
 
-    playBy_DYNAMICALLY_CREATE_AUDIO_TAG = function (soundFilesPaths, loopedSoundID, soundBank) {
+    play_using_DYNAMICALLY_CREATE_AUDIO_TAG = function (soundFilesPaths, loopedSoundID, soundBank) {
 
         var audioElement, source1;
         var soundFilePath = soundFilesPaths[loopedSoundID];
@@ -113,7 +108,7 @@ var createSoundSystem = function (buzz, Bowser) {
         audioElement.play();
     };
 
-    playBy_BUZZJS_WITH_SOUNDBANKS = function (soundFilesPaths, loopedSoundID, soundBank) {
+    play_using_BUZZJS_WITH_SOUNDBANKS = function (soundFilesPaths, loopedSoundID, soundBank) {
         var availableSoundBank,
             relevantSoundBank = soundBank[loopedSoundID],
             lengthOfSoundBank = relevantSoundBank.length,
@@ -144,11 +139,9 @@ var createSoundSystem = function (buzz, Bowser) {
     // defined, we set the "play" function to the best solution according to
     // the browser/os. We wish we could do this better.
     if (Bowser.chrome || Bowser.firefox) {
-        playingMethod = BUZZ_JS_FIRE_AND_FORGET;
-        play = playBy_DYNAMICALLY_CREATE_AUDIO_TAG;
+        play = play_using_DYNAMICALLY_CREATE_AUDIO_TAG;
     } else if (Bowser.safari || Bowser.ie) {
-        playingMethod = BUZZJS_WITH_SOUNDBANKS;
-        play = playBy_BUZZJS_WITH_SOUNDBANKS;
+        play = play_using_BUZZJS_WITH_SOUNDBANKS;
     }
 
     // Called from changeUpdatesPerMinuteIfNeeded
