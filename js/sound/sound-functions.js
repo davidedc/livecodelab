@@ -1,7 +1,7 @@
 /*jslint browser: true */
 /*global $, createSoundDef */
 
-var createSoundSystem = function (buzz) {
+var createSoundSystem = function (buzz, Bowser) {
 
     'use strict';
 
@@ -42,13 +42,13 @@ var createSoundSystem = function (buzz) {
 
     // note that chrome user agent contains the string "safari/"
     // so the chrome check needs to go first.
-    if (bowser.chrome) {
+    if (Bowser.chrome) {
         chosenSoundPlayingMethod = 3;
-    } else if (bowser.safari) {
+    } else if (Bowser.safari) {
         chosenSoundPlayingMethod = 2;
-    } else if (bowser.ie) {
+    } else if (Bowser.ie) {
         chosenSoundPlayingMethod = 2;
-    } else if (bowser.firefox) {
+    } else if (Bowser.firefox) {
         chosenSoundPlayingMethod = 3;
     }
 
@@ -277,7 +277,7 @@ var createSoundSystem = function (buzz) {
             // so fast - it crashes.
             // At the opposite end, Safari doesn't like loading sound dynamically
             // and instead works fine by loading sound all at the beginning.
-            if (bowser.safari) {
+            if (Bowser.safari) {
 
                 for (preloadSounds = 0; preloadSounds < CHANNELSPERSOUND; preloadSounds += 1) {
                     // if you load and play all the channels of all the sounds all together
@@ -292,7 +292,7 @@ var createSoundSystem = function (buzz) {
 
         // if this is chrome, fire the callback immediately
         // otherwise wait untill all the sounds have been tested
-        if (!bowser.safari) {
+        if (!Bowser.safari) {
             callback();
         }
     };

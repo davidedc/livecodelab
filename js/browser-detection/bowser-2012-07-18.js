@@ -3,11 +3,7 @@
   * https://github.com/ded/bowser
   * MIT License | (c) Dustin Diaz 2011
   */
-!function (name, definition) {
-  if (typeof define == 'function') define(definition)
-  else if (typeof module != 'undefined' && module.exports) module.exports['browser'] = definition()
-  else this[name] = definition()
-}('bowser', function () {
+var createBowser = function () {
   /**
     * navigator.userAgent =>
     * Chrome:  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_7) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.57 Safari/534.24"
@@ -125,4 +121,4 @@
   } else bowser.x = t
 
   return bowser
-})
+}
