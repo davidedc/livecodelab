@@ -42,13 +42,13 @@ var createSoundSystem = function (buzz) {
 
     // note that chrome user agent contains the string "safari/"
     // so the chrome check needs to go first.
-    if (navigator.userAgent.toLowerCase().indexOf('chrome') !== -1) {
+    if (bowser.chrome) {
         chosenSoundPlayingMethod = 3;
-    } else if (navigator.userAgent.toLowerCase().indexOf('safari/') > -1) {
+    } else if (bowser.safari) {
         chosenSoundPlayingMethod = 2;
-    } else if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)) {
+    } else if (bowser.ie) {
         chosenSoundPlayingMethod = 2;
-    } else if (navigator.userAgent.indexOf("Firefox") !== -1) {
+    } else if (bowser.firefox) {
         chosenSoundPlayingMethod = 3;
     }
 
@@ -277,7 +277,7 @@ var createSoundSystem = function (buzz) {
             // so fast - it crashes.
             // At the opposite end, Safari doesn't like loading sound dynamically
             // and instead works fine by loading sound all at the beginning.
-            if (navigator.userAgent.indexOf("Firefox") === -1 && navigator.userAgent.toLowerCase().indexOf('chrome') === -1 && !(/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
+            if (bowser.safari) {
 
                 for (preloadSounds = 0; preloadSounds < CHANNELSPERSOUND; preloadSounds += 1) {
                     // if you load and play all the channels of all the sounds all together
@@ -292,7 +292,7 @@ var createSoundSystem = function (buzz) {
 
         // if this is chrome, fire the callback immediately
         // otherwise wait untill all the sounds have been tested
-        if (navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || (/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
+        if (!bowser.safari) {
             callback();
         }
     };
