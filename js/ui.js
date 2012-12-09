@@ -168,12 +168,12 @@ var createUi = function (events, stats) {
     // Setup Event Listeners
     events.bind('display-error', Ui.checkErrorAndReport, Ui);
 
-    events.bind('autocoderbutton-on', function () {
-        $("#autocodeIndicator").html("Autocode: on").css("background-color", '#FF0000');
-    });
-
-    events.bind('autocoderbutton-off', function () {
-        $("#autocodeIndicator").html("Autocode: off").css("background-color", '');
+    events.bind('autocoder-state', function (state) {
+        if (state === true) {
+            $("#autocodeIndicator").html("Autocode: on").css("background-color", '#FF0000');
+        } else {
+            $("#autocodeIndicator").html("Autocode: off").css("background-color", '');
+        }
     });
 
     events.bind('autocoderbutton-flash', function () {

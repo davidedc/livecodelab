@@ -555,16 +555,15 @@ var createAutocoder = function (events, editor, ColourNames) {
             autocoder.active = active;
         }
 
-        if (!autocoder.active) {
-            events.trigger('autocoderbutton-off');
-            clearInterval(autocoderMutateTimeout);
-        } else {
-            events.trigger('autocoderbutton-on');
+        if (autocoder.active) {
             autocoderMutateTimeout = setInterval(autocoderMutate, 1000);
             if (editor.getValue() === '' || ((window.location.hash.indexOf("bookmark") !== -1) && (window.location.hash.indexOf("autocodeTutorial") !== -1))) {
                 events.trigger('load-program', 'cubesAndSpikes');
             }
+        } else {
+            clearInterval(autocoderMutateTimeout);
         }
+        events.trigger('autocoder-state', autocoder.active);
     };
 
     // Setup Event Listeners
