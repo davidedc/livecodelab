@@ -1,5 +1,4 @@
 /*jslint browser: true */
-/*global $ */
 
 
 var frame = 0;
