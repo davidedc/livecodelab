@@ -17,21 +17,21 @@ var startEnvironment = function () {
 
     LiveCodeLab.events = createEventRouter();
 
-    ColourNames = createColours(); // no global dependencies
+    ColourNames = createColours();
     ColourFunctions = createColourFunctions();
-    TimeKeeper = createTimeKeeper(); // no global dependencies
-    MatrixCommands = createMatrixCommands(THREE, TimeKeeper);  // no global dependencies
+    TimeKeeper = createTimeKeeper();
+    MatrixCommands = createMatrixCommands(THREE, TimeKeeper);
 
-    ThreeJs = createThreeJs(Detector, THREE, THREEx); // no global dependencies
+    ThreeJs = createThreeJs(Detector, THREE, THREEx);
     BlendControls = createBlendControls(ThreeJs);
     SoundSystem = createSoundSystem(buzz); // $, createSoundDef
     BigCursor = createBigCursor(LiveCodeLab.events); // $
-    BackgroundPainter = createBackgroundPainter(LiveCodeLab.events, ThreeJs); // $, color
+    BackgroundPainter = createBackgroundPainter(LiveCodeLab.events, ThreeJs, ColourFunctions); // $
 
 
     // There's a tricky cyclic dependency here between LightSystem and GraphicsCommands
     GraphicsCommands = createGraphicsCommands(); // THREE, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne
-    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands); // color
+    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands, ColourFunctions);
 
 
 

@@ -1,5 +1,5 @@
 /*jslint browser: true, devel: true */
-/*global $, color */
+/*global $ */
 
 // The user can issue multiple solid fill and gradient fill commands
 // and they are all painted on top of each other according to the
@@ -36,7 +36,7 @@
 // elements of the array, so we could discard those when such
 // a command is issued.
 
-var createBackgroundPainter = function (events, threejs) {
+var createBackgroundPainter = function (events, threejs, colourfuncs) {
 
     'use strict';
 
@@ -54,10 +54,10 @@ var createBackgroundPainter = function (events, threejs) {
 
         currentGradientStackValue = currentGradientStackValue + " " + a + "" + b + "" + c + "" + d + "null ";
         gradStack.push({
-            gradStacka: color(a),
-            gradStackb: color(b),
-            gradStackc: color(c),
-            gradStackd: color(d),
+            gradStacka: colourfuncs.color(a),
+            gradStackb: colourfuncs.color(b),
+            gradStackc: colourfuncs.color(c),
+            gradStackd: colourfuncs.color(d),
             solid: null
         });
 
@@ -69,8 +69,7 @@ var createBackgroundPainter = function (events, threejs) {
         // [todo] should the screen be cleared when you invoke
         // the background command? (In processing it's not)
 
-        var a = color(arguments[0], arguments[1], arguments[2], arguments[3]);
-        //if (a===undefined) a = color(0);
+        var a = colourfuncs.color(arguments[0], arguments[1], arguments[2], arguments[3]);
         currentGradientStackValue = currentGradientStackValue + " null null null null " + a + " ";
         gradStack.push({
             gradStacka: undefined,
@@ -115,9 +114,9 @@ var createBackgroundPainter = function (events, threejs) {
 							$("#fakeStartingBlinkingCursor").css('color', 'white');
 							break;
 					case 4:
-							defaultGradientColor1 = color(155, 255, 155);
-							defaultGradientColor2 = color(155, 255, 155);
-							defaultGradientColor3 = color(155, 255, 155);
+							defaultGradientColor1 = colourfuncs.color(155, 255, 155);
+							defaultGradientColor2 = colourfuncs.color(155, 255, 155);
+							defaultGradientColor3 = colourfuncs.color(155, 255, 155);
 							$("#fakeStartingBlinkingCursor").css('color', 'DarkOliveGreen');
 							break;
         }
@@ -146,16 +145,16 @@ var createBackgroundPainter = function (events, threejs) {
 
                 if (gradStack[scanningGradStack].gradStacka !== undefined) {
                     radgrad = threejs.backgroundSceneContext.createLinearGradient(threejs.scaledBackgroundWidth / 2, 0, threejs.scaledBackgroundWidth / 2, threejs.scaledBackgroundHeight);
-                    radgrad.addColorStop(0, color.toString(gradStack[scanningGradStack].gradStacka));
-                    radgrad.addColorStop(0.5, color.toString(gradStack[scanningGradStack].gradStackb));
-                    radgrad.addColorStop(1, color.toString(gradStack[scanningGradStack].gradStackc));
+                    radgrad.addColorStop(0, colourfuncs.color.toString(gradStack[scanningGradStack].gradStacka));
+                    radgrad.addColorStop(0.5, colourfuncs.color.toString(gradStack[scanningGradStack].gradStackb));
+                    radgrad.addColorStop(1, colourfuncs.color.toString(gradStack[scanningGradStack].gradStackc));
 
                     threejs.backgroundSceneContext.globalAlpha = 1.0;
                     threejs.backgroundSceneContext.fillStyle = radgrad;
                     threejs.backgroundSceneContext.fillRect(0, 0, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
                 } else {
                     threejs.backgroundSceneContext.globalAlpha = 1.0;
-                    threejs.backgroundSceneContext.fillStyle = color.toString(gradStack[scanningGradStack].solid);
+                    threejs.backgroundSceneContext.fillStyle = colourfuncs.color.toString(gradStack[scanningGradStack].solid);
                     threejs.backgroundSceneContext.fillRect(0, 0, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
                 }
             }
