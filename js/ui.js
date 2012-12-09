@@ -1,31 +1,13 @@
 /*jslint browser: true */
-/*global $, Stats */
+/*global $ */
 
-var createUi = function (autocoder, backgroundpainter, editor, programloader, editordimmer) {
+var createUi = function (events, stats) {
 
     'use strict';
 
     var Ui = {},
-        triggerReset,
         resizeCanvas,
         adjustCodeMirrorHeight;
-
-    // All used by Three.js
-    // add Stats.js - https://github.com/mrdoob/stats.js
-    Ui.stats = new Stats();
-
-    triggerReset = function () {
-
-        backgroundpainter.pickRandomDefaultGradient();
-        if (autocoder.active) {
-            autocoder.toggle(false);
-        }
-        editor.setValue('');
-        $("#resetButtonContainer").css("background-color", '#FF0000');
-        setTimeout(function () {
-            $("#resetButtonContainer").css("background-color", "");
-        }, 200);
-    };
 
     resizeCanvas = function (canvasId) {
         var canvas, scale;
@@ -148,38 +130,64 @@ var createUi = function (autocoder, backgroundpainter, editor, programloader, ed
             });
 
             $('#demos li a').click(function () {
-                programloader.loadDemoOrTutorial($(this).attr('id'));
+                events.trigger('load-program', $(this).attr('id'));
                 return false;
             });
 
             $('#tutorials li a').click(function () {
-                programloader.loadDemoOrTutorial($(this).attr('id'));
+                events.trigger('load-program', $(this).attr('id'));
                 return false;
             });
 
             $('#autocodeIndicatorContainer').click(function () {
-                autocoder.toggle();
+                events.trigger('toggle-autocoder');
                 return false;
             });
 
             $('#dimCodeButtonContainer').click(function () {
-                editordimmer.toggleDimCode();
+                events.trigger('editor-toggle-dim');
                 return false;
             });
 
             $('#resetButtonContainer').click(function () {
-                triggerReset();
+                events.trigger('reset');
+                $(this).stop().fadeOut(100).fadeIn(100);
                 return false;
             });
 
             // Align bottom-left
-            Ui.stats.getDomElement().style.position = 'absolute';
-            Ui.stats.getDomElement().style.right = '0px';
-            Ui.stats.getDomElement().style.top = '0px';
-            document.body.appendChild(Ui.stats.getDomElement());
+            stats.getDomElement().style.position = 'absolute';
+            stats.getDomElement().style.right = '0px';
+            stats.getDomElement().style.top = '0px';
+            document.body.appendChild(stats.getDomElement());
 
         });
     };
+
+
+    // Setup Event Listeners
+    events.bind('display-error', Ui.checkErrorAndReport, Ui);
+
+    events.bind('autocoder-state', function (state) {
+        if (state === true) {
+            $("#autocodeIndicator").html("Autocode: on").css("background-color", '#FF0000');
+        } else {
+            $("#autocodeIndicator").html("Autocode: off").css("background-color", '');
+        }
+    });
+
+    events.bind('autocoderbutton-flash', function () {
+        $("#autocodeIndicator").fadeOut(100).fadeIn(100);
+    });
+
+    events.bind('editor-dimmer-state', function (state) {
+        if (state === true) {
+            $("#dimCodeIndicator").html("Hide Code: on");
+        } else {
+            $("#dimCodeIndicator").html("Hide Code: off");
+        }
+    });
+
 
     return Ui;
 };

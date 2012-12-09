@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, devel: true */
-/*global $, Detector, BlendControls, EditorDimmer */
+/*global $, Detector, BlendControls */
 
-var createProgramLoader = function (texteditor, bigcursor, animationController, threejs, graphics) {
+var createProgramLoader = function (events, texteditor, animationController, threejs, graphics) {
 
     'use strict';
 
@@ -594,11 +594,9 @@ var createProgramLoader = function (texteditor, bigcursor, animationController, 
         // this hash value and load the correct demo)
         window.location.hash = 'bookmark=' + demoName;
 
-        if (bigcursor.show) {
-            bigcursor.shrinkFakeText();
-        }
+        events.trigger('cursor-hide');
 
-        EditorDimmer.undimEditor();
+        events.trigger('editor-undim');
 
         graphics.doTheSpinThingy = false;
 
@@ -640,6 +638,11 @@ var createProgramLoader = function (texteditor, bigcursor, animationController, 
         animationController.render();
 
     };
+
+
+    // Setup Event Listeners
+    events.bind('load-program', ProgramLoader.loadDemoOrTutorial, ProgramLoader);
+
 
     return ProgramLoader;
 

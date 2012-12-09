@@ -49,3 +49,9 @@ var Ui;
 var SoundSystem;
 var ColourNames;
 
+
+// this is the global namespace for the LiveCodeLab application
+var LiveCodeLab = {};
+
+
+
