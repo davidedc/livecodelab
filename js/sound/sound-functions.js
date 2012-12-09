@@ -15,15 +15,24 @@ var createSoundSystem = function (buzz, Bowser) {
         CHANNELSPERSOUND = 6,
         endedFirstPlay = 0,
         soundBank = {},
-        soundFiles = {},
+        soundFilesPaths = {},
         soundLoops = [],
         soundLoop,
         checkSound,
         updatesPerMinute,
-        playingMethods = {};
+        playingMethod,
+        BUZZ_JS_FIRE_AND_FORGET = 0,
+        DYNAMICALLY_CREATE_AUDIO_TAG = 1,
+        BUZZJS_WITH_SOUNDBANKS = 2,
+        playBy_BUZZ_JS_FIRE_AND_FORGET,
+        playBy_DYNAMICALLY_CREATE_AUDIO_TAG,
+        playBy_BUZZJS_WITH_SOUNDBANKS,
+        play;
 
     soundLoops.soundIDs = [];
     soundLoops.beatStrings = [];
+
+    SoundSystem.resetLoops = 0;
 
 
     SoundSystem.resetLoops = function () {
@@ -39,18 +48,6 @@ var createSoundSystem = function (buzz, Bowser) {
     // if there isn't any code using the bpm setting then we can save a timer, so
     // worth tracking with this variable
     SoundSystem.anyCodeReactingTobpm = false;
-
-    // note that chrome user agent contains the string "safari/"
-    // so the chrome check needs to go first.
-    if (Bowser.chrome) {
-        chosenSoundPlayingMethod = 3;
-    } else if (Bowser.safari) {
-        chosenSoundPlayingMethod = 2;
-    } else if (Bowser.ie) {
-        chosenSoundPlayingMethod = 2;
-    } else if (Bowser.firefox) {
-        chosenSoundPlayingMethod = 3;
-    }
 
     // sets BPM
     // is called by code in patches
@@ -84,14 +81,14 @@ var createSoundSystem = function (buzz, Bowser) {
     };
 
 
-    playingMethods.basic = function (soundFile) {
+    playBy_BUZZ_JS_FIRE_AND_FORGET = function (soundFilePath) {
         // This method is the simplest and entails just using buzz.js fire and forget.
         // Each "playing" beat a new object is created.
-        var availableSoundBank = new buzz.sound(soundFile);
+        var availableSoundBank = new buzz.sound(soundFilePath);
         availableSoundBank.play();
     };
 
-    playingMethods.createAudioTag = function (soundFile) {
+    playBy_DYNAMICALLY_CREATE_AUDIO_TAG = function (soundFilePath) {
 
         var audioElement, source1;
 
@@ -103,7 +100,7 @@ var createSoundSystem = function (buzz, Bowser) {
 
         source1 = document.createElement('source');
         source1.type = 'audio/ogg';
-        source1.src = soundFile;
+        source1.src = soundFilePath;
 
         audioElement.appendChild(source1);
         audioElement.addEventListener("load", function () {
@@ -114,7 +111,7 @@ var createSoundSystem = function (buzz, Bowser) {
         audioElement.play();
     };
 
-    playingMethods.buzzPlay = function (soundBank, loopedSoundID) {
+    playBy_BUZZJS_WITH_SOUNDBANKS = function (soundBank, loopedSoundID) {
         var availableSoundBank,
             relevantSoundBank = soundBank[loopedSoundID],
             lengthOfSoundBank = relevantSoundBank.length,
@@ -134,12 +131,23 @@ var createSoundSystem = function (buzz, Bowser) {
                 $('#soundSystemIsMangledMessage').modal();
                 $('#simplemodal-container').height(250);
             }
-            availableSoundBank = new buzz.sound(soundFiles[loopedSoundID]);
+            availableSoundBank = new buzz.sound(soundFilesPaths[loopedSoundID]);
             soundBank[loopedSoundID].push(availableSoundBank);
             totalCreatedSoundObjects += 1;
         }
         availableSoundBank.play();
     };
+
+    // now that all the various sound playing functions for the different cases are
+    // defined, we set the "play" function to the best solution according to
+    // the browser/os. We wish we could do this better.
+    if (Bowser.chrome || Bowser.firefox) {
+        playingMethod = DYNAMICALLY_CREATE_AUDIO_TAG;
+        play = playBy_DYNAMICALLY_CREATE_AUDIO_TAG;
+    } else if (Bowser.safari || Bowser.ie) {
+        playingMethod = BUZZJS_WITH_SOUNDBANKS;
+        play = playBy_BUZZJS_WITH_SOUNDBANKS;
+    }
 
     // Called from changeUpdatesPerMinuteIfNeeded
     soundLoop = function () {
@@ -165,7 +173,7 @@ var createSoundSystem = function (buzz, Bowser) {
             // while she is not done finishing typing, the sample name is "incomplete"
             // or anyways it doesn't map to anything until it's complete,
             // doesn't index any actual sound. So we check for that here.
-            if (soundFiles[loopedSoundID]) {
+            if (soundFilesPaths[loopedSoundID]) {
                 beatString = soundLoops.beatStrings[loopingTheSoundIDs];
                 // the beat string can be any length, we just wrap around if needed.
                 playOrNoPlay = beatString.charAt(beatNumber % (beatString.length));
@@ -191,12 +199,12 @@ var createSoundSystem = function (buzz, Bowser) {
                     // So here we went for 2), and we preload the sounds only for
                     // browsers other than Chrome and IE.
 
-                    if (chosenSoundPlayingMethod === 1) {
-                        playingMethods.basic(soundFiles[loopedSoundID]);
-                    } else if (chosenSoundPlayingMethod === 3) {
-                        playingMethods.createAudioTag(soundFiles[loopedSoundID]);
-                    } else if (chosenSoundPlayingMethod === 2) {
-                        playingMethods.buzzPlay(soundBank, loopedSoundID);
+                    if (playingMethod === BUZZ_JS_FIRE_AND_FORGET) {
+                        play(soundFilesPaths[loopedSoundID]);
+                    } else if (playingMethod === DYNAMICALLY_CREATE_AUDIO_TAG)  {
+                        play(soundFilesPaths[loopedSoundID]);
+                    } else if (playingMethod === BUZZJS_WITH_SOUNDBANKS) {
+                        play(soundBank, loopedSoundID);
                     }
 
                 }
@@ -270,7 +278,7 @@ var createSoundSystem = function (buzz, Bowser) {
             soundInfo = soundDef.getByNumber(cycleSoundDefs);
 
             soundBank[soundInfo.name] = [];
-            soundFiles[soundInfo.name] = soundInfo.path;
+            soundFilesPaths[soundInfo.name] = soundInfo.path;
 
             // Chrome can deal with dynamic loading
             // of many files but doesn't like loading too many audio objects
