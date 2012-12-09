@@ -81,16 +81,18 @@ var createSoundSystem = function (buzz, Bowser) {
     };
 
 
-    playBy_BUZZ_JS_FIRE_AND_FORGET = function (soundFilePath) {
+    playBy_BUZZ_JS_FIRE_AND_FORGET = function  (soundFilesPaths, loopedSoundID, soundBank) {
+        var soundFilePath = soundFilesPaths[loopedSoundID];
         // This method is the simplest and entails just using buzz.js fire and forget.
         // Each "playing" beat a new object is created.
         var availableSoundBank = new buzz.sound(soundFilePath);
         availableSoundBank.play();
     };
 
-    playBy_DYNAMICALLY_CREATE_AUDIO_TAG = function (soundFilePath) {
+    playBy_DYNAMICALLY_CREATE_AUDIO_TAG = function (soundFilesPaths, loopedSoundID, soundBank) {
 
         var audioElement, source1;
+        var soundFilePath = soundFilesPaths[loopedSoundID];
 
         // This method is quite "raw" and involves using the
         // audio object directly.
@@ -111,7 +113,7 @@ var createSoundSystem = function (buzz, Bowser) {
         audioElement.play();
     };
 
-    playBy_BUZZJS_WITH_SOUNDBANKS = function (soundBank, loopedSoundID) {
+    playBy_BUZZJS_WITH_SOUNDBANKS = function (soundFilesPaths, loopedSoundID, soundBank) {
         var availableSoundBank,
             relevantSoundBank = soundBank[loopedSoundID],
             lengthOfSoundBank = relevantSoundBank.length,
@@ -142,7 +144,7 @@ var createSoundSystem = function (buzz, Bowser) {
     // defined, we set the "play" function to the best solution according to
     // the browser/os. We wish we could do this better.
     if (Bowser.chrome || Bowser.firefox) {
-        playingMethod = DYNAMICALLY_CREATE_AUDIO_TAG;
+        playingMethod = BUZZ_JS_FIRE_AND_FORGET;
         play = playBy_DYNAMICALLY_CREATE_AUDIO_TAG;
     } else if (Bowser.safari || Bowser.ie) {
         playingMethod = BUZZJS_WITH_SOUNDBANKS;
@@ -199,13 +201,7 @@ var createSoundSystem = function (buzz, Bowser) {
                     // So here we went for 2), and we preload the sounds only for
                     // browsers other than Chrome and IE.
 
-                    if (playingMethod === BUZZ_JS_FIRE_AND_FORGET) {
-                        play(soundFilesPaths[loopedSoundID]);
-                    } else if (playingMethod === DYNAMICALLY_CREATE_AUDIO_TAG)  {
-                        play(soundFilesPaths[loopedSoundID]);
-                    } else if (playingMethod === BUZZJS_WITH_SOUNDBANKS) {
-                        play(soundBank, loopedSoundID);
-                    }
+                    play(soundFilesPaths, loopedSoundID, soundBank);
 
                 }
             }
