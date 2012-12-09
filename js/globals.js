@@ -47,6 +47,7 @@ var EditorDimmer;
 var Ui;
 var SoundSystem;
 var ColourNames;
+var ColourFunctions;
 
 
 // this is the global namespace for the LiveCodeLab application

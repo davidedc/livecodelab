@@ -18,6 +18,7 @@ var startEnvironment = function () {
     LiveCodeLab.events = createEventRouter();
 
     ColourNames = createColours(); // no global dependencies
+    ColourFunctions = createColourFunctions();
     TimeKeeper = createTimeKeeper(); // no global dependencies
     MatrixCommands = createMatrixCommands(THREE, TimeKeeper);  // no global dependencies
 
