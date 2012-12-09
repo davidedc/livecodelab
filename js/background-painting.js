@@ -36,7 +36,7 @@
 // elements of the array, so we could discard those when such
 // a command is issued.
 
-var createBackgroundPainter = function (threejs) {
+var createBackgroundPainter = function (events, threejs) {
 
     'use strict';
 
@@ -171,6 +171,12 @@ var createBackgroundPainter = function (threejs) {
 
     // This needs to be global so it can be run by the draw function
     window.background = BackgroundPainter.background;
+
+
+    // Setup Event Listeners
+    events.bind('reset', BackgroundPainter.pickRandomDefaultGradient, BackgroundPainter);
+
+
 
     return BackgroundPainter;
 

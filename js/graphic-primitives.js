@@ -422,7 +422,25 @@ var createGraphicsCommands = function () {
     };
 
 
+    GraphicsCommands.reset = function () {
+        GraphicsCommands.fill(0xFFFFFFFF);
+        GraphicsCommands.stroke(0xFFFFFFFF);
+        GraphicsCommands.currentStrokeSize = 1;
+        GraphicsCommands.defaultNormalFill = true;
+        GraphicsCommands.defaultNormalStroke = true;
+        GraphicsCommands.ballDetLevel = ThreeJs.ballDefaultDetLevel;
 
+        GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.ambientLight] = 0;
+        GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.line] = 0;
+        GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.rect] = 0;
+        GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.box] = 0;
+        GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.peg] = 0;
+        // initialising ball counts
+        var i;
+        for (i = 0; i < (GraphicsCommands.maximumBallDetail - GraphicsCommands.minimumBallDetail + 1); i += 1) {
+            GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.ball + i] = 0;
+        }
+    };
 
     // TODO Note that lines have a "solid fill" mode
     // and something similar to the normalMaterial mode
@@ -443,18 +461,18 @@ var createGraphicsCommands = function () {
         // fill is not needed, we temporarily switch off the fill and then put it back
         // to whichever value it was.
         if (LightSystem.lightsAreOn) {
-        	var rememberIfThereWasAFill = doFill;
-        	var rememberPreviousStrokeSize = GraphicsCommands.currentStrokeSize;
-        	if (GraphicsCommands.currentStrokeSize < 2) {
-	        	GraphicsCommands.currentStrokeSize = 2;
-        	}
-        	if (a == undefined) {
-        		a=1;
-        	}
-        	rect(0,a,0);
-        	doFill = rememberIfThereWasAFill;  
-        	GraphicsCommands.currentStrokeSize = rememberPreviousStrokeSize;
-        	return;
+            var rememberIfThereWasAFill = doFill;
+            var rememberPreviousStrokeSize = GraphicsCommands.currentStrokeSize;
+            if (GraphicsCommands.currentStrokeSize < 2) {
+                GraphicsCommands.currentStrokeSize = 2;
+            }
+            if (a == undefined) {
+                a=1;
+            }
+            rect(0,a,0);
+            doFill = rememberIfThereWasAFill;
+            GraphicsCommands.currentStrokeSize = rememberPreviousStrokeSize;
+            return;
         }
         
         // primitive-specific initialisations:

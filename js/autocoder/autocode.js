@@ -1,12 +1,12 @@
 /*jslint devel: true */
-/*global $, editor, McLexer */
+/*global McLexer */
 
-var createAutocoder = function (editor, ColourNames) {
+var createAutocoder = function (events, editor, ColourNames) {
 
     'use strict';
 
     var blinkingAutocoderStatus = false,
-        blinkingAutocoderTimeout,
+        autocoderMutateTimeout,
         numberOfResults = 0,
         whichOneToChange = 0,
         scanningAllColors;
@@ -543,37 +543,37 @@ var createAutocoder = function (editor, ColourNames) {
         editor.setValue(newContent);
     };
 
-    var blinkAutocodeIndicator = function () {
-        blinkingAutocoderStatus = !blinkingAutocoderStatus;
-        if (blinkingAutocoderStatus) {
-            $("#autocodeIndicatorContainer").css("background-color", '');
-        } else {
-            $("#autocodeIndicatorContainer").css("background-color", '#FF0000');
-            mutate();
-        }
+    var autocoderMutate = function () {
+        events.trigger('autocoderbutton-flash');
+        mutate();
     };
 
-    var toggleAutocodeAndUpdateButtonAndBlinking = function () {
-        autocoder.active = !autocoder.active;
-
-        if (!autocoder.active) {
-            $("#autocodeIndicator").html("Autocode: off");
-            clearInterval(blinkingAutocoderTimeout);
-            $("#autocodeIndicatorContainer").css("background-color", '');
+    var toggle = function (active) {
+        if (active === undefined) {
+            autocoder.active = !autocoder.active;
         } else {
-            $("#autocodeIndicator").html("Autocode: on");
-            blinkingAutocoderTimeout = setInterval(blinkAutocodeIndicator, 500);
-            $("#autocodeIndicatorContainer").css("background-color", '#FF0000');
-            if (editor.getValue() === '' || (
-            (window.location.hash.indexOf("bookmark") !== -1) && (window.location.hash.indexOf("autocodeTutorial") !== -1))
+            autocoder.active = active;
+        }
 
-            ) {
-                ProgramLoader.loadDemoOrTutorial('cubesAndSpikes');
+        if (autocoder.active) {
+            autocoderMutateTimeout = setInterval(autocoderMutate, 1000);
+            if (editor.getValue() === '' || ((window.location.hash.indexOf("bookmark") !== -1) && (window.location.hash.indexOf("autocodeTutorial") !== -1))) {
+                events.trigger('load-program', 'cubesAndSpikes');
             }
+        } else {
+            clearInterval(autocoderMutateTimeout);
         }
+        events.trigger('autocoder-state', autocoder.active);
     };
 
-    autocoder.toggle = toggleAutocodeAndUpdateButtonAndBlinking;
+    // Setup Event Listeners
+    events.bind('reset', function () {
+        toggle(false);
+    });
+
+    events.bind('toggle-autocoder', function () {
+        toggle();
+    });
 
     return autocoder;
 
