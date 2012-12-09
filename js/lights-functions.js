@@ -1,8 +1,7 @@
 /*jslint browser: true */
-/*global color */
 
 
-var createLightSystem = function (threejs, three, matrixcommands, graphics) {
+var createLightSystem = function (threejs, three, matrixcommands, graphics, colourfuncs) {
 
     'use strict';
 
@@ -24,7 +23,9 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
     window.ambientLight = LightSystem.ambientLight = function (r, g, b, a) {
 
         var colorToBeUsed,
-            newLightCreated = false;
+            newLightCreated = false,
+            ambientLightsPool,
+            pooledAmbientLight;
 
         if (r === undefined) {
             // empty arguments gives some sort
@@ -32,9 +33,9 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
             // black is too stark and white
             // doesn't show the effect with the
             // default white fill
-            colorToBeUsed = color(255);
+            colorToBeUsed = colourfuncs.color(255);
         } else {
-            colorToBeUsed = color(r, g, b, a);
+            colorToBeUsed = colourfuncs.color(r, g, b, a);
         }
 
         LightSystem.lightsAreOn = true;
@@ -45,19 +46,18 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
         // used by graphic-primitives
         graphics.defaultNormalStroke = false;
 
-        var ambientLightsPool = graphics.objectPools[graphics.primitiveTypes.ambientLight];
-        var pooledAmbientLight =  ambientLightsPool[graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
+        ambientLightsPool = graphics.objectPools[graphics.primitiveTypes.ambientLight];
+        pooledAmbientLight =  ambientLightsPool[graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
         if (pooledAmbientLight === undefined) {
-            
             // So here is the thing, the command is currently called AmbientLight but
             // in reality we are creating a PointLight in a specific position.
             // AmbientLight just fills the whole scene,
             // so the faces of the cube would all be of the same
             // exact color. Note that in Three.js versions before r50 the AmbientLight
             // would work like a PointLight does now.
-            pooledAmbientLight = new THREE.PointLight(colorToBeUsed);
-            pooledAmbientLight.position.set( 10, 50, 130 );
-            
+            pooledAmbientLight = new three.PointLight(colorToBeUsed);
+            pooledAmbientLight.position.set(10, 50, 130);
+
             newLightCreated = true;
             ambientLightsPool.push(pooledAmbientLight);
             pooledAmbientLight.detailLevel = 0;
