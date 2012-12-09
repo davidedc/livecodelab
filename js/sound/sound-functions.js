@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*global $, logger, createSoundDef */
+/*global $, createSoundDef */
 
 var createSoundSystem = function (buzz) {
 
@@ -81,7 +81,6 @@ var createSoundSystem = function (buzz) {
         beatString = beatString.replace(/\s*/g, "");
         soundLoops.soundIDs.push(soundID);
         soundLoops.beatStrings.push(beatString);
-        logger('pushing ' + soundID + " beat: " + beatString);
     };
 
 
@@ -126,14 +125,10 @@ var createSoundSystem = function (buzz) {
             checkingSoundBank = relevantSoundBank[i];
             if (checkingSoundBank.isEnded()) {
                 availableSoundBank = checkingSoundBank;
-                logger('sound bank ' + i + " is available ");
                 break;
-            } else {
-                logger('sound bank ' + i + " has not ended ");
             }
         }
         if (availableSoundBank === undefined) {
-            logger('creating new sound object ');
             if (totalCreatedSoundObjects > 31) {
                 soundSystemIsMangled = true;
                 $('#soundSystemIsMangledMessage').modal();
@@ -243,16 +238,13 @@ var createSoundSystem = function (buzz) {
 
         var newSound = new buzz.sound(soundInfo.path);
 
-        logger("testing sound: " + soundInfo.path);
         newSound.mute();
         newSound.load();
         newSound.bind("ended", function (e) {
             newSound.unbind("ended");
             newSound.unmute();
             endedFirstPlay += 1;
-            logger("tested " + endedFirstPlay + " sounds");
             if (endedFirstPlay === soundDef.sounds.length * CHANNELSPERSOUND) {
-                logger("tested all sounds");
                 callback();
             }
         });
@@ -280,8 +272,6 @@ var createSoundSystem = function (buzz) {
             soundBank[soundInfo.name] = [];
             soundFiles[soundInfo.name] = soundInfo.path;
 
-            logger("loading sound: " + soundInfo.name);
-
             // Chrome can deal with dynamic loading
             // of many files but doesn't like loading too many audio objects
             // so fast - it crashes.
@@ -290,7 +280,6 @@ var createSoundSystem = function (buzz) {
             if (navigator.userAgent.indexOf("Firefox") === -1 && navigator.userAgent.toLowerCase().indexOf('chrome') === -1 && !(/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
 
                 for (preloadSounds = 0; preloadSounds < CHANNELSPERSOUND; preloadSounds += 1) {
-                    logger("checking sound " + soundInfo.name);
                     // if you load and play all the channels of all the sounds all together
                     // the browser freezes, and the OS doesn't feel too well either
                     // so better stagger the checks in time.

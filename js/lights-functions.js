@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*global logger, color */
+/*global color */
 
 
 var createLightSystem = function (threejs, three, matrixcommands, graphics) {
@@ -47,9 +47,7 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
 
         var ambientLightsPool = graphics.objectPools[graphics.primitiveTypes.ambientLight];
         var pooledAmbientLight =  ambientLightsPool[graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
-        //logger("how many ambient lights: " + graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]);
         if (pooledAmbientLight === undefined) {
-            //logger('no ambientLight in pool, creating one - ambientLightsPool length: ' + ambientLightsPool.length);
             
             // So here is the thing, the command is currently called AmbientLight but
             // in reality we are creating a PointLight in a specific position.
@@ -64,10 +62,8 @@ var createLightSystem = function (threejs, three, matrixcommands, graphics) {
             ambientLightsPool.push(pooledAmbientLight);
             pooledAmbientLight.detailLevel = 0;
             pooledAmbientLight.primitiveType = graphics.primitiveTypes.ambientLight;
-            //logger("graphics.primitiveTypes.ambientLight" + graphics.primitiveTypes.ambientLight);
         } else {
             pooledAmbientLight.color.setHex(colorToBeUsed);
-            //logger('existing ambientLight in pool, setting color: ' + pooledAmbientLight.color.r + ' ' + pooledAmbientLight.color.g + ' ' + pooledAmbientLight.color.b);
         }
 
 

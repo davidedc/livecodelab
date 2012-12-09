@@ -214,11 +214,7 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
 
 
             // set the first "used*****" objects to visible...
-            //logger('combing display list objects: ' + (i+1) + " of " + threejs.scene.objects.length);
-            //logger('prim type' + sceneObject.primitiveType);
-            //logger('det level' + sceneObject.detailLevel);
             if (graphics.objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] > 0) {
-                //logger('object visible');
                 sceneObject.visible = true;
                 graphics.objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] -= 1;
             } else {

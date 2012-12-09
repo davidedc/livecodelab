@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*global THREE, logger, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne  */
+/*global THREE, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne  */
 
 // Please reference the colour-functions.js file for all colour-related
 // functions and lights-functions.js for lights, which use a similar
@@ -252,16 +252,10 @@ var createGraphicsCommands = function () {
 
             objectIsNew = true;
             objectPool.push(pooledObjectWithMaterials);
-            //console.log("creating new object");
-            //console.log("primitive type: " + primitiveProperties.primitiveType  );
-            //console.log("level of detail: " + primitiveProperties.detailLevel);
-            //console.log("pool id: " + (primitiveID));
-            //console.log("  length: " + objectPool.length);
         }
 
         if (primitiveProperties.primitiveType === primitiveTypes.line) {
             if (pooledObjectWithMaterials.lineMaterial === undefined) {
-                logger("creating line material");
                 pooledObjectWithMaterials.lineMaterial = new THREE.LineBasicMaterial();
             }
 
@@ -284,7 +278,6 @@ var createGraphicsCommands = function () {
             // Another workaround would be to create a pooled object
             // for each different type of material.
             if (pooledObjectWithMaterials.normalMaterial === undefined) {
-                logger("creating normal material");
                 pooledObjectWithMaterials.normalMaterial = new THREE.MeshNormalMaterial();
             }
             pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.normalMaterial;
@@ -298,7 +291,6 @@ var createGraphicsCommands = function () {
         } else {
             // lights are on
             if (pooledObjectWithMaterials.lambertMaterial === undefined) {
-                logger("creating lambert:" + currentFillColor + " " + currentFillAlpha + " " + reflectValue + " " + refractValue);
                 pooledObjectWithMaterials.lambertMaterial = new THREE.MeshLambertMaterial();
             }
             pooledObjectWithMaterials.lambertMaterial.color.setHex(colorToBeUsed);
@@ -340,7 +332,6 @@ var createGraphicsCommands = function () {
         if (GraphicsCommands.doTheSpinThingy && pooledObjectWithMaterials.initialSpinCountdown > 0) {
             MatrixCommands.pushMatrix();
             MatrixCommands.rotate(pooledObjectWithMaterials.initialSpinCountdown / 50);
-            logger(pooledObjectWithMaterials.initialSpinCountdown);
         }
 
         pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = false;

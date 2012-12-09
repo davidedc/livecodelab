@@ -1,5 +1,5 @@
 /*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
-/*global $, logger, autocoder */
+/*global $, autocoder */
 
 
 var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
@@ -497,7 +497,6 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
             compiledOutput = CodeTransformer.compiler.compile(elaboratedSource, {
                 bare: "on"
             });
-            logger("in javascript: " + compiledOutput);
         } catch (e) {
 
             if (autocoder.active) {
@@ -577,9 +576,6 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
         // coffeescript to javascript translator inserts.
         compiledOutput = compiledOutput.replace(/var frame/, ";");
 
-        logger(compiledOutput);
-
-        logger("code transform set draw");
         return new Function(compiledOutput);
 
     };
