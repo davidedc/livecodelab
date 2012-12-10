@@ -9,8 +9,7 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
     'use strict';
 
     var AnimationController = {},
-        loopInterval,
-        lastStableProgram;
+        loopInterval;
 
     // if you put to -1 then it means that
     // requestAnimationFrame will try to go as fast as it
@@ -101,8 +100,8 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
                 events.trigger('display-error', e);
 
                 // mark the program as flawed and register the previous stable one.
-                CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
-                AnimationController.drawFunction = lastStableProgram;
+                CodeTransformer.reinstateLastWorkingProgram();
+                events.trigger('display-error', e);
 
                 return;
             }
@@ -122,7 +121,7 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
 
             CodeTransformer.consecutiveFramesWithoutRunTimeError += 1;
             if (CodeTransformer.consecutiveFramesWithoutRunTimeError === 5) {
-                lastStableProgram = AnimationController.drawFunction;
+                CodeTransformer.lastStableProgram = AnimationController.drawFunction;
             }
         } // if typeof draw
 

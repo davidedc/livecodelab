@@ -14,6 +14,7 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
 
 
     CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
+    CodeTransformer.lastStableProgram = "";
 
     CodeTransformer.compiler = CoffeeCompiler;
 
@@ -503,6 +504,8 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
                 return;
             }
 
+            // mark the program as flawed and register the previous stable one.
+            CodeTransformer.reinstateLastWorkingProgram();
             events.trigger('display-error', e);
 
             return;
@@ -574,6 +577,12 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
         return new Function(compiledOutput);
 
     };
+
+    CodeTransformer.reinstateLastWorkingProgram = function () {
+            // mark the program as flawed and register the previous stable one.
+            CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
+            AnimationController.drawFunction = CodeTransformer.lastStableProgram;
+    }
 
     CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun = function (editor) {
 
