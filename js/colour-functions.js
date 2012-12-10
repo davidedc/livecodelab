@@ -3,7 +3,7 @@
 // Code adapted from processing.js
 
 /**
- * Grunt automatically replaces symbolic Constants.* names with their
+ * Closure compiler automatically replaces symbolic Constants.* names with their
  * values (it does it for everything it thinks it's a constant really).
  */
 
