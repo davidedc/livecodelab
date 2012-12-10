@@ -41,7 +41,7 @@ module.exports = function (grunt) {
                     'js/events.js',
                     'js/big-cursor-animation.js',
                     'js/autocoder/mclexer.js',
-                    'js/sound/sounddef.js',
+                    'js/sound/samplebank.js',
                     'js/sound/sound-functions.js',
                     'js/sound/buzz.js',
                     'js/animation-controls.js',
