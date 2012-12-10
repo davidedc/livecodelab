@@ -25,7 +25,8 @@ var startEnvironment = function () {
     ThreeJs = createThreeJs(Detector, THREE, THREEx);
     BlendControls = createBlendControls(ThreeJs);
     Bowser = createBowser();
-    SoundSystem = createSoundSystem(buzz, Bowser); // $, createSoundDef
+    SampleBank = createSampleBank(buzz);
+    SoundSystem = createSoundSystem(buzz, Bowser, SampleBank); // $
     BigCursor = createBigCursor(LiveCodeLab.events); // $
     BackgroundPainter = createBackgroundPainter(LiveCodeLab.events, ThreeJs, ColourFunctions); // $
 

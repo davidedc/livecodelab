@@ -1,7 +1,7 @@
 /*jslint browser: true */
-/*global $, createSoundDef */
+/*global $ */
 
-var createSoundSystem = function (buzz, Bowser) {
+var createSoundSystem = function (buzz, Bowser, samplebank) {
 
     'use strict';
 
@@ -76,47 +76,47 @@ var createSoundSystem = function (buzz, Bowser) {
     };
 
 
-		// When each Audio object plays, it plays from start to end
-		// and you can't get it to re-start until it's completely done
-		// playing.
-		// This is problematic because some sounds last a second or so, and they
-		// need to play more often than one time per second.
-		// So here are possible mechanisms to achieve that:
-		//
-		// BUZZJS_WITH_ONE_POOL:
-		//    to have 20 or so sound objects, and all the times that
-		//    a file needs playing, scan them and find one that is free,
-		//    then associate that to the file one wants to play
-		//    this works well in IE and Chrome but really bad in Safari
-		//    The problem here is the potentially heavy switching of sound files.
-		//
-		// BUZZJS_WITH_ONE_POOL_PER_SOUND:
-		//    for each file, give there is a pool of buzz objects that can play it.
-		//    This is more complicated but seems to work
-		//    about right in all browsers. Only caveat is that Safari
-		//    needs the audio objects to be preloaded because otherwise
-		//    it jams. Conversely, IE and Chrome don't like them preloaded
-		//    because they have a limit of 35 or so sounds.
-		//
-		// BUZZ_JS_FIRE_AND_FORGET:
+    // When each Audio object plays, it plays from start to end
+    // and you can't get it to re-start until it's completely done
+    // playing.
+    // This is problematic because some sounds last a second or so, and they
+    // need to play more often than one time per second.
+    // So here are possible mechanisms to achieve that:
+    //
+    // BUZZJS_WITH_ONE_POOL:
+    //    to have 20 or so sound objects, and all the times that
+    //    a file needs playing, scan them and find one that is free,
+    //    then associate that to the file one wants to play
+    //    this works well in IE and Chrome but really bad in Safari
+    //    The problem here is the potentially heavy switching of sound files.
+    //
+    // BUZZJS_WITH_ONE_POOL_PER_SOUND:
+    //    for each file, give there is a pool of buzz objects that can play it.
+    //    This is more complicated but seems to work
+    //    about right in all browsers. Only caveat is that Safari
+    //    needs the audio objects to be preloaded because otherwise
+    //    it jams. Conversely, IE and Chrome don't like them preloaded
+    //    because they have a limit of 35 or so sounds.
+    //
+    // BUZZ_JS_FIRE_AND_FORGET:
     //    This method is the simplest and entails just using buzz.js fire and forget.
     //    Each "playing" beat a new object is created.
     //
-		// DYNAMICALLY_CREATED_AUDIO_TAG:
-		//    Directly create an audio object each time we need to play a sound.
-		//    Once the sound has finished playing, the audio object is garbage collected.
+    // DYNAMICALLY_CREATED_AUDIO_TAG:
+    //    Directly create an audio object each time we need to play a sound.
+    //    Once the sound has finished playing, the audio object is garbage collected.
 
-    play_using_BUZZ_JS_FIRE_AND_FORGET = function  (soundFilesPaths, loopedSoundID, buzzObjectsPool) {
-        var soundFilePath = soundFilesPaths[loopedSoundID];
-
-        var availableBuzzObject = new buzz.sound(soundFilePath);
+    play_using_BUZZ_JS_FIRE_AND_FORGET = function (soundFilesPaths, loopedSoundID, buzzObjectsPool) {
+        var soundFilePath, availableBuzzObject;
+        soundFilePath = soundFilesPaths[loopedSoundID];
+        availableBuzzObject = new buzz.sound(soundFilePath);
         availableBuzzObject.play();
     };
 
     play_using_DYNAMICALLY_CREATED_AUDIO_TAG = function (soundFilesPaths, loopedSoundID, buzzObjectsPool) {
 
-        var audioElement, source1;
-        var soundFilePath = soundFilesPaths[loopedSoundID];
+        var audioElement, source1, soundFilePath;
+        soundFilePath = soundFilesPaths[loopedSoundID];
 
         audioElement = document.createElement('audio');
         audioElement.setAttribute("preload", "auto");
@@ -272,14 +272,8 @@ var createSoundSystem = function (buzz, Bowser) {
 
         var soundDef, soundInfo, cycleSoundDefs, preloadSounds;
 
-        if (buzz.isMP3Supported()) {
-            soundDef = createSoundDef("mp3");
-        } else if (buzz.isOGGSupported()) {
-            soundDef = createSoundDef("ogg");
-        } else {
-            return;
-        }
-        
+        soundDef = samplebank;
+
         for (cycleSoundDefs = 0; cycleSoundDefs < soundDef.sounds.length; cycleSoundDefs += 1) {
 
             soundInfo = soundDef.getByNumber(cycleSoundDefs);
