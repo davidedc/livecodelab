@@ -25,7 +25,8 @@ var startEnvironment = function () {
     ThreeJs = createThreeJs(Detector, THREE, THREEx);
     BlendControls = createBlendControls(ThreeJs);
     Bowser = createBowser();
-    SoundSystem = createSoundSystem(buzz, Bowser); // $, createSoundDef
+    SampleBank = createSampleBank(buzz);
+    SoundSystem = createSoundSystem(buzz, Bowser, SampleBank); // $
     BigCursor = createBigCursor(LiveCodeLab.events); // $
     BackgroundPainter = createBackgroundPainter(LiveCodeLab.events, ThreeJs, ColourFunctions); // $
 
@@ -80,13 +81,7 @@ var startEnvironment = function () {
         var demoToLoad = window.location.hash.substring("bookmark".length + 2);
         LiveCodeLab.events.trigger('load-program', demoToLoad);
     } else {
-        var startingSound = new buzz.sound("./sound/audioFiles/start_bing", {
-            formats: ["ogg", "mp3"]
-        });
-
-        setTimeout(function () {
-            startingSound.play();
-        }, 650);
+        setTimeout(SoundSystem.playStartupSound, 650);
     }
 
 
