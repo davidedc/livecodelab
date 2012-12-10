@@ -814,5 +814,4 @@ var createColourFunctions = function () {
 
 
     return ColourFunctions;
-    // enf of functions from processing.js
 };
