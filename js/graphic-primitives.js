@@ -100,7 +100,7 @@
 // ted.
 
 
-var createGraphicsCommands = function () {
+var createGraphicsCommands = function (colourfuncs) {
 
     'use strict';
 
@@ -593,7 +593,7 @@ var createGraphicsCommands = function () {
             GraphicsCommands.defaultNormalFill = true;
             currentFillColor = angleColor;
             if (b=== undefined && g !== undefined) {
-                currentFillAlpha = g / colorModeA;
+                currentFillAlpha = g / colourfuncs.colorModeA;
             } else {
                 currentFillAlpha = 1;
             }
@@ -663,8 +663,8 @@ var createGraphicsCommands = function () {
             // the fill
             GraphicsCommands.defaultNormalStroke = true;
             currentStrokeColor = angleColor;
-            if (b=== undefined && g !== undefined) {
-                currentStrokeAlpha = g / colorModeA;
+            if (b === undefined && g !== undefined) {
+                currentStrokeAlpha = g / colourfuncs.colorModeA;
             } else {
                 currentStrokeAlpha = 1;
             }
