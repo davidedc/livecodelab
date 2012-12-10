@@ -81,13 +81,7 @@ var startEnvironment = function () {
         var demoToLoad = window.location.hash.substring("bookmark".length + 2);
         LiveCodeLab.events.trigger('load-program', demoToLoad);
     } else {
-        var startingSound = new buzz.sound("./sound/audioFiles/start_bing", {
-            formats: ["ogg", "mp3"]
-        });
-
-        setTimeout(function () {
-            startingSound.play();
-        }, 650);
+        setTimeout(SoundSystem.playStartupSound, 650);
     }
 
 

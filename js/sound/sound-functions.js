@@ -35,6 +35,10 @@ var createSoundSystem = function (buzz, Bowser, samplebank) {
         soundLoops.beatStrings = [];
     };
 
+    SoundSystem.playStartupSound = function () {
+        var startup = new buzz.sound(samplebank.getByName('bing').path);
+        startup.play();
+    };
 
     SoundSystem.SetUpdatesPerMinute = function (updates) {
         updatesPerMinute = updates;
