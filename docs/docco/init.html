@@ -29,15 +29,15 @@ add Stats.js - https://github.com/mrdoob/stats.js</p>             </td>         
     BackgroundPainter = createBackgroundPainter(LiveCodeLab.events, ThreeJs, ColourFunctions); <span class="comment">// $</span>
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>There's a tricky cyclic dependency here between LightSystem and GraphicsCommands</p>             </td>             <td class="code">               <div class="highlight"><pre>    GraphicsCommands = createGraphicsCommands(); <span class="comment">// THREE, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne</span>
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>There's a tricky cyclic dependency here between LightSystem and GraphicsCommands</p>             </td>             <td class="code">               <div class="highlight"><pre>    GraphicsCommands = createGraphicsCommands(ColourFunctions); <span class="comment">// THREE, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne</span>
     LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands, ColourFunctions);
 
 
 
 
-    CodeTransformer = createCodeTransformer(LiveCodeLab.events, CoffeeScript, GraphicsCommands); <span class="comment">// $, autocoder</span>
+    CodeTransformer = createCodeTransformer(LiveCodeLab.events, CoffeeScript, GraphicsCommands); <span class="comment">// autocoder</span>
 
-    AnimationController = createAnimationController(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter); <span class="comment">// $</span>
+    AnimationController = createAnimationController(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter);
     editor = createEditor(LiveCodeLab.events, CodeMirror);
 
     autocoder = createAutocoder(LiveCodeLab.events, editor, ColourNames); <span class="comment">// McLexer</span>
@@ -59,24 +59,18 @@ add Stats.js - https://github.com/mrdoob/stats.js</p>             </td>         
     }
 
     <span class="keyword">if</span> (!Detector.webgl || ThreeJs.forceCanvasRenderer) {
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>$('#noWebGLMessage').modal()</p>             </td>             <td class="code">               <div class="highlight"><pre>        $(<span class="string">'#noWebGLMessage'</span>).modal({
+        $(<span class="string">'#noWebGLMessage'</span>).modal({
             onClose: SoundSystem.closeAndCheckAudio
         });
         $(<span class="string">'#simplemodal-container'</span>).height(<span class="number">200</span>);
     }
 
-    Ui.fullscreenify(<span class="string">'#backGroundCanvas'</span>);
-
     BackgroundPainter.resetGradientStack();
     BackgroundPainter.simpleGradientUpdateIfChanged();
 
-    $(<span class="string">'#startingCourtainScreen'</span>).fadeOut();
-    $(<span class="string">"#formCode"</span>).css(<span class="string">'opacity'</span>, <span class="number">0</span>);
-
     editor.focus();
-    Ui.adjustCodeMirrorHeight();
 
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>check if the url points to a particular demo,
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>check if the url points to a particular demo,
 in which case we load the demo directly.
 otherwise we do as usual.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (window.location.hash.indexOf(<span class="string">"bookmark"</span>) !== -<span class="number">1</span>) {
         <span class="keyword">var</span> demoToLoad = window.location.hash.substring(<span class="string">"bookmark"</span>.length + <span class="number">2</span>);
@@ -90,10 +84,11 @@ otherwise we do as usual.</p>             </td>             <td class="code">   
             startingSound.play();
         }, <span class="number">650</span>);
     }
+
+
     BigCursor.toggleBlink(<span class="literal">true</span>);
 
-
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Turn dimming on by default</p>             </td>             <td class="code">               <div class="highlight"><pre>    LiveCodeLab.events.trigger(<span class="string">'editor-toggle-dim'</span>, <span class="literal">true</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Turn dimming on by default</p>             </td>             <td class="code">               <div class="highlight"><pre>    LiveCodeLab.events.trigger(<span class="string">'editor-toggle-dim'</span>, <span class="literal">true</span>);
 
     Ui.setup();
 

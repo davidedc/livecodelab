@@ -1,5 +1,5 @@
 <!DOCTYPE html>  <html> <head>   <title>code-transformations.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-controls.html">                 animation-controls.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="events.html">                 events.js               </a>                                           <a class="source" href="globals.html">                 globals.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               code-transformations.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint maxerr: 200, browser: true, devel: true, bitwise: true */</span>
-<span class="comment">/*global $, autocoder */</span>
+<span class="comment">/*global autocoder */</span>
 
 
 <span class="keyword">var</span> createCodeTransformer = <span class="function"><span class="keyword">function</span> <span class="params">(events, CoffeeCompiler, graphics)</span> {</span>
@@ -236,7 +236,6 @@ the line where it was</p>             </td>             <td class="code">       
                 }
 
                 programHasBasicError = <span class="literal">true</span>;
-                $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);
 
                 <span class="keyword">if</span> (aposCount &amp; <span class="number">1</span>) {
                     reasonOfBasicError = <span class="string">"Missing '"</span>;
@@ -254,7 +253,7 @@ the line where it was</p>             </td>             <td class="code">       
                     reasonOfBasicError = <span class="string">"Unbalanced []"</span>;
                 }
 
-                $(<span class="string">'#errorMessageText'</span>).text(reasonOfBasicError);
+                events.trigger(<span class="string">'display-error'</span>, reasonOfBasicError);
 
 
                 <span class="keyword">return</span>;
@@ -363,8 +362,7 @@ likely to use by mistake and take away this check.</p>             </td>        
 </pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>alert("did an undo");</p>             </td>             <td class="code">               <div class="highlight"><pre>                    <span class="keyword">return</span>;
                 }
                 programHasBasicError = <span class="literal">true</span>;
-                $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);
-                $(<span class="string">'#errorMessageText'</span>).text(<span class="string">"You can't call draw()"</span>);
+                events.trigger(<span class="string">'display-error'</span>, <span class="string">"You can't call draw()"</span>);
                 <span class="keyword">return</span>;
             }
 
@@ -488,8 +486,7 @@ the semicolon mangles the first line of the function definitions:</p>           
             }
             <span class="keyword">if</span> (declaredMethods.length === <span class="number">0</span>) {
                 error = <span class="literal">true</span>;
-                $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);
-                $(<span class="string">'#errorMessageText'</span>).text(usedMethods[scanningUsedMethods] + <span class="string">" doesn't exist"</span>);
+                events.trigger(<span class="string">'display-error'</span>, usedMethods[scanningUsedMethods] + <span class="string">" doesn't exist"</span>);
                 <span class="keyword">return</span>;
             }
             <span class="keyword">var</span> scanningDeclaredMethods;
@@ -498,8 +495,7 @@ the semicolon mangles the first line of the function definitions:</p>           
                     <span class="keyword">break</span>;
                 } <span class="keyword">else</span> <span class="keyword">if</span> (scanningDeclaredMethods === declaredMethods.length - <span class="number">1</span>) {
                     error = <span class="literal">true</span>;
-                    $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);
-                    $(<span class="string">'#errorMessageText'</span>).text(usedMethods[scanningUsedMethods] + <span class="string">" doesn't exist"</span>);
+                    events.trigger(<span class="string">'display-error'</span>, usedMethods[scanningUsedMethods] + <span class="string">" doesn't exist"</span>);
                     <span class="keyword">return</span>;
                 }
             }
@@ -508,8 +504,7 @@ the semicolon mangles the first line of the function definitions:</p>           
 
         programHasBasicError = <span class="literal">false</span>;
         reasonOfBasicError = <span class="string">""</span>;
-        $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'#000000'</span>);
-        $(<span class="string">'#errorMessageText'</span>).text(reasonOfBasicError);
+        events.trigger(<span class="string">'clear-error'</span>);
 
 </pre></div>             </td>           </tr>                               <tr id="section-51">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-51">&#182;</a>               </div>               <p>see here for the deepest examination ever of "eval"
 http://perfectionkills.com/global-eval-what-are-the-options/

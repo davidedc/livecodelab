@@ -78,8 +78,8 @@ is resized.</p>             </td>             <td class="code">               <d
 
         $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);
 
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>don't need to convert entire object to string
-can just get the message, or a blank string if there is no message</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> errorMessage = e.message || <span class="string">""</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>if the object is an exception then get the message
+otherwise e should just be a string</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> errorMessage = e.message || e;
 
         <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'INDENT'"</span>) &gt; -<span class="number">1</span>) {
             errorMessage = <span class="string">"weird indentation"</span>;
@@ -103,6 +103,11 @@ can just get the message, or a blank string if there is no message</p>          
 
         $(<span class="string">'#errorMessageText'</span>).text(errorMessage);
 
+    };
+
+    Ui.clearError = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'#000000'</span>);
+        $(<span class="string">'#errorMessageText'</span>).text(<span class="string">""</span>);
     };
 
     Ui.soundSystemOk = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
@@ -154,11 +159,19 @@ can just get the message, or a blank string if there is no message</p>          
             stats.getDomElement().style.top = <span class="string">'0px'</span>;
             document.body.appendChild(stats.getDomElement());
 
+            $(<span class="string">'#startingCourtainScreen'</span>).fadeOut();
+            $(<span class="string">"#formCode"</span>).css(<span class="string">'opacity'</span>, <span class="number">0</span>);
+
+            Ui.fullscreenify(<span class="string">'#backGroundCanvas'</span>);
+
+            Ui.adjustCodeMirrorHeight();
+
         });
     };
 
 
 </pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>    events.bind(<span class="string">'display-error'</span>, Ui.checkErrorAndReport, Ui);
+    events.bind(<span class="string">'clear-error'</span>, Ui.clearError, Ui);
 
     events.bind(<span class="string">'autocoder-state'</span>, <span class="function"><span class="keyword">function</span> <span class="params">(state)</span> {</span>
         <span class="keyword">if</span> (state === <span class="literal">true</span>) {

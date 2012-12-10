@@ -13,7 +13,6 @@
 
     <span class="keyword">var</span> ColourFunctions = {},
         Constants,
-        colorModeA = <span class="number">255</span>,
         colorModeX = <span class="number">255</span>,
         colorModeY = <span class="number">255</span>,
         colorModeZ = <span class="number">255</span>,
@@ -23,6 +22,8 @@
         color$<span class="number">1</span>,
         modes;
 
+
+    ColourFunctions.colorModeA = <span class="number">255</span>;
 
     Constants = {
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Color modes</p>             </td>             <td class="code">               <div class="highlight"><pre>        RGB: <span class="number">1</span>,
@@ -71,7 +72,7 @@
             b = Math.round(<span class="number">255</span> * (aValue3 / colorModeZ));
         }
 
-        a = Math.round(<span class="number">255</span> * (aValue4 / colorModeA));
+        a = Math.round(<span class="number">255</span> * (aValue4 / ColourFunctions.colorModeA));
 
 </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Limit values less than 0 and greater than 255</p>             </td>             <td class="code">               <div class="highlight"><pre>        r = (r &lt; <span class="number">0</span>) ? <span class="number">0</span> : r;
         g = (g &lt; <span class="number">0</span>) ? <span class="number">0</span> : g;
@@ -95,7 +96,7 @@ color that paints based on normals.</p>             </td>             <td class=
         }
 
 </pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Color int and alpha</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (aValue1 &amp; Constants.ALPHA_MASK) {
-            a = Math.round(<span class="number">255</span> * (aValue2 / colorModeA));
+            a = Math.round(<span class="number">255</span> * (aValue2 / ColourFunctions.colorModeA));
 </pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Limit values less than 0 and greater than 255</p>             </td>             <td class="code">               <div class="highlight"><pre>            a = (a &gt; <span class="number">255</span>) ? <span class="number">255</span> : a;
             a = (a &lt; <span class="number">0</span>) ? <span class="number">0</span> : a;
 
@@ -112,10 +113,10 @@ color that paints based on normals.</p>             </td>             <td class=
     color$<span class="number">1</span> = <span class="function"><span class="keyword">function</span> <span class="params">(aValue1)</span> {</span>
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Grayscale</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (aValue1 &lt;= colorModeX &amp;&amp; aValue1 &gt;= <span class="number">0</span>) {
             <span class="keyword">if</span> (curColorMode === Constants.RGB) {
-                <span class="keyword">return</span> color$<span class="number">4</span>(aValue1, aValue1, aValue1, colorModeA);
+                <span class="keyword">return</span> color$<span class="number">4</span>(aValue1, aValue1, aValue1, ColourFunctions.colorModeA);
             }
             <span class="keyword">if</span> (curColorMode === Constants.HSB) {
-                <span class="keyword">return</span> color$<span class="number">4</span>(<span class="number">0</span>, <span class="number">0</span>, (aValue1 / colorModeX) * colorModeZ, colorModeA);
+                <span class="keyword">return</span> color$<span class="number">4</span>(<span class="number">0</span>, <span class="number">0</span>, (aValue1 / colorModeX) * colorModeZ, ColourFunctions.colorModeA);
             }
         }
 </pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>Color int</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (aValue1) {
@@ -149,7 +150,7 @@ color that paints based on normals.</p>             </td>             <td class=
         }
 
 </pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>3 arguments: (R, G, B) or (H, S, B)</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (aValue1 !== <span class="literal">undefined</span> &amp;&amp; aValue2 !== <span class="literal">undefined</span> &amp;&amp; aValue3 !== <span class="literal">undefined</span>) {
-            <span class="keyword">return</span> color$<span class="number">4</span>(aValue1, aValue2, aValue3, colorModeA);
+            <span class="keyword">return</span> color$<span class="number">4</span>(aValue1, aValue2, aValue3, ColourFunctions.colorModeA);
         }
 
 </pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>2 arguments: (Color, A) or (Grayscale, A)</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (aValue1 !== <span class="literal">undefined</span> &amp;&amp; aValue2 !== <span class="literal">undefined</span>) {
@@ -160,7 +161,7 @@ color that paints based on normals.</p>             </td>             <td class=
             <span class="keyword">return</span> color$<span class="number">1</span>(aValue1);
         }
 
-</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Default</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">return</span> color$<span class="number">4</span>(colorModeX, colorModeY, colorModeZ, colorModeA);
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Default</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">return</span> color$<span class="number">4</span>(colorModeX, colorModeY, colorModeZ, ColourFunctions.colorModeA);
     };
 
 </pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Ease of use function to extract the colour bits into a string</p>             </td>             <td class="code">               <div class="highlight"><pre>    ColourFunctions.color.toString = <span class="function"><span class="keyword">function</span> <span class="params">(colorInt)</span> {</span>
@@ -380,7 +381,7 @@ color that paints based on normals.</p>             </td>             <td class=
      * @see brightness
      */</span>
     window.alpha = ColourFunctions.alpha = <span class="function"><span class="keyword">function</span> <span class="params">(aColor)</span> {</span>
-        <span class="keyword">return</span> ((aColor &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="number">255</span> * colorModeA;
+        <span class="keyword">return</span> ((aColor &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="number">255</span> * ColourFunctions.colorModeA;
     };
     window.alphaZeroToOne = ColourFunctions.alphaZeroToOne = <span class="function"><span class="keyword">function</span> <span class="params">(aColor)</span> {</span>
         <span class="keyword">return</span> ((aColor &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="number">255</span>;
@@ -429,15 +430,15 @@ color that paints based on normals.</p>             </td>             <td class=
         <span class="keyword">if</span> (curColorMode === Constants.HSB) {
 </pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>Special processing for HSB mode.
 Get HSB and Alpha values for Color 1 and 2</p>             </td>             <td class="code">               <div class="highlight"><pre>            hsb1 = ColourFunctions.colorToHSB(colorBits1);
-            a1 = ((colorBits1 &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / colorModeA;
+            a1 = ((colorBits1 &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / ColourFunctions.colorModeA;
             hsb2 = ColourFunctions.colorToHSB(colorBits2);
-            a2 = ((colorBits2 &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / colorModeA;
+            a2 = ((colorBits2 &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / ColourFunctions.colorModeA;
 
 </pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>RColourFunctions.eturn lerp value for each channel, for HSB components</p>             </td>             <td class="code">               <div class="highlight"><pre>            h = ColourFunctions.lerp(hsb1[<span class="number">0</span>], hsb2[<span class="number">0</span>], amt);
             s = ColourFunctions.lerp(hsb1[<span class="number">1</span>], hsb2[<span class="number">1</span>], amt);
             b = ColourFunctions.lerp(hsb1[<span class="number">2</span>], hsb2[<span class="number">2</span>], amt);
             rgb = ColourFunctions.color.toRGB(h, s, b);
-</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>... and for Alpha-range</p>             </td>             <td class="code">               <div class="highlight"><pre>            a = ColourFunctions.lerp(a1, a2, amt) * colorModeA;
+</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>... and for Alpha-range</p>             </td>             <td class="code">               <div class="highlight"><pre>            a = ColourFunctions.lerp(a1, a2, amt) * ColourFunctions.colorModeA;
 
             <span class="keyword">return</span> (a &lt;<span class="xml"><span class="tag">&lt; <span class="attribute">24</span>) &amp; <span class="attribute">Constants.ALPHA_MASK</span> | (<span class="attribute">rgb</span>[<span class="attribute">0</span>] &lt;&lt; <span class="attribute">16</span>) &amp; <span class="attribute">Constants.RED_MASK</span> | (<span class="attribute">rgb</span>[<span class="attribute">1</span>] &lt;&lt; <span class="attribute">8</span>) &amp; <span class="attribute">Constants.GREEN_MASK</span> | <span class="attribute">rgb</span>[<span class="attribute">2</span>] &amp; <span class="attribute">Constants.BLUE_MASK</span>;
         }
@@ -445,17 +446,17 @@ Get HSB and Alpha values for Color 1 and 2</p>             </td>             <td
 </span></pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>Get RGBA values for Color 1 to floats</p>             </td>             <td class="code">               <div class="highlight"><pre>        r1 = (colorBits1 &amp; Constants.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>;
         g1 = (colorBits1 &amp; Constants.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>;
         b1 = (colorBits1 &amp; Constants.BLUE_MASK);
-        a1 = ((colorBits1 &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / colorModeA;
+        a1 = ((colorBits1 &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / ColourFunctions.colorModeA;
 
 </pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>Get RGBA values for Color 2 to floats</p>             </td>             <td class="code">               <div class="highlight"><pre>        r2 = (colorBits2 &amp; Constants.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>;
         g2 = (colorBits2 &amp; Constants.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>;
         b2 = (colorBits2 &amp; Constants.BLUE_MASK);
-        a2 = ((colorBits2 &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / colorModeA;
+        a2 = ((colorBits2 &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / ColourFunctions.colorModeA;
 
 </pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>Return lerp value for each channel, INT for color, Float for Alpha-range</p>             </td>             <td class="code">               <div class="highlight"><pre>        r = ColourFunctions.lerp(r1, r2, amt) | <span class="number">0</span>;
         g = ColourFunctions.lerp(g1, g2, amt) | <span class="number">0</span>;
         b = ColourFunctions.lerp(b1, b2, amt) | <span class="number">0</span>;
-        a = ColourFunctions.lerp(a1, a2, amt) * colorModeA;
+        a = ColourFunctions.lerp(a1, a2, amt) * ColourFunctions.colorModeA;
 
         <span class="keyword">return</span> (a &lt;<span class="xml"><span class="tag">&lt; <span class="attribute">24</span>) &amp; <span class="attribute">Constants.ALPHA_MASK</span> | (<span class="attribute">r</span> &lt;&lt; <span class="attribute">16</span>) &amp; <span class="attribute">Constants.RED_MASK</span> | (<span class="attribute">g</span> &lt;&lt; <span class="attribute">8</span>) &amp; <span class="attribute">Constants.GREEN_MASK</span> | <span class="attribute">b</span> &amp; <span class="attribute">Constants.BLUE_MASK</span>;
     };
@@ -486,7 +487,7 @@ Get HSB and Alpha values for Color 1 and 2</p>             </td>             <td
             colorModeX = range1;
             colorModeY = range2 || range1;
             colorModeZ = range3 || range1;
-            colorModeA = range4 || range1;
+            ColourFunctions.colorModeA = range4 || range1;
         }
     };
 
