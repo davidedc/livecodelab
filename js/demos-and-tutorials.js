@@ -12,10 +12,12 @@ var createProgramLoader = function (events, texteditor, animationController, thr
 
 
     ProgramLoader.program.roseDemo = [
-        "// 'A rose' by Guy John",
+        "// 'A rose' by Guy John (@rumblesan)",
         "// Mozilla Festival 2012",
         "// adapted from 'A rose' by Lib4tech",
         "",
+        "doOnce -> frame = 0",
+        "background red",
         "scale 1.5",
         "animationStyle paintOver",
         "rotate frame/100",
