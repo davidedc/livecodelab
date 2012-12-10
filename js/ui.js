@@ -165,6 +165,13 @@ var createUi = function (events, stats) {
             stats.getDomElement().style.top = '0px';
             document.body.appendChild(stats.getDomElement());
 
+            $('#startingCourtainScreen').fadeOut();
+            $("#formCode").css('opacity', 0);
+
+            Ui.fullscreenify('#backGroundCanvas');
+
+            Ui.adjustCodeMirrorHeight();
+
         });
     };
 

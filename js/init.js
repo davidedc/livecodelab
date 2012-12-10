@@ -62,23 +62,16 @@ var startEnvironment = function () {
     }
 
     if (!Detector.webgl || ThreeJs.forceCanvasRenderer) {
-        //$('#noWebGLMessage').modal()
         $('#noWebGLMessage').modal({
             onClose: SoundSystem.closeAndCheckAudio
         });
         $('#simplemodal-container').height(200);
     }
 
-    Ui.fullscreenify('#backGroundCanvas');
-
     BackgroundPainter.resetGradientStack();
     BackgroundPainter.simpleGradientUpdateIfChanged();
 
-    $('#startingCourtainScreen').fadeOut();
-    $("#formCode").css('opacity', 0);
-
     editor.focus();
-    Ui.adjustCodeMirrorHeight();
 
     // check if the url points to a particular demo,
     // in which case we load the demo directly.
@@ -95,8 +88,9 @@ var startEnvironment = function () {
             startingSound.play();
         }, 650);
     }
-    BigCursor.toggleBlink(true);
 
+
+    BigCursor.toggleBlink(true);
 
     // Turn dimming on by default
     LiveCodeLab.events.trigger('editor-toggle-dim', true);
