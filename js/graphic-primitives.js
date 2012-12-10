@@ -334,6 +334,10 @@ var createGraphicsCommands = function (colourfuncs) {
             MatrixCommands.rotate(pooledObjectWithMaterials.initialSpinCountdown / 50);
         }
 
+        // see https://github.com/mrdoob/three.js/wiki/Using-Matrices-&-Object3Ds-in-THREE
+        // for info on how this works.
+        // Around 11% of the time is spent doing matrix multiplications, which
+        // happens every time there is a scale or rotate or move.
         pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = false;
         pooledObjectWithMaterials.threejsObject3D.matrix.copy(MatrixCommands.getWorldMatrix());
         pooledObjectWithMaterials.threejsObject3D.matrixWorldNeedsUpdate = true;
