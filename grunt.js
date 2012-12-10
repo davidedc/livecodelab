@@ -80,10 +80,13 @@ module.exports = function (grunt) {
         },
         doccoh: {
             src: ['js/*.js',
-                  'js/editor/*.js']
+                  'js/editor/*.js'],
+            options: {
+            			output: 'docs/docco/'
+            }
         },
         clean: {
-            docs: ['docs/'],
+            docs: ['docs/docco/'],
             build: ['dist/', 'indexMinified.html', 'js_compiled/Livecodelab-minified.js']
         },
         targethtml: {
