@@ -37,9 +37,9 @@ var startEnvironment = function () {
 
 
 
-    CodeTransformer = createCodeTransformer(LiveCodeLab.events, CoffeeScript, GraphicsCommands); // $, autocoder
+    CodeTransformer = createCodeTransformer(LiveCodeLab.events, CoffeeScript, GraphicsCommands); // autocoder
 
-    AnimationController = createAnimationController(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter); // $
+    AnimationController = createAnimationController(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter);
     editor = createEditor(LiveCodeLab.events, CodeMirror);
 
     autocoder = createAutocoder(LiveCodeLab.events, editor, ColourNames); // McLexer
@@ -62,23 +62,16 @@ var startEnvironment = function () {
     }
 
     if (!Detector.webgl || ThreeJs.forceCanvasRenderer) {
-        //$('#noWebGLMessage').modal()
         $('#noWebGLMessage').modal({
             onClose: SoundSystem.closeAndCheckAudio
         });
         $('#simplemodal-container').height(200);
     }
 
-    Ui.fullscreenify('#backGroundCanvas');
-
     BackgroundPainter.resetGradientStack();
     BackgroundPainter.simpleGradientUpdateIfChanged();
 
-    $('#startingCourtainScreen').fadeOut();
-    $("#formCode").css('opacity', 0);
-
     editor.focus();
-    Ui.adjustCodeMirrorHeight();
 
     // check if the url points to a particular demo,
     // in which case we load the demo directly.
@@ -95,8 +88,9 @@ var startEnvironment = function () {
             startingSound.play();
         }, 650);
     }
-    BigCursor.toggleBlink(true);
 
+
+    BigCursor.toggleBlink(true);
 
     // Turn dimming on by default
     LiveCodeLab.events.trigger('editor-toggle-dim', true);
