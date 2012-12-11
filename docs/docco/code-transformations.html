@@ -14,6 +14,7 @@
 
 
     CodeTransformer.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>;
+    CodeTransformer.lastStableProgram = <span class="string">""</span>;
 
     CodeTransformer.compiler = CoffeeCompiler;
 
@@ -94,7 +95,6 @@ block has run.</p>             </td>             <td class="code">              
 
     CodeTransformer.registerCode = <span class="function"><span class="keyword">function</span> <span class="params">(editor)</span> {</span>
 
-        <span class="keyword">try</span> {
 
             <span class="keyword">var</span> editorContent = editor.getValue(),
                 copyOfEditorContent,
@@ -445,24 +445,26 @@ the semicolon mangles the first line of the function definitions:</p>           
 </pre></div>             </td>           </tr>                               <tr id="section-47">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-47">&#182;</a>               </div>               <p>the semicolon mangles the first line of else if statements</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/(\s);(else\s*if\s*.*\s*);/g</span>, <span class="string">"$1$2"</span>);
 </pre></div>             </td>           </tr>                               <tr id="section-48">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-48">&#182;</a>               </div>               <p>the semicolon mangles the first line of else statements</p>             </td>             <td class="code">               <div class="highlight"><pre>            elaboratedSource = elaboratedSource.replace(<span class="regexp">/(\s);(else.*\s*);/g</span>, <span class="string">"$1$2"</span>);
 
-
+        <span class="keyword">try</span> {
             compiledOutput = CodeTransformer.compiler.compile(elaboratedSource, {
                 bare: <span class="string">"on"</span>
             });
         } <span class="keyword">catch</span> (e) {
-
+</pre></div>             </td>           </tr>                               <tr id="section-49">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-49">&#182;</a>               </div>               <p>coffescript compiler has caught a syntax error.
+we are going to display the error and we WON'T register
+the new code</p>             </td>             <td class="code">               <div class="highlight"><pre>            
             <span class="keyword">if</span> (autocoder.active) {
                 editor.undo();
-</pre></div>             </td>           </tr>                               <tr id="section-49">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-49">&#182;</a>               </div>               <p>alert("did an undo");</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="keyword">return</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-50">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-50">&#182;</a>               </div>               <p>alert("did an undo");</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="keyword">return</span>;
             }
 
-            events.trigger(<span class="string">'display-error'</span>, e);
+</pre></div>             </td>           </tr>                               <tr id="section-51">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-51">&#182;</a>               </div>               <p>mark the program as flawed</p>             </td>             <td class="code">               <div class="highlight"><pre>            events.trigger(<span class="string">'display-error'</span>, e);
 
             <span class="keyword">return</span>;
         }
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-50">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-50">&#182;</a>               </div>               <p>FINDS USED METHODS WHICH ARE NOT DECLARED</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> matchDeclaredMethod = <span class="regexp">/([a-z]+[a-zA-Z0-9]*) = function/</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-52">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-52">&#182;</a>               </div>               <p>FINDS USED METHODS WHICH ARE NOT DECLARED</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> matchDeclaredMethod = <span class="regexp">/([a-z]+[a-zA-Z0-9]*) = function/</span>;
         <span class="keyword">var</span> declaredMethods = [];
         <span class="keyword">var</span> mc;
         <span class="keyword">var</span> copyOfCompiledOutput = compiledOutput;
@@ -506,11 +508,11 @@ the semicolon mangles the first line of the function definitions:</p>           
         reasonOfBasicError = <span class="string">""</span>;
         events.trigger(<span class="string">'clear-error'</span>);
 
-</pre></div>             </td>           </tr>                               <tr id="section-51">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-51">&#182;</a>               </div>               <p>see here for the deepest examination ever of "eval"
+</pre></div>             </td>           </tr>                               <tr id="section-53">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-53">&#182;</a>               </div>               <p>see here for the deepest examination ever of "eval"
 http://perfectionkills.com/global-eval-what-are-the-options/
 note that exceptions are caught by the window.onerror callback</p>             </td>             <td class="code">               <div class="highlight"><pre>        CodeTransformer.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>;
 
-</pre></div>             </td>           </tr>                               <tr id="section-52">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-52">&#182;</a>               </div>               <p>You might want to change the frame count from the program
+</pre></div>             </td>           </tr>                               <tr id="section-54">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-54">&#182;</a>               </div>               <p>You might want to change the frame count from the program
 just like you can in Processing, but it turns out that when
 you ASSIGN a value to the frame variable inside
 the coffeescript code, the coffeescript to javascript translator
@@ -525,6 +527,11 @@ coffeescript to javascript translator inserts.</p>             </td>            
 
     };
 
+    CodeTransformer.reinstateLastWorkingProgram = <span class="function"><span class="keyword">function</span> <span class="params">(animationController)</span> {</span>
+</pre></div>             </td>           </tr>                               <tr id="section-55">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-55">&#182;</a>               </div>               <p>mark the program as flawed and register the previous stable one.</p>             </td>             <td class="code">               <div class="highlight"><pre>            CodeTransformer.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>;
+            animationController.drawFunction = CodeTransformer.lastStableProgram;
+    }
+
     CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun = <span class="function"><span class="keyword">function</span> <span class="params">(editor)</span> {</span>
 
         <span class="keyword">var</span> elaboratedSource,
@@ -537,7 +544,7 @@ coffeescript to javascript translator inserts.</p>             </td>            
             <span class="keyword">return</span>;
         }
 
-</pre></div>             </td>           </tr>                               <tr id="section-53">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-53">&#182;</a>               </div>               <p>if we are here, the following has happened: someone has added an element
+</pre></div>             </td>           </tr>                               <tr id="section-56">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-56">&#182;</a>               </div>               <p>if we are here, the following has happened: someone has added an element
 to the doOnceOccurrencesLineNumbers array. This can only have happened
 when a doOnce block is run, because we manipulate each doOnce block
 so that in its first line the line number of the block is pushed into
@@ -548,7 +555,7 @@ when we start the program we could have more than one doOnce that has
 to run.</p>             </td>             <td class="code">               <div class="highlight"><pre>
         elaboratedSource = editor.getValue();
 
-</pre></div>             </td>           </tr>                               <tr id="section-54">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-54">&#182;</a>               </div>               <p>we know the line number of each doOnce block that has been run
+</pre></div>             </td>           </tr>                               <tr id="section-57">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-57">&#182;</a>               </div>               <p>we know the line number of each doOnce block that has been run
 so we go there and add a tick next to each doOnce to indicate
 that it has been run.</p>             </td>             <td class="code">               <div class="highlight"><pre>        elaboratedSourceByLine = elaboratedSource.split(<span class="string">"\n"</span>);
         <span class="keyword">for</span> (iteratingOverSource = <span class="number">0</span>; iteratingOverSource &lt; CodeTransformer.doOnceOccurrencesLineNumbers.length; iteratingOverSource += <span class="number">1</span>) {
@@ -562,7 +569,7 @@ that it has been run.</p>             </td>             <td class="code">       
         editor.setValue(elaboratedSource);
         editor.setCursor(cursorPositionBeforeAddingCheckMark);
 
-</pre></div>             </td>           </tr>                               <tr id="section-55">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-55">&#182;</a>               </div>               <p>we want to avoid that another frame is run with the old
+</pre></div>             </td>           </tr>                               <tr id="section-58">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-58">&#182;</a>               </div>               <p>we want to avoid that another frame is run with the old
 code, as this would mean that the
 runOnce code is run more than once,
 so we need to register the new code.
