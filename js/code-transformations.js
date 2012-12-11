@@ -513,7 +513,9 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
         }
 
 
+        /*
         // FINDS USED METHODS WHICH ARE NOT DECLARED
+        // Note: this is now simply detected at runtime.
         var matchDeclaredMethod = /([a-z]+[a-zA-Z0-9]*) = function/;
         var declaredMethods = [];
         var mc;
@@ -552,6 +554,7 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
                 }
             }
         }
+        */
 
 
         programHasBasicError = false;
