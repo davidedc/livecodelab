@@ -464,49 +464,52 @@ the new code</p>             </td>             <td class="code">               <
         }
 
 
-</pre></div>             </td>           </tr>                               <tr id="section-52">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-52">&#182;</a>               </div>               <p>FINDS USED METHODS WHICH ARE NOT DECLARED</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> matchDeclaredMethod = <span class="regexp">/([a-z]+[a-zA-Z0-9]*) = function/</span>;
-        <span class="keyword">var</span> declaredMethods = [];
-        <span class="keyword">var</span> mc;
-        <span class="keyword">var</span> copyOfCompiledOutput = compiledOutput;
-        <span class="keyword">while</span> ((mc = copyOfCompiledOutput.match(matchDeclaredMethod))) {
-            declaredMethods.push(mc[<span class="number">1</span>]);
+        <span class="comment">/*
+</pre></div>             </td>           </tr>                               <tr id="section-52">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-52">&#182;</a>               </div>               <p>FINDS USED METHODS WHICH ARE NOT DECLARED
+Note: this is now simply detected at runtime.</p>             </td>             <td class="code">               <div class="highlight"><pre>        var matchDeclaredMethod = /([a-z]+[a-zA-Z0-9]*) = function/;
+        var declaredMethods = [];
+        var mc;
+        var copyOfCompiledOutput = compiledOutput;
+        while ((mc = copyOfCompiledOutput.match(matchDeclaredMethod))) {
+            declaredMethods.push(mc[1]);
             copyOfCompiledOutput = RegExp.rightContext;
         }
 
-        <span class="keyword">var</span> usedMethods = [];
-        <span class="keyword">var</span> md;
+        var usedMethods = [];
+        var md;
         copyOfCompiledOutput = compiledOutput;
-        <span class="keyword">while</span> ((md = copyOfCompiledOutput.match(<span class="regexp">/\s([a-z]+[a-zA-Z0-9]*)\(/</span>))) {
-            usedMethods.push(md[<span class="number">1</span>]);
+        while ((md = copyOfCompiledOutput.match(/\s([a-z]+[a-zA-Z0-9]*)\(/))) {
+            usedMethods.push(md[1]);
             copyOfCompiledOutput = RegExp.rightContext;
         }
-        <span class="keyword">var</span> error = <span class="literal">false</span>;
-        <span class="keyword">var</span> scanningUsedMethods;
-        <span class="keyword">for</span> (scanningUsedMethods = <span class="number">0</span>; scanningUsedMethods &lt; usedMethods.length; scanningUsedMethods += <span class="number">1</span>) {
-            <span class="keyword">if</span> (listOfPossibleFunctions.indexOf(usedMethods[scanningUsedMethods]) !== -<span class="number">1</span>) {
-                <span class="keyword">continue</span>;
+        var error = false;
+        var scanningUsedMethods;
+        for (scanningUsedMethods = 0; scanningUsedMethods &lt; usedMethods.length; scanningUsedMethods += 1) {
+            if (listOfPossibleFunctions.indexOf(usedMethods[scanningUsedMethods]) !== -1) {
+                continue;
             }
-            <span class="keyword">if</span> (declaredMethods.length === <span class="number">0</span>) {
-                error = <span class="literal">true</span>;
-                events.trigger(<span class="string">'display-error'</span>, usedMethods[scanningUsedMethods] + <span class="string">" doesn't exist"</span>);
-                <span class="keyword">return</span>;
+            if (declaredMethods.length === 0) {
+                error = true;
+                events.trigger('display-error', usedMethods[scanningUsedMethods] + " doesn't exist");
+                return;
             }
-            <span class="keyword">var</span> scanningDeclaredMethods;
-            <span class="keyword">for</span> (scanningDeclaredMethods = <span class="number">0</span>; scanningDeclaredMethods &lt; declaredMethods.length; scanningDeclaredMethods += <span class="number">1</span>) {
-                <span class="keyword">if</span> (usedMethods[scanningUsedMethods] === declaredMethods[scanningDeclaredMethods]) {
-                    <span class="keyword">break</span>;
-                } <span class="keyword">else</span> <span class="keyword">if</span> (scanningDeclaredMethods === declaredMethods.length - <span class="number">1</span>) {
-                    error = <span class="literal">true</span>;
-                    events.trigger(<span class="string">'display-error'</span>, usedMethods[scanningUsedMethods] + <span class="string">" doesn't exist"</span>);
-                    <span class="keyword">return</span>;
+            var scanningDeclaredMethods;
+            for (scanningDeclaredMethods = 0; scanningDeclaredMethods &lt; declaredMethods.length; scanningDeclaredMethods += 1) {
+                if (usedMethods[scanningUsedMethods] === declaredMethods[scanningDeclaredMethods]) {
+                    break;
+                } else if (scanningDeclaredMethods === declaredMethods.length - 1) {
+                    error = true;
+                    events.trigger('display-error', usedMethods[scanningUsedMethods] + " doesn't exist");
+                    return;
                 }
             }
         }
+        */
 
 
-        programHasBasicError = <span class="literal">false</span>;
-        reasonOfBasicError = <span class="string">""</span>;
-        events.trigger(<span class="string">'clear-error'</span>);
+        programHasBasicError = false;
+        reasonOfBasicError = "";
+        events.trigger('clear-error');
 
 </pre></div>             </td>           </tr>                               <tr id="section-53">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-53">&#182;</a>               </div>               <p>see here for the deepest examination ever of "eval"
 http://perfectionkills.com/global-eval-what-are-the-options/
