@@ -128,7 +128,8 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
 
             if (editorContent === '') {
                 graphics.resetTheSpinThingy = true;
-                window.location.hash = '';
+
+                events.trigger('set-url-hash', '');
 
                 events.trigger('cursor-show');
             }

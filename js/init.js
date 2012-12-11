@@ -1,4 +1,4 @@
-/*jslint devel: true */
+/*jslint browser: true, maxerr: 100 */
 /*global LiveCodeLab, $, autocoder, BackgroundPainter, initThreeJs, buzz */
 
 var isCanvasSupported = function () {
@@ -16,6 +16,8 @@ var startEnvironment = function () {
 
 
     LiveCodeLab.events = createEventRouter();
+
+    UrlRouter = createUrlRouter(LiveCodeLab.events);
 
     ColourNames = createColours();
     ColourFunctions = createColourFunctions();
@@ -53,8 +55,6 @@ var startEnvironment = function () {
     Ui = createUi(LiveCodeLab.events, stats); // $
 
 
-
-
     BackgroundPainter.pickRandomDefaultGradient();
     SoundSystem.loadAndTestAllTheSounds(Ui.soundSystemOk);
 
@@ -77,13 +77,9 @@ var startEnvironment = function () {
     // check if the url points to a particular demo,
     // in which case we load the demo directly.
     // otherwise we do as usual.
-    if (window.location.hash.indexOf("bookmark") !== -1) {
-        var demoToLoad = window.location.hash.substring("bookmark".length + 2);
-        LiveCodeLab.events.trigger('load-program', demoToLoad);
-    } else {
+    if (!UrlRouter.checkUrl()) {
         setTimeout(SoundSystem.playStartupSound, 650);
     }
-
 
     BigCursor.toggleBlink(true);
 
