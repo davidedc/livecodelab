@@ -50,6 +50,7 @@ var SoundSystem;
 var SampleBank;
 var ColourNames;
 var ColourFunctions;
+var UrlRouter;
 
 
 // this is the global namespace for the LiveCodeLab application
