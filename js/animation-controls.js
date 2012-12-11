@@ -20,7 +20,9 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
     AnimationController.drawFunction = "";
 
     AnimationController.setDrawFunction = function (drawFunc) {
-        AnimationController.drawFunction = drawFunc;
+        if (drawFunc) {
+        	AnimationController.drawFunction = drawFunc;
+        }
     };
 
     AnimationController.registerCode = function (Editor) {
@@ -96,13 +98,12 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
                 AnimationController.drawFunction();
             } catch (e) {
 
-                // highlight the error
-                events.trigger('display-error', e);
+                // we caught a runtime error.
+                // This should only be because a referenced variable doesn't exist.
 
                 // mark the program as flawed and register the previous stable one.
-                CodeTransformer.reinstateLastWorkingProgram();
                 events.trigger('display-error', e);
-
+                CodeTransformer.reinstateLastWorkingProgram(AnimationController);
                 return;
             }
 
@@ -132,9 +133,7 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
         stats.update();
 
         drawFunction = CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(Editor);
-        if (drawFunction) {
-            AnimationController.setDrawFunction(drawFunction);
-        }
+        AnimationController.setDrawFunction(drawFunction);
 
     };
 

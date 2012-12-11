@@ -106,7 +106,6 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
 
     CodeTransformer.registerCode = function (editor) {
 
-        try {
 
             var editorContent = editor.getValue(),
                 copyOfEditorContent,
@@ -492,20 +491,22 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
             // the semicolon mangles the first line of else statements
             elaboratedSource = elaboratedSource.replace(/(\s);(else.*\s*);/g, "$1$2");
 
-
+        try {
             compiledOutput = CodeTransformer.compiler.compile(elaboratedSource, {
                 bare: "on"
             });
         } catch (e) {
-
+            // coffescript compiler has caught a syntax error.
+            // we are going to display the error and we WON'T register
+            // the new code
+            
             if (autocoder.active) {
                 editor.undo();
                 //alert("did an undo");
                 return;
             }
 
-            // mark the program as flawed and register the previous stable one.
-            CodeTransformer.reinstateLastWorkingProgram();
+            // mark the program as flawed
             events.trigger('display-error', e);
 
             return;
@@ -578,10 +579,10 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
 
     };
 
-    CodeTransformer.reinstateLastWorkingProgram = function () {
+    CodeTransformer.reinstateLastWorkingProgram = function (animationController) {
             // mark the program as flawed and register the previous stable one.
             CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
-            AnimationController.drawFunction = CodeTransformer.lastStableProgram;
+            animationController.drawFunction = CodeTransformer.lastStableProgram;
     }
 
     CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun = function (editor) {
