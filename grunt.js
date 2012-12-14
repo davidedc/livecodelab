@@ -45,7 +45,7 @@ module.exports = function (grunt) {
                     'js/sound/samplebank.js',
                     'js/sound/sound-system.js',
                     'js/sound/buzz.js',
-                    'js/animation-controls.js',
+                    'js/animation-loop.js',
                     'js/init-threejs.js',
                     'js/colour-definitions.js',
                     'js/three.js/Detector.js',
