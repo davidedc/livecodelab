@@ -39,9 +39,15 @@ var createAnimationLoop = function (editor, drawFunctionRunner, events, CodeTran
                 }
             }
         } else {
-            setTimeout(function () {
-                AnimationLoop.animate(editor);
-            }, 1000 / AnimationLoop.wantedFramesPerSecond);
+            if (AnimationLoop.wantedFramesPerSecond === -1) {
+							setTimeout(function () {
+									AnimationLoop.animate(editor);
+							}, 1000 / 60);
+            } else {
+							setTimeout(function () {
+									AnimationLoop.animate(editor);
+							}, 1000 / AnimationLoop.wantedFramesPerSecond);
+            }
         }
     }
     
