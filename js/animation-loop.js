@@ -69,7 +69,8 @@ var createAnimationLoop = function (editor, drawFunctionRunner, events, CodeTran
 				} else {
 						timekeeper.updateTime();
 				}
-				CodeTransformer.doOnceOccurrencesLineNumbers = [];
+				
+				drawFunctionRunner.resetTrackingOfDoOnceOccurrences();
 				soundsystem.anyCodeReactingTobpm = false;
 
 				soundsystem.SetUpdatesPerMinute(60 * 4);
@@ -89,12 +90,15 @@ var createAnimationLoop = function (editor, drawFunctionRunner, events, CodeTran
 				// draws only a box, because the execution silently fails at the yeLow reference.
 				// So in that case we need to a) highlight the error and b) run the previously
 				// known good program.
-				var error = drawFunctionRunner.runDrawFunction();
-				if (error) {
-						 events.trigger('display-error', error);
+				try{
+					drawFunctionRunner.runDrawFunction();
+				}
+				catch (e) {
+						 events.trigger('display-error', e);
 						 drawFunctionRunner.reinstateLastWorkingProgram();
 						 return;
 				}
+        drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(editor, CodeTransformer);
 
 
 				// we have to repeat this check because in the case
@@ -108,22 +112,19 @@ var createAnimationLoop = function (editor, drawFunctionRunner, events, CodeTran
 				backgroundpainter.simpleGradientUpdateIfChanged();
 				soundsystem.changeUpdatesPerMinuteIfNeeded();
 
-				frame += 1;
+        // "frame" starts at zero, so we increment after the first time the draw
+        // function has been run.
+ 				frame++;
 		
-
         // do the render
-        AnimationLoop.combDisplayList();
         AnimationLoop.render();
         // update stats
         stats.update();
-
-        drawFunction = CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(editor);
-        drawFunctionRunner.setDrawFunction(drawFunction);
-
     };
 
     AnimationLoop.render = function () {
 
+        combDisplayList();
         if (threejs.isWebGLUsed) {
             threejs.composer.render();
         } else {
@@ -181,7 +182,7 @@ var createAnimationLoop = function (editor, drawFunctionRunner, events, CodeTran
     //       are much faster. Also the objects of the scene are harder to reach, so
     //       it could be the case that this mechanism is not needed anymore.
 
-    AnimationLoop.combDisplayList = function () {
+    var combDisplayList = function () {
         var i,
             sceneObject,
             primitiveType;

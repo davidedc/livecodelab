@@ -90,15 +90,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, events, Coffee
         ""];
 
 
-    // this array is used to keep track of all the instances of "doOnce" in the code
-    // we need to keep this so we can put the ticks next to doOnce once that doOnce
-    // block has run.
-    CodeTransformer.doOnceOccurrencesLineNumbers = [];
 
-    // This is the function called from the compiled code to add the doOnce line
-    window.addDoOnce = CodeTransformer.addDoOnce = function (lineNum) {
-        CodeTransformer.doOnceOccurrencesLineNumbers.push(lineNum);
-    };
 
 
     CodeTransformer.registerCode = function () {
@@ -582,17 +574,13 @@ var createCodeTransformer = function (drawFunctionRunner, editor, events, Coffee
 
     };
 
-    CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun = function () {
+    CodeTransformer.addCheckMarksAndRegisterCode = function (editor, CodeTransformer, doOnceOccurrencesLineNumbers) {
 
         var elaboratedSource,
             elaboratedSourceByLine,
             iteratingOverSource,
             cursorPositionBeforeAddingCheckMark,
             drawFunction;
-
-        if (CodeTransformer.doOnceOccurrencesLineNumbers.length === 0) {
-            return;
-        }
 
         // if we are here, the following has happened: someone has added an element
         // to the doOnceOccurrencesLineNumbers array. This can only have happened
@@ -610,8 +598,8 @@ var createCodeTransformer = function (drawFunctionRunner, editor, events, Coffee
         // so we go there and add a tick next to each doOnce to indicate
         // that it has been run.
         elaboratedSourceByLine = elaboratedSource.split("\n");
-        for (iteratingOverSource = 0; iteratingOverSource < CodeTransformer.doOnceOccurrencesLineNumbers.length; iteratingOverSource += 1) {
-            elaboratedSourceByLine[CodeTransformer.doOnceOccurrencesLineNumbers[iteratingOverSource]] = elaboratedSourceByLine[CodeTransformer.doOnceOccurrencesLineNumbers[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*.*)$/gm, "$1\u2713doOnce$2");
+        for (iteratingOverSource = 0; iteratingOverSource < doOnceOccurrencesLineNumbers.length; iteratingOverSource += 1) {
+            elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]] = elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*.*)$/gm, "$1\u2713doOnce$2");
         }
         elaboratedSource = elaboratedSourceByLine.join("\n");
 

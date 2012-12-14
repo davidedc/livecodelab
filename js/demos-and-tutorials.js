@@ -630,10 +630,6 @@ var createProgramLoader = function (events, texteditor, animationLoop, threejs, 
         BlendControls.animationStyle(BlendControls.animationStyles.normal);
         // b) apply the potentially new animationStyle
         BlendControls.animationStyleUpdateIfChanged();
-        // combing the display list now means that all items in the
-        // display list are set to hidden because no draw() code has been ran
-        // to put items in it.
-        animationLoop.combDisplayList();
         // render the empty frame
         animationLoop.render();
 
