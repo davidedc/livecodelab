@@ -103,6 +103,14 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
         CodeTransformer.doOnceOccurrencesLineNumbers.push(lineNum);
     };
 
+    CodeTransformer.drawFunction = "";
+
+    CodeTransformer.setDrawFunction = function (drawFunc) {
+        if (drawFunc) {
+        	CodeTransformer.drawFunction = drawFunc;
+        }
+    };
+
 
     CodeTransformer.registerCode = function (editor) {
 
@@ -579,14 +587,16 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
         // coffeescript to javascript translator inserts.
         compiledOutput = compiledOutput.replace(/var frame/, ";");
 
-        return new Function(compiledOutput);
+        var functionFromCompiledCode = new Function(compiledOutput);
+        CodeTransformer.setDrawFunction(functionFromCompiledCode);
+        return functionFromCompiledCode;
 
     };
 
-    CodeTransformer.reinstateLastWorkingProgram = function (animationLoop) {
+    CodeTransformer.reinstateLastWorkingProgram = function () {
             // mark the program as flawed and register the previous stable one.
             CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
-            animationLoop.drawFunction = CodeTransformer.lastStableProgram;
+            CodeTransformer.drawFunction = CodeTransformer.lastStableProgram;
     }
 
     CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun = function (editor) {

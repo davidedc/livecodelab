@@ -17,18 +17,6 @@ var createAnimationLoop = function (events, CodeTransformer, threejs, timekeeper
     AnimationLoop.wantedFramesPerSecond = -1;
     AnimationLoop.useRequestAnimationFrame = true;
 
-    AnimationLoop.drawFunction = "";
-
-    AnimationLoop.setDrawFunction = function (drawFunc) {
-        if (drawFunc) {
-        	AnimationLoop.drawFunction = drawFunc;
-        }
-    };
-
-    AnimationLoop.registerCode = function (Editor) {
-        var drawFunction = CodeTransformer.registerCode(Editor);
-        AnimationLoop.setDrawFunction(drawFunction);
-    };
 
     // animation loop
     AnimationLoop.animate = function (Editor) {
@@ -67,7 +55,7 @@ var createAnimationLoop = function (events, CodeTransformer, threejs, timekeeper
         soundsystem.resetLoops();
 
 
-        if (AnimationLoop.drawFunction !== "") {
+        if (CodeTransformer.drawFunction !== "") {
 
             if (frame === 0) {
                 timekeeper.resetTime();
@@ -94,18 +82,18 @@ var createAnimationLoop = function (events, CodeTransformer, threejs, timekeeper
             // draws only a box, because the execution silently fails at the yeLow reference.
             // So in that case we need to a) highlight the error and b) run the previously
             // known good program.
-            try {
-                AnimationLoop.drawFunction();
-            } catch (e) {
-
-                // we caught a runtime error.
-                // This should only be because a referenced variable doesn't exist.
-
-                // mark the program as flawed and register the previous stable one.
-                events.trigger('display-error', e);
-                CodeTransformer.reinstateLastWorkingProgram(AnimationLoop);
-                return;
-            }
+             try {
+                 CodeTransformer.drawFunction();
+             } catch (e) {
+ 
+                 // we caught a runtime error.
+                 // This should only be because a referenced variable doesn't exist.
+ 
+                 // mark the program as flawed and register the previous stable one.
+                 events.trigger('display-error', e);
+                 CodeTransformer.reinstateLastWorkingProgram();
+                 return;
+             }
 
             // we have to repeat this check because in the case
             // the user has set frame = 0,
@@ -122,7 +110,7 @@ var createAnimationLoop = function (events, CodeTransformer, threejs, timekeeper
 
             CodeTransformer.consecutiveFramesWithoutRunTimeError += 1;
             if (CodeTransformer.consecutiveFramesWithoutRunTimeError === 5) {
-                CodeTransformer.lastStableProgram = AnimationLoop.drawFunction;
+                CodeTransformer.lastStableProgram = CodeTransformer.drawFunction;
             }
         } // if typeof draw
 
@@ -133,7 +121,7 @@ var createAnimationLoop = function (events, CodeTransformer, threejs, timekeeper
         stats.update();
 
         drawFunction = CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(Editor);
-        AnimationLoop.setDrawFunction(drawFunction);
+        CodeTransformer.setDrawFunction(drawFunction);
 
     };
 
@@ -224,7 +212,7 @@ var createAnimationLoop = function (events, CodeTransformer, threejs, timekeeper
 
 
     // Setup Event Listeners
-    events.bind('editor-change', AnimationLoop.registerCode, AnimationLoop);
+    events.bind('editor-change', CodeTransformer.registerCode, CodeTransformer);
 
 
 
