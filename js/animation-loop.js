@@ -51,6 +51,12 @@ var createAnimationLoop = function (editor, drawFunctionRunner, events, CodeTran
         var drawFunction;
 
         scheduleNextFrame();
+
+        // if the draw function is empty, then there
+        // is nothing to do, return.
+        if (drawFunctionRunner.drawFunction === "") {
+          return;
+        }
         
         matrixcommands.resetMatrixStack();
 
@@ -58,65 +64,62 @@ var createAnimationLoop = function (editor, drawFunctionRunner, events, CodeTran
         // so that the user program can create its own from scratch
         soundsystem.resetLoops();
 
+				if (frame === 0) {
+						timekeeper.resetTime();
+				} else {
+						timekeeper.updateTime();
+				}
+				CodeTransformer.doOnceOccurrencesLineNumbers = [];
+				soundsystem.anyCodeReactingTobpm = false;
 
-        if (drawFunctionRunner.drawFunction !== "") {
+				soundsystem.SetUpdatesPerMinute(60 * 4);
+				lightsystem.noLights();
 
-            if (frame === 0) {
-                timekeeper.resetTime();
-            } else {
-                timekeeper.updateTime();
-            }
-            CodeTransformer.doOnceOccurrencesLineNumbers = [];
-            soundsystem.anyCodeReactingTobpm = false;
+				graphics.reset();
 
-            soundsystem.SetUpdatesPerMinute(60 * 4);
-            lightsystem.noLights();
+				blendcontrols.animationStyle(blendcontrols.animationStyles.normal);
+				backgroundpainter.resetGradientStack();
 
-            graphics.reset();
+				// Now here there is another try/catch check when the draw function is ran.
+				// The reason is that there might be references to uninitialised or inexistent
+				// variables. For example:
+				//   box
+				//   background yeLow
+				//   ball
+				// draws only a box, because the execution silently fails at the yeLow reference.
+				// So in that case we need to a) highlight the error and b) run the previously
+				// known good program.
+				 try {
+						 drawFunctionRunner.drawFunction();
+				 } catch (e) {
 
-            blendcontrols.animationStyle(blendcontrols.animationStyles.normal);
-            backgroundpainter.resetGradientStack();
+						 // we caught a runtime error.
+						 // This should only be because a referenced variable doesn't exist.
 
-            // Now here there is another try/catch check when the draw function is ran.
-            // The reason is that there might be references to uninitialised or inexistent
-            // variables. For example:
-            //   box
-            //   background yeLow
-            //   ball
-            // draws only a box, because the execution silently fails at the yeLow reference.
-            // So in that case we need to a) highlight the error and b) run the previously
-            // known good program.
-             try {
-                 drawFunctionRunner.drawFunction();
-             } catch (e) {
- 
-                 // we caught a runtime error.
-                 // This should only be because a referenced variable doesn't exist.
- 
-                 // mark the program as flawed and register the previous stable one.
-                 events.trigger('display-error', e);
-                 drawFunctionRunner.reinstateLastWorkingProgram();
-                 return;
-             }
+						 // mark the program as flawed and register the previous stable one.
+						 events.trigger('display-error', e);
+						 drawFunctionRunner.reinstateLastWorkingProgram();
+						 return;
+				 }
 
-            // we have to repeat this check because in the case
-            // the user has set frame = 0,
-            // then we have to catch that case here
-            // after the program has executed
-            if (frame === 0) {
-                timekeeper.resetTime();
-            }
-            blendcontrols.animationStyleUpdateIfChanged();
-            backgroundpainter.simpleGradientUpdateIfChanged();
-            soundsystem.changeUpdatesPerMinuteIfNeeded();
+				// we have to repeat this check because in the case
+				// the user has set frame = 0,
+				// then we have to catch that case here
+				// after the program has executed
+				if (frame === 0) {
+						timekeeper.resetTime();
+				}
+				blendcontrols.animationStyleUpdateIfChanged();
+				backgroundpainter.simpleGradientUpdateIfChanged();
+				soundsystem.changeUpdatesPerMinuteIfNeeded();
 
-            frame += 1;
+				frame += 1;
 
-            drawFunctionRunner.consecutiveFramesWithoutRunTimeError += 1;
-            if (drawFunctionRunner.consecutiveFramesWithoutRunTimeError === 5) {
-                drawFunctionRunner.lastStableProgram = drawFunctionRunner.drawFunction;
-            }
-        } // if typeof draw
+				drawFunctionRunner.consecutiveFramesWithoutRunTimeError += 1;
+				if (drawFunctionRunner.consecutiveFramesWithoutRunTimeError === 5) {
+						drawFunctionRunner.lastStableProgram = drawFunctionRunner.drawFunction;
+				}
+		
 
         // do the render
         AnimationLoop.combDisplayList();
