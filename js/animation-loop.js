@@ -89,18 +89,13 @@ var createAnimationLoop = function (editor, drawFunctionRunner, events, CodeTran
 				// draws only a box, because the execution silently fails at the yeLow reference.
 				// So in that case we need to a) highlight the error and b) run the previously
 				// known good program.
-				 try {
-						 drawFunctionRunner.drawFunction();
-				 } catch (e) {
-
-						 // we caught a runtime error.
-						 // This should only be because a referenced variable doesn't exist.
-
-						 // mark the program as flawed and register the previous stable one.
-						 events.trigger('display-error', e);
+				var error = drawFunctionRunner.runDrawFunction();
+				if (error) {
+						 events.trigger('display-error', error);
 						 drawFunctionRunner.reinstateLastWorkingProgram();
 						 return;
-				 }
+				}
+
 
 				// we have to repeat this check because in the case
 				// the user has set frame = 0,
@@ -114,11 +109,6 @@ var createAnimationLoop = function (editor, drawFunctionRunner, events, CodeTran
 				soundsystem.changeUpdatesPerMinuteIfNeeded();
 
 				frame += 1;
-
-				drawFunctionRunner.consecutiveFramesWithoutRunTimeError += 1;
-				if (drawFunctionRunner.consecutiveFramesWithoutRunTimeError === 5) {
-						drawFunctionRunner.lastStableProgram = drawFunctionRunner.drawFunction;
-				}
 		
 
         // do the render
