@@ -1,4 +1,4 @@
-/*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
+/*jslint maxerr: 200, browser: true, regexp: true, bitwise: true */
 /*global autocoder */
 
 
@@ -97,6 +97,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, events, Coffee
 
 
             var editorContent = editor.getValue(),
+                preprocessingFunctions = {},
                 copyOfEditorContent,
                 programIsMangled = false,
                 programContainsStringsOrComments = false,
@@ -124,21 +125,36 @@ var createCodeTransformer = function (drawFunctionRunner, editor, events, Coffee
             }
 
 
-            // doOnce statements which have a tick mark next to them
-            // are not run. This is achieved by replacing the line with
-            // the "doOnce" with "if false" or "//" depending on whether
-            // the doOnce is a multiline or an inline one, like so:
-            //      ✓doOnce ->
-            //        background 255
-            //        fill 255,0,0
-            //      ✓doOnce -> ball
-            // becomes:
-            //      if false ->
-            //        background 255
-            //        fill 255,0,0
-            //      //doOnce -> ball
-            editorContent = editorContent.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false");
-            editorContent = editorContent.replace(/\u2713/g, "//");
+            /**
+             * Stops ticked doOnce blocks from running
+             *
+             * doOnce statements which have a tick mark next to them
+             * are not run. This is achieved by replacing the line with
+             * the "doOnce" with "if false" or "//" depending on whether
+             * the doOnce is a multiline or an inline one, like so:
+             *      ✓doOnce ->
+             *        background 255
+             *        fill 255,0,0
+             *      ✓doOnce -> ball
+             * becomes:
+             *      if false ->
+             *        background 255
+             *        fill 255,0,0
+             *      //doOnce -> ball
+             *
+             * @param {string} code    the code to re-write
+             *
+             * @returns {string}
+             */
+            preprocessingFunctions.removeTickedDoOnce = function (code) {
+                var newCode;
+                newCode = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false");
+                newCode = newCode.replace(/\u2713/g, "//");
+                return newCode;
+            };
+
+            editorContent = preprocessingFunctions.removeTickedDoOnce(editorContent);
+
 
             // according to jsperf, this is the fastest way to count for
             // occurrences of a character. We count apostrophes
