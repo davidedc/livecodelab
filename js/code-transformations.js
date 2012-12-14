@@ -582,7 +582,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, events, Coffee
 
     };
 
-    CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun = function (editor) {
+    CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun = function () {
 
         var elaboratedSource,
             elaboratedSourceByLine,
@@ -632,7 +632,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, events, Coffee
         // Also registerCode() may split the source code by line, so we can
         // avoid that since we've just split it, we could pass
         // the already split code.
-        drawFunction = CodeTransformer.registerCode(editor);
+        drawFunction = CodeTransformer.registerCode();
         return drawFunction;
     };
 
