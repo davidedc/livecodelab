@@ -42,7 +42,7 @@ var startEnvironment = function () {
 
     CodeTransformer = createCodeTransformer(LiveCodeLab.events, CoffeeScript, GraphicsCommands); // autocoder
 
-    AnimationController = createAnimationController(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter);
+    AnimationLoop = createAnimationLoop(LiveCodeLab.events, CodeTransformer, ThreeJs, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter);
     editor = createEditor(LiveCodeLab.events, CodeMirror);
 
     autocoder = createAutocoder(LiveCodeLab.events, editor, ColourNames); // McLexer
@@ -50,7 +50,7 @@ var startEnvironment = function () {
     // EditorDimmer functions should probablly be rolled into the editor itself
     EditorDimmer = createEditorDimmer(LiveCodeLab.events); // $
 
-    ProgramLoader = createProgramLoader(LiveCodeLab.events, editor, AnimationController, ThreeJs, GraphicsCommands); // $, Detector, BlendControls
+    ProgramLoader = createProgramLoader(LiveCodeLab.events, editor, AnimationLoop, ThreeJs, GraphicsCommands); // $, Detector, BlendControls
 
     Ui = createUi(LiveCodeLab.events, stats); // $
 
@@ -59,7 +59,7 @@ var startEnvironment = function () {
     SoundSystem.loadAndTestAllTheSounds(Ui.soundSystemOk);
 
     if (ThreeJs) {
-        AnimationController.animate(editor);
+        AnimationLoop.animate(editor);
     }
 
     if (!Detector.webgl || ThreeJs.forceCanvasRenderer) {

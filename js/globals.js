@@ -34,7 +34,7 @@ var autocoder;
 // All used globally
 var ThreeJs;
 var BigCursor;
-var AnimationController;
+var AnimationLoop;
 var ProgramLoader;
 var LightSystem;
 var BlendControls;

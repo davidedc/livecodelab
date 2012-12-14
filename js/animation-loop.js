@@ -4,34 +4,34 @@
 var frame = 0;
 
 
-var createAnimationController = function (events, CodeTransformer, threejs, timekeeper, graphics, stats, matrixcommands, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
+var createAnimationLoop = function (events, CodeTransformer, threejs, timekeeper, graphics, stats, matrixcommands, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
 
     'use strict';
 
-    var AnimationController = {},
+    var AnimationLoop = {},
         loopInterval;
 
     // if you put to -1 then it means that
     // requestAnimationFrame will try to go as fast as it
     // can.
-    AnimationController.wantedFramesPerSecond = -1;
-    AnimationController.useRequestAnimationFrame = true;
+    AnimationLoop.wantedFramesPerSecond = -1;
+    AnimationLoop.useRequestAnimationFrame = true;
 
-    AnimationController.drawFunction = "";
+    AnimationLoop.drawFunction = "";
 
-    AnimationController.setDrawFunction = function (drawFunc) {
+    AnimationLoop.setDrawFunction = function (drawFunc) {
         if (drawFunc) {
-        	AnimationController.drawFunction = drawFunc;
+        	AnimationLoop.drawFunction = drawFunc;
         }
     };
 
-    AnimationController.registerCode = function (Editor) {
+    AnimationLoop.registerCode = function (Editor) {
         var drawFunction = CodeTransformer.registerCode(Editor);
-        AnimationController.setDrawFunction(drawFunction);
+        AnimationLoop.setDrawFunction(drawFunction);
     };
 
     // animation loop
-    AnimationController.animate = function (Editor) {
+    AnimationLoop.animate = function (Editor) {
 
         var drawFunction;
 
@@ -40,24 +40,24 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
         // - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
         // requestAnimationFrame seems to only do 60 fps, which in my case is too much,
         // I rather prefer to have a slower framerate but steadier.
-        if (AnimationController.useRequestAnimationFrame) {
-            if (AnimationController.wantedFramesPerSecond === -1) {
+        if (AnimationLoop.useRequestAnimationFrame) {
+            if (AnimationLoop.wantedFramesPerSecond === -1) {
                 window.requestAnimationFrame(function () {
-                    AnimationController.animate(Editor);
+                    AnimationLoop.animate(Editor);
                 });
             } else {
                 if (loopInterval === undefined) {
                     loopInterval = setInterval(function () {
                         window.requestAnimationFrame(function () {
-                            AnimationController.animate(Editor);
+                            AnimationLoop.animate(Editor);
                         });
-                    }, 1000 / AnimationController.wantedFramesPerSecond);
+                    }, 1000 / AnimationLoop.wantedFramesPerSecond);
                 }
             }
         } else {
             setTimeout(function () {
-                AnimationController.animate(Editor);
-            }, 1000 / AnimationController.wantedFramesPerSecond);
+                AnimationLoop.animate(Editor);
+            }, 1000 / AnimationLoop.wantedFramesPerSecond);
         }
 
         matrixcommands.resetMatrixStack();
@@ -67,7 +67,7 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
         soundsystem.resetLoops();
 
 
-        if (AnimationController.drawFunction !== "") {
+        if (AnimationLoop.drawFunction !== "") {
 
             if (frame === 0) {
                 timekeeper.resetTime();
@@ -95,7 +95,7 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
             // So in that case we need to a) highlight the error and b) run the previously
             // known good program.
             try {
-                AnimationController.drawFunction();
+                AnimationLoop.drawFunction();
             } catch (e) {
 
                 // we caught a runtime error.
@@ -103,7 +103,7 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
 
                 // mark the program as flawed and register the previous stable one.
                 events.trigger('display-error', e);
-                CodeTransformer.reinstateLastWorkingProgram(AnimationController);
+                CodeTransformer.reinstateLastWorkingProgram(AnimationLoop);
                 return;
             }
 
@@ -122,22 +122,22 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
 
             CodeTransformer.consecutiveFramesWithoutRunTimeError += 1;
             if (CodeTransformer.consecutiveFramesWithoutRunTimeError === 5) {
-                CodeTransformer.lastStableProgram = AnimationController.drawFunction;
+                CodeTransformer.lastStableProgram = AnimationLoop.drawFunction;
             }
         } // if typeof draw
 
         // do the render
-        AnimationController.combDisplayList();
-        AnimationController.render();
+        AnimationLoop.combDisplayList();
+        AnimationLoop.render();
         // update stats
         stats.update();
 
         drawFunction = CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(Editor);
-        AnimationController.setDrawFunction(drawFunction);
+        AnimationLoop.setDrawFunction(drawFunction);
 
     };
 
-    AnimationController.render = function () {
+    AnimationLoop.render = function () {
 
         if (threejs.isWebGLUsed) {
             threejs.composer.render();
@@ -196,7 +196,7 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
     //       are much faster. Also the objects of the scene are harder to reach, so
     //       it could be the case that this mechanism is not needed anymore.
 
-    AnimationController.combDisplayList = function () {
+    AnimationLoop.combDisplayList = function () {
         var i,
             sceneObject,
             primitiveType;
@@ -224,10 +224,10 @@ var createAnimationController = function (events, CodeTransformer, threejs, time
 
 
     // Setup Event Listeners
-    events.bind('editor-change', AnimationController.registerCode, AnimationController);
+    events.bind('editor-change', AnimationLoop.registerCode, AnimationLoop);
 
 
 
-    return AnimationController;
+    return AnimationLoop;
 
 };

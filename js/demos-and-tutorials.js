@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, regexp: true */
 /*global $, Detector, BlendControls */
 
-var createProgramLoader = function (events, texteditor, animationController, threejs, graphics) {
+var createProgramLoader = function (events, texteditor, animationLoop, threejs, graphics) {
 
     'use strict';
 
@@ -633,9 +633,9 @@ var createProgramLoader = function (events, texteditor, animationController, thr
         // combing the display list now means that all items in the
         // display list are set to hidden because no draw() code has been ran
         // to put items in it.
-        animationController.combDisplayList();
+        animationLoop.combDisplayList();
         // render the empty frame
-        animationController.render();
+        animationLoop.render();
 
     };
 

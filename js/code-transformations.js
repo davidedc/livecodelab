@@ -583,10 +583,10 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
 
     };
 
-    CodeTransformer.reinstateLastWorkingProgram = function (animationController) {
+    CodeTransformer.reinstateLastWorkingProgram = function (animationLoop) {
             // mark the program as flawed and register the previous stable one.
             CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
-            animationController.drawFunction = CodeTransformer.lastStableProgram;
+            animationLoop.drawFunction = CodeTransformer.lastStableProgram;
     }
 
     CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun = function (editor) {
