@@ -39,6 +39,7 @@ module.exports = function (grunt) {
             dist: {
                 src: [
                     'js/events.js',
+                    'js/simple-error-checker.js',
                     'js/url-router.js',
                     'js/big-cursor-animation.js',
                     'js/autocoder/mclexer.js',
