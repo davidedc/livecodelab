@@ -2,7 +2,7 @@
 /*global autocoder */
 
 
-var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
+var createCodeTransformer = function (editor, events, CoffeeCompiler, graphics) {
 
     'use strict';
 
@@ -112,7 +112,7 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
     };
 
 
-    CodeTransformer.registerCode = function (editor) {
+    CodeTransformer.registerCode = function () {
 
 
             var editorContent = editor.getValue(),
