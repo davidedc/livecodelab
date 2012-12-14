@@ -4,7 +4,7 @@
 var frame = 0;
 
 
-var createAnimationLoop = function (drawFunctionRunner, events, CodeTransformer, threejs, timekeeper, graphics, stats, matrixcommands, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
+var createAnimationLoop = function (editor, drawFunctionRunner, events, CodeTransformer, threejs, timekeeper, graphics, stats, matrixcommands, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
 
     'use strict';
 
@@ -18,11 +18,7 @@ var createAnimationLoop = function (drawFunctionRunner, events, CodeTransformer,
     AnimationLoop.useRequestAnimationFrame = true;
 
 
-    // animation loop
-    AnimationLoop.animate = function (Editor) {
-
-        var drawFunction;
-
+    var scheduleNextFrame = function() {
         // loop on request animation loop
         // - it has to be at the begining of the function
         // - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
@@ -31,23 +27,31 @@ var createAnimationLoop = function (drawFunctionRunner, events, CodeTransformer,
         if (AnimationLoop.useRequestAnimationFrame) {
             if (AnimationLoop.wantedFramesPerSecond === -1) {
                 window.requestAnimationFrame(function () {
-                    AnimationLoop.animate(Editor);
+                    AnimationLoop.animate(editor);
                 });
             } else {
                 if (loopInterval === undefined) {
                     loopInterval = setInterval(function () {
                         window.requestAnimationFrame(function () {
-                            AnimationLoop.animate(Editor);
+                            AnimationLoop.animate(editor);
                         });
                     }, 1000 / AnimationLoop.wantedFramesPerSecond);
                 }
             }
         } else {
             setTimeout(function () {
-                AnimationLoop.animate(Editor);
+                AnimationLoop.animate(editor);
             }, 1000 / AnimationLoop.wantedFramesPerSecond);
         }
+    }
+    
+    // animation loop
+    AnimationLoop.animate = function () {
 
+        var drawFunction;
+
+        scheduleNextFrame();
+        
         matrixcommands.resetMatrixStack();
 
         // the sound list needs to be cleaned
@@ -120,7 +124,7 @@ var createAnimationLoop = function (drawFunctionRunner, events, CodeTransformer,
         // update stats
         stats.update();
 
-        drawFunction = CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(Editor);
+        drawFunction = CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(editor);
         drawFunctionRunner.setDrawFunction(drawFunction);
 
     };
