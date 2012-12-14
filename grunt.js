@@ -65,6 +65,7 @@ module.exports = function (grunt) {
                     'js/matrix-commands.js',
                     'js/graphic-primitives.js',
                     'js/math.js',
+                    'js/draw-function-runner.js',
                     'js/code-transformations.js',
                     'js/demos-and-tutorials.js',
                     'js/autocoder/autocode.js',

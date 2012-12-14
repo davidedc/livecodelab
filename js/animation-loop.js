@@ -4,7 +4,7 @@
 var frame = 0;
 
 
-var createAnimationLoop = function (events, CodeTransformer, threejs, timekeeper, graphics, stats, matrixcommands, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
+var createAnimationLoop = function (drawFunctionRunner, events, CodeTransformer, threejs, timekeeper, graphics, stats, matrixcommands, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
 
     'use strict';
 
@@ -55,7 +55,7 @@ var createAnimationLoop = function (events, CodeTransformer, threejs, timekeeper
         soundsystem.resetLoops();
 
 
-        if (CodeTransformer.drawFunction !== "") {
+        if (drawFunctionRunner.drawFunction !== "") {
 
             if (frame === 0) {
                 timekeeper.resetTime();
@@ -83,7 +83,7 @@ var createAnimationLoop = function (events, CodeTransformer, threejs, timekeeper
             // So in that case we need to a) highlight the error and b) run the previously
             // known good program.
              try {
-                 CodeTransformer.drawFunction();
+                 drawFunctionRunner.drawFunction();
              } catch (e) {
  
                  // we caught a runtime error.
@@ -91,7 +91,7 @@ var createAnimationLoop = function (events, CodeTransformer, threejs, timekeeper
  
                  // mark the program as flawed and register the previous stable one.
                  events.trigger('display-error', e);
-                 CodeTransformer.reinstateLastWorkingProgram();
+                 drawFunctionRunner.reinstateLastWorkingProgram();
                  return;
              }
 
@@ -108,9 +108,9 @@ var createAnimationLoop = function (events, CodeTransformer, threejs, timekeeper
 
             frame += 1;
 
-            CodeTransformer.consecutiveFramesWithoutRunTimeError += 1;
-            if (CodeTransformer.consecutiveFramesWithoutRunTimeError === 5) {
-                CodeTransformer.lastStableProgram = CodeTransformer.drawFunction;
+            drawFunctionRunner.consecutiveFramesWithoutRunTimeError += 1;
+            if (drawFunctionRunner.consecutiveFramesWithoutRunTimeError === 5) {
+                drawFunctionRunner.lastStableProgram = drawFunctionRunner.drawFunction;
             }
         } // if typeof draw
 
@@ -121,7 +121,7 @@ var createAnimationLoop = function (events, CodeTransformer, threejs, timekeeper
         stats.update();
 
         drawFunction = CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun(Editor);
-        CodeTransformer.setDrawFunction(drawFunction);
+        drawFunctionRunner.setDrawFunction(drawFunction);
 
     };
 

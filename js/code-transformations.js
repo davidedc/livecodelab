@@ -2,7 +2,7 @@
 /*global autocoder */
 
 
-var createCodeTransformer = function (editor, events, CoffeeCompiler, graphics) {
+var createCodeTransformer = function (drawFunctionRunner, editor, events, CoffeeCompiler, graphics) {
 
     'use strict';
 
@@ -12,9 +12,6 @@ var createCodeTransformer = function (editor, events, CoffeeCompiler, graphics) 
         compiledOutput,
         listOfPossibleFunctions;
 
-
-    CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
-    CodeTransformer.lastStableProgram = "";
 
     CodeTransformer.compiler = CoffeeCompiler;
 
@@ -101,14 +98,6 @@ var createCodeTransformer = function (editor, events, CoffeeCompiler, graphics) 
     // This is the function called from the compiled code to add the doOnce line
     window.addDoOnce = CodeTransformer.addDoOnce = function (lineNum) {
         CodeTransformer.doOnceOccurrencesLineNumbers.push(lineNum);
-    };
-
-    CodeTransformer.drawFunction = "";
-
-    CodeTransformer.setDrawFunction = function (drawFunc) {
-        if (drawFunc) {
-        	CodeTransformer.drawFunction = drawFunc;
-        }
     };
 
 
@@ -573,7 +562,7 @@ var createCodeTransformer = function (editor, events, CoffeeCompiler, graphics) 
         // see here for the deepest examination ever of "eval"
         // http://perfectionkills.com/global-eval-what-are-the-options/
         // note that exceptions are caught by the window.onerror callback
-        CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
+        DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
 
         // You might want to change the frame count from the program
         // just like you can in Processing, but it turns out that when
@@ -588,16 +577,10 @@ var createCodeTransformer = function (editor, events, CoffeeCompiler, graphics) 
         compiledOutput = compiledOutput.replace(/var frame/, ";");
 
         var functionFromCompiledCode = new Function(compiledOutput);
-        CodeTransformer.setDrawFunction(functionFromCompiledCode);
+        drawFunctionRunner.setDrawFunction(functionFromCompiledCode);
         return functionFromCompiledCode;
 
     };
-
-    CodeTransformer.reinstateLastWorkingProgram = function () {
-            // mark the program as flawed and register the previous stable one.
-            CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
-            CodeTransformer.drawFunction = CodeTransformer.lastStableProgram;
-    }
 
     CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun = function (editor) {
 

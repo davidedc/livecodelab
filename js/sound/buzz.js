@@ -32,7 +32,7 @@ var buzz = {
         duration: 5000,
         formats: [],
         loop: false,
-        placeholder: '--',
+        placerunner: '--',
         preload: 'metadata',
         volume: 80
     },
@@ -229,7 +229,7 @@ var buzz = {
             }
 
             var time = Math.round( this.sound.currentTime * 100 ) / 100;
-            return isNaN( time ) ? buzz.defaults.placeholder : time;
+            return isNaN( time ) ? buzz.defaults.placerunner : time;
         };
 
         this.setPercent = function( percent ) {
@@ -246,7 +246,7 @@ var buzz = {
             }
 
 			var percent = Math.round( buzz.toPercent( this.sound.currentTime, this.sound.duration ) );
-            return isNaN( percent ) ? buzz.defaults.placeholder : percent;
+            return isNaN( percent ) ? buzz.defaults.placerunner : percent;
         };
 
         this.setSpeed = function( duration ) {
@@ -271,7 +271,7 @@ var buzz = {
             }
 
             var duration = Math.round( this.sound.duration * 100 ) / 100;
-            return isNaN( duration ) ? buzz.defaults.placeholder : duration;
+            return isNaN( duration ) ? buzz.defaults.placerunner : duration;
         };
 
         this.getPlayed = function() {

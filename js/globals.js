@@ -40,6 +40,7 @@ var LightSystem;
 var BlendControls;
 var MatrixCommands;
 var TimeKeeper;
+var DrawFunctionRunner;
 var CodeTransformer;
 var GraphicsCommands;
 var BackgroundPainter;
