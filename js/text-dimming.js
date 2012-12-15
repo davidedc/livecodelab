@@ -1,7 +1,7 @@
 /*jslint */
 /*global $ */
 
-var createEditorDimmer = function (events) {
+var createEditorDimmer = function (eventRouter) {
 
     'use strict';
 
@@ -57,16 +57,16 @@ var createEditorDimmer = function (events) {
             clearInterval(dimIntervalID);
             EditorDimmer.undimEditor();
         }
-        events.trigger('editor-dimmer-state', dimCodeOn);
+        eventRouter.trigger('editor-dimmer-state', dimCodeOn);
     };
 
 
     // Setup Event Listeners
-    events.bind('editor-dim', EditorDimmer.dimEditor, EditorDimmer);
+    eventRouter.bind('editor-dim', EditorDimmer.dimEditor, EditorDimmer);
 
-    events.bind('editor-undim', EditorDimmer.undimEditor, EditorDimmer);
+    eventRouter.bind('editor-undim', EditorDimmer.undimEditor, EditorDimmer);
 
-    events.bind('editor-toggle-dim', EditorDimmer.toggleDimCode, EditorDimmer);
+    eventRouter.bind('editor-toggle-dim', EditorDimmer.toggleDimCode, EditorDimmer);
 
     return EditorDimmer;
 
