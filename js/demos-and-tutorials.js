@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, regexp: true */
 /*global $, Detector, BlendControls */
 
-var createProgramLoader = function (events, texteditor, animationLoop, threejs, renderer, graphics) {
+var createProgramLoader = function (eventRouter, texteditor, animationLoop, threejs, renderer, graphics) {
 
     'use strict';
 
@@ -592,11 +592,11 @@ var createProgramLoader = function (events, texteditor, animationLoop, threejs, 
         // set the demo as a hash state
         // so that ideally people can link directly to
         // a specific demo they like.
-        events.trigger('set-url-hash', 'bookmark=' + demoName);
+        eventRouter.trigger('set-url-hash', 'bookmark=' + demoName);
 
-        events.trigger('cursor-hide');
+        eventRouter.trigger('cursor-hide');
 
-        events.trigger('editor-undim');
+        eventRouter.trigger('editor-undim');
 
         graphics.doTheSpinThingy = false;
 
@@ -639,9 +639,9 @@ var createProgramLoader = function (events, texteditor, animationLoop, threejs, 
 
 
     // Setup Event Listeners
-    events.bind('load-program', ProgramLoader.loadDemoOrTutorial, ProgramLoader);
+    eventRouter.bind('load-program', ProgramLoader.loadDemoOrTutorial, ProgramLoader);
 
-    events.bind('url-hash', function (hash) {
+    eventRouter.bind('url-hash', function (hash) {
         var matched = hash.match(/bookmark=(.*)/);
         if (matched) {
             ProgramLoader.loadDemoOrTutorial(matched[1]);
