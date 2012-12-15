@@ -57,7 +57,7 @@ var createEditorDimmer = function (eventRouter) {
             clearInterval(dimIntervalID);
             EditorDimmer.undimEditor();
         }
-        eventRouter.trigger('editor-dimmer-state', dimCodeOn);
+        eventRouter.trigger('auto-hide-code-button-pressed', dimCodeOn);
     };
 
 

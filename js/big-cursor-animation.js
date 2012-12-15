@@ -82,11 +82,11 @@ var createBigCursor = function (eventRouter) {
 
 
     // Setup Event Listeners
-    eventRouter.bind('cursor-show', function () {
+    eventRouter.bind('big-cursor-show', function () {
         showFakeText();
     });
 
-    eventRouter.bind('cursor-hide', function () {
+    eventRouter.bind('big-cursor-hide', function () {
         shrinkFakeText();
     });
 

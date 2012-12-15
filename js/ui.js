@@ -180,7 +180,7 @@ var createUi = function (eventRouter, stats) {
     eventRouter.bind('display-error', Ui.checkErrorAndReport, Ui);
     eventRouter.bind('clear-error', Ui.clearError, Ui);
 
-    eventRouter.bind('autocoder-state', function (state) {
+    eventRouter.bind('autocoder-button-pressed', function (state) {
         if (state === true) {
             $("#autocodeIndicator").html("Autocode: on").css("background-color", '#FF0000');
         } else {
@@ -192,7 +192,7 @@ var createUi = function (eventRouter, stats) {
         $("#autocodeIndicator").fadeOut(100).fadeIn(100);
     });
 
-    eventRouter.bind('editor-dimmer-state', function (state) {
+    eventRouter.bind('auto-hide-code-button-pressed', function (state) {
         if (state === true) {
             $("#dimCodeIndicator").html("Hide Code: on");
         } else {

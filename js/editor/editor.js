@@ -59,7 +59,7 @@ var createEditor = function (eventRouter, codemirror) {
         // will pass in the "editor" instance as the first
         // argument to the function callback
         onChange: function (editor) {
-            eventRouter.trigger('editor-change', editor);
+            eventRouter.trigger('code_changed', editor);
         },
         onCursorActivity: suspendDimmingAndCheckIfLink
     });

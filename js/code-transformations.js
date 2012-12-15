@@ -104,7 +104,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
             errResults;
 
         if (editorContent !== '') {
-            eventRouter.trigger('cursor-hide');
+            eventRouter.trigger('big-cursor-hide');
         }
 
         if (editorContent === '') {
@@ -112,7 +112,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
 
             eventRouter.trigger('set-url-hash', '');
 
-            eventRouter.trigger('cursor-show');
+            eventRouter.trigger('big-cursor-show');
         }
 
 

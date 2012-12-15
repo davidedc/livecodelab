@@ -557,7 +557,7 @@ var createAutocoder = function (eventRouter, editor, ColourNames) {
         } else {
             clearInterval(autocoderMutateTimeout);
         }
-        eventRouter.trigger('autocoder-state', autocoder.active);
+        eventRouter.trigger('autocoder-button-pressed', autocoder.active);
     };
 
     // Setup Event Listeners

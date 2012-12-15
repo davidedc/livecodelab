@@ -594,7 +594,7 @@ var createProgramLoader = function (eventRouter, texteditor, animationLoop, thre
         // a specific demo they like.
         eventRouter.trigger('set-url-hash', 'bookmark=' + demoName);
 
-        eventRouter.trigger('cursor-hide');
+        eventRouter.trigger('big-cursor-hide');
 
         eventRouter.trigger('editor-undim');
 

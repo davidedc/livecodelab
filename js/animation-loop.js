@@ -130,7 +130,7 @@ var createAnimationLoop = function (editor, drawFunctionRunner, eventRouter, Cod
 
 
     // Setup Event Listeners
-    eventRouter.bind('editor-change', CodeTransformer.registerCode, CodeTransformer);
+    eventRouter.bind('code_changed', CodeTransformer.registerCode, CodeTransformer);
 
 
 
