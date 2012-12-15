@@ -144,18 +144,18 @@ var createBackgroundPainter = function (events, threejs, colourfuncs) {
             for (scanningGradStack = 0; scanningGradStack < gradStack.length; scanningGradStack++) {
 
                 if (gradStack[scanningGradStack].gradStacka !== undefined) {
-                    radgrad = threejs.backgroundSceneContext.createLinearGradient(threejs.scaledBackgroundWidth / 2, 0, threejs.scaledBackgroundWidth / 2, threejs.scaledBackgroundHeight);
+                    radgrad = LiveCodeLab.backgroundSceneContext.createLinearGradient(threejs.scaledBackgroundWidth / 2, 0, threejs.scaledBackgroundWidth / 2, threejs.scaledBackgroundHeight);
                     radgrad.addColorStop(0, colourfuncs.color.toString(gradStack[scanningGradStack].gradStacka));
                     radgrad.addColorStop(0.5, colourfuncs.color.toString(gradStack[scanningGradStack].gradStackb));
                     radgrad.addColorStop(1, colourfuncs.color.toString(gradStack[scanningGradStack].gradStackc));
 
-                    threejs.backgroundSceneContext.globalAlpha = 1.0;
-                    threejs.backgroundSceneContext.fillStyle = radgrad;
-                    threejs.backgroundSceneContext.fillRect(0, 0, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
+                    LiveCodeLab.backgroundSceneContext.globalAlpha = 1.0;
+                    LiveCodeLab.backgroundSceneContext.fillStyle = radgrad;
+                    LiveCodeLab.backgroundSceneContext.fillRect(0, 0, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
                 } else {
-                    threejs.backgroundSceneContext.globalAlpha = 1.0;
-                    threejs.backgroundSceneContext.fillStyle = colourfuncs.color.toString(gradStack[scanningGradStack].solid);
-                    threejs.backgroundSceneContext.fillRect(0, 0, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
+                    LiveCodeLab.backgroundSceneContext.globalAlpha = 1.0;
+                    LiveCodeLab.backgroundSceneContext.fillStyle = colourfuncs.color.toString(gradStack[scanningGradStack].solid);
+                    LiveCodeLab.backgroundSceneContext.fillRect(0, 0, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
                 }
             }
         }

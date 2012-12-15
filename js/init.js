@@ -6,7 +6,7 @@ var isCanvasSupported = function () {
     return !!(elem.getContext && elem.getContext('2d'));
 };
 
-var startEnvironment = function (canvasElementForThreeJS) {
+var startEnvironment = function (canvasElementForThreeJS, canvasForBackground) {
 
     'use strict';
 
@@ -25,6 +25,16 @@ var startEnvironment = function (canvasElementForThreeJS) {
     MatrixCommands = createMatrixCommands(THREE, TimeKeeper);
 
     ThreeJs = createThreeJs(Detector, THREE, THREEx, canvasElementForThreeJS);
+    
+    if (!canvasForBackground) {
+      canvasForBackground = document.createElement('canvas');
+    }
+    LiveCodeLab.canvasForBackground = canvasForBackground;
+    LiveCodeLab.canvasForBackground.width = ThreeJs.scaledBackgroundWidth;
+    LiveCodeLab.canvasForBackground.height = ThreeJs.scaledBackgroundHeight;
+    LiveCodeLab.backgroundSceneContext = LiveCodeLab.canvasForBackground.getContext('2d');
+
+
     BlendControls = createBlendControls(ThreeJs);
     Bowser = createBowser();
     SampleBank = createSampleBank(buzz);
@@ -111,6 +121,6 @@ $(document).ready(function () {
         return;
     }
 
-    startEnvironment();
+    startEnvironment(null, document.getElementById('backGroundCanvas'));
 
 });

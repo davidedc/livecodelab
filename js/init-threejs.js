@@ -24,7 +24,7 @@ var createThreeJs = function (Detector, THREE, THREEx, canvasElementForThreeJS) 
 
         ThreeJs.ballDefaultDetLevel = 16;
         
-        if (canvasElementForThreeJS === undefined) {
+        if (!canvasElementForThreeJS) {
           canvasElementForThreeJS = document.createElement('canvas');
         }
         ThreeJs.sceneRenderingCanvas = canvasElementForThreeJS;
@@ -46,7 +46,10 @@ var createThreeJs = function (Detector, THREE, THREEx, canvasElementForThreeJS) 
 
         // we always draw the 3d scene off-screen
         ThreeJs.ballDefaultDetLevel = 6;
-        ThreeJs.sceneRenderingCanvas = document.createElement('canvas');
+        if (!canvasElementForThreeJS) {
+          canvasElementForThreeJS = document.createElement('canvas');
+        }
+        ThreeJs.sceneRenderingCanvas = canvasElementForThreeJS;
         ThreeJs.sceneRenderingCanvasContext = ThreeJs.sceneRenderingCanvas.getContext('2d');
         ThreeJs.renderer = new THREE.CanvasRenderer({
             canvas: ThreeJs.sceneRenderingCanvas,
@@ -68,11 +71,6 @@ var createThreeJs = function (Detector, THREE, THREEx, canvasElementForThreeJS) 
         ThreeJs.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-
-    backgroundScene = document.getElementById('backGroundCanvas');
-    backgroundScene.width = ThreeJs.scaledBackgroundWidth;
-    backgroundScene.height = ThreeJs.scaledBackgroundHeight;
-    ThreeJs.backgroundSceneContext = backgroundScene.getContext('2d');
 
 
     ThreeJs.scene = new THREE.Scene();
