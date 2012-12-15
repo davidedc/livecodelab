@@ -2,7 +2,7 @@
 /*global LiveCodeLab, $, autocoder, BackgroundPainter, initThreeJs, buzz */
 
 var isCanvasSupported = function () {
-    var elem = document.createElement('canvas');
+    var elem = document.createElement('testCanvas');
     return !!(elem.getContext && elem.getContext('2d'));
 };
 
