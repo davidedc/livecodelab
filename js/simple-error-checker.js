@@ -1,6 +1,3 @@
-/*jslint browser: true, devel: true */
-/*global */
-
 
 var createParsingFunctions = function () {
 
@@ -54,7 +51,8 @@ var createCodeChecker = function () {
     var CodeChecker = createParsingFunctions(),
         states = {},
         isErr,
-        setState;
+        setState,
+        generateErrMessage;
 
     setState = function () {
         var state = {
@@ -77,18 +75,40 @@ var createCodeChecker = function () {
     isErr = function (s) {
         if (s.bracketStack.length > 0) {
             var b = s.bracketStack.pop();
-            if (b === "{") {
-                states.message = "Unbalanced {}";
-            } else if (b === "(") {
-                states.message = "Unbalanced ()";
-            } else {
-                states.message = "Unbalanced []";
-            }
+            states.message = generateErrMessage(b);
             s.err = true;
-        } else if (s.inSingleString || s.inDoubleString) {
+        } else if (s.inSingleString) {
+            states.message = generateErrMessage("'");
+            s.err = true;
+        } else if (s.inDoubleString) {
+            states.message = generateErrMessage('"');
             s.err = true;
         }
         return s;
+    };
+
+    generateErrMessage = function (token) {
+        var message;
+        switch (token) {
+        case "{":
+            message = "Unbalanced {}";
+            break;
+        case "(":
+            message = "Unbalanced ()";
+            break;
+        case "[":
+            message = "Unbalanced []";
+            break;
+        case "'":
+            message = "Missing '";
+            break;
+        case '"':
+            message = 'Missing "';
+            break;
+        default:
+            message = "Unexpected " + token;
+        }
+        return message;
     };
 
     CodeChecker.charHandlers = {
@@ -102,7 +122,7 @@ var createCodeChecker = function () {
                 var b = states.bracketStack.pop();
                 if (b !== '[') {
                     states.err = true;
-                    states.message = "Unbalanced []";
+                    states.message = generateErrMessage(b);
                 }
             }
         },
@@ -116,7 +136,7 @@ var createCodeChecker = function () {
                 var b = states.bracketStack.pop();
                 if (b !== '(') {
                     states.err = true;
-                    states.message = "Unbalanced ()";
+                    states.message = generateErrMessage(b);
                 }
             }
         },
@@ -130,7 +150,7 @@ var createCodeChecker = function () {
                 var b = states.bracketStack.pop();
                 if (b !== "{") {
                     states.err = true;
-                    states.message = "Unbalanced {}";
+                    states.message = generateErrMessage(b);
                 }
             }
         },
@@ -170,10 +190,10 @@ var createCodeChecker = function () {
         },
         "\n": function () {
             if (states.inSingleString) {
-                states.message = "Missing '";
+                states.message = generateErrMessage("'");
                 states.err = true;
             } else if (states.inDoubleString) {
-                states.message = 'Missing "';
+                states.message = generateErrMessage('"');
                 states.err = true;
             } else if (states.inComment) {
                 states.inComment = false;
