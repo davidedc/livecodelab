@@ -12,10 +12,21 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
     // Used by Three.js
     // add Stats.js - https://github.com/mrdoob/stats.js
-    var stats = new Stats();
+    var stats = new Stats(); //no
+    
+    /*
+    createLiveCodeLab(
+      createEventRouter(),
+      forceCanvasRenderer,
+      createTimeKeeper(),
+      canvasElementForThreeJS,
+      canvasForBackground,
+    );
+    */
 
 
-    LiveCodeLab.events = createEventRouter();
+    LiveCodeLab.events = createEventRouter(); //yes
+    //no
     if (forceCanvasRenderer === undefined) {
     	forceCanvasRenderer = false;
     }
@@ -23,20 +34,20 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     	forceCanvasRenderer = false;
     }
 
-    UrlRouter = createUrlRouter(LiveCodeLab.events);
+    UrlRouter = createUrlRouter(LiveCodeLab.events); //no
+    // TODO for some weird reason this actually cannot be moved further down
+    ColourNames = createColours(); //no
 
-    ColourNames = createColours();
-    ColourFunctions = createColourFunctions();
-    TimeKeeper = createTimeKeeper();
-    MatrixCommands = createMatrixCommands(THREE, TimeKeeper);
+    TimeKeeper = createTimeKeeper(); //yes
+    MatrixCommands = createMatrixCommands(THREE, TimeKeeper); //yes
 
-    ThreeJs = createThreeJs(Detector, THREE, THREEx, canvasElementForThreeJS, forceCanvasRenderer);
-    document.getElementById('container').appendChild(ThreeJs.sceneRenderingCanvas);
+    ThreeJs = createThreeJs(Detector, THREE, THREEx, canvasElementForThreeJS, forceCanvasRenderer); //yes
+    document.getElementById('container').appendChild(ThreeJs.sceneRenderingCanvas); //no
     
     if (!canvasForBackground) {
-      canvasForBackground = document.createElement('canvas');
+      canvasForBackground = document.createElement('canvas'); //no
     }
-    LiveCodeLab.canvasForBackground = canvasForBackground;
+    LiveCodeLab.canvasForBackground = canvasForBackground; //yes
     // the canvas background for the time being is only going to contain
     // gradients, so we can get away with creating a really tiny canvas and
     // stretch it. The advantage is that the fill operations are a lot faster.
@@ -44,55 +55,57 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     // is not accelerated just as well as CSS.
     // backGroundFraction specifies what fraction of the window the background canvas
     // is going to be.
-    var backGroundFraction = 1/15;
-    LiveCodeLab.canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction);
-    LiveCodeLab.canvasForBackground.height = Math.floor(window.innerHeight * backGroundFraction);
-    LiveCodeLab.backgroundSceneContext = LiveCodeLab.canvasForBackground.getContext('2d');
+    var backGroundFraction = 1/15; //no
+    LiveCodeLab.canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction); //yes
+    LiveCodeLab.canvasForBackground.height = Math.floor(window.innerHeight * backGroundFraction); //yes
+    LiveCodeLab.backgroundSceneContext = LiveCodeLab.canvasForBackground.getContext('2d'); //yes
 
 
 
-    BlendControls = createBlendControls(ThreeJs);
-    Bowser = createBowser();
-    SampleBank = createSampleBank(buzz);
-    SoundSystem = createSoundSystem(buzz, Bowser, SampleBank); // $
-    BigCursor = createBigCursor(LiveCodeLab.events); // $
-    BackgroundPainter = createBackgroundPainter(LiveCodeLab.events, ThreeJs, ColourFunctions); // $
+    BlendControls = createBlendControls(ThreeJs); //yes
+    Bowser = createBowser(); //yes
+    SampleBank = createSampleBank(buzz); //yes
+    SoundSystem = createSoundSystem(buzz, Bowser, SampleBank); // $ //yes
+    BigCursor = createBigCursor(LiveCodeLab.events); // $ //no
+    ColourFunctions = createColourFunctions(); //yes
+    BackgroundPainter = createBackgroundPainter(LiveCodeLab.events, ThreeJs, ColourFunctions); // $ //yes
 
 
     // There's a tricky cyclic dependency here between LightSystem and GraphicsCommands
-    GraphicsCommands = createGraphicsCommands(ColourFunctions); // THREE, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne
-    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands, ColourFunctions);
+    GraphicsCommands = createGraphicsCommands(ColourFunctions); // THREE, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne //yes
+    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands, ColourFunctions); //yes
 
 
 
 
-    editor = createEditor(LiveCodeLab.events, CodeMirror);
+    editor = createEditor(LiveCodeLab.events, CodeMirror); //no
 
-    DrawFunctionRunner = createDrawFunctionRunner();
+    DrawFunctionRunner = createDrawFunctionRunner(); //yes
 
-    CodeTransformer = createCodeTransformer(DrawFunctionRunner, editor, LiveCodeLab.events, CoffeeScript, GraphicsCommands); // autocoder
+    CodeTransformer = createCodeTransformer(DrawFunctionRunner, editor, LiveCodeLab.events, CoffeeScript, GraphicsCommands); // autocoder //yes
 
-    Renderer = createRenderer(ThreeJs, BlendControls);
+    Renderer = createRenderer(ThreeJs, BlendControls); //yes
 
-    AnimationLoop = createAnimationLoop(editor, DrawFunctionRunner, LiveCodeLab.events, CodeTransformer, Renderer, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter);
+    AnimationLoop = createAnimationLoop(editor, DrawFunctionRunner, LiveCodeLab.events, CodeTransformer, Renderer, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter); //yes
 
-    autocoder = createAutocoder(LiveCodeLab.events, editor, ColourNames); // McLexer
+    autocoder = createAutocoder(LiveCodeLab.events, editor, ColourNames); // McLexer //no
 
     // EditorDimmer functions should probablly be rolled into the editor itself
-    EditorDimmer = createEditorDimmer(LiveCodeLab.events); // $
+    EditorDimmer = createEditorDimmer(LiveCodeLab.events); // $ //no
 
-    ProgramLoader = createProgramLoader(LiveCodeLab.events, editor, AnimationLoop, ThreeJs, Renderer, GraphicsCommands); // $, Detector, BlendControls
+    ProgramLoader = createProgramLoader(LiveCodeLab.events, editor, AnimationLoop, ThreeJs, Renderer, GraphicsCommands); // $, Detector, BlendControls //no
 
-    Ui = createUi(LiveCodeLab.events, stats); // $
+    Ui = createUi(LiveCodeLab.events, stats); // $ //no
 
 
-    BackgroundPainter.pickRandomDefaultGradient();
-    SoundSystem.loadAndTestAllTheSounds(Ui.soundSystemOk);
+    BackgroundPainter.pickRandomDefaultGradient(); //yes
+    SoundSystem.loadAndTestAllTheSounds(Ui.soundSystemOk); //yes
 
     if (ThreeJs) {
-        AnimationLoop.animate(editor);
+        AnimationLoop.animate(editor); //yes
     }
 
+    //no
     if (!Detector.webgl || forceCanvasRenderer) {
         $('#noWebGLMessage').modal({
             onClose: SoundSystem.closeAndCheckAudio
@@ -100,24 +113,25 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
         $('#simplemodal-container').height(200);
     }
 
-    BackgroundPainter.resetGradientStack();
-    BackgroundPainter.simpleGradientUpdateIfChanged();
+    BackgroundPainter.resetGradientStack(); //yes
+    BackgroundPainter.simpleGradientUpdateIfChanged(); //yes
 
-    editor.focus();
+    editor.focus(); //no
 
     // check if the url points to a particular demo,
     // in which case we load the demo directly.
     // otherwise we do as usual.
+    //no
     if (!UrlRouter.checkUrl()) {
         setTimeout(SoundSystem.playStartupSound, 650);
     }
 
-    BigCursor.toggleBlink(true);
+    BigCursor.toggleBlink(true); //no
 
     // Turn dimming on by default
-    LiveCodeLab.events.trigger('editor-toggle-dim', true);
+    LiveCodeLab.events.trigger('editor-toggle-dim', true); //yes
 
-    Ui.setup();
+    Ui.setup(); //no
 
 };
 
