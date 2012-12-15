@@ -1,6 +1,6 @@
 /*jslint browser: true, devel: true */
 
-var createThreeJs = function (Detector, THREE, THREEx, canvasElementForThreeJS) {
+var createThreeJs = function (Detector, THREE, THREEx, canvasElementForThreeJS, forceCanvasRenderer) {
 
     'use strict';
 
@@ -13,7 +13,7 @@ var createThreeJs = function (Detector, THREE, THREEx, canvasElementForThreeJS) 
 
     ThreeJs.sceneRenderingCanvas = {};
 
-    ThreeJs.forceCanvasRenderer = false;
+    ThreeJs.forceCanvasRenderer = forceCanvasRenderer;
 
 
     if (!ThreeJs.forceCanvasRenderer && Detector.webgl) {
@@ -38,7 +38,6 @@ var createThreeJs = function (Detector, THREE, THREEx, canvasElementForThreeJS) 
         document.getElementById('container').appendChild(ThreeJs.sceneRenderingCanvas);
 
     } else {
-
 
         // we always draw the 3d scene off-screen
         ThreeJs.ballDefaultDetLevel = 6;

@@ -6,7 +6,7 @@ var isCanvasSupported = function () {
     return !!(elem.getContext && elem.getContext('2d'));
 };
 
-var startEnvironment = function (canvasElementForThreeJS, canvasForBackground) {
+var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, forceCanvasRenderer) {
 
     'use strict';
 
@@ -16,6 +16,12 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground) {
 
 
     LiveCodeLab.events = createEventRouter();
+    if (forceCanvasRenderer === undefined) {
+    	forceCanvasRenderer = false;
+    }
+    if (forceCanvasRenderer === null) {
+    	forceCanvasRenderer = false;
+    }
 
     UrlRouter = createUrlRouter(LiveCodeLab.events);
 
@@ -24,7 +30,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground) {
     TimeKeeper = createTimeKeeper();
     MatrixCommands = createMatrixCommands(THREE, TimeKeeper);
 
-    ThreeJs = createThreeJs(Detector, THREE, THREEx, canvasElementForThreeJS);
+    ThreeJs = createThreeJs(Detector, THREE, THREEx, canvasElementForThreeJS, forceCanvasRenderer);
     
     if (!canvasForBackground) {
       canvasForBackground = document.createElement('canvas');
@@ -41,6 +47,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground) {
     LiveCodeLab.canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction);
     LiveCodeLab.canvasForBackground.height = Math.floor(window.innerHeight * backGroundFraction);
     LiveCodeLab.backgroundSceneContext = LiveCodeLab.canvasForBackground.getContext('2d');
+
 
 
     BlendControls = createBlendControls(ThreeJs);
@@ -64,7 +71,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground) {
 
     CodeTransformer = createCodeTransformer(DrawFunctionRunner, editor, LiveCodeLab.events, CoffeeScript, GraphicsCommands); // autocoder
 
-    Renderer = createRenderer(ThreeJs);
+    Renderer = createRenderer(ThreeJs, BlendControls);
 
     AnimationLoop = createAnimationLoop(editor, DrawFunctionRunner, LiveCodeLab.events, CodeTransformer, Renderer, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter);
 
@@ -85,7 +92,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground) {
         AnimationLoop.animate(editor);
     }
 
-    if (!Detector.webgl || ThreeJs.forceCanvasRenderer) {
+    if (!Detector.webgl || forceCanvasRenderer) {
         $('#noWebGLMessage').modal({
             onClose: SoundSystem.closeAndCheckAudio
         });
@@ -129,6 +136,6 @@ $(document).ready(function () {
         return;
     }
 
-    startEnvironment(null, document.getElementById('backGroundCanvas'));
+    startEnvironment(null, document.getElementById('backGroundCanvas'), false);
 
 });

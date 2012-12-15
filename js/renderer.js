@@ -1,7 +1,7 @@
 /*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
 
 
-var createRenderer = function (threejs) {
+var createRenderer = function (threejs, blendcontrols) {
 
     'use strict';
 
