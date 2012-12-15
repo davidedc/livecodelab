@@ -603,8 +603,9 @@ var createProgramLoader = function (events, texteditor, animationLoop, threejs, 
         var prependMessage = "";
         if ((!Detector.webgl || threejs.forceCanvasRenderer) && demoName.indexOf('webgl') === 0) {
             prependMessage = [
-                "// this drawing makes much more sense",
-                "// in a WebGL-enabled browser",
+                "// This drawing makes much more sense",
+                "// in a WebGL-enabled browser.",
+                "",
                 ""].join("\n").replace(/\u25B6/g, "\t");
         }
 
