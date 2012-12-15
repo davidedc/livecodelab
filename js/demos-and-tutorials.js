@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, regexp: true */
 /*global $, Detector, BlendControls */
 
-var createProgramLoader = function (events, texteditor, animationLoop, threejs, graphics) {
+var createProgramLoader = function (events, texteditor, animationLoop, threejs, renderer, graphics) {
 
     'use strict';
 
@@ -631,7 +631,7 @@ var createProgramLoader = function (events, texteditor, animationLoop, threejs, 
         // b) apply the potentially new animationStyle
         BlendControls.animationStyleUpdateIfChanged();
         // render the empty frame
-        animationLoop.render();
+        Renderer.render(graphics);
 
     };
 

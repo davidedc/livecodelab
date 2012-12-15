@@ -33,6 +33,7 @@ var autocoder;
 
 // All used globally
 var ThreeJs;
+var Renderer;
 var BigCursor;
 var AnimationLoop;
 var ProgramLoader;
