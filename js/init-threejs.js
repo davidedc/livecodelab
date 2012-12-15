@@ -5,8 +5,6 @@ var createThreeJs = function (Detector, THREE, THREEx, canvasElementForThreeJS) 
     'use strict';
 
     var ThreeJs = {},
-        backgroundScene,
-        backGroundFraction = 15,
         pointLight;
 
     ThreeJs.isWebGLUsed = false;
@@ -17,8 +15,6 @@ var createThreeJs = function (Detector, THREE, THREEx, canvasElementForThreeJS) 
 
     ThreeJs.forceCanvasRenderer = false;
 
-    ThreeJs.scaledBackgroundWidth = Math.floor(window.innerWidth / backGroundFraction);
-    ThreeJs.scaledBackgroundHeight = Math.floor(window.innerHeight / backGroundFraction);
 
     if (!ThreeJs.forceCanvasRenderer && Detector.webgl) {
 

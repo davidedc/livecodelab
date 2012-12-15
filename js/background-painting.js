@@ -139,23 +139,23 @@ var createBackgroundPainter = function (events, threejs, colourfuncs) {
         if ((currentGradientStackValue !== previousGradientStackValue)) {
 
             previousGradientStackValue = currentGradientStackValue;
-            diagonal = Math.sqrt(Math.pow(threejs.scaledBackgroundWidth / 2, 2) + Math.pow(threejs.scaledBackgroundHeight / 2, 2));
+            diagonal = Math.sqrt(Math.pow(LiveCodeLab.canvasForBackground.width / 2, 2) + Math.pow(LiveCodeLab.canvasForBackground.height / 2, 2));
 
             for (scanningGradStack = 0; scanningGradStack < gradStack.length; scanningGradStack++) {
 
                 if (gradStack[scanningGradStack].gradStacka !== undefined) {
-                    radgrad = LiveCodeLab.backgroundSceneContext.createLinearGradient(threejs.scaledBackgroundWidth / 2, 0, threejs.scaledBackgroundWidth / 2, threejs.scaledBackgroundHeight);
+                    radgrad = LiveCodeLab.backgroundSceneContext.createLinearGradient(LiveCodeLab.canvasForBackground.width / 2, 0, LiveCodeLab.canvasForBackground.width / 2, LiveCodeLab.canvasForBackground.height);
                     radgrad.addColorStop(0, colourfuncs.color.toString(gradStack[scanningGradStack].gradStacka));
                     radgrad.addColorStop(0.5, colourfuncs.color.toString(gradStack[scanningGradStack].gradStackb));
                     radgrad.addColorStop(1, colourfuncs.color.toString(gradStack[scanningGradStack].gradStackc));
 
                     LiveCodeLab.backgroundSceneContext.globalAlpha = 1.0;
                     LiveCodeLab.backgroundSceneContext.fillStyle = radgrad;
-                    LiveCodeLab.backgroundSceneContext.fillRect(0, 0, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
+                    LiveCodeLab.backgroundSceneContext.fillRect(0, 0, LiveCodeLab.canvasForBackground.width, LiveCodeLab.canvasForBackground.height);
                 } else {
                     LiveCodeLab.backgroundSceneContext.globalAlpha = 1.0;
                     LiveCodeLab.backgroundSceneContext.fillStyle = colourfuncs.color.toString(gradStack[scanningGradStack].solid);
-                    LiveCodeLab.backgroundSceneContext.fillRect(0, 0, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
+                    LiveCodeLab.backgroundSceneContext.fillRect(0, 0, LiveCodeLab.canvasForBackground.width, LiveCodeLab.canvasForBackground.height);
                 }
             }
         }

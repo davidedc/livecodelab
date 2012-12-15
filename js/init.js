@@ -30,8 +30,16 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground) {
       canvasForBackground = document.createElement('canvas');
     }
     LiveCodeLab.canvasForBackground = canvasForBackground;
-    LiveCodeLab.canvasForBackground.width = ThreeJs.scaledBackgroundWidth;
-    LiveCodeLab.canvasForBackground.height = ThreeJs.scaledBackgroundHeight;
+    // the canvas background for the time being is only going to contain
+    // gradients, so we can get away with creating a really tiny canvas and
+    // stretch it. The advantage is that the fill operations are a lot faster.
+    // We should try to use CSS instead of canvas, as in some browsers canvas
+    // is not accelerated just as well as CSS.
+    // backGroundFraction specifies what fraction of the window the background canvas
+    // is going to be.
+    var backGroundFraction = 1/15;
+    LiveCodeLab.canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction);
+    LiveCodeLab.canvasForBackground.height = Math.floor(window.innerHeight * backGroundFraction);
     LiveCodeLab.backgroundSceneContext = LiveCodeLab.canvasForBackground.getContext('2d');
 
 
