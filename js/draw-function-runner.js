@@ -11,9 +11,13 @@ var createDrawFunctionRunner = function () {
         // block has run.
         doOnceOccurrencesLineNumbers = [];
 
-    DrawFunctionRunner.drawFunction = "";
+    // contains the draw function as a Function object. Never mind the
+    // initialisation as an empty string.
+    DrawFunctionRunner.drawFunction = '';
     DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
-    DrawFunctionRunner.lastStableProgram = "";
+    // contains the last stable draw function as a Function object. Never mind the
+    // initialisation as an empty string.
+    DrawFunctionRunner.lastStableDrawFunction = '';
 
     // This is the function called from the compiled code to add the doOnce line
     window.addDoOnce = DrawFunctionRunner.addDoOnce = function (lineNum) {
@@ -56,7 +60,7 @@ var createDrawFunctionRunner = function () {
 				// so the new version too gets an opportunity to be tested and saved.
 				DrawFunctionRunner.consecutiveFramesWithoutRunTimeError += 1;
 				if (DrawFunctionRunner.consecutiveFramesWithoutRunTimeError === 5) {
-						DrawFunctionRunner.lastStableProgram = DrawFunctionRunner.drawFunction;
+						DrawFunctionRunner.lastStableDrawFunction = DrawFunctionRunner.drawFunction;
 				}
 
     };
@@ -65,7 +69,7 @@ var createDrawFunctionRunner = function () {
     DrawFunctionRunner.reinstateLastWorkingProgram = function () {
             // mark the program as flawed and register the previous stable one.
             DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
-            DrawFunctionRunner.drawFunction = DrawFunctionRunner.lastStableProgram;
+            DrawFunctionRunner.drawFunction = DrawFunctionRunner.lastStableDrawFunction;
     }
 
 
