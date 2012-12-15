@@ -2,7 +2,7 @@
 /*global LiveCodeLab, $, autocoder, BackgroundPainter, initThreeJs, buzz */
 
 var isCanvasSupported = function () {
-    var elem = document.createElement('testCanvas');
+    var elem = document.createElement('canvas');
     return !!(elem.getContext && elem.getContext('2d'));
 };
 
@@ -31,6 +31,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     MatrixCommands = createMatrixCommands(THREE, TimeKeeper);
 
     ThreeJs = createThreeJs(Detector, THREE, THREEx, canvasElementForThreeJS, forceCanvasRenderer);
+    document.getElementById('container').appendChild(ThreeJs.sceneRenderingCanvas);
     
     if (!canvasForBackground) {
       canvasForBackground = document.createElement('canvas');

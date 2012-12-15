@@ -35,7 +35,6 @@ var createThreeJs = function (Detector, THREE, THREEx, canvasElementForThreeJS, 
         ThreeJs.isWebGLUsed = true;
 
         ThreeJs.renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('container').appendChild(ThreeJs.sceneRenderingCanvas);
 
     } else {
 
