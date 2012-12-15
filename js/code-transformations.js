@@ -2,7 +2,7 @@
 /*global autocoder, createCodeChecker */
 
 
-var createCodeTransformer = function (drawFunctionRunner, editor, events, CoffeeCompiler, graphics) {
+var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, CoffeeCompiler, graphics) {
 
     'use strict';
 
@@ -104,15 +104,15 @@ var createCodeTransformer = function (drawFunctionRunner, editor, events, Coffee
             errResults;
 
         if (editorContent !== '') {
-            events.trigger('cursor-hide');
+            eventRouter.trigger('cursor-hide');
         }
 
         if (editorContent === '') {
             graphics.resetTheSpinThingy = true;
 
-            events.trigger('set-url-hash', '');
+            eventRouter.trigger('set-url-hash', '');
 
-            events.trigger('cursor-show');
+            eventRouter.trigger('cursor-show');
         }
 
 
@@ -156,7 +156,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, events, Coffee
                 return;
             }
 
-            events.trigger('display-error', errResults.message);
+            eventRouter.trigger('display-error', errResults.message);
 
             return;
         }
@@ -278,7 +278,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, events, Coffee
                 return;
             }
             programHasBasicError = true;
-            events.trigger('display-error', "You can't call draw()");
+            eventRouter.trigger('display-error', "You can't call draw()");
             return;
         }
 
@@ -387,7 +387,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, events, Coffee
             }
 
             // mark the program as flawed
-            events.trigger('display-error', e);
+            eventRouter.trigger('display-error', e);
 
             return;
         }
@@ -420,7 +420,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, events, Coffee
             }
             if (declaredMethods.length === 0) {
                 error = true;
-                events.trigger('display-error', usedMethods[scanningUsedMethods] + " doesn't exist");
+                eventRouter.trigger('display-error', usedMethods[scanningUsedMethods] + " doesn't exist");
                 return;
             }
             var scanningDeclaredMethods;
@@ -429,7 +429,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, events, Coffee
                     break;
                 } else if (scanningDeclaredMethods === declaredMethods.length - 1) {
                     error = true;
-                    events.trigger('display-error', usedMethods[scanningUsedMethods] + " doesn't exist");
+                    eventRouter.trigger('display-error', usedMethods[scanningUsedMethods] + " doesn't exist");
                     return;
                 }
             }
@@ -438,7 +438,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, events, Coffee
 
 
         programHasBasicError = false;
-        events.trigger('clear-error');
+        eventRouter.trigger('clear-error');
 
         // see here for the deepest examination ever of "eval"
         // http://perfectionkills.com/global-eval-what-are-the-options/

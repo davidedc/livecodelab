@@ -1,6 +1,6 @@
 /*jslint browser: true, devel: true */
 
-var createEditor = function (events, codemirror) {
+var createEditor = function (eventRouter, codemirror) {
 
     'use strict';
 
@@ -27,7 +27,7 @@ var createEditor = function (events, codemirror) {
                 currentLineContent = currentLineContent.replace("_", "");
                 program = currentLineContent + 'Tutorial';
                 setTimeout(function () {
-                    events.trigger('load-program', program);
+                    eventRouter.trigger('load-program', program);
                 }, 200);
             }
         }
@@ -35,7 +35,7 @@ var createEditor = function (events, codemirror) {
         if (editor.getValue() === '') {
             return;
         }
-        events.trigger('editor-undim');
+        eventRouter.trigger('editor-undim');
     };
 
 
@@ -59,14 +59,14 @@ var createEditor = function (events, codemirror) {
         // will pass in the "editor" instance as the first
         // argument to the function callback
         onChange: function (editor) {
-            events.trigger('editor-change', editor);
+            eventRouter.trigger('editor-change', editor);
         },
         onCursorActivity: suspendDimmingAndCheckIfLink
     });
 
 
     // Setup Event Listeners
-    events.bind('reset', function () {
+    eventRouter.bind('reset', function () {
         Editor.setValue('');
     });
 

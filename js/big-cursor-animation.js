@@ -1,7 +1,7 @@
 /*jslint browser: true, devel: true */
 /*global $ */
 
-var createBigCursor = function (events) {
+var createBigCursor = function (eventRouter) {
 
     'use strict';
 
@@ -82,11 +82,11 @@ var createBigCursor = function (events) {
 
 
     // Setup Event Listeners
-    events.bind('cursor-show', function () {
+    eventRouter.bind('cursor-show', function () {
         showFakeText();
     });
 
-    events.bind('cursor-hide', function () {
+    eventRouter.bind('cursor-hide', function () {
         shrinkFakeText();
     });
 

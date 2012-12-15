@@ -4,7 +4,7 @@
 var frame = 0;
 
 
-var createAnimationLoop = function (editor, drawFunctionRunner, events, CodeTransformer, renderer, timekeeper, graphics, stats, matrixcommands, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
+var createAnimationLoop = function (editor, drawFunctionRunner, eventRouter, CodeTransformer, renderer, timekeeper, graphics, stats, matrixcommands, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
 
     'use strict';
 
@@ -100,7 +100,7 @@ var createAnimationLoop = function (editor, drawFunctionRunner, events, CodeTran
 					drawFunctionRunner.runDrawFunction();
 				}
 				catch (e) {
-						 events.trigger('display-error', e);
+						 eventRouter.trigger('display-error', e);
 						 drawFunctionRunner.reinstateLastWorkingProgram();
 						 return;
 				}
@@ -130,7 +130,7 @@ var createAnimationLoop = function (editor, drawFunctionRunner, events, CodeTran
 
 
     // Setup Event Listeners
-    events.bind('editor-change', CodeTransformer.registerCode, CodeTransformer);
+    eventRouter.bind('editor-change', CodeTransformer.registerCode, CodeTransformer);
 
 
 

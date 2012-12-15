@@ -36,7 +36,7 @@
 // elements of the array, so we could discard those when such
 // a command is issued.
 
-var createBackgroundPainter = function (events, threejs, colourfuncs) {
+var createBackgroundPainter = function (eventRouter, threejs, colourfuncs) {
 
     'use strict';
 
@@ -170,7 +170,7 @@ var createBackgroundPainter = function (events, threejs, colourfuncs) {
 
 
     // Setup Event Listeners
-    events.bind('reset', BackgroundPainter.pickRandomDefaultGradient, BackgroundPainter);
+    eventRouter.bind('reset', BackgroundPainter.pickRandomDefaultGradient, BackgroundPainter);
 
 
 

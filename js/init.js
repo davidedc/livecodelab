@@ -25,7 +25,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     */
 
 
-    LiveCodeLab.events = createEventRouter(); //yes
+    LiveCodeLab.eventRouter = createEventRouter(); //yes
     //no
     if (forceCanvasRenderer === undefined) {
     	forceCanvasRenderer = false;
@@ -34,7 +34,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     	forceCanvasRenderer = false;
     }
 
-    UrlRouter = createUrlRouter(LiveCodeLab.events); //no
+    UrlRouter = createUrlRouter(LiveCodeLab.eventRouter); //no
     // TODO for some weird reason this actually cannot be moved further down
     ColourNames = createColours(); //no
 
@@ -66,9 +66,9 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     Bowser = createBowser(); //yes
     SampleBank = createSampleBank(buzz); //yes
     SoundSystem = createSoundSystem(buzz, Bowser, SampleBank); // $ //yes
-    BigCursor = createBigCursor(LiveCodeLab.events); // $ //no
+    BigCursor = createBigCursor(LiveCodeLab.eventRouter); // $ //no
     ColourFunctions = createColourFunctions(); //yes
-    BackgroundPainter = createBackgroundPainter(LiveCodeLab.events, ThreeJs, ColourFunctions); // $ //yes
+    BackgroundPainter = createBackgroundPainter(LiveCodeLab.eventRouter, ThreeJs, ColourFunctions); // $ //yes
 
 
     // There's a tricky cyclic dependency here between LightSystem and GraphicsCommands
@@ -78,24 +78,24 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
 
 
-    editor = createEditor(LiveCodeLab.events, CodeMirror); //no
+    editor = createEditor(LiveCodeLab.eventRouter, CodeMirror); //no
 
     DrawFunctionRunner = createDrawFunctionRunner(); //yes
 
-    CodeTransformer = createCodeTransformer(DrawFunctionRunner, editor, LiveCodeLab.events, CoffeeScript, GraphicsCommands); // autocoder //yes
+    CodeTransformer = createCodeTransformer(DrawFunctionRunner, editor, LiveCodeLab.eventRouter, CoffeeScript, GraphicsCommands); // autocoder //yes
 
     Renderer = createRenderer(ThreeJs, BlendControls); //yes
 
-    AnimationLoop = createAnimationLoop(editor, DrawFunctionRunner, LiveCodeLab.events, CodeTransformer, Renderer, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter); //yes
+    AnimationLoop = createAnimationLoop(editor, DrawFunctionRunner, LiveCodeLab.eventRouter, CodeTransformer, Renderer, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter); //yes
 
-    autocoder = createAutocoder(LiveCodeLab.events, editor, ColourNames); // McLexer //no
+    autocoder = createAutocoder(LiveCodeLab.eventRouter, editor, ColourNames); // McLexer //no
 
     // EditorDimmer functions should probablly be rolled into the editor itself
-    EditorDimmer = createEditorDimmer(LiveCodeLab.events); // $ //no
+    EditorDimmer = createEditorDimmer(LiveCodeLab.eventRouter); // $ //no
 
-    ProgramLoader = createProgramLoader(LiveCodeLab.events, editor, AnimationLoop, ThreeJs, Renderer, GraphicsCommands); // $, Detector, BlendControls //no
+    ProgramLoader = createProgramLoader(LiveCodeLab.eventRouter, editor, AnimationLoop, ThreeJs, Renderer, GraphicsCommands); // $, Detector, BlendControls //no
 
-    Ui = createUi(LiveCodeLab.events, stats); // $ //no
+    Ui = createUi(LiveCodeLab.eventRouter, stats); // $ //no
 
 
     BackgroundPainter.pickRandomDefaultGradient(); //yes
@@ -129,7 +129,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     BigCursor.toggleBlink(true); //no
 
     // Turn dimming on by default
-    LiveCodeLab.events.trigger('editor-toggle-dim', true); //yes
+    LiveCodeLab.eventRouter.trigger('editor-toggle-dim', true); //yes
 
     Ui.setup(); //no
 
