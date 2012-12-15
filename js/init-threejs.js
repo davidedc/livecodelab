@@ -1,6 +1,6 @@
 /*jslint browser: true, devel: true */
 
-var createThreeJs = function (Detector, THREE, THREEx) {
+var createThreeJs = function (Detector, THREE, THREEx, canvasElementForThreeJS) {
 
     'use strict';
 
@@ -23,7 +23,11 @@ var createThreeJs = function (Detector, THREE, THREEx) {
     if (!ThreeJs.forceCanvasRenderer && Detector.webgl) {
 
         ThreeJs.ballDefaultDetLevel = 16;
-        ThreeJs.sceneRenderingCanvas = document.createElement('canvas');
+        
+        if (canvasElementForThreeJS === undefined) {
+          canvasElementForThreeJS = document.createElement('canvas');
+        }
+        ThreeJs.sceneRenderingCanvas = canvasElementForThreeJS;
 
         ThreeJs.renderer = new THREE.WebGLRenderer({
             canvas: ThreeJs.sceneRenderingCanvas,

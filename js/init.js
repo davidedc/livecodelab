@@ -6,7 +6,7 @@ var isCanvasSupported = function () {
     return !!(elem.getContext && elem.getContext('2d'));
 };
 
-var startEnvironment = function () {
+var startEnvironment = function (canvasElementForThreeJS) {
 
     'use strict';
 
@@ -24,7 +24,7 @@ var startEnvironment = function () {
     TimeKeeper = createTimeKeeper();
     MatrixCommands = createMatrixCommands(THREE, TimeKeeper);
 
-    ThreeJs = createThreeJs(Detector, THREE, THREEx);
+    ThreeJs = createThreeJs(Detector, THREE, THREEx, canvasElementForThreeJS);
     BlendControls = createBlendControls(ThreeJs);
     Bowser = createBowser();
     SampleBank = createSampleBank(buzz);
