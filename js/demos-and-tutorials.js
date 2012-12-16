@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, regexp: true */
 /*global $, Detector */
 
-var createProgramLoader = function (eventRouter, texteditor, animationLoop, renderer) {
+var createProgramLoader = function (eventRouter, texteditor, animationLoop) {
 
     'use strict';
 
@@ -633,7 +633,7 @@ var createProgramLoader = function (eventRouter, texteditor, animationLoop, rend
         // b) apply the potentially new animationStyle
         LiveCodeLabCore.BlendControls.animationStyleUpdateIfChanged();
         // render the empty frame
-        Renderer.render(LiveCodeLabCore.GraphicsCommands);
+        LiveCodeLabCore.Renderer.render(LiveCodeLabCore.GraphicsCommands);
 
     };
 

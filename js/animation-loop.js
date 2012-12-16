@@ -4,7 +4,7 @@
 var frame = 0;
 
 
-var createAnimationLoop = function (eventRouter, renderer, stats) {
+var createAnimationLoop = function (eventRouter, stats) {
 
     'use strict';
 
@@ -130,7 +130,7 @@ var createAnimationLoop = function (eventRouter, renderer, stats) {
  				frame++;
 		
         // do the render
-        renderer.render(LiveCodeLabCore.GraphicsCommands);
+        LiveCodeLabCore.Renderer.render(LiveCodeLabCore.GraphicsCommands);
         // update stats
         stats.update();
     };

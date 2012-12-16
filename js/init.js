@@ -51,6 +51,8 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     LiveCodeLabCore.LightSystem = createLightSystem(); //yes
     LiveCodeLabCore.DrawFunctionRunner = createDrawFunctionRunner(); //yes
     LiveCodeLabCore.CodeTransformer = createCodeTransformer(eventRouter, CoffeeScript); // autocoder //yes
+    // requires BlendControls
+    LiveCodeLabCore.Renderer = createRenderer(); //yes
 
     
     ///////////////////////////
@@ -93,8 +95,6 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
     // requires DrawFunctionRunner
 
-    // requires BlendControls
-    Renderer = createRenderer(); //yes
 
     // Used by Three.js
     // add Stats.js - https://github.com/mrdoob/stats.js
@@ -102,8 +102,8 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     //console.log('creating stats');
     Ui = createUi(eventRouter, stats); // $ //no
 
-    // requires: TimeKeeper, MatrixCommands, BlendControls, SoundSystem, BackgroundPainter, GraphicsCommands, LightSystem, DrawFunctionRunner, CodeTransformer
-    AnimationLoop = createAnimationLoop(eventRouter, Renderer, stats); //yes
+    // requires: TimeKeeper, MatrixCommands, BlendControls, SoundSystem, BackgroundPainter, GraphicsCommands, LightSystem, DrawFunctionRunner, CodeTransformer, Renderer
+    AnimationLoop = createAnimationLoop(eventRouter, stats); //yes
 
     // requires: ColourNames
     autocoder = createAutocoder(eventRouter, editor); // McLexer //no
@@ -111,8 +111,8 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // EditorDimmer functions should probablly be rolled into the editor itself
     EditorDimmer = createEditorDimmer(eventRouter, BigCursor); // $ //no
 
-    // requires ThreeJsSystem, BlendControls, GraphicsCommands
-    ProgramLoader = createProgramLoader(eventRouter, editor, AnimationLoop, Renderer); // $, Detector, BlendControls //no
+    // requires ThreeJsSystem, BlendControls, GraphicsCommands, Renderer
+    ProgramLoader = createProgramLoader(eventRouter, editor, AnimationLoop); // $, Detector, BlendControls //no
 
     
     LiveCodeLabCore.updateCode = function(updatedCode){
