@@ -56,7 +56,7 @@ var UrlRouter;
 
 
 // this is the global namespace for the LiveCodeLab application
-var LiveCodeLab = {};
+var LiveCodeLabCore = {};
 
 
 

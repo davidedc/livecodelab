@@ -139,23 +139,23 @@ var createBackgroundPainter = function (eventRouter, threejs, colourfuncs) {
         if ((currentGradientStackValue !== previousGradientStackValue)) {
 
             previousGradientStackValue = currentGradientStackValue;
-            diagonal = Math.sqrt(Math.pow(LiveCodeLab.canvasForBackground.width / 2, 2) + Math.pow(LiveCodeLab.canvasForBackground.height / 2, 2));
+            diagonal = Math.sqrt(Math.pow(LiveCodeLabCore.canvasForBackground.width / 2, 2) + Math.pow(LiveCodeLabCore.canvasForBackground.height / 2, 2));
 
             for (scanningGradStack = 0; scanningGradStack < gradStack.length; scanningGradStack++) {
 
                 if (gradStack[scanningGradStack].gradStacka !== undefined) {
-                    radgrad = LiveCodeLab.backgroundSceneContext.createLinearGradient(LiveCodeLab.canvasForBackground.width / 2, 0, LiveCodeLab.canvasForBackground.width / 2, LiveCodeLab.canvasForBackground.height);
+                    radgrad = LiveCodeLabCore.backgroundSceneContext.createLinearGradient(LiveCodeLabCore.canvasForBackground.width / 2, 0, LiveCodeLabCore.canvasForBackground.width / 2, LiveCodeLabCore.canvasForBackground.height);
                     radgrad.addColorStop(0, colourfuncs.color.toString(gradStack[scanningGradStack].gradStacka));
                     radgrad.addColorStop(0.5, colourfuncs.color.toString(gradStack[scanningGradStack].gradStackb));
                     radgrad.addColorStop(1, colourfuncs.color.toString(gradStack[scanningGradStack].gradStackc));
 
-                    LiveCodeLab.backgroundSceneContext.globalAlpha = 1.0;
-                    LiveCodeLab.backgroundSceneContext.fillStyle = radgrad;
-                    LiveCodeLab.backgroundSceneContext.fillRect(0, 0, LiveCodeLab.canvasForBackground.width, LiveCodeLab.canvasForBackground.height);
+                    LiveCodeLabCore.backgroundSceneContext.globalAlpha = 1.0;
+                    LiveCodeLabCore.backgroundSceneContext.fillStyle = radgrad;
+                    LiveCodeLabCore.backgroundSceneContext.fillRect(0, 0, LiveCodeLabCore.canvasForBackground.width, LiveCodeLabCore.canvasForBackground.height);
                 } else {
-                    LiveCodeLab.backgroundSceneContext.globalAlpha = 1.0;
-                    LiveCodeLab.backgroundSceneContext.fillStyle = colourfuncs.color.toString(gradStack[scanningGradStack].solid);
-                    LiveCodeLab.backgroundSceneContext.fillRect(0, 0, LiveCodeLab.canvasForBackground.width, LiveCodeLab.canvasForBackground.height);
+                    LiveCodeLabCore.backgroundSceneContext.globalAlpha = 1.0;
+                    LiveCodeLabCore.backgroundSceneContext.fillStyle = colourfuncs.color.toString(gradStack[scanningGradStack].solid);
+                    LiveCodeLabCore.backgroundSceneContext.fillRect(0, 0, LiveCodeLabCore.canvasForBackground.width, LiveCodeLabCore.canvasForBackground.height);
                 }
             }
         }

@@ -1,5 +1,5 @@
 /*jslint browser: true, maxerr: 100 */
-/*global LiveCodeLab, $, autocoder, BackgroundPainter, initThreeJs, buzz */
+/*global LiveCodeLabCore, $, autocoder, BackgroundPainter, initThreeJs, buzz */
 
 var isCanvasSupported = function () {
     var elem = document.createElement('canvas');
@@ -15,8 +15,8 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     var stats = new Stats(); //no
     
     /*
-    createLiveCodeLab(
-      createEventRouter(),
+    createLiveCodeLabCore(
+      eventRouter,
       forceCanvasRenderer,
       createTimeKeeper(),
       canvasElementForThreeJS,
@@ -24,13 +24,13 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     );
     */
 
-    var eventRouter = createEventRouter(); //yes
+    var eventRouter = createEventRouter();
     
-    LiveCodeLab.updateCode = function(updatedCode){
+    LiveCodeLabCore.updateCode = function(updatedCode){
        //alert('updatedCode: ' + updatedCode);
        CodeTransformer.updateCode(updatedCode);
     }
-    eventRouter.bind('code_changed', LiveCodeLab.updateCode, editor);
+    eventRouter.bind('code_changed', LiveCodeLabCore.updateCode, editor);
 
     //no
     if (forceCanvasRenderer === undefined) {
@@ -53,7 +53,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     if (!canvasForBackground) {
       canvasForBackground = document.createElement('canvas'); //no
     }
-    LiveCodeLab.canvasForBackground = canvasForBackground; //yes
+    LiveCodeLabCore.canvasForBackground = canvasForBackground; //yes
     // the canvas background for the time being is only going to contain
     // gradients, so we can get away with creating a really tiny canvas and
     // stretch it. The advantage is that the fill operations are a lot faster.
@@ -62,9 +62,9 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     // backGroundFraction specifies what fraction of the window the background canvas
     // is going to be.
     var backGroundFraction = 1/15; //no
-    LiveCodeLab.canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction); //yes
-    LiveCodeLab.canvasForBackground.height = Math.floor(window.innerHeight * backGroundFraction); //yes
-    LiveCodeLab.backgroundSceneContext = LiveCodeLab.canvasForBackground.getContext('2d'); //yes
+    LiveCodeLabCore.canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction); //yes
+    LiveCodeLabCore.canvasForBackground.height = Math.floor(window.innerHeight * backGroundFraction); //yes
+    LiveCodeLabCore.backgroundSceneContext = LiveCodeLabCore.canvasForBackground.getContext('2d'); //yes
 
 
 
