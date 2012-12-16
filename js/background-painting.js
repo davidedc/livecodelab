@@ -120,6 +120,17 @@ var createBackgroundPainter = function (eventRouter) {
 							$("#fakeStartingBlinkingCursor").css('color', 'DarkOliveGreen');
 							break;
         }
+        
+        // in theory we should wait for the next frame to repaing the background,
+        // but there would be a problem with that: livecodelab goes to sleep when
+        // the program is empty and the big cursor blinks. And yet, when the
+        // user clicks the reset button, we want the background to change randomly
+        // so we make an exceptio to the rule here and we update the background
+        // right now without waiting for the next frame.
+        // Note this is not wasted time anyways because the repaint won't happen
+        // again later if the background hasn't changed.
+        BackgroundPainter.resetGradientStack();
+        BackgroundPainter.simpleGradientUpdateIfChanged();
     };
 
     BackgroundPainter.resetGradientStack = function () {
@@ -137,6 +148,7 @@ var createBackgroundPainter = function (eventRouter) {
 
         var diagonal, radgrad, scanningGradStack;
         if ((currentGradientStackValue !== previousGradientStackValue)) {
+        //alert('repainting the background');
 
             previousGradientStackValue = currentGradientStackValue;
             diagonal = Math.sqrt(Math.pow(LiveCodeLabCore.canvasForBackground.width / 2, 2) + Math.pow(LiveCodeLabCore.canvasForBackground.height / 2, 2));

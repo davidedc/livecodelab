@@ -4,7 +4,7 @@
 var frame = 0;
 
 
-var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransformer, renderer, stats) {
+var createAnimationLoop = function (eventRouter, CodeTransformer, renderer, stats) {
 
     'use strict';
 
@@ -56,14 +56,6 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
 
         var drawFunction;
 
-        scheduleNextFrame();
-
-        // if the draw function is empty, then there
-        // is nothing to do, return.
-        if (drawFunctionRunner.drawFunction === "") {
-          return;
-        }
-        
         LiveCodeLabCore.MatrixCommands.resetMatrixStack();
 
         // the sound list needs to be cleaned
@@ -76,7 +68,7 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
 						LiveCodeLabCore.TimeKeeper.updateTime();
 				}
 				
-				drawFunctionRunner.resetTrackingOfDoOnceOccurrences();
+				LiveCodeLabCore.DrawFunctionRunner.resetTrackingOfDoOnceOccurrences();
 				LiveCodeLabCore.SoundSystem.anyCodeReactingTobpm = false;
 
 				LiveCodeLabCore.SoundSystem.SetUpdatesPerMinute(60 * 4);
@@ -86,25 +78,38 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
 
 				LiveCodeLabCore.BlendControls.animationStyle(LiveCodeLabCore.BlendControls.animationStyles.normal);
 				LiveCodeLabCore.BackgroundPainter.resetGradientStack();
-
-				// Now here there is another try/catch check when the draw function is ran.
-				// The reason is that there might be references to uninitialised or inexistent
-				// variables. For example:
-				//   box
-				//   background yeLow
-				//   ball
-				// draws only a box, because the execution silently fails at the yeLow reference.
-				// So in that case we need to a) highlight the error and b) run the previously
-				// known good program.
-				try{
-					drawFunctionRunner.runDrawFunction();
-				}
-				catch (e) {
-						 //alert('runtime error');
-						 eventRouter.trigger('runtime-error-thrown', e);
-						 return;
-				}
-        drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(CodeTransformer);
+				        
+				// if the draw function is empty, then don't schedule the
+				// next animation frame and set a "I'm sleeping" flag.
+				// We'll re-start the animation when the editor content
+				// changes. Note that this frame goes to completion anyways, because
+				// we actually do want to render one "empty screen" frame.
+        if (LiveCodeLabCore.DrawFunctionRunner.drawFunction) {
+          scheduleNextFrame();
+					// Now here there is another try/catch check when the draw function is ran.
+					// The reason is that there might be references to uninitialised or inexistent
+					// variables. For example:
+					//   box
+					//   background yeLow
+					//   ball
+					// draws only a box, because the execution silently fails at the yeLow reference.
+					// So in that case we need to a) highlight the error and b) run the previously
+					// known good program.
+					try{
+						LiveCodeLabCore.DrawFunctionRunner.runDrawFunction();
+					}
+					catch (e) {
+							 //alert('runtime error');
+							 eventRouter.trigger('runtime-error-thrown', e);
+							 return;
+					}
+					LiveCodeLabCore.DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(CodeTransformer);
+        }
+        else {
+					LiveCodeLabCore.DrawFunctionRunner.dozingOff = true;
+					//console.log('dozing off');
+					Ui.hideStatsWidget();
+        }
 
 
 				// we have to repeat this check because in the case

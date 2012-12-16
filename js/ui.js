@@ -119,6 +119,15 @@ var createUi = function (eventRouter, stats) {
         $("#soundSystemStatus").text("Sound System On").removeClass('off').addClass('on');
     };
 
+    Ui.hideStatsWidget = function () {
+        $("#statsWidget").hide();
+        //console.log('hiding stats widget');
+    };
+    Ui.showStatsWidget = function () {
+        $("#statsWidget").show();
+        //console.log('showing stats widget');
+    };
+
 
 
     Ui.setup = function () {
@@ -171,6 +180,7 @@ var createUi = function (eventRouter, stats) {
             Ui.fullscreenify('#backGroundCanvas');
 
             Ui.adjustCodeMirrorHeight();
+
 
         });
     };

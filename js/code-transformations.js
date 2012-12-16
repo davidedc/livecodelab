@@ -2,7 +2,7 @@
 /*global autocoder, createCodeChecker */
 
 
-var createCodeTransformer = function (drawFunctionRunner, eventRouter, CoffeeCompiler) {
+var createCodeTransformer = function (eventRouter, CoffeeCompiler) {
 
     'use strict';
 
@@ -103,6 +103,17 @@ var createCodeTransformer = function (drawFunctionRunner, eventRouter, CoffeeCom
             errResults;
 
         CodeTransformer.currentCodeString = updatedCodeAsString;
+        
+        if (CodeTransformer.currentCodeString === ''){
+					programHasBasicError = false;
+					eventRouter.trigger('clear-error');	
+					LiveCodeLabCore.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
+					var functionFromCompiledCode = new Function('');
+					LiveCodeLabCore.DrawFunctionRunner.setDrawFunction(null);
+					LiveCodeLabCore.DrawFunctionRunner.lastStableDrawFunction = null;
+					return functionFromCompiledCode;
+        }
+
 
 
         /**
@@ -412,7 +423,7 @@ var createCodeTransformer = function (drawFunctionRunner, eventRouter, CoffeeCom
         // see here for the deepest examination ever of "eval"
         // http://perfectionkills.com/global-eval-what-are-the-options/
         // note that exceptions are caught by the window.onerror callback
-        DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
+        LiveCodeLabCore.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
 
         // You might want to change the frame count from the program
         // just like you can in Processing, but it turns out that when
@@ -427,7 +438,7 @@ var createCodeTransformer = function (drawFunctionRunner, eventRouter, CoffeeCom
         compiledOutput = compiledOutput.replace(/var frame/, ";");
 
         var functionFromCompiledCode = new Function(compiledOutput);
-        drawFunctionRunner.setDrawFunction(functionFromCompiledCode);
+        LiveCodeLabCore.DrawFunctionRunner.setDrawFunction(functionFromCompiledCode);
         return functionFromCompiledCode;
 
     };

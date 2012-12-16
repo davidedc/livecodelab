@@ -29,9 +29,7 @@ var createDrawFunctionRunner = function () {
     };
 
     DrawFunctionRunner.setDrawFunction = function (drawFunc) {
-        if (drawFunc) {
         	DrawFunctionRunner.drawFunction = drawFunc;
-        }
     };
 
     DrawFunctionRunner.resetTrackingOfDoOnceOccurrences = function () {

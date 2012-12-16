@@ -10,9 +10,6 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
     'use strict';
 
-    // Used by Three.js
-    // add Stats.js - https://github.com/mrdoob/stats.js
-    var stats = new Stats(); //no
     
     /*
     createLiveCodeLabCore(
@@ -51,33 +48,15 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // requires MatrixCommands, ThreeJsSystem, ColourFunctions, GraphicsCommands
     // needs THREE
     LiveCodeLabCore.LightSystem = createLightSystem(); //yes
+    LiveCodeLabCore.DrawFunctionRunner = createDrawFunctionRunner(); //yes
 
     var eventRouter = createEventRouter();
     
     ///////////////////////////
     // Setup Event Listeners
     ///////////////////////////
-    eventRouter.bind('reset', LiveCodeLabCore.BackgroundPainter.pickRandomDefaultGradient, LiveCodeLabCore.BackgroundPainter);
+    eventRouter.bind('reset', LiveCodeLabCore.BackgroundPainter.pickRandomDefaultGradient);
 
-    LiveCodeLabCore.updateCode = function(updatedCode){
-       //alert('updatedCode: ' + updatedCode);
-       CodeTransformer.updateCode(updatedCode);
-    }
-    eventRouter.bind('code_changed',
-        function(updatedCodeAsString) {
-					if (updatedCodeAsString !== '') {
-							eventRouter.trigger('big-cursor-hide');
-					}
-					else {
-							LiveCodeLabCore.GraphicsCommands.resetTheSpinThingy = true;
-	
-							eventRouter.trigger('set-url-hash', '');
-	
-							eventRouter.trigger('big-cursor-show');
-					}
-					LiveCodeLabCore.updateCode(updatedCodeAsString);
-        }
-    );
     //no
     if (forceCanvasRenderer === undefined) {
     	forceCanvasRenderer = false;
@@ -118,15 +97,21 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
     editor = createEditor(eventRouter, CodeMirror); //no
 
-    DrawFunctionRunner = createDrawFunctionRunner(); //yes
-
-    CodeTransformer = createCodeTransformer(DrawFunctionRunner, eventRouter, CoffeeScript); // autocoder //yes
+    // requires DrawFunctionRunner
+    CodeTransformer = createCodeTransformer(eventRouter, CoffeeScript); // autocoder //yes
 
     // requires BlendControls
     Renderer = createRenderer(); //yes
 
-    // requires: TimeKeeper, MatrixCommands, BlendControls, SoundSystem, BackgroundPainter, GraphicsCommands, LightSystem
-    AnimationLoop = createAnimationLoop(DrawFunctionRunner, eventRouter, CodeTransformer, Renderer, stats); //yes
+    // Used by Three.js
+    // add Stats.js - https://github.com/mrdoob/stats.js
+    var stats = new Stats();
+    //console.log('creating stats');
+    Ui = createUi(eventRouter, stats); // $ //no
+    Ui.hideStatsWidget();
+
+    // requires: TimeKeeper, MatrixCommands, BlendControls, SoundSystem, BackgroundPainter, GraphicsCommands, LightSystem, DrawFunctionRunner
+    AnimationLoop = createAnimationLoop(eventRouter, CodeTransformer, Renderer, stats); //yes
 
     // requires: ColourNames
     autocoder = createAutocoder(eventRouter, editor); // McLexer //no
@@ -137,8 +122,34 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // requires ThreeJsSystem, BlendControls, GraphicsCommands
     ProgramLoader = createProgramLoader(eventRouter, editor, AnimationLoop, Renderer); // $, Detector, BlendControls //no
 
-    Ui = createUi(eventRouter, stats); // $ //no
     
+    LiveCodeLabCore.updateCode = function(updatedCode){
+       //alert('updatedCode: ' + updatedCode);
+       CodeTransformer.updateCode(updatedCode);
+        if ((updatedCode !== '') && LiveCodeLabCore.DrawFunctionRunner.dozingOff) {
+					LiveCodeLabCore.DrawFunctionRunner.dozingOff = false;
+					AnimationLoop.animate();
+					Ui.showStatsWidget();
+					//console.log('waking up');
+        }
+    }
+    eventRouter.bind('code_changed',
+        function(updatedCodeAsString) {
+					if (updatedCodeAsString !== '') {
+							eventRouter.trigger('big-cursor-hide');
+					}
+					else {
+							LiveCodeLabCore.GraphicsCommands.resetTheSpinThingy = true;
+	
+							eventRouter.trigger('set-url-hash', '');
+	
+							eventRouter.trigger('big-cursor-show');
+							Ui.hideStatsWidget();
+					}
+					LiveCodeLabCore.updateCode(updatedCodeAsString);
+        }
+    );
+
     ///////////////////////////////////////////////////////
     // runtime and compile-time error management
     ///////////////////////////////////////////////////////
@@ -219,7 +230,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 						//alert('undoing');
 				}
 				else {
-						 DrawFunctionRunner.reinstateLastWorkingDrawFunction();
+						 LiveCodeLabCore.DrawFunctionRunner.reinstateLastWorkingDrawFunction();
 				}
 				// re-throw the error so that the top-level debuggers
 				// (firebug, built-in, whathaveyous) can properly
@@ -243,6 +254,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
     LiveCodeLabCore.BackgroundPainter.pickRandomDefaultGradient(); //yes
     LiveCodeLabCore.SoundSystem.loadAndTestAllTheSounds(Ui.soundSystemOk); //yes
+
 
     if (LiveCodeLabCore.ThreeJsSystem) {
         AnimationLoop.animate(); //yes

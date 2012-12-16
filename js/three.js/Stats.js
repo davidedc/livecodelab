@@ -14,6 +14,9 @@ var Stats = function () {
 	_msColors = [ [ 0, 0, 0 ], [ 255, 255, 255 ] ];
 
 	_container = document.createElement( 'div' );
+	_container.setAttribute('id','statsWidget'); // added by DDC for LiveCodeLab
+	_container.style.display = 'none'; // added by DDC for LiveCodeLab
+	_container.style.cursor = 'pointer';
 	_container.style.cursor = 'pointer';
 	_container.style.width = '74px';
 	//_container.style.opacity = '0.9';
