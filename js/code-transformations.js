@@ -435,7 +435,7 @@ var createCodeTransformer = function (drawFunctionRunner, eventRouter, CoffeeCom
         // see here for the deepest examination ever of "eval"
         // http://perfectionkills.com/global-eval-what-are-the-options/
         // note that exceptions are caught by the window.onerror callback
-        DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
+        drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
 
         // You might want to change the frame count from the program
         // just like you can in Processing, but it turns out that when
@@ -458,9 +458,9 @@ var createCodeTransformer = function (drawFunctionRunner, eventRouter, CoffeeCom
     CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange = function (CodeTransformer, doOnceOccurrencesLineNumbers) {
 
         var elaboratedSource,
-        elaboratedSourceByLine,
-        iteratingOverSource,
-        drawFunction;
+            elaboratedSourceByLine,
+            iteratingOverSource,
+            drawFunction;
 
         // if we are here, the following has happened: someone has added an element
         // to the doOnceOccurrencesLineNumbers array. This can only have happened
