@@ -199,7 +199,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     
     if (!Detector.webgl || forceCanvasRenderer) {
         $('#noWebGLMessage').modal({
-            onClose: LiveCodeLabCore.SoundSystem.closeAndCheckAudio
+            onClose: eval('$.modal.close()','LiveCodeLabCore.isAudioSupported')
         });
         $('#simplemodal-container').height(200);
     }

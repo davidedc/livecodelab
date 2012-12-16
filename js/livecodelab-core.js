@@ -79,6 +79,10 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
     LiveCodeLabCore.playStartupSound = function() {
       LiveCodeLabCore.SoundSystem.playStartupSound();
     };
+    
+    LiveCodeLabCore.isAudioSupported = function() {
+      LiveCodeLabCore.SoundSystem.isAudioSupported();
+    };
 
     return LiveCodeLabCore;
 };

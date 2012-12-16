@@ -242,8 +242,7 @@ var createSoundSystem = function (eventRouter, buzz, Bowser, samplebank) {
 
 
     // Called in init.js
-    SoundSystem.closeAndCheckAudio = function () {
-        $.modal.close();
+    SoundSystem.isAudioSupported = function () {
         setTimeout(function () {
             if (!buzz.isSupported()) {
                 $('#noAudioMessage').modal();
