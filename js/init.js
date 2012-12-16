@@ -29,6 +29,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     LiveCodeLabCore.ThreeJs = createThreeJs(Detector, THREE, THREEx, canvasElementForThreeJS, forceCanvasRenderer); //yes
     // requires ThreeJs
     LiveCodeLabCore.BlendControls = createBlendControls(); //yes
+    LiveCodeLabCore.SoundSystem = createSoundSystem(buzz, createBowser(), createSampleBank(buzz)); // $ //yes
 
     var eventRouter = createEventRouter();
     
@@ -68,7 +69,6 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
 
 
-    LiveCodeLabCore.SoundSystem = createSoundSystem(buzz, createBowser(), createSampleBank(buzz)); // $ //yes
     BigCursor = createBigCursor(eventRouter); // $ //no
     ColourFunctions = createColourFunctions(); //yes
     BackgroundPainter = createBackgroundPainter(eventRouter, ColourFunctions); // $ //yes
