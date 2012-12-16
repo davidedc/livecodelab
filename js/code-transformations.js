@@ -180,13 +180,56 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler) {
         return code.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->");
     };
 
+    /**
+     * Each doOnce block is made to start with an instruction that traces whether
+     * the block has been run or not. This allows us to put back the tick where
+     * necessary, so the doOnce block is not run again.
+     * Example - let's say one pastes in this code:
+     *     doOnce ->
+     *         background 255
+     *         fill 255,0,0
+     *
+     *     doOnce -> ball
+     *
+     * it becomes:
+     *     (1+0).times ->
+     *         addDoOnce(1); background 255
+     *         fill 255,0,0
+     *
+     *     ;addDoOnce(4);
+     *     (1+0).times -> ball
+     *    
+     * So: if there is at least one doOnce
+     *     split the source in lines
+     *     add line numbers tracing instructions so we can track which ones have been run
+     *     regroup the lines into a single string again
+     *
+     */
+    preprocessingFunctions.addDoOnceTracing = function (source) {
+        var sourceLines, i;
+        if (source.indexOf('doOnce') > -1) {
+            sourceLines = source.split("\n");
+            for (i = 0; i < sourceLines.length; i += 1) {
+
+                // add the line number tracing instruction to inline case
+                sourceLines[i] = sourceLines[i].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/gm, "$1;addDoOnce(" + i + "); (1+0).times -> $2");
+
+                // add the line number tracing instruction to multiline case
+                if (sourceLines[i].match(/^(\s*)doOnce[ ]*\->[ ]*$/gm)) {
+                    sourceLines[i] = sourceLines[i].replace(/^(\s*)doOnce[ ]*\->[ ]*$/gm, "$1(1+0).times ->");
+                    sourceLines[i + 1] = sourceLines[i + 1].replace(/^(\s*)(.+)$/gm, "$1;addDoOnce(" + i + "); $2");
+                }
+
+            }
+            source = sourceLines.join("\n");
+        }
+        return source;
+    };
+
 
     CodeTransformer.updateCode = function (updatedCodeAsString) {
 
-        var elaboratedSource,
-            elaboratedSourceByLine,
-            iteratingOverSource,
-            errResults;
+        var elaboratedSource, errResults;
 
         CodeTransformer.currentCodeString = updatedCodeAsString;
         
@@ -225,49 +268,7 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler) {
 
         elaboratedSource = preprocessingFunctions.fixTimesFunctions(elaboratedSource);
 
-
-
-        // ADDING TRACING INSTRUCTION TO THE DOONCE BLOCKS
-        // each doOnce block is made to start with an instruction that traces whether
-        // the block has been run or not. This allows us to put back the tick where
-        // necessary, so the doOnce block is not run again.
-        // Example - let's say one pastes in this code:
-        //      doOnce ->
-        //        background 255
-        //        fill 255,0,0
-        //
-        //      doOnce -> ball
-        //
-        // it becomes:
-        //      (1+0).times ->
-        //        addDoOnce(1); background 255
-        //        fill 255,0,0
-        //
-        //      ;addDoOnce(4);
-        //      (1+0).times -> ball
-        //    
-        // So: if there is at least one doOnce
-        //   split the source in lines
-        //   add line numbers tracing instructions so we can track which ones have been run
-        //   regroup the lines into a single string again
-        //
-        if (elaboratedSource.indexOf('doOnce') > -1) {
-            elaboratedSourceByLine = elaboratedSource.split("\n");
-            for (iteratingOverSource = 0; iteratingOverSource < elaboratedSourceByLine.length; iteratingOverSource += 1) {
-
-                // add the line number tracing instruction to inline case
-                elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/gm, "$1;addDoOnce(" + iteratingOverSource + "); (1+0).times -> $2");
-
-                // add the line number tracing instruction to multiline case
-                if (elaboratedSourceByLine[iteratingOverSource].match(/^(\s*)doOnce[ ]*\->[ ]*$/gm)) {
-                    elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*$/gm, "$1(1+0).times ->");
-                    elaboratedSourceByLine[iteratingOverSource + 1] = elaboratedSourceByLine[iteratingOverSource + 1].replace(/^(\s*)(.+)$/gm, "$1;addDoOnce(" + iteratingOverSource + "); $2");
-                }
-
-            }
-            elaboratedSource = elaboratedSourceByLine.join("\n");
-        }
-
+        elaboratedSource = preprocessingFunctions.addDoOnceTracing(elaboratedSource);
 
 
         elaboratedSource = elaboratedSource.replace(/^(\s*)([a-z]+[a-zA-Z0-9]*)[ ]*$/gm, "$1;$2()");
