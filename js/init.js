@@ -117,7 +117,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     autocoder = createAutocoder(eventRouter, editor); // McLexer //no
 
     // EditorDimmer functions should probablly be rolled into the editor itself
-    EditorDimmer = createEditorDimmer(eventRouter); // $ //no
+    EditorDimmer = createEditorDimmer(eventRouter, BigCursor); // $ //no
 
     // requires ThreeJsSystem, BlendControls, GraphicsCommands
     ProgramLoader = createProgramLoader(eventRouter, editor, AnimationLoop, Renderer); // $, Detector, BlendControls //no

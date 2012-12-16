@@ -1,7 +1,7 @@
 /*jslint */
 /*global $ */
 
-var createEditorDimmer = function (eventRouter) {
+var createEditorDimmer = function (eventRouter, bigCursor) {
 
     'use strict';
 
@@ -11,11 +11,14 @@ var createEditorDimmer = function (eventRouter) {
         dimCodeOn = false;
 
     EditorDimmer.undimEditor = function () {
-        if ($("#formCode").css('opacity') < 0.99) {
-            $("#formCode").animate({
-                opacity: 1
-            }, "fast");
-        }
+			//console.log('undimming, bigCursor.startBigCursorBlinkingAnimation:' + bigCursor.startBigCursorBlinkingAnimation);
+			if (!bigCursor.isShowing) {
+				if ($("#formCode").css('opacity') < 0.99) {
+						$("#formCode").animate({
+								opacity: 1
+						}, "fast");
+				}
+			}
     };
 
     // Now that there is a manual switch to toggle it off and on
