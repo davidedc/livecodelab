@@ -84,5 +84,16 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
       LiveCodeLabCore.SoundSystem.isAudioSupported();
     };
 
+    LiveCodeLabCore.updateCode = function(updatedCode){
+       //alert('updatedCode: ' + updatedCode);
+       LiveCodeLabCore.CodeTransformer.updateCode(updatedCode);
+        if ((updatedCode !== '') && LiveCodeLabCore.dozingOff) {
+					LiveCodeLabCore.dozingOff = false;
+					LiveCodeLabCore.AnimationLoop.animate();
+					//console.log('waking up');
+					eventRouter.trigger('livecodelab-waking-up');
+        }
+    }
+
     return LiveCodeLabCore;
 };
