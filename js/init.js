@@ -10,54 +10,94 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
     'use strict';
 
+    ///////////////////////////////////////////////////////
+    // Preliminary check, is canvas supported?
+    ///////////////////////////////////////////////////////
+    if (!isCanvasSupported) {
+        $('#noCanvasMessage').modal({
+            onClose: function () {
+                $('#loading').text('sorry :-(');
+                $.modal.close();
+            }
+        });
+
+        $('#simplemodal-container').height(200);
+        return;
+    }
+
+    // eventRouter manages all the events/callbacks across the whole
+    // of livecodelab.
     var eventRouter = createEventRouter();
-    // Used by Three.js
+
+    // Stats are updated in the AnimationLoop
     // add Stats.js - https://github.com/mrdoob/stats.js
     var stats = new Stats();
-    
-    // createColours creates a bunch of global variables for all css colors (and more).
-    // Since background-painting.js initialises the background by means of
-    // CSS colors, this needs to be run before creating LiveCodeLabCore
-    var colourNames = createColours();
-
-    LiveCodeLabCore = createLiveCodeLabCore(blendedThreeJsSceneCanvas, canvasForBackground, forceCanvasRenderer, eventRouter, stats );
-
-    
-    ///////////////////////////
-    // Setup Event Listeners
-    ///////////////////////////
-    eventRouter.bind('reset', LiveCodeLabCore.paintARandomBackground);
-
-    
+  
     if (forceCanvasRenderer === undefined) {
     	forceCanvasRenderer = false;
     }
     if (forceCanvasRenderer === null) {
     	forceCanvasRenderer = false;
     }
+  
+    // createColours creates a bunch of global variables for all css colors (and more).
+    // Since background-painting.js initialises the background by means of
+    // CSS colors, this needs to be run before creating LiveCodeLabCore
+    var colourNames = createColours();
 
+    ////////////////////////////////////////////////////////
+    // Initialise the core of livecodelab.
+    // LiveCodeLabCore consists of the following main parts:
+    ////////////////////////////////////////////////////////
+    //  - TimeKeeper
+    //  - THREE
+    //  - ThreeJsSystem
+    //  - MatrixCommands
+    //  - BlendControls
+    //  - SoundSystem
+    //  - ColourFunctions
+    //  - BackgroundPainter
+    //  - GraphicsCommands
+    //  - LightSystem 
+    //  - DrawFunctionRunner
+    //  - CodeTransformer
+    //  - Renderer
+    //  - AnimationLoop
+    
+    LiveCodeLabCore = createLiveCodeLabCore(
+    		blendedThreeJsSceneCanvas,
+    		canvasForBackground,
+    		forceCanvasRenderer,
+    		eventRouter,
+    		stats
+    	);    
+  
+    ///////////////////////////////////////////////////////
+    // Other satellite parts
+    ///////////////////////////////////////////////////////
     var urlRouter = createUrlRouter(eventRouter); 
-
     var bigCursor = createBigCursor(eventRouter); // $ 
     var editor = createEditor(eventRouter, CodeMirror); 
-
-
     //console.log('creating stats');
     var ui = createUi(eventRouter, stats); // $ 
-
-
     // requires: ColourNames
     var autocoder = createAutocoder(eventRouter, editor, colourNames); // McLexer 
-
     // EditorDimmer functions should probablly be rolled into the editor itself
     // note that the editorDimmer variable below is never used. Leaving it
     // in for consistency.
     var editorDimmer = createEditorDimmer(eventRouter, bigCursor); // $ 
-
     // requires ThreeJsSystem, BlendControls, GraphicsCommands, Renderer
     // note that the programLoader variable below is never used. Leaving it
     // in for consistency.
     var programLoader = createProgramLoader(eventRouter, editor); // $, Detector, BlendControls 
+
+    ///////////////////////////////////////////////////////
+    // Setup Of Event Listeners, including handling of
+    // compile time and runtime errors.
+    ///////////////////////////////////////////////////////
+    eventRouter.bind('reset', LiveCodeLabCore.paintARandomBackground);
+
+    eventRouter.trigger('editor-toggle-dim', true);
 
     eventRouter.bind('livecodelab-running-stably', ui.showStatsWidget);
     
@@ -75,8 +115,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
         }
     );
 
-    ///////////////////////////////////////////////////////
-    // runtime and compile-time error management
+    // runtime and compile-time error management //////////
     ///////////////////////////////////////////////////////
     // Two different types of errors are managed in
     // two slightly different ways.
@@ -179,12 +218,13 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
     // create this binding before the sounds are loaded
     eventRouter.bind('all-sounds-loaded-and tested',ui.soundSystemOk);
-    LiveCodeLabCore.loadAndTestAllTheSounds();
 
+    ///////////////////////////////////////////////////////
+    // Now kick-off the system.
+    ///////////////////////////////////////////////////////
+    LiveCodeLabCore.loadAndTestAllTheSounds();
     LiveCodeLabCore.paintARandomBackground();
     LiveCodeLabCore.startAnimationLoop();
-
-
     
     if (!Detector.webgl || forceCanvasRenderer) {
         $('#noWebGLMessage').modal({
@@ -193,41 +233,21 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
         $('#simplemodal-container').height(200);
     }
 
-
     editor.focus(); 
 
     // check if the url points to a particular demo,
     // in which case we load the demo directly.
-    // otherwise we do as usual.
-    
+    // otherwise we do as usual.    
     if (!urlRouter.urlPointsToDemoOrTutorial()) {
         setTimeout(LiveCodeLabCore.playStartupSound, 650);
     }
 
     bigCursor.toggleBlink(true); 
 
-    // Turn dimming on by default
-    eventRouter.trigger('editor-toggle-dim', true);
-
     ui.setup(); 
-
 };
 
 $(document).ready(function () {
-
-
-    if (!isCanvasSupported) {
-
-        $('#noCanvasMessage').modal({
-            onClose: function () {
-                $('#loading').text('sorry :-(');
-                $.modal.close();
-            }
-        });
-
-        $('#simplemodal-container').height(200);
-        return;
-    }
 
     // arguments: (blendedThreeJsSceneCanvas, canvasForBackground, forceCanvasRenderer, bubbleUpErrorsForDebugging)
     startEnvironment(document.getElementById('blendedThreeJsSceneCanvas'), document.getElementById('backGroundCanvas'), false, false);
