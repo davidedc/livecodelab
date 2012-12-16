@@ -18,6 +18,10 @@ var createDrawFunctionRunner = function () {
     // contains the last stable draw function as a Function object. Never mind the
     // initialisation as an empty string.
     DrawFunctionRunner.lastStableDrawFunction = '';
+    // contains the code that is meant to be run, as a string.
+    // note that it might be impossible to run it because of errors, in which case
+    // LiveCodeLab might be running an older version.
+    DrawFunctionRunner.currentCodeString = '';
 
     // This is the function called from the compiled code to add the doOnce line
     window.addDoOnce = DrawFunctionRunner.addDoOnce = function (lineNum) {

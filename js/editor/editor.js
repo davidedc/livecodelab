@@ -59,7 +59,7 @@ var createEditor = function (eventRouter, codemirror) {
         // will pass in the "editor" instance as the first
         // argument to the function callback
         onChange: function (editor) {
-            eventRouter.trigger('code_changed', editor);
+            eventRouter.trigger('code_changed', editor.getValue());
         },
         onCursorActivity: suspendDimmingAndCheckIfLink
     });
@@ -68,6 +68,14 @@ var createEditor = function (eventRouter, codemirror) {
     // Setup Event Listeners
     eventRouter.bind('reset', function () {
         Editor.setValue('');
+    });
+
+    eventRouter.bind('code-updated-by-livecodelab', function (elaboratedSource) {
+        var cursorPositionBeforeAddingCheckMark = Editor.getCursor();
+        cursorPositionBeforeAddingCheckMark.ch = cursorPositionBeforeAddingCheckMark.ch + 1;
+
+        Editor.setValue(elaboratedSource);
+        Editor.setCursor(cursorPositionBeforeAddingCheckMark);
     });
 
 

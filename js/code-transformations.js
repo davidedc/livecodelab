@@ -93,21 +93,22 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
 
 
 
-    CodeTransformer.registerCode = function () {
+    CodeTransformer.registerCode = function (updatedCodeAsString) {
 
 
-        var editorContent = editor.getValue(),
-            preprocessingFunctions = {},
+        var preprocessingFunctions = {},
             elaboratedSource,
             elaboratedSourceByLine,
             iteratingOverSource,
             errResults;
 
-        if (editorContent !== '') {
+        CodeTransformer.currentCodeString = updatedCodeAsString;
+
+        if (updatedCodeAsString !== '') {
             eventRouter.trigger('big-cursor-hide');
         }
 
-        if (editorContent === '') {
+        if (updatedCodeAsString === '') {
             graphics.resetTheSpinThingy = true;
 
             eventRouter.trigger('set-url-hash', '');
@@ -144,10 +145,10 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
             return newCode;
         };
 
-        editorContent = preprocessingFunctions.removeTickedDoOnce(editorContent);
+        updatedCodeAsString = preprocessingFunctions.removeTickedDoOnce(updatedCodeAsString);
 
 
-        errResults = CodeChecker.parse(editorContent);
+        errResults = CodeChecker.parse(updatedCodeAsString);
 
         // according to jsperf, the fastest way to check if number is even/odd
         if (errResults.err === true) {
@@ -162,7 +163,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
         }
 
 
-        elaboratedSource = editorContent;
+        elaboratedSource = updatedCodeAsString;
 
         // we make it so some common command forms can be used in postfix notation, e.g.
         //   60 bpm
@@ -468,7 +469,6 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
         var elaboratedSource,
         elaboratedSourceByLine,
         iteratingOverSource,
-        cursorPositionBeforeAddingCheckMark,
         drawFunction;
 
         // if we are here, the following has happened: someone has added an element
@@ -481,7 +481,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
         // when we start the program we could have more than one doOnce that has
         // to run.
 
-        elaboratedSource = editor.getValue();
+        elaboratedSource = CodeTransformer.currentCodeString;
 
         // we know the line number of each doOnce block that has been run
         // so we go there and add a tick next to each doOnce to indicate
@@ -492,11 +492,10 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
         }
         elaboratedSource = elaboratedSourceByLine.join("\n");
 
-        cursorPositionBeforeAddingCheckMark = editor.getCursor();
-        cursorPositionBeforeAddingCheckMark.ch = cursorPositionBeforeAddingCheckMark.ch + 1;
-
-        editor.setValue(elaboratedSource);
-        editor.setCursor(cursorPositionBeforeAddingCheckMark);
+        // puts the new code (where the doOnce that have been executed have
+        // tickboxes put back) in the editor. Which will trigger a re-registration
+        // of the new code.
+        eventRouter.trigger('code-updated-by-livecodelab', elaboratedSource);
 
         // we want to avoid that another frame is run with the old
         // code, as this would mean that the
@@ -509,7 +508,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
         // Also registerCode() may split the source code by line, so we can
         // avoid that since we've just split it, we could pass
         // the already split code.
-        drawFunction = CodeTransformer.registerCode();
+        drawFunction = CodeTransformer.registerCode(elaboratedSource);
         return drawFunction;
     };
 

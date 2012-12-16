@@ -24,8 +24,14 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     );
     */
 
-
     var eventRouter = createEventRouter(); //yes
+    
+    LiveCodeLab.updateCode = function(updatedCode){
+       //alert('updatedCode: ' + updatedCode);
+       CodeTransformer.registerCode(updatedCode);
+    }
+    eventRouter.bind('code_changed', LiveCodeLab.updateCode, editor);
+
     //no
     if (forceCanvasRenderer === undefined) {
     	forceCanvasRenderer = false;
