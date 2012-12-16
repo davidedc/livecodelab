@@ -93,7 +93,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
 
 
 
-    CodeTransformer.registerCode = function (updatedCodeAsString) {
+    CodeTransformer.updateCode = function (updatedCodeAsString) {
 
 
         var preprocessingFunctions = {},
@@ -464,7 +464,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
 
     };
 
-    CodeTransformer.addCheckMarksAndRegisterCode = function (editor, CodeTransformer, doOnceOccurrencesLineNumbers) {
+    CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange = function (editor, CodeTransformer, doOnceOccurrencesLineNumbers) {
 
         var elaboratedSource,
         elaboratedSourceByLine,
@@ -505,10 +505,10 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
         // new code by getting the code from codemirror again
         // because we don't know what that entails. We should
         // just pass the code we already have.
-        // Also registerCode() may split the source code by line, so we can
+        // Also updateCode() may split the source code by line, so we can
         // avoid that since we've just split it, we could pass
         // the already split code.
-        drawFunction = CodeTransformer.registerCode(elaboratedSource);
+        drawFunction = CodeTransformer.updateCode(elaboratedSource);
         return drawFunction;
     };
 

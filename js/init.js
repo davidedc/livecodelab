@@ -28,7 +28,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     
     LiveCodeLab.updateCode = function(updatedCode){
        //alert('updatedCode: ' + updatedCode);
-       CodeTransformer.registerCode(updatedCode);
+       CodeTransformer.updateCode(updatedCode);
     }
     eventRouter.bind('code_changed', LiveCodeLab.updateCode, editor);
 

@@ -42,7 +42,7 @@ var createDrawFunctionRunner = function () {
     DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun = function (editor, CodeTransformer) {
         if (doOnceOccurrencesLineNumbers.length !== 0) {
            DrawFunctionRunner.setDrawFunction(
-             CodeTransformer.addCheckMarksAndRegisterCode(editor, CodeTransformer, doOnceOccurrencesLineNumbers)
+             CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(editor, CodeTransformer, doOnceOccurrencesLineNumbers)
            );
         }
     }
