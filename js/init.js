@@ -46,8 +46,6 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     // TODO for some weird reason this actually cannot be moved further down
     ColourNames = createColours(); //no
 
-    LiveCodeLabCore.MatrixCommands = createMatrixCommands(THREE);
-
     ThreeJs = createThreeJs(Detector, THREE, THREEx, canvasElementForThreeJS, forceCanvasRenderer); //yes
     document.getElementById('container').appendChild(ThreeJs.sceneRenderingCanvas); //no
     
