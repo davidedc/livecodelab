@@ -4,7 +4,7 @@
 var frame = 0;
 
 
-var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransformer, renderer, graphics, stats, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
+var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransformer, renderer, graphics, stats, soundsystem, lightsystem, backgroundpainter) {
 
     'use strict';
 
@@ -84,7 +84,7 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
 
 				graphics.reset();
 
-				blendcontrols.animationStyle(blendcontrols.animationStyles.normal);
+				LiveCodeLabCore.BlendControls.animationStyle(LiveCodeLabCore.BlendControls.animationStyles.normal);
 				backgroundpainter.resetGradientStack();
 
 				// Now here there is another try/catch check when the draw function is ran.
@@ -114,7 +114,7 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
 				if (frame === 0) {
 						LiveCodeLabCore.TimeKeeper.resetTime();
 				}
-				blendcontrols.animationStyleUpdateIfChanged();
+				LiveCodeLabCore.BlendControls.animationStyleUpdateIfChanged();
 				backgroundpainter.simpleGradientUpdateIfChanged();
 				soundsystem.changeUpdatesPerMinuteIfNeeded();
 

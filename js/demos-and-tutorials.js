@@ -1,5 +1,5 @@
 /*jslint browser: true, nomen: true, regexp: true */
-/*global $, Detector, BlendControls */
+/*global $, Detector */
 
 var createProgramLoader = function (eventRouter, texteditor, animationLoop, renderer, graphics) {
 
@@ -629,9 +629,9 @@ var createProgramLoader = function (eventRouter, texteditor, animationLoop, rend
         // of the previous code.
         // So basically we draw an empty frame.
         // a) make sure that animationStyle
-        BlendControls.animationStyle(BlendControls.animationStyles.normal);
+        LiveCodeLabCore.BlendControls.animationStyle(LiveCodeLabCore.BlendControls.animationStyles.normal);
         // b) apply the potentially new animationStyle
-        BlendControls.animationStyleUpdateIfChanged();
+        LiveCodeLabCore.BlendControls.animationStyleUpdateIfChanged();
         // render the empty frame
         Renderer.render(graphics);
 

@@ -26,6 +26,9 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     LiveCodeLabCore.TimeKeeper = createTimeKeeper();
     LiveCodeLabCore.MatrixCommands = createMatrixCommands(THREE); // needs TimeKeeper to be initialised
     LiveCodeLabCore.ColourNames = createColours(); //no
+    LiveCodeLabCore.ThreeJs = createThreeJs(Detector, THREE, THREEx, canvasElementForThreeJS, forceCanvasRenderer); //yes
+    // requires ThreeJs
+    LiveCodeLabCore.BlendControls = createBlendControls(); //yes
 
     var eventRouter = createEventRouter();
     
@@ -45,7 +48,6 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
     UrlRouter = createUrlRouter(eventRouter); //no
 
-    LiveCodeLabCore.ThreeJs = createThreeJs(Detector, THREE, THREEx, canvasElementForThreeJS, forceCanvasRenderer); //yes
     document.getElementById('container').appendChild(LiveCodeLabCore.ThreeJs.sceneRenderingCanvas); //no
     
     if (!canvasForBackground) {
@@ -66,8 +68,6 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
 
 
-    // requires ThreeJs
-    BlendControls = createBlendControls(); //yes
     Bowser = createBowser(); //yes
     SampleBank = createSampleBank(buzz); //yes
     SoundSystem = createSoundSystem(buzz, Bowser, SampleBank); // $ //yes
@@ -92,11 +92,11 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
     CodeTransformer = createCodeTransformer(DrawFunctionRunner, eventRouter, CoffeeScript, GraphicsCommands); // autocoder //yes
 
-    // requires ThreeJs
-    Renderer = createRenderer(BlendControls); //yes
+    // requires BlendControls
+    Renderer = createRenderer(); //yes
 
-    // requires: TimeKeeper, MatrixCommands
-    AnimationLoop = createAnimationLoop(DrawFunctionRunner, eventRouter, CodeTransformer, Renderer, GraphicsCommands, stats, SoundSystem, LightSystem, BlendControls, BackgroundPainter); //yes
+    // requires: TimeKeeper, MatrixCommands, BlendControls
+    AnimationLoop = createAnimationLoop(DrawFunctionRunner, eventRouter, CodeTransformer, Renderer, GraphicsCommands, stats, SoundSystem, LightSystem, BackgroundPainter); //yes
 
     // requires: ColourNames
     autocoder = createAutocoder(eventRouter, editor); // McLexer //no
@@ -104,7 +104,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     // EditorDimmer functions should probablly be rolled into the editor itself
     EditorDimmer = createEditorDimmer(eventRouter); // $ //no
 
-    // requires ThreeJs
+    // requires ThreeJs, BlendControls
     ProgramLoader = createProgramLoader(eventRouter, editor, AnimationLoop, Renderer, GraphicsCommands); // $, Detector, BlendControls //no
 
     Ui = createUi(eventRouter, stats); // $ //no

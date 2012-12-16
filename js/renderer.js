@@ -1,7 +1,7 @@
 /*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
 
 
-var createRenderer = function (blendcontrols) {
+var createRenderer = function () {
 
     'use strict';
 
@@ -23,7 +23,7 @@ var createRenderer = function (blendcontrols) {
 
             // draw the rendering of the scene on the final render
             // clear the final render context
-            LiveCodeLabCore.ThreeJs.finalRenderWithSceneAndBlendContext.globalAlpha = blendcontrols.blendAmount;
+            LiveCodeLabCore.ThreeJs.finalRenderWithSceneAndBlendContext.globalAlpha = LiveCodeLabCore.BlendControls.blendAmount;
             LiveCodeLabCore.ThreeJs.finalRenderWithSceneAndBlendContext.drawImage(LiveCodeLabCore.ThreeJs.previousRenderForBlending, 0, 0);
 
             LiveCodeLabCore.ThreeJs.finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
