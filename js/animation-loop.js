@@ -102,6 +102,10 @@ var createAnimationLoop = function (editor, drawFunctionRunner, eventRouter, Cod
 				catch (e) {
 						 eventRouter.trigger('display-error', e);
 						 drawFunctionRunner.reinstateLastWorkingProgram();
+						 if (autocoder.active) {
+						 		editor.undo();
+						 		return;
+						 }
 						 return;
 				}
         drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(editor, CodeTransformer);
