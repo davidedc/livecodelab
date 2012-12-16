@@ -4,7 +4,7 @@
 var frame = 0;
 
 
-var createAnimationLoop = function (editor, drawFunctionRunner, eventRouter, CodeTransformer, renderer, timekeeper, graphics, stats, matrixcommands, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
+var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransformer, renderer, timekeeper, graphics, stats, matrixcommands, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
 
     'use strict';
 
@@ -27,13 +27,13 @@ var createAnimationLoop = function (editor, drawFunctionRunner, eventRouter, Cod
         if (AnimationLoop.useRequestAnimationFrame) {
             if (AnimationLoop.wantedFramesPerSecond === -1) {
                 window.requestAnimationFrame(function () {
-                    AnimationLoop.animate(editor);
+                    AnimationLoop.animate();
                 });
             } else {
                 if (loopInterval === undefined) {
                     loopInterval = setInterval(function () {
                         window.requestAnimationFrame(function () {
-                            AnimationLoop.animate(editor);
+                            AnimationLoop.animate();
                         });
                     }, 1000 / AnimationLoop.wantedFramesPerSecond);
                 }
@@ -41,11 +41,11 @@ var createAnimationLoop = function (editor, drawFunctionRunner, eventRouter, Cod
         } else {
             if (AnimationLoop.wantedFramesPerSecond === -1) {
 							setTimeout(function () {
-									AnimationLoop.animate(editor);
+									AnimationLoop.animate();
 							}, 1000 / 60);
             } else {
 							setTimeout(function () {
-									AnimationLoop.animate(editor);
+									AnimationLoop.animate();
 							}, 1000 / AnimationLoop.wantedFramesPerSecond);
             }
         }
@@ -100,15 +100,11 @@ var createAnimationLoop = function (editor, drawFunctionRunner, eventRouter, Cod
 					drawFunctionRunner.runDrawFunction();
 				}
 				catch (e) {
-						 eventRouter.trigger('display-error', e);
-						 drawFunctionRunner.reinstateLastWorkingProgram();
-						 if (autocoder.active) {
-						 		editor.undo();
-						 		return;
-						 }
+						 //alert('runtime error');
+						 eventRouter.trigger('runtime-error-thrown', e);
 						 return;
 				}
-        drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(editor, CodeTransformer);
+        drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(CodeTransformer);
 
 
 				// we have to repeat this check because in the case

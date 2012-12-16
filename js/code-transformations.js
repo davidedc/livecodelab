@@ -2,7 +2,7 @@
 /*global autocoder, createCodeChecker */
 
 
-var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, CoffeeCompiler, graphics) {
+var createCodeTransformer = function (drawFunctionRunner, eventRouter, CoffeeCompiler, graphics) {
 
     'use strict';
 
@@ -152,13 +152,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
 
         // according to jsperf, the fastest way to check if number is even/odd
         if (errResults.err === true) {
-            if (autocoder.active) {
-                editor.undo();
-                return;
-            }
-
-            eventRouter.trigger('display-error', errResults.message);
-
+            eventRouter.trigger('compile-time-error-thrown', errResults.message);
             return;
         }
 
@@ -273,13 +267,8 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
         // TODO: call draw() something else that the user is not
         // likely to use by mistake and take away this check.
         if (elaboratedSource.match(/[\s\+\;]+draw\s*\(/) || false) {
-            if (autocoder.active) {
-                editor.undo();
-                //alert("did an undo");
-                return;
-            }
             programHasBasicError = true;
-            eventRouter.trigger('display-error', "You can't call draw()");
+            eventRouter.trigger('compile-time-error-thrown', "You can't call draw()");
             return;
         }
 
@@ -380,16 +369,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
             // coffescript compiler has caught a syntax error.
             // we are going to display the error and we WON'T register
             // the new code
-
-            if (autocoder.active) {
-                editor.undo();
-                //alert("did an undo");
-                return;
-            }
-
-            // mark the program as flawed
-            eventRouter.trigger('display-error', e);
-
+            eventRouter.trigger('compile-time-error-thrown', e);
             return;
         }
 
@@ -421,7 +401,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
             }
             if (declaredMethods.length === 0) {
                 error = true;
-                eventRouter.trigger('display-error', usedMethods[scanningUsedMethods] + " doesn't exist");
+                eventRouter.trigger('compile-time-error-thrown', usedMethods[scanningUsedMethods] + " doesn't exist");
                 return;
             }
             var scanningDeclaredMethods;
@@ -430,7 +410,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
                     break;
                 } else if (scanningDeclaredMethods === declaredMethods.length - 1) {
                     error = true;
-                    eventRouter.trigger('display-error', usedMethods[scanningUsedMethods] + " doesn't exist");
+                    eventRouter.trigger('compile-time-error-thrown', usedMethods[scanningUsedMethods] + " doesn't exist");
                     return;
                 }
             }
@@ -464,7 +444,7 @@ var createCodeTransformer = function (drawFunctionRunner, editor, eventRouter, C
 
     };
 
-    CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange = function (editor, CodeTransformer, doOnceOccurrencesLineNumbers) {
+    CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange = function (CodeTransformer, doOnceOccurrencesLineNumbers) {
 
         var elaboratedSource,
         elaboratedSourceByLine,

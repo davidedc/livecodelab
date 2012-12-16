@@ -64,7 +64,6 @@ var createEditor = function (eventRouter, codemirror) {
         onCursorActivity: suspendDimmingAndCheckIfLink
     });
 
-
     // Setup Event Listeners
     eventRouter.bind('reset', function () {
         Editor.setValue('');

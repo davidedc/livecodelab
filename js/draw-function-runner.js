@@ -39,10 +39,10 @@ var createDrawFunctionRunner = function () {
     }
 
 
-    DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun = function (editor, CodeTransformer) {
+    DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun = function ( CodeTransformer) {
         if (doOnceOccurrencesLineNumbers.length !== 0) {
            DrawFunctionRunner.setDrawFunction(
-             CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(editor, CodeTransformer, doOnceOccurrencesLineNumbers)
+             CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(CodeTransformer, doOnceOccurrencesLineNumbers)
            );
         }
     }

@@ -177,7 +177,7 @@ var createUi = function (eventRouter, stats) {
 
 
     // Setup Event Listeners
-    eventRouter.bind('display-error', Ui.checkErrorAndReport, Ui);
+    eventRouter.bind('report-runtime-or-compile-time-error', Ui.checkErrorAndReport, Ui);
     eventRouter.bind('clear-error', Ui.clearError, Ui);
 
     eventRouter.bind('autocoder-button-pressed', function (state) {

@@ -88,11 +88,11 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
     DrawFunctionRunner = createDrawFunctionRunner(); //yes
 
-    CodeTransformer = createCodeTransformer(DrawFunctionRunner, editor, eventRouter, CoffeeScript, GraphicsCommands); // autocoder //yes
+    CodeTransformer = createCodeTransformer(DrawFunctionRunner, eventRouter, CoffeeScript, GraphicsCommands); // autocoder //yes
 
     Renderer = createRenderer(ThreeJs, BlendControls); //yes
 
-    AnimationLoop = createAnimationLoop(editor, DrawFunctionRunner, eventRouter, CodeTransformer, Renderer, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter); //yes
+    AnimationLoop = createAnimationLoop(DrawFunctionRunner, eventRouter, CodeTransformer, Renderer, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter); //yes
 
     autocoder = createAutocoder(eventRouter, editor, ColourNames); // McLexer //no
 
@@ -102,13 +102,36 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     ProgramLoader = createProgramLoader(eventRouter, editor, AnimationLoop, ThreeJs, Renderer, GraphicsCommands); // $, Detector, BlendControls //no
 
     Ui = createUi(eventRouter, stats); // $ //no
+    eventRouter.bind('runtime-error-thrown',
+      function(e) {
+				eventRouter.trigger('report-runtime-or-compile-time-error',e);
+				if (autocoder.active) {
+						//alert('editor: ' + editor);
+						editor.undo();
+						//alert('undoing');
+				}
+				else {
+						 DrawFunctionRunner.reinstateLastWorkingProgram();
+				}
+      }
+    );
+    eventRouter.bind('compile-time-error-thrown',
+      function(e) {
+				eventRouter.trigger('report-runtime-or-compile-time-error',e);
+				if (autocoder.active) {
+						editor.undo();
+				}
+      }
+    );
+
+    eventRouter.bind('clear-error', Ui.clearError, Ui);
 
 
     BackgroundPainter.pickRandomDefaultGradient(); //yes
     SoundSystem.loadAndTestAllTheSounds(Ui.soundSystemOk); //yes
 
     if (ThreeJs) {
-        AnimationLoop.animate(editor); //yes
+        AnimationLoop.animate(); //yes
     }
 
     //no
