@@ -211,7 +211,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // in which case we load the demo directly.
     // otherwise we do as usual.
     
-    if (!urlRouter.checkUrl()) {
+    if (!urlRouter.urlPointsToDemoOrTutorial()) {
         setTimeout(LiveCodeLabCore.SoundSystem.playStartupSound, 650);
     }
 

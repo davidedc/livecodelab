@@ -20,7 +20,7 @@ var createUrlRouter = function (events) {
         window.location.hash = hash;
     };
 
-    UrlRouter.checkUrl = function () {
+    UrlRouter.urlPointsToDemoOrTutorial = function () {
         var hash, found = false;
         hash = UrlRouter.getHash();
         if (hash) {
