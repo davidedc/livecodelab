@@ -1,6 +1,6 @@
 /*jslint browser: true, devel: true */
 
-var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer) {
+var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer, liveCodeLabCore_THREE) {
 
     'use strict';
 
@@ -25,7 +25,7 @@ var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas,
         }
         ThreeJsSystem.blendedThreeJsSceneCanvas = blendedThreeJsSceneCanvas;
 
-        ThreeJsSystem.renderer = new LiveCodeLabCore.THREE.WebGLRenderer({
+        ThreeJsSystem.renderer = new liveCodeLabCore_THREE.WebGLRenderer({
             canvas: ThreeJsSystem.blendedThreeJsSceneCanvas,
             preserveDrawingBuffer: false, // to allow screenshot
             antialias: false,
@@ -44,7 +44,7 @@ var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas,
           ThreeJsSystem.currentFrameThreeJsSceneCanvas = document.createElement('canvas');
         }
         ThreeJsSystem.currentFrameThreeJsSceneCanvasContext = ThreeJsSystem.currentFrameThreeJsSceneCanvas.getContext('2d');
-        ThreeJsSystem.renderer = new LiveCodeLabCore.THREE.CanvasRenderer({
+        ThreeJsSystem.renderer = new liveCodeLabCore_THREE.CanvasRenderer({
             canvas: ThreeJsSystem.currentFrameThreeJsSceneCanvas,
             antialias: true, // to get smoother output
             preserveDrawingBuffer: false // to allow screenshot
@@ -67,12 +67,12 @@ var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas,
 
 
 
-    ThreeJsSystem.scene = new LiveCodeLabCore.THREE.Scene();
+    ThreeJsSystem.scene = new liveCodeLabCore_THREE.Scene();
     ThreeJsSystem.scene.matrixAutoUpdate = false;
 
 
     // put a camera in the scene
-    ThreeJsSystem.camera = new LiveCodeLabCore.THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000);
+    ThreeJsSystem.camera = new liveCodeLabCore_THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000);
     ThreeJsSystem.camera.position.set(0, 0, 5);
     ThreeJsSystem.scene.add(ThreeJsSystem.camera);
 
@@ -88,12 +88,12 @@ var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas,
             renderModel;
 
         renderTargetParameters = {
-            format: LiveCodeLabCore.THREE.RGBAFormat,
+            format: liveCodeLabCore_THREE.RGBAFormat,
             stencilBuffer: true
         };
 
-        renderTarget = new LiveCodeLabCore.THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters);
-        effectSaveTarget = new LiveCodeLabCore.THREE.SavePass(new LiveCodeLabCore.THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters));
+        renderTarget = new liveCodeLabCore_THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters);
+        effectSaveTarget = new liveCodeLabCore_THREE.SavePass(new liveCodeLabCore_THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters));
         effectSaveTarget.clear = false;
 
         // Uncomment the three lines containing "fxaaPass" below to try a fast
@@ -103,19 +103,19 @@ var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas,
         // motionBlur leaving a black trail - tracked in github with
         // https://github.com/davidedc/livecodelab/issues/22
         
-        //fxaaPass = new LiveCodeLabCore.THREE.ShaderPass(LiveCodeLabCore.THREE.ShaderExtras.fxaa);
+        //fxaaPass = new liveCodeLabCore_THREE.ShaderPass(liveCodeLabCore_THREE.ShaderExtras.fxaa);
         //fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);
 
-        ThreeJsSystem.effectBlend = new LiveCodeLabCore.THREE.ShaderPass(LiveCodeLabCore.THREE.ShaderExtras.blend, "tDiffuse1");
-        screenPass = new LiveCodeLabCore.THREE.ShaderPass(LiveCodeLabCore.THREE.ShaderExtras.screen);
+        ThreeJsSystem.effectBlend = new liveCodeLabCore_THREE.ShaderPass(liveCodeLabCore_THREE.ShaderExtras.blend, "tDiffuse1");
+        screenPass = new liveCodeLabCore_THREE.ShaderPass(liveCodeLabCore_THREE.ShaderExtras.screen);
 
         // motion blur
         ThreeJsSystem.effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget;
         ThreeJsSystem.effectBlend.uniforms.mixRatio.value = 0;
 
-        renderModel = new LiveCodeLabCore.THREE.RenderPass(ThreeJsSystem.scene, ThreeJsSystem.camera);
+        renderModel = new liveCodeLabCore_THREE.RenderPass(ThreeJsSystem.scene, ThreeJsSystem.camera);
 
-        ThreeJsSystem.composer = new LiveCodeLabCore.THREE.EffectComposer(ThreeJsSystem.renderer, renderTarget);
+        ThreeJsSystem.composer = new liveCodeLabCore_THREE.EffectComposer(ThreeJsSystem.renderer, renderTarget);
 
         ThreeJsSystem.composer.addPass(renderModel);
         //ThreeJsSystem.composer.addPass(fxaaPass);

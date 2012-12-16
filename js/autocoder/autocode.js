@@ -1,7 +1,7 @@
 /*jslint devel: true */
 /*global McLexer */
 
-var createAutocoder = function (eventRouter, editor) {
+var createAutocoder = function (eventRouter, editor, colourNames) {
 
     'use strict';
 
@@ -128,13 +128,13 @@ var createAutocoder = function (eventRouter, editor) {
         };
 
         this.mutate = function () {
-            var idx = Math.floor(Math.random() * LiveCodeLabCore.ColourNames.length);
+            var idx = Math.floor(Math.random() * colourNames.length);
 
-            while (this.string == LiveCodeLabCore.ColourNames[idx]) {
-                idx = Math.floor(Math.random() * LiveCodeLabCore.ColourNames.length);
+            while (this.string == colourNames[idx]) {
+                idx = Math.floor(Math.random() * colourNames.length);
             }
 
-            this.string = LiveCodeLabCore.ColourNames[idx];
+            this.string = colourNames[idx];
         };
     };
 
@@ -248,8 +248,8 @@ var createAutocoder = function (eventRouter, editor) {
     });
 
     // colour
-    for (scanningAllColors = 0; scanningAllColors < LiveCodeLabCore.ColourNames.length; scanningAllColors++) {
-        INIT(new RegExp(LiveCodeLabCore.ColourNames[scanningAllColors]))(function (match, rest, state) {
+    for (scanningAllColors = 0; scanningAllColors < colourNames.length; scanningAllColors++) {
+        INIT(new RegExp(colourNames[scanningAllColors]))(function (match, rest, state) {
             Tokens.push(new COLOUR(match[0]));
             return state.continuation(rest);
         });

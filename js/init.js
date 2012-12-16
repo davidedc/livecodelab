@@ -15,49 +15,12 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // add Stats.js - https://github.com/mrdoob/stats.js
     var stats = new Stats();
     
-    /*
-    createLiveCodeLabCore(
-      eventRouter,
-      forceCanvasRenderer,
-      createTimeKeeper(),
-      blendedThreeJsSceneCanvas,
-      canvasForBackground,
-    );
-    */
-    LiveCodeLabCore.TimeKeeper = createTimeKeeper();
-    // THREE is a global defined in three.min.js and used in ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
-    // The difference between THREE and the ThreeJsSystem initialised later is that
-    // a) THREE is the raw Three.js system without for example the blend options.
-    // b) ThreeJsSystem contains some convenience fields and abstractions, for example
-    //    it keeps the renderer (whether it's canvas-based or WebGL based) in a
-    //    "renderer" field.
-    // Several fields/methids in ThreeJsSystem are just conveniency mappings into
-    // the raw THREE object.
-    // But often in LiveCodeLab there are direct reference to THREE fields/methods.
-    // So, ThreeJsSystem provides some abstraction without attempting to be a complete
-    // abstraction layer.
-    LiveCodeLabCore.THREE = THREE;
-    // needs THREE
-    LiveCodeLabCore.ThreeJsSystem = createThreeJsSystem(Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer); //yes
-    LiveCodeLabCore.MatrixCommands = createMatrixCommands(); // needs TimeKeeper and THREE
-    LiveCodeLabCore.ColourNames = createColours(); //no
-    // requires ThreeJsSystem
-    LiveCodeLabCore.BlendControls = createBlendControls(); //yes
-    LiveCodeLabCore.SoundSystem = createSoundSystem(buzz, createBowser(), createSampleBank(buzz)); // $ //yes
-    LiveCodeLabCore.ColourFunctions = createColourFunctions(); //yes
-    // requires ColourFunctions
-    LiveCodeLabCore.BackgroundPainter = createBackgroundPainter(eventRouter); // $ //yes
-    // requires ThreeJsSystem, ColourFunctions, LightSystem, THREE
-    LiveCodeLabCore.GraphicsCommands = createGraphicsCommands(); // THREE, color, LightSystem, MatrixCommands, ThreeJsSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne //yes
-    // requires MatrixCommands, ThreeJsSystem, ColourFunctions, GraphicsCommands
-    // needs THREE
-    LiveCodeLabCore.LightSystem = createLightSystem(); //yes
-    LiveCodeLabCore.DrawFunctionRunner = createDrawFunctionRunner(); //yes
-    LiveCodeLabCore.CodeTransformer = createCodeTransformer(eventRouter, CoffeeScript); // autocoder //yes
-    // requires BlendControls
-    LiveCodeLabCore.Renderer = createRenderer(); //yes
-    // requires: TimeKeeper, MatrixCommands, BlendControls, SoundSystem, BackgroundPainter, GraphicsCommands, LightSystem, DrawFunctionRunner, CodeTransformer, Renderer
-    LiveCodeLabCore.AnimationLoop = createAnimationLoop(eventRouter, stats); //yes
+    // createColours creates a bunch of global variables for all css colors (and more).
+    // Since background-painting.js initialises the background by means of
+    // CSS colors, this needs to be run before creating LiveCodeLabCore
+    var colourNames = createColours();
+
+    LiveCodeLabCore = createLiveCodeLabCore(blendedThreeJsSceneCanvas, forceCanvasRenderer, eventRouter, stats );
 
     
     ///////////////////////////
@@ -73,7 +36,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     	forceCanvasRenderer = false;
     }
 
-    UrlRouter = createUrlRouter(eventRouter); //no
+    var urlRouter = createUrlRouter(eventRouter); //no
 
     //document.getElementById('container').appendChild(LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvas); //no
     
@@ -95,24 +58,28 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
 
 
-    BigCursor = createBigCursor(eventRouter); // $ //no
+    var bigCursor = createBigCursor(eventRouter); // $ //no
     editor = createEditor(eventRouter, CodeMirror); //no
 
     // requires DrawFunctionRunner
 
 
     //console.log('creating stats');
-    Ui = createUi(eventRouter, stats); // $ //no
+    var Ui = createUi(eventRouter, stats); // $ //no
 
 
     // requires: ColourNames
-    autocoder = createAutocoder(eventRouter, editor); // McLexer //no
+    var autocoder = createAutocoder(eventRouter, editor, colourNames); // McLexer //no
 
     // EditorDimmer functions should probablly be rolled into the editor itself
-    EditorDimmer = createEditorDimmer(eventRouter, BigCursor); // $ //no
+    // note that the editorDimmer variable below is never used. Leaving it
+    // in for consistency.
+    var editorDimmer = createEditorDimmer(eventRouter, bigCursor); // $ //no
 
     // requires ThreeJsSystem, BlendControls, GraphicsCommands, Renderer
-    ProgramLoader = createProgramLoader(eventRouter, editor); // $, Detector, BlendControls //no
+    // note that the programLoader variable below is never used. Leaving it
+    // in for consistency.
+    var programLoader = createProgramLoader(eventRouter, editor); // $, Detector, BlendControls //no
 
     
     LiveCodeLabCore.updateCode = function(updatedCode){
@@ -269,11 +236,11 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // in which case we load the demo directly.
     // otherwise we do as usual.
     //no
-    if (!UrlRouter.checkUrl()) {
+    if (!urlRouter.checkUrl()) {
         setTimeout(LiveCodeLabCore.SoundSystem.playStartupSound, 650);
     }
 
-    BigCursor.toggleBlink(true); //no
+    bigCursor.toggleBlink(true); //no
 
     // Turn dimming on by default
     eventRouter.trigger('editor-toggle-dim', true); //yes

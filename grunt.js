@@ -38,6 +38,7 @@ module.exports = function (grunt) {
         concat: {
             dist: {
                 src: [
+                    'js/livecodelab-core.js',
                     'js/events.js',
                     'js/simple-error-checker.js',
                     'js/url-router.js',

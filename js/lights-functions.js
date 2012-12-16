@@ -1,14 +1,14 @@
 /*jslint browser: true */
 
 
-var createLightSystem = function (three) {
+var createLightSystem = function (liveCodeLabCore_THREE, liveCodeLabCore_GraphicsCommands) {
 
     'use strict';
 
     var LightSystem = {};
 
-    LiveCodeLabCore.GraphicsCommands.objectPools[LiveCodeLabCore.GraphicsCommands.primitiveTypes.ambientLight] = [];
-    LiveCodeLabCore.GraphicsCommands.objectsUsedInFrameCounts[LiveCodeLabCore.GraphicsCommands.primitiveTypes.ambientLight] = 0;
+    liveCodeLabCore_GraphicsCommands.objectPools[liveCodeLabCore_GraphicsCommands.primitiveTypes.ambientLight] = [];
+    liveCodeLabCore_GraphicsCommands.objectsUsedInFrameCounts[liveCodeLabCore_GraphicsCommands.primitiveTypes.ambientLight] = 0;
 
     LightSystem.lightsAreOn = false;
 
@@ -41,13 +41,13 @@ var createLightSystem = function (three) {
         LightSystem.lightsAreOn = true;
 
         // used by graphic-primitives
-        LiveCodeLabCore.GraphicsCommands.defaultNormalFill = false;
+        liveCodeLabCore_GraphicsCommands.defaultNormalFill = false;
 
         // used by graphic-primitives
-        LiveCodeLabCore.GraphicsCommands.defaultNormalStroke = false;
+        liveCodeLabCore_GraphicsCommands.defaultNormalStroke = false;
 
-        ambientLightsPool = LiveCodeLabCore.GraphicsCommands.objectPools[LiveCodeLabCore.GraphicsCommands.primitiveTypes.ambientLight];
-        pooledAmbientLight =  ambientLightsPool[LiveCodeLabCore.GraphicsCommands.objectsUsedInFrameCounts[LiveCodeLabCore.GraphicsCommands.primitiveTypes.ambientLight]];
+        ambientLightsPool = liveCodeLabCore_GraphicsCommands.objectPools[liveCodeLabCore_GraphicsCommands.primitiveTypes.ambientLight];
+        pooledAmbientLight =  ambientLightsPool[liveCodeLabCore_GraphicsCommands.objectsUsedInFrameCounts[liveCodeLabCore_GraphicsCommands.primitiveTypes.ambientLight]];
         if (pooledAmbientLight === undefined) {
             // So here is the thing, the command is currently called AmbientLight but
             // in reality we are creating a PointLight in a specific position.
@@ -55,13 +55,13 @@ var createLightSystem = function (three) {
             // so the faces of the cube would all be of the same
             // exact color. Note that in Three.js versions before r50 the AmbientLight
             // would work like a PointLight does now.
-            pooledAmbientLight = new three.PointLight(colorToBeUsed);
+            pooledAmbientLight = new liveCodeLabCore_THREE.PointLight(colorToBeUsed);
             pooledAmbientLight.position.set(10, 50, 130);
 
             newLightCreated = true;
             ambientLightsPool.push(pooledAmbientLight);
             pooledAmbientLight.detailLevel = 0;
-            pooledAmbientLight.primitiveType = LiveCodeLabCore.GraphicsCommands.primitiveTypes.ambientLight;
+            pooledAmbientLight.primitiveType = liveCodeLabCore_GraphicsCommands.primitiveTypes.ambientLight;
         } else {
             pooledAmbientLight.color.setHex(colorToBeUsed);
         }
@@ -69,7 +69,7 @@ var createLightSystem = function (three) {
 
 
 
-        LiveCodeLabCore.GraphicsCommands.objectsUsedInFrameCounts[LiveCodeLabCore.GraphicsCommands.primitiveTypes.ambientLight] += 1;
+        liveCodeLabCore_GraphicsCommands.objectsUsedInFrameCounts[liveCodeLabCore_GraphicsCommands.primitiveTypes.ambientLight] += 1;
 
         if (newLightCreated) {
             // NOTE that an ambient light is not actually added as an object.

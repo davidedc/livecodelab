@@ -1,7 +1,7 @@
 /*jslint browser: true */
 /*global */
 
-var createMatrixCommands = function () {
+var createMatrixCommands = function (liveCodeLabCore_THREE) {
 
     'use strict';
 
@@ -10,7 +10,7 @@ var createMatrixCommands = function () {
         rootObject = 0,
         currentObject,
         matrixStack = [],
-        worldMatrix = new LiveCodeLabCore.THREE.Matrix4();
+        worldMatrix = new liveCodeLabCore_THREE.Matrix4();
 
     MatrixCommands.getWorldMatrix = function () {
         return worldMatrix;
@@ -23,7 +23,7 @@ var createMatrixCommands = function () {
 
     window.pushMatrix = MatrixCommands.pushMatrix = function () {
         matrixStack.push(worldMatrix);
-        worldMatrix = (new LiveCodeLabCore.THREE.Matrix4()).copy(worldMatrix);
+        worldMatrix = (new liveCodeLabCore_THREE.Matrix4()).copy(worldMatrix);
     };
 
     window.popMatrix = MatrixCommands.popMatrix = function () {
@@ -51,7 +51,7 @@ var createMatrixCommands = function () {
             c = 0;
         }
 
-        worldMatrix.translate(new LiveCodeLabCore.THREE.Vector3(a, b, c));
+        worldMatrix.translate(new liveCodeLabCore_THREE.Vector3(a, b, c));
     };
 
     window.rotate = MatrixCommands.rotate = function (a, b, c) {
@@ -94,7 +94,7 @@ var createMatrixCommands = function () {
             c = 0.000000001;
         }
 
-        worldMatrix.scale(new LiveCodeLabCore.THREE.Vector3(a, b, c));
+        worldMatrix.scale(new liveCodeLabCore_THREE.Vector3(a, b, c));
 
     };
 
