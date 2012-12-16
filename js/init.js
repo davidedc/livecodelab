@@ -102,6 +102,74 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     ProgramLoader = createProgramLoader(eventRouter, editor, AnimationLoop, ThreeJs, Renderer, GraphicsCommands); // $, Detector, BlendControls //no
 
     Ui = createUi(eventRouter, stats); // $ //no
+    
+    ///////////////////////////////////////////////////////
+    // runtime and compile-time error management
+    ///////////////////////////////////////////////////////
+    // Two different types of errors are managed in
+    // two slightly different ways.
+    //
+    // Compile-time errors are the errors such as an extra
+    // comma being added, or an unbalanced parenthesis, or
+    // in general any of the syntactic problems.
+    // These errors are just reported and the
+    // new borked program does *not* result in a new
+    // draw Function, so the previous syntactically correct
+    // program is kept as the draw Function. The editor
+    // content is kept the same as the user is probably just
+    // finishing to type something.
+    // If the autocoder is active, the editor
+    // undoes the change, which results in the previous
+    // syntactically correct program being eventually set as
+    // the draw Function.
+    //
+    // Runtime errors are things such as calling a function
+    // with invalid parameters, accessing a non-existing
+    // field of an object, accessing a null or an undefined,
+    // accessing a variable that is not defined anywhere.
+    // Runtime errors cannot be caught at compile time (not in
+    // general anyways) because they are syntactically correct
+    // and doing analysis on runtime behaviour at compile time
+    // is extremely difficult if not outright impossible.
+    // For example one might want to try to figure out whether
+    // all the called functions and all the referenced variables
+    // actually exist. In practice though one might create
+    // those variables at runtime depending on complex tests
+    // on state of the system, so one cannot really figure out
+    // at compile time whether all functions and variables will
+    // actually be in place when the program runs. One could
+    // carry out some clever checks in particular cases, but *in
+    // general* it's an impossible thing to do.
+    // So the incorrect program *does* pass the compile checks
+    // and is turned into a new draw Function.
+    // When the next frame runs, the draw Function is run and
+    // the runtime error is thrown. At this point what we just
+    // want to do is to keep the editor contents the same (because
+    // user might be just finishing to type something) and we
+    // just swap the current draw Function with a previous draw
+    // Function that proved stable so that the animation
+    // in the background doesn't stop. Note again that there is no
+    // guarantee that just because a function was stable in the
+    // past that it might still be stable now. For example the old
+    // stable function might do silly things in the new state
+    // that has been borked by the draw Function that just threw
+    // a runtime error. Or just simply a stable Function might
+    // eventually do some silly things on its own, for example
+    // might do an out-of bounds array reference as the frame
+    // count is incremented. Since at the moment we keep
+    // track of only one stable function at the time (rather than
+    // a stack of the) in general one cannot guarantee
+    // that the animation will keep going no matter what. It probably
+    // will though.
+    // When the autocoder is active, a runtime error *does not* swap
+    // the current function for an old stable one. Doing so
+    // causes some bad interactions with the undoing of the
+    // editor. Rather, the
+    // editor simply "undoes" its content until a
+    // syntactically-correct version of the program can be
+    // established as the draw Function. If this new version still
+    // throws a runtime error, the editor "undoes" again, until both
+    // a syntactically correct and stable program is found.
     eventRouter.bind('runtime-error-thrown',
       function(e) {
 				eventRouter.trigger('report-runtime-or-compile-time-error',e);
