@@ -85,8 +85,8 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     LiveCodeLabCore.updateCode = function(updatedCode){
        //alert('updatedCode: ' + updatedCode);
        LiveCodeLabCore.CodeTransformer.updateCode(updatedCode);
-        if ((updatedCode !== '') && LiveCodeLabCore.DrawFunctionRunner.dozingOff) {
-					LiveCodeLabCore.DrawFunctionRunner.dozingOff = false;
+        if ((updatedCode !== '') && LiveCodeLabCore.dozingOff) {
+					LiveCodeLabCore.dozingOff = false;
 					LiveCodeLabCore.AnimationLoop.animate();
 					//console.log('waking up');
 					ui.showStatsWidget();

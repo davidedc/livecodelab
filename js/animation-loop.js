@@ -106,7 +106,7 @@ var createAnimationLoop = function (eventRouter, stats) {
 					LiveCodeLabCore.DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(LiveCodeLabCore.CodeTransformer);
         }
         else {
-					LiveCodeLabCore.DrawFunctionRunner.dozingOff = true;
+					LiveCodeLabCore.dozingOff = true;
 					//console.log('dozing off');
         }
 
