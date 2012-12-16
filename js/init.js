@@ -119,8 +119,9 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     // content is kept the same as the user is probably just
     // finishing to type something.
     // If the autocoder is active, the editor
-    // undoes the change, which results in the previous
-    // syntactically correct program being eventually set as
+    // undoes the change, which triggers in a recompilation.
+    // So this undo/recompilation cycle results in eventually
+    // a syntactically correct program being set as
     // the draw Function.
     //
     // Runtime errors are things such as calling a function
@@ -140,36 +141,39 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     // actually be in place when the program runs. One could
     // carry out some clever checks in particular cases, but *in
     // general* it's an impossible thing to do.
-    // So the incorrect program *does* pass the compile checks
-    // and is turned into a new draw Function.
-    // When the next frame runs, the draw Function is run and
-    // the runtime error is thrown. At this point what we just
+    // So an "unstable" program might often pass the compile checks
+    // and be turned into a new draw Function.
+    // When the next frame runs (or at some point in one of the
+    // next frames), the draw Function is run and
+    // a runtime error is thrown. At this point what we just
     // want to do is to keep the editor contents the same (because
     // user might be just finishing to type something) and we
     // just swap the current draw Function with a previous draw
-    // Function that proved stable so that the animation
+    // Function that seemed to be stable, so that the animation
     // in the background doesn't stop. Note again that there is no
     // guarantee that just because a function was stable in the
     // past that it might still be stable now. For example the old
     // stable function might do silly things in the new state
-    // that has been borked by the draw Function that just threw
-    // a runtime error. Or just simply a stable Function might
+    // that has been changed/borked in the meantime.
+    // Or just simply a stable Function might
     // eventually do some silly things on its own, for example
-    // might do an out-of bounds array reference as the frame
+    // it might do an out-of bounds array reference as the frame
     // count is incremented. Since at the moment we keep
     // track of only one stable function at the time (rather than
     // a stack of the) in general one cannot guarantee
     // that the animation will keep going no matter what. It probably
-    // will though.
+    // will in most normal cases though.
     // When the autocoder is active, a runtime error *does not* swap
     // the current function for an old stable one. Doing so
     // causes some bad interactions with the undoing of the
-    // editor. Rather, the
-    // editor simply "undoes" its content until a
+    // editor. Rather, the editor "undoes" its content,
+    // which causes old content to be recompiled, and this
+    // undo/recompile cycle carries on until a
     // syntactically-correct version of the program can be
     // established as the draw Function. If this new version still
-    // throws a runtime error, the editor "undoes" again, until both
-    // a syntactically correct and stable program is found.
+    // throws a runtime error, the editor "undoes" again, until a
+    // program that is both syntactically correct and stable
+    // is found.
     eventRouter.bind('runtime-error-thrown',
       function(e) {
 				eventRouter.trigger('report-runtime-or-compile-time-error',e);
