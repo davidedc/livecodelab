@@ -1,6 +1,15 @@
 /*jslint browser: true, maxerr: 100 */
 /*global LiveCodeLabCore, $, autocoder, initThreeJs, buzz */
 
+$(document).ready(function () {
+    startEnvironment(
+    		document.getElementById('blendedThreeJsSceneCanvas'), // blendedThreeJsSceneCanvas
+    		document.getElementById('backGroundCanvas'), // canvasForBackground
+    		true, // forceCanvasRenderer
+    		false // bubbleUpErrorsForDebugging
+    	);
+});
+
 var isCanvasSupported = function () {
     var elem = document.createElement('canvas');
     return !!(elem.getContext && elem.getContext('2d'));
@@ -246,10 +255,3 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
     ui.setup(); 
 };
-
-$(document).ready(function () {
-
-    // arguments: (blendedThreeJsSceneCanvas, canvasForBackground, forceCanvasRenderer, bubbleUpErrorsForDebugging)
-    startEnvironment(document.getElementById('blendedThreeJsSceneCanvas'), document.getElementById('backGroundCanvas'), false, false);
-
-});
