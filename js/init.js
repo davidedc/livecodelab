@@ -10,6 +10,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
     'use strict';
 
+    var eventRouter = createEventRouter();
     
     /*
     createLiveCodeLabCore(
@@ -49,8 +50,8 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // needs THREE
     LiveCodeLabCore.LightSystem = createLightSystem(); //yes
     LiveCodeLabCore.DrawFunctionRunner = createDrawFunctionRunner(); //yes
+    LiveCodeLabCore.CodeTransformer = createCodeTransformer(eventRouter, CoffeeScript); // autocoder //yes
 
-    var eventRouter = createEventRouter();
     
     ///////////////////////////
     // Setup Event Listeners
@@ -88,17 +89,9 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
 
     BigCursor = createBigCursor(eventRouter); // $ //no
-
-
-    
-
-
-
-
     editor = createEditor(eventRouter, CodeMirror); //no
 
     // requires DrawFunctionRunner
-    CodeTransformer = createCodeTransformer(eventRouter, CoffeeScript); // autocoder //yes
 
     // requires BlendControls
     Renderer = createRenderer(); //yes
@@ -109,8 +102,8 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     //console.log('creating stats');
     Ui = createUi(eventRouter, stats); // $ //no
 
-    // requires: TimeKeeper, MatrixCommands, BlendControls, SoundSystem, BackgroundPainter, GraphicsCommands, LightSystem, DrawFunctionRunner
-    AnimationLoop = createAnimationLoop(eventRouter, CodeTransformer, Renderer, stats); //yes
+    // requires: TimeKeeper, MatrixCommands, BlendControls, SoundSystem, BackgroundPainter, GraphicsCommands, LightSystem, DrawFunctionRunner, CodeTransformer
+    AnimationLoop = createAnimationLoop(eventRouter, Renderer, stats); //yes
 
     // requires: ColourNames
     autocoder = createAutocoder(eventRouter, editor); // McLexer //no
@@ -124,7 +117,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     
     LiveCodeLabCore.updateCode = function(updatedCode){
        //alert('updatedCode: ' + updatedCode);
-       CodeTransformer.updateCode(updatedCode);
+       LiveCodeLabCore.CodeTransformer.updateCode(updatedCode);
         if ((updatedCode !== '') && LiveCodeLabCore.DrawFunctionRunner.dozingOff) {
 					LiveCodeLabCore.DrawFunctionRunner.dozingOff = false;
 					AnimationLoop.animate();

@@ -4,7 +4,7 @@
 var frame = 0;
 
 
-var createAnimationLoop = function (eventRouter, CodeTransformer, renderer, stats) {
+var createAnimationLoop = function (eventRouter, renderer, stats) {
 
     'use strict';
 
@@ -103,7 +103,7 @@ var createAnimationLoop = function (eventRouter, CodeTransformer, renderer, stat
 							 eventRouter.trigger('runtime-error-thrown', e);
 							 return;
 					}
-					LiveCodeLabCore.DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(CodeTransformer);
+					LiveCodeLabCore.DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(LiveCodeLabCore.CodeTransformer);
         }
         else {
 					LiveCodeLabCore.DrawFunctionRunner.dozingOff = true;
