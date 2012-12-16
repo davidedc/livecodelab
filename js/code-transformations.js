@@ -469,9 +469,9 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler) {
     CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange = function (CodeTransformer, doOnceOccurrencesLineNumbers) {
 
         var elaboratedSource,
-        elaboratedSourceByLine,
-        iteratingOverSource,
-        drawFunction;
+            elaboratedSourceByLine,
+            iteratingOverSource,
+            drawFunction;
 
         // if we are here, the following has happened: someone has added an element
         // to the doOnceOccurrencesLineNumbers array. This can only have happened
