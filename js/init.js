@@ -41,8 +41,6 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     var bigCursor = createBigCursor(eventRouter); // $ 
     var editor = createEditor(eventRouter, CodeMirror); 
 
-    // requires DrawFunctionRunner
-
 
     //console.log('creating stats');
     var ui = createUi(eventRouter, stats); // $ 
