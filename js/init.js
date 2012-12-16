@@ -61,7 +61,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // in for consistency.
     var programLoader = createProgramLoader(eventRouter, editor); // $, Detector, BlendControls 
 
-    eventRouter.bind('livecodelab-waking-up', ui.showStatsWidget);
+    eventRouter.bind('livecodelab-running-stably', ui.showStatsWidget);
     
     eventRouter.bind('code_changed',
         function(updatedCodeAsString) {

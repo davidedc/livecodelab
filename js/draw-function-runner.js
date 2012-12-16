@@ -1,7 +1,7 @@
 /*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
 
 
-var createDrawFunctionRunner = function () {
+var createDrawFunctionRunner = function (eventRouter) {
 
     'use strict';
 
@@ -17,7 +17,7 @@ var createDrawFunctionRunner = function () {
     DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
     // contains the last stable draw function as a Function object. Never mind the
     // initialisation as an empty string.
-    DrawFunctionRunner.lastStableDrawFunction = '';
+    DrawFunctionRunner.lastStableDrawFunction = null;
     // contains the code that is meant to be run, as a string.
     // note that it might be impossible to run it because of errors, in which case
     // LiveCodeLab might be running an older version.
@@ -63,6 +63,7 @@ var createDrawFunctionRunner = function () {
 				DrawFunctionRunner.consecutiveFramesWithoutRunTimeError += 1;
 				if (DrawFunctionRunner.consecutiveFramesWithoutRunTimeError === 5) {
 						DrawFunctionRunner.lastStableDrawFunction = DrawFunctionRunner.drawFunction;
+						eventRouter.trigger('livecodelab-running-stably');
 				}
 
     };
