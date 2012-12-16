@@ -70,7 +70,7 @@ var createDrawFunctionRunner = function () {
     };
 
 
-    DrawFunctionRunner.reinstateLastWorkingProgram = function () {
+    DrawFunctionRunner.reinstateLastWorkingDrawFunction = function () {
             // mark the program as flawed and register the previous stable one.
             DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
             DrawFunctionRunner.drawFunction = DrawFunctionRunner.lastStableDrawFunction;

@@ -111,7 +111,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 						//alert('undoing');
 				}
 				else {
-						 DrawFunctionRunner.reinstateLastWorkingProgram();
+						 DrawFunctionRunner.reinstateLastWorkingDrawFunction();
 				}
       }
     );
