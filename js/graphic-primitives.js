@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*global THREE, color, LightSystem, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne  */
+/*global THREE, color, LightSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne  */
 
 // Please reference the colour-functions.js file for all colour-related
 // functions and lights-functions.js for lights, which use a similar
@@ -369,7 +369,7 @@ var createGraphicsCommands = function (colourfuncs) {
         }
 
         if (objectIsNew) {
-            ThreeJs.scene.add(pooledObjectWithMaterials.threejsObject3D);
+            LiveCodeLabCore.ThreeJs.scene.add(pooledObjectWithMaterials.threejsObject3D);
         }
 
     };
@@ -423,7 +423,7 @@ var createGraphicsCommands = function (colourfuncs) {
         GraphicsCommands.currentStrokeSize = 1;
         GraphicsCommands.defaultNormalFill = true;
         GraphicsCommands.defaultNormalStroke = true;
-        GraphicsCommands.ballDetLevel = ThreeJs.ballDefaultDetLevel;
+        GraphicsCommands.ballDetLevel = LiveCodeLabCore.ThreeJs.ballDefaultDetLevel;
 
         GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.ambientLight] = 0;
         GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.line] = 0;

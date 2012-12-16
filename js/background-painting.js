@@ -36,7 +36,7 @@
 // elements of the array, so we could discard those when such
 // a command is issued.
 
-var createBackgroundPainter = function (eventRouter, threejs, colourfuncs) {
+var createBackgroundPainter = function (eventRouter, colourfuncs) {
 
     'use strict';
 

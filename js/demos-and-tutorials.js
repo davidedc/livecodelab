@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, regexp: true */
 /*global $, Detector, BlendControls */
 
-var createProgramLoader = function (eventRouter, texteditor, animationLoop, threejs, renderer, graphics) {
+var createProgramLoader = function (eventRouter, texteditor, animationLoop, renderer, graphics) {
 
     'use strict';
 
@@ -582,7 +582,7 @@ var createProgramLoader = function (eventRouter, texteditor, animationLoop, thre
 
     ProgramLoader.loadDemoOrTutorial = function (demoName) {
 
-        if ((!Detector.webgl || threejs.forceCanvasRenderer) && !userWarnedAboutWebglExamples && demoName.indexOf('webgl') === 0) {
+        if ((!Detector.webgl || LiveCodeLabCore.ThreeJs.forceCanvasRenderer) && !userWarnedAboutWebglExamples && demoName.indexOf('webgl') === 0) {
             userWarnedAboutWebglExamples = true;
             $('#exampleNeedsWebgl').modal();
             $('#simplemodal-container').height(200);
@@ -601,7 +601,7 @@ var createProgramLoader = function (eventRouter, texteditor, animationLoop, thre
         graphics.doTheSpinThingy = false;
 
         var prependMessage = "";
-        if ((!Detector.webgl || threejs.forceCanvasRenderer) && demoName.indexOf('webgl') === 0) {
+        if ((!Detector.webgl || LiveCodeLabCore.ThreeJs.forceCanvasRenderer) && demoName.indexOf('webgl') === 0) {
             prependMessage = [
                 "// This drawing makes much more sense",
                 "// in a WebGL-enabled browser.",

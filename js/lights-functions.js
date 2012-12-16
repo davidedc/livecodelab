@@ -1,7 +1,7 @@
 /*jslint browser: true */
 
 
-var createLightSystem = function (threejs, three, graphics, colourfuncs) {
+var createLightSystem = function (three, graphics, colourfuncs) {
 
     'use strict';
 
@@ -74,7 +74,7 @@ var createLightSystem = function (threejs, three, graphics, colourfuncs) {
         if (newLightCreated) {
             // NOTE that an ambient light is not actually added as an object.
             // i.e. if you navigate the objects you don't find it.
-            threejs.scene.add(pooledAmbientLight);
+            LiveCodeLabCore.ThreeJs.scene.add(pooledAmbientLight);
         }
     };
 

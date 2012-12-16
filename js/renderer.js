@@ -1,7 +1,7 @@
 /*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
 
 
-var createRenderer = function (threejs, blendcontrols) {
+var createRenderer = function (blendcontrols) {
 
     'use strict';
 
@@ -10,30 +10,30 @@ var createRenderer = function (threejs, blendcontrols) {
     Renderer.render = function (graphics) {
 
         combDisplayList(graphics);
-        if (threejs.isWebGLUsed) {
-            threejs.composer.render();
+        if (LiveCodeLabCore.ThreeJs.isWebGLUsed) {
+            LiveCodeLabCore.ThreeJs.composer.render();
         } else {
 
             // the renderer draws into an offscreen canvas called sceneRenderingCanvas
-            threejs.renderer.render(threejs.scene, threejs.camera);
+            LiveCodeLabCore.ThreeJs.renderer.render(LiveCodeLabCore.ThreeJs.scene, LiveCodeLabCore.ThreeJs.camera);
 
             // clear the final render context
-            threejs.finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
-            threejs.finalRenderWithSceneAndBlendContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            LiveCodeLabCore.ThreeJs.finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
+            LiveCodeLabCore.ThreeJs.finalRenderWithSceneAndBlendContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
             // draw the rendering of the scene on the final render
             // clear the final render context
-            threejs.finalRenderWithSceneAndBlendContext.globalAlpha = blendcontrols.blendAmount;
-            threejs.finalRenderWithSceneAndBlendContext.drawImage(threejs.previousRenderForBlending, 0, 0);
+            LiveCodeLabCore.ThreeJs.finalRenderWithSceneAndBlendContext.globalAlpha = blendcontrols.blendAmount;
+            LiveCodeLabCore.ThreeJs.finalRenderWithSceneAndBlendContext.drawImage(LiveCodeLabCore.ThreeJs.previousRenderForBlending, 0, 0);
 
-            threejs.finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
-            threejs.finalRenderWithSceneAndBlendContext.drawImage(threejs.sceneRenderingCanvas, 0, 0);
+            LiveCodeLabCore.ThreeJs.finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
+            LiveCodeLabCore.ThreeJs.finalRenderWithSceneAndBlendContext.drawImage(LiveCodeLabCore.ThreeJs.sceneRenderingCanvas, 0, 0);
 
-            threejs.previousRenderForBlendingContext.globalCompositeOperation = 'copy';
-            threejs.previousRenderForBlendingContext.drawImage(threejs.finalRenderWithSceneAndBlend, 0, 0);
+            LiveCodeLabCore.ThreeJs.previousRenderForBlendingContext.globalCompositeOperation = 'copy';
+            LiveCodeLabCore.ThreeJs.previousRenderForBlendingContext.drawImage(LiveCodeLabCore.ThreeJs.finalRenderWithSceneAndBlend, 0, 0);
 
             // clear the renderer's canvas to transparent black
-            threejs.sceneRenderingCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            LiveCodeLabCore.ThreeJs.sceneRenderingCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
         }
     };
@@ -74,8 +74,8 @@ var createRenderer = function (threejs, blendcontrols) {
 
 
         // scan all the objects in the display list
-        for (i = 0; i < threejs.scene.children.length; i += 1) {
-            sceneObject = threejs.scene.children[i];
+        for (i = 0; i < LiveCodeLabCore.ThreeJs.scene.children.length; i += 1) {
+            sceneObject = LiveCodeLabCore.ThreeJs.scene.children[i];
 
             // check the type of object. Each type has one pool. Go through each object in the
             // pool and set to visible the number of used objects in this frame, set the
