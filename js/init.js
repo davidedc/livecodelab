@@ -212,7 +212,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // otherwise we do as usual.
     
     if (!urlRouter.urlPointsToDemoOrTutorial()) {
-        setTimeout(LiveCodeLabCore.SoundSystem.playStartupSound, 650);
+        setTimeout(LiveCodeLabCore.playStartupSound, 650);
     }
 
     bigCursor.toggleBlink(true); 

@@ -70,11 +70,15 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
     
     LiveCodeLabCore.runLastWorkingDrawFunction = function() {
       LiveCodeLabCore.DrawFunctionRunner.reinstateLastWorkingDrawFunction();
-    }
+    };
 
     LiveCodeLabCore.loadAndTestAllTheSounds = function() {
       LiveCodeLabCore.SoundSystem.loadAndTestAllTheSounds();
-    }
+    };
+    
+    LiveCodeLabCore.playStartupSound = function() {
+      LiveCodeLabCore.SoundSystem.playStartupSound();
+    };
 
     return LiveCodeLabCore;
 };
