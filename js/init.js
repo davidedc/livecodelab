@@ -25,6 +25,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     */
     LiveCodeLabCore.TimeKeeper = createTimeKeeper();
     LiveCodeLabCore.MatrixCommands = createMatrixCommands(THREE); // needs TimeKeeper to be initialised
+    LiveCodeLabCore.ColourNames = createColours(); //no
 
     var eventRouter = createEventRouter();
     
@@ -43,8 +44,6 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     }
 
     UrlRouter = createUrlRouter(eventRouter); //no
-    // TODO for some weird reason this actually cannot be moved further down
-    ColourNames = createColours(); //no
 
     ThreeJs = createThreeJs(Detector, THREE, THREEx, canvasElementForThreeJS, forceCanvasRenderer); //yes
     document.getElementById('container').appendChild(ThreeJs.sceneRenderingCanvas); //no
@@ -96,7 +95,8 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     // requires: TimeKeeper, MatrixCommands
     AnimationLoop = createAnimationLoop(DrawFunctionRunner, eventRouter, CodeTransformer, Renderer, GraphicsCommands, stats, SoundSystem, LightSystem, BlendControls, BackgroundPainter); //yes
 
-    autocoder = createAutocoder(eventRouter, editor, ColourNames); // McLexer //no
+    // requires: ColourNames
+    autocoder = createAutocoder(eventRouter, editor); // McLexer //no
 
     // EditorDimmer functions should probablly be rolled into the editor itself
     EditorDimmer = createEditorDimmer(eventRouter); // $ //no
