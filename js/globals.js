@@ -49,7 +49,6 @@ var EditorDimmer;
 var Ui;
 var Bowser;
 var SoundSystem;
-var SampleBank;
 var ColourNames;
 var ColourFunctions;
 var UrlRouter;

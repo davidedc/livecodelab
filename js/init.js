@@ -69,8 +69,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
 
     Bowser = createBowser(); //yes
-    SampleBank = createSampleBank(buzz); //yes
-    SoundSystem = createSoundSystem(buzz, Bowser, SampleBank); // $ //yes
+    SoundSystem = createSoundSystem(buzz, Bowser, createSampleBank(buzz)); // $ //yes
     BigCursor = createBigCursor(eventRouter); // $ //no
     ColourFunctions = createColourFunctions(); //yes
     BackgroundPainter = createBackgroundPainter(eventRouter, ColourFunctions); // $ //yes
