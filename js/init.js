@@ -1,5 +1,5 @@
 /*jslint browser: true, maxerr: 100 */
-/*global LiveCodeLabCore, $, autocoder, BackgroundPainter, initThreeJs, buzz */
+/*global LiveCodeLabCore, $, autocoder, initThreeJs, buzz */
 
 var isCanvasSupported = function () {
     var elem = document.createElement('canvas');
@@ -31,9 +31,16 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     LiveCodeLabCore.BlendControls = createBlendControls(); //yes
     LiveCodeLabCore.SoundSystem = createSoundSystem(buzz, createBowser(), createSampleBank(buzz)); // $ //yes
     LiveCodeLabCore.ColourFunctions = createColourFunctions(); //yes
+    // requires ColourFunctions
+    LiveCodeLabCore.BackgroundPainter = createBackgroundPainter(eventRouter); // $ //yes
 
     var eventRouter = createEventRouter();
     
+    ///////////////////////////
+    // Setup Event Listeners
+    ///////////////////////////
+    eventRouter.bind('reset', LiveCodeLabCore.BackgroundPainter.pickRandomDefaultGradient, LiveCodeLabCore.BackgroundPainter);
+
     LiveCodeLabCore.updateCode = function(updatedCode){
        //alert('updatedCode: ' + updatedCode);
        CodeTransformer.updateCode(updatedCode);
@@ -71,8 +78,6 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
 
     BigCursor = createBigCursor(eventRouter); // $ //no
-    // requires ColourFunctions
-    BackgroundPainter = createBackgroundPainter(eventRouter); // $ //yes
 
 
     // There's a tricky cyclic dependency here between LightSystem and GraphicsCommands
@@ -94,8 +99,8 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     // requires BlendControls
     Renderer = createRenderer(); //yes
 
-    // requires: TimeKeeper, MatrixCommands, BlendControls, SoundSystem
-    AnimationLoop = createAnimationLoop(DrawFunctionRunner, eventRouter, CodeTransformer, Renderer, GraphicsCommands, stats, LightSystem, BackgroundPainter); //yes
+    // requires: TimeKeeper, MatrixCommands, BlendControls, SoundSystem, BackgroundPainter
+    AnimationLoop = createAnimationLoop(DrawFunctionRunner, eventRouter, CodeTransformer, Renderer, GraphicsCommands, stats, LightSystem); //yes
 
     // requires: ColourNames
     autocoder = createAutocoder(eventRouter, editor); // McLexer //no
@@ -204,7 +209,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     eventRouter.bind('clear-error', Ui.clearError, Ui);
 
 
-    BackgroundPainter.pickRandomDefaultGradient(); //yes
+    LiveCodeLabCore.BackgroundPainter.pickRandomDefaultGradient(); //yes
     LiveCodeLabCore.SoundSystem.loadAndTestAllTheSounds(Ui.soundSystemOk); //yes
 
     if (LiveCodeLabCore.ThreeJs) {
@@ -219,8 +224,8 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
         $('#simplemodal-container').height(200);
     }
 
-    BackgroundPainter.resetGradientStack(); //yes
-    BackgroundPainter.simpleGradientUpdateIfChanged(); //yes
+    LiveCodeLabCore.BackgroundPainter.resetGradientStack(); //yes
+    LiveCodeLabCore.BackgroundPainter.simpleGradientUpdateIfChanged(); //yes
 
     editor.focus(); //no
 

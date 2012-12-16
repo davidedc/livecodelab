@@ -4,7 +4,7 @@
 var frame = 0;
 
 
-var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransformer, renderer, graphics, stats, lightsystem, backgroundpainter) {
+var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransformer, renderer, graphics, stats, lightsystem) {
 
     'use strict';
 
@@ -85,7 +85,7 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
 				graphics.reset();
 
 				LiveCodeLabCore.BlendControls.animationStyle(LiveCodeLabCore.BlendControls.animationStyles.normal);
-				backgroundpainter.resetGradientStack();
+				LiveCodeLabCore.BackgroundPainter.resetGradientStack();
 
 				// Now here there is another try/catch check when the draw function is ran.
 				// The reason is that there might be references to uninitialised or inexistent
@@ -115,7 +115,7 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
 						LiveCodeLabCore.TimeKeeper.resetTime();
 				}
 				LiveCodeLabCore.BlendControls.animationStyleUpdateIfChanged();
-				backgroundpainter.simpleGradientUpdateIfChanged();
+				LiveCodeLabCore.BackgroundPainter.simpleGradientUpdateIfChanged();
 				LiveCodeLabCore.SoundSystem.changeUpdatesPerMinuteIfNeeded();
 
         // "frame" starts at zero, so we increment after the first time the draw

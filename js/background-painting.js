@@ -168,13 +168,6 @@ var createBackgroundPainter = function (eventRouter) {
     // This needs to be global so it can be run by the draw function
     window.background = BackgroundPainter.background;
 
-
-    // Setup Event Listeners
-    eventRouter.bind('reset', BackgroundPainter.pickRandomDefaultGradient, BackgroundPainter);
-
-
-
     return BackgroundPainter;
-
 };
 
