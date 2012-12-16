@@ -88,7 +88,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
 
 
-    LiveCodeLabCore.BigCursor = createBigCursor(eventRouter); // $ //no
+    BigCursor = createBigCursor(eventRouter); // $ //no
     editor = createEditor(eventRouter, CodeMirror); //no
 
     // requires DrawFunctionRunner
@@ -109,7 +109,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     autocoder = createAutocoder(eventRouter, editor); // McLexer //no
 
     // EditorDimmer functions should probablly be rolled into the editor itself
-    EditorDimmer = createEditorDimmer(eventRouter, LiveCodeLabCore.BigCursor); // $ //no
+    EditorDimmer = createEditorDimmer(eventRouter, BigCursor); // $ //no
 
     // requires ThreeJsSystem, BlendControls, GraphicsCommands
     ProgramLoader = createProgramLoader(eventRouter, editor, AnimationLoop, Renderer); // $, Detector, BlendControls //no
@@ -273,7 +273,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
         setTimeout(LiveCodeLabCore.SoundSystem.playStartupSound, 650);
     }
 
-    LiveCodeLabCore.BigCursor.toggleBlink(true); //no
+    BigCursor.toggleBlink(true); //no
 
     // Turn dimming on by default
     eventRouter.trigger('editor-toggle-dim', true); //yes
