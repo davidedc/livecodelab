@@ -124,7 +124,9 @@ var createUi = function (eventRouter, stats) {
         //console.log('hiding stats widget');
     };
     Ui.showStatsWidget = function () {
-        $("#statsWidget").show();
+					// I wish I could tell you why showing the widget straight away doesn't work.
+					// Postponing a little bit makes this work. It doesn't make any sense.
+        setTimeout('$("#statsWidget").show()',1);
         //console.log('showing stats widget');
     };
 

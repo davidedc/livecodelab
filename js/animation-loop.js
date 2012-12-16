@@ -108,7 +108,9 @@ var createAnimationLoop = function (eventRouter, CodeTransformer, renderer, stat
         else {
 					LiveCodeLabCore.DrawFunctionRunner.dozingOff = true;
 					//console.log('dozing off');
-					Ui.hideStatsWidget();
+					// I wish I could tell you why hiding the widget straight away doesn't work.
+					// Postponing a little bit makes this work. It doesn't make any sense.
+					setTimeout('Ui.hideStatsWidget();',1);
         }
 
 

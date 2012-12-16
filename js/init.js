@@ -108,7 +108,6 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     var stats = new Stats();
     //console.log('creating stats');
     Ui = createUi(eventRouter, stats); // $ //no
-    Ui.hideStatsWidget();
 
     // requires: TimeKeeper, MatrixCommands, BlendControls, SoundSystem, BackgroundPainter, GraphicsCommands, LightSystem, DrawFunctionRunner
     AnimationLoop = createAnimationLoop(eventRouter, CodeTransformer, Renderer, stats); //yes
@@ -129,8 +128,8 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
         if ((updatedCode !== '') && LiveCodeLabCore.DrawFunctionRunner.dozingOff) {
 					LiveCodeLabCore.DrawFunctionRunner.dozingOff = false;
 					AnimationLoop.animate();
-					Ui.showStatsWidget();
 					//console.log('waking up');
+					Ui.showStatsWidget();
         }
     }
     eventRouter.bind('code_changed',
