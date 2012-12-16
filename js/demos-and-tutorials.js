@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, regexp: true */
 /*global $, Detector */
 
-var createProgramLoader = function (eventRouter, texteditor, animationLoop) {
+var createProgramLoader = function (eventRouter, texteditor) {
 
     'use strict';
 
