@@ -65,7 +65,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
 
     //console.log('creating stats');
-    var Ui = createUi(eventRouter, stats); // $ //no
+    var ui = createUi(eventRouter, stats); // $ //no
 
 
     // requires: ColourNames
@@ -89,7 +89,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 					LiveCodeLabCore.DrawFunctionRunner.dozingOff = false;
 					LiveCodeLabCore.AnimationLoop.animate();
 					//console.log('waking up');
-					Ui.showStatsWidget();
+					ui.showStatsWidget();
         }
     }
     eventRouter.bind('code_changed',
@@ -103,7 +103,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 							eventRouter.trigger('set-url-hash', '');
 	
 							eventRouter.trigger('big-cursor-show');
-							Ui.hideStatsWidget();
+							ui.hideStatsWidget();
 					}
 					LiveCodeLabCore.updateCode(updatedCodeAsString);
         }
@@ -208,11 +208,11 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
       }
     );
 
-    eventRouter.bind('clear-error', Ui.clearError, Ui);
+    eventRouter.bind('clear-error', ui.clearError, ui);
 
 
     LiveCodeLabCore.BackgroundPainter.pickRandomDefaultGradient(); //yes
-    LiveCodeLabCore.SoundSystem.loadAndTestAllTheSounds(Ui.soundSystemOk); //yes
+    LiveCodeLabCore.SoundSystem.loadAndTestAllTheSounds(ui.soundSystemOk); //yes
 
 
     if (LiveCodeLabCore.ThreeJsSystem) {
@@ -245,7 +245,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // Turn dimming on by default
     eventRouter.trigger('editor-toggle-dim', true); //yes
 
-    Ui.setup(); //no
+    ui.setup(); //no
 
 };
 

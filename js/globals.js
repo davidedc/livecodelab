@@ -24,9 +24,6 @@ window.forward = function() {};
 window.close = function() {};
 
 
-// All used globally
-var Ui;
-
 // this is the global namespace for the LiveCodeLab application
 var LiveCodeLabCore = {};
 
