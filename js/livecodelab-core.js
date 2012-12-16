@@ -43,7 +43,14 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, forceCanvasRend
 
     LiveCodeLabCore.paintARandomBackground = function(){
       LiveCodeLabCore.BackgroundPainter.paintARandomBackground();
-    }
+    };
+
+    LiveCodeLabCore.startAnimationLoop = function(){
+     // there is nothing special about starting the animation loop,
+     // it's just a call to animate(), which then creates its own request
+     // for the next frame. Abstracting a bit though, it's clearer this way.
+     LiveCodeLabCore.AnimationLoop.animate();
+    };
 
     return LiveCodeLabCore;
 };

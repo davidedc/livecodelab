@@ -213,8 +213,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
     LiveCodeLabCore.SoundSystem.loadAndTestAllTheSounds(ui.soundSystemOk); //yes
     LiveCodeLabCore.paintARandomBackground();
-    LiveCodeLabCore.AnimationLoop.animate(); //yes
-
+    LiveCodeLabCore.startAnimationLoop();
     
     if (!Detector.webgl || forceCanvasRenderer) {
         $('#noWebGLMessage').modal({
