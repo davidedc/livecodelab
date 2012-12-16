@@ -10,6 +10,7 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler) {
         programHasBasicError = false,
         compiledOutput,
         listOfPossibleFunctions,
+        preprocessingFunctions = {},
         CodeChecker = createCodeChecker();
 
 
@@ -89,15 +90,100 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler) {
         "addDoOnce",
         ""];
 
+    /**
+     * The preprocessing functions are used to process the
+     * code before it is sent through the coffee script
+     * compiler
+     *
+     * Note
+     * some replacements add a semicolon for the following reason:
+     * coffeescript allows you to split arguments over multiple lines.
+     * So if you have:
+     *     rotate 0,0,1
+     *     box
+     * and you want to add a scale like so:
+     *     scale 2,2,2
+     *     rotate 0,0,1
+     *     box
+     * What happens is that as you are in the middle of typing:
+     *     scale 2,
+     *     rotate 0,0,1
+     *     box
+     * coffeescript takes the rotate as the second argument of scale
+     * causing mayhem.
+     * Instead, all is good if rotate is prepended with a semicolon.
+     */
 
 
+    /**
+     * Stops ticked doOnce blocks from running
+     *
+     * doOnce statements which have a tick mark next to them
+     * are not run. This is achieved by replacing the line with
+     * the "doOnce" with "if false" or "//" depending on whether
+     * the doOnce is a multiline or an inline one, like so:
+     *      ✓doOnce ->
+     *        background 255
+     *        fill 255,0,0
+     *      ✓doOnce -> ball
+     * becomes:
+     *      if false ->
+     *        background 255
+     *        fill 255,0,0
+     *      //doOnce -> ball
+     *
+     * @param {string} code    the code to re-write
+     *
+     * @returns {string}
+     */
+    preprocessingFunctions.removeTickedDoOnce = function (code) {
+        var newCode;
+        newCode = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false");
+        newCode = newCode.replace(/\u2713/g, "//");
+        return newCode;
+    };
+
+    /**
+     * Some of the functions can be used with postfix notation
+     *
+     * e.g.
+     *
+     *      60 bpm
+     *      red fill
+     *      yellow stroke
+     *      black background
+     *
+     * We need to switch this round before coffee script compilation
+     */
+    preprocessingFunctions.postfixNotation = function (code) {
+        var elaboratedSource;
+        elaboratedSource = code.replace(/(\d+)[ ]+bpm(\s)/g, "bpm $1$2");
+        elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+fill(\s)/g, "fill $1$2");
+        elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+stroke(\s)/g, "stroke $1$2");
+        elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+background(\s)/g, "background $1$2");
+        return elaboratedSource;
+    };
+
+    /**
+     * The times function is mangled by coffeescript
+     *     (1).times ->
+     * But this isn't:
+     *     (1+0).times ->
+     * So here is the little replace.
+     *
+     * TODO: you should be a little smarter about the substitution of the draw method
+     * You can tell a method declaration because the line below is indented
+     * so you should check that.
+     *
+     */
+    preprocessingFunctions.fixTimesFunctions = function (code) {
+        return code.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->");
+    };
 
 
     CodeTransformer.updateCode = function (updatedCodeAsString) {
 
-
-        var preprocessingFunctions = {},
-            elaboratedSource,
+        var elaboratedSource,
             elaboratedSourceByLine,
             iteratingOverSource,
             errResults;
@@ -115,41 +201,18 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler) {
         }
 
 
-
-        /**
-         * Stops ticked doOnce blocks from running
-         *
-         * doOnce statements which have a tick mark next to them
-         * are not run. This is achieved by replacing the line with
-         * the "doOnce" with "if false" or "//" depending on whether
-         * the doOnce is a multiline or an inline one, like so:
-         *      ✓doOnce ->
-         *        background 255
-         *        fill 255,0,0
-         *      ✓doOnce -> ball
-         * becomes:
-         *      if false ->
-         *        background 255
-         *        fill 255,0,0
-         *      //doOnce -> ball
-         *
-         * @param {string} code    the code to re-write
-         *
-         * @returns {string}
-         */
-        preprocessingFunctions.removeTickedDoOnce = function (code) {
-            var newCode;
-            newCode = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false");
-            newCode = newCode.replace(/\u2713/g, "//");
-            return newCode;
-        };
-
         updatedCodeAsString = preprocessingFunctions.removeTickedDoOnce(updatedCodeAsString);
 
+        /**
+         * The CodeChecker will check for unbalanced brackets
+         * and unfinished strings
+         *
+         * If any errors are found then we quit compilation here
+         * and display an error message
+         */
 
         errResults = CodeChecker.parse(updatedCodeAsString);
 
-        // according to jsperf, the fastest way to check if number is even/odd
         if (errResults.err === true) {
             eventRouter.trigger('compile-time-error-thrown', errResults.message);
             return;
@@ -158,45 +221,9 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler) {
 
         elaboratedSource = updatedCodeAsString;
 
-        // we make it so some common command forms can be used in postfix notation, e.g.
-        //   60 bpm
-        //   red fill
-        //   yellow stroke
-        //   black background
-        elaboratedSource = elaboratedSource.replace(/(\d+)[ ]+bpm(\s)/g, "bpm $1$2");
-        elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+fill(\s)/g, "fill $1$2");
-        elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+stroke(\s)/g, "stroke $1$2");
-        elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+background(\s)/g, "background $1$2");
+        elaboratedSource = preprocessingFunctions.postfixNotation(elaboratedSource);
 
-        // little trick. This is mangled up in the translation from coffeescript
-        // (1).times ->
-        // But this isn't:
-        // (1+0).times ->
-        // So here is the little replace.
-        // TODO: you should be a little smarter about the substitution of the draw method
-        // You can tell a method declaration because the line below is indented
-        // so you should check that.
-
-        //elaboratedSource =  elaboratedSource.replace(/^([a-z]+[a-zA-Z0-9]+)\s*$/gm, "$1 = ->" );
-        // some replacements add a semicolon for the
-        // following reason: coffeescript allows you to split arguments
-        // over multiple lines.
-        // So if you have:
-        //   rotate 0,0,1
-        //   box
-        // and you want to add a scale like so:
-        //   scale 2,2,2
-        //   rotate 0,0,1
-        //   box
-        // What happens is that as you are in the middle of typing:
-        //   scale 2,
-        //   rotate 0,0,1
-        //   box
-        // coffeescript takes the rotate as the second argument of scale
-        // causing mayhem.
-        // Instead, all is good if rotate is prepended with a semicolon.
-
-        elaboratedSource = elaboratedSource.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->");
+        elaboratedSource = preprocessingFunctions.fixTimesFunctions(elaboratedSource);
 
 
 
@@ -225,25 +252,20 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler) {
         //   regroup the lines into a single string again
         //
         if (elaboratedSource.indexOf('doOnce') > -1) {
-            //alert("a doOnce is potentially executable");
             elaboratedSourceByLine = elaboratedSource.split("\n");
-            //alert('splitting: ' + elaboratedSourceByLine.length );
             for (iteratingOverSource = 0; iteratingOverSource < elaboratedSourceByLine.length; iteratingOverSource += 1) {
-                //alert('iterating: ' + iteratingOverSource );
 
                 // add the line number tracing instruction to inline case
                 elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/gm, "$1;addDoOnce(" + iteratingOverSource + "); (1+0).times -> $2");
 
                 // add the line number tracing instruction to multiline case
                 if (elaboratedSourceByLine[iteratingOverSource].match(/^(\s*)doOnce[ ]*\->[ ]*$/gm)) {
-                    //alert('doOnce multiline!');
                     elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*$/gm, "$1(1+0).times ->");
                     elaboratedSourceByLine[iteratingOverSource + 1] = elaboratedSourceByLine[iteratingOverSource + 1].replace(/^(\s*)(.+)$/gm, "$1;addDoOnce(" + iteratingOverSource + "); $2");
                 }
 
             }
             elaboratedSource = elaboratedSourceByLine.join("\n");
-            //alert('soon after replacing doOnces'+elaboratedSource);
         }
 
 
