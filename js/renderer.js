@@ -14,26 +14,29 @@ var createRenderer = function () {
             LiveCodeLabCore.ThreeJsSystem.composer.render();
         } else {
 
-            // the renderer draws into an offscreen canvas called sceneRenderingCanvas
+            // the renderer draws into an offscreen canvas called currentFrameThreeJsSceneCanvas
             LiveCodeLabCore.ThreeJsSystem.renderer.render(LiveCodeLabCore.ThreeJsSystem.scene, LiveCodeLabCore.ThreeJsSystem.camera);
 
             // clear the final render context
-            LiveCodeLabCore.ThreeJsSystem.finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
-            LiveCodeLabCore.ThreeJsSystem.finalRenderWithSceneAndBlendContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvasContext.globalAlpha = 1.0;
+            LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-            // draw the rendering of the scene on the final render
-            // clear the final render context
-            LiveCodeLabCore.ThreeJsSystem.finalRenderWithSceneAndBlendContext.globalAlpha = LiveCodeLabCore.BlendControls.blendAmount;
-            LiveCodeLabCore.ThreeJsSystem.finalRenderWithSceneAndBlendContext.drawImage(LiveCodeLabCore.ThreeJsSystem.previousRenderForBlending, 0, 0);
+            // draw the rendering of the scene on the blendedThreeJsSceneCanvasContext
+            // this needs a few steps so we can get the motionBlur or the paintOver effects right
+            // TODO: I'm sure that this can be optimised for the case where there is no
+            // motionBlur and no paintOver, because we don't need to keep and blend with
+            // the previous frame in that case.
+            LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvasContext.globalAlpha = LiveCodeLabCore.BlendControls.blendAmount;
+            LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvasContext.drawImage(LiveCodeLabCore.ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, 0, 0);
 
-            LiveCodeLabCore.ThreeJsSystem.finalRenderWithSceneAndBlendContext.globalAlpha = 1.0;
-            LiveCodeLabCore.ThreeJsSystem.finalRenderWithSceneAndBlendContext.drawImage(LiveCodeLabCore.ThreeJsSystem.sceneRenderingCanvas, 0, 0);
+            LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvasContext.globalAlpha = 1.0;
+            LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvasContext.drawImage(LiveCodeLabCore.ThreeJsSystem.currentFrameThreeJsSceneCanvas, 0, 0);
 
-            LiveCodeLabCore.ThreeJsSystem.previousRenderForBlendingContext.globalCompositeOperation = 'copy';
-            LiveCodeLabCore.ThreeJsSystem.previousRenderForBlendingContext.drawImage(LiveCodeLabCore.ThreeJsSystem.finalRenderWithSceneAndBlend, 0, 0);
+            LiveCodeLabCore.ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext.globalCompositeOperation = 'copy';
+            LiveCodeLabCore.ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext.drawImage(LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvas, 0, 0);
 
             // clear the renderer's canvas to transparent black
-            LiveCodeLabCore.ThreeJsSystem.sceneRenderingCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            LiveCodeLabCore.ThreeJsSystem.currentFrameThreeJsSceneCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
         }
     };

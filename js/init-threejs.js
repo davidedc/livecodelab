@@ -1,6 +1,6 @@
 /*jslint browser: true, devel: true */
 
-var createThreeJsSystem = function (Detector, THREEx, canvasElementForThreeJS, forceCanvasRenderer) {
+var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer) {
 
     'use strict';
 
@@ -11,7 +11,7 @@ var createThreeJsSystem = function (Detector, THREEx, canvasElementForThreeJS, f
 
     ThreeJsSystem.composer = {};
 
-    ThreeJsSystem.sceneRenderingCanvas = {};
+    ThreeJsSystem.blendedThreeJsSceneCanvas;
 
     ThreeJsSystem.forceCanvasRenderer = forceCanvasRenderer;
 
@@ -20,13 +20,13 @@ var createThreeJsSystem = function (Detector, THREEx, canvasElementForThreeJS, f
 
         ThreeJsSystem.ballDefaultDetLevel = 16;
         
-        if (!canvasElementForThreeJS) {
-          canvasElementForThreeJS = document.createElement('canvas');
+        if (!blendedThreeJsSceneCanvas) {
+          blendedThreeJsSceneCanvas = document.createElement('canvas');
         }
-        ThreeJsSystem.sceneRenderingCanvas = canvasElementForThreeJS;
+        ThreeJsSystem.blendedThreeJsSceneCanvas = blendedThreeJsSceneCanvas;
 
         ThreeJsSystem.renderer = new LiveCodeLabCore.THREE.WebGLRenderer({
-            canvas: ThreeJsSystem.sceneRenderingCanvas,
+            canvas: ThreeJsSystem.blendedThreeJsSceneCanvas,
             preserveDrawingBuffer: false, // to allow screenshot
             antialias: false,
             premultipliedAlpha: false
@@ -40,27 +40,27 @@ var createThreeJsSystem = function (Detector, THREEx, canvasElementForThreeJS, f
 
         // we always draw the 3d scene off-screen
         ThreeJsSystem.ballDefaultDetLevel = 6;
-        if (!canvasElementForThreeJS) {
-          canvasElementForThreeJS = document.createElement('canvas');
+        if (!ThreeJsSystem.currentFrameThreeJsSceneCanvas) {
+          ThreeJsSystem.currentFrameThreeJsSceneCanvas = document.createElement('canvas');
         }
-        ThreeJsSystem.sceneRenderingCanvas = canvasElementForThreeJS;
-        ThreeJsSystem.sceneRenderingCanvasContext = ThreeJsSystem.sceneRenderingCanvas.getContext('2d');
+        ThreeJsSystem.currentFrameThreeJsSceneCanvasContext = ThreeJsSystem.currentFrameThreeJsSceneCanvas.getContext('2d');
         ThreeJsSystem.renderer = new LiveCodeLabCore.THREE.CanvasRenderer({
-            canvas: ThreeJsSystem.sceneRenderingCanvas,
+            canvas: ThreeJsSystem.currentFrameThreeJsSceneCanvas,
             antialias: true, // to get smoother output
             preserveDrawingBuffer: false // to allow screenshot
         });
 
 
-        ThreeJsSystem.previousRenderForBlending = document.createElement('canvas');
-        ThreeJsSystem.previousRenderForBlending.width = window.innerWidth;
-        ThreeJsSystem.previousRenderForBlending.height = window.innerHeight;
-        ThreeJsSystem.previousRenderForBlendingContext = ThreeJsSystem.previousRenderForBlending.getContext('2d');
+        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas = document.createElement('canvas');
+        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas.width = window.innerWidth;
+        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas.height = window.innerHeight;
+        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext = ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas.getContext('2d');
 
-        ThreeJsSystem.finalRenderWithSceneAndBlend = document.getElementById('finalRenderWithSceneAndBlendCanvas');
-        ThreeJsSystem.finalRenderWithSceneAndBlend.width = window.innerWidth;
-        ThreeJsSystem.finalRenderWithSceneAndBlend.height = window.innerWidth;
-        ThreeJsSystem.finalRenderWithSceneAndBlendContext = ThreeJsSystem.finalRenderWithSceneAndBlend.getContext('2d');
+
+        ThreeJsSystem.blendedThreeJsSceneCanvas = document.getElementById('blendedThreeJsSceneCanvas');
+        ThreeJsSystem.blendedThreeJsSceneCanvas.width = window.innerWidth;
+        ThreeJsSystem.blendedThreeJsSceneCanvas.height = window.innerWidth;
+        ThreeJsSystem.blendedThreeJsSceneCanvasContext = ThreeJsSystem.blendedThreeJsSceneCanvas.getContext('2d');
 
         ThreeJsSystem.renderer.setSize(window.innerWidth, window.innerHeight);
     }

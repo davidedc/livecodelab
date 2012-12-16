@@ -6,7 +6,7 @@ var isCanvasSupported = function () {
     return !!(elem.getContext && elem.getContext('2d'));
 };
 
-var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, forceCanvasRenderer, bubbleUpErrorsForDebugging) {
+var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground, forceCanvasRenderer, bubbleUpErrorsForDebugging) {
 
     'use strict';
 
@@ -19,7 +19,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
       eventRouter,
       forceCanvasRenderer,
       createTimeKeeper(),
-      canvasElementForThreeJS,
+      blendedThreeJsSceneCanvas,
       canvasForBackground,
     );
     */
@@ -37,7 +37,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     // abstraction layer.
     LiveCodeLabCore.THREE = THREE;
     // needs THREE
-    LiveCodeLabCore.ThreeJsSystem = createThreeJsSystem(Detector, THREEx, canvasElementForThreeJS, forceCanvasRenderer); //yes
+    LiveCodeLabCore.ThreeJsSystem = createThreeJsSystem(Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer); //yes
     LiveCodeLabCore.MatrixCommands = createMatrixCommands(); // needs TimeKeeper and THREE
     LiveCodeLabCore.ColourNames = createColours(); //no
     // requires ThreeJsSystem
@@ -75,7 +75,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
     UrlRouter = createUrlRouter(eventRouter); //no
 
-    document.getElementById('container').appendChild(LiveCodeLabCore.ThreeJsSystem.sceneRenderingCanvas); //no
+    //document.getElementById('container').appendChild(LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvas); //no
     
     if (!canvasForBackground) {
       canvasForBackground = document.createElement('canvas'); //no
@@ -282,7 +282,7 @@ $(document).ready(function () {
         return;
     }
 
-    // arguments: (canvasElementForThreeJS, canvasForBackground, forceCanvasRenderer, bubbleUpErrorsForDebugging)
-    startEnvironment(null, document.getElementById('backGroundCanvas'), false, false);
+    // arguments: (blendedThreeJsSceneCanvas, canvasForBackground, forceCanvasRenderer, bubbleUpErrorsForDebugging)
+    startEnvironment(document.getElementById('blendedThreeJsSceneCanvas'), document.getElementById('backGroundCanvas'), true, false);
 
 });
