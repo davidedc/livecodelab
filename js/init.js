@@ -20,7 +20,8 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     'use strict';
 
     ///////////////////////////////////////////////////////
-    // Preliminary check, is canvas supported?
+    // Phase 1 - Preliminary checks and initialisations
+    // before LiveCodeCore.
     ///////////////////////////////////////////////////////
     if (!isCanvasSupported) {
         $('#noCanvasMessage').modal({
@@ -34,8 +35,11 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
         return;
     }
 
-    // eventRouter manages all the events/callbacks across the whole
+    // EventRouter manages all the events/callbacks across the whole
     // of livecodelab.
+    // For "heavy fire" callbacks one might want to use a classic callback system,
+    // because there might be some overhead in the triggering of events using this.
+    // (to be tested. just throwing it out there.)
     var eventRouter = createEventRouter();
 
     // Stats are updated in the AnimationLoop
@@ -51,11 +55,13 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
   
     // createColours creates a bunch of global variables for all css colors (and more).
     // Since background-painting.js initialises the background by means of
-    // CSS colors, this needs to be run before creating LiveCodeLabCore
+    // CSS colors, this needs to be run before creating LiveCodeLabCore. This is also
+    // used by the autocoder because it needs to be able to swap color names that it
+    // finds as CSS color strings in the user program.
     var colourNames = createColours();
 
     ////////////////////////////////////////////////////////
-    // Initialise the core of livecodelab.
+    // Phase 2 - Initialise the core of livecodelab.
     // LiveCodeLabCore consists of the following main parts:
     ////////////////////////////////////////////////////////
     //  - TimeKeeper
@@ -82,7 +88,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     	);    
   
     ///////////////////////////////////////////////////////
-    // Other satellite parts
+    // Phase 3 - Other satellite parts
     ///////////////////////////////////////////////////////
     var urlRouter = createUrlRouter(eventRouter); 
     var bigCursor = createBigCursor(eventRouter); // $ 
@@ -101,7 +107,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     var programLoader = createProgramLoader(eventRouter, editor); // $, Detector, BlendControls 
 
     ///////////////////////////////////////////////////////
-    // Setup Of Event Listeners, including handling of
+    // Phase 4 - Setup Of Event Listeners, including handling of
     // compile time and runtime errors.
     ///////////////////////////////////////////////////////
     eventRouter.bind('reset', LiveCodeLabCore.paintARandomBackground);
@@ -229,7 +235,9 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     eventRouter.bind('all-sounds-loaded-and tested',ui.soundSystemOk);
 
     ///////////////////////////////////////////////////////
-    // Now kick-off the system.
+    // Phase 5- Kick-off the system and start of the
+    // animation loop. Events will start
+    // being triggered from here on.
     ///////////////////////////////////////////////////////
     LiveCodeLabCore.loadAndTestAllTheSounds();
     LiveCodeLabCore.paintARandomBackground();
