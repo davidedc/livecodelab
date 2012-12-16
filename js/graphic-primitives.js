@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*global THREE, color, LightSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne  */
+/*global color, LightSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne  */
 
 // Please reference the colour-functions.js file for all colour-related
 // functions and lights-functions.js for lights, which use a similar
@@ -169,15 +169,15 @@ var createGraphicsCommands = function () {
     // used (since probably only a few ball detail levels will be used in a session)
     // then one could leave all these arrays undefined and define them at runtime
     // only when needed.
-    geometriesBank[primitiveTypes.line] = new THREE.Geometry();
-    geometriesBank[primitiveTypes.line].vertices.push(new THREE.Vector3(0, -0.5, 0));
-    geometriesBank[primitiveTypes.line].vertices.push(new THREE.Vector3(0, 0.5, 0));
-    geometriesBank[primitiveTypes.rect] = new THREE.PlaneGeometry(1, 1);
-    geometriesBank[primitiveTypes.box] = new THREE.CubeGeometry(1, 1, 1);
-    geometriesBank[primitiveTypes.peg] = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
+    geometriesBank[primitiveTypes.line] = new LiveCodeLabCore.THREE.Geometry();
+    geometriesBank[primitiveTypes.line].vertices.push(new LiveCodeLabCore.THREE.Vector3(0, -0.5, 0));
+    geometriesBank[primitiveTypes.line].vertices.push(new LiveCodeLabCore.THREE.Vector3(0, 0.5, 0));
+    geometriesBank[primitiveTypes.rect] = new LiveCodeLabCore.THREE.PlaneGeometry(1, 1);
+    geometriesBank[primitiveTypes.box] = new LiveCodeLabCore.THREE.CubeGeometry(1, 1, 1);
+    geometriesBank[primitiveTypes.peg] = new LiveCodeLabCore.THREE.CylinderGeometry(0.5, 0.5, 1, 32);
     // creating ball geometries
     for (i = 0; i < (maximumBallDetail - minimumBallDetail + 1); i += 1) {
-        geometriesBank[primitiveTypes.ball + i] = new THREE.SphereGeometry(1, minimumBallDetail + i, minimumBallDetail + i);
+        geometriesBank[primitiveTypes.ball + i] = new LiveCodeLabCore.THREE.SphereGeometry(1, minimumBallDetail + i, minimumBallDetail + i);
     }
 
 
@@ -256,13 +256,13 @@ var createGraphicsCommands = function () {
 
         if (primitiveProperties.primitiveType === primitiveTypes.line) {
             if (pooledObjectWithMaterials.lineMaterial === undefined) {
-                pooledObjectWithMaterials.lineMaterial = new THREE.LineBasicMaterial();
+                pooledObjectWithMaterials.lineMaterial = new LiveCodeLabCore.THREE.LineBasicMaterial();
             }
 
             // associating normal material to threejs' Object3D
 
             if (currentStrokeColor === angleColor || GraphicsCommands.defaultNormalStroke) {
-                theAngle = pooledObjectWithMaterials.threejsObject3D.matrix.multiplyVector3(new THREE.Vector3(0, 1, 0)).normalize();
+                theAngle = pooledObjectWithMaterials.threejsObject3D.matrix.multiplyVector3(new LiveCodeLabCore.THREE.Vector3(0, 1, 0)).normalize();
                 pooledObjectWithMaterials.lineMaterial.color.setHex(color(((theAngle.x + 1) / 2) * 255, ((theAngle.y + 1) / 2) * 255, ((theAngle.z + 1) / 2) * 255));
             } else {
                 pooledObjectWithMaterials.lineMaterial.color.setHex(currentStrokeColor);
@@ -278,12 +278,12 @@ var createGraphicsCommands = function () {
             // Another workaround would be to create a pooled object
             // for each different type of material.
             if (pooledObjectWithMaterials.normalMaterial === undefined) {
-                pooledObjectWithMaterials.normalMaterial = new THREE.MeshNormalMaterial();
+                pooledObjectWithMaterials.normalMaterial = new LiveCodeLabCore.THREE.MeshNormalMaterial();
             }
             pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.normalMaterial;
         } else if (!LiveCodeLabCore.LightSystem.lightsAreOn) {
             if (pooledObjectWithMaterials.basicMaterial === undefined) {
-                pooledObjectWithMaterials.basicMaterial = new THREE.MeshBasicMaterial();
+                pooledObjectWithMaterials.basicMaterial = new LiveCodeLabCore.THREE.MeshBasicMaterial();
             }
             pooledObjectWithMaterials.basicMaterial.color.setHex(colorToBeUsed);
             pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.basicMaterial;
@@ -291,7 +291,7 @@ var createGraphicsCommands = function () {
         } else {
             // lights are on
             if (pooledObjectWithMaterials.lambertMaterial === undefined) {
-                pooledObjectWithMaterials.lambertMaterial = new THREE.MeshLambertMaterial();
+                pooledObjectWithMaterials.lambertMaterial = new LiveCodeLabCore.THREE.MeshLambertMaterial();
             }
             pooledObjectWithMaterials.lambertMaterial.color.setHex(colorToBeUsed);
             pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.lambertMaterial;
@@ -354,7 +354,7 @@ var createGraphicsCommands = function () {
                 // by setting the scale to almost zero. The object will still go through
                 // the rendering step, so the memory for the material is initialised
                 // correctly.
-                pooledObjectWithMaterials.threejsObject3D.matrix.scale(new THREE.Vector3(0.0001,0.0001,0.0001));
+                pooledObjectWithMaterials.threejsObject3D.matrix.scale(new LiveCodeLabCore.THREE.Vector3(0.0001,0.0001,0.0001));
         }
         else if (a !== 1 || b !== 1 || c !== 1) {
             if (strokeTime) {
@@ -362,14 +362,14 @@ var createGraphicsCommands = function () {
                 // ever so slight larger than the "fill" object, so there
                 // is no z-fighting and the stroke is drawn neatly on top of the fill
                 // constant 0.001 below is to avoid z-fighting
-                pooledObjectWithMaterials.threejsObject3D.matrix.scale(new THREE.Vector3(a + 0.001, b + 0.001, c + 0.001));
+                pooledObjectWithMaterials.threejsObject3D.matrix.scale(new LiveCodeLabCore.THREE.Vector3(a + 0.001, b + 0.001, c + 0.001));
             } else {
-                pooledObjectWithMaterials.threejsObject3D.matrix.scale(new THREE.Vector3(a, b, c));
+                pooledObjectWithMaterials.threejsObject3D.matrix.scale(new LiveCodeLabCore.THREE.Vector3(a, b, c));
             }
         }
 
         if (objectIsNew) {
-            LiveCodeLabCore.ThreeJs.scene.add(pooledObjectWithMaterials.threejsObject3D);
+            LiveCodeLabCore.ThreeJsSystem.scene.add(pooledObjectWithMaterials.threejsObject3D);
         }
 
     };
@@ -423,7 +423,7 @@ var createGraphicsCommands = function () {
         GraphicsCommands.currentStrokeSize = 1;
         GraphicsCommands.defaultNormalFill = true;
         GraphicsCommands.defaultNormalStroke = true;
-        GraphicsCommands.ballDetLevel = LiveCodeLabCore.ThreeJs.ballDefaultDetLevel;
+        GraphicsCommands.ballDetLevel = LiveCodeLabCore.ThreeJsSystem.ballDefaultDetLevel;
 
         GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.ambientLight] = 0;
         GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.line] = 0;
@@ -474,8 +474,8 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             canFill: false,
             primitiveType: primitiveTypes.line,
-            sidedness: THREE.FrontSide,
-            THREEObjectConstructor: THREE.Line,
+            sidedness: LiveCodeLabCore.THREE.FrontSide,
+            THREEObjectConstructor: LiveCodeLabCore.THREE.Line,
             detailLevel: 0
         };
         // end of primitive-specific initialisations:
@@ -490,8 +490,8 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             canFill: true,
             primitiveType: primitiveTypes.rect,
-            sidedness: THREE.DoubleSide,
-            THREEObjectConstructor: THREE.Mesh,
+            sidedness: LiveCodeLabCore.THREE.DoubleSide,
+            THREEObjectConstructor: LiveCodeLabCore.THREE.Mesh,
             detailLevel: 0
         };
         // end of primitive-specific initialisations:
@@ -506,8 +506,8 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             canFill: true,
             primitiveType: primitiveTypes.box,
-            sidedness: THREE.FrontSide,
-            THREEObjectConstructor: THREE.Mesh,
+            sidedness: LiveCodeLabCore.THREE.FrontSide,
+            THREEObjectConstructor: LiveCodeLabCore.THREE.Mesh,
             detailLevel: 0
         };
         // end of primitive-specific initialisations:
@@ -522,8 +522,8 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             canFill: true,
             primitiveType: primitiveTypes.peg,
-            sidedness: THREE.FrontSide,
-            THREEObjectConstructor: THREE.Mesh,
+            sidedness: LiveCodeLabCore.THREE.FrontSide,
+            THREEObjectConstructor: LiveCodeLabCore.THREE.Mesh,
             detailLevel: 0
         };
         // end of primitive-specific initialisations:
@@ -551,8 +551,8 @@ var createGraphicsCommands = function () {
         var primitiveProperties = {
             canFill: true,
             primitiveType: primitiveTypes.ball,
-            sidedness: THREE.FrontSide,
-            THREEObjectConstructor: THREE.Mesh,
+            sidedness: LiveCodeLabCore.THREE.FrontSide,
+            THREEObjectConstructor: LiveCodeLabCore.THREE.Mesh,
             detailLevel: GraphicsCommands.ballDetLevel - minimumBallDetail
         };
         // end of primitive-specific initialisations:

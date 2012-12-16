@@ -74,7 +74,7 @@ var createLightSystem = function (three) {
         if (newLightCreated) {
             // NOTE that an ambient light is not actually added as an object.
             // i.e. if you navigate the objects you don't find it.
-            LiveCodeLabCore.ThreeJs.scene.add(pooledAmbientLight);
+            LiveCodeLabCore.ThreeJsSystem.scene.add(pooledAmbientLight);
         }
     };
 

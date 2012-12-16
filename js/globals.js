@@ -32,7 +32,7 @@ var autocoder;
 
 
 // All used globally
-var ThreeJs;
+var ThreeJsSystem;
 var Renderer;
 var BigCursor;
 var AnimationLoop;

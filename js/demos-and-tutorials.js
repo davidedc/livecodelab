@@ -582,7 +582,7 @@ var createProgramLoader = function (eventRouter, texteditor, animationLoop, rend
 
     ProgramLoader.loadDemoOrTutorial = function (demoName) {
 
-        if ((!Detector.webgl || LiveCodeLabCore.ThreeJs.forceCanvasRenderer) && !userWarnedAboutWebglExamples && demoName.indexOf('webgl') === 0) {
+        if ((!Detector.webgl || LiveCodeLabCore.ThreeJsSystem.forceCanvasRenderer) && !userWarnedAboutWebglExamples && demoName.indexOf('webgl') === 0) {
             userWarnedAboutWebglExamples = true;
             $('#exampleNeedsWebgl').modal();
             $('#simplemodal-container').height(200);
@@ -601,7 +601,7 @@ var createProgramLoader = function (eventRouter, texteditor, animationLoop, rend
         LiveCodeLabCore.GraphicsCommands.doTheSpinThingy = false;
 
         var prependMessage = "";
-        if ((!Detector.webgl || LiveCodeLabCore.ThreeJs.forceCanvasRenderer) && demoName.indexOf('webgl') === 0) {
+        if ((!Detector.webgl || LiveCodeLabCore.ThreeJsSystem.forceCanvasRenderer) && demoName.indexOf('webgl') === 0) {
             prependMessage = [
                 "// This drawing makes much more sense",
                 "// in a WebGL-enabled browser.",
