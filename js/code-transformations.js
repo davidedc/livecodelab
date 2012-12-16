@@ -234,6 +234,7 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler) {
         CodeTransformer.currentCodeString = updatedCodeAsString;
         
         if (CodeTransformer.currentCodeString === ''){
+					LiveCodeLabCore.GraphicsCommands.resetTheSpinThingy = true;
 					programHasBasicError = false;
 					eventRouter.trigger('clear-error');	
 					LiveCodeLabCore.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;

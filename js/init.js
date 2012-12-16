@@ -98,10 +98,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 							eventRouter.trigger('big-cursor-hide');
 					}
 					else {
-							LiveCodeLabCore.GraphicsCommands.resetTheSpinThingy = true;
-	
 							eventRouter.trigger('set-url-hash', '');
-	
 							eventRouter.trigger('big-cursor-show');
 							ui.hideStatsWidget();
 					}
