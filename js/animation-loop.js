@@ -96,7 +96,14 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
 				// draws only a box, because the execution silently fails at the yeLow reference.
 				// So in that case we need to a) highlight the error and b) run the previously
 				// known good program.
+				try{
 					drawFunctionRunner.runDrawFunction();
+				}
+				catch (e) {
+						 //alert('runtime error');
+						 eventRouter.trigger('runtime-error-thrown', e);
+						 return;
+				}
         drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(CodeTransformer);
 
 
