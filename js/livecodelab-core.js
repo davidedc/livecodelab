@@ -21,24 +21,24 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, forceCanvasRend
     // this one below also uses TimeKeeper at runtime
     LiveCodeLabCore.MatrixCommands = createMatrixCommands(LiveCodeLabCore.THREE);
     // this one below also uses ThreeJsSystem at runtime
-    LiveCodeLabCore.BlendControls = createBlendControls(); //yes
-    LiveCodeLabCore.SoundSystem = createSoundSystem(buzz, createBowser(), createSampleBank(buzz)); // $ //yes
-    LiveCodeLabCore.ColourFunctions = createColourFunctions(); //yes
+    LiveCodeLabCore.BlendControls = createBlendControls(); 
+    LiveCodeLabCore.SoundSystem = createSoundSystem(buzz, createBowser(), createSampleBank(buzz)); // $ 
+    LiveCodeLabCore.ColourFunctions = createColourFunctions(); 
     // this one below also uses ColourFunctions at runtime
-    LiveCodeLabCore.BackgroundPainter = createBackgroundPainter(eventRouter); // $ //yes
+    LiveCodeLabCore.BackgroundPainter = createBackgroundPainter(eventRouter); // $ 
     // this one below also uses ColourFunctions, LightSystem at runtime
-    LiveCodeLabCore.GraphicsCommands = createGraphicsCommands(LiveCodeLabCore.THREE, LiveCodeLabCore.ThreeJsSystem); // color, LightSystem, MatrixCommands, ThreeJsSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne //yes
+    LiveCodeLabCore.GraphicsCommands = createGraphicsCommands(LiveCodeLabCore.THREE, LiveCodeLabCore.ThreeJsSystem); // color, LightSystem, MatrixCommands, ThreeJsSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne 
     // this one below also uses MatrixCommands, ThreeJsSystem, ColourFunctions at runtime
-    LiveCodeLabCore.LightSystem = createLightSystem(LiveCodeLabCore.THREE, LiveCodeLabCore.GraphicsCommands); //yes
-    LiveCodeLabCore.DrawFunctionRunner = createDrawFunctionRunner(); //yes
-    LiveCodeLabCore.CodeTransformer = createCodeTransformer(eventRouter, CoffeeScript); // autocoder //yes
+    LiveCodeLabCore.LightSystem = createLightSystem(LiveCodeLabCore.THREE, LiveCodeLabCore.GraphicsCommands); 
+    LiveCodeLabCore.DrawFunctionRunner = createDrawFunctionRunner(); 
+    LiveCodeLabCore.CodeTransformer = createCodeTransformer(eventRouter, CoffeeScript); // autocoder 
     // this one below also uses BlendControls at runtime
-    LiveCodeLabCore.Renderer = createRenderer(); //yes
+    LiveCodeLabCore.Renderer = createRenderer(); 
     // this one below also uses TimeKeeper, MatrixCommands, BlendControls, SoundSystem,
     //    BackgroundPainter, GraphicsCommands, LightSystem, DrawFunctionRunner,
     //    CodeTransformer, Renderer
     // ...at runtime
-    LiveCodeLabCore.AnimationLoop = createAnimationLoop(eventRouter, stats); //yes
+    LiveCodeLabCore.AnimationLoop = createAnimationLoop(eventRouter, stats); 
 
 
     return LiveCodeLabCore;

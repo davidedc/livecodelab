@@ -28,7 +28,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     ///////////////////////////
     eventRouter.bind('reset', LiveCodeLabCore.BackgroundPainter.pickRandomDefaultGradient);
 
-    //no
+    
     if (forceCanvasRenderer === undefined) {
     	forceCanvasRenderer = false;
     }
@@ -36,12 +36,12 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     	forceCanvasRenderer = false;
     }
 
-    var urlRouter = createUrlRouter(eventRouter); //no
+    var urlRouter = createUrlRouter(eventRouter); 
 
-    //document.getElementById('container').appendChild(LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvas); //no
+    //document.getElementById('container').appendChild(LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvas); 
     
     if (!canvasForBackground) {
-      canvasForBackground = document.createElement('canvas'); //no
+      canvasForBackground = document.createElement('canvas'); 
     }
     LiveCodeLabCore.canvasForBackground = canvasForBackground; //yes
     // the canvas background for the time being is only going to contain
@@ -51,35 +51,35 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // is not accelerated just as well as CSS.
     // backGroundFraction specifies what fraction of the window the background canvas
     // is going to be.
-    var backGroundFraction = 1/15; //no
+    var backGroundFraction = 1/15; 
     LiveCodeLabCore.canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction); //yes
     LiveCodeLabCore.canvasForBackground.height = Math.floor(window.innerHeight * backGroundFraction); //yes
     LiveCodeLabCore.backgroundSceneContext = LiveCodeLabCore.canvasForBackground.getContext('2d'); //yes
 
 
 
-    var bigCursor = createBigCursor(eventRouter); // $ //no
-    var editor = createEditor(eventRouter, CodeMirror); //no
+    var bigCursor = createBigCursor(eventRouter); // $ 
+    var editor = createEditor(eventRouter, CodeMirror); 
 
     // requires DrawFunctionRunner
 
 
     //console.log('creating stats');
-    var ui = createUi(eventRouter, stats); // $ //no
+    var ui = createUi(eventRouter, stats); // $ 
 
 
     // requires: ColourNames
-    var autocoder = createAutocoder(eventRouter, editor, colourNames); // McLexer //no
+    var autocoder = createAutocoder(eventRouter, editor, colourNames); // McLexer 
 
     // EditorDimmer functions should probablly be rolled into the editor itself
     // note that the editorDimmer variable below is never used. Leaving it
     // in for consistency.
-    var editorDimmer = createEditorDimmer(eventRouter, bigCursor); // $ //no
+    var editorDimmer = createEditorDimmer(eventRouter, bigCursor); // $ 
 
     // requires ThreeJsSystem, BlendControls, GraphicsCommands, Renderer
     // note that the programLoader variable below is never used. Leaving it
     // in for consistency.
-    var programLoader = createProgramLoader(eventRouter, editor); // $, Detector, BlendControls //no
+    var programLoader = createProgramLoader(eventRouter, editor); // $, Detector, BlendControls 
 
     
     LiveCodeLabCore.updateCode = function(updatedCode){
@@ -219,7 +219,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
         LiveCodeLabCore.AnimationLoop.animate(); //yes
     }
 
-    //no
+    
     if (!Detector.webgl || forceCanvasRenderer) {
         $('#noWebGLMessage').modal({
             onClose: LiveCodeLabCore.SoundSystem.closeAndCheckAudio
@@ -230,22 +230,22 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     LiveCodeLabCore.BackgroundPainter.resetGradientStack(); //yes
     LiveCodeLabCore.BackgroundPainter.simpleGradientUpdateIfChanged(); //yes
 
-    editor.focus(); //no
+    editor.focus(); 
 
     // check if the url points to a particular demo,
     // in which case we load the demo directly.
     // otherwise we do as usual.
-    //no
+    
     if (!urlRouter.checkUrl()) {
         setTimeout(LiveCodeLabCore.SoundSystem.playStartupSound, 650);
     }
 
-    bigCursor.toggleBlink(true); //no
+    bigCursor.toggleBlink(true); 
 
     // Turn dimming on by default
     eventRouter.trigger('editor-toggle-dim', true); //yes
 
-    ui.setup(); //no
+    ui.setup(); 
 
 };
 
