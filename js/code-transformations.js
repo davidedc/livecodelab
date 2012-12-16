@@ -384,51 +384,6 @@ var createCodeTransformer = function (drawFunctionRunner, eventRouter, CoffeeCom
             return;
         }
 
-
-        /*
-        // FINDS USED METHODS WHICH ARE NOT DECLARED
-        // Note: this is now simply detected at runtime.
-        var matchDeclaredMethod = /([a-z]+[a-zA-Z0-9]*) = function/;
-        var declaredMethods = [];
-        var mc;
-        var copyOfCompiledOutput = compiledOutput;
-        while ((mc = copyOfCompiledOutput.match(matchDeclaredMethod))) {
-            declaredMethods.push(mc[1]);
-            copyOfCompiledOutput = RegExp.rightContext;
-        }
-
-        var usedMethods = [];
-        var md;
-        copyOfCompiledOutput = compiledOutput;
-        while ((md = copyOfCompiledOutput.match(/\s([a-z]+[a-zA-Z0-9]*)\(/))) {
-            usedMethods.push(md[1]);
-            copyOfCompiledOutput = RegExp.rightContext;
-        }
-        var error = false;
-        var scanningUsedMethods;
-        for (scanningUsedMethods = 0; scanningUsedMethods < usedMethods.length; scanningUsedMethods += 1) {
-            if (listOfPossibleFunctions.indexOf(usedMethods[scanningUsedMethods]) !== -1) {
-                continue;
-            }
-            if (declaredMethods.length === 0) {
-                error = true;
-                eventRouter.trigger('compile-time-error-thrown', usedMethods[scanningUsedMethods] + " doesn't exist");
-                return;
-            }
-            var scanningDeclaredMethods;
-            for (scanningDeclaredMethods = 0; scanningDeclaredMethods < declaredMethods.length; scanningDeclaredMethods += 1) {
-                if (usedMethods[scanningUsedMethods] === declaredMethods[scanningDeclaredMethods]) {
-                    break;
-                } else if (scanningDeclaredMethods === declaredMethods.length - 1) {
-                    error = true;
-                    eventRouter.trigger('compile-time-error-thrown', usedMethods[scanningUsedMethods] + " doesn't exist");
-                    return;
-                }
-            }
-        }
-        */
-
-
         programHasBasicError = false;
         eventRouter.trigger('clear-error');
 
