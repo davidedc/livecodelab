@@ -51,6 +51,10 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, forceCanvasRend
      // for the next frame. Abstracting a bit though, it's clearer this way.
      LiveCodeLabCore.AnimationLoop.animate();
     };
+    
+    LiveCodeLabCore.runLastWorkingDrawFunction = function() {
+      LiveCodeLabCore.DrawFunctionRunner.reinstateLastWorkingDrawFunction();
+    }
 
     return LiveCodeLabCore;
 };

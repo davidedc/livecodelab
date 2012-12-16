@@ -189,7 +189,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 						//alert('undoing');
 				}
 				else {
-						 LiveCodeLabCore.DrawFunctionRunner.reinstateLastWorkingDrawFunction();
+						 LiveCodeLabCore.runLastWorkingDrawFunction();
 				}
 				// re-throw the error so that the top-level debuggers
 				// (firebug, built-in, whathaveyous) can properly
