@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, regexp: true */
 /*global $, Detector */
 
-var createProgramLoader = function (eventRouter, texteditor, animationLoop, renderer, graphics) {
+var createProgramLoader = function (eventRouter, texteditor, animationLoop, renderer) {
 
     'use strict';
 
@@ -598,7 +598,7 @@ var createProgramLoader = function (eventRouter, texteditor, animationLoop, rend
 
         eventRouter.trigger('editor-undim');
 
-        graphics.doTheSpinThingy = false;
+        LiveCodeLabCore.GraphicsCommands.doTheSpinThingy = false;
 
         var prependMessage = "";
         if ((!Detector.webgl || LiveCodeLabCore.ThreeJs.forceCanvasRenderer) && demoName.indexOf('webgl') === 0) {
@@ -633,7 +633,7 @@ var createProgramLoader = function (eventRouter, texteditor, animationLoop, rend
         // b) apply the potentially new animationStyle
         LiveCodeLabCore.BlendControls.animationStyleUpdateIfChanged();
         // render the empty frame
-        Renderer.render(graphics);
+        Renderer.render(LiveCodeLabCore.GraphicsCommands);
 
     };
 

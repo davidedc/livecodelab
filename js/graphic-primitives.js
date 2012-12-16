@@ -281,7 +281,7 @@ var createGraphicsCommands = function () {
                 pooledObjectWithMaterials.normalMaterial = new THREE.MeshNormalMaterial();
             }
             pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.normalMaterial;
-        } else if (!LightSystem.lightsAreOn) {
+        } else if (!LiveCodeLabCore.LightSystem.lightsAreOn) {
             if (pooledObjectWithMaterials.basicMaterial === undefined) {
                 pooledObjectWithMaterials.basicMaterial = new THREE.MeshBasicMaterial();
             }
@@ -455,7 +455,7 @@ var createGraphicsCommands = function () {
         // Since the stroke and the fill are drawn with two different objects and the
         // fill is not needed, we temporarily switch off the fill and then put it back
         // to whichever value it was.
-        if (LightSystem.lightsAreOn) {
+        if (LiveCodeLabCore.LightSystem.lightsAreOn) {
             var rememberIfThereWasAFill = doFill;
             var rememberPreviousStrokeSize = GraphicsCommands.currentStrokeSize;
             if (GraphicsCommands.currentStrokeSize < 2) {

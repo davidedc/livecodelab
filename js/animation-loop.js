@@ -4,7 +4,7 @@
 var frame = 0;
 
 
-var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransformer, renderer, graphics, stats, lightsystem) {
+var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransformer, renderer, stats) {
 
     'use strict';
 
@@ -80,9 +80,9 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
 				LiveCodeLabCore.SoundSystem.anyCodeReactingTobpm = false;
 
 				LiveCodeLabCore.SoundSystem.SetUpdatesPerMinute(60 * 4);
-				lightsystem.noLights();
+				LiveCodeLabCore.LightSystem.noLights();
 
-				graphics.reset();
+				LiveCodeLabCore.GraphicsCommands.reset();
 
 				LiveCodeLabCore.BlendControls.animationStyle(LiveCodeLabCore.BlendControls.animationStyles.normal);
 				LiveCodeLabCore.BackgroundPainter.resetGradientStack();
@@ -96,14 +96,7 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
 				// draws only a box, because the execution silently fails at the yeLow reference.
 				// So in that case we need to a) highlight the error and b) run the previously
 				// known good program.
-				try{
 					drawFunctionRunner.runDrawFunction();
-				}
-				catch (e) {
-						 //alert('runtime error');
-						 eventRouter.trigger('runtime-error-thrown', e);
-						 return;
-				}
         drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(CodeTransformer);
 
 
@@ -123,7 +116,7 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
  				frame++;
 		
         // do the render
-        renderer.render(graphics);
+        renderer.render(LiveCodeLabCore.GraphicsCommands);
         // update stats
         stats.update();
     };

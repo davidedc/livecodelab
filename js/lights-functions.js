@@ -1,14 +1,14 @@
 /*jslint browser: true */
 
 
-var createLightSystem = function (three, graphics) {
+var createLightSystem = function (three) {
 
     'use strict';
 
     var LightSystem = {};
 
-    graphics.objectPools[graphics.primitiveTypes.ambientLight] = [];
-    graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight] = 0;
+    LiveCodeLabCore.GraphicsCommands.objectPools[LiveCodeLabCore.GraphicsCommands.primitiveTypes.ambientLight] = [];
+    LiveCodeLabCore.GraphicsCommands.objectsUsedInFrameCounts[LiveCodeLabCore.GraphicsCommands.primitiveTypes.ambientLight] = 0;
 
     LightSystem.lightsAreOn = false;
 
@@ -41,13 +41,13 @@ var createLightSystem = function (three, graphics) {
         LightSystem.lightsAreOn = true;
 
         // used by graphic-primitives
-        graphics.defaultNormalFill = false;
+        LiveCodeLabCore.GraphicsCommands.defaultNormalFill = false;
 
         // used by graphic-primitives
-        graphics.defaultNormalStroke = false;
+        LiveCodeLabCore.GraphicsCommands.defaultNormalStroke = false;
 
-        ambientLightsPool = graphics.objectPools[graphics.primitiveTypes.ambientLight];
-        pooledAmbientLight =  ambientLightsPool[graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight]];
+        ambientLightsPool = LiveCodeLabCore.GraphicsCommands.objectPools[LiveCodeLabCore.GraphicsCommands.primitiveTypes.ambientLight];
+        pooledAmbientLight =  ambientLightsPool[LiveCodeLabCore.GraphicsCommands.objectsUsedInFrameCounts[LiveCodeLabCore.GraphicsCommands.primitiveTypes.ambientLight]];
         if (pooledAmbientLight === undefined) {
             // So here is the thing, the command is currently called AmbientLight but
             // in reality we are creating a PointLight in a specific position.
@@ -61,7 +61,7 @@ var createLightSystem = function (three, graphics) {
             newLightCreated = true;
             ambientLightsPool.push(pooledAmbientLight);
             pooledAmbientLight.detailLevel = 0;
-            pooledAmbientLight.primitiveType = graphics.primitiveTypes.ambientLight;
+            pooledAmbientLight.primitiveType = LiveCodeLabCore.GraphicsCommands.primitiveTypes.ambientLight;
         } else {
             pooledAmbientLight.color.setHex(colorToBeUsed);
         }
@@ -69,7 +69,7 @@ var createLightSystem = function (three, graphics) {
 
 
 
-        graphics.objectsUsedInFrameCounts[graphics.primitiveTypes.ambientLight] += 1;
+        LiveCodeLabCore.GraphicsCommands.objectsUsedInFrameCounts[LiveCodeLabCore.GraphicsCommands.primitiveTypes.ambientLight] += 1;
 
         if (newLightCreated) {
             // NOTE that an ambient light is not actually added as an object.
