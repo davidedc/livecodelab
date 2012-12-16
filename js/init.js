@@ -26,7 +26,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     ///////////////////////////
     // Setup Event Listeners
     ///////////////////////////
-    eventRouter.bind('reset', LiveCodeLabCore.BackgroundPainter.pickRandomDefaultGradient);
+    eventRouter.bind('reset', LiveCodeLabCore.paintARandomBackground);
 
     
     if (forceCanvasRenderer === undefined) {
@@ -211,13 +211,9 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     eventRouter.bind('clear-error', ui.clearError, ui);
 
 
-    LiveCodeLabCore.BackgroundPainter.pickRandomDefaultGradient(); //yes
     LiveCodeLabCore.SoundSystem.loadAndTestAllTheSounds(ui.soundSystemOk); //yes
-
-
-    if (LiveCodeLabCore.ThreeJsSystem) {
-        LiveCodeLabCore.AnimationLoop.animate(); //yes
-    }
+    LiveCodeLabCore.paintARandomBackground();
+    LiveCodeLabCore.AnimationLoop.animate(); //yes
 
     
     if (!Detector.webgl || forceCanvasRenderer) {
@@ -227,8 +223,6 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
         $('#simplemodal-container').height(200);
     }
 
-    LiveCodeLabCore.BackgroundPainter.resetGradientStack(); //yes
-    LiveCodeLabCore.BackgroundPainter.simpleGradientUpdateIfChanged(); //yes
 
     editor.focus(); 
 
@@ -243,7 +237,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     bigCursor.toggleBlink(true); 
 
     // Turn dimming on by default
-    eventRouter.trigger('editor-toggle-dim', true); //yes
+    eventRouter.trigger('editor-toggle-dim', true);
 
     ui.setup(); 
 

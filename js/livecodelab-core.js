@@ -41,5 +41,9 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, forceCanvasRend
     LiveCodeLabCore.AnimationLoop = createAnimationLoop(eventRouter, stats); 
 
 
+    LiveCodeLabCore.paintARandomBackground = function(){
+      LiveCodeLabCore.BackgroundPainter.paintARandomBackground();
+    }
+
     return LiveCodeLabCore;
 };

@@ -80,7 +80,7 @@ var createBackgroundPainter = function (eventRouter) {
         });
     };
 
-    BackgroundPainter.pickRandomDefaultGradient = function () {
+    BackgroundPainter.paintARandomBackground = function () {
 
         if (whichDefaultBackground === undefined) {
             whichDefaultBackground = Math.floor(Math.random() * 5);
