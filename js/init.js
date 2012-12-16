@@ -68,8 +68,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
 
 
-    Bowser = createBowser(); //yes
-    SoundSystem = createSoundSystem(buzz, Bowser, createSampleBank(buzz)); // $ //yes
+    LiveCodeLabCore.SoundSystem = createSoundSystem(buzz, createBowser(), createSampleBank(buzz)); // $ //yes
     BigCursor = createBigCursor(eventRouter); // $ //no
     ColourFunctions = createColourFunctions(); //yes
     BackgroundPainter = createBackgroundPainter(eventRouter, ColourFunctions); // $ //yes
@@ -94,8 +93,8 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     // requires BlendControls
     Renderer = createRenderer(); //yes
 
-    // requires: TimeKeeper, MatrixCommands, BlendControls
-    AnimationLoop = createAnimationLoop(DrawFunctionRunner, eventRouter, CodeTransformer, Renderer, GraphicsCommands, stats, SoundSystem, LightSystem, BackgroundPainter); //yes
+    // requires: TimeKeeper, MatrixCommands, BlendControls, SoundSystem
+    AnimationLoop = createAnimationLoop(DrawFunctionRunner, eventRouter, CodeTransformer, Renderer, GraphicsCommands, stats, LightSystem, BackgroundPainter); //yes
 
     // requires: ColourNames
     autocoder = createAutocoder(eventRouter, editor); // McLexer //no
@@ -205,7 +204,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
 
     BackgroundPainter.pickRandomDefaultGradient(); //yes
-    SoundSystem.loadAndTestAllTheSounds(Ui.soundSystemOk); //yes
+    LiveCodeLabCore.SoundSystem.loadAndTestAllTheSounds(Ui.soundSystemOk); //yes
 
     if (LiveCodeLabCore.ThreeJs) {
         AnimationLoop.animate(); //yes
@@ -214,7 +213,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     //no
     if (!Detector.webgl || forceCanvasRenderer) {
         $('#noWebGLMessage').modal({
-            onClose: SoundSystem.closeAndCheckAudio
+            onClose: LiveCodeLabCore.SoundSystem.closeAndCheckAudio
         });
         $('#simplemodal-container').height(200);
     }
@@ -229,7 +228,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     // otherwise we do as usual.
     //no
     if (!UrlRouter.checkUrl()) {
-        setTimeout(SoundSystem.playStartupSound, 650);
+        setTimeout(LiveCodeLabCore.SoundSystem.playStartupSound, 650);
     }
 
     BigCursor.toggleBlink(true); //no

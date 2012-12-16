@@ -47,7 +47,6 @@ var GraphicsCommands;
 var BackgroundPainter;
 var EditorDimmer;
 var Ui;
-var Bowser;
 var SoundSystem;
 var ColourNames;
 var ColourFunctions;

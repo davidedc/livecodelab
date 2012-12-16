@@ -4,7 +4,7 @@
 var frame = 0;
 
 
-var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransformer, renderer, graphics, stats, soundsystem, lightsystem, backgroundpainter) {
+var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransformer, renderer, graphics, stats, lightsystem, backgroundpainter) {
 
     'use strict';
 
@@ -68,7 +68,7 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
 
         // the sound list needs to be cleaned
         // so that the user program can create its own from scratch
-        soundsystem.resetLoops();
+        LiveCodeLabCore.SoundSystem.resetLoops();
 
 				if (frame === 0) {
 						LiveCodeLabCore.TimeKeeper.resetTime();
@@ -77,9 +77,9 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
 				}
 				
 				drawFunctionRunner.resetTrackingOfDoOnceOccurrences();
-				soundsystem.anyCodeReactingTobpm = false;
+				LiveCodeLabCore.SoundSystem.anyCodeReactingTobpm = false;
 
-				soundsystem.SetUpdatesPerMinute(60 * 4);
+				LiveCodeLabCore.SoundSystem.SetUpdatesPerMinute(60 * 4);
 				lightsystem.noLights();
 
 				graphics.reset();
@@ -116,7 +116,7 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
 				}
 				LiveCodeLabCore.BlendControls.animationStyleUpdateIfChanged();
 				backgroundpainter.simpleGradientUpdateIfChanged();
-				soundsystem.changeUpdatesPerMinuteIfNeeded();
+				LiveCodeLabCore.SoundSystem.changeUpdatesPerMinuteIfNeeded();
 
         // "frame" starts at zero, so we increment after the first time the draw
         // function has been run.
