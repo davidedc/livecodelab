@@ -188,9 +188,14 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     eventRouter.bind('clear-error', ui.clearError, ui);
 
 
-    LiveCodeLabCore.SoundSystem.loadAndTestAllTheSounds(ui.soundSystemOk); //yes
+    // create this binding before the sounds are loaded
+    eventRouter.bind('all-sounds-loaded-and tested',ui.soundSystemOk);
+    LiveCodeLabCore.loadAndTestAllTheSounds();
+
     LiveCodeLabCore.paintARandomBackground();
     LiveCodeLabCore.startAnimationLoop();
+
+
     
     if (!Detector.webgl || forceCanvasRenderer) {
         $('#noWebGLMessage').modal({

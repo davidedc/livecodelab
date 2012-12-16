@@ -1,7 +1,7 @@
 /*jslint browser: true */
 /*global $ */
 
-var createSoundSystem = function (buzz, Bowser, samplebank) {
+var createSoundSystem = function (eventRouter, buzz, Bowser, samplebank) {
 
     'use strict';
 
@@ -253,7 +253,7 @@ var createSoundSystem = function (buzz, Bowser, samplebank) {
     };
 
     // Called from loadAndTestAllTheSounds
-    checkSound = function (soundDef, soundInfo, callback) {
+    checkSound = function (soundDef, soundInfo) {
 
         var newSound = new buzz.sound(soundInfo.path);
 
@@ -264,7 +264,7 @@ var createSoundSystem = function (buzz, Bowser, samplebank) {
             newSound.unmute();
             endedFirstPlay += 1;
             if (endedFirstPlay === soundDef.sounds.length * CHANNELSPERSOUND) {
-                callback();
+                eventRouter.trigger('all-sounds-loaded-and tested');
             }
         });
         newSound.play();
@@ -272,7 +272,7 @@ var createSoundSystem = function (buzz, Bowser, samplebank) {
     };
 
     // Called form the document ready block in init.js
-    SoundSystem.loadAndTestAllTheSounds = function (callback) {
+    SoundSystem.loadAndTestAllTheSounds = function () {
 
         var soundDef, soundInfo, cycleSoundDefs, preloadSounds;
 
@@ -296,7 +296,7 @@ var createSoundSystem = function (buzz, Bowser, samplebank) {
                     // if you load and play all the channels of all the sounds all together
                     // the browser freezes, and the OS doesn't feel too well either
                     // so better stagger the checks in time.
-                    setTimeout(checkSound, 200 * cycleSoundDefs, soundDef, soundInfo, callback);
+                    setTimeout(checkSound, 200 * cycleSoundDefs, soundDef, soundInfo);
                 }
 
             }
@@ -306,7 +306,7 @@ var createSoundSystem = function (buzz, Bowser, samplebank) {
         // if this is chrome, fire the callback immediately
         // otherwise wait untill all the sounds have been tested
         if (!Bowser.safari) {
-            callback();
+            eventRouter.trigger('all-sounds-loaded-and tested');
         }
     };
 

@@ -22,7 +22,7 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
     LiveCodeLabCore.MatrixCommands = createMatrixCommands(LiveCodeLabCore.THREE);
     // this one below also uses ThreeJsSystem at runtime
     LiveCodeLabCore.BlendControls = createBlendControls(); 
-    LiveCodeLabCore.SoundSystem = createSoundSystem(buzz, createBowser(), createSampleBank(buzz)); // $ 
+    LiveCodeLabCore.SoundSystem = createSoundSystem(eventRouter, buzz, createBowser(), createSampleBank(buzz)); // $ 
     LiveCodeLabCore.ColourFunctions = createColourFunctions(); 
     // this one below also uses ColourFunctions at runtime
     LiveCodeLabCore.BackgroundPainter = createBackgroundPainter(eventRouter); // $ 
@@ -70,6 +70,10 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
     
     LiveCodeLabCore.runLastWorkingDrawFunction = function() {
       LiveCodeLabCore.DrawFunctionRunner.reinstateLastWorkingDrawFunction();
+    }
+
+    LiveCodeLabCore.loadAndTestAllTheSounds = function() {
+      LiveCodeLabCore.SoundSystem.loadAndTestAllTheSounds();
     }
 
     return LiveCodeLabCore;
