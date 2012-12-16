@@ -24,6 +24,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     );
     */
     LiveCodeLabCore.TimeKeeper = createTimeKeeper();
+    LiveCodeLabCore.MatrixCommands = createMatrixCommands(THREE); // needs TimeKeeper to be initialised
 
     var eventRouter = createEventRouter();
     
@@ -77,10 +78,11 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     BackgroundPainter = createBackgroundPainter(eventRouter, ThreeJs, ColourFunctions); // $ //yes
 
 
-    MatrixCommands = createMatrixCommands(THREE); //yes
     // There's a tricky cyclic dependency here between LightSystem and GraphicsCommands
     GraphicsCommands = createGraphicsCommands(ColourFunctions); // THREE, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne //yes
-    LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands, ColourFunctions); //yes
+    
+    // requires MatrixCommands
+    LightSystem = createLightSystem(ThreeJs, THREE, GraphicsCommands, ColourFunctions); //yes
 
 
 
@@ -93,7 +95,8 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
     Renderer = createRenderer(ThreeJs, BlendControls); //yes
 
-    AnimationLoop = createAnimationLoop(DrawFunctionRunner, eventRouter, CodeTransformer, Renderer, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter); //yes
+    // requires: TimeKeeper, MatrixCommands
+    AnimationLoop = createAnimationLoop(DrawFunctionRunner, eventRouter, CodeTransformer, Renderer, GraphicsCommands, stats, SoundSystem, LightSystem, BlendControls, BackgroundPainter); //yes
 
     autocoder = createAutocoder(eventRouter, editor, ColourNames); // McLexer //no
 

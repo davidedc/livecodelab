@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*global THREE, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne  */
+/*global THREE, color, LightSystem, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne  */
 
 // Please reference the colour-functions.js file for all colour-related
 // functions and lights-functions.js for lights, which use a similar
@@ -330,8 +330,8 @@ var createGraphicsCommands = function (colourfuncs) {
         objectsUsedInFrameCounts[primitiveID] += 1;
 
         if (GraphicsCommands.doTheSpinThingy && pooledObjectWithMaterials.initialSpinCountdown > 0) {
-            MatrixCommands.pushMatrix();
-            MatrixCommands.rotate(pooledObjectWithMaterials.initialSpinCountdown / 50);
+            LiveCodeLabCore.MatrixCommands.pushMatrix();
+            LiveCodeLabCore.MatrixCommands.rotate(pooledObjectWithMaterials.initialSpinCountdown / 50);
         }
 
         // see https://github.com/mrdoob/three.js/wiki/Using-Matrices-&-Object3Ds-in-THREE
@@ -339,11 +339,11 @@ var createGraphicsCommands = function (colourfuncs) {
         // Around 11% of the time is spent doing matrix multiplications, which
         // happens every time there is a scale or rotate or move.
         pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = false;
-        pooledObjectWithMaterials.threejsObject3D.matrix.copy(MatrixCommands.getWorldMatrix());
+        pooledObjectWithMaterials.threejsObject3D.matrix.copy(LiveCodeLabCore.MatrixCommands.getWorldMatrix());
         pooledObjectWithMaterials.threejsObject3D.matrixWorldNeedsUpdate = true;
 
         if (GraphicsCommands.doTheSpinThingy && pooledObjectWithMaterials.initialSpinCountdown > 0) {
-            MatrixCommands.popMatrix();
+            LiveCodeLabCore.MatrixCommands.popMatrix();
         }
 
         if (objectIsNew) {

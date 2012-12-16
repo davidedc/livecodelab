@@ -4,7 +4,7 @@
 var frame = 0;
 
 
-var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransformer, renderer, graphics, stats, matrixcommands, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
+var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransformer, renderer, graphics, stats, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
 
     'use strict';
 
@@ -64,7 +64,7 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
           return;
         }
         
-        matrixcommands.resetMatrixStack();
+        LiveCodeLabCore.MatrixCommands.resetMatrixStack();
 
         // the sound list needs to be cleaned
         // so that the user program can create its own from scratch

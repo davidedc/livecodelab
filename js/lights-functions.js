@@ -1,7 +1,7 @@
 /*jslint browser: true */
 
 
-var createLightSystem = function (threejs, three, matrixcommands, graphics, colourfuncs) {
+var createLightSystem = function (threejs, three, graphics, colourfuncs) {
 
     'use strict';
 
