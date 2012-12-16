@@ -6,7 +6,7 @@ var isCanvasSupported = function () {
     return !!(elem.getContext && elem.getContext('2d'));
 };
 
-var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, forceCanvasRenderer) {
+var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, forceCanvasRenderer, bubbleUpErrorsForDebugging) {
 
     'use strict';
 
@@ -199,6 +199,12 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 				else {
 						 DrawFunctionRunner.reinstateLastWorkingDrawFunction();
 				}
+				// re-throw the error so that the top-level debuggers
+				// (firebug, built-in, whathaveyous) can properly
+				// catch the error and let the user inspect things.
+				if (bubbleUpErrorsForDebugging) {
+				  throw(e)
+				}
       }
     );
     eventRouter.bind('compile-time-error-thrown',
@@ -266,6 +272,7 @@ $(document).ready(function () {
         return;
     }
 
-    startEnvironment(null, document.getElementById('backGroundCanvas'), false);
+    // arguments: (canvasElementForThreeJS, canvasForBackground, forceCanvasRenderer, bubbleUpErrorsForDebugging)
+    startEnvironment(null, document.getElementById('backGroundCanvas'), false, false);
 
 });
