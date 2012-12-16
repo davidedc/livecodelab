@@ -20,7 +20,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // CSS colors, this needs to be run before creating LiveCodeLabCore
     var colourNames = createColours();
 
-    LiveCodeLabCore = createLiveCodeLabCore(blendedThreeJsSceneCanvas, forceCanvasRenderer, eventRouter, stats );
+    LiveCodeLabCore = createLiveCodeLabCore(blendedThreeJsSceneCanvas, canvasForBackground, forceCanvasRenderer, eventRouter, stats );
 
     
     ///////////////////////////
@@ -37,24 +37,6 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     }
 
     var urlRouter = createUrlRouter(eventRouter); 
-
-    if (!canvasForBackground) {
-      canvasForBackground = document.createElement('canvas'); 
-    }
-    LiveCodeLabCore.canvasForBackground = canvasForBackground; //yes
-    // the canvas background for the time being is only going to contain
-    // gradients, so we can get away with creating a really tiny canvas and
-    // stretch it. The advantage is that the fill operations are a lot faster.
-    // We should try to use CSS instead of canvas, as in some browsers canvas
-    // is not accelerated just as well as CSS.
-    // backGroundFraction specifies what fraction of the window the background canvas
-    // is going to be.
-    var backGroundFraction = 1/15; 
-    LiveCodeLabCore.canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction); //yes
-    LiveCodeLabCore.canvasForBackground.height = Math.floor(window.innerHeight * backGroundFraction); //yes
-    LiveCodeLabCore.backgroundSceneContext = LiveCodeLabCore.canvasForBackground.getContext('2d'); //yes
-
-
 
     var bigCursor = createBigCursor(eventRouter); // $ 
     var editor = createEditor(eventRouter, CodeMirror); 
