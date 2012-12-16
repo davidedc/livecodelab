@@ -23,6 +23,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
       canvasForBackground,
     );
     */
+    LiveCodeLabCore.TimeKeeper = createTimeKeeper();
 
     var eventRouter = createEventRouter();
     
@@ -44,8 +45,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     // TODO for some weird reason this actually cannot be moved further down
     ColourNames = createColours(); //no
 
-    TimeKeeper = createTimeKeeper(); //yes
-    MatrixCommands = createMatrixCommands(THREE, TimeKeeper); //yes
+    LiveCodeLabCore.MatrixCommands = createMatrixCommands(THREE);
 
     ThreeJs = createThreeJs(Detector, THREE, THREEx, canvasElementForThreeJS, forceCanvasRenderer); //yes
     document.getElementById('container').appendChild(ThreeJs.sceneRenderingCanvas); //no
@@ -77,6 +77,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     BackgroundPainter = createBackgroundPainter(eventRouter, ThreeJs, ColourFunctions); // $ //yes
 
 
+    MatrixCommands = createMatrixCommands(THREE); //yes
     // There's a tricky cyclic dependency here between LightSystem and GraphicsCommands
     GraphicsCommands = createGraphicsCommands(ColourFunctions); // THREE, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne //yes
     LightSystem = createLightSystem(ThreeJs, THREE, MatrixCommands, GraphicsCommands, ColourFunctions); //yes
@@ -92,7 +93,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
     Renderer = createRenderer(ThreeJs, BlendControls); //yes
 
-    AnimationLoop = createAnimationLoop(DrawFunctionRunner, eventRouter, CodeTransformer, Renderer, TimeKeeper, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter); //yes
+    AnimationLoop = createAnimationLoop(DrawFunctionRunner, eventRouter, CodeTransformer, Renderer, GraphicsCommands, stats, MatrixCommands, SoundSystem, LightSystem, BlendControls, BackgroundPainter); //yes
 
     autocoder = createAutocoder(eventRouter, editor, ColourNames); // McLexer //no
 

@@ -4,7 +4,7 @@
 var frame = 0;
 
 
-var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransformer, renderer, timekeeper, graphics, stats, matrixcommands, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
+var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransformer, renderer, graphics, stats, matrixcommands, soundsystem, lightsystem, blendcontrols, backgroundpainter) {
 
     'use strict';
 
@@ -71,9 +71,9 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
         soundsystem.resetLoops();
 
 				if (frame === 0) {
-						timekeeper.resetTime();
+						LiveCodeLabCore.TimeKeeper.resetTime();
 				} else {
-						timekeeper.updateTime();
+						LiveCodeLabCore.TimeKeeper.updateTime();
 				}
 				
 				drawFunctionRunner.resetTrackingOfDoOnceOccurrences();
@@ -112,7 +112,7 @@ var createAnimationLoop = function (drawFunctionRunner, eventRouter, CodeTransfo
 				// then we have to catch that case here
 				// after the program has executed
 				if (frame === 0) {
-						timekeeper.resetTime();
+						LiveCodeLabCore.TimeKeeper.resetTime();
 				}
 				blendcontrols.animationStyleUpdateIfChanged();
 				backgroundpainter.simpleGradientUpdateIfChanged();
