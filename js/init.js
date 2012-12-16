@@ -63,8 +63,21 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
        //alert('updatedCode: ' + updatedCode);
        CodeTransformer.updateCode(updatedCode);
     }
-    eventRouter.bind('code_changed', LiveCodeLabCore.updateCode, editor);
-
+    eventRouter.bind('code_changed',
+        function(updatedCodeAsString) {
+					if (updatedCodeAsString !== '') {
+							eventRouter.trigger('big-cursor-hide');
+					}
+					else {
+							LiveCodeLabCore.GraphicsCommands.resetTheSpinThingy = true;
+	
+							eventRouter.trigger('set-url-hash', '');
+	
+							eventRouter.trigger('big-cursor-show');
+					}
+					LiveCodeLabCore.updateCode(updatedCodeAsString);
+        }
+    );
     //no
     if (forceCanvasRenderer === undefined) {
     	forceCanvasRenderer = false;
@@ -107,7 +120,6 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
     DrawFunctionRunner = createDrawFunctionRunner(); //yes
 
-    // requires GraphicsCommands
     CodeTransformer = createCodeTransformer(DrawFunctionRunner, eventRouter, CoffeeScript); // autocoder //yes
 
     // requires BlendControls
@@ -283,6 +295,6 @@ $(document).ready(function () {
     }
 
     // arguments: (blendedThreeJsSceneCanvas, canvasForBackground, forceCanvasRenderer, bubbleUpErrorsForDebugging)
-    startEnvironment(document.getElementById('blendedThreeJsSceneCanvas'), document.getElementById('backGroundCanvas'), true, false);
+    startEnvironment(document.getElementById('blendedThreeJsSceneCanvas'), document.getElementById('backGroundCanvas'), false, false);
 
 });

@@ -2,7 +2,7 @@
 /*global autocoder, createCodeChecker */
 
 
-var createCodeTransformer = function (drawFunctionRunner, eventRouter, CoffeeCompiler, graphics) {
+var createCodeTransformer = function (drawFunctionRunner, eventRouter, CoffeeCompiler) {
 
     'use strict';
 
@@ -103,18 +103,6 @@ var createCodeTransformer = function (drawFunctionRunner, eventRouter, CoffeeCom
             errResults;
 
         CodeTransformer.currentCodeString = updatedCodeAsString;
-
-        if (updatedCodeAsString !== '') {
-            eventRouter.trigger('big-cursor-hide');
-        }
-
-        if (updatedCodeAsString === '') {
-            graphics.resetTheSpinThingy = true;
-
-            eventRouter.trigger('set-url-hash', '');
-
-            eventRouter.trigger('big-cursor-show');
-        }
 
 
         /**
