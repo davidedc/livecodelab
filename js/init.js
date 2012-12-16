@@ -38,8 +38,6 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
     var urlRouter = createUrlRouter(eventRouter); 
 
-    //document.getElementById('container').appendChild(LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvas); 
-    
     if (!canvasForBackground) {
       canvasForBackground = document.createElement('canvas'); 
     }
