@@ -87,7 +87,7 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
     LiveCodeLabCore.updateCode = function(updatedCode){
        //alert('updatedCode: ' + updatedCode);
        LiveCodeLabCore.CodeTransformer.updateCode(updatedCode);
-        if ((updatedCode !== '') && LiveCodeLabCore.dozingOff) {
+        if (updatedCode !== '' && LiveCodeLabCore.dozingOff) {
 					LiveCodeLabCore.dozingOff = false;
 					LiveCodeLabCore.AnimationLoop.animate();
 					//console.log('waking up');
