@@ -24,9 +24,6 @@ window.forward = function() {};
 window.close = function() {};
 
 
-// The CodeMirror editor
-var editor;
-
 // All used globally
 var Ui;
 

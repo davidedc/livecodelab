@@ -59,7 +59,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 
 
     var bigCursor = createBigCursor(eventRouter); // $ //no
-    editor = createEditor(eventRouter, CodeMirror); //no
+    var editor = createEditor(eventRouter, CodeMirror); //no
 
     // requires DrawFunctionRunner
 
