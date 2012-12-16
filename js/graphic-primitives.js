@@ -100,7 +100,7 @@
 // ted.
 
 
-var createGraphicsCommands = function (colourfuncs) {
+var createGraphicsCommands = function () {
 
     'use strict';
 
@@ -597,7 +597,7 @@ var createGraphicsCommands = function (colourfuncs) {
             GraphicsCommands.defaultNormalFill = true;
             currentFillColor = angleColor;
             if (b=== undefined && g !== undefined) {
-                currentFillAlpha = g / colourfuncs.colorModeA;
+                currentFillAlpha = g / LiveCodeLabCore.ColourFunctions.colorModeA;
             } else {
                 currentFillAlpha = 1;
             }
@@ -668,7 +668,7 @@ var createGraphicsCommands = function (colourfuncs) {
             GraphicsCommands.defaultNormalStroke = true;
             currentStrokeColor = angleColor;
             if (b === undefined && g !== undefined) {
-                currentStrokeAlpha = g / colourfuncs.colorModeA;
+                currentStrokeAlpha = g / LiveCodeLabCore.ColourFunctions.colorModeA;
             } else {
                 currentStrokeAlpha = 1;
             }

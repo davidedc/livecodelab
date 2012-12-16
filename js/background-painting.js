@@ -36,7 +36,7 @@
 // elements of the array, so we could discard those when such
 // a command is issued.
 
-var createBackgroundPainter = function (eventRouter, colourfuncs) {
+var createBackgroundPainter = function (eventRouter) {
 
     'use strict';
 
@@ -54,10 +54,10 @@ var createBackgroundPainter = function (eventRouter, colourfuncs) {
 
         currentGradientStackValue = currentGradientStackValue + " " + a + "" + b + "" + c + "" + d + "null ";
         gradStack.push({
-            gradStacka: colourfuncs.color(a),
-            gradStackb: colourfuncs.color(b),
-            gradStackc: colourfuncs.color(c),
-            gradStackd: colourfuncs.color(d),
+            gradStacka: LiveCodeLabCore.ColourFunctions.color(a),
+            gradStackb: LiveCodeLabCore.ColourFunctions.color(b),
+            gradStackc: LiveCodeLabCore.ColourFunctions.color(c),
+            gradStackd: LiveCodeLabCore.ColourFunctions.color(d),
             solid: null
         });
 
@@ -69,7 +69,7 @@ var createBackgroundPainter = function (eventRouter, colourfuncs) {
         // [todo] should the screen be cleared when you invoke
         // the background command? (In processing it's not)
 
-        var a = colourfuncs.color(arguments[0], arguments[1], arguments[2], arguments[3]);
+        var a = LiveCodeLabCore.ColourFunctions.color(arguments[0], arguments[1], arguments[2], arguments[3]);
         currentGradientStackValue = currentGradientStackValue + " null null null null " + a + " ";
         gradStack.push({
             gradStacka: undefined,
@@ -114,9 +114,9 @@ var createBackgroundPainter = function (eventRouter, colourfuncs) {
 							$("#fakeStartingBlinkingCursor").css('color', 'white');
 							break;
 					case 4:
-							defaultGradientColor1 = colourfuncs.color(155, 255, 155);
-							defaultGradientColor2 = colourfuncs.color(155, 255, 155);
-							defaultGradientColor3 = colourfuncs.color(155, 255, 155);
+							defaultGradientColor1 = LiveCodeLabCore.ColourFunctions.color(155, 255, 155);
+							defaultGradientColor2 = LiveCodeLabCore.ColourFunctions.color(155, 255, 155);
+							defaultGradientColor3 = LiveCodeLabCore.ColourFunctions.color(155, 255, 155);
 							$("#fakeStartingBlinkingCursor").css('color', 'DarkOliveGreen');
 							break;
         }
@@ -145,16 +145,16 @@ var createBackgroundPainter = function (eventRouter, colourfuncs) {
 
                 if (gradStack[scanningGradStack].gradStacka !== undefined) {
                     radgrad = LiveCodeLabCore.backgroundSceneContext.createLinearGradient(LiveCodeLabCore.canvasForBackground.width / 2, 0, LiveCodeLabCore.canvasForBackground.width / 2, LiveCodeLabCore.canvasForBackground.height);
-                    radgrad.addColorStop(0, colourfuncs.color.toString(gradStack[scanningGradStack].gradStacka));
-                    radgrad.addColorStop(0.5, colourfuncs.color.toString(gradStack[scanningGradStack].gradStackb));
-                    radgrad.addColorStop(1, colourfuncs.color.toString(gradStack[scanningGradStack].gradStackc));
+                    radgrad.addColorStop(0, LiveCodeLabCore.ColourFunctions.color.toString(gradStack[scanningGradStack].gradStacka));
+                    radgrad.addColorStop(0.5, LiveCodeLabCore.ColourFunctions.color.toString(gradStack[scanningGradStack].gradStackb));
+                    radgrad.addColorStop(1, LiveCodeLabCore.ColourFunctions.color.toString(gradStack[scanningGradStack].gradStackc));
 
                     LiveCodeLabCore.backgroundSceneContext.globalAlpha = 1.0;
                     LiveCodeLabCore.backgroundSceneContext.fillStyle = radgrad;
                     LiveCodeLabCore.backgroundSceneContext.fillRect(0, 0, LiveCodeLabCore.canvasForBackground.width, LiveCodeLabCore.canvasForBackground.height);
                 } else {
                     LiveCodeLabCore.backgroundSceneContext.globalAlpha = 1.0;
-                    LiveCodeLabCore.backgroundSceneContext.fillStyle = colourfuncs.color.toString(gradStack[scanningGradStack].solid);
+                    LiveCodeLabCore.backgroundSceneContext.fillStyle = LiveCodeLabCore.ColourFunctions.color.toString(gradStack[scanningGradStack].solid);
                     LiveCodeLabCore.backgroundSceneContext.fillRect(0, 0, LiveCodeLabCore.canvasForBackground.width, LiveCodeLabCore.canvasForBackground.height);
                 }
             }

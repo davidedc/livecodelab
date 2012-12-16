@@ -1,7 +1,7 @@
 /*jslint browser: true */
 
 
-var createLightSystem = function (three, graphics, colourfuncs) {
+var createLightSystem = function (three, graphics) {
 
     'use strict';
 
@@ -33,9 +33,9 @@ var createLightSystem = function (three, graphics, colourfuncs) {
             // black is too stark and white
             // doesn't show the effect with the
             // default white fill
-            colorToBeUsed = colourfuncs.color(255);
+            colorToBeUsed = LiveCodeLabCore.ColourFunctions.color(255);
         } else {
-            colorToBeUsed = colourfuncs.color(r, g, b, a);
+            colorToBeUsed = LiveCodeLabCore.ColourFunctions.color(r, g, b, a);
         }
 
         LightSystem.lightsAreOn = true;

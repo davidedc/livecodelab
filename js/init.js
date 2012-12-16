@@ -30,6 +30,7 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
     // requires ThreeJs
     LiveCodeLabCore.BlendControls = createBlendControls(); //yes
     LiveCodeLabCore.SoundSystem = createSoundSystem(buzz, createBowser(), createSampleBank(buzz)); // $ //yes
+    LiveCodeLabCore.ColourFunctions = createColourFunctions(); //yes
 
     var eventRouter = createEventRouter();
     
@@ -70,16 +71,16 @@ var startEnvironment = function (canvasElementForThreeJS, canvasForBackground, f
 
 
     BigCursor = createBigCursor(eventRouter); // $ //no
-    ColourFunctions = createColourFunctions(); //yes
-    BackgroundPainter = createBackgroundPainter(eventRouter, ColourFunctions); // $ //yes
+    // requires ColourFunctions
+    BackgroundPainter = createBackgroundPainter(eventRouter); // $ //yes
 
 
     // There's a tricky cyclic dependency here between LightSystem and GraphicsCommands
-    // requires ThreeJs
-    GraphicsCommands = createGraphicsCommands(ColourFunctions); // THREE, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne //yes
+    // requires ThreeJs, ColourFunctions
+    GraphicsCommands = createGraphicsCommands(); // THREE, color, LightSystem, MatrixCommands, ThreeJs, colorModeA, redF, greenF, blueF, alphaZeroToOne //yes
     
-    // requires MatrixCommands, ThreeJs
-    LightSystem = createLightSystem(THREE, GraphicsCommands, ColourFunctions); //yes
+    // requires MatrixCommands, ThreeJs, ColourFunctions
+    LightSystem = createLightSystem(THREE, GraphicsCommands); //yes
 
 
 
