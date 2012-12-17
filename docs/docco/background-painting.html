@@ -35,7 +35,7 @@ and each background/gradient is painted anew.</p>
 a solid fill effectively invalidates the contents of the previous
 elements of the array, so we could discard those when such
 a command is issued.</p>             </td>             <td class="code">               <div class="highlight"><pre>
-<span class="keyword">var</span> createBackgroundPainter = <span class="function"><span class="keyword">function</span> <span class="params">(eventRouter, liveCodeLabCoreInstance)</span> {</span>
+<span class="keyword">var</span> createBackgroundPainter = <span class="function"><span class="keyword">function</span> <span class="params">(eventRouter, canvasForBackground, liveCodeLabCoreInstance)</span> {</span>
 
     <span class="string">'use strict'</span>;
 
@@ -48,7 +48,25 @@ a command is issued.</p>             </td>             <td class="code">        
         previousGradientStackValue = <span class="number">0</span>,
         BackgroundPainter = {};
 
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    BackgroundPainter.simpleGradient = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c, d)</span> {</span>
+    <span class="keyword">if</span> (!canvasForBackground) {
+      canvasForBackground = document.createElement(<span class="string">'canvas'</span>); 
+    }
+    BackgroundPainter.canvasForBackground = canvasForBackground; 
+
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>the canvas background for the time being is only going to contain
+gradients, so we can get away with creating a really tiny canvas and
+stretch it. The advantage is that the fill operations are a lot faster.
+We should try to use CSS instead of canvas, as in some browsers canvas
+is not accelerated just as well as CSS.
+backGroundFraction specifies what fraction of the window the background canvas
+is going to be.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> backGroundFraction = <span class="number">1</span>/<span class="number">15</span>; 
+    BackgroundPainter.canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction); 
+    BackgroundPainter.canvasForBackground.height = Math.floor(window.innerHeight * backGroundFraction); 
+
+    BackgroundPainter.backgroundSceneContext = BackgroundPainter.canvasForBackground.getContext(<span class="string">'2d'</span>); 
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    BackgroundPainter.simpleGradient = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c, d)</span> {</span>
 
         currentGradientStackValue = currentGradientStackValue + <span class="string">" "</span> + a + <span class="string">""</span> + b + <span class="string">""</span> + c + <span class="string">""</span> + d + <span class="string">"null "</span>;
         gradStack.push({
@@ -61,9 +79,9 @@ a command is issued.</p>             </td>             <td class="code">        
 
     };
 
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    BackgroundPainter.background = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    BackgroundPainter.background = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>[todo] should the screen be cleared when you invoke
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>[todo] should the screen be cleared when you invoke
 the background command? (In processing it's not)</p>             </td>             <td class="code">               <div class="highlight"><pre>
         <span class="keyword">var</span> a = liveCodeLabCoreInstance.ColourFunctions.color(arguments[<span class="number">0</span>], arguments[<span class="number">1</span>], arguments[<span class="number">2</span>], arguments[<span class="number">3</span>]);
         currentGradientStackValue = currentGradientStackValue + <span class="string">" null null null null "</span> + a + <span class="string">" "</span>;
@@ -117,7 +135,7 @@ the background command? (In processing it's not)</p>             </td>          
 							<span class="keyword">break</span>;
         }
         
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>in theory we should wait for the next frame to repaing the background,
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>in theory we should wait for the next frame to repaing the background,
 but there would be a problem with that: livecodelab goes to sleep when
 the program is empty and the big cursor blinks. And yet, when the
 user clicks the reset button, we want the background to change randomly
@@ -131,7 +149,7 @@ again later if the background hasn't changed.</p>             </td>             
     BackgroundPainter.resetGradientStack = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
 
         currentGradientStackValue = <span class="string">""</span>;
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>we could be more efficient and
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>we could be more efficient and
 reuse the previous stack elements
 but I don't think it matters here</p>             </td>             <td class="code">               <div class="highlight"><pre>        gradStack = [];
 
@@ -142,34 +160,34 @@ but I don't think it matters here</p>             </td>             <td class="c
 
         <span class="keyword">var</span> diagonal, radgrad, scanningGradStack;
         <span class="keyword">if</span> ((currentGradientStackValue !== previousGradientStackValue)) {
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>alert('repainting the background');</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>alert('repainting the background');</p>             </td>             <td class="code">               <div class="highlight"><pre>
             previousGradientStackValue = currentGradientStackValue;
-            diagonal = Math.sqrt(Math.pow(liveCodeLabCoreInstance.canvasForBackground.width / <span class="number">2</span>, <span class="number">2</span>) + Math.pow(liveCodeLabCoreInstance.canvasForBackground.height / <span class="number">2</span>, <span class="number">2</span>));
+            diagonal = Math.sqrt(Math.pow(BackgroundPainter.canvasForBackground.width / <span class="number">2</span>, <span class="number">2</span>) + Math.pow(BackgroundPainter.canvasForBackground.height / <span class="number">2</span>, <span class="number">2</span>));
 
             <span class="keyword">for</span> (scanningGradStack = <span class="number">0</span>; scanningGradStack &lt; gradStack.length; scanningGradStack++) {
 
                 <span class="keyword">if</span> (gradStack[scanningGradStack].gradStacka !== <span class="literal">undefined</span>) {
-                    radgrad = liveCodeLabCoreInstance.backgroundSceneContext.createLinearGradient(liveCodeLabCoreInstance.canvasForBackground.width / <span class="number">2</span>, <span class="number">0</span>, liveCodeLabCoreInstance.canvasForBackground.width / <span class="number">2</span>, liveCodeLabCoreInstance.canvasForBackground.height);
+                    radgrad = BackgroundPainter.backgroundSceneContext.createLinearGradient(BackgroundPainter.canvasForBackground.width / <span class="number">2</span>, <span class="number">0</span>, BackgroundPainter.canvasForBackground.width / <span class="number">2</span>, BackgroundPainter.canvasForBackground.height);
                     radgrad.addColorStop(<span class="number">0</span>, liveCodeLabCoreInstance.ColourFunctions.color.toString(gradStack[scanningGradStack].gradStacka));
                     radgrad.addColorStop(<span class="number">0.5</span>, liveCodeLabCoreInstance.ColourFunctions.color.toString(gradStack[scanningGradStack].gradStackb));
                     radgrad.addColorStop(<span class="number">1</span>, liveCodeLabCoreInstance.ColourFunctions.color.toString(gradStack[scanningGradStack].gradStackc));
 
-                    liveCodeLabCoreInstance.backgroundSceneContext.globalAlpha = <span class="number">1.0</span>;
-                    liveCodeLabCoreInstance.backgroundSceneContext.fillStyle = radgrad;
-                    liveCodeLabCoreInstance.backgroundSceneContext.fillRect(<span class="number">0</span>, <span class="number">0</span>, liveCodeLabCoreInstance.canvasForBackground.width, liveCodeLabCoreInstance.canvasForBackground.height);
+                    BackgroundPainter.backgroundSceneContext.globalAlpha = <span class="number">1.0</span>;
+                    BackgroundPainter.backgroundSceneContext.fillStyle = radgrad;
+                    BackgroundPainter.backgroundSceneContext.fillRect(<span class="number">0</span>, <span class="number">0</span>, BackgroundPainter.canvasForBackground.width, BackgroundPainter.canvasForBackground.height);
                 } <span class="keyword">else</span> {
-                    liveCodeLabCoreInstance.backgroundSceneContext.globalAlpha = <span class="number">1.0</span>;
-                    liveCodeLabCoreInstance.backgroundSceneContext.fillStyle = liveCodeLabCoreInstance.ColourFunctions.color.toString(gradStack[scanningGradStack].solid);
-                    liveCodeLabCoreInstance.backgroundSceneContext.fillRect(<span class="number">0</span>, <span class="number">0</span>, liveCodeLabCoreInstance.canvasForBackground.width, liveCodeLabCoreInstance.canvasForBackground.height);
+                    BackgroundPainter.backgroundSceneContext.globalAlpha = <span class="number">1.0</span>;
+                    BackgroundPainter.backgroundSceneContext.fillStyle = liveCodeLabCoreInstance.ColourFunctions.color.toString(gradStack[scanningGradStack].solid);
+                    BackgroundPainter.backgroundSceneContext.fillRect(<span class="number">0</span>, <span class="number">0</span>, BackgroundPainter.canvasForBackground.width, BackgroundPainter.canvasForBackground.height);
                 }
             }
         }
 
     };
 
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.simpleGradient = BackgroundPainter.simpleGradient;
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.simpleGradient = BackgroundPainter.simpleGradient;
 
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.background = BackgroundPainter.background;
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.background = BackgroundPainter.background;
 
     <span class="keyword">return</span> BackgroundPainter;
 };
