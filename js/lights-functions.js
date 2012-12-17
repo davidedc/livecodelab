@@ -1,7 +1,7 @@
 /*jslint browser: true */
 
 
-var createLightSystem = function (liveCodeLabCore_GraphicsCommands) {
+var createLightSystem = function (liveCodeLabCore_GraphicsCommands, liveCodeLabCoreInstance) {
 
     'use strict';
 
@@ -33,9 +33,9 @@ var createLightSystem = function (liveCodeLabCore_GraphicsCommands) {
             // black is too stark and white
             // doesn't show the effect with the
             // default white fill
-            colorToBeUsed = LiveCodeLabCore.ColourFunctions.color(255);
+            colorToBeUsed = liveCodeLabCoreInstance.ColourFunctions.color(255);
         } else {
-            colorToBeUsed = LiveCodeLabCore.ColourFunctions.color(r, g, b, a);
+            colorToBeUsed = liveCodeLabCoreInstance.ColourFunctions.color(r, g, b, a);
         }
 
         LightSystem.lightsAreOn = true;
@@ -55,7 +55,7 @@ var createLightSystem = function (liveCodeLabCore_GraphicsCommands) {
             // so the faces of the cube would all be of the same
             // exact color. Note that in Three.js versions before r50 the AmbientLight
             // would work like a PointLight does now.
-            pooledAmbientLight = new LiveCodeLabCore.THREE.PointLight(colorToBeUsed);
+            pooledAmbientLight = new liveCodeLabCoreInstance.THREE.PointLight(colorToBeUsed);
             pooledAmbientLight.position.set(10, 50, 130);
 
             newLightCreated = true;
@@ -74,7 +74,7 @@ var createLightSystem = function (liveCodeLabCore_GraphicsCommands) {
         if (newLightCreated) {
             // NOTE that an ambient light is not actually added as an object.
             // i.e. if you navigate the objects you don't find it.
-            LiveCodeLabCore.ThreeJsSystem.scene.add(pooledAmbientLight);
+            liveCodeLabCoreInstance.ThreeJsSystem.scene.add(pooledAmbientLight);
         }
     };
 

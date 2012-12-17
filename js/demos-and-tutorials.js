@@ -1,7 +1,7 @@
 /*jslint browser: true, nomen: true, regexp: true */
 /*global $, Detector */
 
-var createProgramLoader = function (eventRouter, texteditor) {
+var createProgramLoader = function (eventRouter, texteditor, liveCodeLabCoreInstance) {
 
     'use strict';
 
@@ -582,7 +582,7 @@ var createProgramLoader = function (eventRouter, texteditor) {
 
     ProgramLoader.loadDemoOrTutorial = function (demoName) {
 
-        if ((!Detector.webgl || LiveCodeLabCore.ThreeJsSystem.forceCanvasRenderer) && !userWarnedAboutWebglExamples && demoName.indexOf('webgl') === 0) {
+        if ((!Detector.webgl || liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) && !userWarnedAboutWebglExamples && demoName.indexOf('webgl') === 0) {
             userWarnedAboutWebglExamples = true;
             $('#exampleNeedsWebgl').modal();
             $('#simplemodal-container').height(200);
@@ -598,10 +598,10 @@ var createProgramLoader = function (eventRouter, texteditor) {
 
         eventRouter.trigger('editor-undim');
 
-        LiveCodeLabCore.GraphicsCommands.doTheSpinThingy = false;
+        liveCodeLabCoreInstance.GraphicsCommands.doTheSpinThingy = false;
 
         var prependMessage = "";
-        if ((!Detector.webgl || LiveCodeLabCore.ThreeJsSystem.forceCanvasRenderer) && demoName.indexOf('webgl') === 0) {
+        if ((!Detector.webgl || liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) && demoName.indexOf('webgl') === 0) {
             prependMessage = [
                 "// This drawing makes much more sense",
                 "// in a WebGL-enabled browser.",
@@ -629,11 +629,11 @@ var createProgramLoader = function (eventRouter, texteditor) {
         // of the previous code.
         // So basically we draw an empty frame.
         // a) make sure that animationStyle
-        LiveCodeLabCore.BlendControls.animationStyle(LiveCodeLabCore.BlendControls.animationStyles.normal);
+        liveCodeLabCoreInstance.BlendControls.animationStyle(liveCodeLabCoreInstance.BlendControls.animationStyles.normal);
         // b) apply the potentially new animationStyle
-        LiveCodeLabCore.BlendControls.animationStyleUpdateIfChanged();
+        liveCodeLabCoreInstance.BlendControls.animationStyleUpdateIfChanged();
         // render the empty frame
-        LiveCodeLabCore.Renderer.render(LiveCodeLabCore.GraphicsCommands);
+        liveCodeLabCoreInstance.Renderer.render(liveCodeLabCoreInstance.GraphicsCommands);
 
     };
 

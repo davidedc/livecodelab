@@ -1,7 +1,7 @@
 /*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
 
 
-var createRenderer = function () {
+var createRenderer = function (liveCodeLabCoreInstance) {
 
     'use strict';
 
@@ -10,33 +10,33 @@ var createRenderer = function () {
     Renderer.render = function (graphics) {
 
         combDisplayList(graphics);
-        if (LiveCodeLabCore.ThreeJsSystem.isWebGLUsed) {
-            LiveCodeLabCore.ThreeJsSystem.composer.render();
+        if (liveCodeLabCoreInstance.ThreeJsSystem.isWebGLUsed) {
+            liveCodeLabCoreInstance.ThreeJsSystem.composer.render();
         } else {
 
             // the renderer draws into an offscreen canvas called currentFrameThreeJsSceneCanvas
-            LiveCodeLabCore.ThreeJsSystem.renderer.render(LiveCodeLabCore.ThreeJsSystem.scene, LiveCodeLabCore.ThreeJsSystem.camera);
+            liveCodeLabCoreInstance.ThreeJsSystem.renderer.render(liveCodeLabCoreInstance.ThreeJsSystem.scene, liveCodeLabCoreInstance.ThreeJsSystem.camera);
 
             // clear the final render context
-            LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvasContext.globalAlpha = 1.0;
-            LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvasContext.globalAlpha = 1.0;
+            liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
             // draw the rendering of the scene on the blendedThreeJsSceneCanvasContext
             // this needs a few steps so we can get the motionBlur or the paintOver effects right
             // TODO: I'm sure that this can be optimised for the case where there is no
             // motionBlur and no paintOver, because we don't need to keep and blend with
             // the previous frame in that case.
-            LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvasContext.globalAlpha = LiveCodeLabCore.BlendControls.blendAmount;
-            LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvasContext.drawImage(LiveCodeLabCore.ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, 0, 0);
+            liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvasContext.globalAlpha = liveCodeLabCoreInstance.BlendControls.blendAmount;
+            liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvasContext.drawImage(liveCodeLabCoreInstance.ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, 0, 0);
 
-            LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvasContext.globalAlpha = 1.0;
-            LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvasContext.drawImage(LiveCodeLabCore.ThreeJsSystem.currentFrameThreeJsSceneCanvas, 0, 0);
+            liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvasContext.globalAlpha = 1.0;
+            liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvasContext.drawImage(liveCodeLabCoreInstance.ThreeJsSystem.currentFrameThreeJsSceneCanvas, 0, 0);
 
-            LiveCodeLabCore.ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext.globalCompositeOperation = 'copy';
-            LiveCodeLabCore.ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext.drawImage(LiveCodeLabCore.ThreeJsSystem.blendedThreeJsSceneCanvas, 0, 0);
+            liveCodeLabCoreInstance.ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext.globalCompositeOperation = 'copy';
+            liveCodeLabCoreInstance.ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext.drawImage(liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas, 0, 0);
 
             // clear the renderer's canvas to transparent black
-            LiveCodeLabCore.ThreeJsSystem.currentFrameThreeJsSceneCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            liveCodeLabCoreInstance.ThreeJsSystem.currentFrameThreeJsSceneCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
         }
     };
@@ -77,8 +77,8 @@ var createRenderer = function () {
 
 
         // scan all the objects in the display list
-        for (i = 0; i < LiveCodeLabCore.ThreeJsSystem.scene.children.length; i += 1) {
-            sceneObject = LiveCodeLabCore.ThreeJsSystem.scene.children[i];
+        for (i = 0; i < liveCodeLabCoreInstance.ThreeJsSystem.scene.children.length; i += 1) {
+            sceneObject = liveCodeLabCoreInstance.ThreeJsSystem.scene.children[i];
 
             // check the type of object. Each type has one pool. Go through each object in the
             // pool and set to visible the number of used objects in this frame, set the

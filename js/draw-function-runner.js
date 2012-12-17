@@ -1,7 +1,7 @@
 /*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
 
 
-var createDrawFunctionRunner = function (eventRouter) {
+var createDrawFunctionRunner = function (eventRouter, liveCodeLabCoreInstance) {
 
     'use strict';
 
@@ -40,7 +40,7 @@ var createDrawFunctionRunner = function (eventRouter) {
     DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun = function () {
         if (doOnceOccurrencesLineNumbers.length !== 0) {
            DrawFunctionRunner.setDrawFunction(
-             LiveCodeLabCore.CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(LiveCodeLabCore.CodeTransformer, doOnceOccurrencesLineNumbers)
+             liveCodeLabCoreInstance.CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(liveCodeLabCoreInstance.CodeTransformer, doOnceOccurrencesLineNumbers)
            );
         }
     }

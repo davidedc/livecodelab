@@ -2,9 +2,9 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
 
     'use strict';
 
-    var LiveCodeLabCore = {};
+    var liveCodeLabCoreInstance = {};
 
-    LiveCodeLabCore.TimeKeeper = createTimeKeeper();
+    liveCodeLabCoreInstance.TimeKeeper = createTimeKeeper();
     // THREE is a global defined in three.min.js and used in ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
     // The difference between THREE and the ThreeJsSystem initialised later is that
     // a) THREE is the raw Three.js system without for example the blend options.
@@ -16,34 +16,34 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
     // But often in LiveCodeLab there are direct reference to THREE fields/methods.
     // So, ThreeJsSystem provides some abstraction without attempting to be a complete
     // abstraction layer.
-    LiveCodeLabCore.THREE = THREE;
-    LiveCodeLabCore.ThreeJsSystem = createThreeJsSystem(Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer, LiveCodeLabCore.THREE);
+    liveCodeLabCoreInstance.THREE = THREE;
+    liveCodeLabCoreInstance.ThreeJsSystem = createThreeJsSystem(Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer, liveCodeLabCoreInstance.THREE);
     // this one below also uses TimeKeeper at runtime
-    LiveCodeLabCore.MatrixCommands = createMatrixCommands(LiveCodeLabCore.THREE);
+    liveCodeLabCoreInstance.MatrixCommands = createMatrixCommands(liveCodeLabCoreInstance.THREE, liveCodeLabCoreInstance);
     // this one below also uses ThreeJsSystem at runtime
-    LiveCodeLabCore.BlendControls = createBlendControls(); 
-    LiveCodeLabCore.SoundSystem = createSoundSystem(eventRouter, buzz, createBowser(), createSampleBank(buzz)); // $ 
-    LiveCodeLabCore.ColourFunctions = createColourFunctions(); 
+    liveCodeLabCoreInstance.BlendControls = createBlendControls(liveCodeLabCoreInstance); 
+    liveCodeLabCoreInstance.SoundSystem = createSoundSystem(eventRouter, buzz, createBowser(), createSampleBank(buzz)); // $ 
+    liveCodeLabCoreInstance.ColourFunctions = createColourFunctions(); 
     // this one below also uses ColourFunctions at runtime
-    LiveCodeLabCore.BackgroundPainter = createBackgroundPainter(eventRouter); // $ 
+    liveCodeLabCoreInstance.BackgroundPainter = createBackgroundPainter(eventRouter, liveCodeLabCoreInstance); // $ 
     // this one below also uses ColourFunctions, LightSystem at runtime
-    LiveCodeLabCore.GraphicsCommands = createGraphicsCommands(LiveCodeLabCore.THREE); // color, LightSystem, MatrixCommands, ThreeJsSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne 
+    liveCodeLabCoreInstance.GraphicsCommands = createGraphicsCommands(liveCodeLabCoreInstance.THREE, liveCodeLabCoreInstance); // color, LightSystem, MatrixCommands, ThreeJsSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne 
     // this one below also uses MatrixCommands, ThreeJsSystem, ColourFunctions at runtime
-    LiveCodeLabCore.LightSystem = createLightSystem(LiveCodeLabCore.GraphicsCommands); 
-    LiveCodeLabCore.DrawFunctionRunner = createDrawFunctionRunner(eventRouter); 
-    LiveCodeLabCore.CodeTransformer = createCodeTransformer(eventRouter, CoffeeScript); // autocoder 
+    liveCodeLabCoreInstance.LightSystem = createLightSystem(liveCodeLabCoreInstance.GraphicsCommands, liveCodeLabCoreInstance); 
+    liveCodeLabCoreInstance.DrawFunctionRunner = createDrawFunctionRunner(eventRouter, liveCodeLabCoreInstance); 
+    liveCodeLabCoreInstance.CodeTransformer = createCodeTransformer(eventRouter, CoffeeScript, liveCodeLabCoreInstance); // autocoder 
     // this one below also uses BlendControls at runtime
-    LiveCodeLabCore.Renderer = createRenderer(); 
+    liveCodeLabCoreInstance.Renderer = createRenderer(liveCodeLabCoreInstance); 
     // this one below also uses TimeKeeper, MatrixCommands, BlendControls, SoundSystem,
     //    BackgroundPainter, GraphicsCommands, LightSystem, DrawFunctionRunner,
     //    CodeTransformer, Renderer
     // ...at runtime
-    LiveCodeLabCore.AnimationLoop = createAnimationLoop(eventRouter, stats); 
+    liveCodeLabCoreInstance.AnimationLoop = createAnimationLoop(eventRouter, stats, liveCodeLabCoreInstance); 
 
     if (!canvasForBackground) {
       canvasForBackground = document.createElement('canvas'); 
     }
-    LiveCodeLabCore.canvasForBackground = canvasForBackground; //yes
+    liveCodeLabCoreInstance.canvasForBackground = canvasForBackground; //yes
     // the canvas background for the time being is only going to contain
     // gradients, so we can get away with creating a really tiny canvas and
     // stretch it. The advantage is that the fill operations are a lot faster.
@@ -52,48 +52,48 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
     // backGroundFraction specifies what fraction of the window the background canvas
     // is going to be.
     var backGroundFraction = 1/15; 
-    LiveCodeLabCore.canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction); //yes
-    LiveCodeLabCore.canvasForBackground.height = Math.floor(window.innerHeight * backGroundFraction); //yes
-    LiveCodeLabCore.backgroundSceneContext = LiveCodeLabCore.canvasForBackground.getContext('2d'); //yes
+    liveCodeLabCoreInstance.canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction); //yes
+    liveCodeLabCoreInstance.canvasForBackground.height = Math.floor(window.innerHeight * backGroundFraction); //yes
+    liveCodeLabCoreInstance.backgroundSceneContext = liveCodeLabCoreInstance.canvasForBackground.getContext('2d'); //yes
 
 
-    LiveCodeLabCore.paintARandomBackground = function(){
-      LiveCodeLabCore.BackgroundPainter.paintARandomBackground();
+    liveCodeLabCoreInstance.paintARandomBackground = function(){
+      liveCodeLabCoreInstance.BackgroundPainter.paintARandomBackground();
     };
 
-    LiveCodeLabCore.startAnimationLoop = function(){
+    liveCodeLabCoreInstance.startAnimationLoop = function(){
      // there is nothing special about starting the animation loop,
      // it's just a call to animate(), which then creates its own request
      // for the next frame. Abstracting a bit though, it's clearer this way.
-     LiveCodeLabCore.AnimationLoop.animate();
+     liveCodeLabCoreInstance.AnimationLoop.animate();
     };
     
-    LiveCodeLabCore.runLastWorkingDrawFunction = function() {
-      LiveCodeLabCore.DrawFunctionRunner.reinstateLastWorkingDrawFunction();
+    liveCodeLabCoreInstance.runLastWorkingDrawFunction = function() {
+      liveCodeLabCoreInstance.DrawFunctionRunner.reinstateLastWorkingDrawFunction();
     };
 
-    LiveCodeLabCore.loadAndTestAllTheSounds = function() {
-      LiveCodeLabCore.SoundSystem.loadAndTestAllTheSounds();
+    liveCodeLabCoreInstance.loadAndTestAllTheSounds = function() {
+      liveCodeLabCoreInstance.SoundSystem.loadAndTestAllTheSounds();
     };
     
-    LiveCodeLabCore.playStartupSound = function() {
-      LiveCodeLabCore.SoundSystem.playStartupSound();
+    liveCodeLabCoreInstance.playStartupSound = function() {
+      liveCodeLabCoreInstance.SoundSystem.playStartupSound();
     };
     
-    LiveCodeLabCore.isAudioSupported = function() {
-      LiveCodeLabCore.SoundSystem.isAudioSupported();
+    liveCodeLabCoreInstance.isAudioSupported = function() {
+      liveCodeLabCoreInstance.SoundSystem.isAudioSupported();
     };
 
-    LiveCodeLabCore.updateCode = function(updatedCode){
+    liveCodeLabCoreInstance.updateCode = function(updatedCode){
        //alert('updatedCode: ' + updatedCode);
-       LiveCodeLabCore.CodeTransformer.updateCode(updatedCode);
-        if (updatedCode !== '' && LiveCodeLabCore.dozingOff) {
-					LiveCodeLabCore.dozingOff = false;
-					LiveCodeLabCore.AnimationLoop.animate();
+       liveCodeLabCoreInstance.CodeTransformer.updateCode(updatedCode);
+        if (updatedCode !== '' && liveCodeLabCoreInstance.dozingOff) {
+					liveCodeLabCoreInstance.dozingOff = false;
+					liveCodeLabCoreInstance.AnimationLoop.animate();
 					//console.log('waking up');
 					eventRouter.trigger('livecodelab-waking-up');
         }
     }
 
-    return LiveCodeLabCore;
+    return liveCodeLabCoreInstance;
 };

@@ -2,7 +2,7 @@
 /*global autocoder, createCodeChecker */
 
 
-var createCodeTransformer = function (eventRouter, CoffeeCompiler) {
+var createCodeTransformer = function (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) {
 
     'use strict';
 
@@ -234,13 +234,13 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler) {
         CodeTransformer.currentCodeString = updatedCodeAsString;
         
         if (CodeTransformer.currentCodeString === ''){
-					LiveCodeLabCore.GraphicsCommands.resetTheSpinThingy = true;
+					liveCodeLabCoreInstance.GraphicsCommands.resetTheSpinThingy = true;
 					programHasBasicError = false;
 					eventRouter.trigger('clear-error');	
-					LiveCodeLabCore.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
+					liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
 					var functionFromCompiledCode = new Function('');
-					LiveCodeLabCore.DrawFunctionRunner.setDrawFunction(null);
-					LiveCodeLabCore.DrawFunctionRunner.lastStableDrawFunction = null;
+					liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction(null);
+					liveCodeLabCoreInstance.DrawFunctionRunner.lastStableDrawFunction = null;
 					return functionFromCompiledCode;
         }
 
@@ -402,7 +402,7 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler) {
         // see here for the deepest examination ever of "eval"
         // http://perfectionkills.com/global-eval-what-are-the-options/
         // note that exceptions are caught by the window.onerror callback
-        LiveCodeLabCore.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
+        liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
 
         // You might want to change the frame count from the program
         // just like you can in Processing, but it turns out that when
@@ -417,7 +417,7 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler) {
         compiledOutput = compiledOutput.replace(/var frame/, ";");
 
         var functionFromCompiledCode = new Function(compiledOutput);
-        LiveCodeLabCore.DrawFunctionRunner.setDrawFunction(functionFromCompiledCode);
+        liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction(functionFromCompiledCode);
         return functionFromCompiledCode;
 
     };

@@ -1,7 +1,7 @@
 /*jslint browser: true */
 /*global */
 
-var createMatrixCommands = function (liveCodeLabCore_THREE) {
+var createMatrixCommands = function (liveCodeLabCore_THREE, liveCodeLabCoreInstance) {
 
     'use strict';
 
@@ -41,8 +41,8 @@ var createMatrixCommands = function (liveCodeLabCore_THREE) {
 
     window.move = MatrixCommands.move = function (a, b, c) {
         if (arguments.length === 0) {
-            a = Math.sin(LiveCodeLabCore.TimeKeeper.getTime() / 500);
-            b = Math.cos(LiveCodeLabCore.TimeKeeper.getTime() / 500);
+            a = Math.sin(liveCodeLabCoreInstance.TimeKeeper.getTime() / 500);
+            b = Math.cos(liveCodeLabCoreInstance.TimeKeeper.getTime() / 500);
             c = a;
         } else if (arguments.length === 1) {
             b = a;
@@ -57,7 +57,7 @@ var createMatrixCommands = function (liveCodeLabCore_THREE) {
     window.rotate = MatrixCommands.rotate = function (a, b, c) {
 
         if (arguments.length === 0) {
-            a = LiveCodeLabCore.TimeKeeper.getTime() / 1000;
+            a = liveCodeLabCoreInstance.TimeKeeper.getTime() / 1000;
             b = a;
             c = a;
         } else if (arguments.length === 1) {
@@ -73,7 +73,7 @@ var createMatrixCommands = function (liveCodeLabCore_THREE) {
 
     window.scale = MatrixCommands.scale = function (a, b, c) {
         if (arguments.length === 0) {
-            a = 1 + Math.sin(LiveCodeLabCore.TimeKeeper.getTime() / 500) / 4;
+            a = 1 + Math.sin(liveCodeLabCoreInstance.TimeKeeper.getTime() / 500) / 4;
             b = a;
             c = a;
         } else if (arguments.length === 1) {

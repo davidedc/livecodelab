@@ -100,7 +100,7 @@
 // ted.
 
 
-var createGraphicsCommands = function (liveCodeLabCore_THREE) {
+var createGraphicsCommands = function (liveCodeLabCore_THREE, liveCodeLabCoreInstance) {
 
     'use strict';
 
@@ -281,7 +281,7 @@ var createGraphicsCommands = function (liveCodeLabCore_THREE) {
                 pooledObjectWithMaterials.normalMaterial = new liveCodeLabCore_THREE.MeshNormalMaterial();
             }
             pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.normalMaterial;
-        } else if (!LiveCodeLabCore.LightSystem.lightsAreOn) {
+        } else if (!liveCodeLabCoreInstance.LightSystem.lightsAreOn) {
             if (pooledObjectWithMaterials.basicMaterial === undefined) {
                 pooledObjectWithMaterials.basicMaterial = new liveCodeLabCore_THREE.MeshBasicMaterial();
             }
@@ -330,8 +330,8 @@ var createGraphicsCommands = function (liveCodeLabCore_THREE) {
         objectsUsedInFrameCounts[primitiveID] += 1;
 
         if (GraphicsCommands.doTheSpinThingy && pooledObjectWithMaterials.initialSpinCountdown > 0) {
-            LiveCodeLabCore.MatrixCommands.pushMatrix();
-            LiveCodeLabCore.MatrixCommands.rotate(pooledObjectWithMaterials.initialSpinCountdown / 50);
+            liveCodeLabCoreInstance.MatrixCommands.pushMatrix();
+            liveCodeLabCoreInstance.MatrixCommands.rotate(pooledObjectWithMaterials.initialSpinCountdown / 50);
         }
 
         // see https://github.com/mrdoob/three.js/wiki/Using-Matrices-&-Object3Ds-in-THREE
@@ -339,11 +339,11 @@ var createGraphicsCommands = function (liveCodeLabCore_THREE) {
         // Around 11% of the time is spent doing matrix multiplications, which
         // happens every time there is a scale or rotate or move.
         pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = false;
-        pooledObjectWithMaterials.threejsObject3D.matrix.copy(LiveCodeLabCore.MatrixCommands.getWorldMatrix());
+        pooledObjectWithMaterials.threejsObject3D.matrix.copy(liveCodeLabCoreInstance.MatrixCommands.getWorldMatrix());
         pooledObjectWithMaterials.threejsObject3D.matrixWorldNeedsUpdate = true;
 
         if (GraphicsCommands.doTheSpinThingy && pooledObjectWithMaterials.initialSpinCountdown > 0) {
-            LiveCodeLabCore.MatrixCommands.popMatrix();
+            liveCodeLabCoreInstance.MatrixCommands.popMatrix();
         }
 
         if (objectIsNew) {
@@ -369,7 +369,7 @@ var createGraphicsCommands = function (liveCodeLabCore_THREE) {
         }
 
         if (objectIsNew) {
-            LiveCodeLabCore.ThreeJsSystem.scene.add(pooledObjectWithMaterials.threejsObject3D);
+            liveCodeLabCoreInstance.ThreeJsSystem.scene.add(pooledObjectWithMaterials.threejsObject3D);
         }
 
     };
@@ -423,7 +423,7 @@ var createGraphicsCommands = function (liveCodeLabCore_THREE) {
         GraphicsCommands.currentStrokeSize = 1;
         GraphicsCommands.defaultNormalFill = true;
         GraphicsCommands.defaultNormalStroke = true;
-        GraphicsCommands.ballDetLevel = LiveCodeLabCore.ThreeJsSystem.ballDefaultDetLevel;
+        GraphicsCommands.ballDetLevel = liveCodeLabCoreInstance.ThreeJsSystem.ballDefaultDetLevel;
 
         GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.ambientLight] = 0;
         GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.line] = 0;
@@ -455,7 +455,7 @@ var createGraphicsCommands = function (liveCodeLabCore_THREE) {
         // Since the stroke and the fill are drawn with two different objects and the
         // fill is not needed, we temporarily switch off the fill and then put it back
         // to whichever value it was.
-        if (LiveCodeLabCore.LightSystem.lightsAreOn) {
+        if (liveCodeLabCoreInstance.LightSystem.lightsAreOn) {
             var rememberIfThereWasAFill = doFill;
             var rememberPreviousStrokeSize = GraphicsCommands.currentStrokeSize;
             if (GraphicsCommands.currentStrokeSize < 2) {
@@ -597,7 +597,7 @@ var createGraphicsCommands = function (liveCodeLabCore_THREE) {
             GraphicsCommands.defaultNormalFill = true;
             currentFillColor = angleColor;
             if (b=== undefined && g !== undefined) {
-                currentFillAlpha = g / LiveCodeLabCore.ColourFunctions.colorModeA;
+                currentFillAlpha = g / liveCodeLabCoreInstance.ColourFunctions.colorModeA;
             } else {
                 currentFillAlpha = 1;
             }
@@ -668,7 +668,7 @@ var createGraphicsCommands = function (liveCodeLabCore_THREE) {
             GraphicsCommands.defaultNormalStroke = true;
             currentStrokeColor = angleColor;
             if (b === undefined && g !== undefined) {
-                currentStrokeAlpha = g / LiveCodeLabCore.ColourFunctions.colorModeA;
+                currentStrokeAlpha = g / liveCodeLabCoreInstance.ColourFunctions.colorModeA;
             } else {
                 currentStrokeAlpha = 1;
             }

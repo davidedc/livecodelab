@@ -85,7 +85,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     //  - Renderer
     //  - AnimationLoop
     
-    LiveCodeLabCore = createLiveCodeLabCore(
+    var liveCodeLabCore = createLiveCodeLabCore(
     		blendedThreeJsSceneCanvas,
     		canvasForBackground,
     		forceCanvasRenderer,
@@ -110,13 +110,13 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // requires ThreeJsSystem, BlendControls, GraphicsCommands, Renderer
     // note that the programLoader variable below is never used. Leaving it
     // in for consistency.
-    var programLoader = createProgramLoader(eventRouter, editor); // $, Detector, BlendControls 
+    var programLoader = createProgramLoader(eventRouter, editor, liveCodeLabCore); // $, Detector, BlendControls 
 
     ///////////////////////////////////////////////////////
     // Phase 4 - Setup Of Event Listeners, including handling of
     // compile time and runtime errors.
     ///////////////////////////////////////////////////////
-    eventRouter.bind('reset', LiveCodeLabCore.paintARandomBackground);
+    eventRouter.bind('reset', liveCodeLabCore.paintARandomBackground);
 
     eventRouter.trigger('editor-toggle-dim', true);
 
@@ -132,7 +132,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 							eventRouter.trigger('big-cursor-show');
 							ui.hideStatsWidget();
 					}
-					LiveCodeLabCore.updateCode(updatedCodeAsString);
+					liveCodeLabCore.updateCode(updatedCodeAsString);
         }
     );
 
@@ -215,7 +215,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 						//alert('undoing');
 				}
 				else {
-						 LiveCodeLabCore.runLastWorkingDrawFunction();
+						 liveCodeLabCore.runLastWorkingDrawFunction();
 				}
 				// re-throw the error so that the top-level debuggers
 				// (firebug, built-in, whathaveyous) can properly
@@ -245,13 +245,13 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // animation loop. Events will start
     // being triggered from here on.
     ///////////////////////////////////////////////////////
-    LiveCodeLabCore.loadAndTestAllTheSounds();
-    LiveCodeLabCore.paintARandomBackground();
-    LiveCodeLabCore.startAnimationLoop();
+    liveCodeLabCore.loadAndTestAllTheSounds();
+    liveCodeLabCore.paintARandomBackground();
+    liveCodeLabCore.startAnimationLoop();
     
     if (!Detector.webgl || forceCanvasRenderer) {
         $('#noWebGLMessage').modal({
-            onClose: eval('$.modal.close()','LiveCodeLabCore.isAudioSupported')
+            onClose: eval('$.modal.close()','liveCodeLabCore.isAudioSupported')
         });
         $('#simplemodal-container').height(200);
     }
@@ -262,7 +262,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // in which case we load the demo directly.
     // otherwise we do as usual.    
     if (!urlRouter.urlPointsToDemoOrTutorial()) {
-        setTimeout(LiveCodeLabCore.playStartupSound, 650);
+        setTimeout(liveCodeLabCore.playStartupSound, 650);
     }
 
     bigCursor.toggleBlink(true); 

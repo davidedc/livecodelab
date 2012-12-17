@@ -1,7 +1,7 @@
 /*jslint browser: true */
 
 
-var createBlendControls = function () {
+var createBlendControls = function (liveCodeLabCoreInstance) {
 
     'use strict';
 
@@ -38,21 +38,21 @@ var createBlendControls = function () {
 
         previousanimationStyleValue = animationStyleValue;
 
-        if (LiveCodeLabCore.ThreeJsSystem.isWebGLUsed && animationStyleValue === BlendControls.animationStyles.motionBlur) {
-            LiveCodeLabCore.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = 0.7;
-        } else if (!LiveCodeLabCore.ThreeJsSystem.isWebGLUsed && animationStyleValue === BlendControls.animationStyles.motionBlur) {
+        if (liveCodeLabCoreInstance.ThreeJsSystem.isWebGLUsed && animationStyleValue === BlendControls.animationStyles.motionBlur) {
+            liveCodeLabCoreInstance.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = 0.7;
+        } else if (!liveCodeLabCoreInstance.ThreeJsSystem.isWebGLUsed && animationStyleValue === BlendControls.animationStyles.motionBlur) {
             BlendControls.blendAmount = 0.6;
         }
 
-        if (LiveCodeLabCore.ThreeJsSystem.isWebGLUsed && animationStyleValue === BlendControls.animationStyles.paintOver) {
-            LiveCodeLabCore.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = 1;
-        } else if (!LiveCodeLabCore.ThreeJsSystem.isWebGLUsed && animationStyleValue === BlendControls.animationStyles.paintOver) {
+        if (liveCodeLabCoreInstance.ThreeJsSystem.isWebGLUsed && animationStyleValue === BlendControls.animationStyles.paintOver) {
+            liveCodeLabCoreInstance.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = 1;
+        } else if (!liveCodeLabCoreInstance.ThreeJsSystem.isWebGLUsed && animationStyleValue === BlendControls.animationStyles.paintOver) {
             BlendControls.blendAmount = 1;
         }
 
-        if (LiveCodeLabCore.ThreeJsSystem.isWebGLUsed && animationStyleValue === BlendControls.animationStyles.normal) {
-            LiveCodeLabCore.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = 0;
-        } else if (!LiveCodeLabCore.ThreeJsSystem.isWebGLUsed && animationStyleValue === BlendControls.animationStyles.normal) {
+        if (liveCodeLabCoreInstance.ThreeJsSystem.isWebGLUsed && animationStyleValue === BlendControls.animationStyles.normal) {
+            liveCodeLabCoreInstance.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = 0;
+        } else if (!liveCodeLabCoreInstance.ThreeJsSystem.isWebGLUsed && animationStyleValue === BlendControls.animationStyles.normal) {
             BlendControls.blendAmount = 0;
         }
 

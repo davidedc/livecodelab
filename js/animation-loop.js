@@ -4,7 +4,7 @@
 var frame = 0;
 
 
-var createAnimationLoop = function (eventRouter, stats) {
+var createAnimationLoop = function (eventRouter, stats, liveCodeLabCoreInstance) {
 
     'use strict';
 
@@ -56,35 +56,35 @@ var createAnimationLoop = function (eventRouter, stats) {
 
         var drawFunction;
 
-        LiveCodeLabCore.MatrixCommands.resetMatrixStack();
+        liveCodeLabCoreInstance.MatrixCommands.resetMatrixStack();
 
         // the sound list needs to be cleaned
         // so that the user program can create its own from scratch
-        LiveCodeLabCore.SoundSystem.resetLoops();
+        liveCodeLabCoreInstance.SoundSystem.resetLoops();
 
 				if (frame === 0) {
-						LiveCodeLabCore.TimeKeeper.resetTime();
+						liveCodeLabCoreInstance.TimeKeeper.resetTime();
 				} else {
-						LiveCodeLabCore.TimeKeeper.updateTime();
+						liveCodeLabCoreInstance.TimeKeeper.updateTime();
 				}
 				
-				LiveCodeLabCore.DrawFunctionRunner.resetTrackingOfDoOnceOccurrences();
-				LiveCodeLabCore.SoundSystem.anyCodeReactingTobpm = false;
+				liveCodeLabCoreInstance.DrawFunctionRunner.resetTrackingOfDoOnceOccurrences();
+				liveCodeLabCoreInstance.SoundSystem.anyCodeReactingTobpm = false;
 
-				LiveCodeLabCore.SoundSystem.SetUpdatesPerMinute(60 * 4);
-				LiveCodeLabCore.LightSystem.noLights();
+				liveCodeLabCoreInstance.SoundSystem.SetUpdatesPerMinute(60 * 4);
+				liveCodeLabCoreInstance.LightSystem.noLights();
 
-				LiveCodeLabCore.GraphicsCommands.reset();
+				liveCodeLabCoreInstance.GraphicsCommands.reset();
 
-				LiveCodeLabCore.BlendControls.animationStyle(LiveCodeLabCore.BlendControls.animationStyles.normal);
-				LiveCodeLabCore.BackgroundPainter.resetGradientStack();
+				liveCodeLabCoreInstance.BlendControls.animationStyle(liveCodeLabCoreInstance.BlendControls.animationStyles.normal);
+				liveCodeLabCoreInstance.BackgroundPainter.resetGradientStack();
 				        
 				// if the draw function is empty, then don't schedule the
 				// next animation frame and set a "I'm sleeping" flag.
 				// We'll re-start the animation when the editor content
 				// changes. Note that this frame goes to completion anyways, because
 				// we actually do want to render one "empty screen" frame.
-        if (LiveCodeLabCore.DrawFunctionRunner.drawFunction) {
+        if (liveCodeLabCoreInstance.DrawFunctionRunner.drawFunction) {
           scheduleNextFrame();
 					// Now here there is another try/catch check when the draw function is ran.
 					// The reason is that there might be references to uninitialised or inexistent
@@ -96,17 +96,17 @@ var createAnimationLoop = function (eventRouter, stats) {
 					// So in that case we need to a) highlight the error and b) run the previously
 					// known good program.
 					try{
-						LiveCodeLabCore.DrawFunctionRunner.runDrawFunction();
+						liveCodeLabCoreInstance.DrawFunctionRunner.runDrawFunction();
 					}
 					catch (e) {
 							 //alert('runtime error');
 							 eventRouter.trigger('runtime-error-thrown', e);
 							 return;
 					}
-					LiveCodeLabCore.DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(LiveCodeLabCore.CodeTransformer);
+					liveCodeLabCoreInstance.DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(liveCodeLabCoreInstance.CodeTransformer);
         }
         else {
-					LiveCodeLabCore.dozingOff = true;
+					liveCodeLabCoreInstance.dozingOff = true;
 					//console.log('dozing off');
         }
 
@@ -116,18 +116,18 @@ var createAnimationLoop = function (eventRouter, stats) {
 				// then we have to catch that case here
 				// after the program has executed
 				if (frame === 0) {
-						LiveCodeLabCore.TimeKeeper.resetTime();
+						liveCodeLabCoreInstance.TimeKeeper.resetTime();
 				}
-				LiveCodeLabCore.BlendControls.animationStyleUpdateIfChanged();
-				LiveCodeLabCore.BackgroundPainter.simpleGradientUpdateIfChanged();
-				LiveCodeLabCore.SoundSystem.changeUpdatesPerMinuteIfNeeded();
+				liveCodeLabCoreInstance.BlendControls.animationStyleUpdateIfChanged();
+				liveCodeLabCoreInstance.BackgroundPainter.simpleGradientUpdateIfChanged();
+				liveCodeLabCoreInstance.SoundSystem.changeUpdatesPerMinuteIfNeeded();
 
         // "frame" starts at zero, so we increment after the first time the draw
         // function has been run.
  				frame++;
 		
         // do the render
-        LiveCodeLabCore.Renderer.render(LiveCodeLabCore.GraphicsCommands);
+        liveCodeLabCoreInstance.Renderer.render(liveCodeLabCoreInstance.GraphicsCommands);
         // update stats
         stats.update();
     };
