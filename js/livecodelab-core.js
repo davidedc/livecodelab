@@ -108,7 +108,7 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
 
     // this one also interacts with ColourFunctions, backgroundSceneContext,
     // canvasForBackground at runtime
-    liveCodeLabCoreInstance.BackgroundPainter = createBackgroundPainter(eventRouter, liveCodeLabCoreInstance); // $ 
+    liveCodeLabCoreInstance.BackgroundPainter = createBackgroundPainter(eventRouter, canvasForBackground, liveCodeLabCoreInstance); // $ 
 
     // this one also interacts with CodeTransformer at runtime.
     liveCodeLabCoreInstance.DrawFunctionRunner = createDrawFunctionRunner(eventRouter, liveCodeLabCoreInstance); 
