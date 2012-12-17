@@ -1,17 +1,23 @@
 /*jslint browser: true, maxerr: 100 */
 /*global LiveCodeLabCore, $, autocoder, initThreeJs, buzz */
 
+// Init.js takes care of the setup of the whole environment up to
+// cruise speed
+
 $(document).ready(function () {
     startEnvironment(
     		document.getElementById('blendedThreeJsSceneCanvas'), // blendedThreeJsSceneCanvas
     		document.getElementById('backGroundCanvas'), // canvasForBackground
-    		true, // forceCanvasRenderer
+    		false, // forceCanvasRenderer
     		false // bubbleUpErrorsForDebugging
     	);
 });
 
+// see http://stackoverflow.com/questions/2745432
 var isCanvasSupported = function () {
     var elem = document.createElement('canvas');
+    // One would think that doing the !! double negation below is
+    // redundant but no, that's how Javascript rolls.
     return !!(elem.getContext && elem.getContext('2d'));
 };
 
