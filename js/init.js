@@ -5,12 +5,12 @@
 // cruise speed
 
 $(document).ready(function () {
-    startEnvironment(
-    		document.getElementById('blendedThreeJsSceneCanvas'), // blendedThreeJsSceneCanvas
-    		document.getElementById('backGroundCanvas'), // canvasForBackground
-    		false, // forceCanvasRenderer
-    		false // bubbleUpErrorsForDebugging
-    	);
+    startEnvironment({
+    		blendedThreeJsSceneCanvas: document.getElementById('blendedThreeJsSceneCanvas'),
+    		canvasForBackground: document.getElementById('backGroundCanvas'),
+    		forceCanvasRenderer: false,
+    		bubbleUpErrorsForDebugging: false
+    	});
 });
 
 // see http://stackoverflow.com/questions/2745432
@@ -21,7 +21,7 @@ var isCanvasSupported = function () {
     return !!(elem.getContext && elem.getContext('2d'));
 };
 
-var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground, forceCanvasRenderer, bubbleUpErrorsForDebugging) {
+var startEnvironment = function (paramsObject) {
 
     'use strict';
 
@@ -52,11 +52,11 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     // add Stats.js - https://github.com/mrdoob/stats.js
     var stats = new Stats();
   
-    if (forceCanvasRenderer === undefined) {
-    	forceCanvasRenderer = false;
+    if (paramsObject.forceCanvasRenderer === undefined) {
+    	paramsObject.forceCanvasRenderer = false;
     }
-    if (forceCanvasRenderer === null) {
-    	forceCanvasRenderer = false;
+    if (paramsObject.forceCanvasRenderer === null) {
+    	paramsObject.forceCanvasRenderer = false;
     }
   
     // createColours creates a bunch of global variables for all css colors (and more).
@@ -85,14 +85,14 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     //  - Renderer
     //  - AnimationLoop
     
-    var liveCodeLabCore = createLiveCodeLabCore(
-    		blendedThreeJsSceneCanvas,
-    		canvasForBackground,
-    		forceCanvasRenderer,
-    		eventRouter,
-    		stats
-    	);    
-  
+    var liveCodeLabCore = createLiveCodeLabCore({
+    		blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas,
+    		canvasForBackground: paramsObject.canvasForBackground,
+    		forceCanvasRenderer: paramsObject.forceCanvasRenderer,
+    		eventRouter: eventRouter,
+    		statsWidget: stats
+    	});
+
     ///////////////////////////////////////////////////////
     // Phase 3 - Other satellite parts
     ///////////////////////////////////////////////////////
@@ -220,7 +220,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
 				// re-throw the error so that the top-level debuggers
 				// (firebug, built-in, whathaveyous) can properly
 				// catch the error and let the user inspect things.
-				if (bubbleUpErrorsForDebugging) {
+				if (paramsObject.bubbleUpErrorsForDebugging) {
 				  throw(e)
 				}
       }
@@ -249,7 +249,7 @@ var startEnvironment = function (blendedThreeJsSceneCanvas, canvasForBackground,
     liveCodeLabCore.paintARandomBackground();
     liveCodeLabCore.startAnimationLoop();
     
-    if (!Detector.webgl || forceCanvasRenderer) {
+    if (!Detector.webgl || paramsObject.forceCanvasRenderer) {
         $('#noWebGLMessage').modal({
             onClose: eval('$.modal.close()','liveCodeLabCore.isAudioSupported')
         });

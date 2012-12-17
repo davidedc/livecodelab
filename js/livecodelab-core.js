@@ -54,7 +54,7 @@
 // all "liveCodeLabCoreInstance" occurrences and see which of its children are
 // accessed.
 
-var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackground, forceCanvasRenderer, eventRouter, stats ) {
+var createLiveCodeLabCore = function ( paramsObject ) {
 
     'use strict';
 
@@ -104,24 +104,24 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
     // this one also interacts with ThreeJsSystem and BlendControls at runtime
     liveCodeLabCoreInstance.Renderer = createRenderer(liveCodeLabCoreInstance); 
 
-    liveCodeLabCoreInstance.SoundSystem = createSoundSystem(eventRouter, buzz, createBowser(), createSampleBank(buzz)); // $ 
+    liveCodeLabCoreInstance.SoundSystem = createSoundSystem(paramsObject.eventRouter, buzz, createBowser(), createSampleBank(buzz)); // $ 
 
     // this one also interacts with ColourFunctions, backgroundSceneContext,
     // canvasForBackground at runtime
-    liveCodeLabCoreInstance.BackgroundPainter = createBackgroundPainter(eventRouter, canvasForBackground, liveCodeLabCoreInstance); // $ 
+    liveCodeLabCoreInstance.BackgroundPainter = createBackgroundPainter(paramsObject.eventRouter, paramsObject.canvasForBackground, liveCodeLabCoreInstance); // $ 
 
     // this one also interacts with CodeTransformer at runtime.
-    liveCodeLabCoreInstance.DrawFunctionRunner = createDrawFunctionRunner(eventRouter, liveCodeLabCoreInstance); 
+    liveCodeLabCoreInstance.DrawFunctionRunner = createDrawFunctionRunner(paramsObject.eventRouter, liveCodeLabCoreInstance); 
 
     // this one also interacts with GraphicsCommands, DrawFunctionRunner at runtime.
-    liveCodeLabCoreInstance.CodeTransformer = createCodeTransformer(eventRouter, CoffeeScript, liveCodeLabCoreInstance); // autocoder 
+    liveCodeLabCoreInstance.CodeTransformer = createCodeTransformer(paramsObject.eventRouter, CoffeeScript, liveCodeLabCoreInstance); // autocoder 
 
     // this one also interacts with TimeKeeper, MatrixCommands, BlendControls,
     //    SoundSystem,
     //    BackgroundPainter, GraphicsCommands, LightSystem, DrawFunctionRunner,
     //    CodeTransformer, Renderer
     // ...at runtime
-    liveCodeLabCoreInstance.AnimationLoop = createAnimationLoop(eventRouter, stats, liveCodeLabCoreInstance); 
+    liveCodeLabCoreInstance.AnimationLoop = createAnimationLoop(paramsObject.eventRouter, paramsObject.statsWidget, liveCodeLabCoreInstance); 
 
     ////////////////////////////////////////////////
     //
@@ -138,7 +138,7 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
     ////////////////////////////////////////////////
 
     // this one doesn't interact with any other part at runtime.
-    liveCodeLabCoreInstance.ThreeJsSystem = createThreeJsSystem(Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer, liveCodeLabCoreInstance.THREE);
+    liveCodeLabCoreInstance.ThreeJsSystem = createThreeJsSystem(Detector, THREEx, paramsObject.blendedThreeJsSceneCanvas, paramsObject.forceCanvasRenderer, liveCodeLabCoreInstance.THREE);
 
     // this one interacts with TimeKeeper at runtime
     liveCodeLabCoreInstance.MatrixCommands = createMatrixCommands(liveCodeLabCoreInstance.THREE, liveCodeLabCoreInstance);
@@ -194,7 +194,7 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
 					liveCodeLabCoreInstance.dozingOff = false;
 					liveCodeLabCoreInstance.AnimationLoop.animate();
 					/* console.log('waking up'); */
-					eventRouter.trigger('livecodelab-waking-up');
+					paramsObject.eventRouter.trigger('livecodelab-waking-up');
         }
     }
 
