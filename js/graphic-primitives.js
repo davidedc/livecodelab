@@ -100,7 +100,7 @@
 // ted.
 
 
-var createGraphicsCommands = function (liveCodeLabCore_THREE, liveCodeLabCore_ThreeJsSystem) {
+var createGraphicsCommands = function (liveCodeLabCore_THREE) {
 
     'use strict';
 
@@ -369,7 +369,7 @@ var createGraphicsCommands = function (liveCodeLabCore_THREE, liveCodeLabCore_Th
         }
 
         if (objectIsNew) {
-            liveCodeLabCore_ThreeJsSystem.scene.add(pooledObjectWithMaterials.threejsObject3D);
+            LiveCodeLabCore.ThreeJsSystem.scene.add(pooledObjectWithMaterials.threejsObject3D);
         }
 
     };
@@ -423,7 +423,7 @@ var createGraphicsCommands = function (liveCodeLabCore_THREE, liveCodeLabCore_Th
         GraphicsCommands.currentStrokeSize = 1;
         GraphicsCommands.defaultNormalFill = true;
         GraphicsCommands.defaultNormalStroke = true;
-        GraphicsCommands.ballDetLevel = liveCodeLabCore_ThreeJsSystem.ballDefaultDetLevel;
+        GraphicsCommands.ballDetLevel = LiveCodeLabCore.ThreeJsSystem.ballDefaultDetLevel;
 
         GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.ambientLight] = 0;
         GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.line] = 0;

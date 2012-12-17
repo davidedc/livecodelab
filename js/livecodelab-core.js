@@ -27,7 +27,7 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
     // this one below also uses ColourFunctions at runtime
     LiveCodeLabCore.BackgroundPainter = createBackgroundPainter(eventRouter); // $ 
     // this one below also uses ColourFunctions, LightSystem at runtime
-    LiveCodeLabCore.GraphicsCommands = createGraphicsCommands(LiveCodeLabCore.THREE, LiveCodeLabCore.ThreeJsSystem); // color, LightSystem, MatrixCommands, ThreeJsSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne 
+    LiveCodeLabCore.GraphicsCommands = createGraphicsCommands(LiveCodeLabCore.THREE); // color, LightSystem, MatrixCommands, ThreeJsSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne 
     // this one below also uses MatrixCommands, ThreeJsSystem, ColourFunctions at runtime
     LiveCodeLabCore.LightSystem = createLightSystem(LiveCodeLabCore.THREE, LiveCodeLabCore.GraphicsCommands); 
     LiveCodeLabCore.DrawFunctionRunner = createDrawFunctionRunner(eventRouter); 
