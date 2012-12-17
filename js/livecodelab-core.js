@@ -1,10 +1,15 @@
 // a LiveCodeLabCore instance packs together the following parts:
 //
+// - TimeKeeper
 // - THREE
 // - MatrixCommands
+// - BlendControls
 // - SoundSystem
+// - ColourFunctions
 // - BackgroundPainter
+// - GraphicsCommands
 // - LightSystem 
+// - DrawFunctionRunner
 // - CodeTransformer
 // - Renderer
 // - AnimationLoop
@@ -15,7 +20,6 @@
 //
 // - _A constructor with no arguments_ (or where the arguments are just passed
 //   by the caller of the very createLiveCodeLabCore function we are in),
-//   with any of the other pieces at run time.
 //   such as createColourFunctions, is a part
 //   that does not need any other part at construction time and it doesn't interact
 //   with any of the other parts at run time.
@@ -61,9 +65,6 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
     // initialise all the fields first
     //
     ////////////////////////////////////////////////
-
-      canvasForBackground = document.createElement('canvas'); 
-    var backGroundFraction = 1/15; 
 
     // THREE is a global defined in three.min.js and used in ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
     // The difference between THREE and the ThreeJsSystem initialised later is that
