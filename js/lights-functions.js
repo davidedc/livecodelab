@@ -1,7 +1,7 @@
 /*jslint browser: true */
 
 
-var createLightSystem = function (liveCodeLabCore_THREE, liveCodeLabCore_GraphicsCommands) {
+var createLightSystem = function (liveCodeLabCore_GraphicsCommands) {
 
     'use strict';
 
@@ -55,7 +55,7 @@ var createLightSystem = function (liveCodeLabCore_THREE, liveCodeLabCore_Graphic
             // so the faces of the cube would all be of the same
             // exact color. Note that in Three.js versions before r50 the AmbientLight
             // would work like a PointLight does now.
-            pooledAmbientLight = new liveCodeLabCore_THREE.PointLight(colorToBeUsed);
+            pooledAmbientLight = new LiveCodeLabCore.THREE.PointLight(colorToBeUsed);
             pooledAmbientLight.position.set(10, 50, 130);
 
             newLightCreated = true;

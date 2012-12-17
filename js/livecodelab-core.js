@@ -29,7 +29,7 @@ var createLiveCodeLabCore = function (blendedThreeJsSceneCanvas, canvasForBackgr
     // this one below also uses ColourFunctions, LightSystem at runtime
     LiveCodeLabCore.GraphicsCommands = createGraphicsCommands(LiveCodeLabCore.THREE); // color, LightSystem, MatrixCommands, ThreeJsSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne 
     // this one below also uses MatrixCommands, ThreeJsSystem, ColourFunctions at runtime
-    LiveCodeLabCore.LightSystem = createLightSystem(LiveCodeLabCore.THREE, LiveCodeLabCore.GraphicsCommands); 
+    LiveCodeLabCore.LightSystem = createLightSystem(LiveCodeLabCore.GraphicsCommands); 
     LiveCodeLabCore.DrawFunctionRunner = createDrawFunctionRunner(eventRouter); 
     LiveCodeLabCore.CodeTransformer = createCodeTransformer(eventRouter, CoffeeScript); // autocoder 
     // this one below also uses BlendControls at runtime
