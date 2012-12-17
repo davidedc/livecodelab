@@ -1,6 +1,6 @@
 /*jslint browser: true */
 
-var createColours = function (autocoder) {
+var createColours = function () {
 
     'use strict';
 

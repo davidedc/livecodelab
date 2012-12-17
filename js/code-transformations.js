@@ -1,43 +1,42 @@
-/*jslint maxerr: 200, browser: true, devel: true, bitwise: true */
-/*global $, autocoder */
+/*jslint maxerr: 200, browser: true, regexp: true, bitwise: true */
+/*global autocoder, createCodeChecker */
 
 
-var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
+var createCodeTransformer = function (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) {
 
     'use strict';
 
     var CodeTransformer = {},
         programHasBasicError = false,
-        reasonOfBasicError = "",
         compiledOutput,
-        listOfPossibleFunctions;
+        listOfPossibleFunctions,
+        preprocessingFunctions = {},
+        CodeChecker = createCodeChecker();
 
-
-    CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
 
     CodeTransformer.compiler = CoffeeCompiler;
 
     listOfPossibleFunctions = [
         "function",
         "alert",
-    // Geometry
+        // Geometry
         "rect",
         "line",
         "box",
         "ball",
         "ballDetail",
         "peg",
-    // Matrix manipulation
+        // Matrix manipulation
         "rotate",
         "move",
         "scale",
         "pushMatrix",
         "popMatrix",
         "resetMatrix",
-    // Sound
+        // Sound
         "bpm",
         "play",
-    // Color and drawing styles
+        // Color and drawing styles
         "fill",
         "noFill",
         "stroke",
@@ -47,13 +46,13 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
         "background",
         "simpleGradient",
         "color",
-    // Lighting
-    /*"ambient","reflect", "refract", */
+        // Lighting
+        /*"ambient","reflect", "refract", */
         "lights",
         "noLights",
         "ambientLight",
         "pointLight",
-    // Calculations
+        // Calculations
         "abs",
         "ceil",
         "constrain",
@@ -71,7 +70,7 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
         "round",
         "sq",
         "sqrt",
-    // Trigonometry
+        // Trigonometry
         "acos",
         "asin",
         "atan",
@@ -81,75 +80,215 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
         "radians",
         "sin",
         "tan",
-    // Random
+        // Random
         "random",
         "randomSeed",
         "noise",
         "noiseDetail",
         "noiseSeed",
-    // do once
+        // do once
         "addDoOnce",
         ""];
 
+    /**
+     * The preprocessing functions are used to process the
+     * code before it is sent through the coffee script
+     * compiler
+     *
+     * Note
+     * some replacements add a semicolon for the following reason:
+     * coffeescript allows you to split arguments over multiple lines.
+     * So if you have:
+     *     rotate 0,0,1
+     *     box
+     * and you want to add a scale like so:
+     *     scale 2,2,2
+     *     rotate 0,0,1
+     *     box
+     * What happens is that as you are in the middle of typing:
+     *     scale 2,
+     *     rotate 0,0,1
+     *     box
+     * coffeescript takes the rotate as the second argument of scale
+     * causing mayhem.
+     * Instead, all is good if rotate is prepended with a semicolon.
+     */
 
-    // this array is used to keep track of all the instances of "doOnce" in the code
-    // we need to keep this so we can put the ticks next to doOnce once that doOnce
-    // block has run.
-    CodeTransformer.doOnceOccurrencesLineNumbers = [];
 
-    // This is the function called from the compiled code to add the doOnce line
-    window.addDoOnce = CodeTransformer.addDoOnce = function (lineNum) {
-        CodeTransformer.doOnceOccurrencesLineNumbers.push(lineNum);
+    /**
+     * Stops ticked doOnce blocks from running
+     *
+     * doOnce statements which have a tick mark next to them
+     * are not run. This is achieved by replacing the line with
+     * the "doOnce" with "if false" or "//" depending on whether
+     * the doOnce is a multiline or an inline one, like so:
+     *      ✓doOnce ->
+     *        background 255
+     *        fill 255,0,0
+     *      ✓doOnce -> ball
+     * becomes:
+     *      if false ->
+     *        background 255
+     *        fill 255,0,0
+     *      //doOnce -> ball
+     *
+     * @param {string} code    the code to re-write
+     *
+     * @returns {string}
+     */
+    preprocessingFunctions.removeTickedDoOnce = function (code) {
+        var newCode;
+        newCode = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false");
+        newCode = newCode.replace(/\u2713/g, "//");
+        return newCode;
+    };
+
+    /**
+     * Some of the functions can be used with postfix notation
+     *
+     * e.g.
+     *
+     *      60 bpm
+     *      red fill
+     *      yellow stroke
+     *      black background
+     *
+     * We need to switch this round before coffee script compilation
+     */
+    preprocessingFunctions.postfixNotation = function (code) {
+        var elaboratedSource;
+        elaboratedSource = code.replace(/(\d+)[ ]+bpm(\s)/g, "bpm $1$2");
+        elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+fill(\s)/g, "fill $1$2");
+        elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+stroke(\s)/g, "stroke $1$2");
+        elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+background(\s)/g, "background $1$2");
+        return elaboratedSource;
+    };
+
+    /**
+     * The times function is mangled by coffeescript
+     *     (1).times ->
+     * But this isn't:
+     *     (1+0).times ->
+     * So here is the little replace.
+     *
+     * TODO: you should be a little smarter about the substitution of the draw method
+     * You can tell a method declaration because the line below is indented
+     * so you should check that.
+     *
+     */
+    preprocessingFunctions.fixTimesFunctions = function (code) {
+        return code.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->");
+    };
+
+    /**
+     * Each doOnce block is made to start with an instruction that traces whether
+     * the block has been run or not. This allows us to put back the tick where
+     * necessary, so the doOnce block is not run again.
+     * Example - let's say one pastes in this code:
+     *     doOnce ->
+     *         background 255
+     *         fill 255,0,0
+     *
+     *     doOnce -> ball
+     *
+     * it becomes:
+     *     (1+0).times ->
+     *         addDoOnce(1); background 255
+     *         fill 255,0,0
+     *
+     *     ;addDoOnce(4);
+     *     (1+0).times -> ball
+     *    
+     * So: if there is at least one doOnce
+     *     split the source in lines
+     *     add line numbers tracing instructions so we can track which ones have been run
+     *     regroup the lines into a single string again
+     *
+     */
+    preprocessingFunctions.addDoOnceTracing = function (source) {
+        var sourceLines, i;
+        if (source.indexOf('doOnce') > -1) {
+            sourceLines = source.split("\n");
+            for (i = 0; i < sourceLines.length; i += 1) {
+
+                // add the line number tracing instruction to inline case
+                sourceLines[i] = sourceLines[i].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/gm, "$1;addDoOnce(" + i + "); (1+0).times -> $2");
+
+                // add the line number tracing instruction to multiline case
+                if (sourceLines[i].match(/^(\s*)doOnce[ ]*\->[ ]*$/gm)) {
+                    sourceLines[i] = sourceLines[i].replace(/^(\s*)doOnce[ ]*\->[ ]*$/gm, "$1(1+0).times ->");
+                    sourceLines[i + 1] = sourceLines[i + 1].replace(/^(\s*)(.+)$/gm, "$1;addDoOnce(" + i + "); $2");
+                }
+
+            }
+            source = sourceLines.join("\n");
+        }
+        return source;
     };
 
 
-    CodeTransformer.registerCode = function (editor) {
+    CodeTransformer.updateCode = function (updatedCodeAsString) {
 
-        try {
+        var elaboratedSource,
+        	errResults,
+        	characterBeingExamined,
+        	nextCharacterBeingExamined,
+        	programContainsStringsOrComments,
+        	aposCount,
+        	quoteCount,
+        	roundBrackCount,
+        	curlyBrackCount,
+        	squareBrackCount,
+        	elaboratedSourceByLine,
+        	iteratingOverSource,
+        	reasonOfBasicError;
 
-            var editorContent = editor.getValue(),
-                copyOfEditorContent,
-                programIsMangled = false,
-                programContainsStringsOrComments = false,
-                characterBeingExamined,
-                nextCharacterBeingExamined,
-                aposCount,
-                quoteCount,
-                roundBrackCount,
-                curlyBrackCount,
-                squareBrackCount,
-                elaboratedSource,
-                elaboratedSourceByLine,
-                iteratingOverSource;
-
-            if (editorContent !== '') {
-                events.trigger('cursor-hide');
-            }
-
-            if (editorContent === '') {
-                graphics.resetTheSpinThingy = true;
-                window.location.hash = '';
-
-                events.trigger('cursor-show');
-            }
+        CodeTransformer.currentCodeString = updatedCodeAsString;
+        
+        if (CodeTransformer.currentCodeString === ''){
+					liveCodeLabCoreInstance.GraphicsCommands.resetTheSpinThingy = true;
+					programHasBasicError = false;
+					eventRouter.trigger('clear-error');	
+					liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
+					var functionFromCompiledCode = new Function('');
+					liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction(null);
+					liveCodeLabCoreInstance.DrawFunctionRunner.lastStableDrawFunction = null;
+					return functionFromCompiledCode;
+        }
 
 
-            // doOnce statements which have a tick mark next to them
-            // are not run. This is achieved by replacing the line with
-            // the "doOnce" with "if false" or "//" depending on whether
-            // the doOnce is a multiline or an inline one, like so:
-            //      ✓doOnce ->
-            //        background 255
-            //        fill 255,0,0
-            //      ✓doOnce -> ball
-            // becomes:
-            //      if false ->
-            //        background 255
-            //        fill 255,0,0
-            //      //doOnce -> ball
-            editorContent = editorContent.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false");
-            editorContent = editorContent.replace(/\u2713/g, "//");
+        updatedCodeAsString = preprocessingFunctions.removeTickedDoOnce(updatedCodeAsString);
 
+//////////////////// Newer code checks
+        /**
+         * The CodeChecker will check for unbalanced brackets
+         * and unfinished strings
+         *
+         * If any errors are found then we quit compilation here
+         * and display an error message
+         */
+
+        /*
+        errResults = CodeChecker.parse(updatedCodeAsString);
+
+        if (errResults.err === true) {
+            eventRouter.trigger('compile-time-error-thrown', errResults.message);
+            return;
+        }
+
+
+        elaboratedSource = updatedCodeAsString;
+
+        elaboratedSource = preprocessingFunctions.postfixNotation(elaboratedSource);
+
+        elaboratedSource = preprocessingFunctions.fixTimesFunctions(elaboratedSource);
+
+        elaboratedSource = preprocessingFunctions.addDoOnceTracing(elaboratedSource);
+				*/
+//////////////////////////////////////
+
+////////////////// Older code checks
+            
             // according to jsperf, this is the fastest way to count for
             // occurrences of a character. We count apostrophes
 
@@ -159,11 +298,11 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
             // simple syntactic checks that are likely
             // to be much faster than attempting a
             // coffescript to javascript translation
-            copyOfEditorContent = editorContent;
+            var copyOfUpdatedCodeAsString = updatedCodeAsString;
 
-            while (copyOfEditorContent.length) {
-                characterBeingExamined = copyOfEditorContent.charAt(0);
-                nextCharacterBeingExamined = copyOfEditorContent.charAt(1);
+            while (copyOfUpdatedCodeAsString.length) {
+                characterBeingExamined = copyOfUpdatedCodeAsString.charAt(0);
+                nextCharacterBeingExamined = copyOfUpdatedCodeAsString.charAt(1);
                 if (characterBeingExamined === "'" || characterBeingExamined === '"' || (characterBeingExamined === "/" &&
                         (nextCharacterBeingExamined === "*" || nextCharacterBeingExamined === "/"))
                         ) {
@@ -171,12 +310,14 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
                     //alert('program contains strings or comments');
                     break;
                 }
-                copyOfEditorContent = copyOfEditorContent.slice(1);
+                copyOfUpdatedCodeAsString = copyOfUpdatedCodeAsString.slice(1);
             }
 
             // let's do a quick check:
             // these groups of characters should be in even number:
             // ", ', (), {}, []
+            // Note that this doesn't check nesting, so for example
+            // [{]} does pass the test.
             if (programContainsStringsOrComments) {
                 // OK the program contains comments and/or strings
                 // so this is what we are going to do:
@@ -194,7 +335,7 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
                 // Note that string take precedence over comments i.e.
                 // is a string, not half a string with a quote in a comment
                 // get rid of the comments for good.
-                editorContent = editorContent.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')|(\/\/[^\n]*\n)|(\/\*(?:(?!\*\/)(?:.|\n))*\*\/)/g, function (all, quoted, aposed, singleComment, comment) {
+                updatedCodeAsString = updatedCodeAsString.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')|(\/\/[^\n]*\n)|(\/\*(?:(?!\*\/)(?:.|\n))*\*\/)/g, function (all, quoted, aposed, singleComment, comment) {
                     var numberOfLinesInMultilineComment,
                         rebuiltNewLines,
                         cycleToRebuildNewLines;
@@ -221,10 +362,10 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
                 });
 
                 // ok now in the version we use for syntax checking we delete all the strings
-                copyOfEditorContent = editorContent.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')/g, "");
+                copyOfUpdatedCodeAsString = updatedCodeAsString.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')/g, "");
 
             } else {
-                copyOfEditorContent = editorContent;
+                copyOfUpdatedCodeAsString = updatedCodeAsString;
             }
 
             aposCount = 0;
@@ -233,8 +374,8 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
             curlyBrackCount = 0;
             squareBrackCount = 0;
 
-            while (copyOfEditorContent.length) {
-                characterBeingExamined = copyOfEditorContent.charAt(0);
+            while (copyOfUpdatedCodeAsString.length) {
+                characterBeingExamined = copyOfUpdatedCodeAsString.charAt(0);
 
                 if (characterBeingExamined === "'") {
                     aposCount += 1;
@@ -247,18 +388,13 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
                 } else if (characterBeingExamined === '[' || characterBeingExamined === ']') {
                     squareBrackCount += 1;
                 }
-                copyOfEditorContent = copyOfEditorContent.slice(1);
+                copyOfUpdatedCodeAsString = copyOfUpdatedCodeAsString.slice(1);
             }
 
             // according to jsperf, the fastest way to check if number is even/odd
             if (aposCount & 1 || quoteCount & 1 || roundBrackCount & 1 || curlyBrackCount & 1 || squareBrackCount & 1) {
-                if (autocoder.active) {
-                    editor.undo();
-                    return;
-                }
 
                 programHasBasicError = true;
-                $('#dangerSignText').css('color', 'red');
 
                 if (aposCount & 1) {
                     reasonOfBasicError = "Missing '";
@@ -276,14 +412,14 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
                     reasonOfBasicError = "Unbalanced []";
                 }
 
-                $('#errorMessageText').text(reasonOfBasicError);
+                eventRouter.trigger('compile-time-error-thrown', reasonOfBasicError);
 
 
                 return;
             }
 
 
-            elaboratedSource = editorContent;
+            elaboratedSource = updatedCodeAsString;
 
             // we make it so some common command forms can be used in postfix notation, e.g.
             //   60 bpm
@@ -373,196 +509,139 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
                 //alert('soon after replacing doOnces'+elaboratedSource);
             }
 
+///////////////////////////////////////
 
+        elaboratedSource = elaboratedSource.replace(/^(\s*)([a-z]+[a-zA-Z0-9]*)[ ]*$/gm, "$1;$2()");
 
-            elaboratedSource = elaboratedSource.replace(/^(\s*)([a-z]+[a-zA-Z0-9]*)[ ]*$/gm, "$1;$2()");
+        // this takes care of when a token that it's supposed to be
+        // a function is inlined with something else e.g.
+        // doOnce frame = 0; box
+        // 2 times -> box
+        elaboratedSource = elaboratedSource.replace(/;\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2");
+        // this takes care of when a token that it's supposed to be
+        // a function is inlined like so:
+        // 2 times -> box
+        elaboratedSource = elaboratedSource.replace(/\->\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2");
 
-            // this takes care of when a token that it's supposed to be
-            // a function is inlined with something else e.g.
-            // doOnce frame = 0; box
-            // 2 times -> box
-            elaboratedSource = elaboratedSource.replace(/;\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2");
-            // this takes care of when a token that it's supposed to be
-            // a function is inlined like so:
-            // 2 times -> box
-            elaboratedSource = elaboratedSource.replace(/\->\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2");
-
-            // draw() could just be called by mistake and it's likely
-            // to be disastrous. User doesn't even have visibility of such method,
-            // why should he/she call it?
-            // TODO: call draw() something else that the user is not
-            // likely to use by mistake and take away this check.
-            if (elaboratedSource.match(/[\s\+\;]+draw\s*\(/) || false) {
-                if (autocoder.active) {
-                    editor.undo();
-                    //alert("did an undo");
-                    return;
-                }
-                programHasBasicError = true;
-                $('#dangerSignText').css('color', 'red');
-                $('#errorMessageText').text("You can't call draw()");
-                return;
-            }
-
-
-            // we don't want if and for to undergo the same tratment as, say, box
-            // so put those back to normal.
-            elaboratedSource = elaboratedSource.replace(/;(if)\(\)/g, ";$1");
-            elaboratedSource = elaboratedSource.replace(/;(else)\(\)/g, ";$1");
-            elaboratedSource = elaboratedSource.replace(/;(for)\(\)/g, ";$1");
-
-            elaboratedSource = elaboratedSource.replace(/\/\//g, "#");
-            // Why do we have to match a non-digit non-letter?
-            // because we have to make sure that the keyword is "on its own"
-            // otherwise for example we interfere the replacements of "background" and "round"
-            // Checking whether the keyword is "on its own" avoid those interferences.
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(scale)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(rotate)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(move)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(rect)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(line)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(bpm)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(play)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(pushMatrix)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(popMatrix)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(resetMatrix)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(fill)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noFill)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(stroke)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noStroke)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(strokeSize)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(animationStyle)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(simpleGradient)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(background)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(color)(\s)+/g, "$1;$2$3");
-            //elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(ambient)(\s)+/g, "$1;$2$3" );
-            //elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(reflect)(\s)+/g, "$1;$2$3" );
-            //elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(refract)(\s)+/g, "$1;$2$3" );
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(lights)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noLights)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(ambientLight)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(pointLight)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(ball)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(ballDetail)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(peg)(\s)+/g, "$1;$2$3");
-
-            // Calculation
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(abs)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(ceil)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(constrain)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(dist)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(exp)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(floor)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(lerp)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(log)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(mag)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(map)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(max)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(min)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(norm)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(pow)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(round)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(sq)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(sqrt)(\s)+/g, "$1;$2$3");
-            // Trigonometry
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(acos)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(asin)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(atan)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(atan2)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(cos)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(degrees)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(radians)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(sin)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(tan)(\s)+/g, "$1;$2$3");
-            // Random
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(random)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(randomSeed)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noise)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noiseDetail)(\s)+/g, "$1;$2$3");
-            elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noiseSeed)(\s)+/g, "$1;$2$3");
-
-
-            // you'd think that semicolons are OK anywhere before any command
-            // but coffee-script doesn't like some particular configurations - fixing those:
-            // the semicolon mangles the first line of the function definitions:
-            elaboratedSource = elaboratedSource.replace(/->(\s+);/g, "->$1");
-            // the semicolon mangles the first line of if statements
-            elaboratedSource = elaboratedSource.replace(/(\sif\s*.*\s*);/g, "$1");
-            // the semicolon mangles the first line of else if statements
-            elaboratedSource = elaboratedSource.replace(/(\s);(else\s*if\s*.*\s*);/g, "$1$2");
-            // the semicolon mangles the first line of else statements
-            elaboratedSource = elaboratedSource.replace(/(\s);(else.*\s*);/g, "$1$2");
-
-
-            compiledOutput = CodeTransformer.compiler.compile(elaboratedSource, {
-                bare: "on"
-            });
-        } catch (e) {
-
-            if (autocoder.active) {
-                editor.undo();
-                //alert("did an undo");
-                return;
-            }
-
-            events.trigger('display-error', e);
-
+        // draw() could just be called by mistake and it's likely
+        // to be disastrous. User doesn't even have visibility of such method,
+        // why should he/she call it?
+        // TODO: call draw() something else that the user is not
+        // likely to use by mistake and take away this check.
+        if (elaboratedSource.match(/[\s\+\;]+draw\s*\(/) || false) {
+            programHasBasicError = true;
+            eventRouter.trigger('compile-time-error-thrown', "You can't call draw()");
             return;
         }
 
 
-        // FINDS USED METHODS WHICH ARE NOT DECLARED
-        var matchDeclaredMethod = /([a-z]+[a-zA-Z0-9]*) = function/;
-        var declaredMethods = [];
-        var mc;
-        var copyOfCompiledOutput = compiledOutput;
-        while ((mc = copyOfCompiledOutput.match(matchDeclaredMethod))) {
-            declaredMethods.push(mc[1]);
-            copyOfCompiledOutput = RegExp.rightContext;
-        }
+        // we don't want if and for to undergo the same tratment as, say, box
+        // so put those back to normal.
+        elaboratedSource = elaboratedSource.replace(/;(if)\(\)/g, ";$1");
+        elaboratedSource = elaboratedSource.replace(/;(else)\(\)/g, ";$1");
+        elaboratedSource = elaboratedSource.replace(/;(for)\(\)/g, ";$1");
 
-        var usedMethods = [];
-        var md;
-        copyOfCompiledOutput = compiledOutput;
-        while ((md = copyOfCompiledOutput.match(/\s([a-z]+[a-zA-Z0-9]*)\(/))) {
-            usedMethods.push(md[1]);
-            copyOfCompiledOutput = RegExp.rightContext;
-        }
-        var error = false;
-        var scanningUsedMethods;
-        for (scanningUsedMethods = 0; scanningUsedMethods < usedMethods.length; scanningUsedMethods += 1) {
-            if (listOfPossibleFunctions.indexOf(usedMethods[scanningUsedMethods]) !== -1) {
-                continue;
-            }
-            if (declaredMethods.length === 0) {
-                error = true;
-                $('#dangerSignText').css('color', 'red');
-                $('#errorMessageText').text(usedMethods[scanningUsedMethods] + " doesn't exist");
-                return;
-            }
-            var scanningDeclaredMethods;
-            for (scanningDeclaredMethods = 0; scanningDeclaredMethods < declaredMethods.length; scanningDeclaredMethods += 1) {
-                if (usedMethods[scanningUsedMethods] === declaredMethods[scanningDeclaredMethods]) {
-                    break;
-                } else if (scanningDeclaredMethods === declaredMethods.length - 1) {
-                    error = true;
-                    $('#dangerSignText').css('color', 'red');
-                    $('#errorMessageText').text(usedMethods[scanningUsedMethods] + " doesn't exist");
-                    return;
-                }
-            }
-        }
+        elaboratedSource = elaboratedSource.replace(/\/\//g, "#");
+        // Why do we have to match a non-digit non-letter?
+        // because we have to make sure that the keyword is "on its own"
+        // otherwise for example we interfere the replacements of "background" and "round"
+        // Checking whether the keyword is "on its own" avoid those interferences.
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(scale)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(rotate)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(move)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(rect)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(line)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(bpm)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(play)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(pushMatrix)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(popMatrix)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(resetMatrix)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(fill)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noFill)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(stroke)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noStroke)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(strokeSize)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(animationStyle)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(simpleGradient)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(background)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(color)(\s)+/g, "$1;$2$3");
+        //elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(ambient)(\s)+/g, "$1;$2$3" );
+        //elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(reflect)(\s)+/g, "$1;$2$3" );
+        //elaboratedSource =  elaboratedSource.replace(/([^a-zA-Z0-9])(refract)(\s)+/g, "$1;$2$3" );
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(lights)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noLights)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(ambientLight)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(pointLight)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(ball)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(ballDetail)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(peg)(\s)+/g, "$1;$2$3");
 
+        // Calculation
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(abs)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(ceil)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(constrain)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(dist)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(exp)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(floor)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(lerp)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(log)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(mag)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(map)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(max)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(min)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(norm)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(pow)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(round)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(sq)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(sqrt)(\s)+/g, "$1;$2$3");
+        // Trigonometry
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(acos)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(asin)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(atan)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(atan2)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(cos)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(degrees)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(radians)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(sin)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(tan)(\s)+/g, "$1;$2$3");
+        // Random
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(random)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(randomSeed)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noise)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noiseDetail)(\s)+/g, "$1;$2$3");
+        elaboratedSource = elaboratedSource.replace(/([^a-zA-Z0-9])(noiseSeed)(\s)+/g, "$1;$2$3");
+
+
+        // you'd think that semicolons are OK anywhere before any command
+        // but coffee-script doesn't like some particular configurations - fixing those:
+        // the semicolon mangles the first line of the function definitions:
+        elaboratedSource = elaboratedSource.replace(/->(\s+);/g, "->$1");
+        // the semicolon mangles the first line of if statements
+        elaboratedSource = elaboratedSource.replace(/(\sif\s*.*\s*);/g, "$1");
+        // the semicolon mangles the first line of else if statements
+        elaboratedSource = elaboratedSource.replace(/(\s);(else\s*if\s*.*\s*);/g, "$1$2");
+        // the semicolon mangles the first line of else statements
+        elaboratedSource = elaboratedSource.replace(/(\s);(else.*\s*);/g, "$1$2");
+
+        try {
+            compiledOutput = CodeTransformer.compiler.compile(elaboratedSource, {
+                bare: "on"
+            });
+        } catch (e) {
+            // coffescript compiler has caught a syntax error.
+            // we are going to display the error and we WON'T register
+            // the new code
+            eventRouter.trigger('compile-time-error-thrown', e);
+            return;
+        }
 
         programHasBasicError = false;
-        reasonOfBasicError = "";
-        $('#dangerSignText').css('color', '#000000');
-        $('#errorMessageText').text(reasonOfBasicError);
+        eventRouter.trigger('clear-error');
 
         // see here for the deepest examination ever of "eval"
         // http://perfectionkills.com/global-eval-what-are-the-options/
         // note that exceptions are caught by the window.onerror callback
-        CodeTransformer.consecutiveFramesWithoutRunTimeError = 0;
+        liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
 
         // You might want to change the frame count from the program
         // just like you can in Processing, but it turns out that when
@@ -576,21 +655,18 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
         // coffeescript to javascript translator inserts.
         compiledOutput = compiledOutput.replace(/var frame/, ";");
 
-        return new Function(compiledOutput);
+        var functionFromCompiledCode = new Function(compiledOutput);
+        liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction(functionFromCompiledCode);
+        return functionFromCompiledCode;
 
     };
 
-    CodeTransformer.putTicksNextToDoOnceBlocksThatHaveBeenRun = function (editor) {
+    CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange = function (CodeTransformer, doOnceOccurrencesLineNumbers) {
 
         var elaboratedSource,
             elaboratedSourceByLine,
             iteratingOverSource,
-            cursorPositionBeforeAddingCheckMark,
             drawFunction;
-
-        if (CodeTransformer.doOnceOccurrencesLineNumbers.length === 0) {
-            return;
-        }
 
         // if we are here, the following has happened: someone has added an element
         // to the doOnceOccurrencesLineNumbers array. This can only have happened
@@ -602,22 +678,21 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
         // when we start the program we could have more than one doOnce that has
         // to run.
 
-        elaboratedSource = editor.getValue();
+        elaboratedSource = CodeTransformer.currentCodeString;
 
         // we know the line number of each doOnce block that has been run
         // so we go there and add a tick next to each doOnce to indicate
         // that it has been run.
         elaboratedSourceByLine = elaboratedSource.split("\n");
-        for (iteratingOverSource = 0; iteratingOverSource < CodeTransformer.doOnceOccurrencesLineNumbers.length; iteratingOverSource += 1) {
-            elaboratedSourceByLine[CodeTransformer.doOnceOccurrencesLineNumbers[iteratingOverSource]] = elaboratedSourceByLine[CodeTransformer.doOnceOccurrencesLineNumbers[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*.*)$/gm, "$1\u2713doOnce$2");
+        for (iteratingOverSource = 0; iteratingOverSource < doOnceOccurrencesLineNumbers.length; iteratingOverSource += 1) {
+            elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]] = elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*.*)$/gm, "$1\u2713doOnce$2");
         }
         elaboratedSource = elaboratedSourceByLine.join("\n");
 
-        cursorPositionBeforeAddingCheckMark = editor.getCursor();
-        cursorPositionBeforeAddingCheckMark.ch = cursorPositionBeforeAddingCheckMark.ch + 1;
-
-        editor.setValue(elaboratedSource);
-        editor.setCursor(cursorPositionBeforeAddingCheckMark);
+        // puts the new code (where the doOnce that have been executed have
+        // tickboxes put back) in the editor. Which will trigger a re-registration
+        // of the new code.
+        eventRouter.trigger('code-updated-by-livecodelab', elaboratedSource);
 
         // we want to avoid that another frame is run with the old
         // code, as this would mean that the
@@ -627,10 +702,10 @@ var createCodeTransformer = function (events, CoffeeCompiler, graphics) {
         // new code by getting the code from codemirror again
         // because we don't know what that entails. We should
         // just pass the code we already have.
-        // Also registerCode() may split the source code by line, so we can
+        // Also updateCode() may split the source code by line, so we can
         // avoid that since we've just split it, we could pass
         // the already split code.
-        drawFunction = CodeTransformer.registerCode(editor);
+        drawFunction = CodeTransformer.updateCode(elaboratedSource);
         return drawFunction;
     };
 

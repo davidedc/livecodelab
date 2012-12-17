@@ -1,22 +1,22 @@
 /*jslint browser: true, devel: true */
 /*global $ */
 
-var createBigCursor = function (events) {
+var createBigCursor = function (eventRouter) {
 
     'use strict';
 
     var BigCursor = {},
-        fakeCursorBlinking,
+        startBigCursorBlinkingAnimation,
         fakeCursorInterval,
-        shrinkFakeText,
-        showFakeText;
+        shrinkBigCursor,
+        unshrinkBigCursor;
 
     // Do we show the big cursor or not
     // If there's any text in the editor
     // then we shouldn't be showing it
-    BigCursor.show = true;
+    BigCursor.isShowing = true;
 
-    fakeCursorBlinking = function () {
+    startBigCursorBlinkingAnimation = function () {
         $("#fakeStartingBlinkingCursor").animate({
             opacity: 0.2
         }, "fast", "swing").animate({
@@ -26,15 +26,20 @@ var createBigCursor = function (events) {
 
     BigCursor.toggleBlink = function (active) {
         if (active) {
-            fakeCursorInterval = setInterval(fakeCursorBlinking, 800);
+        		//avoid setting the animation twice, which causes
+        		// the cursor to start blinking twice as fast.
+        		if (!fakeCursorInterval){
+            	fakeCursorInterval = setInterval(startBigCursorBlinkingAnimation, 800);
+            }
         } else {
             clearTimeout(fakeCursorInterval);
+            fakeCursorInterval = null;
         }
     };
 
-    shrinkFakeText = function () {
+    shrinkBigCursor = function () {
         var currentCaption, shorterCaption;
-        if (BigCursor.show) {
+        if (BigCursor.isShowing) {
             currentCaption = $('#caption').html();
             shorterCaption = currentCaption.substring(0, currentCaption.length - 1);
             $('#caption').html(shorterCaption + "|");
@@ -50,13 +55,13 @@ var createBigCursor = function (events) {
             setTimeout('$("#formCode").animate({opacity: 1}, "fast");', 120);
             setTimeout('$("#justForFakeCursor").hide();', 200);
             setTimeout('$("#toMove").hide();', 200);
-            BigCursor.show = false;
+            BigCursor.isShowing = false;
             BigCursor.toggleBlink(false);
         }
     };
 
-    showFakeText = function () {
-        if (!BigCursor.show) {
+    unshrinkBigCursor = function () {
+        if (!BigCursor.isShowing) {
             $("#formCode").animate({
                 opacity: 0
             }, "fast");
@@ -75,19 +80,19 @@ var createBigCursor = function (events) {
                 $('#caption').html('');
                 $('#fakeStartingBlinkingCursor').html('|');
             });
-            BigCursor.show = true;
+            BigCursor.isShowing = true;
             BigCursor.toggleBlink(true);
         }
     };
 
 
     // Setup Event Listeners
-    events.bind('cursor-show', function () {
-        showFakeText();
+    eventRouter.bind('big-cursor-show', function () {
+        unshrinkBigCursor();
     });
 
-    events.bind('cursor-hide', function () {
-        shrinkFakeText();
+    eventRouter.bind('big-cursor-hide', function () {
+        shrinkBigCursor();
     });
 
 

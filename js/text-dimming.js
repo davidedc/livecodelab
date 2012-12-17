@@ -1,7 +1,7 @@
 /*jslint */
 /*global $ */
 
-var createEditorDimmer = function (events) {
+var createEditorDimmer = function (eventRouter, bigCursor) {
 
     'use strict';
 
@@ -11,11 +11,14 @@ var createEditorDimmer = function (events) {
         dimCodeOn = false;
 
     EditorDimmer.undimEditor = function () {
-        if ($("#formCode").css('opacity') < 0.99) {
-            $("#formCode").animate({
-                opacity: 1
-            }, "fast");
-        }
+			//console.log('undimming, bigCursor.startBigCursorBlinkingAnimation:' + bigCursor.startBigCursorBlinkingAnimation);
+			if (!bigCursor.isShowing) {
+				if ($("#formCode").css('opacity') < 0.99) {
+						$("#formCode").animate({
+								opacity: 1
+						}, "fast");
+				}
+			}
     };
 
     // Now that there is a manual switch to toggle it off and on
@@ -57,16 +60,16 @@ var createEditorDimmer = function (events) {
             clearInterval(dimIntervalID);
             EditorDimmer.undimEditor();
         }
-        events.trigger('editor-dimmer-state', dimCodeOn);
+        eventRouter.trigger('auto-hide-code-button-pressed', dimCodeOn);
     };
 
 
     // Setup Event Listeners
-    events.bind('editor-dim', EditorDimmer.dimEditor, EditorDimmer);
+    eventRouter.bind('editor-dim', EditorDimmer.dimEditor, EditorDimmer);
 
-    events.bind('editor-undim', EditorDimmer.undimEditor, EditorDimmer);
+    eventRouter.bind('editor-undim', EditorDimmer.undimEditor, EditorDimmer);
 
-    events.bind('editor-toggle-dim', EditorDimmer.toggleDimCode, EditorDimmer);
+    eventRouter.bind('editor-toggle-dim', EditorDimmer.toggleDimCode, EditorDimmer);
 
     return EditorDimmer;
 

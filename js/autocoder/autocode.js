@@ -1,7 +1,7 @@
 /*jslint devel: true */
 /*global McLexer */
 
-var createAutocoder = function (events, editor, ColourNames) {
+var createAutocoder = function (eventRouter, editor, colourNames) {
 
     'use strict';
 
@@ -128,13 +128,13 @@ var createAutocoder = function (events, editor, ColourNames) {
         };
 
         this.mutate = function () {
-            var idx = Math.floor(Math.random() * ColourNames.length);
+            var idx = Math.floor(Math.random() * colourNames.length);
 
-            while (this.string == ColourNames[idx]) {
-                idx = Math.floor(Math.random() * ColourNames.length);
+            while (this.string == colourNames[idx]) {
+                idx = Math.floor(Math.random() * colourNames.length);
             }
 
-            this.string = ColourNames[idx];
+            this.string = colourNames[idx];
         };
     };
 
@@ -248,8 +248,8 @@ var createAutocoder = function (events, editor, ColourNames) {
     });
 
     // colour
-    for (scanningAllColors = 0; scanningAllColors < ColourNames.length; scanningAllColors++) {
-        INIT(new RegExp(ColourNames[scanningAllColors]))(function (match, rest, state) {
+    for (scanningAllColors = 0; scanningAllColors < colourNames.length; scanningAllColors++) {
+        INIT(new RegExp(colourNames[scanningAllColors]))(function (match, rest, state) {
             Tokens.push(new COLOUR(match[0]));
             return state.continuation(rest);
         });
@@ -538,7 +538,7 @@ var createAutocoder = function (events, editor, ColourNames) {
     };
 
     var autocoderMutate = function () {
-        events.trigger('autocoderbutton-flash');
+        eventRouter.trigger('autocoderbutton-flash');
         mutate();
     };
 
@@ -552,20 +552,20 @@ var createAutocoder = function (events, editor, ColourNames) {
         if (autocoder.active) {
             autocoderMutateTimeout = setInterval(autocoderMutate, 1000);
             if (editor.getValue() === '' || ((window.location.hash.indexOf("bookmark") !== -1) && (window.location.hash.indexOf("autocodeTutorial") !== -1))) {
-                events.trigger('load-program', 'cubesAndSpikes');
+                eventRouter.trigger('load-program', 'cubesAndSpikes');
             }
         } else {
             clearInterval(autocoderMutateTimeout);
         }
-        events.trigger('autocoder-state', autocoder.active);
+        eventRouter.trigger('autocoder-button-pressed', autocoder.active);
     };
 
     // Setup Event Listeners
-    events.bind('reset', function () {
+    eventRouter.bind('reset', function () {
         toggle(false);
     });
 
-    events.bind('toggle-autocoder', function () {
+    eventRouter.bind('toggle-autocoder', function () {
         toggle();
     });
 

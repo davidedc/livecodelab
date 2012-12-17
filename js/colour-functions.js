@@ -3,8 +3,8 @@
 // Code adapted from processing.js
 
 /**
- * NOTE: in releases we replace symbolic Constants.* names with their values.
- * Using Constants.* in code below is fine.  See tools/rewrite-Constants.js.
+ * Closure compiler automatically replaces symbolic Constants.* names with their
+ * values (it does it for everything it thinks it's a constant really).
  */
 
 
@@ -14,7 +14,6 @@ var createColourFunctions = function () {
 
     var ColourFunctions = {},
         Constants,
-        colorModeA = 255,
         colorModeX = 255,
         colorModeY = 255,
         colorModeZ = 255,
@@ -24,6 +23,8 @@ var createColourFunctions = function () {
         color$1,
         modes;
 
+
+    ColourFunctions.colorModeA = 255;
 
     Constants = {
         // Color modes
@@ -75,7 +76,7 @@ var createColourFunctions = function () {
             b = Math.round(255 * (aValue3 / colorModeZ));
         }
 
-        a = Math.round(255 * (aValue4 / colorModeA));
+        a = Math.round(255 * (aValue4 / ColourFunctions.colorModeA));
 
         // Limit values less than 0 and greater than 255
         r = (r < 0) ? 0 : r;
@@ -103,7 +104,7 @@ var createColourFunctions = function () {
 
         // Color int and alpha
         if (aValue1 & Constants.ALPHA_MASK) {
-            a = Math.round(255 * (aValue2 / colorModeA));
+            a = Math.round(255 * (aValue2 / ColourFunctions.colorModeA));
             // Limit values less than 0 and greater than 255
             a = (a > 255) ? 255 : a;
             a = (a < 0) ? 0 : a;
@@ -123,10 +124,10 @@ var createColourFunctions = function () {
         // Grayscale
         if (aValue1 <= colorModeX && aValue1 >= 0) {
             if (curColorMode === Constants.RGB) {
-                return color$4(aValue1, aValue1, aValue1, colorModeA);
+                return color$4(aValue1, aValue1, aValue1, ColourFunctions.colorModeA);
             }
             if (curColorMode === Constants.HSB) {
-                return color$4(0, 0, (aValue1 / colorModeX) * colorModeZ, colorModeA);
+                return color$4(0, 0, (aValue1 / colorModeX) * colorModeZ, ColourFunctions.colorModeA);
             }
         }
         // Color int
@@ -164,7 +165,7 @@ var createColourFunctions = function () {
 
         // 3 arguments: (R, G, B) or (H, S, B)
         if (aValue1 !== undefined && aValue2 !== undefined && aValue3 !== undefined) {
-            return color$4(aValue1, aValue2, aValue3, colorModeA);
+            return color$4(aValue1, aValue2, aValue3, ColourFunctions.colorModeA);
         }
 
         // 2 arguments: (Color, A) or (Grayscale, A)
@@ -178,7 +179,7 @@ var createColourFunctions = function () {
         }
 
         // Default
-        return color$4(colorModeX, colorModeY, colorModeZ, colorModeA);
+        return color$4(colorModeX, colorModeY, colorModeZ, ColourFunctions.colorModeA);
     };
 
     // Ease of use function to extract the colour bits into a string
@@ -404,7 +405,7 @@ var createColourFunctions = function () {
      * @see brightness
      */
     window.alpha = ColourFunctions.alpha = function (aColor) {
-        return ((aColor & Constants.ALPHA_MASK) >>> 24) / 255 * colorModeA;
+        return ((aColor & Constants.ALPHA_MASK) >>> 24) / 255 * ColourFunctions.colorModeA;
     };
     window.alphaZeroToOne = ColourFunctions.alphaZeroToOne = function (aColor) {
         return ((aColor & Constants.ALPHA_MASK) >>> 24) / 255;
@@ -454,9 +455,9 @@ var createColourFunctions = function () {
             // Special processing for HSB mode.
             // Get HSB and Alpha values for Color 1 and 2
             hsb1 = ColourFunctions.colorToHSB(colorBits1);
-            a1 = ((colorBits1 & Constants.ALPHA_MASK) >>> 24) / colorModeA;
+            a1 = ((colorBits1 & Constants.ALPHA_MASK) >>> 24) / ColourFunctions.colorModeA;
             hsb2 = ColourFunctions.colorToHSB(colorBits2);
-            a2 = ((colorBits2 & Constants.ALPHA_MASK) >>> 24) / colorModeA;
+            a2 = ((colorBits2 & Constants.ALPHA_MASK) >>> 24) / ColourFunctions.colorModeA;
 
             // RColourFunctions.eturn lerp value for each channel, for HSB components
             h = ColourFunctions.lerp(hsb1[0], hsb2[0], amt);
@@ -464,7 +465,7 @@ var createColourFunctions = function () {
             b = ColourFunctions.lerp(hsb1[2], hsb2[2], amt);
             rgb = ColourFunctions.color.toRGB(h, s, b);
             // ... and for Alpha-range
-            a = ColourFunctions.lerp(a1, a2, amt) * colorModeA;
+            a = ColourFunctions.lerp(a1, a2, amt) * ColourFunctions.colorModeA;
 
             return (a << 24) & Constants.ALPHA_MASK | (rgb[0] << 16) & Constants.RED_MASK | (rgb[1] << 8) & Constants.GREEN_MASK | rgb[2] & Constants.BLUE_MASK;
         }
@@ -473,19 +474,19 @@ var createColourFunctions = function () {
         r1 = (colorBits1 & Constants.RED_MASK) >>> 16;
         g1 = (colorBits1 & Constants.GREEN_MASK) >>> 8;
         b1 = (colorBits1 & Constants.BLUE_MASK);
-        a1 = ((colorBits1 & Constants.ALPHA_MASK) >>> 24) / colorModeA;
+        a1 = ((colorBits1 & Constants.ALPHA_MASK) >>> 24) / ColourFunctions.colorModeA;
 
         // Get RGBA values for Color 2 to floats
         r2 = (colorBits2 & Constants.RED_MASK) >>> 16;
         g2 = (colorBits2 & Constants.GREEN_MASK) >>> 8;
         b2 = (colorBits2 & Constants.BLUE_MASK);
-        a2 = ((colorBits2 & Constants.ALPHA_MASK) >>> 24) / colorModeA;
+        a2 = ((colorBits2 & Constants.ALPHA_MASK) >>> 24) / ColourFunctions.colorModeA;
 
         // Return lerp value for each channel, INT for color, Float for Alpha-range
         r = ColourFunctions.lerp(r1, r2, amt) | 0;
         g = ColourFunctions.lerp(g1, g2, amt) | 0;
         b = ColourFunctions.lerp(b1, b2, amt) | 0;
-        a = ColourFunctions.lerp(a1, a2, amt) * colorModeA;
+        a = ColourFunctions.lerp(a1, a2, amt) * ColourFunctions.colorModeA;
 
         return (a << 24) & Constants.ALPHA_MASK | (r << 16) & Constants.RED_MASK | (g << 8) & Constants.GREEN_MASK | b & Constants.BLUE_MASK;
     };
@@ -516,7 +517,7 @@ var createColourFunctions = function () {
             colorModeX = range1;
             colorModeY = range2 || range1;
             colorModeZ = range3 || range1;
-            colorModeA = range4 || range1;
+            ColourFunctions.colorModeA = range4 || range1;
         }
     };
 
@@ -813,5 +814,4 @@ var createColourFunctions = function () {
 
 
     return ColourFunctions;
-    // enf of functions from processing.js
 };

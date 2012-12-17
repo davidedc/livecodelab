@@ -1,89 +1,85 @@
 /*jslint browser: true, devel: true */
 
-var createThreeJs = function (Detector, THREE, THREEx) {
+var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer, liveCodeLabCore_THREE) {
 
     'use strict';
 
-    var ThreeJs = {},
-        backgroundScene,
-        backGroundFraction = 15,
+    var ThreeJsSystem = {},
         pointLight;
 
-    ThreeJs.isWebGLUsed = false;
+    ThreeJsSystem.isWebGLUsed = false;
 
-    ThreeJs.composer = {};
+    ThreeJsSystem.composer = {};
 
-    ThreeJs.sceneRenderingCanvas = {};
+    ThreeJsSystem.blendedThreeJsSceneCanvas;
 
-    ThreeJs.forceCanvasRenderer = false;
+    ThreeJsSystem.forceCanvasRenderer = forceCanvasRenderer;
 
-    ThreeJs.scaledBackgroundWidth = Math.floor(window.innerWidth / backGroundFraction);
-    ThreeJs.scaledBackgroundHeight = Math.floor(window.innerHeight / backGroundFraction);
 
-    if (!ThreeJs.forceCanvasRenderer && Detector.webgl) {
+    if (!ThreeJsSystem.forceCanvasRenderer && Detector.webgl) {
 
-        ThreeJs.ballDefaultDetLevel = 16;
-        ThreeJs.sceneRenderingCanvas = document.createElement('canvas');
+        ThreeJsSystem.ballDefaultDetLevel = 16;
+        
+        if (!blendedThreeJsSceneCanvas) {
+          blendedThreeJsSceneCanvas = document.createElement('canvas');
+        }
+        ThreeJsSystem.blendedThreeJsSceneCanvas = blendedThreeJsSceneCanvas;
 
-        ThreeJs.renderer = new THREE.WebGLRenderer({
-            canvas: ThreeJs.sceneRenderingCanvas,
+        ThreeJsSystem.renderer = new liveCodeLabCore_THREE.WebGLRenderer({
+            canvas: ThreeJsSystem.blendedThreeJsSceneCanvas,
             preserveDrawingBuffer: false, // to allow screenshot
             antialias: false,
             premultipliedAlpha: false
         });
 
-        ThreeJs.isWebGLUsed = true;
+        ThreeJsSystem.isWebGLUsed = true;
 
-        ThreeJs.renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('container').appendChild(ThreeJs.sceneRenderingCanvas);
+        ThreeJsSystem.renderer.setSize(window.innerWidth, window.innerHeight);
 
     } else {
 
-
         // we always draw the 3d scene off-screen
-        ThreeJs.ballDefaultDetLevel = 6;
-        ThreeJs.sceneRenderingCanvas = document.createElement('canvas');
-        ThreeJs.sceneRenderingCanvasContext = ThreeJs.sceneRenderingCanvas.getContext('2d');
-        ThreeJs.renderer = new THREE.CanvasRenderer({
-            canvas: ThreeJs.sceneRenderingCanvas,
+        ThreeJsSystem.ballDefaultDetLevel = 6;
+        if (!ThreeJsSystem.currentFrameThreeJsSceneCanvas) {
+          ThreeJsSystem.currentFrameThreeJsSceneCanvas = document.createElement('canvas');
+        }
+        ThreeJsSystem.currentFrameThreeJsSceneCanvasContext = ThreeJsSystem.currentFrameThreeJsSceneCanvas.getContext('2d');
+        ThreeJsSystem.renderer = new liveCodeLabCore_THREE.CanvasRenderer({
+            canvas: ThreeJsSystem.currentFrameThreeJsSceneCanvas,
             antialias: true, // to get smoother output
             preserveDrawingBuffer: false // to allow screenshot
         });
 
 
-        ThreeJs.previousRenderForBlending = document.createElement('canvas');
-        ThreeJs.previousRenderForBlending.width = window.innerWidth;
-        ThreeJs.previousRenderForBlending.height = window.innerHeight;
-        ThreeJs.previousRenderForBlendingContext = ThreeJs.previousRenderForBlending.getContext('2d');
+        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas = document.createElement('canvas');
+        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas.width = window.innerWidth;
+        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas.height = window.innerHeight;
+        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext = ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas.getContext('2d');
 
-        ThreeJs.finalRenderWithSceneAndBlend = document.getElementById('finalRenderWithSceneAndBlendCanvas');
-        ThreeJs.finalRenderWithSceneAndBlend.width = window.innerWidth;
-        ThreeJs.finalRenderWithSceneAndBlend.height = window.innerWidth;
-        ThreeJs.finalRenderWithSceneAndBlendContext = ThreeJs.finalRenderWithSceneAndBlend.getContext('2d');
 
-        ThreeJs.renderer.setSize(window.innerWidth, window.innerHeight);
+        ThreeJsSystem.blendedThreeJsSceneCanvas = document.getElementById('blendedThreeJsSceneCanvas');
+        ThreeJsSystem.blendedThreeJsSceneCanvas.width = window.innerWidth;
+        ThreeJsSystem.blendedThreeJsSceneCanvas.height = window.innerWidth;
+        ThreeJsSystem.blendedThreeJsSceneCanvasContext = ThreeJsSystem.blendedThreeJsSceneCanvas.getContext('2d');
+
+        ThreeJsSystem.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
 
-    backgroundScene = document.getElementById('backGroundCanvas');
-    backgroundScene.width = ThreeJs.scaledBackgroundWidth;
-    backgroundScene.height = ThreeJs.scaledBackgroundHeight;
-    ThreeJs.backgroundSceneContext = backgroundScene.getContext('2d');
 
-
-    ThreeJs.scene = new THREE.Scene();
-    ThreeJs.scene.matrixAutoUpdate = false;
+    ThreeJsSystem.scene = new liveCodeLabCore_THREE.Scene();
+    ThreeJsSystem.scene.matrixAutoUpdate = false;
 
 
     // put a camera in the scene
-    ThreeJs.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000);
-    ThreeJs.camera.position.set(0, 0, 5);
-    ThreeJs.scene.add(ThreeJs.camera);
+    ThreeJsSystem.camera = new liveCodeLabCore_THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000);
+    ThreeJsSystem.camera.position.set(0, 0, 5);
+    ThreeJsSystem.scene.add(ThreeJsSystem.camera);
 
     // transparently support window resize
-    THREEx.WindowResize.bind(ThreeJs.renderer, ThreeJs.camera);
+    THREEx.WindowResize.bind(ThreeJsSystem.renderer, ThreeJsSystem.camera);
 
-    ThreeJs.buildPostprocessingChain = function () {
+    ThreeJsSystem.buildPostprocessingChain = function () {
         var renderTargetParameters,
             renderTarget,
             effectSaveTarget,
@@ -92,12 +88,12 @@ var createThreeJs = function (Detector, THREE, THREEx) {
             renderModel;
 
         renderTargetParameters = {
-            format: THREE.RGBAFormat,
+            format: liveCodeLabCore_THREE.RGBAFormat,
             stencilBuffer: true
         };
 
-        renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters);
-        effectSaveTarget = new THREE.SavePass(new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters));
+        renderTarget = new liveCodeLabCore_THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters);
+        effectSaveTarget = new liveCodeLabCore_THREE.SavePass(new liveCodeLabCore_THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters));
         effectSaveTarget.clear = false;
 
         // Uncomment the three lines containing "fxaaPass" below to try a fast
@@ -107,35 +103,35 @@ var createThreeJs = function (Detector, THREE, THREEx) {
         // motionBlur leaving a black trail - tracked in github with
         // https://github.com/davidedc/livecodelab/issues/22
         
-        //fxaaPass = new THREE.ShaderPass(THREE.ShaderExtras.fxaa);
+        //fxaaPass = new liveCodeLabCore_THREE.ShaderPass(liveCodeLabCore_THREE.ShaderExtras.fxaa);
         //fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);
 
-        ThreeJs.effectBlend = new THREE.ShaderPass(THREE.ShaderExtras.blend, "tDiffuse1");
-        screenPass = new THREE.ShaderPass(THREE.ShaderExtras.screen);
+        ThreeJsSystem.effectBlend = new liveCodeLabCore_THREE.ShaderPass(liveCodeLabCore_THREE.ShaderExtras.blend, "tDiffuse1");
+        screenPass = new liveCodeLabCore_THREE.ShaderPass(liveCodeLabCore_THREE.ShaderExtras.screen);
 
         // motion blur
-        ThreeJs.effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget;
-        ThreeJs.effectBlend.uniforms.mixRatio.value = 0;
+        ThreeJsSystem.effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget;
+        ThreeJsSystem.effectBlend.uniforms.mixRatio.value = 0;
 
-        renderModel = new THREE.RenderPass(ThreeJs.scene, ThreeJs.camera);
+        renderModel = new liveCodeLabCore_THREE.RenderPass(ThreeJsSystem.scene, ThreeJsSystem.camera);
 
-        ThreeJs.composer = new THREE.EffectComposer(ThreeJs.renderer, renderTarget);
+        ThreeJsSystem.composer = new liveCodeLabCore_THREE.EffectComposer(ThreeJsSystem.renderer, renderTarget);
 
-        ThreeJs.composer.addPass(renderModel);
-        //ThreeJs.composer.addPass(fxaaPass);
-        ThreeJs.composer.addPass(ThreeJs.effectBlend);
-        ThreeJs.composer.addPass(effectSaveTarget);
-        ThreeJs.composer.addPass(screenPass);
+        ThreeJsSystem.composer.addPass(renderModel);
+        //ThreeJsSystem.composer.addPass(fxaaPass);
+        ThreeJsSystem.composer.addPass(ThreeJsSystem.effectBlend);
+        ThreeJsSystem.composer.addPass(effectSaveTarget);
+        ThreeJsSystem.composer.addPass(screenPass);
         screenPass.renderToScreen = true;
     };
 
-    if (ThreeJs.isWebGLUsed) {
-        ThreeJs.buildPostprocessingChain();
+    if (ThreeJsSystem.isWebGLUsed) {
+        ThreeJsSystem.buildPostprocessingChain();
     }
 
 
 
 
-    return ThreeJs;
+    return ThreeJsSystem;
 
 };

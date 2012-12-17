@@ -68,15 +68,19 @@
 					<!-- Slicing the code in js files -->
 	
 				<!--(if target standardNonMinifiedVersion)><!-->
+					<script src="js/livecodelab-core.js"></script>
 					<script src="js/events.js"></script>
+					<script src="js/simple-error-checker.js"></script>
+					<script src="js/url-router.js"></script>
 					<script src="js/big-cursor-animation.js"></script>
 					<script src="js/init-threejs.js"></script>
 
-					<script src="js/sound/sounddef.js"></script>
-					<script src="js/sound/sound-functions.js"></script>
+					<script src="js/sound/samplebank.js"></script>
+					<script src="js/sound/sound-system.js"></script>
 					<script src="js/sound/buzz.js"></script>
 	
-					<script src="js/animation-controls.js"></script>
+					<script src="js/draw-function-runner.js"></script>
+					<script src="js/animation-loop.js"></script>
 					<script src="js/colour-definitions.js"></script>
 					<script src="js/globals.js"></script>
 					<script src="js/background-painting.js"></script>
@@ -88,6 +92,7 @@
 	
 					<script src="js/matrix-commands.js"></script>
 					<script src="js/graphic-primitives.js"></script>
+					<script src="js/renderer.js"></script>
 					<script src="js/math.js"></script>
 					<script src="js/code-transformations.js"></script>
 					<script src="js/demos-and-tutorials.js"></script>
@@ -271,7 +276,7 @@
         <div name="miao" id="miao" style="position: absolute;  top: 30px; left: 0px; width: 100%; font-size: 3em;">
 
             <canvas id="backGroundCanvas" style="position: absolute; z-index:-3; top: 0px; left: 0px;" width="100" height="100"></canvas> 
-            <canvas id="finalRenderWithSceneAndBlendCanvas" style="position: absolute; z-index:-2; top: 0px; left: 0px;" width="100" height="100"></canvas> 
+            <canvas id="blendedThreeJsSceneCanvas" style="position: absolute; z-index:-2; top: 0px; left: 0px;" width="100" height="100"></canvas> 
 
             <form id="formCode" autocapitalize="off" autocorrect="off" wrap="off">
                 <textarea id="code" name="code" style="z-index:1;" autocapitalize="off" autocorrect="off" wrap="off"></textarea>

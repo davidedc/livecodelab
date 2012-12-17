@@ -36,7 +36,7 @@
 // elements of the array, so we could discard those when such
 // a command is issued.
 
-var createBackgroundPainter = function (events, threejs, colourfuncs) {
+var createBackgroundPainter = function (eventRouter, liveCodeLabCoreInstance) {
 
     'use strict';
 
@@ -54,10 +54,10 @@ var createBackgroundPainter = function (events, threejs, colourfuncs) {
 
         currentGradientStackValue = currentGradientStackValue + " " + a + "" + b + "" + c + "" + d + "null ";
         gradStack.push({
-            gradStacka: colourfuncs.color(a),
-            gradStackb: colourfuncs.color(b),
-            gradStackc: colourfuncs.color(c),
-            gradStackd: colourfuncs.color(d),
+            gradStacka: liveCodeLabCoreInstance.ColourFunctions.color(a),
+            gradStackb: liveCodeLabCoreInstance.ColourFunctions.color(b),
+            gradStackc: liveCodeLabCoreInstance.ColourFunctions.color(c),
+            gradStackd: liveCodeLabCoreInstance.ColourFunctions.color(d),
             solid: null
         });
 
@@ -69,7 +69,7 @@ var createBackgroundPainter = function (events, threejs, colourfuncs) {
         // [todo] should the screen be cleared when you invoke
         // the background command? (In processing it's not)
 
-        var a = colourfuncs.color(arguments[0], arguments[1], arguments[2], arguments[3]);
+        var a = liveCodeLabCoreInstance.ColourFunctions.color(arguments[0], arguments[1], arguments[2], arguments[3]);
         currentGradientStackValue = currentGradientStackValue + " null null null null " + a + " ";
         gradStack.push({
             gradStacka: undefined,
@@ -80,7 +80,7 @@ var createBackgroundPainter = function (events, threejs, colourfuncs) {
         });
     };
 
-    BackgroundPainter.pickRandomDefaultGradient = function () {
+    BackgroundPainter.paintARandomBackground = function () {
 
         if (whichDefaultBackground === undefined) {
             whichDefaultBackground = Math.floor(Math.random() * 5);
@@ -114,12 +114,23 @@ var createBackgroundPainter = function (events, threejs, colourfuncs) {
 							$("#fakeStartingBlinkingCursor").css('color', 'white');
 							break;
 					case 4:
-							defaultGradientColor1 = colourfuncs.color(155, 255, 155);
-							defaultGradientColor2 = colourfuncs.color(155, 255, 155);
-							defaultGradientColor3 = colourfuncs.color(155, 255, 155);
+							defaultGradientColor1 = liveCodeLabCoreInstance.ColourFunctions.color(155, 255, 155);
+							defaultGradientColor2 = liveCodeLabCoreInstance.ColourFunctions.color(155, 255, 155);
+							defaultGradientColor3 = liveCodeLabCoreInstance.ColourFunctions.color(155, 255, 155);
 							$("#fakeStartingBlinkingCursor").css('color', 'DarkOliveGreen');
 							break;
         }
+        
+        // in theory we should wait for the next frame to repaing the background,
+        // but there would be a problem with that: livecodelab goes to sleep when
+        // the program is empty and the big cursor blinks. And yet, when the
+        // user clicks the reset button, we want the background to change randomly
+        // so we make an exceptio to the rule here and we update the background
+        // right now without waiting for the next frame.
+        // Note this is not wasted time anyways because the repaint won't happen
+        // again later if the background hasn't changed.
+        BackgroundPainter.resetGradientStack();
+        BackgroundPainter.simpleGradientUpdateIfChanged();
     };
 
     BackgroundPainter.resetGradientStack = function () {
@@ -137,25 +148,26 @@ var createBackgroundPainter = function (events, threejs, colourfuncs) {
 
         var diagonal, radgrad, scanningGradStack;
         if ((currentGradientStackValue !== previousGradientStackValue)) {
+        //alert('repainting the background');
 
             previousGradientStackValue = currentGradientStackValue;
-            diagonal = Math.sqrt(Math.pow(threejs.scaledBackgroundWidth / 2, 2) + Math.pow(threejs.scaledBackgroundHeight / 2, 2));
+            diagonal = Math.sqrt(Math.pow(liveCodeLabCoreInstance.canvasForBackground.width / 2, 2) + Math.pow(liveCodeLabCoreInstance.canvasForBackground.height / 2, 2));
 
             for (scanningGradStack = 0; scanningGradStack < gradStack.length; scanningGradStack++) {
 
                 if (gradStack[scanningGradStack].gradStacka !== undefined) {
-                    radgrad = threejs.backgroundSceneContext.createLinearGradient(threejs.scaledBackgroundWidth / 2, 0, threejs.scaledBackgroundWidth / 2, threejs.scaledBackgroundHeight);
-                    radgrad.addColorStop(0, colourfuncs.color.toString(gradStack[scanningGradStack].gradStacka));
-                    radgrad.addColorStop(0.5, colourfuncs.color.toString(gradStack[scanningGradStack].gradStackb));
-                    radgrad.addColorStop(1, colourfuncs.color.toString(gradStack[scanningGradStack].gradStackc));
+                    radgrad = liveCodeLabCoreInstance.backgroundSceneContext.createLinearGradient(liveCodeLabCoreInstance.canvasForBackground.width / 2, 0, liveCodeLabCoreInstance.canvasForBackground.width / 2, liveCodeLabCoreInstance.canvasForBackground.height);
+                    radgrad.addColorStop(0, liveCodeLabCoreInstance.ColourFunctions.color.toString(gradStack[scanningGradStack].gradStacka));
+                    radgrad.addColorStop(0.5, liveCodeLabCoreInstance.ColourFunctions.color.toString(gradStack[scanningGradStack].gradStackb));
+                    radgrad.addColorStop(1, liveCodeLabCoreInstance.ColourFunctions.color.toString(gradStack[scanningGradStack].gradStackc));
 
-                    threejs.backgroundSceneContext.globalAlpha = 1.0;
-                    threejs.backgroundSceneContext.fillStyle = radgrad;
-                    threejs.backgroundSceneContext.fillRect(0, 0, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
+                    liveCodeLabCoreInstance.backgroundSceneContext.globalAlpha = 1.0;
+                    liveCodeLabCoreInstance.backgroundSceneContext.fillStyle = radgrad;
+                    liveCodeLabCoreInstance.backgroundSceneContext.fillRect(0, 0, liveCodeLabCoreInstance.canvasForBackground.width, liveCodeLabCoreInstance.canvasForBackground.height);
                 } else {
-                    threejs.backgroundSceneContext.globalAlpha = 1.0;
-                    threejs.backgroundSceneContext.fillStyle = colourfuncs.color.toString(gradStack[scanningGradStack].solid);
-                    threejs.backgroundSceneContext.fillRect(0, 0, threejs.scaledBackgroundWidth, threejs.scaledBackgroundHeight);
+                    liveCodeLabCoreInstance.backgroundSceneContext.globalAlpha = 1.0;
+                    liveCodeLabCoreInstance.backgroundSceneContext.fillStyle = liveCodeLabCoreInstance.ColourFunctions.color.toString(gradStack[scanningGradStack].solid);
+                    liveCodeLabCoreInstance.backgroundSceneContext.fillRect(0, 0, liveCodeLabCoreInstance.canvasForBackground.width, liveCodeLabCoreInstance.canvasForBackground.height);
                 }
             }
         }
@@ -168,13 +180,6 @@ var createBackgroundPainter = function (events, threejs, colourfuncs) {
     // This needs to be global so it can be run by the draw function
     window.background = BackgroundPainter.background;
 
-
-    // Setup Event Listeners
-    events.bind('reset', BackgroundPainter.pickRandomDefaultGradient, BackgroundPainter);
-
-
-
     return BackgroundPainter;
-
 };
 

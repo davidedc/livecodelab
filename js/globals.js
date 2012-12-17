@@ -24,35 +24,4 @@ window.forward = function() {};
 window.close = function() {};
 
 
-// The CodeMirror editor
-var editor;
-
-// The Autocoder
-var autocoder;
-
-
-// All used globally
-var ThreeJs;
-var BigCursor;
-var AnimationController;
-var ProgramLoader;
-var LightSystem;
-var BlendControls;
-var MatrixCommands;
-var TimeKeeper;
-var CodeTransformer;
-var GraphicsCommands;
-var BackgroundPainter;
-var EditorDimmer;
-var Ui;
-var Bowser;
-var SoundSystem;
-var ColourNames;
-var ColourFunctions;
-
-
-// this is the global namespace for the LiveCodeLab application
-var LiveCodeLab = {};
-
-
 

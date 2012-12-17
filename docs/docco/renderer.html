@@ -1,0 +1,99 @@
+<!DOCTYPE html>  <html> <head>   <title>renderer.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="events.html">                 events.js               </a>                                           <a class="source" href="globals.html">                 globals.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="renderer.html">                 renderer.js               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="url-router.html">                 url-router.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               renderer.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint maxerr: 200, browser: true, devel: true, bitwise: true */</span>
+
+
+<span class="keyword">var</span> createRenderer = <span class="function"><span class="keyword">function</span> <span class="params">(liveCodeLabCoreInstance)</span> {</span>
+
+    <span class="string">'use strict'</span>;
+
+    <span class="keyword">var</span> Renderer = {};
+
+    Renderer.render = <span class="function"><span class="keyword">function</span> <span class="params">(graphics)</span> {</span>
+
+        combDisplayList(graphics);
+        <span class="keyword">if</span> (liveCodeLabCoreInstance.ThreeJsSystem.isWebGLUsed) {
+            liveCodeLabCoreInstance.ThreeJsSystem.composer.render();
+        } <span class="keyword">else</span> {
+
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>the renderer draws into an offscreen canvas called currentFrameThreeJsSceneCanvas</p>             </td>             <td class="code">               <div class="highlight"><pre>            liveCodeLabCoreInstance.ThreeJsSystem.renderer.render(liveCodeLabCoreInstance.ThreeJsSystem.scene, liveCodeLabCoreInstance.ThreeJsSystem.camera);
+
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>clear the final render context</p>             </td>             <td class="code">               <div class="highlight"><pre>            liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvasContext.globalAlpha = <span class="number">1.0</span>;
+            liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvasContext.clearRect(<span class="number">0</span>, <span class="number">0</span>, window.innerWidth, window.innerHeight);
+
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>draw the rendering of the scene on the blendedThreeJsSceneCanvasContext
+this needs a few steps so we can get the motionBlur or the paintOver effects right
+TODO: I'm sure that this can be optimised for the case where there is no
+motionBlur and no paintOver, because we don't need to keep and blend with
+the previous frame in that case.</p>             </td>             <td class="code">               <div class="highlight"><pre>            liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvasContext.globalAlpha = liveCodeLabCoreInstance.BlendControls.blendAmount;
+            liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvasContext.drawImage(liveCodeLabCoreInstance.ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, <span class="number">0</span>, <span class="number">0</span>);
+
+            liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvasContext.globalAlpha = <span class="number">1.0</span>;
+            liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvasContext.drawImage(liveCodeLabCoreInstance.ThreeJsSystem.currentFrameThreeJsSceneCanvas, <span class="number">0</span>, <span class="number">0</span>);
+
+            liveCodeLabCoreInstance.ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext.globalCompositeOperation = <span class="string">'copy'</span>;
+            liveCodeLabCoreInstance.ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext.drawImage(liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas, <span class="number">0</span>, <span class="number">0</span>);
+
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>clear the renderer's canvas to transparent black</p>             </td>             <td class="code">               <div class="highlight"><pre>            liveCodeLabCoreInstance.ThreeJsSystem.currentFrameThreeJsSceneCanvasContext.clearRect(<span class="number">0</span>, <span class="number">0</span>, window.innerWidth, window.innerHeight);
+
+        }
+    };
+
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>By doing some profiling it is apparent that
+adding and removing objects has a big cost.
+So instead of adding/removing objects every frame,
+objects are only added at creation and they are
+never removed from the scene. They are
+only made invisible. This routine combs the
+scene and finds the objects that need to be visible and
+those that need to be hidden.
+This is a scenario of how it works:
+  frame 1: 3 boxes invoked. effect: 3 cubes are created and put in the scene
+  frame 2: 1 box invoked. effect: 1st cube is updated with new scale/matrix/material
+           and the other 2 boxes are set to hidden
+So there is a pool of objects for each primitive. It starts empty, new objects are
+added to the scene only if the ones available from previous draws are not sufficient.
+Note that in theory we could be smarter, instead of combing the whole scene
+we could pack all the similar primitives together (because the order in the
+display list doesn't matter, because there are no "matrix" nodes, each
+primitive contains a fully calculated matrix) and keep indexes of where each
+group is, so we could for example have 100 boxes and 100 balls, and we could
+scan the first two boxes and set those two visible, then jump to the balls
+avoiding to scan all the other 98 boxes, and set the correct amount of balls
+visible. In practice, it's not clear whether a lot of time is spend in this
+function, so that should be determined first.
+TODO a way to shrink the scene and delete from the scene objects that have
+not been used for a long time.
+Note: Mr Doob said that the new scene destruction/creation primitives of Three.js
+      are much faster. Also the objects of the scene are harder to reach, so
+      it could be the case that this mechanism is not needed anymore.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+    <span class="keyword">var</span> combDisplayList = <span class="function"><span class="keyword">function</span> <span class="params">(graphics)</span> {</span>
+        <span class="keyword">var</span> i,
+            sceneObject,
+            primitiveType;
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>scan all the objects in the display list</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; liveCodeLabCoreInstance.ThreeJsSystem.scene.children.length; i += <span class="number">1</span>) {
+            sceneObject = liveCodeLabCoreInstance.ThreeJsSystem.scene.children[i];
+
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>check the type of object. Each type has one pool. Go through each object in the
+pool and set to visible the number of used objects in this frame, set the
+others to hidden.
+Only tiny exception is that the ball has one pool for each detail level.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>set the first "used<strong>*</strong>" objects to visible...</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="keyword">if</span> (graphics.objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] &gt; <span class="number">0</span>) {
+                sceneObject.visible = <span class="literal">true</span>;
+                graphics.objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] -= <span class="number">1</span>;
+            } <span class="keyword">else</span> {
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>... and the others to invisible</p>             </td>             <td class="code">               <div class="highlight"><pre>                sceneObject.visible = <span class="literal">false</span>;
+            }
+
+        }
+    };
+
+
+
+
+    <span class="keyword">return</span> Renderer;
+
+};
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

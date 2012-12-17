@@ -1,0 +1,209 @@
+<!DOCTYPE html>  <html> <head>   <title>ui.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="events.html">                 events.js               </a>                                           <a class="source" href="globals.html">                 globals.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="renderer.html">                 renderer.js               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="url-router.html">                 url-router.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               ui.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true */</span>
+<span class="comment">/*global $ */</span>
+
+<span class="keyword">var</span> createUi = <span class="function"><span class="keyword">function</span> <span class="params">(eventRouter, stats)</span> {</span>
+
+    <span class="string">'use strict'</span>;
+
+    <span class="keyword">var</span> Ui = {},
+        resizeCanvas,
+        adjustCodeMirrorHeight;
+
+    resizeCanvas = <span class="function"><span class="keyword">function</span> <span class="params">(canvasId)</span> {</span>
+        <span class="keyword">var</span> canvas, scale;
+
+        canvas = $(canvasId);
+
+        scale = {
+            x: <span class="number">1</span>,
+            y: <span class="number">1</span>
+        };
+
+        scale.x = (window.innerWidth + <span class="number">40</span>) / canvas.width();
+        scale.y = (window.innerHeight + <span class="number">40</span>) / canvas.height();
+
+        scale = scale.x + <span class="string">', '</span> + scale.y;
+
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>this code below is if one wants to keep the aspect ratio
+but I mean one doesn't necessarily resize the window
+keeping the same aspect ratio.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>if (scale.x &lt; 1 || scale.y &lt; 1) {
+    scale = '1, 1';
+} else if (scale.x &lt; scale.y) {
+    scale = scale.x + ', ' + scale.x;
+} else {
+    scale = scale.y + ', ' + scale.y;
+}</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        canvas.css(<span class="string">'-ms-transform-origin'</span>, <span class="string">'left top'</span>)
+              .css(<span class="string">'-webkit-transform-origin'</span>, <span class="string">'left top'</span>)
+              .css(<span class="string">'-moz-transform-origin'</span>, <span class="string">'left top'</span>)
+              .css(<span class="string">'-o-transform-origin'</span>, <span class="string">'left top'</span>)
+              .css(<span class="string">'transform-origin'</span>, <span class="string">'left top'</span>)
+              .css(<span class="string">'-ms-transform'</span>, <span class="string">'scale('</span> + scale + <span class="string">')'</span>)
+              .css(<span class="string">'-webkit-transform'</span>, <span class="string">'scale3d('</span> + scale + <span class="string">', 1)'</span>)
+              .css(<span class="string">'-moz-transform'</span>, <span class="string">'scale('</span> + scale + <span class="string">')'</span>)
+              .css(<span class="string">'-o-transform'</span>, <span class="string">'scale('</span> + scale + <span class="string">')'</span>)
+              .css(<span class="string">'transform'</span>, <span class="string">'scale('</span> + scale + <span class="string">')'</span>);
+
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>TODO In theory we want to re-draw the background because the
+aspect ration might have changed.
+But for the time being we only have vertical
+gradients so that's not going to be a problem.</p>             </td>             <td class="code">               <div class="highlight"><pre>    };
+
+    Ui.adjustCodeMirrorHeight = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        $(<span class="string">'.CodeMirror-scroll'</span>).css(<span class="string">'height'</span>, window.innerHeight - $(<span class="string">'#theMenu'</span>).height());
+    };
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>resizing the text area is necessary otherwise
+as the user types to the end of it, instead of just scrolling
+the content leaving all the other parts of the page where
+they are, it expands and it pushes down
+the view of the page, meaning that the canvas goes up and
+the menu disappears
+so we have to resize it at launch and also every time the window
+is resized.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+    Ui.fullscreenify = <span class="function"><span class="keyword">function</span> <span class="params">(canvasId)</span> {</span>
+        window.addEventListener(<span class="string">'resize'</span>, <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+            Ui.adjustCodeMirrorHeight();
+            resizeCanvas(canvasId);
+        }, <span class="literal">false</span>);
+
+        resizeCanvas(canvasId);
+    };
+
+
+
+    Ui.checkErrorAndReport = <span class="function"><span class="keyword">function</span> <span class="params">(e)</span> {</span>
+
+        $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);
+
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>if the object is an exception then get the message
+otherwise e should just be a string</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">var</span> errorMessage = e.message || e;
+
+        <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'INDENT'"</span>) &gt; -<span class="number">1</span>) {
+            errorMessage = <span class="string">"weird indentation"</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'TERMINATOR'"</span>) &gt; -<span class="number">1</span>) {
+            errorMessage = <span class="string">"line not complete"</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'CALL_END'"</span>) &gt; -<span class="number">1</span>) {
+            errorMessage = <span class="string">"line not complete"</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected '}'"</span>) &gt; -<span class="number">1</span>) {
+            errorMessage = <span class="string">"something wrong"</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'MATH'"</span>) &gt; -<span class="number">1</span>) {
+            errorMessage = <span class="string">"weird arithmetic there"</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'LOGIC'"</span>) &gt; -<span class="number">1</span>) {
+            errorMessage = <span class="string">"odd expression thingy"</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'NUMBER'"</span>) &gt; -<span class="number">1</span>) {
+            errorMessage = <span class="string">"lost number?"</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"Unexpected 'NUMBER'"</span>) &gt; -<span class="number">1</span>) {
+            errorMessage = <span class="string">"lost number?"</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (errorMessage.indexOf(<span class="string">"ReferenceError"</span>) &gt; -<span class="number">1</span>) {
+            errorMessage = errorMessage.replace(<span class="regexp">/ReferenceError:\s/gm</span>, <span class="string">""</span>);
+        }
+
+        $(<span class="string">'#errorMessageText'</span>).text(errorMessage);
+
+    };
+
+    Ui.clearError = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        $(<span class="string">'#dangerSignText'</span>).css(<span class="string">'color'</span>, <span class="string">'#000000'</span>);
+        $(<span class="string">'#errorMessageText'</span>).text(<span class="string">""</span>);
+    };
+
+    Ui.soundSystemOk = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        $(<span class="string">"#soundSystemStatus"</span>).text(<span class="string">"Sound System On"</span>).removeClass(<span class="string">'off'</span>).addClass(<span class="string">'on'</span>);
+    };
+
+    Ui.hideStatsWidget = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        $(<span class="string">"#statsWidget"</span>).hide();
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>console.log('hiding stats widget');</p>             </td>             <td class="code">               <div class="highlight"><pre>    };
+    Ui.showStatsWidget = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>I wish I could tell you why showing the widget straight away doesn't work.
+Postponing a little bit makes this work. It doesn't make any sense.</p>             </td>             <td class="code">               <div class="highlight"><pre>        setTimeout(<span class="string">'$("#statsWidget").show()'</span>,<span class="number">1</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>console.log('showing stats widget');</p>             </td>             <td class="code">               <div class="highlight"><pre>    };
+
+
+
+    Ui.setup = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+        $(document).ready(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+            $(<span class="string">'#aboutMenu'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+                $(<span class="string">'#aboutWindow'</span>).modal();
+                $(<span class="string">'#simplemodal-container'</span>).height(<span class="number">250</span>);
+
+                <span class="keyword">return</span> <span class="literal">false</span>;
+            });
+
+            $(<span class="string">'#demos li a'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+                eventRouter.trigger(<span class="string">'load-program'</span>, $(<span class="keyword">this</span>).attr(<span class="string">'id'</span>));
+                <span class="keyword">return</span> <span class="literal">false</span>;
+            });
+
+            $(<span class="string">'#tutorials li a'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+                eventRouter.trigger(<span class="string">'load-program'</span>, $(<span class="keyword">this</span>).attr(<span class="string">'id'</span>));
+                <span class="keyword">return</span> <span class="literal">false</span>;
+            });
+
+            $(<span class="string">'#autocodeIndicatorContainer'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+                eventRouter.trigger(<span class="string">'toggle-autocoder'</span>);
+                <span class="keyword">return</span> <span class="literal">false</span>;
+            });
+
+            $(<span class="string">'#dimCodeButtonContainer'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+                eventRouter.trigger(<span class="string">'editor-toggle-dim'</span>);
+                <span class="keyword">return</span> <span class="literal">false</span>;
+            });
+
+            $(<span class="string">'#resetButtonContainer'</span>).click(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+                eventRouter.trigger(<span class="string">'reset'</span>);
+                $(<span class="keyword">this</span>).stop().fadeOut(<span class="number">100</span>).fadeIn(<span class="number">100</span>);
+                <span class="keyword">return</span> <span class="literal">false</span>;
+            });
+
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Align bottom-left</p>             </td>             <td class="code">               <div class="highlight"><pre>            stats.getDomElement().style.position = <span class="string">'absolute'</span>;
+            stats.getDomElement().style.right = <span class="string">'0px'</span>;
+            stats.getDomElement().style.top = <span class="string">'0px'</span>;
+            document.body.appendChild(stats.getDomElement());
+
+            $(<span class="string">'#startingCourtainScreen'</span>).fadeOut();
+            $(<span class="string">"#formCode"</span>).css(<span class="string">'opacity'</span>, <span class="number">0</span>);
+
+            Ui.fullscreenify(<span class="string">'#backGroundCanvas'</span>);
+
+            Ui.adjustCodeMirrorHeight();
+
+
+        });
+    };
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>    eventRouter.bind(<span class="string">'report-runtime-or-compile-time-error'</span>, Ui.checkErrorAndReport, Ui);
+    eventRouter.bind(<span class="string">'clear-error'</span>, Ui.clearError, Ui);
+
+    eventRouter.bind(<span class="string">'autocoder-button-pressed'</span>, <span class="function"><span class="keyword">function</span> <span class="params">(state)</span> {</span>
+        <span class="keyword">if</span> (state === <span class="literal">true</span>) {
+            $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: on"</span>).css(<span class="string">"background-color"</span>, <span class="string">'#FF0000'</span>);
+        } <span class="keyword">else</span> {
+            $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: off"</span>).css(<span class="string">"background-color"</span>, <span class="string">''</span>);
+        }
+    });
+
+    eventRouter.bind(<span class="string">'autocoderbutton-flash'</span>, <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        $(<span class="string">"#autocodeIndicator"</span>).fadeOut(<span class="number">100</span>).fadeIn(<span class="number">100</span>);
+    });
+
+    eventRouter.bind(<span class="string">'auto-hide-code-button-pressed'</span>, <span class="function"><span class="keyword">function</span> <span class="params">(state)</span> {</span>
+        <span class="keyword">if</span> (state === <span class="literal">true</span>) {
+            $(<span class="string">"#dimCodeIndicator"</span>).html(<span class="string">"Hide Code: on"</span>);
+        } <span class="keyword">else</span> {
+            $(<span class="string">"#dimCodeIndicator"</span>).html(<span class="string">"Hide Code: off"</span>);
+        }
+    });
+
+
+    <span class="keyword">return</span> Ui;
+};
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
