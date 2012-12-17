@@ -1,7 +1,7 @@
 /*jslint browser: true */
 /*global */
 
-var createMatrixCommands = function (three, timekeeper) {
+var createMatrixCommands = function (liveCodeLabCore_THREE, liveCodeLabCoreInstance) {
 
     'use strict';
 
@@ -10,7 +10,7 @@ var createMatrixCommands = function (three, timekeeper) {
         rootObject = 0,
         currentObject,
         matrixStack = [],
-        worldMatrix = new three.Matrix4();
+        worldMatrix = new liveCodeLabCore_THREE.Matrix4();
 
     MatrixCommands.getWorldMatrix = function () {
         return worldMatrix;
@@ -23,7 +23,7 @@ var createMatrixCommands = function (three, timekeeper) {
 
     window.pushMatrix = MatrixCommands.pushMatrix = function () {
         matrixStack.push(worldMatrix);
-        worldMatrix = (new three.Matrix4()).copy(worldMatrix);
+        worldMatrix = (new liveCodeLabCore_THREE.Matrix4()).copy(worldMatrix);
     };
 
     window.popMatrix = MatrixCommands.popMatrix = function () {
@@ -41,8 +41,8 @@ var createMatrixCommands = function (three, timekeeper) {
 
     window.move = MatrixCommands.move = function (a, b, c) {
         if (arguments.length === 0) {
-            a = Math.sin(timekeeper.getTime() / 500);
-            b = Math.cos(timekeeper.getTime() / 500);
+            a = Math.sin(liveCodeLabCoreInstance.TimeKeeper.getTime() / 500);
+            b = Math.cos(liveCodeLabCoreInstance.TimeKeeper.getTime() / 500);
             c = a;
         } else if (arguments.length === 1) {
             b = a;
@@ -51,13 +51,13 @@ var createMatrixCommands = function (three, timekeeper) {
             c = 0;
         }
 
-        worldMatrix.translate(new three.Vector3(a, b, c));
+        worldMatrix.translate(new liveCodeLabCore_THREE.Vector3(a, b, c));
     };
 
     window.rotate = MatrixCommands.rotate = function (a, b, c) {
 
         if (arguments.length === 0) {
-            a = timekeeper.getTime() / 1000;
+            a = liveCodeLabCoreInstance.TimeKeeper.getTime() / 1000;
             b = a;
             c = a;
         } else if (arguments.length === 1) {
@@ -73,7 +73,7 @@ var createMatrixCommands = function (three, timekeeper) {
 
     window.scale = MatrixCommands.scale = function (a, b, c) {
         if (arguments.length === 0) {
-            a = 1 + Math.sin(timekeeper.getTime() / 500) / 4;
+            a = 1 + Math.sin(liveCodeLabCoreInstance.TimeKeeper.getTime() / 500) / 4;
             b = a;
             c = a;
         } else if (arguments.length === 1) {
@@ -94,7 +94,7 @@ var createMatrixCommands = function (three, timekeeper) {
             c = 0.000000001;
         }
 
-        worldMatrix.scale(new three.Vector3(a, b, c));
+        worldMatrix.scale(new liveCodeLabCore_THREE.Vector3(a, b, c));
 
     };
 

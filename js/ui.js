@@ -1,7 +1,7 @@
 /*jslint browser: true */
 /*global $ */
 
-var createUi = function (events, stats) {
+var createUi = function (eventRouter, stats) {
 
     'use strict';
 
@@ -82,9 +82,9 @@ var createUi = function (events, stats) {
 
         $('#dangerSignText').css('color', 'red');
 
-        // don't need to convert entire object to string
-        // can just get the message, or a blank string if there is no message
-        var errorMessage = e.message || "";
+        // if the object is an exception then get the message
+        // otherwise e should just be a string
+        var errorMessage = e.message || e;
 
         if (errorMessage.indexOf("Unexpected 'INDENT'") > -1) {
             errorMessage = "weird indentation";
@@ -110,8 +110,24 @@ var createUi = function (events, stats) {
 
     };
 
+    Ui.clearError = function () {
+        $('#dangerSignText').css('color', '#000000');
+        $('#errorMessageText').text("");
+    };
+
     Ui.soundSystemOk = function () {
         $("#soundSystemStatus").text("Sound System On").removeClass('off').addClass('on');
+    };
+
+    Ui.hideStatsWidget = function () {
+        $("#statsWidget").hide();
+        //console.log('hiding stats widget');
+    };
+    Ui.showStatsWidget = function () {
+					// I wish I could tell you why showing the widget straight away doesn't work.
+					// Postponing a little bit makes this work. It doesn't make any sense.
+        setTimeout('$("#statsWidget").show()',1);
+        //console.log('showing stats widget');
     };
 
 
@@ -129,27 +145,27 @@ var createUi = function (events, stats) {
             });
 
             $('#demos li a').click(function () {
-                events.trigger('load-program', $(this).attr('id'));
+                eventRouter.trigger('load-program', $(this).attr('id'));
                 return false;
             });
 
             $('#tutorials li a').click(function () {
-                events.trigger('load-program', $(this).attr('id'));
+                eventRouter.trigger('load-program', $(this).attr('id'));
                 return false;
             });
 
             $('#autocodeIndicatorContainer').click(function () {
-                events.trigger('toggle-autocoder');
+                eventRouter.trigger('toggle-autocoder');
                 return false;
             });
 
             $('#dimCodeButtonContainer').click(function () {
-                events.trigger('editor-toggle-dim');
+                eventRouter.trigger('editor-toggle-dim');
                 return false;
             });
 
             $('#resetButtonContainer').click(function () {
-                events.trigger('reset');
+                eventRouter.trigger('reset');
                 $(this).stop().fadeOut(100).fadeIn(100);
                 return false;
             });
@@ -160,14 +176,23 @@ var createUi = function (events, stats) {
             stats.getDomElement().style.top = '0px';
             document.body.appendChild(stats.getDomElement());
 
+            $('#startingCourtainScreen').fadeOut();
+            $("#formCode").css('opacity', 0);
+
+            Ui.fullscreenify('#backGroundCanvas');
+
+            Ui.adjustCodeMirrorHeight();
+
+
         });
     };
 
 
     // Setup Event Listeners
-    events.bind('display-error', Ui.checkErrorAndReport, Ui);
+    eventRouter.bind('report-runtime-or-compile-time-error', Ui.checkErrorAndReport, Ui);
+    eventRouter.bind('clear-error', Ui.clearError, Ui);
 
-    events.bind('autocoder-state', function (state) {
+    eventRouter.bind('autocoder-button-pressed', function (state) {
         if (state === true) {
             $("#autocodeIndicator").html("Autocode: on").css("background-color", '#FF0000');
         } else {
@@ -175,11 +200,11 @@ var createUi = function (events, stats) {
         }
     });
 
-    events.bind('autocoderbutton-flash', function () {
+    eventRouter.bind('autocoderbutton-flash', function () {
         $("#autocodeIndicator").fadeOut(100).fadeIn(100);
     });
 
-    events.bind('editor-dimmer-state', function (state) {
+    eventRouter.bind('auto-hide-code-button-pressed', function (state) {
         if (state === true) {
             $("#dimCodeIndicator").html("Hide Code: on");
         } else {

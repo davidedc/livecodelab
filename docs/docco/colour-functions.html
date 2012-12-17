@@ -1,0 +1,788 @@
+<!DOCTYPE html>  <html> <head>   <title>colour-functions.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="events.html">                 events.js               </a>                                           <a class="source" href="globals.html">                 globals.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="renderer.html">                 renderer.js               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="url-router.html">                 url-router.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               colour-functions.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true, bitwise: true */</span>
+<span class="comment">/*global max, min */</span>
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Code adapted from processing.js</p>             </td>             <td class="code">               <div class="highlight"><pre>
+<span class="comment">/**
+ * Closure compiler automatically replaces symbolic Constants.* names with their
+ * values (it does it for everything it thinks it's a constant really).
+ */</span>
+
+
+<span class="keyword">var</span> createColourFunctions = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+    <span class="string">'use strict'</span>;
+
+    <span class="keyword">var</span> ColourFunctions = {},
+        Constants,
+        colorModeX = <span class="number">255</span>,
+        colorModeY = <span class="number">255</span>,
+        colorModeZ = <span class="number">255</span>,
+        curColorMode,
+        color$<span class="number">4</span>,
+        color$<span class="number">2</span>,
+        color$<span class="number">1</span>,
+        modes;
+
+
+    ColourFunctions.colorModeA = <span class="number">255</span>;
+
+    Constants = {
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Color modes</p>             </td>             <td class="code">               <div class="highlight"><pre>        RGB: <span class="number">1</span>,
+        ARGB: <span class="number">2</span>,
+        HSB: <span class="number">3</span>,
+        ALPHA: <span class="number">4</span>,
+        CMYK: <span class="number">5</span>,
+
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Blend modes</p>             </td>             <td class="code">               <div class="highlight"><pre>        REPLACE: <span class="number">0</span>,
+        BLEND: <span class="number">1</span> &lt;<span class="xml"><span class="tag">&lt; <span class="attribute">0</span>,
+        <span class="attribute">ADD:</span> <span class="attribute">1</span> &lt;&lt; <span class="attribute">1</span>,
+        <span class="attribute">SUBTRACT:</span> <span class="attribute">1</span> &lt;&lt; <span class="attribute">2</span>,
+        <span class="attribute">LIGHTEST:</span> <span class="attribute">1</span> &lt;&lt; <span class="attribute">3</span>,
+        <span class="attribute">DARKEST:</span> <span class="attribute">1</span> &lt;&lt; <span class="attribute">4</span>,
+        <span class="attribute">DIFFERENCE:</span> <span class="attribute">1</span> &lt;&lt; <span class="attribute">5</span>,
+        <span class="attribute">EXCLUSION:</span> <span class="attribute">1</span> &lt;&lt; <span class="attribute">6</span>,
+        <span class="attribute">MULTIPLY:</span> <span class="attribute">1</span> &lt;&lt; <span class="attribute">7</span>,
+        <span class="attribute">SCREEN:</span> <span class="attribute">1</span> &lt;&lt; <span class="attribute">8</span>,
+        <span class="attribute">OVERLAY:</span> <span class="attribute">1</span> &lt;&lt; <span class="attribute">9</span>,
+        <span class="attribute">HARD_LIGHT:</span> <span class="attribute">1</span> &lt;&lt; <span class="attribute">10</span>,
+        <span class="attribute">SOFT_LIGHT:</span> <span class="attribute">1</span> &lt;&lt; <span class="attribute">11</span>,
+        <span class="attribute">DODGE:</span> <span class="attribute">1</span> &lt;&lt; <span class="attribute">12</span>,
+        <span class="attribute">BURN:</span> <span class="attribute">1</span> &lt;&lt; <span class="attribute">13</span>,
+
+</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Color component bit masks</p>             </td>             <td class="code">               <div class="highlight"><pre>        ALPHA_MASK: <span class="number">0xff000000</span>,
+        RED_MASK: <span class="number">0x00ff0000</span>,
+        GREEN_MASK: <span class="number">0x0000ff00</span>,
+        BLUE_MASK: <span class="number">0x000000ff</span>,
+
+    };
+
+    curColorMode = Constants.RGB;
+
+
+    color$<span class="number">4</span> = <span class="function"><span class="keyword">function</span> <span class="params">(aValue1, aValue2, aValue3, aValue4)</span> {</span>
+        <span class="keyword">var</span> r, g, b, a, rgb;
+
+        <span class="keyword">if</span> (curColorMode === Constants.HSB) {
+            rgb = ColourFunctions.color.toRGB(aValue1, aValue2, aValue3);
+            r = rgb[<span class="number">0</span>];
+            g = rgb[<span class="number">1</span>];
+            b = rgb[<span class="number">2</span>];
+        } <span class="keyword">else</span> {
+            r = Math.round(<span class="number">255</span> * (aValue1 / colorModeX));
+            g = Math.round(<span class="number">255</span> * (aValue2 / colorModeY));
+            b = Math.round(<span class="number">255</span> * (aValue3 / colorModeZ));
+        }
+
+        a = Math.round(<span class="number">255</span> * (aValue4 / ColourFunctions.colorModeA));
+
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Limit values less than 0 and greater than 255</p>             </td>             <td class="code">               <div class="highlight"><pre>        r = (r &lt; <span class="number">0</span>) ? <span class="number">0</span> : r;
+        g = (g &lt; <span class="number">0</span>) ? <span class="number">0</span> : g;
+        b = (b &lt; <span class="number">0</span>) ? <span class="number">0</span> : b;
+        a = (a &lt; <span class="number">0</span>) ? <span class="number">0</span> : a;
+        r = (r &gt; <span class="number">255</span>) ? <span class="number">255</span> : r;
+        g = (g &gt; <span class="number">255</span>) ? <span class="number">255</span> : g;
+        b = (b &gt; <span class="number">255</span>) ? <span class="number">255</span> : b;
+        a = (a &gt; <span class="number">255</span>) ? <span class="number">255</span> : a;
+
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Create color int</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">return</span> (a &lt;<span class="xml"><span class="tag">&lt; <span class="attribute">24</span>) &amp; <span class="attribute">Constants.ALPHA_MASK</span> | (<span class="attribute">r</span> &lt;&lt; <span class="attribute">16</span>) &amp; <span class="attribute">Constants.RED_MASK</span> | (<span class="attribute">g</span> &lt;&lt; <span class="attribute">8</span>) &amp; <span class="attribute">Constants.GREEN_MASK</span> | <span class="attribute">b</span> &amp; <span class="attribute">Constants.BLUE_MASK</span>;
+    };
+
+    <span class="attribute">color</span>$<span class="attribute">2</span> = <span class="attribute">function</span> (<span class="attribute">aValue1</span>, <span class="attribute">aValue2</span>) {
+        <span class="attribute">var</span> <span class="attribute">a</span>,
+</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>lowest than any 32 bit color is a special
+color that paints based on normals.</p>             </td>             <td class="code">               <div class="highlight"><pre>            angleColor = -<span class="number">16777217</span>;
+
+        <span class="keyword">if</span> (aValue1 === angleColor) {
+            <span class="keyword">return</span> angleColor;
+        }
+
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Color int and alpha</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (aValue1 &amp; Constants.ALPHA_MASK) {
+            a = Math.round(<span class="number">255</span> * (aValue2 / ColourFunctions.colorModeA));
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Limit values less than 0 and greater than 255</p>             </td>             <td class="code">               <div class="highlight"><pre>            a = (a &gt; <span class="number">255</span>) ? <span class="number">255</span> : a;
+            a = (a &lt; <span class="number">0</span>) ? <span class="number">0</span> : a;
+
+            <span class="keyword">return</span> aValue1 - (aValue1 &amp; Constants.ALPHA_MASK) + ((a &lt;<span class="xml"><span class="tag">&lt; <span class="attribute">24</span>) &amp; <span class="attribute">Constants.ALPHA_MASK</span>);
+        }
+</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>Grayscale and alpha</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (curColorMode === Constants.RGB) {
+            <span class="keyword">return</span> color$<span class="number">4</span>(aValue1, aValue1, aValue1, aValue2);
+        }
+        <span class="keyword">if</span> (curColorMode === Constants.HSB) {
+            <span class="keyword">return</span> color$<span class="number">4</span>(<span class="number">0</span>, <span class="number">0</span>, (aValue1 / colorModeX) * colorModeZ, aValue2);
+        }
+    };
+
+    color$<span class="number">1</span> = <span class="function"><span class="keyword">function</span> <span class="params">(aValue1)</span> {</span>
+</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Grayscale</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (aValue1 &lt;= colorModeX &amp;&amp; aValue1 &gt;= <span class="number">0</span>) {
+            <span class="keyword">if</span> (curColorMode === Constants.RGB) {
+                <span class="keyword">return</span> color$<span class="number">4</span>(aValue1, aValue1, aValue1, ColourFunctions.colorModeA);
+            }
+            <span class="keyword">if</span> (curColorMode === Constants.HSB) {
+                <span class="keyword">return</span> color$<span class="number">4</span>(<span class="number">0</span>, <span class="number">0</span>, (aValue1 / colorModeX) * colorModeZ, ColourFunctions.colorModeA);
+            }
+        }
+</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>Color int</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (aValue1) {
+            <span class="keyword">if</span> (aValue1 &gt; <span class="number">2147483647</span>) {
+</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Java Overflow</p>             </td>             <td class="code">               <div class="highlight"><pre>                aValue1 -= <span class="number">4294967296</span>;
+            }
+            <span class="keyword">return</span> aValue1;
+        }
+    };
+
+    <span class="comment">/**
+     * Creates colors for storing in variables of the color datatype. The parameters are
+     * interpreted as RGB or HSB values depending on the current colorMode(). The default
+     * mode is RGB values from 0 to 255 and therefore, the function call color(255, 204, 0)
+     * will return a bright yellow color. More about how colors are stored can be found in
+     * the reference for the color datatype.
+     *
+     * @param {int|float} aValue1        red or hue or grey values relative to the current color range.
+     * Also can be color value in hexadecimal notation (i.e. #FFCC00 or 0xFFFFCC00)
+     * @param {int|float} aValue2        green or saturation values relative to the current color range
+     * @param {int|float} aValue3        blue or brightness values relative to the current color range
+     * @param {int|float} aValue4        relative to current color range. Represents alpha
+     *
+     * @returns {color} the color
+     *
+     * @see colorMode
+     */</span>
+    ColourFunctions.color = <span class="function"><span class="keyword">function</span> <span class="params">(aValue1, aValue2, aValue3, aValue4)</span> {</span>
+</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>4 arguments: (R, G, B, A) or (H, S, B, A)</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (aValue1 !== <span class="literal">undefined</span> &amp;&amp; aValue2 !== <span class="literal">undefined</span> &amp;&amp; aValue3 !== <span class="literal">undefined</span> &amp;&amp; aValue4 !== <span class="literal">undefined</span>) {
+            <span class="keyword">return</span> color$<span class="number">4</span>(aValue1, aValue2, aValue3, aValue4);
+        }
+
+</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>3 arguments: (R, G, B) or (H, S, B)</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (aValue1 !== <span class="literal">undefined</span> &amp;&amp; aValue2 !== <span class="literal">undefined</span> &amp;&amp; aValue3 !== <span class="literal">undefined</span>) {
+            <span class="keyword">return</span> color$<span class="number">4</span>(aValue1, aValue2, aValue3, ColourFunctions.colorModeA);
+        }
+
+</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>2 arguments: (Color, A) or (Grayscale, A)</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (aValue1 !== <span class="literal">undefined</span> &amp;&amp; aValue2 !== <span class="literal">undefined</span>) {
+            <span class="keyword">return</span> color$<span class="number">2</span>(aValue1, aValue2);
+        }
+
+</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>1 argument: (Grayscale) or (Color)</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (<span class="keyword">typeof</span> aValue1 === <span class="string">"number"</span>) {
+            <span class="keyword">return</span> color$<span class="number">1</span>(aValue1);
+        }
+
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Default</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">return</span> color$<span class="number">4</span>(colorModeX, colorModeY, colorModeZ, ColourFunctions.colorModeA);
+    };
+
+</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Ease of use function to extract the colour bits into a string</p>             </td>             <td class="code">               <div class="highlight"><pre>    ColourFunctions.color.toString = <span class="function"><span class="keyword">function</span> <span class="params">(colorInt)</span> {</span>
+        <span class="keyword">return</span> <span class="string">"rgba("</span> + ((colorInt &amp; Constants.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>) + <span class="string">","</span> + ((colorInt &amp; Constants.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>) + <span class="string">","</span> + ((colorInt &amp; Constants.BLUE_MASK)) + <span class="string">","</span> + ((colorInt &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="number">255</span> + <span class="string">")"</span>;
+    };
+
+</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Easy of use function to pack rgba values into a single bit-shifted color int.</p>             </td>             <td class="code">               <div class="highlight"><pre>    ColourFunctions.color.toInt = <span class="function"><span class="keyword">function</span> <span class="params">(r, g, b, a)</span> {</span>
+        <span class="keyword">return</span> (a &lt;<span class="xml"><span class="tag">&lt; <span class="attribute">24</span>) &amp; <span class="attribute">Constants.ALPHA_MASK</span> | (<span class="attribute">r</span> &lt;&lt; <span class="attribute">16</span>) &amp; <span class="attribute">Constants.RED_MASK</span> | (<span class="attribute">g</span> &lt;&lt; <span class="attribute">8</span>) &amp; <span class="attribute">Constants.GREEN_MASK</span> | <span class="attribute">b</span> &amp; <span class="attribute">Constants.BLUE_MASK</span>;
+    };
+
+</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>Creates a simple array in [R, G, B, A] format, [255, 255, 255, 255]</p>             </td>             <td class="code">               <div class="highlight"><pre>    ColourFunctions.color.toArray = <span class="function"><span class="keyword">function</span> <span class="params">(colorInt)</span> {</span>
+        <span class="keyword">return</span> [(colorInt &amp; Constants.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>, (colorInt &amp; Constants.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>, colorInt &amp; Constants.BLUE_MASK, (colorInt &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>];
+    };
+
+</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Creates a WebGL color array in [R, G, B, A] format. WebGL wants the color ranges between 0 and 1, [1, 1, 1, 1]</p>             </td>             <td class="code">               <div class="highlight"><pre>    ColourFunctions.color.toGLArray = <span class="function"><span class="keyword">function</span> <span class="params">(colorInt)</span> {</span>
+        <span class="keyword">return</span> [((colorInt &amp; Constants.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>) / <span class="number">255</span>, ((colorInt &amp; Constants.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>) / <span class="number">255</span>, (colorInt &amp; Constants.BLUE_MASK) / <span class="number">255</span>, ((colorInt &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="number">255</span>];
+    };
+
+</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>HSB conversion function from Mootools, MIT Licensed</p>             </td>             <td class="code">               <div class="highlight"><pre>    ColourFunctions.color.toRGB = <span class="function"><span class="keyword">function</span> <span class="params">(h, s, b)</span> {</span>
+
+        <span class="keyword">var</span> br, hue, f, p, q, t;
+
+</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>Limit values greater than range</p>             </td>             <td class="code">               <div class="highlight"><pre>        h = (h &gt; colorModeX) ? colorModeX : h;
+        s = (s &gt; colorModeY) ? colorModeY : s;
+        b = (b &gt; colorModeZ) ? colorModeZ : b;
+
+        h = (h / colorModeX) * <span class="number">360</span>;
+        s = (s / colorModeY) * <span class="number">100</span>;
+        b = (b / colorModeZ) * <span class="number">100</span>;
+
+        br = Math.round(b / <span class="number">100</span> * <span class="number">255</span>);
+
+        <span class="keyword">if</span> (s === <span class="number">0</span>) { <span class="comment">// Grayscale</span>
+            <span class="keyword">return</span> [br, br, br];
+        }
+        hue = h % <span class="number">360</span>;
+        f = hue % <span class="number">60</span>;
+        p = Math.round((b * (<span class="number">100</span> - s)) / <span class="number">10000</span> * <span class="number">255</span>);
+        q = Math.round((b * (<span class="number">6000</span> - s * f)) / <span class="number">600000</span> * <span class="number">255</span>);
+        t = Math.round((b * (<span class="number">6000</span> - s * (<span class="number">60</span> - f))) / <span class="number">600000</span> * <span class="number">255</span>);
+        <span class="keyword">switch</span> (Math.floor(hue / <span class="number">60</span>)) {
+        <span class="keyword">case</span> <span class="number">0</span>:
+            <span class="keyword">return</span> [br, t, p];
+        <span class="keyword">case</span> <span class="number">1</span>:
+            <span class="keyword">return</span> [q, br, p];
+        <span class="keyword">case</span> <span class="number">2</span>:
+            <span class="keyword">return</span> [p, br, t];
+        <span class="keyword">case</span> <span class="number">3</span>:
+            <span class="keyword">return</span> [p, q, br];
+        <span class="keyword">case</span> <span class="number">4</span>:
+            <span class="keyword">return</span> [t, p, br];
+        <span class="keyword">case</span> <span class="number">5</span>:
+            <span class="keyword">return</span> [br, p, q];
+        }
+    };
+
+    window.color = ColourFunctions.color;
+
+    window.colorToHSB = ColourFunctions.colorToHSB = <span class="function"><span class="keyword">function</span> <span class="params">(colorInt)</span> {</span>
+        <span class="keyword">var</span> red, green, blue, minBright, maxBright, hue, saturation;
+
+        red = ((colorInt &amp; Constants.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>) / <span class="number">255</span>;
+        green = ((colorInt &amp; Constants.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>) / <span class="number">255</span>;
+        blue = (colorInt &amp; Constants.BLUE_MASK) / <span class="number">255</span>;
+
+        maxBright = max(max(red, green), blue);
+        minBright = min(min(red, green), blue);
+
+        <span class="keyword">if</span> (minBright === maxBright) {
+            <span class="keyword">return</span> [<span class="number">0</span>, <span class="number">0</span>, maxBright * colorModeZ];
+        }
+        saturation = (maxBright - minBright) / maxBright;
+
+        <span class="keyword">if</span> (red === maxBright) {
+            hue = (green - blue) / (maxBright - minBright);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (green === maxBright) {
+            hue = <span class="number">2</span> + ((blue - red) / (maxBright - minBright));
+        } <span class="keyword">else</span> {
+            hue = <span class="number">4</span> + ((red - green) / (maxBright - minBright));
+        }
+
+        hue /= <span class="number">6</span>;
+
+        <span class="keyword">if</span> (hue &lt; <span class="number">0</span>) {
+            hue += <span class="number">1</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (hue &gt; <span class="number">1</span>) {
+            hue -= <span class="number">1</span>;
+        }
+        <span class="keyword">return</span> [hue * colorModeX, saturation * colorModeY, maxBright * colorModeZ];
+    };
+
+    <span class="comment">/**
+     * Extracts the brightness value from a color.
+     *
+     * @param {color} colInt any value of the color datatype
+     *
+     * @returns {float} The brightness color value.
+     *
+     * @see red
+     * @see green
+     * @see blue
+     * @see hue
+     * @see saturation
+     */</span>
+    window.brightness = ColourFunctions.brightness = <span class="function"><span class="keyword">function</span> <span class="params">(colInt)</span> {</span>
+        <span class="keyword">return</span> ColourFunctions.colorToHSB(colInt)[<span class="number">2</span>];
+    };
+
+    <span class="comment">/**
+     * Extracts the saturation value from a color.
+     *
+     * @param {color} colInt any value of the color datatype
+     *
+     * @returns {float} The saturation color value.
+     *
+     * @see red
+     * @see green
+     * @see blue
+     * @see hue
+     * @see brightness
+     */</span>
+    window.saturation = ColourFunctions.saturation = <span class="function"><span class="keyword">function</span> <span class="params">(colInt)</span> {</span>
+        <span class="keyword">return</span> ColourFunctions.colorToHSB(colInt)[<span class="number">1</span>];
+    };
+
+    <span class="comment">/**
+     * Extracts the hue value from a color.
+     *
+     * @param {color} colInt any value of the color datatype
+     *
+     * @returns {float} The hue color value.
+     *
+     * @see red
+     * @see green
+     * @see blue
+     * @see saturation
+     * @see brightness
+     */</span>
+    window.hue = ColourFunctions.hue = <span class="function"><span class="keyword">function</span> <span class="params">(colInt)</span> {</span>
+        <span class="keyword">return</span> ColourFunctions.colorToHSB(colInt)[<span class="number">0</span>];
+    };
+
+    <span class="comment">/**
+     * Extracts the red value from a color, scaled to match current colorMode().
+     * This value is always returned as a float so be careful not to assign it to an int value.
+     *
+     * @param {color} aColor any value of the color datatype
+     *
+     * @returns {float} The red color value.
+     *
+     * @see green
+     * @see blue
+     * @see alpha
+     * @see &gt;&gt; right shift
+     * @see hue
+     * @see saturation
+     * @see brightness
+     */</span>
+    window.redF = ColourFunctions.redF = <span class="function"><span class="keyword">function</span> <span class="params">(aColor)</span> {</span>
+        <span class="keyword">return</span> ((aColor &amp; Constants.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>) / <span class="number">255</span> * colorModeX;
+    };
+
+    <span class="comment">/**
+     * Extracts the green value from a color, scaled to match current colorMode().
+     * This value is always returned as a float so be careful not to assign it to an int value.
+     *
+     * @param {color} aColor any value of the color datatype
+     *
+     * @returns {float} The green color value.
+     *
+     * @see red
+     * @see blue
+     * @see alpha
+     * @see &gt;&gt; right shift
+     * @see hue
+     * @see saturation
+     * @see brightness
+     */</span>
+    window.greenF = ColourFunctions.greenF = <span class="function"><span class="keyword">function</span> <span class="params">(aColor)</span> {</span>
+        <span class="keyword">return</span> ((aColor &amp; Constants.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>) / <span class="number">255</span> * colorModeY;
+    };
+
+    <span class="comment">/**
+     * Extracts the blue value from a color, scaled to match current colorMode().
+     * This value is always returned as a float so be careful not to assign it to an int value.
+     *
+     * @param {color} aColor any value of the color datatype
+     *
+     * @returns {float} The blue color value.
+     *
+     * @see red
+     * @see green
+     * @see alpha
+     * @see &gt;&gt; right shift
+     * @see hue
+     * @see saturation
+     * @see brightness
+     */</span>
+    window.blueF = ColourFunctions.blueF = <span class="function"><span class="keyword">function</span> <span class="params">(aColor)</span> {</span>
+        <span class="keyword">return</span> (aColor &amp; Constants.BLUE_MASK) / <span class="number">255</span> * colorModeZ;
+    };
+
+    <span class="comment">/**
+     * Extracts the alpha value from a color, scaled to match current colorMode().
+     * This value is always returned as a float so be careful not to assign it to an int value.
+     *
+     * @param {color} aColor any value of the color datatype
+     *
+     * @returns {float} The alpha color value.
+     *
+     * @see red
+     * @see green
+     * @see blue
+     * @see &gt;&gt; right shift
+     * @see hue
+     * @see saturation
+     * @see brightness
+     */</span>
+    window.alpha = ColourFunctions.alpha = <span class="function"><span class="keyword">function</span> <span class="params">(aColor)</span> {</span>
+        <span class="keyword">return</span> ((aColor &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="number">255</span> * ColourFunctions.colorModeA;
+    };
+    window.alphaZeroToOne = ColourFunctions.alphaZeroToOne = <span class="function"><span class="keyword">function</span> <span class="params">(aColor)</span> {</span>
+        <span class="keyword">return</span> ((aColor &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="number">255</span>;
+    };
+
+    <span class="comment">/**
+     * Calculates a number between two numbers at a specific increment. The amt  parameter is the
+     * amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very
+     * near the first point, 0.5 is half-way in between, etc. The lerp function is convenient for
+     * creating motion along a straight path and for drawing dotted lines.
+     *
+     * @param {int|float} value1       float or int: first value
+     * @param {int|float} value2       float or int: second value
+     * @param {int|float} amt          float: between 0.0 and 1.0
+     *
+     * @returns {float}
+     *
+     * @see curvePoint
+     * @see bezierPoint
+     */</span>
+    window.lerp = ColourFunctions.lerp = <span class="function"><span class="keyword">function</span> <span class="params">(value1, value2, amt)</span> {</span>
+        <span class="keyword">return</span> ((value2 - value1) * amt) + value1;
+    };
+
+
+    <span class="comment">/**
+     * Calculates a color or colors between two colors at a specific increment.
+     * The amt parameter is the amount to interpolate between the two values where 0.0
+     * equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
+     *
+     * @param {color} c1     interpolate from this color
+     * @param {color} c2     interpolate to this color
+     * @param {float} amt    between 0.0 and 1.0
+     *
+     * @returns {float} The blended color.
+     *
+     * @see blendColor
+     * @see color
+     */</span>
+    window.lerpColor = ColourFunctions.lerpColor = <span class="function"><span class="keyword">function</span> <span class="params">(c1, c2, amt)</span> {</span>
+        <span class="keyword">var</span> r, g, b, a, r1, g1, b1, a1, r2, g2, b2, a2,
+            hsb1, hsb2, rgb, h, s,
+            colorBits1 = ColourFunctions.color(c1),
+            colorBits2 = ColourFunctions.color(c2);
+
+        <span class="keyword">if</span> (curColorMode === Constants.HSB) {
+</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>Special processing for HSB mode.
+Get HSB and Alpha values for Color 1 and 2</p>             </td>             <td class="code">               <div class="highlight"><pre>            hsb1 = ColourFunctions.colorToHSB(colorBits1);
+            a1 = ((colorBits1 &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / ColourFunctions.colorModeA;
+            hsb2 = ColourFunctions.colorToHSB(colorBits2);
+            a2 = ((colorBits2 &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / ColourFunctions.colorModeA;
+
+</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>RColourFunctions.eturn lerp value for each channel, for HSB components</p>             </td>             <td class="code">               <div class="highlight"><pre>            h = ColourFunctions.lerp(hsb1[<span class="number">0</span>], hsb2[<span class="number">0</span>], amt);
+            s = ColourFunctions.lerp(hsb1[<span class="number">1</span>], hsb2[<span class="number">1</span>], amt);
+            b = ColourFunctions.lerp(hsb1[<span class="number">2</span>], hsb2[<span class="number">2</span>], amt);
+            rgb = ColourFunctions.color.toRGB(h, s, b);
+</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>... and for Alpha-range</p>             </td>             <td class="code">               <div class="highlight"><pre>            a = ColourFunctions.lerp(a1, a2, amt) * ColourFunctions.colorModeA;
+
+            <span class="keyword">return</span> (a &lt;<span class="xml"><span class="tag">&lt; <span class="attribute">24</span>) &amp; <span class="attribute">Constants.ALPHA_MASK</span> | (<span class="attribute">rgb</span>[<span class="attribute">0</span>] &lt;&lt; <span class="attribute">16</span>) &amp; <span class="attribute">Constants.RED_MASK</span> | (<span class="attribute">rgb</span>[<span class="attribute">1</span>] &lt;&lt; <span class="attribute">8</span>) &amp; <span class="attribute">Constants.GREEN_MASK</span> | <span class="attribute">rgb</span>[<span class="attribute">2</span>] &amp; <span class="attribute">Constants.BLUE_MASK</span>;
+        }
+
+</span></pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>Get RGBA values for Color 1 to floats</p>             </td>             <td class="code">               <div class="highlight"><pre>        r1 = (colorBits1 &amp; Constants.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>;
+        g1 = (colorBits1 &amp; Constants.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>;
+        b1 = (colorBits1 &amp; Constants.BLUE_MASK);
+        a1 = ((colorBits1 &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / ColourFunctions.colorModeA;
+
+</pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>Get RGBA values for Color 2 to floats</p>             </td>             <td class="code">               <div class="highlight"><pre>        r2 = (colorBits2 &amp; Constants.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>;
+        g2 = (colorBits2 &amp; Constants.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>;
+        b2 = (colorBits2 &amp; Constants.BLUE_MASK);
+        a2 = ((colorBits2 &amp; Constants.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / ColourFunctions.colorModeA;
+
+</pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>Return lerp value for each channel, INT for color, Float for Alpha-range</p>             </td>             <td class="code">               <div class="highlight"><pre>        r = ColourFunctions.lerp(r1, r2, amt) | <span class="number">0</span>;
+        g = ColourFunctions.lerp(g1, g2, amt) | <span class="number">0</span>;
+        b = ColourFunctions.lerp(b1, b2, amt) | <span class="number">0</span>;
+        a = ColourFunctions.lerp(a1, a2, amt) * ColourFunctions.colorModeA;
+
+        <span class="keyword">return</span> (a &lt;<span class="xml"><span class="tag">&lt; <span class="attribute">24</span>) &amp; <span class="attribute">Constants.ALPHA_MASK</span> | (<span class="attribute">r</span> &lt;&lt; <span class="attribute">16</span>) &amp; <span class="attribute">Constants.RED_MASK</span> | (<span class="attribute">g</span> &lt;&lt; <span class="attribute">8</span>) &amp; <span class="attribute">Constants.GREEN_MASK</span> | <span class="attribute">b</span> &amp; <span class="attribute">Constants.BLUE_MASK</span>;
+    };
+
+    /**
+     * <span class="attribute">Changes</span> <span class="attribute">the</span> <span class="attribute">way</span> <span class="attribute">Processing</span> <span class="attribute">interprets</span> <span class="attribute">color</span> <span class="attribute">data.</span> <span class="attribute">By</span> <span class="attribute">default</span>, <span class="attribute">fill</span>(), <span class="attribute">stroke</span>(), <span class="attribute">and</span> <span class="attribute">background</span>()
+     * <span class="attribute">colors</span> <span class="attribute">are</span> <span class="attribute">set</span> <span class="attribute">by</span> <span class="attribute">values</span> <span class="attribute">between</span> <span class="attribute">0</span> <span class="attribute">and</span> <span class="attribute">255</span> <span class="attribute">using</span> <span class="attribute">the</span> <span class="attribute">RGB</span> <span class="attribute">color</span> <span class="attribute">model.</span> <span class="attribute">It</span> <span class="attribute">is</span> <span class="attribute">possible</span> <span class="attribute">to</span> <span class="attribute">change</span> <span class="attribute">the</span>
+     * <span class="attribute">numerical</span> <span class="attribute">range</span> <span class="attribute">used</span> <span class="attribute">for</span> <span class="attribute">specifying</span> <span class="attribute">colors</span> <span class="attribute">and</span> <span class="attribute">to</span> <span class="attribute">switch</span> <span class="attribute">color</span> <span class="attribute">systems.</span> <span class="attribute">For</span> <span class="attribute">example</span>, <span class="attribute">calling</span> <span class="attribute">colorMode</span>(<span class="attribute">RGB</span>, <span class="attribute">1.0</span>)
+     * <span class="attribute">will</span> <span class="attribute">specify</span> <span class="attribute">that</span> <span class="attribute">values</span> <span class="attribute">are</span> <span class="attribute">specified</span> <span class="attribute">between</span> <span class="attribute">0</span> <span class="attribute">and</span> <span class="attribute">1.</span> <span class="attribute">The</span> <span class="attribute">limits</span> <span class="attribute">for</span> <span class="attribute">defining</span> <span class="attribute">colors</span> <span class="attribute">are</span> <span class="attribute">altered</span> <span class="attribute">by</span> <span class="attribute">setting</span> <span class="attribute">the</span>
+     * <span class="attribute">parameters</span> <span class="attribute">range1</span>, <span class="attribute">range2</span>, <span class="attribute">range3</span>, <span class="attribute">and</span> <span class="attribute">range</span> <span class="attribute">4.</span>
+     *
+     * @<span class="attribute">param</span> {<span class="attribute">MODE</span>} <span class="attribute">mode</span> <span class="attribute">Either</span> <span class="attribute">RGB</span> <span class="attribute">or</span> <span class="attribute">HSB</span>, <span class="attribute">corresponding</span> <span class="attribute">to</span> <span class="attribute">Red</span>/<span class="attribute">Green</span>/<span class="attribute">Blue</span> <span class="attribute">and</span> <span class="attribute">Hue</span>/<span class="attribute">Saturation</span>/<span class="attribute">Brightness</span>
+     * @<span class="attribute">param</span> {<span class="attribute">int</span>|<span class="attribute">float</span>} <span class="attribute">range</span>              <span class="attribute">range</span> <span class="attribute">for</span> <span class="attribute">all</span> <span class="attribute">color</span> <span class="attribute">elements</span>
+     * @<span class="attribute">param</span> {<span class="attribute">int</span>|<span class="attribute">float</span>} <span class="attribute">range1</span>             <span class="attribute">range</span> <span class="attribute">for</span> <span class="attribute">the</span> <span class="attribute">red</span> <span class="attribute">or</span> <span class="attribute">hue</span> <span class="attribute">depending</span> <span class="attribute">on</span> <span class="attribute">the</span> <span class="attribute">current</span> <span class="attribute">color</span> <span class="attribute">mode</span>
+     * @<span class="attribute">param</span> {<span class="attribute">int</span>|<span class="attribute">float</span>} <span class="attribute">range2</span>             <span class="attribute">range</span> <span class="attribute">for</span> <span class="attribute">the</span> <span class="attribute">green</span> <span class="attribute">or</span> <span class="attribute">saturation</span> <span class="attribute">depending</span> <span class="attribute">on</span> <span class="attribute">the</span> <span class="attribute">current</span> <span class="attribute">color</span> <span class="attribute">mode</span>
+     * @<span class="attribute">param</span> {<span class="attribute">int</span>|<span class="attribute">float</span>} <span class="attribute">range3</span>             <span class="attribute">range</span> <span class="attribute">for</span> <span class="attribute">the</span> <span class="attribute">blue</span> <span class="attribute">or</span> <span class="attribute">brightness</span> <span class="attribute">depending</span> <span class="attribute">on</span> <span class="attribute">the</span> <span class="attribute">current</span> <span class="attribute">color</span> <span class="attribute">mode</span>
+     * @<span class="attribute">param</span> {<span class="attribute">int</span>|<span class="attribute">float</span>} <span class="attribute">range4</span>             <span class="attribute">range</span> <span class="attribute">for</span> <span class="attribute">the</span> <span class="attribute">alpha</span>
+     *
+     * @<span class="attribute">returns</span> <span class="attribute">none</span>
+     *
+     * @<span class="attribute">see</span> <span class="attribute">background</span>
+     * @<span class="attribute">see</span> <span class="attribute">fill</span>
+     * @<span class="attribute">see</span> <span class="attribute">stroke</span>
+     */
+    <span class="attribute">window.colorMode</span> = <span class="attribute">ColourFunctions.colorMode</span> = <span class="attribute">function</span> (<span class="attribute">mode</span>, <span class="attribute">range1</span>, <span class="attribute">range2</span>, <span class="attribute">range3</span>, <span class="attribute">range4</span>) {
+        <span class="attribute">curColorMode</span> = <span class="attribute">mode</span>;
+        <span class="attribute">if</span> (<span class="attribute">arguments.length</span> &gt;</span> 1) {
+            colorModeX = range1;
+            colorModeY = range2 || range1;
+            colorModeZ = range3 || range1;
+            ColourFunctions.colorModeA = range4 || range1;
+        }
+    };
+
+
+</span></pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>blending modes</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="comment">/**
+     * These are internal blending modes used for BlendColor()
+     *
+     * @param {Color} c1       First Color to blend
+     * @param {Color} c2       Second Color to blend
+     *
+     * @returns {Color}        The blended Color
+     *
+     * @see BlendColor
+     * @see Blend
+     */</span>
+    modes = (<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        <span class="keyword">var</span> ALPHA_MASK = Constants.ALPHA_MASK,
+            RED_MASK = Constants.RED_MASK,
+            GREEN_MASK = Constants.GREEN_MASK,
+            BLUE_MASK = Constants.BLUE_MASK,
+            min = Math.min,
+            max = Math.max,
+            applyMode;
+
+        applyMode = <span class="function"><span class="keyword">function</span> <span class="params">(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb)</span> {</span>
+            <span class="keyword">var</span> a, r, g, b;
+            a = min(((c1 &amp; <span class="number">0xff000000</span>) &gt;&gt;&gt; <span class="number">24</span>) + f, <span class="number">0xff</span>) &lt;<span class="xml"><span class="tag">&lt; <span class="attribute">24</span>;
+
+            <span class="attribute">r</span> = (<span class="attribute">ar</span> + (((<span class="attribute">cr</span> <span class="attribute">-</span> <span class="attribute">ar</span>) * <span class="attribute">f</span>) &gt;</span>&gt; 8));
+            r = ((r <span class="tag">&lt; <span class="attribute">0</span>) ? <span class="attribute">0</span> <span class="attribute">:</span> ((<span class="attribute">r</span> &gt;</span> 255) ? 255 : r)) <span class="tag">&lt;<span class="title">&lt;</span> <span class="attribute">16</span>;
+
+            <span class="attribute">g</span> = (<span class="attribute">ag</span> + (((<span class="attribute">cg</span> <span class="attribute">-</span> <span class="attribute">ag</span>) * <span class="attribute">f</span>) &gt;</span>&gt; 8));
+            g = ((g <span class="tag">&lt; <span class="attribute">0</span>) ? <span class="attribute">0</span> <span class="attribute">:</span> ((<span class="attribute">g</span> &gt;</span> 255) ? 255 : g)) <span class="tag">&lt;<span class="title">&lt;</span> <span class="attribute">8</span>;
+
+            <span class="attribute">b</span> = <span class="attribute">ab</span> + (((<span class="attribute">cb</span> <span class="attribute">-</span> <span class="attribute">ab</span>) * <span class="attribute">f</span>) &gt;</span>&gt; 8);
+            b = (b <span class="tag">&lt; <span class="attribute">0</span>) ? <span class="attribute">0</span> <span class="attribute">:</span> ((<span class="attribute">b</span> &gt;</span> 255) ? 255 : b);
+
+            return (a | r | g | b);
+        };
+
+        return {
+            replace: function (c1, c2) {
+                return c2;
+            },
+            blend: function (c1, c2) {
+                var f = (c2 &amp; ALPHA_MASK) &gt;&gt;&gt; 24,
+                    ar = (c1 &amp; RED_MASK),
+                    ag = (c1 &amp; GREEN_MASK),
+                    ab = (c1 &amp; BLUE_MASK),
+                    br = (c2 &amp; RED_MASK),
+                    bg = (c2 &amp; GREEN_MASK),
+                    bb = (c2 &amp; BLUE_MASK);
+
+                return (min(((c1 &amp; ALPHA_MASK) &gt;&gt;&gt; 24) + f, 0xff) <span class="tag">&lt;<span class="title">&lt;</span> <span class="attribute">24</span> | (<span class="attribute">ar</span> + (((<span class="attribute">br</span> <span class="attribute">-</span> <span class="attribute">ar</span>) * <span class="attribute">f</span>) &gt;</span>&gt; 8)) &amp; RED_MASK | (ag + (((bg - ag) * f) &gt;&gt; 8)) &amp; GREEN_MASK | (ab + (((bb - ab) * f) &gt;&gt; 8)) &amp; BLUE_MASK);
+            },
+            add: function (c1, c2) {
+                var f = (c2 &amp; ALPHA_MASK) &gt;&gt;&gt; 24;
+                return (min(((c1 &amp; ALPHA_MASK) &gt;&gt;&gt; 24) + f, 0xff) <span class="tag">&lt;<span class="title">&lt;</span> <span class="attribute">24</span> | <span class="attribute">min</span>(((<span class="attribute">c1</span> &amp; <span class="attribute">RED_MASK</span>) + ((<span class="attribute">c2</span> &amp; <span class="attribute">RED_MASK</span>) &gt;</span>&gt; 8) * f), RED_MASK) &amp; RED_MASK | min(((c1 &amp; GREEN_MASK) + ((c2 &amp; GREEN_MASK) &gt;&gt; 8) * f), GREEN_MASK) &amp; GREEN_MASK | min((c1 &amp; BLUE_MASK) + (((c2 &amp; BLUE_MASK) * f) &gt;&gt; 8), BLUE_MASK));
+            },
+            subtract: function (c1, c2) {
+                var f = (c2 &amp; ALPHA_MASK) &gt;&gt;&gt; 24;
+                return (min(((c1 &amp; ALPHA_MASK) &gt;&gt;&gt; 24) + f, 0xff) <span class="tag">&lt;<span class="title">&lt;</span> <span class="attribute">24</span> | <span class="attribute">max</span>(((<span class="attribute">c1</span> &amp; <span class="attribute">RED_MASK</span>) <span class="attribute">-</span> ((<span class="attribute">c2</span> &amp; <span class="attribute">RED_MASK</span>) &gt;</span>&gt; 8) * f), GREEN_MASK) &amp; RED_MASK | max(((c1 &amp; GREEN_MASK) - ((c2 &amp; GREEN_MASK) &gt;&gt; 8) * f), BLUE_MASK) &amp; GREEN_MASK | max((c1 &amp; BLUE_MASK) - (((c2 &amp; BLUE_MASK) * f) &gt;&gt; 8), 0));
+            },
+            lightest: function (c1, c2) {
+                var f = (c2 &amp; ALPHA_MASK) &gt;&gt;&gt; 24;
+                return (min(((c1 &amp; ALPHA_MASK) &gt;&gt;&gt; 24) + f, 0xff) <span class="tag">&lt;<span class="title">&lt;</span> <span class="attribute">24</span> | <span class="attribute">max</span>(<span class="attribute">c1</span> &amp; <span class="attribute">RED_MASK</span>, ((<span class="attribute">c2</span> &amp; <span class="attribute">RED_MASK</span>) &gt;</span>&gt; 8) * f) &amp; RED_MASK | max(c1 &amp; GREEN_MASK, ((c2 &amp; GREEN_MASK) &gt;&gt; 8) * f) &amp; GREEN_MASK | max(c1 &amp; BLUE_MASK, ((c2 &amp; BLUE_MASK) * f) &gt;&gt; 8));
+            },
+            darkest: function (c1, c2) {
+                var f = (c2 &amp; ALPHA_MASK) &gt;&gt;&gt; 24,
+                    ar = (c1 &amp; RED_MASK),
+                    ag = (c1 &amp; GREEN_MASK),
+                    ab = (c1 &amp; BLUE_MASK),
+                    br = min(c1 &amp; RED_MASK, ((c2 &amp; RED_MASK) &gt;&gt; 8) * f),
+                    bg = min(c1 &amp; GREEN_MASK, ((c2 &amp; GREEN_MASK) &gt;&gt; 8) * f),
+                    bb = min(c1 &amp; BLUE_MASK, ((c2 &amp; BLUE_MASK) * f) &gt;&gt; 8);
+
+                return (min(((c1 &amp; ALPHA_MASK) &gt;&gt;&gt; 24) + f, 0xff) <span class="tag">&lt;<span class="title">&lt;</span> <span class="attribute">24</span> | (<span class="attribute">ar</span> + (((<span class="attribute">br</span> <span class="attribute">-</span> <span class="attribute">ar</span>) * <span class="attribute">f</span>) &gt;</span>&gt; 8)) &amp; RED_MASK | (ag + (((bg - ag) * f) &gt;&gt; 8)) &amp; GREEN_MASK | (ab + (((bb - ab) * f) &gt;&gt; 8)) &amp; BLUE_MASK);
+            },
+            difference: function (c1, c2) {
+                var f = (c2 &amp; ALPHA_MASK) &gt;&gt;&gt; 24,
+                    ar = (c1 &amp; RED_MASK) &gt;&gt; 16,
+                    ag = (c1 &amp; GREEN_MASK) &gt;&gt; 8,
+                    ab = (c1 &amp; BLUE_MASK),
+                    br = (c2 &amp; RED_MASK) &gt;&gt; 16,
+                    bg = (c2 &amp; GREEN_MASK) &gt;&gt; 8,
+                    bb = (c2 &amp; BLUE_MASK),
+                    cr = (ar &gt; br) ? (ar - br) : (br - ar),
+                    cg = (ag &gt; bg) ? (ag - bg) : (bg - ag),
+                    cb = (ab &gt; bb) ? (ab - bb) : (bb - ab);
+
+                return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+            },
+            exclusion: function (c1, c2) {
+                var f = (c2 &amp; ALPHA_MASK) &gt;&gt;&gt; 24,
+                    ar = (c1 &amp; RED_MASK) &gt;&gt; 16,
+                    ag = (c1 &amp; GREEN_MASK) &gt;&gt; 8,
+                    ab = (c1 &amp; BLUE_MASK),
+                    br = (c2 &amp; RED_MASK) &gt;&gt; 16,
+                    bg = (c2 &amp; GREEN_MASK) &gt;&gt; 8,
+                    bb = (c2 &amp; BLUE_MASK),
+                    cr = ar + br - ((ar * br) &gt;&gt; 7),
+                    cg = ag + bg - ((ag * bg) &gt;&gt; 7),
+                    cb = ab + bb - ((ab * bb) &gt;&gt; 7);
+
+                return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+            },
+            multiply: function (c1, c2) {
+                var f = (c2 &amp; ALPHA_MASK) &gt;&gt;&gt; 24,
+                    ar = (c1 &amp; RED_MASK) &gt;&gt; 16,
+                    ag = (c1 &amp; GREEN_MASK) &gt;&gt; 8,
+                    ab = (c1 &amp; BLUE_MASK),
+                    br = (c2 &amp; RED_MASK) &gt;&gt; 16,
+                    bg = (c2 &amp; GREEN_MASK) &gt;&gt; 8,
+                    bb = (c2 &amp; BLUE_MASK),
+                    cr = (ar * br) &gt;&gt; 8,
+                    cg = (ag * bg) &gt;&gt; 8,
+                    cb = (ab * bb) &gt;&gt; 8;
+
+                return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+            },
+            screen: function (c1, c2) {
+                var f = (c2 &amp; ALPHA_MASK) &gt;&gt;&gt; 24,
+                    ar = (c1 &amp; RED_MASK) &gt;&gt; 16,
+                    ag = (c1 &amp; GREEN_MASK) &gt;&gt; 8,
+                    ab = (c1 &amp; BLUE_MASK),
+                    br = (c2 &amp; RED_MASK) &gt;&gt; 16,
+                    bg = (c2 &amp; GREEN_MASK) &gt;&gt; 8,
+                    bb = (c2 &amp; BLUE_MASK),
+                    cr = 255 - (((255 - ar) * (255 - br)) &gt;&gt; 8),
+                    cg = 255 - (((255 - ag) * (255 - bg)) &gt;&gt; 8),
+                    cb = 255 - (((255 - ab) * (255 - bb)) &gt;&gt; 8);
+
+                return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+            },
+            hard_light: function (c1, c2) {
+                var f = (c2 &amp; ALPHA_MASK) &gt;&gt;&gt; 24,
+                    ar = (c1 &amp; RED_MASK) &gt;&gt; 16,
+                    ag = (c1 &amp; GREEN_MASK) &gt;&gt; 8,
+                    ab = (c1 &amp; BLUE_MASK),
+                    br = (c2 &amp; RED_MASK) &gt;&gt; 16,
+                    bg = (c2 &amp; GREEN_MASK) &gt;&gt; 8,
+                    bb = (c2 &amp; BLUE_MASK),
+                    cr = (br <span class="tag">&lt; <span class="attribute">128</span>) ? ((<span class="attribute">ar</span> * <span class="attribute">br</span>) &gt;</span>&gt; 7) : (255 - (((255 - ar) * (255 - br)) &gt;&gt; 7)),
+                    cg = (bg <span class="tag">&lt; <span class="attribute">128</span>) ? ((<span class="attribute">ag</span> * <span class="attribute">bg</span>) &gt;</span>&gt; 7) : (255 - (((255 - ag) * (255 - bg)) &gt;&gt; 7)),
+                    cb = (bb <span class="tag">&lt; <span class="attribute">128</span>) ? ((<span class="attribute">ab</span> * <span class="attribute">bb</span>) &gt;</span>&gt; 7) : (255 - (((255 - ab) * (255 - bb)) &gt;&gt; 7));
+
+                return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+            },
+            soft_light: function (c1, c2) {
+                var f = (c2 &amp; ALPHA_MASK) &gt;&gt;&gt; 24,
+                    ar = (c1 &amp; RED_MASK) &gt;&gt; 16,
+                    ag = (c1 &amp; GREEN_MASK) &gt;&gt; 8,
+                    ab = (c1 &amp; BLUE_MASK),
+                    br = (c2 &amp; RED_MASK) &gt;&gt; 16,
+                    bg = (c2 &amp; GREEN_MASK) &gt;&gt; 8,
+                    bb = (c2 &amp; BLUE_MASK),
+                    cr = ((ar * br) &gt;&gt; 7) + ((ar * ar) &gt;&gt; 8) - ((ar * ar * br) &gt;&gt; 15),
+                    cg = ((ag * bg) &gt;&gt; 7) + ((ag * ag) &gt;&gt; 8) - ((ag * ag * bg) &gt;&gt; 15),
+                    cb = ((ab * bb) &gt;&gt; 7) + ((ab * ab) &gt;&gt; 8) - ((ab * ab * bb) &gt;&gt; 15);
+
+                return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+            },
+            overlay: function (c1, c2) {
+                var f = (c2 &amp; ALPHA_MASK) &gt;&gt;&gt; 24,
+                    ar = (c1 &amp; RED_MASK) &gt;&gt; 16,
+                    ag = (c1 &amp; GREEN_MASK) &gt;&gt; 8,
+                    ab = (c1 &amp; BLUE_MASK),
+                    br = (c2 &amp; RED_MASK) &gt;&gt; 16,
+                    bg = (c2 &amp; GREEN_MASK) &gt;&gt; 8,
+                    bb = (c2 &amp; BLUE_MASK),
+                    cr = (ar <span class="tag">&lt; <span class="attribute">128</span>) ? ((<span class="attribute">ar</span> * <span class="attribute">br</span>) &gt;</span>&gt; 7) : (255 - (((255 - ar) * (255 - br)) &gt;&gt; 7)),
+                    cg = (ag <span class="tag">&lt; <span class="attribute">128</span>) ? ((<span class="attribute">ag</span> * <span class="attribute">bg</span>) &gt;</span>&gt; 7) : (255 - (((255 - ag) * (255 - bg)) &gt;&gt; 7)),
+                    cb = (ab <span class="tag">&lt; <span class="attribute">128</span>) ? ((<span class="attribute">ab</span> * <span class="attribute">bb</span>) &gt;</span>&gt; 7) : (255 - (((255 - ab) * (255 - bb)) &gt;&gt; 7));
+
+                return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+            },
+            dodge: function (c1, c2) {
+                var f = (c2 &amp; ALPHA_MASK) &gt;&gt;&gt; 24,
+                    ar = (c1 &amp; RED_MASK) &gt;&gt; 16,
+                    ag = (c1 &amp; GREEN_MASK) &gt;&gt; 8,
+                    ab = (c1 &amp; BLUE_MASK),
+                    br = (c2 &amp; RED_MASK) &gt;&gt; 16,
+                    bg = (c2 &amp; GREEN_MASK) &gt;&gt; 8,
+                    bb = (c2 &amp; BLUE_MASK),
+                    cr,
+                    cg,
+                    cb;
+
+                cr = 255;
+                if (br !== 255) {
+                    cr = (ar <span class="tag">&lt;<span class="title">&lt;</span> <span class="attribute">8</span>) / (<span class="attribute">255</span> <span class="attribute">-</span> <span class="attribute">br</span>);
+                    <span class="attribute">cr</span> = (<span class="attribute">cr</span> &lt; <span class="attribute">0</span>) ? <span class="attribute">0</span> <span class="attribute">:</span> ((<span class="attribute">cr</span> &gt;</span> 255) ? 255 : cr);
+                }
+
+                cg = 255;
+                if (bg !== 255) {
+                    cg = (ag <span class="tag">&lt;<span class="title">&lt;</span> <span class="attribute">8</span>) / (<span class="attribute">255</span> <span class="attribute">-</span> <span class="attribute">bg</span>);
+                    <span class="attribute">cg</span> = (<span class="attribute">cg</span> &lt; <span class="attribute">0</span>) ? <span class="attribute">0</span> <span class="attribute">:</span> ((<span class="attribute">cg</span> &gt;</span> 255) ? 255 : cg);
+                }
+
+                cb = 255;
+                if (bb !== 255) {
+                    cb = (ab <span class="tag">&lt;<span class="title">&lt;</span> <span class="attribute">8</span>) / (<span class="attribute">255</span> <span class="attribute">-</span> <span class="attribute">bb</span>);
+                    <span class="attribute">cb</span> = (<span class="attribute">cb</span> &lt; <span class="attribute">0</span>) ? <span class="attribute">0</span> <span class="attribute">:</span> ((<span class="attribute">cb</span> &gt;</span> 255) ? 255 : cb);
+                }
+
+                return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+            },
+            burn: function (c1, c2) {
+                var f = (c2 &amp; ALPHA_MASK) &gt;&gt;&gt; 24,
+                    ar = (c1 &amp; RED_MASK) &gt;&gt; 16,
+                    ag = (c1 &amp; GREEN_MASK) &gt;&gt; 8,
+                    ab = (c1 &amp; BLUE_MASK),
+                    br = (c2 &amp; RED_MASK) &gt;&gt; 16,
+                    bg = (c2 &amp; GREEN_MASK) &gt;&gt; 8,
+                    bb = (c2 &amp; BLUE_MASK),
+                    cr,
+                    cg,
+                    cb;
+
+                cr = 0;
+                if (br !== 0) {
+                    cr = ((255 - ar) <span class="tag">&lt;<span class="title">&lt;</span> <span class="attribute">8</span>) / <span class="attribute">br</span>;
+                    <span class="attribute">cr</span> = <span class="attribute">255</span> <span class="attribute">-</span> ((<span class="attribute">cr</span> &lt; <span class="attribute">0</span>) ? <span class="attribute">0</span> <span class="attribute">:</span> ((<span class="attribute">cr</span> &gt;</span> 255) ? 255 : cr));
+                }
+
+                cg = 0;
+                if (bg !== 0) {
+                    cg = ((255 - ag) <span class="tag">&lt;<span class="title">&lt;</span> <span class="attribute">8</span>) / <span class="attribute">bg</span>;
+                    <span class="attribute">cg</span> = <span class="attribute">255</span> <span class="attribute">-</span> ((<span class="attribute">cg</span> &lt; <span class="attribute">0</span>) ? <span class="attribute">0</span> <span class="attribute">:</span> ((<span class="attribute">cg</span> &gt;</span> 255) ? 255 : cg));
+                }
+
+                cb = 0;
+                if (bb !== 0) {
+                    cb = ((255 - ab) <span class="tag">&lt;<span class="title">&lt;</span> <span class="attribute">8</span>) / <span class="attribute">bb</span>;
+                    <span class="attribute">cb</span> = <span class="attribute">255</span> <span class="attribute">-</span> ((<span class="attribute">cb</span> &lt; <span class="attribute">0</span>) ? <span class="attribute">0</span> <span class="attribute">:</span> ((<span class="attribute">cb</span> &gt;</span> 255) ? 255 : cb));
+                }
+
+                return applyMode(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb);
+            }
+        };
+    }());
+
+
+
+    /**
+     * Blends two color values together based on the blending mode given as the MODE parameter.
+     * The possible modes are described in the reference for the blend() function.
+     *
+     * @param {color} c1 color: the first color to blend
+     * @param {color} c2 color: the second color to blend
+     * @param {MODE} MODE Either BLEND, ADD, SUBTRACT, DARKEST, LIGHTEST, DIFFERENCE, EXCLUSION, MULTIPLY,
+     * SCREEN, OVERLAY, HARD_LIGHT, SOFT_LIGHT, DODGE, or BURN
+     *
+     * @returns {float} The blended color.
+     *
+     * @see blend
+     * @see color
+     */
+    window.blendColor = ColourFunctions.blendColor = function (c1, c2, mode) {
+        if (mode === Constants.REPLACE) {
+            return modes.replace(c1, c2);
+        } else if (mode === Constants.BLEND) {
+            return modes.blend(c1, c2);
+        } else if (mode === Constants.ADD) {
+            return modes.add(c1, c2);
+        } else if (mode === Constants.SUBTRACT) {
+            return modes.subtract(c1, c2);
+        } else if (mode === Constants.LIGHTEST) {
+            return modes.lightest(c1, c2);
+        } else if (mode === Constants.DARKEST) {
+            return modes.darkest(c1, c2);
+        } else if (mode === Constants.DIFFERENCE) {
+            return modes.difference(c1, c2);
+        } else if (mode === Constants.EXCLUSION) {
+            return modes.exclusion(c1, c2);
+        } else if (mode === Constants.MULTIPLY) {
+            return modes.multiply(c1, c2);
+        } else if (mode === Constants.SCREEN) {
+            return modes.screen(c1, c2);
+        } else if (mode === Constants.HARD_LIGHT) {
+            return modes.hard_light(c1, c2);
+        } else if (mode === Constants.SOFT_LIGHT) {
+            return modes.soft_light(c1, c2);
+        } else if (mode === Constants.OVERLAY) {
+            return modes.overlay(c1, c2);
+        } else if (mode === Constants.DODGE) {
+            return modes.dodge(c1, c2);
+        } else if (mode === Constants.BURN) {
+            return modes.burn(c1, c2);
+        }
+    };
+
+
+    return ColourFunctions;
+};
+
+</span></pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

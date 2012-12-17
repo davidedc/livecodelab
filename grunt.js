@@ -38,14 +38,18 @@ module.exports = function (grunt) {
         concat: {
             dist: {
                 src: [
+                    'js/livecodelab-core.js',
                     'js/events.js',
+                    'js/simple-error-checker.js',
+                    'js/url-router.js',
                     'js/big-cursor-animation.js',
                     'js/autocoder/mclexer.js',
-                    'js/sound/sounddef.js',
-                    'js/sound/sound-functions.js',
+                    'js/sound/samplebank.js',
+                    'js/sound/sound-system.js',
                     'js/sound/buzz.js',
-                    'js/animation-controls.js',
+                    'js/animation-loop.js',
                     'js/init-threejs.js',
+                    'js/renderer.js',
                     'js/colour-definitions.js',
                     'js/three.js/Detector.js',
                     'js/three.js/Stats.js',
@@ -64,6 +68,7 @@ module.exports = function (grunt) {
                     'js/matrix-commands.js',
                     'js/graphic-primitives.js',
                     'js/math.js',
+                    'js/draw-function-runner.js',
                     'js/code-transformations.js',
                     'js/demos-and-tutorials.js',
                     'js/autocoder/autocode.js',
@@ -80,10 +85,13 @@ module.exports = function (grunt) {
         },
         doccoh: {
             src: ['js/*.js',
-                  'js/editor/*.js']
+                  'js/editor/*.js'],
+            options: {
+            			output: 'docs/docco/'
+            }
         },
         clean: {
-            docs: ['docs/'],
+            docs: ['docs/docco/'],
             build: ['dist/', 'indexMinified.html', 'js_compiled/Livecodelab-minified.js']
         },
         targethtml: {

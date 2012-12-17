@@ -7,6 +7,7 @@ var createEventRouter = function () {
         events = {};
 
     EventRouter.bind = function (name, callback, context) {
+        //console.log("binding: " + name + " to callback: " + callback + " with context: " + context);
         var listenerInfo = {
             callback: callback,
             context: context
@@ -21,6 +22,7 @@ var createEventRouter = function () {
     EventRouter.trigger = function (name) {
         var args, callbacks, i, listenerInfo;
 
+        //console.log("triggered: " + name);
         // convert the arguments object into an array
         args = Array.prototype.slice.call(arguments);
 

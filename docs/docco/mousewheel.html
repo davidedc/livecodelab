@@ -1,0 +1,85 @@
+<!DOCTYPE html>  <html> <head>   <title>mousewheel.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="events.html">                 events.js               </a>                                           <a class="source" href="globals.html">                 globals.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="renderer.html">                 renderer.js               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="url-router.html">                 url-router.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               mousewheel.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true, devel: true */</span>
+<span class="comment">/*global editor, $ */</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>/////////// START OF MOUSEWHEEL HANDLER CODE
+I couldn't quite get the exact Javascript plugin below to
+work in its original form, so I only took the
+"calculation" routine.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+<span class="keyword">var</span> wheel = <span class="function"><span class="keyword">function</span> <span class="params">(event)</span> {</span>
+
+    <span class="comment">/*! Copyright (c) 2011 Brandon Aaron (http://brandonaaron.net)
+     * Licensed under the MIT License (LICENSE.txt).
+     *
+     * Thanks to: http://adomas.org/javascript-mouse-wheel/ for some pointers.
+     * Thanks to: Mathias Bank(http://www.mathias-bank.de) for a scope bug fix.
+     * Thanks to: Seamus Leahy for adding deltaX and deltaY
+     *
+     * Version: 3.0.6
+     *
+     * Requires: 1.2.2+
+     */</span>
+
+    <span class="keyword">var</span> orgEvent = event || window.event,
+        args = [].slice.call(arguments, <span class="number">1</span>),
+        delta = <span class="number">0</span>,
+        returnValue = <span class="literal">true</span>,
+        deltaX = <span class="number">0</span>,
+        deltaY = <span class="number">0</span>,
+        cursorPositio;
+    event = $.event.fix(orgEvent);
+    event.type = <span class="string">"mousewheel"</span>;
+
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Old school scrollwheel delta</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (orgEvent.wheelDelta) {
+        delta = orgEvent.wheelDelta / <span class="number">120</span>;
+    }
+    <span class="keyword">if</span> (orgEvent.detail) {
+        delta = -orgEvent.detail / <span class="number">3</span>;
+    }
+
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>New school multidimensional scroll (touchpads) deltas</p>             </td>             <td class="code">               <div class="highlight"><pre>    deltaY = delta;
+
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Gecko</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (orgEvent.axis !== <span class="literal">undefined</span> &amp;&amp; orgEvent.axis === orgEvent.HORIZONTAL_AXIS) {
+        deltaY = <span class="number">0</span>;
+        deltaX = -<span class="number">1</span> * delta;
+    }
+
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Webkit</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (orgEvent.wheelDeltaY !== <span class="literal">undefined</span>) {
+        deltaY = orgEvent.wheelDeltaY / <span class="number">120</span>;
+    }
+    <span class="keyword">if</span> (orgEvent.wheelDeltaX !== <span class="literal">undefined</span>) {
+        deltaX = -<span class="number">1</span> * orgEvent.wheelDeltaX / <span class="number">120</span>;
+    }
+
+    <span class="keyword">if</span> (deltaY &gt; <span class="number">0.2</span>) {
+        cursorPositio = editor.getCursor(<span class="literal">true</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>this is to prevent that when the cursor reaches the
+last line, then it goes to the END of the line
+we avoid that because of a nasty workaround
+where we check whether the cursor is in the
+first few characters of the line to avoid
+following a "next-tutorial" link.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (cursorPositio.line !== editor.lineCount() - <span class="number">1</span>) {
+            editor.setCursor(cursorPositio.line + <span class="number">1</span>, cursorPositio.ch);
+        }
+    } <span class="keyword">else</span> <span class="keyword">if</span> (deltaY &lt; -<span class="number">0.2</span>) {
+        cursorPositio = editor.getCursor(<span class="literal">true</span>);
+        editor.setCursor(cursorPositio.line - <span class="number">1</span>, cursorPositio.ch);
+    }
+};
+
+(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+    <span class="comment">/* Initialization code. */</span>
+    <span class="keyword">if</span> (window.addEventListener) {
+        window.addEventListener(<span class="string">'DOMMouseScroll'</span>, wheel, <span class="literal">false</span>);
+        window.onmousewheel = document.onmousewheel = wheel;
+    }
+}());
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>/////////// END OF MOUSEWHEEL HANDLER CODE
+this function is called when the cursor moves
+and we handle this in two ways
+1) we suspend the dimming countdown
+2) we undim the editor if it is dimmed
+3) we check whether the user moved the cursor over a link
+/////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

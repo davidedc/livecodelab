@@ -1,0 +1,178 @@
+<!DOCTYPE html>  <html> <head>   <title>background-painting.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="events.html">                 events.js               </a>                                           <a class="source" href="globals.html">                 globals.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="renderer.html">                 renderer.js               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="url-router.html">                 url-router.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               background-painting.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true, devel: true */</span>
+<span class="comment">/*global $ */</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>The user can issue multiple solid fill and gradient fill commands
+and they are all painted on top of each other according to the
+order they have been issued in.
+So for example you can have one gradient and then
+a second one painted over it that uses some transparency.</p>
+
+<p>This is why solid and gradient fills are all kept in an array
+and each time the user issues one of the two commands, an
+element is added to the array.</p>
+
+<p>Both solid and gradient fills are stored as elements in the
+array, all elements are the same and accommodate for a description
+that either case (solid/gradient).</p>
+
+<p>The background/gradients are drawn on a separate 2D canvas
+and we avoid repainting that canvas over and over if the
+painting commands stay the same (i.e. colors of their
+arguments and the order of the commands) across frames.</p>
+
+<p>For quickly determining whether the order/content of the commands
+has changed across frames,
+a string is kept that represents the whole stack of commands
+issued in the current frame, and similarly the "previous frame"
+string representation is also kept.
+So it's kind of like a simplified JSON representation if you will.</p>
+
+<p>If the strings are the same across frames, then the 2D layer of
+the background is not repainted, otherwise the array is iterated
+and each background/gradient is painted anew.</p>
+
+<p>Note that we are not trying to be too clever here - for example
+a solid fill effectively invalidates the contents of the previous
+elements of the array, so we could discard those when such
+a command is issued.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+<span class="keyword">var</span> createBackgroundPainter = <span class="function"><span class="keyword">function</span> <span class="params">(eventRouter, liveCodeLabCoreInstance)</span> {</span>
+
+    <span class="string">'use strict'</span>;
+
+    <span class="keyword">var</span> gradStack = [],
+        defaultGradientColor1 = orange,
+        defaultGradientColor2 = red,
+        defaultGradientColor3 = black,
+        whichDefaultBackground,
+        currentGradientStackValue = <span class="string">''</span>,
+        previousGradientStackValue = <span class="number">0</span>,
+        BackgroundPainter = {};
+
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    BackgroundPainter.simpleGradient = <span class="function"><span class="keyword">function</span> <span class="params">(a, b, c, d)</span> {</span>
+
+        currentGradientStackValue = currentGradientStackValue + <span class="string">" "</span> + a + <span class="string">""</span> + b + <span class="string">""</span> + c + <span class="string">""</span> + d + <span class="string">"null "</span>;
+        gradStack.push({
+            gradStacka: liveCodeLabCoreInstance.ColourFunctions.color(a),
+            gradStackb: liveCodeLabCoreInstance.ColourFunctions.color(b),
+            gradStackc: liveCodeLabCoreInstance.ColourFunctions.color(c),
+            gradStackd: liveCodeLabCoreInstance.ColourFunctions.color(d),
+            solid: <span class="literal">null</span>
+        });
+
+    };
+
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    BackgroundPainter.background = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>[todo] should the screen be cleared when you invoke
+the background command? (In processing it's not)</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="keyword">var</span> a = liveCodeLabCoreInstance.ColourFunctions.color(arguments[<span class="number">0</span>], arguments[<span class="number">1</span>], arguments[<span class="number">2</span>], arguments[<span class="number">3</span>]);
+        currentGradientStackValue = currentGradientStackValue + <span class="string">" null null null null "</span> + a + <span class="string">" "</span>;
+        gradStack.push({
+            gradStacka: <span class="literal">undefined</span>,
+            gradStackb: <span class="literal">undefined</span>,
+            gradStackc: <span class="literal">undefined</span>,
+            gradStackd: <span class="literal">undefined</span>,
+            solid: a
+        });
+    };
+
+    BackgroundPainter.paintARandomBackground = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+        <span class="keyword">if</span> (whichDefaultBackground === <span class="literal">undefined</span>) {
+            whichDefaultBackground = Math.floor(Math.random() * <span class="number">5</span>);
+        } <span class="keyword">else</span> {
+            whichDefaultBackground = (whichDefaultBackground + <span class="number">1</span>) % <span class="number">5</span>;
+        }
+
+        <span class="keyword">switch</span> (whichDefaultBackground) {
+					<span class="keyword">case</span> <span class="number">0</span>:
+							defaultGradientColor1 = orange;
+							defaultGradientColor2 = red;
+							defaultGradientColor3 = black;
+							$(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'white'</span>);
+							<span class="keyword">break</span>;
+					<span class="keyword">case</span> <span class="number">1</span>:
+							defaultGradientColor1 = white;
+							defaultGradientColor2 = khaki;
+							defaultGradientColor3 = peachpuff;
+							$(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'LightPink'</span>);
+							<span class="keyword">break</span>;
+					<span class="keyword">case</span> <span class="number">2</span>:
+							defaultGradientColor1 = lightsteelblue;
+							defaultGradientColor2 = lightcyan;
+							defaultGradientColor3 = paleturquoise;
+							$(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'CadetBlue'</span>);
+							<span class="keyword">break</span>;
+					<span class="keyword">case</span> <span class="number">3</span>:
+							defaultGradientColor1 = silver;
+							defaultGradientColor2 = lightgrey;
+							defaultGradientColor3 = gainsboro;
+							$(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'white'</span>);
+							<span class="keyword">break</span>;
+					<span class="keyword">case</span> <span class="number">4</span>:
+							defaultGradientColor1 = liveCodeLabCoreInstance.ColourFunctions.color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
+							defaultGradientColor2 = liveCodeLabCoreInstance.ColourFunctions.color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
+							defaultGradientColor3 = liveCodeLabCoreInstance.ColourFunctions.color(<span class="number">155</span>, <span class="number">255</span>, <span class="number">155</span>);
+							$(<span class="string">"#fakeStartingBlinkingCursor"</span>).css(<span class="string">'color'</span>, <span class="string">'DarkOliveGreen'</span>);
+							<span class="keyword">break</span>;
+        }
+        
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>in theory we should wait for the next frame to repaing the background,
+but there would be a problem with that: livecodelab goes to sleep when
+the program is empty and the big cursor blinks. And yet, when the
+user clicks the reset button, we want the background to change randomly
+so we make an exceptio to the rule here and we update the background
+right now without waiting for the next frame.
+Note this is not wasted time anyways because the repaint won't happen
+again later if the background hasn't changed.</p>             </td>             <td class="code">               <div class="highlight"><pre>        BackgroundPainter.resetGradientStack();
+        BackgroundPainter.simpleGradientUpdateIfChanged();
+    };
+
+    BackgroundPainter.resetGradientStack = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+        currentGradientStackValue = <span class="string">""</span>;
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>we could be more efficient and
+reuse the previous stack elements
+but I don't think it matters here</p>             </td>             <td class="code">               <div class="highlight"><pre>        gradStack = [];
+
+        BackgroundPainter.simpleGradient(defaultGradientColor1, defaultGradientColor2, defaultGradientColor3);
+    };
+
+    BackgroundPainter.simpleGradientUpdateIfChanged = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+
+        <span class="keyword">var</span> diagonal, radgrad, scanningGradStack;
+        <span class="keyword">if</span> ((currentGradientStackValue !== previousGradientStackValue)) {
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>alert('repainting the background');</p>             </td>             <td class="code">               <div class="highlight"><pre>
+            previousGradientStackValue = currentGradientStackValue;
+            diagonal = Math.sqrt(Math.pow(liveCodeLabCoreInstance.canvasForBackground.width / <span class="number">2</span>, <span class="number">2</span>) + Math.pow(liveCodeLabCoreInstance.canvasForBackground.height / <span class="number">2</span>, <span class="number">2</span>));
+
+            <span class="keyword">for</span> (scanningGradStack = <span class="number">0</span>; scanningGradStack &lt; gradStack.length; scanningGradStack++) {
+
+                <span class="keyword">if</span> (gradStack[scanningGradStack].gradStacka !== <span class="literal">undefined</span>) {
+                    radgrad = liveCodeLabCoreInstance.backgroundSceneContext.createLinearGradient(liveCodeLabCoreInstance.canvasForBackground.width / <span class="number">2</span>, <span class="number">0</span>, liveCodeLabCoreInstance.canvasForBackground.width / <span class="number">2</span>, liveCodeLabCoreInstance.canvasForBackground.height);
+                    radgrad.addColorStop(<span class="number">0</span>, liveCodeLabCoreInstance.ColourFunctions.color.toString(gradStack[scanningGradStack].gradStacka));
+                    radgrad.addColorStop(<span class="number">0.5</span>, liveCodeLabCoreInstance.ColourFunctions.color.toString(gradStack[scanningGradStack].gradStackb));
+                    radgrad.addColorStop(<span class="number">1</span>, liveCodeLabCoreInstance.ColourFunctions.color.toString(gradStack[scanningGradStack].gradStackc));
+
+                    liveCodeLabCoreInstance.backgroundSceneContext.globalAlpha = <span class="number">1.0</span>;
+                    liveCodeLabCoreInstance.backgroundSceneContext.fillStyle = radgrad;
+                    liveCodeLabCoreInstance.backgroundSceneContext.fillRect(<span class="number">0</span>, <span class="number">0</span>, liveCodeLabCoreInstance.canvasForBackground.width, liveCodeLabCoreInstance.canvasForBackground.height);
+                } <span class="keyword">else</span> {
+                    liveCodeLabCoreInstance.backgroundSceneContext.globalAlpha = <span class="number">1.0</span>;
+                    liveCodeLabCoreInstance.backgroundSceneContext.fillStyle = liveCodeLabCoreInstance.ColourFunctions.color.toString(gradStack[scanningGradStack].solid);
+                    liveCodeLabCoreInstance.backgroundSceneContext.fillRect(<span class="number">0</span>, <span class="number">0</span>, liveCodeLabCoreInstance.canvasForBackground.width, liveCodeLabCoreInstance.canvasForBackground.height);
+                }
+            }
+        }
+
+    };
+
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.simpleGradient = BackgroundPainter.simpleGradient;
+
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.background = BackgroundPainter.background;
+
+    <span class="keyword">return</span> BackgroundPainter;
+};
+
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

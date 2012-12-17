@@ -1,0 +1,251 @@
+<!DOCTYPE html>  <html> <head>   <title>init.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="events.html">                 events.js               </a>                                           <a class="source" href="globals.html">                 globals.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="renderer.html">                 renderer.js               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="url-router.html">                 url-router.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               init.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true, maxerr: 100 */</span>
+<span class="comment">/*global LiveCodeLabCore, $, autocoder, initThreeJs, buzz */</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Init.js takes care of the setup of the whole environment up to
+cruise speed</p>             </td>             <td class="code">               <div class="highlight"><pre>
+$(document).ready(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+    startEnvironment(
+    		document.getElementById(<span class="string">'blendedThreeJsSceneCanvas'</span>), <span class="comment">// blendedThreeJsSceneCanvas</span>
+    		document.getElementById(<span class="string">'backGroundCanvas'</span>), <span class="comment">// canvasForBackground</span>
+    		<span class="literal">false</span>, <span class="comment">// forceCanvasRenderer</span>
+    		<span class="literal">false</span> <span class="comment">// bubbleUpErrorsForDebugging</span>
+    	);
+});
+
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>see http://stackoverflow.com/questions/2745432</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> isCanvasSupported = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+    <span class="keyword">var</span> elem = document.createElement(<span class="string">'canvas'</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>One would think that doing the !! double negation below is
+redundant but no, that's how Javascript rolls.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">return</span> !!(elem.getContext &amp;&amp; elem.getContext(<span class="string">'2d'</span>));
+};
+
+<span class="keyword">var</span> startEnvironment = <span class="function"><span class="keyword">function</span> <span class="params">(blendedThreeJsSceneCanvas, canvasForBackground, forceCanvasRenderer, bubbleUpErrorsForDebugging)</span> {</span>
+
+    <span class="string">'use strict'</span>;
+
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>/////////////////////////////////////////////////////
+Phase 1 - Preliminary checks and initialisations
+before LiveCodeCore.
+/////////////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (!isCanvasSupported) {
+        $(<span class="string">'#noCanvasMessage'</span>).modal({
+            onClose: <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+                $(<span class="string">'#loading'</span>).text(<span class="string">'sorry :-('</span>);
+                $.modal.close();
+            }
+        });
+
+        $(<span class="string">'#simplemodal-container'</span>).height(<span class="number">200</span>);
+        <span class="keyword">return</span>;
+    }
+
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>EventRouter manages all the events/callbacks across the whole
+of livecodelab.
+For "heavy fire" callbacks one might want to use a classic callback system,
+because there might be some overhead in the triggering of events using this.
+(to be tested. just throwing it out there.)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> eventRouter = createEventRouter();
+
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Stats are updated in the AnimationLoop
+add Stats.js - https://github.com/mrdoob/stats.js</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> stats = <span class="keyword">new</span> Stats();
+  
+    <span class="keyword">if</span> (forceCanvasRenderer === <span class="literal">undefined</span>) {
+    	forceCanvasRenderer = <span class="literal">false</span>;
+    }
+    <span class="keyword">if</span> (forceCanvasRenderer === <span class="literal">null</span>) {
+    	forceCanvasRenderer = <span class="literal">false</span>;
+    }
+  
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>createColours creates a bunch of global variables for all css colors (and more).
+Since background-painting.js initialises the background by means of
+CSS colors, this needs to be run before creating LiveCodeLabCore. This is also
+used by the autocoder because it needs to be able to swap color names that it
+finds as CSS color strings in the user program.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> colourNames = createColours();
+
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>//////////////////////////////////////////////////////
+Phase 2 - Initialise the core of livecodelab.
+LiveCodeLabCore consists of the following main parts:
+//////////////////////////////////////////////////////
+ - TimeKeeper
+ - THREE
+ - ThreeJsSystem
+ - MatrixCommands
+ - BlendControls
+ - SoundSystem
+ - ColourFunctions
+ - BackgroundPainter
+ - GraphicsCommands
+ - LightSystem 
+ - DrawFunctionRunner
+ - CodeTransformer
+ - Renderer
+ - AnimationLoop</p>             </td>             <td class="code">               <div class="highlight"><pre>    
+    <span class="keyword">var</span> liveCodeLabCore = createLiveCodeLabCore(
+    		blendedThreeJsSceneCanvas,
+    		canvasForBackground,
+    		forceCanvasRenderer,
+    		eventRouter,
+    		stats
+    	);    
+  
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>/////////////////////////////////////////////////////
+Phase 3 - Other satellite parts
+/////////////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> urlRouter = createUrlRouter(eventRouter); 
+    <span class="keyword">var</span> bigCursor = createBigCursor(eventRouter); <span class="comment">// $ </span>
+    <span class="keyword">var</span> editor = createEditor(eventRouter, CodeMirror); 
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>console.log('creating stats');</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> ui = createUi(eventRouter, stats); <span class="comment">// $ </span>
+</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>requires: ColourNames</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> autocoder = createAutocoder(eventRouter, editor, colourNames); <span class="comment">// McLexer </span>
+</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>EditorDimmer functions should probablly be rolled into the editor itself
+note that the editorDimmer variable below is never used. Leaving it
+in for consistency.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> editorDimmer = createEditorDimmer(eventRouter, bigCursor); <span class="comment">// $ </span>
+</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>requires ThreeJsSystem, BlendControls, GraphicsCommands, Renderer
+note that the programLoader variable below is never used. Leaving it
+in for consistency.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">var</span> programLoader = createProgramLoader(eventRouter, editor, liveCodeLabCore); <span class="comment">// $, Detector, BlendControls </span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>/////////////////////////////////////////////////////
+Phase 4 - Setup Of Event Listeners, including handling of
+compile time and runtime errors.
+/////////////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>    eventRouter.bind(<span class="string">'reset'</span>, liveCodeLabCore.paintARandomBackground);
+
+    eventRouter.trigger(<span class="string">'editor-toggle-dim'</span>, <span class="literal">true</span>);
+
+    eventRouter.bind(<span class="string">'livecodelab-running-stably'</span>, ui.showStatsWidget);
+    
+    eventRouter.bind(<span class="string">'code_changed'</span>,
+        <span class="keyword">function</span>(updatedCodeAsString) {
+					<span class="keyword">if</span> (updatedCodeAsString !== <span class="string">''</span>) {
+							eventRouter.trigger(<span class="string">'big-cursor-hide'</span>);
+					}
+					<span class="keyword">else</span> {
+							eventRouter.trigger(<span class="string">'set-url-hash'</span>, <span class="string">''</span>);
+							eventRouter.trigger(<span class="string">'big-cursor-show'</span>);
+							ui.hideStatsWidget();
+					}
+					liveCodeLabCore.updateCode(updatedCodeAsString);
+        }
+    );
+
+</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>runtime and compile-time error management //////////
+/////////////////////////////////////////////////////
+Two different types of errors are managed in
+two slightly different ways.</p>
+
+<p>Compile-time errors are the errors such as an extra
+comma being added, or an unbalanced parenthesis, or
+in general any of the syntactic problems.
+These errors are just reported and the
+new borked program does <em>not</em> result in a new
+draw Function, so the previous syntactically correct
+program is kept as the draw Function. The editor
+content is kept the same as the user is probably just
+finishing to type something.
+If the autocoder is active, the editor
+undoes the change, which triggers in a recompilation.
+So this undo/recompilation cycle results in eventually
+a syntactically correct program being set as
+the draw Function.</p>
+
+<p>Runtime errors are things such as calling a function
+with invalid parameters, accessing a non-existing
+field of an object, accessing a null or an undefined,
+accessing a variable that is not defined anywhere.
+Runtime errors cannot be caught at compile time (not in
+general anyways) because they are syntactically correct
+and doing analysis on runtime behaviour at compile time
+is extremely difficult if not outright impossible.
+For example one might want to try to figure out whether
+all the called functions and all the referenced variables
+actually exist. In practice though one might create
+those variables at runtime depending on complex tests
+on state of the system, so one cannot really figure out
+at compile time whether all functions and variables will
+actually be in place when the program runs. One could
+carry out some clever checks in particular cases, but <em>in
+general</em> it's an impossible thing to do.
+So an "unstable" program might often pass the compile checks
+and be turned into a new draw Function.
+When the next frame runs (or at some point in one of the
+next frames), the draw Function is run and
+a runtime error is thrown. At this point what we just
+want to do is to keep the editor contents the same (because
+user might be just finishing to type something) and we
+just swap the current draw Function with a previous draw
+Function that seemed to be stable, so that the animation
+in the background doesn't stop. Note again that there is no
+guarantee that just because a function was stable in the
+past that it might still be stable now. For example the old
+stable function might do silly things in the new state
+that has been changed/borked in the meantime.
+Or just simply a stable Function might
+eventually do some silly things on its own, for example
+it might do an out-of bounds array reference as the frame
+count is incremented. Since at the moment we keep
+track of only one stable function at the time (rather than
+a stack of the) in general one cannot guarantee
+that the animation will keep going no matter what. It probably
+will in most normal cases though.
+When the autocoder is active, a runtime error <em>does not</em> swap
+the current function for an old stable one. Doing so
+causes some bad interactions with the undoing of the
+editor. Rather, the editor "undoes" its content,
+which causes old content to be recompiled, and this
+undo/recompile cycle carries on until a
+syntactically-correct version of the program can be
+established as the draw Function. If this new version still
+throws a runtime error, the editor "undoes" again, until a
+program that is both syntactically correct and stable
+is found.</p>             </td>             <td class="code">               <div class="highlight"><pre>    eventRouter.bind(<span class="string">'runtime-error-thrown'</span>,
+      <span class="keyword">function</span>(e) {
+				eventRouter.trigger(<span class="string">'report-runtime-or-compile-time-error'</span>,e);
+				<span class="keyword">if</span> (autocoder.active) {
+</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>alert('editor: ' + editor);</p>             </td>             <td class="code">               <div class="highlight"><pre>						editor.undo();
+</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>alert('undoing');</p>             </td>             <td class="code">               <div class="highlight"><pre>				}
+				<span class="keyword">else</span> {
+						 liveCodeLabCore.runLastWorkingDrawFunction();
+				}
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>re-throw the error so that the top-level debuggers
+(firebug, built-in, whathaveyous) can properly
+catch the error and let the user inspect things.</p>             </td>             <td class="code">               <div class="highlight"><pre>				<span class="keyword">if</span> (bubbleUpErrorsForDebugging) {
+				  <span class="keyword">throw</span>(e)
+				}
+      }
+    );
+    eventRouter.bind(<span class="string">'compile-time-error-thrown'</span>,
+      <span class="keyword">function</span>(e) {
+				eventRouter.trigger(<span class="string">'report-runtime-or-compile-time-error'</span>,e);
+				<span class="keyword">if</span> (autocoder.active) {
+						editor.undo();
+				}
+      }
+    );
+
+    eventRouter.bind(<span class="string">'clear-error'</span>, ui.clearError, ui);
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>create this binding before the sounds are loaded</p>             </td>             <td class="code">               <div class="highlight"><pre>    eventRouter.bind(<span class="string">'all-sounds-loaded-and tested'</span>,ui.soundSystemOk);
+
+</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>/////////////////////////////////////////////////////
+Phase 5- Kick-off the system and start of the
+animation loop. Events will start
+being triggered from here on.
+/////////////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>    liveCodeLabCore.loadAndTestAllTheSounds();
+    liveCodeLabCore.paintARandomBackground();
+    liveCodeLabCore.startAnimationLoop();
+    
+    <span class="keyword">if</span> (!Detector.webgl || forceCanvasRenderer) {
+        $(<span class="string">'#noWebGLMessage'</span>).modal({
+            onClose: eval(<span class="string">'$.modal.close()'</span>,<span class="string">'liveCodeLabCore.isAudioSupported'</span>)
+        });
+        $(<span class="string">'#simplemodal-container'</span>).height(<span class="number">200</span>);
+    }
+
+    editor.focus(); 
+
+</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>check if the url points to a particular demo,
+in which case we load the demo directly.
+otherwise we do as usual.    </p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (!urlRouter.urlPointsToDemoOrTutorial()) {
+        setTimeout(liveCodeLabCore.playStartupSound, <span class="number">650</span>);
+    }
+
+    bigCursor.toggleBlink(<span class="literal">true</span>); 
+
+    ui.setup(); 
+};
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

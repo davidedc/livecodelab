@@ -1,7 +1,7 @@
-/*jslint browser: true, nomen: true, devel: true */
-/*global $, Detector, BlendControls */
+/*jslint browser: true, nomen: true, regexp: true */
+/*global $, Detector */
 
-var createProgramLoader = function (events, texteditor, animationController, threejs, graphics) {
+var createProgramLoader = function (eventRouter, texteditor, liveCodeLabCoreInstance) {
 
     'use strict';
 
@@ -12,10 +12,12 @@ var createProgramLoader = function (events, texteditor, animationController, thr
 
 
     ProgramLoader.program.roseDemo = [
-        "// 'A rose' by Guy John",
+        "// 'A rose' by Guy John (@rumblesan)",
         "// Mozilla Festival 2012",
         "// adapted from 'A rose' by Lib4tech",
         "",
+        "doOnce -> frame = 0",
+        "background red",
         "scale 1.5",
         "animationStyle paintOver",
         "rotate frame/100",
@@ -580,7 +582,7 @@ var createProgramLoader = function (events, texteditor, animationController, thr
 
     ProgramLoader.loadDemoOrTutorial = function (demoName) {
 
-        if ((!Detector.webgl || threejs.forceCanvasRenderer) && !userWarnedAboutWebglExamples && demoName.indexOf('webgl') === 0) {
+        if ((!Detector.webgl || liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) && !userWarnedAboutWebglExamples && demoName.indexOf('webgl') === 0) {
             userWarnedAboutWebglExamples = true;
             $('#exampleNeedsWebgl').modal();
             $('#simplemodal-container').height(200);
@@ -590,21 +592,21 @@ var createProgramLoader = function (events, texteditor, animationController, thr
         // set the demo as a hash state
         // so that ideally people can link directly to
         // a specific demo they like.
-        // (in the document.ready function we check for
-        // this hash value and load the correct demo)
-        window.location.hash = 'bookmark=' + demoName;
+        eventRouter.trigger('set-url-hash', 'bookmark=' + demoName);
 
-        events.trigger('cursor-hide');
+        eventRouter.trigger('big-cursor-hide');
 
-        events.trigger('editor-undim');
+        eventRouter.trigger('editor-undim');
 
-        graphics.doTheSpinThingy = false;
+        liveCodeLabCoreInstance.GraphicsCommands.doTheSpinThingy = false;
 
         var prependMessage = "";
-        if ((!Detector.webgl || threejs.forceCanvasRenderer) && demoName.indexOf('webgl') === 0) {
+        if ((!Detector.webgl || liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) && demoName.indexOf('webgl') === 0) {
             prependMessage = [
-                "// this drawing makes much more sense",
-                "// in a WebGL-enabled browser"].join("\n").replace(/\u25B6/g, "\t");
+                "// This drawing makes much more sense",
+                "// in a WebGL-enabled browser.",
+                "",
+                ""].join("\n").replace(/\u25B6/g, "\t");
         }
 
 
@@ -627,21 +629,24 @@ var createProgramLoader = function (events, texteditor, animationController, thr
         // of the previous code.
         // So basically we draw an empty frame.
         // a) make sure that animationStyle
-        BlendControls.animationStyle(BlendControls.animationStyles.normal);
+        liveCodeLabCoreInstance.BlendControls.animationStyle(liveCodeLabCoreInstance.BlendControls.animationStyles.normal);
         // b) apply the potentially new animationStyle
-        BlendControls.animationStyleUpdateIfChanged();
-        // combing the display list now means that all items in the
-        // display list are set to hidden because no draw() code has been ran
-        // to put items in it.
-        animationController.combDisplayList();
+        liveCodeLabCoreInstance.BlendControls.animationStyleUpdateIfChanged();
         // render the empty frame
-        animationController.render();
+        liveCodeLabCoreInstance.Renderer.render(liveCodeLabCoreInstance.GraphicsCommands);
 
     };
 
 
     // Setup Event Listeners
-    events.bind('load-program', ProgramLoader.loadDemoOrTutorial, ProgramLoader);
+    eventRouter.bind('load-program', ProgramLoader.loadDemoOrTutorial, ProgramLoader);
+
+    eventRouter.bind('url-hash', function (hash) {
+        var matched = hash.match(/bookmark=(.*)/);
+        if (matched) {
+            ProgramLoader.loadDemoOrTutorial(matched[1]);
+        }
+    }, ProgramLoader);
 
 
     return ProgramLoader;
