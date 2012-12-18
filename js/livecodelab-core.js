@@ -138,7 +138,7 @@ var createLiveCodeLabCore = function ( paramsObject ) {
     ////////////////////////////////////////////////
 
     // this one doesn't interact with any other part at runtime.
-    liveCodeLabCoreInstance.ThreeJsSystem = createThreeJsSystem(Detector, THREEx, paramsObject.blendedThreeJsSceneCanvas, paramsObject.forceCanvasRenderer, liveCodeLabCoreInstance.THREE);
+    liveCodeLabCoreInstance.ThreeJsSystem = createThreeJsSystem(Detector, THREEx, paramsObject.blendedThreeJsSceneCanvas, paramsObject.forceCanvasRenderer, paramsObject.testMode, liveCodeLabCoreInstance.THREE);
 
     // this one interacts with TimeKeeper at runtime
     liveCodeLabCoreInstance.MatrixCommands = createMatrixCommands(liveCodeLabCoreInstance.THREE, liveCodeLabCoreInstance);
@@ -196,6 +196,14 @@ var createLiveCodeLabCore = function ( paramsObject ) {
 					/* console.log('waking up'); */
 					paramsObject.eventRouter.trigger('livecodelab-waking-up');
         }
+    }
+    
+    liveCodeLabCoreInstance.getForeground3DSceneImageData = function() {
+      var img = new Image();
+      img.src = liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas.toDataURL();
+      $('theMenu').append(img);
+      var container = document.getElementById ("theMenu");
+            container.appendChild (img);
     }
 
     return liveCodeLabCoreInstance;

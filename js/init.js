@@ -9,7 +9,10 @@ $(document).ready(function () {
     		blendedThreeJsSceneCanvas: document.getElementById('blendedThreeJsSceneCanvas'),
     		canvasForBackground: document.getElementById('backGroundCanvas'),
     		forceCanvasRenderer: false,
-    		bubbleUpErrorsForDebugging: false
+    		bubbleUpErrorsForDebugging: false,
+    		// testMode enables the webgl flag "preserverDrawingBuffer",
+    		// see https://github.com/mrdoob/three.js/pull/421
+    		testMode: false
     	});
 });
 
@@ -90,7 +93,8 @@ var startEnvironment = function (paramsObject) {
     		canvasForBackground: paramsObject.canvasForBackground,
     		forceCanvasRenderer: paramsObject.forceCanvasRenderer,
     		eventRouter: eventRouter,
-    		statsWidget: stats
+    		statsWidget: stats,
+    		testMode: paramsObject.testMode
     	});
 
     ///////////////////////////////////////////////////////
@@ -267,5 +271,13 @@ var startEnvironment = function (paramsObject) {
 
     bigCursor.toggleBlink(true); 
 
-    ui.setup(); 
+    ui.setup();
+    
+    var printoutImageData = function(){
+    	console.log(liveCodeLabCore.getForeground3DSceneImageData());
+    }
+    
+    if (paramsObject.testMode) {
+      setTimeout(printoutImageData,3000);
+    }
 };

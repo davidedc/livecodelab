@@ -1,6 +1,6 @@
 /*jslint browser: true, devel: true */
 
-var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer, liveCodeLabCore_THREE) {
+var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer, testMode, liveCodeLabCore_THREE) {
 
     'use strict';
 
@@ -27,7 +27,7 @@ var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas,
 
         ThreeJsSystem.renderer = new liveCodeLabCore_THREE.WebGLRenderer({
             canvas: ThreeJsSystem.blendedThreeJsSceneCanvas,
-            preserveDrawingBuffer: false, // to allow screenshot
+            preserveDrawingBuffer: testMode, // to allow screenshot
             antialias: false,
             premultipliedAlpha: false
         });
@@ -47,7 +47,7 @@ var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas,
         ThreeJsSystem.renderer = new liveCodeLabCore_THREE.CanvasRenderer({
             canvas: ThreeJsSystem.currentFrameThreeJsSceneCanvas,
             antialias: true, // to get smoother output
-            preserveDrawingBuffer: false // to allow screenshot
+            preserveDrawingBuffer: testMode // to allow screenshot
         });
 
 
