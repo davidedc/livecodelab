@@ -129,7 +129,9 @@ var createAnimationLoop = function (eventRouter, stats, liveCodeLabCoreInstance)
         // do the render
         liveCodeLabCoreInstance.Renderer.render(liveCodeLabCoreInstance.GraphicsCommands);
         // update stats
+        if (stats !== null) {
         stats.update();
+        }
     };
 
 
