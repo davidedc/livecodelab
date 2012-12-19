@@ -281,6 +281,7 @@ var startEnvironment = function (paramsObject) {
 
     ui.setup();
     
+    /*
     var printoutImageData = function(){
     	console.log(liveCodeLabCore.getForeground3DSceneImageData());
     }
@@ -288,4 +289,5 @@ var startEnvironment = function (paramsObject) {
     if (paramsObject.testMode) {
       setTimeout(printoutImageData,3000);
     }
+    */
 };
