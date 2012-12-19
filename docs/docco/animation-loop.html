@@ -117,7 +117,9 @@ after the program has executed</p>             </td>             <td class="code
 function has been run.</p>             </td>             <td class="code">               <div class="highlight"><pre> 				frame++;
 		
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>do the render</p>             </td>             <td class="code">               <div class="highlight"><pre>        liveCodeLabCoreInstance.Renderer.render(liveCodeLabCoreInstance.GraphicsCommands);
-</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>update stats</p>             </td>             <td class="code">               <div class="highlight"><pre>        stats.update();
+</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>update stats</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (stats !== <span class="literal">null</span>) {
+        stats.update();
+        }
     };
 
 

@@ -189,12 +189,12 @@ for the next frame. Abstracting a bit though, it's clearer this way.</p>        
         }
     }
     
-    liveCodeLabCoreInstance.getForeground3DSceneImageData = <span class="keyword">function</span>() {
+    liveCodeLabCoreInstance.getForeground3DSceneImage = <span class="keyword">function</span>() {
       <span class="keyword">var</span> img = <span class="keyword">new</span> Image();
       img.src = liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas.toDataURL();
-      $(<span class="string">'theMenu'</span>).append(img);
-      <span class="keyword">var</span> container = document.getElementById (<span class="string">"theMenu"</span>);
-            container.appendChild (img);
+</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>$('theMenu').append(img);
+var container = document.getElementById ("theMenu");
+     container.appendChild (img);</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">return</span> img;
     }
 
     <span class="keyword">return</span> liveCodeLabCoreInstance;
