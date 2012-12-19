@@ -11,20 +11,25 @@ var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas,
 
     ThreeJsSystem.composer = {};
 
-    ThreeJsSystem.blendedThreeJsSceneCanvas;
-
     ThreeJsSystem.forceCanvasRenderer = forceCanvasRenderer;
 
+		// if we've not been passed a canvas, then create a new one and make it
+		// as big as the browser window content.
+		if (!blendedThreeJsSceneCanvas) {
+			blendedThreeJsSceneCanvas = document.createElement('canvas');
+		  blendedThreeJsSceneCanvas.width = window.innerWidth;
+		  blendedThreeJsSceneCanvas.height = window.innerHeight;
+		}
+		ThreeJsSystem.blendedThreeJsSceneCanvas = blendedThreeJsSceneCanvas;
 
     if (!ThreeJsSystem.forceCanvasRenderer && Detector.webgl) {
-
+        // Webgl init.
+        // We allow for a bigger ball detail.        
+        // Also the WebGL context allows us to use the Three JS composer and the
+        // postprocessing effects, which use shaders.
         ThreeJsSystem.ballDefaultDetLevel = 16;
-        
-        if (!blendedThreeJsSceneCanvas) {
-          blendedThreeJsSceneCanvas = document.createElement('canvas');
-        }
-        ThreeJsSystem.blendedThreeJsSceneCanvas = blendedThreeJsSceneCanvas;
 
+		    ThreeJsSystem.blendedThreeJsSceneCanvasContext = ThreeJsSystem.blendedThreeJsSceneCanvas.getContext('experimental-webgl');
         ThreeJsSystem.renderer = new liveCodeLabCore_THREE.WebGLRenderer({
             canvas: ThreeJsSystem.blendedThreeJsSceneCanvas,
             preserveDrawingBuffer: testMode, // to allow screenshot
@@ -34,42 +39,41 @@ var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas,
 
         ThreeJsSystem.isWebGLUsed = true;
 
-        ThreeJsSystem.renderer.setSize(window.innerWidth, window.innerHeight);
-
     } else {
-
-        // we always draw the 3d scene off-screen
+        // Canvas init.
+        // Note that the canvas init requires two extra canvases in order to achieve
+        // the motion blur (as we need to keep the previous frame). Basically we have
+        // to do manually what the WebGL solution achieves through the Three.js composer
+        // and postprocessing/shaders.
         ThreeJsSystem.ballDefaultDetLevel = 6;
-        if (!ThreeJsSystem.currentFrameThreeJsSceneCanvas) {
-          ThreeJsSystem.currentFrameThreeJsSceneCanvas = document.createElement('canvas');
-        }
+
+        ThreeJsSystem.currentFrameThreeJsSceneCanvas = document.createElement('canvas');
+        ThreeJsSystem.currentFrameThreeJsSceneCanvas.width = ThreeJsSystem.blendedThreeJsSceneCanvas.width;
+        ThreeJsSystem.currentFrameThreeJsSceneCanvas.height = ThreeJsSystem.blendedThreeJsSceneCanvas.height;
         ThreeJsSystem.currentFrameThreeJsSceneCanvasContext = ThreeJsSystem.currentFrameThreeJsSceneCanvas.getContext('2d');
+
+        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas =
+        	document.createElement('canvas');
+        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas.width =
+        	ThreeJsSystem.blendedThreeJsSceneCanvas.width;
+        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas.height =
+        	ThreeJsSystem.blendedThreeJsSceneCanvas.height;
+        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext =
+        	ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas.getContext('2d');
+
         ThreeJsSystem.renderer = new liveCodeLabCore_THREE.CanvasRenderer({
             canvas: ThreeJsSystem.currentFrameThreeJsSceneCanvas,
             antialias: true, // to get smoother output
             preserveDrawingBuffer: testMode // to allow screenshot
         });
 
-
-        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas = document.createElement('canvas');
-        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas.width = window.innerWidth;
-        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas.height = window.innerHeight;
-        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext = ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas.getContext('2d');
-
-
-        ThreeJsSystem.blendedThreeJsSceneCanvas = document.getElementById('blendedThreeJsSceneCanvas');
-        ThreeJsSystem.blendedThreeJsSceneCanvas.width = window.innerWidth;
-        ThreeJsSystem.blendedThreeJsSceneCanvas.height = window.innerWidth;
-        ThreeJsSystem.blendedThreeJsSceneCanvasContext = ThreeJsSystem.blendedThreeJsSceneCanvas.getContext('2d');
-
-        ThreeJsSystem.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
 
 
+    ThreeJsSystem.renderer.setSize(ThreeJsSystem.blendedThreeJsSceneCanvas.width, ThreeJsSystem.blendedThreeJsSceneCanvas.height);
     ThreeJsSystem.scene = new liveCodeLabCore_THREE.Scene();
     ThreeJsSystem.scene.matrixAutoUpdate = false;
-
 
     // put a camera in the scene
     ThreeJsSystem.camera = new liveCodeLabCore_THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000);

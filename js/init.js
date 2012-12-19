@@ -5,6 +5,13 @@
 // cruise speed
 
 $(document).ready(function () {
+		
+		// The div containing this canvas is supposed to be 100% width and height,
+		// so this canvas in theory should be of the right size already. But it isn't,
+		// so we are setting the width and height here again.
+		document.getElementById('blendedThreeJsSceneCanvas').width = window.innerWidth;
+		document.getElementById('blendedThreeJsSceneCanvas').height = window.innerHeight;
+		    
     startEnvironment({
     		blendedThreeJsSceneCanvas: document.getElementById('blendedThreeJsSceneCanvas'),
     		canvasForBackground: document.getElementById('backGroundCanvas'),
@@ -14,6 +21,7 @@ $(document).ready(function () {
     		// see https://github.com/mrdoob/three.js/pull/421
     		testMode: false
     	});
+    	
 });
 
 // see http://stackoverflow.com/questions/2745432
