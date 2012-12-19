@@ -75,7 +75,6 @@ module.exports = function (grunt) {
                     'js/time-keeper.js',
                     'js/blend-style.js',
                     'js/lights-functions.js',
-                    'js/editor/mousewheel.js',
                     'js/ui.js',
                     'js/browser-detection/bowser-2012-07-18.js'],
                 dest: 'dist/built.js'
