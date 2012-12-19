@@ -78,7 +78,7 @@ var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas,
     ThreeJsSystem.scene.matrixAutoUpdate = false;
 
     // put a camera in the scene
-    ThreeJsSystem.camera = new liveCodeLabCore_THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000);
+    ThreeJsSystem.camera = new liveCodeLabCore_THREE.PerspectiveCamera(35, ThreeJsSystem.blendedThreeJsSceneCanvas.width / ThreeJsSystem.blendedThreeJsSceneCanvas.height, 1, 10000);
     ThreeJsSystem.camera.position.set(0, 0, 5);
     ThreeJsSystem.scene.add(ThreeJsSystem.camera);
 
@@ -98,8 +98,8 @@ var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas,
             stencilBuffer: true
         };
 
-        renderTarget = new liveCodeLabCore_THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters);
-        effectSaveTarget = new liveCodeLabCore_THREE.SavePass(new liveCodeLabCore_THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters));
+        renderTarget = new liveCodeLabCore_THREE.WebGLRenderTarget(ThreeJsSystem.blendedThreeJsSceneCanvas.width / ThreeJsSystem.blendedThreeJsSceneCanvas.height, renderTargetParameters);
+        effectSaveTarget = new liveCodeLabCore_THREE.SavePass(new liveCodeLabCore_THREE.WebGLRenderTarget(ThreeJsSystem.blendedThreeJsSceneCanvas.width / ThreeJsSystem.blendedThreeJsSceneCanvas.height, renderTargetParameters));
         effectSaveTarget.clear = false;
 
         // Uncomment the three lines containing "fxaaPass" below to try a fast
