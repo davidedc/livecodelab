@@ -1,2 +1,2 @@
 import webbrowser
-webbrowser.open("http://localhost:8001/tests/htmlsWithTests/imagediffTest.html")
+webbrowser.open("http://localhost:8001/tests/htmlsWithTests/imagediffTestLiveCodeLab.html")
