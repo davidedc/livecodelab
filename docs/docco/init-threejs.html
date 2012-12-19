@@ -74,7 +74,7 @@ and postprocessing/shaders.</p>             </td>             <td class="code"> 
     ThreeJsSystem.scene = <span class="keyword">new</span> liveCodeLabCore_THREE.Scene();
     ThreeJsSystem.scene.matrixAutoUpdate = <span class="literal">false</span>;
 
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>put a camera in the scene</p>             </td>             <td class="code">               <div class="highlight"><pre>    ThreeJsSystem.camera = <span class="keyword">new</span> liveCodeLabCore_THREE.PerspectiveCamera(<span class="number">35</span>, window.innerWidth / window.innerHeight, <span class="number">1</span>, <span class="number">10000</span>);
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>put a camera in the scene</p>             </td>             <td class="code">               <div class="highlight"><pre>    ThreeJsSystem.camera = <span class="keyword">new</span> liveCodeLabCore_THREE.PerspectiveCamera(<span class="number">35</span>, ThreeJsSystem.blendedThreeJsSceneCanvas.width / ThreeJsSystem.blendedThreeJsSceneCanvas.height, <span class="number">1</span>, <span class="number">10000</span>);
     ThreeJsSystem.camera.position.set(<span class="number">0</span>, <span class="number">0</span>, <span class="number">5</span>);
     ThreeJsSystem.scene.add(ThreeJsSystem.camera);
 
@@ -93,8 +93,8 @@ and postprocessing/shaders.</p>             </td>             <td class="code"> 
             stencilBuffer: <span class="literal">true</span>
         };
 
-        renderTarget = <span class="keyword">new</span> liveCodeLabCore_THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters);
-        effectSaveTarget = <span class="keyword">new</span> liveCodeLabCore_THREE.SavePass(<span class="keyword">new</span> liveCodeLabCore_THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParameters));
+        renderTarget = <span class="keyword">new</span> liveCodeLabCore_THREE.WebGLRenderTarget(ThreeJsSystem.blendedThreeJsSceneCanvas.width / ThreeJsSystem.blendedThreeJsSceneCanvas.height, renderTargetParameters);
+        effectSaveTarget = <span class="keyword">new</span> liveCodeLabCore_THREE.SavePass(<span class="keyword">new</span> liveCodeLabCore_THREE.WebGLRenderTarget(ThreeJsSystem.blendedThreeJsSceneCanvas.width / ThreeJsSystem.blendedThreeJsSceneCanvas.height, renderTargetParameters));
         effectSaveTarget.clear = <span class="literal">false</span>;
 
 </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Uncomment the three lines containing "fxaaPass" below to try a fast

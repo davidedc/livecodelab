@@ -13,8 +13,8 @@ describe('ImageTest', function() {
 		// so we are setting the width and height here again.
 		var testCanvas = document.createElement('canvas');
 
-		testCanvas.width = 200;
-		testCanvas.height = 200;
+		testCanvas.width = 300;
+		testCanvas.height = 300;
 		    
     var eventRouter = createEventRouter();
     var colourNames = createColours();
@@ -27,7 +27,7 @@ describe('ImageTest', function() {
     		statsWidget: null,
     		testMode: true
     	});
-    liveCodeLabCoreInstance.updateCode("box");
+    liveCodeLabCoreInstance.updateCode("ball");
     liveCodeLabCoreInstance.startAnimationLoop();
 
 
