@@ -61,6 +61,8 @@ var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas,
         ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext =
         	ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas.getContext('2d');
 
+		    ThreeJsSystem.blendedThreeJsSceneCanvasContext = ThreeJsSystem.blendedThreeJsSceneCanvas.getContext('2d');
+
         ThreeJsSystem.renderer = new liveCodeLabCore_THREE.CanvasRenderer({
             canvas: ThreeJsSystem.currentFrameThreeJsSceneCanvas,
             antialias: true, // to get smoother output
