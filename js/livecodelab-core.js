@@ -198,12 +198,13 @@ var createLiveCodeLabCore = function ( paramsObject ) {
         }
     }
     
-    liveCodeLabCoreInstance.getForeground3DSceneImageData = function() {
+    liveCodeLabCoreInstance.getForeground3DSceneImage = function() {
       var img = new Image();
       img.src = liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas.toDataURL();
-      $('theMenu').append(img);
-      var container = document.getElementById ("theMenu");
-            container.appendChild (img);
+      //$('theMenu').append(img);
+      //var container = document.getElementById ("theMenu");
+      //      container.appendChild (img);
+      return img;
     }
 
     return liveCodeLabCoreInstance;
