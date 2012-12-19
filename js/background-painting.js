@@ -65,7 +65,7 @@ var createBackgroundPainter = function (eventRouter, canvasForBackground, liveCo
     BackgroundPainter.canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction); 
     BackgroundPainter.canvasForBackground.height = Math.floor(window.innerHeight * backGroundFraction); 
 
-    BackgroundPainter.backgroundSceneContext = BackgroundPainter.canvasForBackground.getContext('2d'); 
+    BackgroundPainter.backgroundSceneContext = BackgroundPainter.canvasForBackground.getContext('2d');
 
 
     // This needs to be global so it can be run by the draw function
