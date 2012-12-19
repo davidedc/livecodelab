@@ -31,6 +31,12 @@
 	
 	
 					<!-- Slicing the code in js files -->
+				<!--this are other parts that are not part of livecodelab and don't
+				need any optimisation. Ideally
+				we'd want to put them in another minified library, but it's not a big deal-->
+					<script  src="js/editor/coffeescript-livecodelab-mode.js"></script>
+					<script src="js/init.js"></script>
+
         
 					<script src="js_compiled/Livecodelab-minified.js"></script>
         
@@ -198,17 +204,14 @@
 
         <div name="miao" id="miao" style="position: absolute;  top: 30px; left: 0px; width: 100%; font-size: 3em;">
 
-            <canvas id="backGroundCanvas" style="position: absolute; z-index:-3; top: 0px; left: 0px;" width="100" height="100"></canvas> 
-            <canvas id="blendedThreeJsSceneCanvas" style="position: absolute; z-index:-2; top: 0px; left: 0px;" width="100" height="100"></canvas> 
+            <canvas id="backGroundCanvas" style="position: absolute; z-index:-3; top: 0px; left: 0px; width:100% height:100%"></canvas> 
+            <canvas id="blendedThreeJsSceneCanvas" style="width:100%; height:100%; position: absolute;  z-index:-2; top: 0px; left: 0px;"></canvas> 
 
             <form id="formCode" autocapitalize="off" autocorrect="off" wrap="off">
                 <textarea id="code" name="code" style="z-index:1;" autocapitalize="off" autocorrect="off" wrap="off"></textarea>
             </form>
 
         </div>
-
-        <!-- three.js container -->
-        <div id="container" style="position: absolute; z-index:-1; top: 0px; left: 0px;"></div>
 
     </body>
 </html>
