@@ -268,11 +268,12 @@
       return imagediff.isImageData(this.actual);
     },
 
-    toImageDiffEqual : function (expected, tolerance) {
+toImageDiffEqual : function (expected, tolerance) {
 
       if (typeof (document) !== UNDEFINED) {
         this.message = function () {
           var
+            img     = get('img'),
             div     = get('div'),
             a       = get('div', '<div>Actual:</div>'),
             b       = get('div', '<div>Expected:</div>'),
@@ -293,6 +294,8 @@
           context.putImageData(diff, 0, 0);
 
           a.appendChild(toCanvas(this.actual));
+          a.appendChild(img);
+          img.src = toCanvas(this.actual).toDataURL();
           b.appendChild(toCanvas(expected));
           c.appendChild(canvas);
 
@@ -305,7 +308,8 @@
             "Expected not to be equal."
           ];
         };
-      }
+    };
+
 
       return imagediff.equal(this.actual, expected, tolerance);
     }
