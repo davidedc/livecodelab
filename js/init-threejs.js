@@ -30,6 +30,7 @@ var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas,
         ThreeJsSystem.ballDefaultDetLevel = 16;
 
 		    ThreeJsSystem.blendedThreeJsSceneCanvasContext = ThreeJsSystem.blendedThreeJsSceneCanvas.getContext('experimental-webgl');
+		    // see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/WebGLRenderer
         ThreeJsSystem.renderer = new liveCodeLabCore_THREE.WebGLRenderer({
             canvas: ThreeJsSystem.blendedThreeJsSceneCanvas,
             preserveDrawingBuffer: testMode, // to allow screenshot
@@ -63,6 +64,7 @@ var createThreeJsSystem = function (Detector, THREEx, blendedThreeJsSceneCanvas,
 
 		    ThreeJsSystem.blendedThreeJsSceneCanvasContext = ThreeJsSystem.blendedThreeJsSceneCanvas.getContext('2d');
 
+        // see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/CanvasRenderer
         ThreeJsSystem.renderer = new liveCodeLabCore_THREE.CanvasRenderer({
             canvas: ThreeJsSystem.currentFrameThreeJsSceneCanvas,
             antialias: true, // to get smoother output
