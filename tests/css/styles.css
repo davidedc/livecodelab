@@ -13,6 +13,9 @@ h1 {
   font-size: 36px;
   text-shadow: 2px 2px 0 #CCC;
 }
+body {
+  background-color: #FFFFFF;
+}
 p {
   text-align: center;
 }
