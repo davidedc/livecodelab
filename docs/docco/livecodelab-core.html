@@ -189,13 +189,27 @@ for the next frame. Abstracting a bit though, it's clearer this way.</p>        
         }
     }
     
-    liveCodeLabCoreInstance.getForeground3DSceneImage = <span class="keyword">function</span>() {
+    liveCodeLabCoreInstance.getForeground3DSceneImage = <span class="keyword">function</span>(backgroundColor) {
       <span class="keyword">var</span> img = <span class="keyword">new</span> Image();
       img.src = liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas.toDataURL();
+      
+      <span class="keyword">if</span> (backgroundColor) {
+				<span class="keyword">var</span> ctx = document.createElement(<span class="string">'canvas'</span>);
+				ctx.width = liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas.width;
+				ctx.height = liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas.height;
+				<span class="keyword">var</span> ctxContext = ctx.getContext(<span class="string">"2d"</span>);
+				ctxContext.drawImage(img, <span class="number">0</span>, <span class="number">0</span>);
+				ctxContext.globalCompositeOperation = <span class="string">"destination-over"</span>;
+				ctxContext.fillStyle=backgroundColor;
+				ctxContext.fillRect(<span class="number">0</span>,<span class="number">0</span>,liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas.width,liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas.height);
+				img = <span class="keyword">new</span> Image();
+        img.src = ctx.toDataURL();
+      }
+      <span class="keyword">return</span> img;
+      
 </pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>$('theMenu').append(img);
 var container = document.getElementById ("theMenu");
-     container.appendChild (img);</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">return</span> img;
-    }
+     container.appendChild (img);</p>             </td>             <td class="code">               <div class="highlight"><pre>    }
 
     <span class="keyword">return</span> liveCodeLabCoreInstance;
 };
