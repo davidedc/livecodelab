@@ -198,13 +198,27 @@ var createLiveCodeLabCore = function ( paramsObject ) {
         }
     }
     
-    liveCodeLabCoreInstance.getForeground3DSceneImage = function() {
+    liveCodeLabCoreInstance.getForeground3DSceneImage = function(backgroundColor) {
       var img = new Image();
       img.src = liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas.toDataURL();
+      
+      if (backgroundColor) {
+				var ctx = document.createElement('canvas');
+				ctx.width = liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas.width;
+				ctx.height = liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas.height;
+				var ctxContext = ctx.getContext("2d");
+				ctxContext.drawImage(img, 0, 0);
+				ctxContext.globalCompositeOperation = "destination-over";
+				ctxContext.fillStyle=backgroundColor;
+				ctxContext.fillRect(0,0,liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas.width,liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas.height);
+				img = new Image();
+        img.src = ctx.toDataURL();
+      }
+      return img;
+      
       //$('theMenu').append(img);
       //var container = document.getElementById ("theMenu");
       //      container.appendChild (img);
-      return img;
     }
 
     return liveCodeLabCoreInstance;
