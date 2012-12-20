@@ -22,25 +22,30 @@ describe('ImageTest', function() {
     var liveCodeLabCoreInstance = createLiveCodeLabCore({
     		blendedThreeJsSceneCanvas: testCanvas,
     		canvasForBackground: null,
-    		forceCanvasRenderer: false,
+    		forceCanvasRenderer: true,
     		eventRouter: eventRouter,
     		statsWidget: null,
     		testMode: true
     	});
-    liveCodeLabCoreInstance.updateCode("ball");
+    liveCodeLabCoreInstance.updateCode("scale 0.99\nball");
+    //liveCodeLabCoreInstance.updateCode("ball");
     liveCodeLabCoreInstance.startAnimationLoop();
 
 
     var a = new Image();
     var b = new Image();
-    b.src = 'images/1_normal_a.jpg';
+    b.src = 'images/ballCanvas.png';
+    //b.src = 'images/ballCanvasTransparentBackground.png';
 
 
     waits(1000);
 
     runs(function () {
-      a = liveCodeLabCoreInstance.getForeground3DSceneImage();
-      expect(a).toImageDiffEqual(b);
+      a = liveCodeLabCoreInstance.getForeground3DSceneImage("#FFFFFF");
+      // tolerance of 1 is very tight - it means that any pixel component
+      // value can at most be +-1 off the original.
+      // A tolerance of 2 makes the test pass on all OSX browsers.
+      expect(a).toImageDiffEqual(b,2);
     });
   });
 
