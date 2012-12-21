@@ -27,14 +27,24 @@ describe('ImageTest', function() {
     		statsWidget: null,
     		testMode: true
     	});
-    liveCodeLabCoreInstance.updateCode("scale 0.99\nball");
-    //liveCodeLabCoreInstance.updateCode("ball");
+    //liveCodeLabCoreInstance.updateCode("scale 0.99\nball");
+    liveCodeLabCoreInstance.updateCode("ball");
     liveCodeLabCoreInstance.startAnimationLoop();
 
 
     var a = new Image();
     var b = new Image();
-    b.src = 'images/ballCanvas.png';
+    var Bowser = createBowser();
+
+    if (Bowser.firefox) {
+      b.src = 'images/ballCanvasFirefox.png';
+    }
+    else if (Bowser.safari) {
+      b.src = 'images/ballCanvasSafari.png';
+    }
+    else if (Bowser.chrome) {
+      b.src = 'images/ballCanvasChrome.png';
+    }
     //b.src = 'images/ballCanvasTransparentBackground.png';
 
 
@@ -45,7 +55,7 @@ describe('ImageTest', function() {
       // tolerance of 1 is very tight - it means that any pixel component
       // value can at most be +-1 off the original.
       // A tolerance of 2 makes the test pass on all OSX browsers.
-      expect(a).toImageDiffEqual(b,2);
+      expect(a).toImageDiffEqual(b,0);
     });
   });
 
