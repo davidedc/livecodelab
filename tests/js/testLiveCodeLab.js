@@ -54,7 +54,8 @@ describe('ImageTest', function() {
       a = liveCodeLabCoreInstance.getForeground3DSceneImage("#FFFFFF");
       // tolerance of 1 is very tight - it means that any pixel component
       // value can at most be +-1 off the original.
-      // A tolerance of 2 makes the test pass on all OSX browsers.
+      // Unfortunately to make it pass on all OSX browsers one would need
+      // a tolerance of around 25, which is quite high.
       expect(a).toImageDiffEqual(b,0);
     });
   });
