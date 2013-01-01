@@ -49,7 +49,7 @@ module.exports = function (grunt) {
                     'js/translatedFromCoffescript/simple-error-checker.js',
                     'js/translatedFromCoffescript/url-router.js',
                     'js/translatedFromCoffescript/big-cursor-animation.js',
-                    'js/autocoder/mclexer.js',
+                    'js/translatedFromCoffescript/mclexer.js',
                     'js/sound/samplebank.js',
                     'js/sound/sound-system.js',
                     'js/sound/buzz.js',
