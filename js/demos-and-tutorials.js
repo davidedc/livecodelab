@@ -641,12 +641,36 @@ var createProgramLoader = function (eventRouter, texteditor, liveCodeLabCoreInst
     // Setup Event Listeners
     eventRouter.bind('load-program', ProgramLoader.loadDemoOrTutorial, ProgramLoader);
 
+		// this paragraph from http://stackoverflow.com/a/629817
+		// there are more elegant ways to track back/forward history
+		// but they are more complex than this. I don't mind having a bit of
+		// polling for this, not too big of a problem.
+		var lastHash = '';
+		function pollHash() {
+				if(lastHash !== location.hash) {
+						lastHash = location.hash;
+						// hash has changed, so do stuff:
+						loadAppropriateDemoOrTutorialBasedOnHash(lastHash);
+				}
+		}		
+		setInterval(pollHash, 100);
+
     eventRouter.bind('url-hash', function (hash) {
+       loadAppropriateDemoOrTutorialBasedOnHash(hash);
+    }, ProgramLoader);
+    
+    var loadAppropriateDemoOrTutorialBasedOnHash =  function(hash) {
         var matched = hash.match(/bookmark=(.*)/);
+        //alert('matched: ' + matched)
         if (matched) {
             ProgramLoader.loadDemoOrTutorial(matched[1]);
         }
-    }, ProgramLoader);
+        else {
+            // user in on the root page without any hashes
+						texteditor.setValue('');
+        }
+    }
+
 
 
     return ProgramLoader;
