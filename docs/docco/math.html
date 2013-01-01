@@ -1,670 +1,611 @@
-<!DOCTYPE html>  <html> <head>   <title>math.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.js               </a>                                           <a class="source" href="background-painting.html">                 background-painting.js               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.js               </a>                                           <a class="source" href="blend-style.html">                 blend-style.js               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.js               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="events.html">                 events.js               </a>                                           <a class="source" href="globals.html">                 globals.js               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.js               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.js               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.js               </a>                                           <a class="source" href="math.html">                 math.js               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.js               </a>                                           <a class="source" href="renderer.html">                 renderer.js               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.js               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.js               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.js               </a>                                           <a class="source" href="ui.html">                 ui.js               </a>                                           <a class="source" href="url-router.html">                 url-router.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               math.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>Functions adapted from processing.js</p>             </td>             <td class="code">               <div class="highlight"><pre>
+<!DOCTYPE html>  <html> <head>   <title>math.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               math.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>Functions adapted from processing.js</p>             </td>             <td class="code">               <div class="highlight"><pre>
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>//////////////////////////////////////////////////////////////////////////
 Math functions
 //////////////////////////////////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Calculation</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/**
-* Calculates the absolute value (magnitude) of a number. The absolute value of a number is always positive.
-*
-* @param {int|float} value   int or float
-*
-* @returns {int|float}
-*/</span>
-<span class="keyword">var</span> abs = Math.abs;
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Calculation</p>
 
-<span class="comment">/**
-* Calculates the closest int value that is greater than or equal to the value of the parameter.
-* For example, ceil(9.03) returns the value 10.
-*
-* @param {float} value   float
-*
-* @returns {int}
-*
-* @see floor
-* @see round
-*/</span>
-<span class="keyword">var</span> ceil = Math.ceil;
+<h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Calculates the absolute value (magnitude) <span class="keyword">of</span> a number. The absolute value <span class="keyword">of</span> a number <span class="keyword">is</span> always positive.
 
-<span class="comment">/**
-* Constrains a value to not exceed a maximum and minimum value.
-*
-* @param {int|float} value   the value to constrain
-* @param {int|float} value   minimum limit
-* @param {int|float} value   maximum limit
-*
-* @returns {int|float}
-*
-* @see max
-* @see min
-*/</span>
-<span class="keyword">var</span> constrain = <span class="keyword">function</span>(aNumber, aMin, aMax) {
-	<span class="keyword">return</span> aNumber &gt; aMax ? aMax : aNumber &lt; aMin ? aMin : aNumber;
-};
+<span class="property">@param</span> {int|float} value   int <span class="keyword">or</span> float
 
-<span class="comment">/**
-* Calculates the distance between two points.
-*
-* @param {int|float} x1     int or float: x-coordinate of the first point
-* @param {int|float} y1     int or float: y-coordinate of the first point
-* @param {int|float} z1     int or float: z-coordinate of the first point
-* @param {int|float} x2     int or float: x-coordinate of the second point
-* @param {int|float} y2     int or float: y-coordinate of the second point
-* @param {int|float} z2     int or float: z-coordinate of the second point
-*
-* @returns {float}
-*/</span>
-<span class="keyword">var</span> dist = <span class="keyword">function</span>() {
-	<span class="keyword">var</span> dx, dy, dz;
-	<span class="keyword">if</span> (arguments.length === <span class="number">4</span>) {
-		dx = arguments[<span class="number">0</span>] - arguments[<span class="number">2</span>];
-		dy = arguments[<span class="number">1</span>] - arguments[<span class="number">3</span>];
-		<span class="keyword">return</span> Math.sqrt(dx * dx + dy * dy);
-	}
-	<span class="keyword">if</span> (arguments.length === <span class="number">6</span>) {
-		dx = arguments[<span class="number">0</span>] - arguments[<span class="number">3</span>];
-		dy = arguments[<span class="number">1</span>] - arguments[<span class="number">4</span>];
-		dz = arguments[<span class="number">2</span>] - arguments[<span class="number">5</span>];
-		<span class="keyword">return</span> Math.sqrt(dx * dx + dy * dy + dz * dz);
-	}
-};
+<span class="property">@returns</span> {int|float}
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>abs = Math.abs
 
-<span class="comment">/**
-* Returns Euler's number e (2.71828...) raised to the power of the value parameter.
-*
-* @param {int|float} value   int or float: the exponent to raise e to
-*
-* @returns {float}
-*/</span>
-<span class="keyword">var</span> exp = Math.exp;
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Calculates the closest int value that <span class="keyword">is</span> greater than <span class="keyword">or</span> equal to the value <span class="keyword">of</span> the parameter.
+For example, ceil(<span class="number">9.03</span>) returns the value <span class="number">10.</span>
 
-<span class="comment">/**
-* Calculates the closest int value that is less than or equal to the value of the parameter.
-*
-* @param {int|float} value        the value to floor
-*
-* @returns {int|float}
-*
-* @see ceil
-* @see round
-*/</span>
-<span class="keyword">var</span> floor = Math.floor;
+<span class="property">@param</span> {float} value   float
 
-<span class="comment">/**
-* Calculates a number between two numbers at a specific increment. The amt  parameter is the
-* amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very
-* near the first point, 0.5 is half-way in between, etc. The lerp function is convenient for
-* creating motion along a straight path and for drawing dotted lines.
-*
-* @param {int|float} value1       float or int: first value
-* @param {int|float} value2       float or int: second value
-* @param {int|float} amt          float: between 0.0 and 1.0
-*
-* @returns {float}
-*
-* @see curvePoint
-* @see bezierPoint
-*/</span>
-<span class="keyword">var</span> lerp = <span class="keyword">function</span>(value1, value2, amt) {
-	<span class="keyword">return</span> ((value2 - value1) * amt) + value1;
-};
+<span class="property">@returns</span> {int}
 
-<span class="comment">/**
-* Calculates the natural logarithm (the base-e logarithm) of a number. This function
-* expects the values greater than 0.0.
-*
-* @param {int|float} value        int or float: number must be greater then 0.0
-*
-* @returns {float}
-*/</span>
-<span class="keyword">var</span> log = Math.log;
+<span class="property">@see</span> floor
+<span class="property">@see</span> round
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>ceil = Math.ceil
 
-<span class="comment">/**
-* Calculates the magnitude (or length) of a vector. A vector is a direction in space commonly
-* used in computer graphics and linear algebra. Because it has no "start" position, the magnitude
-* of a vector can be thought of as the distance from coordinate (0,0) to its (x,y) value.
-* Therefore, mag() is a shortcut for writing "dist(0, 0, x, y)".
-*
-* @param {int|float} a       float or int: first value
-* @param {int|float} b       float or int: second value
-* @param {int|float} c       float or int: third value
-*
-* @returns {float}
-*
-* @see dist
-*/</span>
-<span class="keyword">var</span> mag = <span class="keyword">function</span>(a, b, c) {
-	<span class="keyword">if</span> (c) {
-		<span class="keyword">return</span> Math.sqrt(a * a + b * b + c * c);
-	}
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Constrains a value to <span class="keyword">not</span> exceed a maximum <span class="keyword">and</span> minimum value.
 
-	<span class="keyword">return</span> Math.sqrt(a * a + b * b);
-};
+<span class="property">@param</span> {int|float} value   the value to constrain
+<span class="property">@param</span> {int|float} value   minimum limit
+<span class="property">@param</span> {int|float} value   maximum limit
 
-<span class="comment">/**
-* Re-maps a number from one range to another. In the example above, the number '25' is converted from
-* a value in the range 0..100 into a value that ranges from the left edge (0) to the right edge (width) of the screen.
-* Numbers outside the range are not clamped to 0 and 1, because out-of-range values are often intentional and useful.
-*
-* @param {float} value        The incoming value to be converted
-* @param {float} istart       Lower bound of the value's current range
-* @param {float} istop        Upper bound of the value's current range
-* @param {float} ostart       Lower bound of the value's target range
-* @param {float} ostop        Upper bound of the value's target range
-*
-* @returns {float}
-*
-* @see norm
-* @see lerp
-*/</span>
-<span class="keyword">var</span> map = <span class="keyword">function</span>(value, istart, istop, ostart, ostop) {
-	<span class="keyword">return</span> ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
-};
+<span class="property">@returns</span> {int|float}
 
-<span class="comment">/**
-* Determines the largest value in a sequence of numbers.
-*
-* @param {int|float} value1         int or float
-* @param {int|float} value2         int or float
-* @param {int|float} value3         int or float
-* @param {int|float} array          int or float array
-*
-* @returns {int|float}
-*
-* @see min
-*/</span>
-<span class="keyword">var</span> max = <span class="keyword">function</span>() {
-	<span class="keyword">if</span> (arguments.length === <span class="number">2</span>) {
-		<span class="keyword">return</span> arguments[<span class="number">0</span>] &lt; arguments[<span class="number">1</span>] ? arguments[<span class="number">1</span>] : arguments[<span class="number">0</span>];
-	}
-	<span class="keyword">var</span> numbers = arguments.length === <span class="number">1</span> ? arguments[<span class="number">0</span>] : arguments; <span class="comment">// if single argument, array is used</span>
-	<span class="keyword">if</span> (! (<span class="string">"length"</span> <span class="keyword">in</span> numbers &amp;&amp; numbers.length &gt; <span class="number">0</span>)) {
-		<span class="keyword">throw</span> <span class="string">"Non-empty array is expected"</span>;
-	}
-	<span class="keyword">var</span> max = numbers[<span class="number">0</span>],
-		count = numbers.length;
-	<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; count; ++i) {
-		<span class="keyword">if</span> (max &lt; numbers[i]) {
-			max = numbers[i];
-		}
-	}
-	<span class="keyword">return</span> max;
-};
+<span class="property">@see</span> max
+<span class="property">@see</span> min
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">constrain</span></span> = (aNumber, aMin, aMax) -&gt;
+  (<span class="keyword">if</span> aNumber &gt; aMax <span class="keyword">then</span> aMax <span class="keyword">else</span> (<span class="keyword">if</span> aNumber &lt; aMin <span class="keyword">then</span> aMin <span class="keyword">else</span> aNumber))
 
-<span class="comment">/**
-* Determines the smallest value in a sequence of numbers.
-*
-* @param {int|float} value1         int or float
-* @param {int|float} value2         int or float
-* @param {int|float} value3         int or float
-* @param {int|float} array          int or float array
-*
-* @returns {int|float}
-*
-* @see max
-*/</span>
-<span class="keyword">var</span> min = <span class="keyword">function</span>() {
-	<span class="keyword">if</span> (arguments.length === <span class="number">2</span>) {
-		<span class="keyword">return</span> arguments[<span class="number">0</span>] &lt; arguments[<span class="number">1</span>] ? arguments[<span class="number">0</span>] : arguments[<span class="number">1</span>];
-	}
-	<span class="keyword">var</span> numbers = arguments.length === <span class="number">1</span> ? arguments[<span class="number">0</span>] : arguments; <span class="comment">// if single argument, array is used</span>
-	<span class="keyword">if</span> (! (<span class="string">"length"</span> <span class="keyword">in</span> numbers &amp;&amp; numbers.length &gt; <span class="number">0</span>)) {
-		<span class="keyword">throw</span> <span class="string">"Non-empty array is expected"</span>;
-	}
-	<span class="keyword">var</span> min = numbers[<span class="number">0</span>],
-		count = numbers.length;
-	<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; count; ++i) {
-		<span class="keyword">if</span> (min &gt; numbers[i]) {
-			min = numbers[i];
-		}
-	}
-	<span class="keyword">return</span> min;
-};
 
-<span class="comment">/**
-* Normalizes a number from another range into a value between 0 and 1.
-* Identical to map(value, low, high, 0, 1);
-* Numbers outside the range are not clamped to 0 and 1, because out-of-range
-* values are often intentional and useful.
-*
-* @param {float} aNumber    The incoming value to be converted
-* @param {float} low        Lower bound of the value's current range
-* @param {float} high       Upper bound of the value's current range
-*
-* @returns {float}
-*
-* @see map
-* @see lerp
-*/</span>
-<span class="keyword">var</span> norm = <span class="keyword">function</span>(aNumber, low, high) {
-	<span class="keyword">return</span> (aNumber - low) / (high - low);
-};
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Calculates the distance between two points.
 
-<span class="comment">/**
-* Facilitates exponential expressions. The pow() function is an efficient way of
-* multiplying numbers by themselves (or their reciprocal) in large quantities.
-* For example, pow(3, 5) is equivalent to the expression 3*3*3*3*3 and pow(3, -5)
-* is equivalent to 1 / 3*3*3*3*3.
-*
-* @param {int|float} num        base of the exponential expression
-* @param {int|float} exponent   power of which to raise the base
-*
-* @returns {float}
-*
-* @see sqrt
-*/</span>
-<span class="keyword">var</span> pow = Math.pow;
+<span class="property">@param</span> {int|float} x1     int <span class="keyword">or</span> float: x-coordinate <span class="keyword">of</span> the first point
+<span class="property">@param</span> {int|float} y1     int <span class="keyword">or</span> float: y-coordinate <span class="keyword">of</span> the first point
+<span class="property">@param</span> {int|float} z1     int <span class="keyword">or</span> float: z-coordinate <span class="keyword">of</span> the first point
+<span class="property">@param</span> {int|float} x2     int <span class="keyword">or</span> float: x-coordinate <span class="keyword">of</span> the second point
+<span class="property">@param</span> {int|float} y2     int <span class="keyword">or</span> float: y-coordinate <span class="keyword">of</span> the second point
+<span class="property">@param</span> {int|float} z2     int <span class="keyword">or</span> float: z-coordinate <span class="keyword">of</span> the second point
 
-<span class="comment">/**
-* Calculates the integer closest to the value parameter. For example, round(9.2) returns the value 9.
-*
-* @param {float} value        number to round
-*
-* @returns {int}
-*
-* @see floor
-* @see ceil
-*/</span>
-<span class="keyword">var</span> round = Math.round;
+<span class="property">@returns</span> {float}
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">dist</span></span> = -&gt;
+  dx = <span class="literal">undefined</span>
+  dy = <span class="literal">undefined</span>
+  dz = <span class="literal">undefined</span>
+  <span class="keyword">if</span> arguments.length <span class="keyword">is</span> <span class="number">4</span>
+    dx = arguments[<span class="number">0</span>] - arguments[<span class="number">2</span>]
+    dy = arguments[<span class="number">1</span>] - arguments[<span class="number">3</span>]
+    <span class="keyword">return</span> Math.sqrt(dx * dx + dy * dy)
+  <span class="keyword">if</span> arguments.length <span class="keyword">is</span> <span class="number">6</span>
+    dx = arguments[<span class="number">0</span>] - arguments[<span class="number">3</span>]
+    dy = arguments[<span class="number">1</span>] - arguments[<span class="number">4</span>]
+    dz = arguments[<span class="number">2</span>] - arguments[<span class="number">5</span>]
+    Math.sqrt dx * dx + dy * dy + dz * dz
 
-<span class="comment">/**
-* Squares a number (multiplies a number by itself). The result is always a positive number,
-* as multiplying two negative numbers always yields a positive result. For example, -1 * -1 = 1.
-*
-* @param {float} value        int or float
-*
-* @returns {float}
-*
-* @see sqrt
-*/</span>
-<span class="keyword">var</span> sq = <span class="keyword">function</span>(aNumber) {
-	<span class="keyword">return</span> aNumber * aNumber;
-};
 
-<span class="comment">/**
-* Calculates the square root of a number. The square root of a number is always positive,
-* even though there may be a valid negative root. The square root s of number a is such
-* that s*s = a. It is the opposite of squaring.
-*
-* @param {float} value        int or float, non negative
-*
-* @returns {float}
-*
-* @see pow
-* @see sq
-*/</span>
-<span class="keyword">var</span> sqrt = Math.sqrt;
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Returns Euler's number e (2.71828...) raised to the power of the value parameter.
 
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Trigonometry</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/**
-* The inverse of cos(), returns the arc cosine of a value. This function expects the
-* values in the range of -1 to 1 and values are returned in the range 0 to PI (3.1415927).
-*
-* @param {float} value        the value whose arc cosine is to be returned
-*
-* @returns {float}
-*
-* @see cos
-* @see asin
-* @see atan
-*/</span>
-<span class="keyword">var</span> acos = Math.acos;
+@param {int|float} value   int or float: the exponent to raise e to
 
-<span class="comment">/**
-* The inverse of sin(), returns the arc sine of a value. This function expects the values
-* in the range of -1 to 1 and values are returned in the range -PI/2 to PI/2.
-*
-* @param {float} value        the value whose arc sine is to be returned
-*
-* @returns {float}
-*
-* @see sin
-* @see acos
-* @see atan
-*/</span>
-<span class="keyword">var</span> asin = Math.asin;
+@returns {float}
+</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>exp = Math.exp
 
-<span class="comment">/**
-* The inverse of tan(), returns the arc tangent of a value. This function expects the values
-* in the range of -Infinity to Infinity (exclusive) and values are returned in the range -PI/2 to PI/2 .
-*
-* @param {float} value        -Infinity to Infinity (exclusive)
-*
-* @returns {float}
-*
-* @see tan
-* @see asin
-* @see acos
-*/</span>
-<span class="keyword">var</span> atan = Math.atan;
+</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Calculates the closest int value that <span class="keyword">is</span> less than <span class="keyword">or</span> equal to the value <span class="keyword">of</span> the parameter.
 
-<span class="comment">/**
-* Calculates the angle (in radians) from a specified point to the coordinate origin as measured from
-* the positive x-axis. Values are returned as a float in the range from PI to -PI. The atan2() function
-* is most often used for orienting geometry to the position of the cursor. Note: The y-coordinate of the
-* point is the first parameter and the x-coordinate is the second due the the structure of calculating the tangent.
-*
-* @param {float} y        y-coordinate of the point
-* @param {float} x        x-coordinate of the point
-*
-* @returns {float}
-*
-* @see tan
-*/</span>
-<span class="keyword">var</span> atan2 = Math.atan2;
+<span class="property">@param</span> {int|float} value        the value to floor
 
-<span class="comment">/**
-* Calculates the cosine of an angle. This function expects the values of the angle parameter to be provided
-* in radians (values from 0 to PI*2). Values are returned in the range -1 to 1.
-*
-* @param {float} value        an angle in radians
-*
-* @returns {float}
-*
-* @see tan
-* @see sin
-*/</span>
-<span class="keyword">var</span> cos = Math.cos;
+<span class="property">@returns</span> {int|float}
 
-<span class="comment">/**
-* Converts a radian measurement to its corresponding value in degrees. Radians and degrees are two ways of
-* measuring the same thing. There are 360 degrees in a circle and 2*PI radians in a circle. For example,
-* 90 degrees = PI/2 = 1.5707964. All trigonometric methods in Processing require their parameters to be specified in radians.
-*
-* @param {int|float} value        an angle in radians
-*
-* @returns {float}
-*
-* @see radians
-*/</span>
-<span class="keyword">var</span> degrees = <span class="keyword">function</span>(aAngle) {
-	<span class="keyword">return</span> (aAngle * <span class="number">180</span>) / Math.PI;
-};
+<span class="property">@see</span> ceil
+<span class="property">@see</span> round
+</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>floor = Math.floor
 
-<span class="comment">/**
-* Converts a degree measurement to its corresponding value in radians. Radians and degrees are two ways of
-* measuring the same thing. There are 360 degrees in a circle and 2*PI radians in a circle. For example,
-* 90 degrees = PI/2 = 1.5707964. All trigonometric methods in Processing require their parameters to be specified in radians.
-*
-* @param {int|float} value        an angle in radians
-*
-* @returns {float}
-*
-* @see degrees
-*/</span>
-<span class="keyword">var</span> radians = <span class="keyword">function</span>(aAngle) {
-	<span class="keyword">return</span> (aAngle / <span class="number">180</span>) * Math.PI;
-};
+</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Calculates a number between two numbers at a specific increment. The amt  parameter <span class="keyword">is</span> the
+amount to interpolate between the two values where <span class="number">0.0</span> equal to the first point, <span class="number">0.1</span> <span class="keyword">is</span> very
+near the first point, <span class="number">0.5</span> <span class="keyword">is</span> half-way <span class="keyword">in</span> between, etc. The lerp <span class="reserved">function</span> <span class="keyword">is</span> convenient <span class="keyword">for</span>
+creating motion along a straight path <span class="keyword">and</span> <span class="keyword">for</span> drawing dotted lines.
 
-<span class="comment">/**
-* Calculates the sine of an angle. This function expects the values of the angle parameter to be provided in
-* radians (values from 0 to 6.28). Values are returned in the range -1 to 1.
-*
-* @param {float} value        an angle in radians
-*
-* @returns {float}
-*
-* @see cos
-* @see radians
-*/</span>
-<span class="keyword">var</span> sin = Math.sin;
+<span class="property">@param</span> {int|float} value1       float <span class="keyword">or</span> int: first value
+<span class="property">@param</span> {int|float} value2       float <span class="keyword">or</span> int: second value
+<span class="property">@param</span> {int|float} amt          float: between <span class="number">0.0</span> <span class="keyword">and</span> <span class="number">1.0</span>
 
-<span class="comment">/**
-* Calculates the ratio of the sine and cosine of an angle. This function expects the values of the angle
-* parameter to be provided in radians (values from 0 to PI*2). Values are returned in the range infinity to -infinity.
-*
-* @param {float} value        an angle in radians
-*
-* @returns {float}
-*
-* @see cos
-* @see sin
-* @see radians
-*/</span>
-<span class="keyword">var</span> tan = Math.tan;
+<span class="property">@returns</span> {float}
 
-<span class="keyword">var</span> currentRandom = Math.random;
+<span class="property">@see</span> curvePoint
+<span class="property">@see</span> bezierPoint
+</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">lerp</span></span> = (value1, value2, amt) -&gt;
+  ((value2 - value1) * amt) + value1
 
-<span class="comment">/**
-* Generates random numbers. Each time the random() function is called, it returns an unexpected value within
-* the specified range. If one parameter is passed to the function it will return a float between zero and the
-* value of the high parameter. The function call random(5) returns values between 0 and 5 (starting at zero,
-* up to but not including 5). If two parameters are passed, it will return a float with a value between the
-* parameters. The function call random(-5, 10.2) returns values starting at -5 up to (but not including) 10.2.
-* To convert a floating-point random number to an integer, use the int() function.
-*
-* @param {int|float} value1         if one parameter is used, the top end to random from, if two params the low end
-* @param {int|float} value2         the top end of the random range
-*
-* @returns {float}
-*
-* @see randomSeed
-* @see noise
-*/</span>
-<span class="keyword">var</span> random = <span class="keyword">function</span>() {
-	<span class="keyword">if</span>(arguments.length === <span class="number">0</span>) {
-		<span class="keyword">return</span> currentRandom();
-	}
-	<span class="keyword">if</span>(arguments.length === <span class="number">1</span>) {
-		<span class="keyword">return</span> currentRandom() * arguments[<span class="number">0</span>];
-	}
-	<span class="keyword">var</span> aMin = arguments[<span class="number">0</span>], aMax = arguments[<span class="number">1</span>];
-	<span class="keyword">return</span> currentRandom() * (aMax - aMin) + aMin;
-};
 
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Pseudo-random generator</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> Marsaglia = <span class="keyword">function</span>(i1, i2) {
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>from http://www.math.uni-bielefeld.de/~sillke/ALGORITHMS/random/marsaglia-c</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="keyword">var</span> z=i1 || <span class="number">362436069</span>, w= i2 || <span class="number">521288629</span>;
-	<span class="keyword">var</span> nextInt = <span class="keyword">function</span>() {
-		z=(<span class="number">36969</span>*(z&amp;<span class="number">65535</span>)+(z&gt;&gt;&gt;<span class="number">16</span>)) &amp; <span class="number">0xFFFFFFFF</span>;
-		w=(<span class="number">18000</span>*(w&amp;<span class="number">65535</span>)+(w&gt;&gt;&gt;<span class="number">16</span>)) &amp; <span class="number">0xFFFFFFFF</span>;
-		<span class="keyword">return</span> (((z&amp;<span class="number">0xFFFF</span>)&lt;<span class="xml"><span class="tag">&lt;<span class="title">16)</span> | (<span class="attribute">w</span>&amp;<span class="attribute">0xFFFF</span>)) &amp; <span class="attribute">0xFFFFFFFF</span>;
-	};
+</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Calculates the natural logarithm (the base-e logarithm) <span class="keyword">of</span> a number. This <span class="reserved">function</span>
+expects the values greater than <span class="number">0.0</span>.
 
-	<span class="attribute">this.nextDouble</span> = <span class="attribute">function</span>() {
-		<span class="attribute">var</span> <span class="attribute">i</span> = <span class="attribute">nextInt</span>() / <span class="attribute">4294967296</span>;
-		<span class="attribute">return</span> <span class="attribute">i</span> &lt; <span class="attribute">0</span> ? <span class="attribute">1</span> + <span class="attribute">i</span> <span class="attribute">:</span> <span class="attribute">i</span>;
-	};
-	<span class="attribute">this.nextInt</span> = <span class="attribute">nextInt</span>;
-}
-<span class="attribute">Marsaglia.createRandomized</span> = <span class="attribute">function</span>() {
-	<span class="attribute">var</span> <span class="attribute">now</span> = <span class="attribute">new</span> <span class="attribute">Date</span>();
-	<span class="attribute">return</span> <span class="attribute">new</span> <span class="attribute">Marsaglia</span>((<span class="attribute">now</span> / <span class="attribute">60000</span>) &amp; <span class="attribute">0xFFFFFFFF</span>, <span class="attribute">now</span> &amp; <span class="attribute">0xFFFFFFFF</span>);
-};
+<span class="property">@param</span> {int|float} value        int <span class="keyword">or</span> float: number must be greater <span class="keyword">then</span> <span class="number">0.0</span>
 
-/**
-* <span class="attribute">Sets</span> <span class="attribute">the</span> <span class="attribute">seed</span> <span class="attribute">value</span> <span class="attribute">for</span> <span class="attribute">random</span>()<span class="attribute">.</span> <span class="attribute">By</span> <span class="attribute">default</span>, <span class="attribute">random</span>() <span class="attribute">produces</span> <span class="attribute">different</span> <span class="attribute">results</span> <span class="attribute">each</span> <span class="attribute">time</span> <span class="attribute">the</span>
-* <span class="attribute">program</span> <span class="attribute">is</span> <span class="attribute">run.</span> <span class="attribute">Set</span> <span class="attribute">the</span> <span class="attribute">value</span> <span class="attribute">parameter</span> <span class="attribute">to</span> <span class="attribute">a</span> <span class="attribute">constant</span> <span class="attribute">to</span> <span class="attribute">return</span> <span class="attribute">the</span> <span class="attribute">same</span> <span class="attribute">pseudo-random</span> <span class="attribute">numbers</span>
-* <span class="attribute">each</span> <span class="attribute">time</span> <span class="attribute">the</span> <span class="attribute">software</span> <span class="attribute">is</span> <span class="attribute">run.</span>
-*
-* @<span class="attribute">param</span> {<span class="attribute">int</span>|<span class="attribute">float</span>} <span class="attribute">seed</span>         <span class="attribute">int</span>
-*
-* @<span class="attribute">see</span> <span class="attribute">random</span>
-* @<span class="attribute">see</span> <span class="attribute">noise</span>
-* @<span class="attribute">see</span> <span class="attribute">noiseSeed</span>
-*/
-<span class="attribute">var</span> <span class="attribute">randomSeed</span> = <span class="attribute">function</span>(<span class="attribute">seed</span>) {
-	<span class="attribute">currentRandom</span> = (<span class="attribute">new</span> <span class="attribute">Marsaglia</span>(<span class="attribute">seed</span>))<span class="attribute">.nextDouble</span>;
-};
+<span class="property">@returns</span> {float}
+</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>log = Math.log
 
-</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Random
-We have two random()'s in the code... what does this do ? and which one is current ?</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> Random = <span class="keyword">function</span>(seed) {
-	<span class="keyword">var</span> haveNextNextGaussian = <span class="literal">false</span>, nextNextGaussian, random;
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Calculates the magnitude (<span class="keyword">or</span> length) <span class="keyword">of</span> a vector. A vector <span class="keyword">is</span> a direction <span class="keyword">in</span> space commonly
+used <span class="keyword">in</span> computer graphics <span class="keyword">and</span> linear algebra. Because it has <span class="literal">no</span> <span class="string">"start"</span> position, the magnitude
+<span class="keyword">of</span> a vector can be thought <span class="keyword">of</span> as the distance from coordinate (<span class="number">0</span>,<span class="number">0</span>) to its (x,y) value.
+Therefore, mag() <span class="keyword">is</span> a shortcut <span class="keyword">for</span> writing <span class="string">"dist(0, 0, x, y)"</span>.
 
-	<span class="keyword">this</span>.nextGaussian = <span class="keyword">function</span>() {
-		<span class="keyword">if</span> (haveNextNextGaussian) {
-			haveNextNextGaussian = <span class="literal">false</span>;
-			<span class="keyword">return</span> nextNextGaussian;
-		}
-		<span class="keyword">var</span> v1, v2, s;
-		<span class="keyword">do</span> {
-			v1 = <span class="number">2</span> * random() - <span class="number">1</span>; <span class="comment">// between -1.0 and 1.0</span>
-			v2 = <span class="number">2</span> * random() - <span class="number">1</span>; <span class="comment">// between -1.0 and 1.0</span>
-			s = v1 * v1 + v2 * v2;
-		}
-		<span class="keyword">while</span> (s &gt;= <span class="number">1</span> || s === <span class="number">0</span>);
+<span class="property">@param</span> {int|float} a       float <span class="keyword">or</span> int: first value
+<span class="property">@param</span> {int|float} b       float <span class="keyword">or</span> int: second value
+<span class="property">@param</span> {int|float} c       float <span class="keyword">or</span> int: third value
 
-		<span class="keyword">var</span> multiplier = Math.sqrt(-<span class="number">2</span> * Math.log(s) / s);
-		nextNextGaussian = v2 * multiplier;
-		haveNextNextGaussian = <span class="literal">true</span>;
+<span class="property">@returns</span> {float}
 
-		<span class="keyword">return</span> v1 * multiplier;
-	};
+<span class="property">@see</span> dist
+</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">mag</span></span> = (a, b, c) -&gt;
+  <span class="keyword">return</span> Math.sqrt(a * a + b * b + c * c)  <span class="keyword">if</span> c
+  Math.sqrt a * a + b * b
 
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>by default use standard random, otherwise seeded</p>             </td>             <td class="code">               <div class="highlight"><pre>	random = (seed === <span class="literal">undefined</span>) ? Math.random : (<span class="keyword">new</span> Marsaglia(seed)).nextDouble;
-};
 
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Noise functions and helpers</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> PerlinNoise = <span class="function"><span class="keyword">function</span> <span class="params">(seed)</span> {</span>
-	<span class="keyword">var</span> rnd = seed !== <span class="literal">undefined</span> ? <span class="keyword">new</span> Marsaglia(seed) : Marsaglia.createRandomized();
-	<span class="keyword">var</span> i, j;
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>http://www.noisemachine.com/talk1/17b.html
+</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Re-maps a number from one range to another. In the example above, the number '25' is converted from
+a value in the range 0..100 into a value that ranges from the left edge (0) to the right edge (width) of the screen.
+Numbers outside the range are not clamped to 0 and 1, because out-of-range values are often intentional and useful.
+
+@param {float} value        The incoming value to be converted
+@param {float} istart       Lower bound of the value's current range
+@param {float} istop        Upper bound of the value's current range
+@param {float} ostart       Lower bound of the value's target range
+@param {float} ostop        Upper bound of the value's target range
+
+@returns {float}
+
+@see norm
+@see lerp
+</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">map</span></span> = (value, istart, istop, ostart, ostop) -&gt;
+  ostart + (ostop - ostart) * ((value - istart) / (istop - istart))
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Determines the largest value <span class="keyword">in</span> a sequence <span class="keyword">of</span> numbers.
+
+<span class="property">@param</span> {int|float} value1         int <span class="keyword">or</span> float
+<span class="property">@param</span> {int|float} value2         int <span class="keyword">or</span> float
+<span class="property">@param</span> {int|float} value3         int <span class="keyword">or</span> float
+<span class="property">@param</span> {int|float} array          int <span class="keyword">or</span> float array
+
+<span class="property">@returns</span> {int|float}
+
+<span class="property">@see</span> min
+</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">max</span></span> = -&gt;
+  <span class="keyword">return</span> (<span class="keyword">if</span> arguments[<span class="number">0</span>] &lt; arguments[<span class="number">1</span>] <span class="keyword">then</span> arguments[<span class="number">1</span>] <span class="keyword">else</span> arguments[<span class="number">0</span>])  <span class="keyword">if</span> arguments.length <span class="keyword">is</span> <span class="number">2</span>
+  numbers = (<span class="keyword">if</span> arguments.length <span class="keyword">is</span> <span class="number">1</span> <span class="keyword">then</span> arguments[<span class="number">0</span>] <span class="keyword">else</span> arguments) <span class="comment"># if single argument, array is used</span>
+  <span class="keyword">throw</span> <span class="string">"Non-empty array is expected"</span>  <span class="keyword">unless</span> <span class="string">"length"</span> <span class="keyword">of</span> numbers <span class="keyword">and</span> numbers.length &gt; <span class="number">0</span>
+  max = numbers[<span class="number">0</span>]
+  count = numbers.length
+  i = <span class="number">1</span>
+
+  <span class="keyword">while</span> i &lt; count
+    max = numbers[i]  <span class="keyword">if</span> max &lt; numbers[i]
+    ++i
+  max
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Determines the smallest value <span class="keyword">in</span> a sequence <span class="keyword">of</span> numbers.
+
+<span class="property">@param</span> {int|float} value1         int <span class="keyword">or</span> float
+<span class="property">@param</span> {int|float} value2         int <span class="keyword">or</span> float
+<span class="property">@param</span> {int|float} value3         int <span class="keyword">or</span> float
+<span class="property">@param</span> {int|float} array          int <span class="keyword">or</span> float array
+
+<span class="property">@returns</span> {int|float}
+
+<span class="property">@see</span> max
+</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">min</span></span> = -&gt;
+  <span class="keyword">return</span> (<span class="keyword">if</span> arguments[<span class="number">0</span>] &lt; arguments[<span class="number">1</span>] <span class="keyword">then</span> arguments[<span class="number">0</span>] <span class="keyword">else</span> arguments[<span class="number">1</span>])  <span class="keyword">if</span> arguments.length <span class="keyword">is</span> <span class="number">2</span>
+  numbers = (<span class="keyword">if</span> arguments.length <span class="keyword">is</span> <span class="number">1</span> <span class="keyword">then</span> arguments[<span class="number">0</span>] <span class="keyword">else</span> arguments) <span class="comment"># if single argument, array is used</span>
+  <span class="keyword">throw</span> <span class="string">"Non-empty array is expected"</span>  <span class="keyword">unless</span> <span class="string">"length"</span> <span class="keyword">of</span> numbers <span class="keyword">and</span> numbers.length &gt; <span class="number">0</span>
+  min = numbers[<span class="number">0</span>]
+  count = numbers.length
+  i = <span class="number">1</span>
+
+  <span class="keyword">while</span> i &lt; count
+    min = numbers[i]  <span class="keyword">if</span> min &gt; numbers[i]
+    ++i
+  min
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Normalizes a number from another range into a value between 0 and 1.
+Identical to map(value, low, high, 0, 1);
+Numbers outside the range are not clamped to 0 and 1, because out-of-range
+values are often intentional and useful.
+
+@param {float} aNumber    The incoming value to be converted
+@param {float} low        Lower bound of the value's current range
+@param {float} high       Upper bound of the value's current range
+
+@returns {float}
+
+@see map
+@see lerp
+</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">norm</span></span> = (aNumber, low, high) -&gt;
+  (aNumber - low) / (high - low)
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Facilitates exponential expressions. The pow() <span class="reserved">function</span> <span class="keyword">is</span> an efficient way <span class="keyword">of</span>
+multiplying numbers <span class="keyword">by</span> themselves (<span class="keyword">or</span> their reciprocal) <span class="keyword">in</span> large quantities.
+For example, pow(<span class="number">3</span>, <span class="number">5</span>) <span class="keyword">is</span> equivalent to the expression <span class="number">3</span>*<span class="number">3</span>*<span class="number">3</span>*<span class="number">3</span>*<span class="number">3</span> <span class="keyword">and</span> pow(<span class="number">3</span>, -<span class="number">5</span>)
+<span class="keyword">is</span> equivalent to <span class="number">1</span> / <span class="number">3</span>*<span class="number">3</span>*<span class="number">3</span>*<span class="number">3</span>*<span class="number">3.</span>
+
+<span class="property">@param</span> {int|float} num        base <span class="keyword">of</span> the exponential expression
+<span class="property">@param</span> {int|float} exponent   power <span class="keyword">of</span> which to raise the base
+
+<span class="property">@returns</span> {float}
+
+<span class="property">@see</span> sqrt
+</pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>pow = Math.pow
+
+</pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Calculates the integer closest to the value parameter. For example, round(<span class="number">9.2</span>) returns the value <span class="number">9.</span>
+
+<span class="property">@param</span> {float} value        number to round
+
+<span class="property">@returns</span> {int}
+
+<span class="property">@see</span> floor
+<span class="property">@see</span> ceil
+</pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>round = Math.round
+
+</pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Squares a number (multiplies a number <span class="keyword">by</span> itself). The result <span class="keyword">is</span> always a positive number,
+as multiplying two negative numbers always yields a positive result. For example, -<span class="number">1</span> * -<span class="number">1</span> = <span class="number">1.</span>
+
+<span class="property">@param</span> {float} value        int <span class="keyword">or</span> float
+
+<span class="property">@returns</span> {float}
+
+<span class="property">@see</span> sqrt
+</pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">sq</span></span> = (aNumber) -&gt;
+  aNumber * aNumber
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Calculates the square root <span class="keyword">of</span> a number. The square root <span class="keyword">of</span> a number <span class="keyword">is</span> always positive,
+even though there may be a valid negative root. The square root s <span class="keyword">of</span> number a <span class="keyword">is</span> such
+that s*s = a. It <span class="keyword">is</span> the opposite <span class="keyword">of</span> squaring.
+
+<span class="property">@param</span> {float} value        int <span class="keyword">or</span> float, non negative
+
+<span class="property">@returns</span> {float}
+
+<span class="property">@see</span> pow
+<span class="property">@see</span> sq
+</pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>sqrt = Math.sqrt
+
+</pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>Trigonometry</p>
+
+<h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>The inverse <span class="keyword">of</span> cos(), returns the arc cosine <span class="keyword">of</span> a value. This <span class="reserved">function</span> expects the
+values <span class="keyword">in</span> the range <span class="keyword">of</span> -<span class="number">1</span> to <span class="number">1</span> <span class="keyword">and</span> values are returned <span class="keyword">in</span> the range <span class="number">0</span> to PI (<span class="number">3.1415927</span>).
+
+<span class="property">@param</span> {float} value        the value whose arc cosine <span class="keyword">is</span> to be returned
+
+<span class="property">@returns</span> {float}
+
+<span class="property">@see</span> cos
+<span class="property">@see</span> asin
+<span class="property">@see</span> atan
+</pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>acos = Math.acos
+
+</pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>The inverse <span class="keyword">of</span> sin(), returns the arc sine <span class="keyword">of</span> a value. This <span class="reserved">function</span> expects the values
+<span class="keyword">in</span> the range <span class="keyword">of</span> -<span class="number">1</span> to <span class="number">1</span> <span class="keyword">and</span> values are returned <span class="keyword">in</span> the range -PI<span class="regexp">/2 to PI/</span><span class="number">2.</span>
+
+<span class="property">@param</span> {float} value        the value whose arc sine <span class="keyword">is</span> to be returned
+
+<span class="property">@returns</span> {float}
+
+<span class="property">@see</span> sin
+<span class="property">@see</span> acos
+<span class="property">@see</span> atan
+</pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>asin = Math.asin
+
+</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>The inverse <span class="keyword">of</span> tan(), returns the arc tangent <span class="keyword">of</span> a value. This <span class="reserved">function</span> expects the values
+<span class="keyword">in</span> the range <span class="keyword">of</span> -Infinity to Infinity (exclusive) <span class="keyword">and</span> values are returned <span class="keyword">in</span> the range -PI<span class="regexp">/2 to PI/</span><span class="number">2</span> .
+
+<span class="property">@param</span> {float} value        -Infinity to Infinity (exclusive)
+
+<span class="property">@returns</span> {float}
+
+<span class="property">@see</span> tan
+<span class="property">@see</span> asin
+<span class="property">@see</span> acos
+</pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>atan = Math.atan
+
+</pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Calculates the angle (<span class="keyword">in</span> radians) from a specified point to the coordinate origin as measured from
+the positive x-axis. Values are returned as a float <span class="keyword">in</span> the range from PI to -PI. The atan2() <span class="reserved">function</span>
+<span class="keyword">is</span> most often used <span class="keyword">for</span> orienting geometry to the position <span class="keyword">of</span> the cursor. Note: The y-coordinate <span class="keyword">of</span> the
+point <span class="keyword">is</span> the first parameter <span class="keyword">and</span> the x-coordinate <span class="keyword">is</span> the second due the the structure <span class="keyword">of</span> calculating the tangent.
+
+<span class="property">@param</span> {float} y        y-coordinate <span class="keyword">of</span> the point
+<span class="property">@param</span> {float} x        x-coordinate <span class="keyword">of</span> the point
+
+<span class="property">@returns</span> {float}
+
+<span class="property">@see</span> tan
+</pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>atan2 = Math.atan2
+
+</pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-45">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Calculates the cosine <span class="keyword">of</span> an angle. This <span class="reserved">function</span> expects the values <span class="keyword">of</span> the angle parameter to be provided
+<span class="keyword">in</span> radians (values from <span class="number">0</span> to PI*<span class="number">2</span>). Values are returned <span class="keyword">in</span> the range -<span class="number">1</span> to <span class="number">1.</span>
+
+<span class="property">@param</span> {float} value        an angle <span class="keyword">in</span> radians
+
+<span class="property">@returns</span> {float}
+
+<span class="property">@see</span> tan
+<span class="property">@see</span> sin
+</pre></div>             </td>           </tr>                               <tr id="section-46">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-46">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>cos = Math.cos
+
+</pre></div>             </td>           </tr>                               <tr id="section-47">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-47">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Converts a radian measurement to its corresponding value <span class="keyword">in</span> degrees. Radians <span class="keyword">and</span> degrees are two ways <span class="keyword">of</span>
+measuring the same thing. There are <span class="number">360</span> degrees <span class="keyword">in</span> a circle <span class="keyword">and</span> <span class="number">2</span>*PI radians <span class="keyword">in</span> a circle. For example,
+<span class="number">90</span> degrees = PI/<span class="number">2</span> = <span class="number">1.5707964</span>. All trigonometric methods <span class="keyword">in</span> Processing require their parameters to be specified <span class="keyword">in</span> radians.
+
+<span class="property">@param</span> {int|float} value        an angle <span class="keyword">in</span> radians
+
+<span class="property">@returns</span> {float}
+
+<span class="property">@see</span> radians
+</pre></div>             </td>           </tr>                               <tr id="section-48">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-48">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">degrees</span></span> = (aAngle) -&gt;
+  (aAngle * <span class="number">180</span>) / Math.PI
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-49">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-49">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Converts a degree measurement to its corresponding value <span class="keyword">in</span> radians. Radians <span class="keyword">and</span> degrees are two ways <span class="keyword">of</span>
+measuring the same thing. There are <span class="number">360</span> degrees <span class="keyword">in</span> a circle <span class="keyword">and</span> <span class="number">2</span>*PI radians <span class="keyword">in</span> a circle. For example,
+<span class="number">90</span> degrees = PI/<span class="number">2</span> = <span class="number">1.5707964</span>. All trigonometric methods <span class="keyword">in</span> Processing require their parameters to be specified <span class="keyword">in</span> radians.
+
+<span class="property">@param</span> {int|float} value        an angle <span class="keyword">in</span> radians
+
+<span class="property">@returns</span> {float}
+
+<span class="property">@see</span> degrees
+</pre></div>             </td>           </tr>                               <tr id="section-50">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-50">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">radians</span></span> = (aAngle) -&gt;
+  (aAngle / <span class="number">180</span>) * Math.PI
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-51">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-51">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Calculates the sine <span class="keyword">of</span> an angle. This <span class="reserved">function</span> expects the values <span class="keyword">of</span> the angle parameter to be provided <span class="keyword">in</span>
+radians (values from <span class="number">0</span> to <span class="number">6.28</span>). Values are returned <span class="keyword">in</span> the range -<span class="number">1</span> to <span class="number">1.</span>
+
+<span class="property">@param</span> {float} value        an angle <span class="keyword">in</span> radians
+
+<span class="property">@returns</span> {float}
+
+<span class="property">@see</span> cos
+<span class="property">@see</span> radians
+</pre></div>             </td>           </tr>                               <tr id="section-52">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-52">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>sin = Math.sin
+
+</pre></div>             </td>           </tr>                               <tr id="section-53">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-53">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Calculates the ratio <span class="keyword">of</span> the sine <span class="keyword">and</span> cosine <span class="keyword">of</span> an angle. This <span class="reserved">function</span> expects the values <span class="keyword">of</span> the angle
+parameter to be provided <span class="keyword">in</span> radians (values from <span class="number">0</span> to PI*<span class="number">2</span>). Values are returned <span class="keyword">in</span> the range infinity to -infinity.
+
+<span class="property">@param</span> {float} value        an angle <span class="keyword">in</span> radians
+
+<span class="property">@returns</span> {float}
+
+<span class="property">@see</span> cos
+<span class="property">@see</span> sin
+<span class="property">@see</span> radians
+</pre></div>             </td>           </tr>                               <tr id="section-54">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-54">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>tan = Math.tan
+currentRandom = Math.random
+
+</pre></div>             </td>           </tr>                               <tr id="section-55">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-55">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Generates random numbers. Each time the random() <span class="reserved">function</span> <span class="keyword">is</span> called, it returns an unexpected value within
+the specified range. If one parameter <span class="keyword">is</span> passed to the <span class="reserved">function</span> it will <span class="keyword">return</span> a float between zero <span class="keyword">and</span> the
+value <span class="keyword">of</span> the high parameter. The <span class="reserved">function</span> call random(<span class="number">5</span>) returns values between <span class="number">0</span> <span class="keyword">and</span> <span class="number">5</span> (starting at zero,
+up to but <span class="keyword">not</span> including <span class="number">5</span>). If two parameters are passed, it will <span class="keyword">return</span> a float <span class="reserved">with</span> a value between the
+parameters. The <span class="reserved">function</span> call random(-<span class="number">5</span>, <span class="number">10.2</span>) returns values starting at -<span class="number">5</span> up to (but <span class="keyword">not</span> including) <span class="number">10.2</span>.
+To convert a floating-point random number to an integer, use the int() <span class="reserved">function</span>.
+
+<span class="property">@param</span> {int|float} value1         <span class="keyword">if</span> one parameter <span class="keyword">is</span> used, the top end to random from, <span class="keyword">if</span> two params the low end
+<span class="property">@param</span> {int|float} value2         the top end <span class="keyword">of</span> the random range
+
+<span class="property">@returns</span> {float}
+
+<span class="property">@see</span> randomSeed
+<span class="property">@see</span> noise
+</pre></div>             </td>           </tr>                               <tr id="section-56">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-56">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">random</span></span> = -&gt;
+  <span class="keyword">return</span> currentRandom()  <span class="keyword">if</span> arguments.length <span class="keyword">is</span> <span class="number">0</span>
+  <span class="keyword">return</span> currentRandom() * arguments[<span class="number">0</span>]  <span class="keyword">if</span> arguments.length <span class="keyword">is</span> <span class="number">1</span>
+  aMin = arguments[<span class="number">0</span>]
+  aMax = arguments[<span class="number">1</span>]
+  currentRandom() * (aMax - aMin) + aMin
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-57">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-57">&#182;</a>               </div>               <p>Pseudo-random generator</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">Marsaglia</span></span> = (i1, i2) -&gt;
+  
+</pre></div>             </td>           </tr>                               <tr id="section-58">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-58">&#182;</a>               </div>               <p>from http://www.math.uni-bielefeld.de/~sillke/ALGORITHMS/random/marsaglia-c</p>             </td>             <td class="code">               <div class="highlight"><pre>  z = i1 <span class="keyword">or</span> <span class="number">362436069</span>
+  w = i2 <span class="keyword">or</span> <span class="number">521288629</span>
+  <span class="function"><span class="title">nextInt</span></span> = -&gt;
+    z = (<span class="number">36969</span> * (z &amp; <span class="number">65535</span>) + (z &gt;&gt;&gt; <span class="number">16</span>)) &amp; <span class="number">0xFFFFFFFF</span>
+    w = (<span class="number">18000</span> * (w &amp; <span class="number">65535</span>) + (w &gt;&gt;&gt; <span class="number">16</span>)) &amp; <span class="number">0xFFFFFFFF</span>
+    (((z &amp; <span class="number">0xFFFF</span>) &lt;&lt; <span class="number">16</span>) | (w &amp; <span class="number">0xFFFF</span>)) &amp; <span class="number">0xFFFFFFFF</span>
+
+  <span class="property">@nextDouble</span> = -&gt;
+    i = nextInt() / <span class="number">4294967296</span>
+    (<span class="keyword">if</span> i &lt; <span class="number">0</span> <span class="keyword">then</span> <span class="number">1</span> + i <span class="keyword">else</span> i)
+
+  <span class="property">@nextInt</span> = nextInt
+
+Marsaglia.<span class="function"><span class="title">createRandomized</span></span> = -&gt;
+  now = <span class="keyword">new</span> Date()
+  <span class="keyword">new</span> Marsaglia((now / <span class="number">60000</span>) &amp; <span class="number">0xFFFFFFFF</span>, now &amp; <span class="number">0xFFFFFFFF</span>)
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-59">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-59">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Sets the seed value <span class="keyword">for</span> random(). By <span class="reserved">default</span>, random() produces different results each time the
+program <span class="keyword">is</span> run. Set the value parameter to a constant to <span class="keyword">return</span> the same pseudo-random numbers
+each time the software <span class="keyword">is</span> run.
+
+<span class="property">@param</span> {int|float} seed         int
+
+<span class="property">@see</span> random
+<span class="property">@see</span> noise
+<span class="property">@see</span> noiseSeed
+</pre></div>             </td>           </tr>                               <tr id="section-60">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-60">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">randomSeed</span></span> = (seed) -&gt;
+  currentRandom = (<span class="keyword">new</span> Marsaglia(seed)).nextDouble
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-61">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-61">&#182;</a>               </div>               <p>Random
+We have two random()'s in the code... what does this do ? and which one is current ?</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">Random</span></span> = (seed) -&gt;
+  haveNextNextGaussian = <span class="literal">false</span>
+  nextNextGaussian = <span class="literal">undefined</span>
+  random = <span class="literal">undefined</span>
+  <span class="property">@nextGaussian</span> = -&gt;
+    <span class="keyword">if</span> haveNextNextGaussian
+      haveNextNextGaussian = <span class="literal">false</span>
+      <span class="keyword">return</span> nextNextGaussian
+    v1 = <span class="literal">undefined</span>
+    v2 = <span class="literal">undefined</span>
+    s = <span class="literal">undefined</span>
+    <span class="keyword">loop</span>
+      v1 = <span class="number">2</span> * random() - <span class="number">1</span> <span class="comment"># between -1.0 and 1.0</span>
+      v2 = <span class="number">2</span> * random() - <span class="number">1</span> <span class="comment"># between -1.0 and 1.0</span>
+      s = v1 * v1 + v2 * v2
+      <span class="keyword">break</span> <span class="keyword">unless</span> s &gt;= <span class="number">1</span> <span class="keyword">or</span> s <span class="keyword">is</span> <span class="number">0</span>
+    multiplier = Math.sqrt(-<span class="number">2</span> * Math.log(s) / s)
+    nextNextGaussian = v2 * multiplier
+    haveNextNextGaussian = <span class="literal">true</span>
+    v1 * multiplier
+
+  
+</pre></div>             </td>           </tr>                               <tr id="section-62">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-62">&#182;</a>               </div>               <p>by default use standard random, otherwise seeded</p>             </td>             <td class="code">               <div class="highlight"><pre>  random = (<span class="keyword">if</span> (seed <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`) <span class="keyword">then</span> Math.random <span class="keyword">else</span> (<span class="keyword">new</span> Marsaglia(seed)).nextDouble)
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-63">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-63">&#182;</a>               </div>               <p>Noise functions and helpers</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">PerlinNoise</span></span> = (seed) -&gt;
+  
+</pre></div>             </td>           </tr>                               <tr id="section-64">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-64">&#182;</a>               </div>               <p>http://www.noisemachine.com/talk1/17b.html
 http://mrl.nyu.edu/~perlin/noise/
-generate permutation</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="keyword">var</span> perm = <span class="keyword">new</span> Uint8Array(<span class="number">512</span>);
-	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">256</span>;++i) { perm[i] = i; }
-	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">256</span>;++i) { <span class="keyword">var</span> t = perm[j = rnd.nextInt() &amp; <span class="number">0xFF</span>]; perm[j] = perm[i]; perm[i] = t; }
-</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>copy to avoid taking mod in perm[0];</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">256</span>;++i) { perm[i + <span class="number">256</span>] = perm[i]; }
+generate permutation</p>             </td>             <td class="code">               <div class="highlight"><pre>  
+</pre></div>             </td>           </tr>                               <tr id="section-65">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-65">&#182;</a>               </div>               <p>copy to avoid taking mod in perm[0];</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="function"><span class="title">grad3d</span></span> = (i, x, y, z) -&gt;
+    h = i &amp; <span class="number">15</span> <span class="comment"># convert into 12 gradient directions</span>
+    u = (<span class="keyword">if</span> h &lt; <span class="number">8</span> <span class="keyword">then</span> x <span class="keyword">else</span> y)
+    v = (<span class="keyword">if</span> h &lt; <span class="number">4</span> <span class="keyword">then</span> y <span class="keyword">else</span> (<span class="keyword">if</span> h <span class="keyword">is</span> <span class="number">12</span> <span class="keyword">or</span> h <span class="keyword">is</span> <span class="number">14</span> <span class="keyword">then</span> x <span class="keyword">else</span> z))
+    ((<span class="keyword">if</span> (h &amp; <span class="number">1</span>) <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> u <span class="keyword">else</span> -u)) + ((<span class="keyword">if</span> (h &amp; <span class="number">2</span>) <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> v <span class="keyword">else</span> -v))
+  <span class="function"><span class="title">grad2d</span></span> = (i, x, y) -&gt;
+    v = (<span class="keyword">if</span> (i &amp; <span class="number">1</span>) <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> x <span class="keyword">else</span> y)
+    (<span class="keyword">if</span> (i &amp; <span class="number">2</span>) <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> -v <span class="keyword">else</span> v)
+  <span class="function"><span class="title">grad1d</span></span> = (i, x) -&gt;
+    (<span class="keyword">if</span> (i &amp; <span class="number">1</span>) <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> -x <span class="keyword">else</span> x)
+  <span class="function"><span class="title">lerp</span></span> = (t, a, b) -&gt;
+    a + t * (b - a)
+  rnd = (<span class="keyword">if</span> seed <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">then</span> <span class="keyword">new</span> Marsaglia(seed) <span class="keyword">else</span> Marsaglia.createRandomized())
+  i = <span class="literal">undefined</span>
+  j = <span class="literal">undefined</span>
+  perm = <span class="keyword">new</span> Uint8Array(<span class="number">512</span>)
+  i = <span class="number">0</span>
+  <span class="keyword">while</span> i &lt; <span class="number">256</span>
+    perm[i] = i
+    ++i
+  i = <span class="number">0</span>
+  <span class="keyword">while</span> i &lt; <span class="number">256</span>
+    t = perm[j = rnd.nextInt() &amp; <span class="number">0xFF</span>]
+    perm[j] = perm[i]
+    perm[i] = t
+    ++i
+  i = <span class="number">0</span>
+  <span class="keyword">while</span> i &lt; <span class="number">256</span>
+    perm[i + <span class="number">256</span>] = perm[i]
+    ++i
+  <span class="property">@noise3d</span> = (x, y, z) -&gt;
+    X = Math.floor(x) &amp; <span class="number">255</span>
+    Y = Math.floor(y) &amp; <span class="number">255</span>
+    Z = Math.floor(z) &amp; <span class="number">255</span>
+    x -= Math.floor(x)
+    y -= Math.floor(y)
+    z -= Math.floor(z)
+    fx = (<span class="number">3</span> - <span class="number">2</span> * x) * x * x
+    fy = (<span class="number">3</span> - <span class="number">2</span> * y) * y * y
+    fz = (<span class="number">3</span> - <span class="number">2</span> * z) * z * z
+    p0 = perm[X] + Y
+    p00 = perm[p0] + Z
+    p01 = perm[p0 + <span class="number">1</span>] + Z
+    p1 = perm[X + <span class="number">1</span>] + Y
+    p10 = perm[p1] + Z
+    p11 = perm[p1 + <span class="number">1</span>] + Z
+    lerp fz, lerp(fy, lerp(fx, grad3d(perm[p00], x, y, z), grad3d(perm[p10], x - <span class="number">1</span>, y, z)), lerp(fx, grad3d(perm[p01], x, y - <span class="number">1</span>, z), grad3d(perm[p11], x - <span class="number">1</span>, y - <span class="number">1</span>, z))), lerp(fy, lerp(fx, grad3d(perm[p00 + <span class="number">1</span>], x, y, z - <span class="number">1</span>), grad3d(perm[p10 + <span class="number">1</span>], x - <span class="number">1</span>, y, z - <span class="number">1</span>)), lerp(fx, grad3d(perm[p01 + <span class="number">1</span>], x, y - <span class="number">1</span>, z - <span class="number">1</span>), grad3d(perm[p11 + <span class="number">1</span>], x - <span class="number">1</span>, y - <span class="number">1</span>, z - <span class="number">1</span>)))
 
-	<span class="function"><span class="keyword">function</span> <span class="title">grad3d</span><span class="params">(i,x,y,z)</span> {</span>
-		<span class="keyword">var</span> h = i &amp; <span class="number">15</span>; <span class="comment">// convert into 12 gradient directions</span>
-		<span class="keyword">var</span> u = h&lt;<span class="number">8</span> ? x : y,
-				v = h&lt;<span class="number">4</span> ? y : h===<span class="number">12</span>||h===<span class="number">14</span> ? x : z;
-		<span class="keyword">return</span> ((h&amp;<span class="number">1</span>) === <span class="number">0</span> ? u : -u) + ((h&amp;<span class="number">2</span>) === <span class="number">0</span> ? v : -v);
-	}
+  <span class="property">@noise2d</span> = (x, y) -&gt;
+    X = Math.floor(x) &amp; <span class="number">255</span>
+    Y = Math.floor(y) &amp; <span class="number">255</span>
+    x -= Math.floor(x)
+    y -= Math.floor(y)
+    fx = (<span class="number">3</span> - <span class="number">2</span> * x) * x * x
+    fy = (<span class="number">3</span> - <span class="number">2</span> * y) * y * y
+    p0 = perm[X] + Y
+    p1 = perm[X + <span class="number">1</span>] + Y
+    lerp fy, lerp(fx, grad2d(perm[p0], x, y), grad2d(perm[p1], x - <span class="number">1</span>, y)), lerp(fx, grad2d(perm[p0 + <span class="number">1</span>], x, y - <span class="number">1</span>), grad2d(perm[p1 + <span class="number">1</span>], x - <span class="number">1</span>, y - <span class="number">1</span>))
 
-	<span class="function"><span class="keyword">function</span> <span class="title">grad2d</span><span class="params">(i,x,y)</span> {</span>
-		<span class="keyword">var</span> v = (i &amp; <span class="number">1</span>) === <span class="number">0</span> ? x : y;
-		<span class="keyword">return</span> (i&amp;<span class="number">2</span>) === <span class="number">0</span> ? -v : v;
-	}
-
-	<span class="function"><span class="keyword">function</span> <span class="title">grad1d</span><span class="params">(i,x)</span> {</span>
-		<span class="keyword">return</span> (i&amp;<span class="number">1</span>) === <span class="number">0</span> ? -x : x;
-	}
-
-	<span class="function"><span class="keyword">function</span> <span class="title">lerp</span><span class="params">(t,a,b)</span> {</span> <span class="keyword">return</span> a + t * (b - a); }
-
-	<span class="keyword">this</span>.noise3d = <span class="keyword">function</span>(x, y, z) {
-		<span class="keyword">var</span> X = Math.floor(x)&amp;<span class="number">255</span>, Y = Math.floor(y)&amp;<span class="number">255</span>, Z = Math.floor(z)&amp;<span class="number">255</span>;
-		x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
-		<span class="keyword">var</span> fx = (<span class="number">3</span>-<span class="number">2</span>*x)*x*x, fy = (<span class="number">3</span>-<span class="number">2</span>*y)*y*y, fz = (<span class="number">3</span>-<span class="number">2</span>*z)*z*z;
-		<span class="keyword">var</span> p0 = perm[X]+Y, p00 = perm[p0] + Z, p01 = perm[p0 + <span class="number">1</span>] + Z,
-				p1 = perm[X + <span class="number">1</span>] + Y, p10 = perm[p1] + Z, p11 = perm[p1 + <span class="number">1</span>] + Z;
-		<span class="keyword">return</span> lerp(fz,
-			lerp(fy, lerp(fx, grad3d(perm[p00], x, y, z), grad3d(perm[p10], x-<span class="number">1</span>, y, z)),
-							 lerp(fx, grad3d(perm[p01], x, y-<span class="number">1</span>, z), grad3d(perm[p11], x-<span class="number">1</span>, y-<span class="number">1</span>,z))),
-			lerp(fy, lerp(fx, grad3d(perm[p00 + <span class="number">1</span>], x, y, z-<span class="number">1</span>), grad3d(perm[p10 + <span class="number">1</span>], x-<span class="number">1</span>, y, z-<span class="number">1</span>)),
-							 lerp(fx, grad3d(perm[p01 + <span class="number">1</span>], x, y-<span class="number">1</span>, z-<span class="number">1</span>), grad3d(perm[p11 + <span class="number">1</span>], x-<span class="number">1</span>, y-<span class="number">1</span>,z-<span class="number">1</span>))));
-	};
-
-	<span class="keyword">this</span>.noise2d = <span class="keyword">function</span>(x, y) {
-		<span class="keyword">var</span> X = Math.floor(x)&amp;<span class="number">255</span>, Y = Math.floor(y)&amp;<span class="number">255</span>;
-		x -= Math.floor(x); y -= Math.floor(y);
-		<span class="keyword">var</span> fx = (<span class="number">3</span>-<span class="number">2</span>*x)*x*x, fy = (<span class="number">3</span>-<span class="number">2</span>*y)*y*y;
-		<span class="keyword">var</span> p0 = perm[X]+Y, p1 = perm[X + <span class="number">1</span>] + Y;
-		<span class="keyword">return</span> lerp(fy,
-			lerp(fx, grad2d(perm[p0], x, y), grad2d(perm[p1], x-<span class="number">1</span>, y)),
-			lerp(fx, grad2d(perm[p0 + <span class="number">1</span>], x, y-<span class="number">1</span>), grad2d(perm[p1 + <span class="number">1</span>], x-<span class="number">1</span>, y-<span class="number">1</span>)));
-	};
-
-	<span class="keyword">this</span>.noise1d = <span class="keyword">function</span>(x) {
-		<span class="keyword">var</span> X = Math.floor(x)&amp;<span class="number">255</span>;
-		x -= Math.floor(x);
-		<span class="keyword">var</span> fx = (<span class="number">3</span>-<span class="number">2</span>*x)*x*x;
-		<span class="keyword">return</span> lerp(fx, grad1d(perm[X], x), grad1d(perm[X+<span class="number">1</span>], x-<span class="number">1</span>));
-	};
-}
-
-</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>processing defaults</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">var</span> noiseProfile = { generator: <span class="literal">undefined</span>, octaves: <span class="number">4</span>, fallout: <span class="number">0.5</span>, seed: <span class="literal">undefined</span>};
-
-<span class="comment">/**
-* Returns the Perlin noise value at specified coordinates. Perlin noise is a random sequence
-* generator producing a more natural ordered, harmonic succession of numbers compared to the
-* standard random() function. It was invented by Ken Perlin in the 1980s and been used since
-* in graphical applications to produce procedural textures, natural motion, shapes, terrains etc.
-* The main difference to the random() function is that Perlin noise is defined in an infinite
-* n-dimensional space where each pair of coordinates corresponds to a fixed semi-random value
-* (fixed only for the lifespan of the program). The resulting value will always be between 0.0
-* and 1.0. Processing can compute 1D, 2D and 3D noise, depending on the number of coordinates
-* given. The noise value can be animated by moving through the noise space as demonstrated in
-* the example above. The 2nd and 3rd dimension can also be interpreted as time.
-* The actual noise is structured similar to an audio signal, in respect to the function's use
-* of frequencies. Similar to the concept of harmonics in physics, perlin noise is computed over
-* several octaves which are added together for the final result.
-* Another way to adjust the character of the resulting sequence is the scale of the input
-* coordinates. As the function works within an infinite space the value of the coordinates
-* doesn't matter as such, only the distance between successive coordinates does (eg. when using
-* noise() within a loop). As a general rule the smaller the difference between coordinates, the
-* smoother the resulting noise sequence will be. Steps of 0.005-0.03 work best for most applications,
-* but this will differ depending on use.
-*
-* @param {float} x          x coordinate in noise space
-* @param {float} y          y coordinate in noise space
-* @param {float} z          z coordinate in noise space
-*
-* @returns {float}
-*
-* @see random
-* @see noiseDetail
-*/</span>
-<span class="keyword">var</span> noise = <span class="keyword">function</span>(x, y, z) {
-	<span class="keyword">if</span>(noiseProfile.generator === <span class="literal">undefined</span>) {
-</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>caching</p>             </td>             <td class="code">               <div class="highlight"><pre>		noiseProfile.generator = <span class="keyword">new</span> PerlinNoise(noiseProfile.seed);
-	}
-	<span class="keyword">var</span> generator = noiseProfile.generator;
-	<span class="keyword">var</span> effect = <span class="number">1</span>, k = <span class="number">1</span>, sum = <span class="number">0</span>;
-	<span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>; i&lt;noiseProfile.octaves; ++i) {
-		effect *= noiseProfile.fallout;
-		<span class="keyword">switch</span> (arguments.length) {
-		<span class="keyword">case</span> <span class="number">1</span>:
-			sum += effect * (<span class="number">1</span> + generator.noise1d(k*x))/<span class="number">2</span>; <span class="keyword">break</span>;
-		<span class="keyword">case</span> <span class="number">2</span>:
-			sum += effect * (<span class="number">1</span> + generator.noise2d(k*x, k*y))/<span class="number">2</span>; <span class="keyword">break</span>;
-		<span class="keyword">case</span> <span class="number">3</span>:
-			sum += effect * (<span class="number">1</span> + generator.noise3d(k*x, k*y, k*z))/<span class="number">2</span>; <span class="keyword">break</span>;
-		}
-		k *= <span class="number">2</span>;
-	}
-	<span class="keyword">return</span> sum;
-};
-
-<span class="comment">/**
-* Adjusts the character and level of detail produced by the Perlin noise function.
-* Similar to harmonics in physics, noise is computed over several octaves. Lower octaves
-* contribute more to the output signal and as such define the overal intensity of the noise,
-* whereas higher octaves create finer grained details in the noise sequence. By default,
-* noise is computed over 4 octaves with each octave contributing exactly half than its
-* predecessor, starting at 50% strength for the 1st octave. This falloff amount can be
-* changed by adding an additional function parameter. Eg. a falloff factor of 0.75 means
-* each octave will now have 75% impact (25% less) of the previous lower octave. Any value
-* between 0.0 and 1.0 is valid, however note that values greater than 0.5 might result in
-* greater than 1.0 values returned by noise(). By changing these parameters, the signal
-* created by the noise() function can be adapted to fit very specific needs and characteristics.
-*
-* @param {int} octaves          number of octaves to be used by the noise() function
-* @param {float} falloff        falloff factor for each octave
-*
-* @see noise
-*/</span>
-<span class="keyword">var</span> noiseDetail = <span class="keyword">function</span>(octaves, fallout) {
-	noiseProfile.octaves = octaves;
-	<span class="keyword">if</span>(fallout !== <span class="literal">undefined</span>) {
-		noiseProfile.fallout = fallout;
-	}
-};
-
-<span class="comment">/**
-* Sets the seed value for noise(). By default, noise() produces different results each
-* time the program is run. Set the value parameter to a constant to return the same
-* pseudo-random numbers each time the software is run.
-*
-* @param {int} seed         int
-*
-* @returns {float}
-*
-* @see random
-* @see radomSeed
-* @see noise
-* @see noiseDetail
-*/</span>
-<span class="keyword">var</span> noiseSeed = <span class="keyword">function</span>(seed) {
-	noiseProfile.seed = seed;
-	noiseProfile.generator = <span class="literal">undefined</span>;
-};
+  <span class="property">@noise1d</span> = (x) -&gt;
+    X = Math.floor(x) &amp; <span class="number">255</span>
+    x -= Math.floor(x)
+    fx = (<span class="number">3</span> - <span class="number">2</span> * x) * x * x
+    lerp fx, grad1d(perm[X], x), grad1d(perm[X + <span class="number">1</span>], x - <span class="number">1</span>)
 
 
+</pre></div>             </td>           </tr>                               <tr id="section-66">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-66">&#182;</a>               </div>               <p>processing defaults</p>             </td>             <td class="code">               <div class="highlight"><pre>noiseProfile =
+  generator: `<span class="javascript"><span class="literal">undefined</span></span>`
+  octaves: <span class="number">4</span>
+  fallout: <span class="number">0.5</span>
+  seed: `<span class="javascript"><span class="literal">undefined</span></span>`
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-67">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-67">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Returns the Perlin noise value at specified coordinates. Perlin noise is a random sequence
+generator producing a more natural ordered, harmonic succession of numbers compared to the
+standard random() function. It was invented by Ken Perlin in the 1980s and been used since
+in graphical applications to produce procedural textures, natural motion, shapes, terrains etc.
+The main difference to the random() function is that Perlin noise is defined in an infinite
+n-dimensional space where each pair of coordinates corresponds to a fixed semi-random value
+(fixed only for the lifespan of the program). The resulting value will always be between 0.0
+and 1.0. Processing can compute 1D, 2D and 3D noise, depending on the number of coordinates
+given. The noise value can be animated by moving through the noise space as demonstrated in
+the example above. The 2nd and 3rd dimension can also be interpreted as time.
+The actual noise is structured similar to an audio signal, in respect to the function's use
+of frequencies. Similar to the concept of harmonics in physics, perlin noise is computed over
+several octaves which are added together for the final result.
+Another way to adjust the character of the resulting sequence is the scale of the input
+coordinates. As the function works within an infinite space the value of the coordinates
+doesn't matter as such, only the distance between successive coordinates does (eg. when using
+noise() within a loop). As a general rule the smaller the difference between coordinates, the
+smoother the resulting noise sequence will be. Steps of 0.005-0.03 work best for most applications,
+but this will differ depending on use.
+
+@param {float} x          x coordinate in noise space
+@param {float} y          y coordinate in noise space
+@param {float} z          z coordinate in noise space
+
+@returns {float}
+
+@see random
+@see noiseDetail
+</pre></div>             </td>           </tr>                               <tr id="section-68">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-68">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">noise</span></span> = (x, y, z) -&gt;
+  
+</pre></div>             </td>           </tr>                               <tr id="section-69">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-69">&#182;</a>               </div>               <p>caching</p>             </td>             <td class="code">               <div class="highlight"><pre>  noiseProfile.generator = <span class="keyword">new</span> PerlinNoise(noiseProfile.seed)  <span class="keyword">if</span> noiseProfile.generator <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`
+  generator = noiseProfile.generator
+  effect = <span class="number">1</span>
+  k = <span class="number">1</span>
+  sum = <span class="number">0</span>
+  i = <span class="number">0</span>
+
+  <span class="keyword">while</span> i &lt; noiseProfile.octaves
+    effect *= noiseProfile.fallout
+    <span class="keyword">switch</span> arguments.length
+      <span class="keyword">when</span> <span class="number">1</span>
+        sum += effect * (<span class="number">1</span> + generator.noise1d(k * x)) / <span class="number">2</span>
+      <span class="keyword">when</span> <span class="number">2</span>
+        sum += effect * (<span class="number">1</span> + generator.noise2d(k * x, k * y)) / <span class="number">2</span>
+      <span class="keyword">when</span> <span class="number">3</span>
+        sum += effect * (<span class="number">1</span> + generator.noise3d(k * x, k * y, k * z)) / <span class="number">2</span>
+    k *= <span class="number">2</span>
+    ++i
+  sum
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-70">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-70">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Adjusts the character <span class="keyword">and</span> level <span class="keyword">of</span> detail produced <span class="keyword">by</span> the Perlin noise <span class="reserved">function</span>.
+Similar to harmonics <span class="keyword">in</span> physics, noise <span class="keyword">is</span> computed over several octaves. Lower octaves
+contribute more to the output signal <span class="keyword">and</span> as such define the overal intensity <span class="keyword">of</span> the noise,
+whereas higher octaves create finer grained details <span class="keyword">in</span> the noise sequence. By <span class="reserved">default</span>,
+noise <span class="keyword">is</span> computed over <span class="number">4</span> octaves <span class="reserved">with</span> each octave contributing exactly half than its
+predecessor, starting at <span class="number">50</span>% strength <span class="keyword">for</span> the <span class="number">1</span>st octave. This falloff amount can be
+changed <span class="keyword">by</span> adding an additional <span class="reserved">function</span> parameter. Eg. a falloff factor <span class="keyword">of</span> <span class="number">0.75</span> means
+each octave will now have <span class="number">75</span>% impact (<span class="number">25</span>% less) <span class="keyword">of</span> the previous lower octave. Any value
+between <span class="number">0.0</span> <span class="keyword">and</span> <span class="number">1.0</span> <span class="keyword">is</span> valid, however note that values greater than <span class="number">0.5</span> might result <span class="keyword">in</span>
+greater than <span class="number">1.0</span> values returned <span class="keyword">by</span> noise(). By changing these parameters, the signal
+created <span class="keyword">by</span> the noise() <span class="reserved">function</span> can be adapted to fit very specific needs <span class="keyword">and</span> characteristics.
+
+<span class="property">@param</span> {int} octaves          number <span class="keyword">of</span> octaves to be used <span class="keyword">by</span> the noise() <span class="reserved">function</span>
+<span class="property">@param</span> {float} falloff        falloff factor <span class="keyword">for</span> each octave
+
+<span class="property">@see</span> noise
+</pre></div>             </td>           </tr>                               <tr id="section-71">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-71">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">noiseDetail</span></span> = (octaves, fallout) -&gt;
+  noiseProfile.octaves = octaves
+  noiseProfile.fallout = fallout  <span class="keyword">if</span> fallout <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>`
+
+
+</pre></div>             </td>           </tr>                               <tr id="section-72">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-72">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Sets the seed value <span class="keyword">for</span> noise(). By <span class="reserved">default</span>, noise() produces different results each
+time the program <span class="keyword">is</span> run. Set the value parameter to a constant to <span class="keyword">return</span> the same
+pseudo-random numbers each time the software <span class="keyword">is</span> run.
+
+<span class="property">@param</span> {int} seed         int
+
+<span class="property">@returns</span> {float}
+
+<span class="property">@see</span> random
+<span class="property">@see</span> radomSeed
+<span class="property">@see</span> noise
+<span class="property">@see</span> noiseDetail
+</pre></div>             </td>           </tr>                               <tr id="section-73">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-73">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">noiseSeed</span></span> = (seed) -&gt;
+  noiseProfile.seed = seed
+  noiseProfile.generator = `<span class="javascript"><span class="literal">undefined</span></span>`
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
