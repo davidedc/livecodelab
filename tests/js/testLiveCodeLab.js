@@ -6,7 +6,23 @@ describe('ImageTest', function() {
   });
 
   // Test
-  it('should convert be the same image', function () {
+  it('A simple ball should look right', function () {
+
+		var a = new Image();
+		var b = new Image();
+		var Bowser = createBowser();
+
+		if (Bowser.firefox) {
+			b.src = 'images/ballCanvasFirefox.png';
+		}
+		else if (Bowser.safari) {
+			b.src = 'images/ballCanvasSafari.png';
+		}
+		else if (Bowser.chrome) {
+			b.src = 'images/ballCanvasChrome.png';
+		}
+		//b.src = 'images/ballCanvasTransparentBackground.png';
+
 
 		// The div containing this canvas is supposed to be 100% width and height,
 		// so this canvas in theory should be of the right size already. But it isn't,
@@ -27,53 +43,34 @@ describe('ImageTest', function() {
     		statsWidget: null,
     		testMode: true
     	});
-    //liveCodeLabCoreInstance.updateCode("scale 0.99\nball");
-    liveCodeLabCoreInstance.updateCode("ball");
-    liveCodeLabCoreInstance.startAnimationLoop();
 
+    waits(200);
 
-    var a = new Image();
-    var b = new Image();
-    var Bowser = createBowser();
+		runs(function () {
+			//liveCodeLabCoreInstance.updateCode("scale 0.99\nball");
+			liveCodeLabCoreInstance.updateCode("ball");
+			liveCodeLabCoreInstance.startAnimationLoop();
+		});    
+		//alert('1');
 
-    if (Bowser.firefox) {
-      b.src = 'images/ballCanvasFirefox.png';
-    }
-    else if (Bowser.safari) {
-      b.src = 'images/ballCanvasSafari.png';
-    }
-    else if (Bowser.chrome) {
-      b.src = 'images/ballCanvasChrome.png';
-    }
-    //b.src = 'images/ballCanvasTransparentBackground.png';
-
-
-    waits(1000);
+    // there is an initial animation,
+    // in this test we wait here for it to finish.
+    waits(1500);
 
     runs(function () {
+		  //alert('2');
       a = liveCodeLabCoreInstance.getForeground3DSceneImage("#FFFFFF");
-      // tolerance of 1 is very tight - it means that any pixel component
-      // value can at most be +-1 off the original.
-      // Unfortunately to make it pass on all OSX browsers one would need
-      // a tolerance of around 25, which is quite high.
+      //alert('got the image from livecodelab: ' + a);
+
+    });
+
+    waits(200);
+
+    runs(function () {
+		  //alert('2b');
       expect(a).toImageDiffEqual(b,0);
     });
+
   });
 
-  it('should convert be the same image', function () {
-
-    var
-      a = new Image(),
-      b = new Image();
-    a.src = 'images/1_normal_a.jpg';
-    b.src = 'images/1_normal_b.jpg';
-
-    waitsFor(function () {
-      return a.complete & b.complete;
-    }, 'image not loaded.', 2000);
-
-    runs(function () {
-      expect(a).toImageDiffEqual(b);
-    });
-  });
 });
