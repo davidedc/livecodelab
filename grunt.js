@@ -35,6 +35,12 @@ module.exports = function (grunt) {
                 browser: true
             }
         },
+				coffee: {
+							app: {
+								src: ['coffee/*.coffee'],
+								dest: 'js/'
+							}
+				},
         concat: {
             dist: {
                 src: [
@@ -122,7 +128,7 @@ module.exports = function (grunt) {
     grunt.registerTask('docs', 'doccoh');
 
     // Compilation task
-    grunt.registerTask('compile', 'clean:build concat closure-compiler recess:compile targethtml:compile');
+    grunt.registerTask('compile', 'clean:build coffee concat closure-compiler recess:compile targethtml:compile');
 
     // Load NPM Task modules
     grunt.loadNpmTasks('grunt-closure-compiler');
@@ -130,5 +136,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-doccoh');
     grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-targethtml');
+    grunt.loadNpmTasks('grunt-coffee');
 
 };
