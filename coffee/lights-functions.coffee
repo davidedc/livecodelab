@@ -44,8 +44,8 @@ createLightSystem = (liveCodeLabCore_GraphicsCommands, liveCodeLabCoreInstance) 
     liveCodeLabCore_GraphicsCommands.defaultNormalStroke = false
     ambientLightsPool = objectPools[primitiveTypes.ambientLight]
     pooledAmbientLight = ambientLightsPool[objectsUsedInFrameCounts[primitiveTypes.ambientLight]]
-    if pooledAmbientLight is `undefined`
-      
+
+    if pooledAmbientLight is `undefined`      
       # So here is the thing, the command is currently called AmbientLight but
       # in reality we are creating a PointLight in a specific position.
       # AmbientLight just fills the whole scene,
@@ -60,6 +60,7 @@ createLightSystem = (liveCodeLabCore_GraphicsCommands, liveCodeLabCoreInstance) 
       pooledAmbientLight.primitiveType = primitiveTypes.ambientLight
     else
       pooledAmbientLight.color.setHex colorToBeUsed
+
     objectsUsedInFrameCounts[primitiveTypes.ambientLight] += 1
     
     # NOTE that an ambient light is not actually added as an object.
