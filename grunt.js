@@ -87,11 +87,19 @@ module.exports = function (grunt) {
             }
         },
         doccoh: {
-            src: ['js/*.js',
-                  'js/editor/*.js'],
-            options: {
-            			output: 'docs/docco/'
-            }
+            Js: {
+							src: ['js/*.js',
+										'js/editor/*.js'],
+							options: {
+										output: 'docs/docco/'
+							}
+            },
+            Coffee: {
+							src: ['coffee/*.coffee'],
+							options: {
+										output: 'docs/docco/'
+							}
+            },
         },
         clean: {
             docs: ['docs/docco/'],
@@ -124,8 +132,13 @@ module.exports = function (grunt) {
     // Default task.
     grunt.registerTask('default', 'lint');
 
-    // Doc generation task
-    grunt.registerTask('docs', 'doccoh');
+    // Doc generation task. We create the docs in two steps:
+    // first from the js files and then fro, the coffee files.
+    // This is because the js files compiled from the coffee files
+    // don't preserve the comments of the coffee files. So we
+    // re-write the docs generated from the (translated) js files
+    // with the docs generated from the coffee files.
+    grunt.registerTask('docs', 'doccoh:Js doccoh:Coffee');
 
     // Compilation task
     grunt.registerTask('compile', 'clean:build coffee concat closure-compiler recess:compile targethtml:compile');
