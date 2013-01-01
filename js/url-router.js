@@ -24,7 +24,7 @@ var createUrlRouter = function (events) {
         var hash, found = false;
         hash = UrlRouter.getHash();
         if (hash) {
-            events.trigger('url-hash', hash);
+            events.trigger('url-hash-changed', hash);
             found = true;
         }
         return found;

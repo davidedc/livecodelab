@@ -655,7 +655,7 @@ var createProgramLoader = function (eventRouter, texteditor, liveCodeLabCoreInst
 		}		
 		setInterval(pollHash, 100);
 
-    eventRouter.bind('url-hash', function (hash) {
+    eventRouter.bind('url-hash-changed', function (hash) {
        loadAppropriateDemoOrTutorialBasedOnHash(hash);
     }, ProgramLoader);
     
