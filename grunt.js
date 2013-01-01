@@ -37,7 +37,7 @@ module.exports = function (grunt) {
         },
 				coffee: {
 							app: {
-								src: ['coffee/*.coffee'],
+								src: ['coffee/**/*.coffee'],
 								dest: 'js/translatedFromCoffescript/'
 							}
 				},
