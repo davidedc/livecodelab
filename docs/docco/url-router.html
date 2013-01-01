@@ -24,7 +24,7 @@
         <span class="keyword">var</span> hash, found = <span class="literal">false</span>;
         hash = UrlRouter.getHash();
         <span class="keyword">if</span> (hash) {
-            events.trigger(<span class="string">'url-hash'</span>, hash);
+            events.trigger(<span class="string">'url-hash-changed'</span>, hash);
             found = <span class="literal">true</span>;
         }
         <span class="keyword">return</span> found;

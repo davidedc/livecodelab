@@ -634,12 +634,32 @@ a) make sure that animationStyle</p>             </td>             <td class="co
 
 </pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>    eventRouter.bind(<span class="string">'load-program'</span>, ProgramLoader.loadDemoOrTutorial, ProgramLoader);
 
-    eventRouter.bind(<span class="string">'url-hash'</span>, <span class="function"><span class="keyword">function</span> <span class="params">(hash)</span> {</span>
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>this paragraph from http://stackoverflow.com/a/629817
+there are more elegant ways to track back/forward history
+but they are more complex than this. I don't mind having a bit of
+polling for this, not too big of a problem.</p>             </td>             <td class="code">               <div class="highlight"><pre>		<span class="keyword">var</span> lastHash = <span class="string">''</span>;
+		<span class="function"><span class="keyword">function</span> <span class="title">pollHash</span><span class="params">()</span> {</span>
+				<span class="keyword">if</span>(lastHash !== location.hash) {
+						lastHash = location.hash;
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>hash has changed, so do stuff:</p>             </td>             <td class="code">               <div class="highlight"><pre>						loadAppropriateDemoOrTutorialBasedOnHash(lastHash);
+				}
+		}		
+		setInterval(pollHash, <span class="number">100</span>);
+
+    eventRouter.bind(<span class="string">'url-hash-changed'</span>, <span class="function"><span class="keyword">function</span> <span class="params">(hash)</span> {</span>
+       loadAppropriateDemoOrTutorialBasedOnHash(hash);
+    }, ProgramLoader);
+    
+    <span class="keyword">var</span> loadAppropriateDemoOrTutorialBasedOnHash =  <span class="keyword">function</span>(hash) {
         <span class="keyword">var</span> matched = hash.match(<span class="regexp">/bookmark=(.*)/</span>);
-        <span class="keyword">if</span> (matched) {
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>alert('matched: ' + matched)</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (matched) {
             ProgramLoader.loadDemoOrTutorial(matched[<span class="number">1</span>]);
         }
-    }, ProgramLoader);
+        <span class="keyword">else</span> {
+</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>user in on the root page without any hashes</p>             </td>             <td class="code">               <div class="highlight"><pre>						texteditor.setValue(<span class="string">''</span>);
+        }
+    }
+
 
 
     <span class="keyword">return</span> ProgramLoader;

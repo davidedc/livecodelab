@@ -189,7 +189,21 @@ for the next frame. Abstracting a bit though, it's clearer this way.</p>        
         }
     }
     
-    liveCodeLabCoreInstance.getForeground3DSceneImage = <span class="keyword">function</span>(backgroundColor) {
+</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>why do we leave the option to put a background?
+For two reasons:
+ a) leaving the transparent background makes it very
+    difficult to save a reference "expected" image. The way to do that would
+    be to save the image that appears in the failing test case. And when one
+    does it, the correct image with the transparent background gets saved. But
+    still, the expected image is slightly different from the generated image.
+    This is really weird as the two should be absolutely identical, and yet
+    (maybe because of compression artifacts reasons?) they are different enough
+    that it makes the testing unusable.
+ b) In theory one could get Three.js to directly render on an opaque background
+    but if we do it this way (as in after all the rendering has happened)
+    we keep the motionblur and the paintover styles. If we let Three.js paint
+    the backgrounds, then the postprocessing effects for motionblur and for
+    paintOver wouldn't work anymore.</p>             </td>             <td class="code">               <div class="highlight"><pre>    liveCodeLabCoreInstance.getForeground3DSceneImage = <span class="keyword">function</span>(backgroundColor) {
       <span class="keyword">var</span> img = <span class="keyword">new</span> Image();
       img.src = liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas.toDataURL();
       
@@ -207,7 +221,7 @@ for the next frame. Abstracting a bit though, it's clearer this way.</p>        
       }
       <span class="keyword">return</span> img;
       
-</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>$('theMenu').append(img);
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>$('theMenu').append(img);
 var container = document.getElementById ("theMenu");
      container.appendChild (img);</p>             </td>             <td class="code">               <div class="highlight"><pre>    }
 
