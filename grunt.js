@@ -103,7 +103,7 @@ module.exports = function (grunt) {
         },
         clean: {
             docs: ['docs/docco/'],
-            build: ['dist/', 'indexMinified.html', 'js_compiled/Livecodelab-minified.js']
+            build: ['dist/', 'indexMinified.html', 'js_compiled/Livecodelab-minified.js' , 'js/translatedFromCoffescript/']
         },
         targethtml: {
             compile: {
