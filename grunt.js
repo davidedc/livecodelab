@@ -76,7 +76,7 @@ module.exports = function (grunt) {
                     'js/translatedFromCoffescript/draw-function-runner.js',
                     'js/code-transformations.js',
                     'js/demos-and-tutorials.js',
-                    'js/autocoder/autocode.js',
+                    'js/translatedFromCoffescript/autocode.js',
                     'js/translatedFromCoffescript/text-dimming.js',
                     'js/translatedFromCoffescript/time-keeper.js',
                     'js/translatedFromCoffescript/blend-style.js',

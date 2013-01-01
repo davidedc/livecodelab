@@ -56,6 +56,7 @@ function McState() {
 
  state.lex = function (input) {
    var nextCont = state.run(input) ;
+   //console.log("mclexer: " + nextCont);
    while (typeof nextCont == "function") {
      nextCont = nextCont() ;
    }
@@ -92,13 +93,17 @@ function McRunMethod(input) {
   var longestMatchedRule = null ;
   var longestMatch = null ;
   var longestMatchedLength = -1 ;
+  //console.log("trying to match: " + input)
 
   for (var i = this.rules.length-1; i >= 0; --i) {
     var r = this.rules[i] ;
+    //console.log("scanning rules: " + r)
 
     var m = r.matches (input) ;
+    //console.log("matches? " + m)
     
     if (m && (m[0].length >= longestMatchedLength)) {
+      //console.log("this is the longest matching rule")
       longestMatchedRule = r ;
       longestMatch = m ;
       longestMatchedLength = m[0].length ;
