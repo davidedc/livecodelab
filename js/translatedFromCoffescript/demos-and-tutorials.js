@@ -58,7 +58,7 @@ createProgramLoader = function(eventRouter, texteditor, liveCodeLabCoreInstance)
   ProgramLoader.program.conditionalsTutorial = "// you can draw different things\n// (or in general do different things)\n// based on any\n// test condition you want:\n\nrotate\nif frame%3 == 0\n▶box\nelse if frame%3 == 1\n▶ball\nelse\n▶peg\n\n// next-tutorial:autocode".replace(/\u25B6/g, "\t");
   ProgramLoader.program.autocodeTutorial = "// the Autocode button invents random\n// variations for you.\n\n// You can interrupt the Autocoder at\n// any time by pressing the button again,\n// or you can press CTRL-Z\n// (or CMD-Z on Macs) to undo (or re-do) some of\n// the steps even WHILE the autocoder is running,\n// if you see that things got\n// boring down a particular path of changes.".replace(/\u25B6/g, "\t");
   ProgramLoader.loadDemoOrTutorial = function(demoName) {
-    var prependMessage;
+    var BlendControls, prependMessage;
     if ((!Detector.webgl || liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) && !userWarnedAboutWebglExamples && demoName.indexOf("webgl") === 0) {
       userWarnedAboutWebglExamples = true;
       $("#exampleNeedsWebgl").modal();
@@ -76,8 +76,9 @@ createProgramLoader = function(eventRouter, texteditor, liveCodeLabCoreInstance)
       texteditor.setValue(prependMessage + ProgramLoader.program[demoName]);
     }
     texteditor.setCursor(0, 0);
-    liveCodeLabCoreInstance.BlendControls.animationStyle(liveCodeLabCoreInstance.BlendControls.animationStyles.normal);
-    liveCodeLabCoreInstance.BlendControls.animationStyleUpdateIfChanged();
+    BlendControls = liveCodeLabCoreInstance.BlendControls;
+    BlendControls.animationStyle(BlendControls.animationStyles.normal);
+    BlendControls.animationStyleUpdateIfChanged();
     liveCodeLabCoreInstance.Renderer.render(liveCodeLabCoreInstance.GraphicsCommands);
     return null;
   };

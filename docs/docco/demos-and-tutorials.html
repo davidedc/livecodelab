@@ -684,7 +684,8 @@ polling for this, not too big of a problem.</p>             </td>             <t
 		// boring down a particular path of changes.
 		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
   ProgramLoader.<span class="function"><span class="title">loadDemoOrTutorial</span></span> = (demoName) -&gt;
-    <span class="keyword">if</span> (<span class="keyword">not</span> Detector.webgl <span class="keyword">or</span> liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) <span class="keyword">and</span> <span class="keyword">not</span> userWarnedAboutWebglExamples <span class="keyword">and</span> demoName.indexOf(<span class="string">"webgl"</span>) <span class="keyword">is</span> <span class="number">0</span>
+    <span class="keyword">if</span> (<span class="keyword">not</span> Detector.webgl <span class="keyword">or</span> liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) \
+        <span class="keyword">and</span> <span class="keyword">not</span> userWarnedAboutWebglExamples <span class="keyword">and</span> demoName.indexOf(<span class="string">"webgl"</span>) <span class="keyword">is</span> <span class="number">0</span>
       userWarnedAboutWebglExamples = <span class="literal">true</span>
       $(<span class="string">"#exampleNeedsWebgl"</span>).modal()
       $(<span class="string">"#simplemodal-container"</span>).height <span class="number">200</span>
@@ -694,7 +695,8 @@ polling for this, not too big of a problem.</p>             </td>             <t
     eventRouter.trigger <span class="string">"editor-undim"</span>
     liveCodeLabCoreInstance.GraphicsCommands.doTheSpinThingy = <span class="literal">false</span>
     prependMessage = <span class="string">""</span>
-    <span class="keyword">if</span> (<span class="keyword">not</span> Detector.webgl <span class="keyword">or</span> liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) <span class="keyword">and</span> demoName.indexOf(<span class="string">"webgl"</span>) <span class="keyword">is</span> <span class="number">0</span>
+    <span class="keyword">if</span> (<span class="keyword">not</span> Detector.webgl <span class="keyword">or</span> liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) \
+        <span class="keyword">and</span> demoName.indexOf(<span class="string">"webgl"</span>) <span class="keyword">is</span> <span class="number">0</span>
       prependMessage =
       <span class="string">"""
       // This drawing makes much more sense
@@ -702,10 +704,12 @@ polling for this, not too big of a problem.</p>             </td>             <t
       
       
       """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
-    texteditor.setValue prependMessage + ProgramLoader.program[demoName]  <span class="keyword">if</span> ProgramLoader.program[demoName]
+    <span class="keyword">if</span> ProgramLoader.program[demoName]
+      texteditor.setValue prependMessage + ProgramLoader.program[demoName]
     texteditor.setCursor <span class="number">0</span>, <span class="number">0</span>
-    liveCodeLabCoreInstance.BlendControls.animationStyle liveCodeLabCoreInstance.BlendControls.animationStyles.normal
-    liveCodeLabCoreInstance.BlendControls.animationStyleUpdateIfChanged()
+    BlendControls = liveCodeLabCoreInstance.BlendControls
+    BlendControls.animationStyle BlendControls.animationStyles.normal
+    BlendControls.animationStyleUpdateIfChanged()
     liveCodeLabCoreInstance.Renderer.render liveCodeLabCoreInstance.GraphicsCommands
     <span class="literal">null</span>
 
