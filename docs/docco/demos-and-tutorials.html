@@ -1,669 +1,728 @@
-<!DOCTYPE html>  <html> <head>   <title>demos-and-tutorials.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="code-transformations.html">                 code-transformations.js               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="editor.html">                 editor.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="init.html">                 init.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               demos-and-tutorials.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="comment">/*jslint browser: true, nomen: true, regexp: true */</span>
-<span class="comment">/*global $, Detector */</span>
-
-<span class="keyword">var</span> createProgramLoader = <span class="function"><span class="keyword">function</span> <span class="params">(eventRouter, texteditor, liveCodeLabCoreInstance)</span> {</span>
-
-    <span class="string">'use strict'</span>;
-
-    <span class="keyword">var</span> ProgramLoader = {},
-        userWarnedAboutWebglExamples = <span class="literal">false</span>;
-
-    ProgramLoader.program = {};
-
-
-    ProgramLoader.program.roseDemo = [
-        <span class="string">"// 'A rose' by Guy John (@rumblesan)"</span>,
-        <span class="string">"// Mozilla Festival 2012"</span>,
-        <span class="string">"// adapted from 'A rose' by Lib4tech"</span>,
-        <span class="string">""</span>,
-        <span class="string">"doOnce -&gt; frame = 0"</span>,
-        <span class="string">"background red"</span>,
-        <span class="string">"scale 1.5"</span>,
-        <span class="string">"animationStyle paintOver"</span>,
-        <span class="string">"rotate frame/100"</span>,
-        <span class="string">"fill 255-((frame/2)%255),0,0"</span>,
-        <span class="string">"stroke 255-((frame/2)%255),0,0"</span>,
-        <span class="string">"scale 1-((frame/2)%255) / 255"</span>,
-        <span class="string">"box"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.cheeseAndOlivesDemo = [
-        <span class="string">"// 'Cheese and olives' by"</span>,
-        <span class="string">"// Davina Tirvengadum"</span>,
-        <span class="string">"// Mozilla festival 2012"</span>,
-        <span class="string">""</span>,
-        <span class="string">"background white"</span>,
-        <span class="string">"scale .3"</span>,
-        <span class="string">"move 0,-1"</span>,
-        <span class="string">"fill yellow"</span>,
-        <span class="string">"stroke black"</span>,
-        <span class="string">"rotate"</span>,
-        <span class="string">"strokeSize 3"</span>,
-        <span class="string">"line 4"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"rotate 2,3"</span>,
-        <span class="string">"move 0,3"</span>,
-        <span class="string">"scale .3"</span>,
-        <span class="string">"fill black"</span>,
-        <span class="string">"stroke black"</span>,
-        <span class="string">"ball"</span>,
-        <span class="string">""</span>,
-        <span class="string">"rotate 3"</span>,
-        <span class="string">"move 5"</span>,
-        <span class="string">"scale 1"</span>,
-        <span class="string">"fill green"</span>,
-        <span class="string">"stroke green"</span>,
-        <span class="string">"ball"</span>,
-        <span class="string">""</span>,
-        <span class="string">"rotate 1"</span>,
-        <span class="string">"move -3"</span>,
-        <span class="string">"scale 1"</span>,
-        <span class="string">"fill yellow"</span>,
-        <span class="string">"stroke yellow"</span>,
-        <span class="string">"ball"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.simpleCubeDemo = [
-        <span class="string">"// there you go!"</span>,
-        <span class="string">"// a simple cube!"</span>,
-        <span class="string">""</span>,
-        <span class="string">"background yellow"</span>,
-        <span class="string">"rotate 0,time/2000,time/2000"</span>,
-        <span class="string">"box"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.webgltwocubesDemo = [
-        <span class="string">"background 155,255,255"</span>,
-        <span class="string">"2 times -&gt;"</span>,
-        <span class="string">"▶rotate 0, 1, time/2000"</span>,
-        <span class="string">"▶box"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.cubesAndSpikes = [
-        <span class="string">"simpleGradient fuchsia,color(100,200,200),yellow"</span>,
-        <span class="string">"scale 2.1"</span>,
-        <span class="string">"5 times -&gt;"</span>,
-        <span class="string">"▶rotate 0,1,time/5000"</span>,
-        <span class="string">"▶box 0.1,0.1,0.1"</span>,
-        <span class="string">"▶move 0,0.1,0.1"</span>,
-        <span class="string">"▶3 times -&gt;"</span>,
-        <span class="string">"▶▶rotate 0,1,1"</span>,
-        <span class="string">"▶▶box 0.01,0.01,1"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.webglturbineDemo = [
-        <span class="string">"background 155,55,255"</span>,
-        <span class="string">"70 times -&gt;"</span>,
-        <span class="string">"▶rotate time/100000,1,time/100000"</span>,
-        <span class="string">"▶box"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.webglzfightartDemo = [
-        <span class="string">"// Explore the artifacts"</span>,
-        <span class="string">"// of your GPU!"</span>,
-        <span class="string">"// Go Z-fighting, go!"</span>,
-        <span class="string">"scale 5"</span>,
-        <span class="string">"rotate"</span>,
-        <span class="string">"fill red"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">"rotate 0.000001"</span>,
-        <span class="string">"fill yellow"</span>,
-        <span class="string">"box"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.littleSpiralOfCubes = [
-        <span class="string">"background orange"</span>,
-        <span class="string">"scale 0.1"</span>,
-        <span class="string">"10 times -&gt;"</span>,
-        <span class="string">"▶rotate 0,1,time/1000"</span>,
-        <span class="string">"▶move 1,1,1"</span>,
-        <span class="string">"▶box"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.tentacleDemo = [
-        <span class="string">"background 155,255,155"</span>,
-        <span class="string">"scale 0.15"</span>,
-        <span class="string">"3 times -&gt;"</span>,
-        <span class="string">"▶rotate 0,1,1"</span>,
-        <span class="string">"▶10 times -&gt;"</span>,
-        <span class="string">"▶▶rotate 0,1,time/1000"</span>,
-        <span class="string">"▶▶scale 0.9"</span>,
-        <span class="string">"▶▶move 1,1,1"</span>,
-        <span class="string">"▶▶box"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.lampDemo = [
-        <span class="string">"animationStyle motionBlur"</span>,
-        <span class="string">"simpleGradient red,yellow,color(255,0,255)"</span>,
-        <span class="string">"//animationStyle paintOver"</span>,
-        <span class="string">"scale 2"</span>,
-        <span class="string">"rotate time/4000, time/4000,  time/4000"</span>,
-        <span class="string">"90 times -&gt;"</span>,
-        <span class="string">"▶rotate time/200000, time/200000,  time/200000"</span>,
-        <span class="string">"▶line"</span>,
-        <span class="string">"▶move 0.5,0,0"</span>,
-        <span class="string">"▶line"</span>,
-        <span class="string">"▶move -0.5,0,0"</span>,
-        <span class="string">"▶line"</span>,
-        <span class="string">"▶line"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.trillionfeathersDemo = [
-        <span class="string">"animationStyle paintOver"</span>,
-        <span class="string">"move 2,0,0"</span>,
-        <span class="string">"scale 2"</span>,
-        <span class="string">"rotate"</span>,
-        <span class="string">"20 times -&gt;"</span>,
-        <span class="string">"▶rotate"</span>,
-        <span class="string">"▶move 0.25,0,0"</span>,
-        <span class="string">"▶line"</span>,
-        <span class="string">"▶move -0.5,0,0"</span>,
-        <span class="string">"▶line"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.monsterblobDemo = [
-        <span class="string">"ballDetail 6"</span>,
-        <span class="string">"animationStyle motionBlur"</span>,
-        <span class="string">"rotate time/5000"</span>,
-        <span class="string">"simpleGradient fuchsia,aqua,yellow"</span>,
-        <span class="string">"5 times -&gt;"</span>,
-        <span class="string">"▶rotate 0,1,time/5000"</span>,
-        <span class="string">"▶move 0.2,0,0"</span>,
-        <span class="string">"▶3 times -&gt;"</span>,
-        <span class="string">"▶▶rotate 1"</span>,
-        <span class="string">"▶▶ball -1"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.industrialMusicDemo = [
-        <span class="string">"bpm 88"</span>,
-        <span class="string">"play 'alienBeep'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"play 'beepC'  ,'zxzz zzzz xzzx xxxz'"</span>,
-        <span class="string">"play 'beepA'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"play 'lowFlash'  ,'zzxz zzzz zzzz zzzz'"</span>,
-        <span class="string">"play 'beepB'  ,'xzzx zzzz zxzz zxzz'"</span>,
-        <span class="string">"play 'voltage'  ,'xzxz zxzz xzxx xzxx'"</span>,
-        <span class="string">"play 'tranceKick'  ,'zxzx zzzx xzzz zzxx'"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.trySoundsDemo = [
-        <span class="string">"bpm 88"</span>,
-        <span class="string">"// leave this one as base"</span>,
-        <span class="string">"play 'tranceKick'  ,'zxzx zzzx xzzz zzxx'"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// uncomment the sounds you want to try"</span>,
-        <span class="string">"//play 'toc'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'highHatClosed'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'highHatOpen'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'toc2'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'toc3'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'toc4'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'snare'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'snare2'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'china'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'crash'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'crash2'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'crash3'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'ride'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'glass'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'glass1'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'glass2'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'glass3'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'thump'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'lowFlash'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'lowFlash2'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'tranceKick2'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'tranceKick'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'wosh'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'voltage'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'beepA'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'beepB'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'beepC'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'beepD'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'beep'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'hello'  ,'zzxz zzzz zzxz zzzz'"</span>,
-        <span class="string">"//play 'alienBeep'  ,'zzxz zzzz zzxz zzzz'"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.springysquaresDemo = [
-        <span class="string">"animationStyle motionBlur"</span>,
-        <span class="string">"simpleGradient fuchsia,color(100,200,200),yellow"</span>,
-        <span class="string">"scale 0.3"</span>,
-        <span class="string">"3 times -&gt;"</span>,
-        <span class="string">"▶move 0,0,0.5"</span>,
-        <span class="string">"▶5 times -&gt;"</span>,
-        <span class="string">"▶▶rotate time/2000"</span>,
-        <span class="string">"▶▶move 0.7,0,0"</span>,
-        <span class="string">"▶▶rect"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.diceDemo = [
-        <span class="string">"animationStyle motionBlur"</span>,
-        <span class="string">"simpleGradient color(255),moccasin,peachpuff"</span>,
-        <span class="string">"stroke 255,100,100,255"</span>,
-        <span class="string">"fill red,155"</span>,
-        <span class="string">"move -0.5,0,0"</span>,
-        <span class="string">"scale 0.3"</span>,
-        <span class="string">"3 times -&gt;"</span>,
-        <span class="string">"▶move 0,0,0.5"</span>,
-        <span class="string">"▶1 times -&gt;"</span>,
-        <span class="string">"▶▶rotate time/1000"</span>,
-        <span class="string">"▶▶move 2,0,0"</span>,
-        <span class="string">"▶▶box"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.webglalmostvoronoiDemo = [
-        <span class="string">"scale 10"</span>,
-        <span class="string">"2 times -&gt;"</span>,
-        <span class="string">"▶rotate 0,1,time/10000"</span>,
-        <span class="string">"▶ball -1"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.webglshardsDemo = [
-        <span class="string">"scale 10"</span>,
-        <span class="string">"fill 0"</span>,
-        <span class="string">"strokeSize 7"</span>,
-        <span class="string">"5 times -&gt;"</span>,
-        <span class="string">"▶rotate 0,1,time/20000"</span>,
-        <span class="string">"▶ball "</span>,
-        <span class="string">"▶rotate 0,1,1"</span>,
-        <span class="string">"▶ball -1.01"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.webglredthreadsDemo = [
-        <span class="string">"scale 10.5"</span>,
-        <span class="string">"background black"</span>,
-        <span class="string">"stroke red"</span>,
-        <span class="string">"noFill"</span>,
-        <span class="string">"strokeSize 7"</span>,
-        <span class="string">"5 times -&gt;"</span>,
-        <span class="string">"▶rotate time/20000"</span>,
-        <span class="string">"▶ball"</span>,
-        <span class="string">"▶rotate 0,1,1"</span>,
-        <span class="string">"▶ball"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.webglnuclearOctopusDemo = [
-        <span class="string">"simpleGradient black,color(0,0,(time/5)%255),black"</span>,
-        <span class="string">"scale 0.2"</span>,
-        <span class="string">"move 5,0,0"</span>,
-        <span class="string">"animationStyle motionBlur"</span>,
-        <span class="string">"//animationStyle paintOver"</span>,
-        <span class="string">"stroke 255,0,0,120"</span>,
-        <span class="string">"fill time%255,0,0"</span>,
-        <span class="string">"pushMatrix"</span>,
-        <span class="string">"count = 0"</span>,
-        <span class="string">"3 times -&gt;"</span>,
-        <span class="string">"▶count++"</span>,
-        <span class="string">"▶pushMatrix"</span>,
-        <span class="string">"▶rotate count+3+time/1000,2+count + time/1000,4+count"</span>,
-        <span class="string">"▶120 times -&gt;"</span>,
-        <span class="string">"▶▶scale 0.9"</span>,
-        <span class="string">"▶▶move 1,1,0"</span>,
-        <span class="string">"▶▶rotate time/100"</span>,
-        <span class="string">"▶▶box"</span>,
-        <span class="string">"▶popMatrix"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-
-    ProgramLoader.program.introTutorial = [
-        <span class="string">"// Lines beginning with two"</span>,
-        <span class="string">"// slashes (like these) are just comments."</span>,
-        <span class="string">""</span>,
-        <span class="string">"// Everything else is run"</span>,
-        <span class="string">"// about 30 to 60 times per second"</span>,
-        <span class="string">"// in order to create an animation."</span>,
-        <span class="string">""</span>,
-        <span class="string">"// Click the link below to start the tutorial."</span>,
-        <span class="string">""</span>,
-        <span class="string">"// next-tutorial:hello_world"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.helloworldTutorial = [
-        <span class="string">"// type these three letters"</span>,
-        <span class="string">"// in one of these empty lines below:"</span>,
-        <span class="string">"// 'b' and 'o' and 'x'"</span>,
-        <span class="string">""</span>,
-        <span class="string">""</span>,
-        <span class="string">""</span>,
-        <span class="string">"// (you should then see a box facing you)"</span>,
-        <span class="string">"// click below for the next tutorial"</span>,
-        <span class="string">"// next-tutorial:some_notes"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.somenotesTutorial = [
-        <span class="string">"// If this makes sense to you:"</span>,
-        <span class="string">"// the syntax is similar to Coffeescript"</span>,
-        <span class="string">"// and the commands are almost"</span>,
-        <span class="string">"// like Processing."</span>,
-        <span class="string">""</span>,
-        <span class="string">"// If this doesn't make sense to you"</span>,
-        <span class="string">"// don't worry."</span>,
-        <span class="string">""</span>,
-        <span class="string">"// next-tutorial:rotate"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.rotateTutorial = [
-        <span class="string">"// now that we have a box"</span>,
-        <span class="string">"// let's rotate it:"</span>,
-        <span class="string">"// type 'rotate 1' in the"</span>,
-        <span class="string">"// line before the 'box'"</span>,
-        <span class="string">""</span>,
-        <span class="string">""</span>,
-        <span class="string">"box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// click for the next tutorial:"</span>,
-        <span class="string">"// next-tutorial:frame"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.frameTutorial = [
-        <span class="string">"// make the box spin"</span>,
-        <span class="string">"// by replacing '1' with 'frame'"</span>,
-        <span class="string">""</span>,
-        <span class="string">"rotate 1"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// 'frame' contains a number"</span>,
-        <span class="string">"// always incrementing as"</span>,
-        <span class="string">"// the screen is re-drawn."</span>,
-        <span class="string">"// (use 'frame/100' to slow it down)"</span>,
-        <span class="string">"// next-tutorial:time"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.timeTutorial = [
-        <span class="string">"// 'frame/100' has one problem:"</span>,
-        <span class="string">"// faster computers will make"</span>,
-        <span class="string">"// the cube spin too fast."</span>,
-        <span class="string">"// Replace it with 'time/2000'."</span>,
-        <span class="string">""</span>,
-        <span class="string">"rotate frame/100"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// 'time' counts the"</span>,
-        <span class="string">"// number of milliseconds since"</span>,
-        <span class="string">"// the program started, so it's"</span>,
-        <span class="string">"// independent of how fast"</span>,
-        <span class="string">"// the computer is at drawing."</span>,
-        <span class="string">"// next-tutorial:move"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.moveTutorial = [
-        <span class="string">"// you can move any object"</span>,
-        <span class="string">"// by using 'move'"</span>,
-        <span class="string">""</span>,
-        <span class="string">"box"</span>,
-        <span class="string">"move 1,1,0"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// try to use a rotate before"</span>,
-        <span class="string">"// the first box to see how the"</span>,
-        <span class="string">"// scene changes."</span>,
-        <span class="string">"// next-tutorial:scale"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.scaleTutorial = [
-        <span class="string">"// you can make an object bigger"</span>,
-        <span class="string">"// or smaller by using 'scale'"</span>,
-        <span class="string">""</span>,
-        <span class="string">"rotate 3"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">"move 1"</span>,
-        <span class="string">"scale 2"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// try to use scale or move before"</span>,
-        <span class="string">"// the first box to see how the"</span>,
-        <span class="string">"// scene changes."</span>,
-        <span class="string">"// next-tutorial:times"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.timesTutorial = [
-        <span class="string">"// 'times' (not to be confused with"</span>,
-        <span class="string">"// 'time'!) can be used to"</span>,
-        <span class="string">"// repeat operations like so:"</span>,
-        <span class="string">""</span>,
-        <span class="string">"rotate 1"</span>,
-        <span class="string">"3 times -&gt;"</span>,
-        <span class="string">"▶move 0.2,0.2,0.2"</span>,
-        <span class="string">"▶box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// note how the tabs indicate"</span>,
-        <span class="string">"// exactly the block of code"</span>,
-        <span class="string">"// to be repeated."</span>,
-        <span class="string">"// next-tutorial:fill"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.fillTutorial = [
-        <span class="string">"// 'fill' changes the"</span>,
-        <span class="string">"// color of all the faces:"</span>,
-        <span class="string">""</span>,
-        <span class="string">"rotate 1"</span>,
-        <span class="string">"fill 255,255,0"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// the three numbers indicate "</span>,
-        <span class="string">"// red green and blue values."</span>,
-        <span class="string">"// You can also use color names such as 'indigo'"</span>,
-        <span class="string">"// Try replacing the numbers with"</span>,
-        <span class="string">"// 'angleColor'"</span>,
-        <span class="string">"// next-tutorial:stroke"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.strokeTutorial = [
-        <span class="string">"// 'stroke' changes all the"</span>,
-        <span class="string">"// edges:"</span>,
-        <span class="string">""</span>,
-        <span class="string">"rotate 1"</span>,
-        <span class="string">"strokeSize 5"</span>,
-        <span class="string">"stroke 255,255,255"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// the three numbers are RGB"</span>,
-        <span class="string">"// but you can also use the color names"</span>,
-        <span class="string">"// or the special color 'angleColor'"</span>,
-        <span class="string">"// Also you can use 'strokeSize'"</span>,
-        <span class="string">"// to specify the thickness."</span>,
-        <span class="string">"// next-tutorial:color_names"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.colornamesTutorial = [
-        <span class="string">"// you can call colors by name"</span>,
-        <span class="string">"// try to un-comment one line:"</span>,
-        <span class="string">"//fill greenyellow"</span>,
-        <span class="string">"//fill indigo"</span>,
-        <span class="string">"//fill lemonchiffon // whaaaat?"</span>,
-        <span class="string">""</span>,
-        <span class="string">"rotate 1"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// more color names here:"</span>,
-        <span class="string">"// http://html-color-codes.info/color-names/"</span>,
-        <span class="string">"// (just use them in lower case)"</span>,
-        <span class="string">"// next-tutorial:lights"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-
-    ProgramLoader.program.lightsTutorial = [
-        <span class="string">"// 'ambientLight' creates an"</span>,
-        <span class="string">"// ambient light so things have"</span>,
-        <span class="string">"// some sort of shading:"</span>,
-        <span class="string">""</span>,
-        <span class="string">"ambientLight 0,255,255"</span>,
-        <span class="string">"rotate time/1000"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// you can turn that light on and "</span>,
-        <span class="string">"// off while you build the scene"</span>,
-        <span class="string">"// by using 'lights' and 'noLights'"</span>,
-        <span class="string">"// next-tutorial:background"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.backgroundTutorial = [
-        <span class="string">"// 'background' creates a"</span>,
-        <span class="string">"// solid background:"</span>,
-        <span class="string">""</span>,
-        <span class="string">"background 0,0,255"</span>,
-        <span class="string">"rotate time/1000"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// next-tutorial:gradient"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.gradientTutorial = [
-        <span class="string">"// even nicer, you can paint a"</span>,
-        <span class="string">"// background gradient:"</span>,
-        <span class="string">""</span>,
-        <span class="string">"simpleGradient color(190,10,10),color(30,90,100),color(0)"</span>,
-        <span class="string">"rotate time/1000"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// next-tutorial:line"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.lineTutorial = [
-        <span class="string">"// draw lines like this:"</span>,
-        <span class="string">""</span>,
-        <span class="string">"20 times -&gt;"</span>,
-        <span class="string">"▶rotate time/9000"</span>,
-        <span class="string">"▶line"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// next-tutorial:ball"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.ballTutorial = [
-        <span class="string">"// draw balls like this:"</span>,
-        <span class="string">""</span>,
-        <span class="string">"ballDetail 10"</span>,
-        <span class="string">"3 times -&gt;"</span>,
-        <span class="string">"▶move 0.2,0.2,0.2"</span>,
-        <span class="string">"▶ball"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// ('ballDetail' is optional)"</span>,
-        <span class="string">"// next-tutorial:pushpopMatrix"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.pushpopMatrixTutorial = [
-        <span class="string">"// pushMatrix creates a bookmark of"</span>,
-        <span class="string">"// the position, which you can"</span>,
-        <span class="string">"// return to later by using popMatrix."</span>,
-        <span class="string">"// You can reset using 'resetMatrix'."</span>,
-        <span class="string">""</span>,
-        <span class="string">"rotate time/1000"</span>,
-        <span class="string">"pushMatrix // bookmark the position after the rotation"</span>,
-        <span class="string">"line"</span>,
-        <span class="string">"move 0.5,0,0"</span>,
-        <span class="string">"line"</span>,
-        <span class="string">"popMatrix // go back to the bookmarked position"</span>,
-        <span class="string">"move -0.5,0,0"</span>,
-        <span class="string">"line"</span>,
-        <span class="string">"resetMatrix // resets the position"</span>,
-        <span class="string">"line // not affected by initial rotation"</span>,
-        <span class="string">"// next-tutorial:animation_style"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.animationstyleTutorial = [
-        <span class="string">"// try uncommenting either line"</span>,
-        <span class="string">"// with the animationStyle"</span>,
-        <span class="string">""</span>,
-        <span class="string">"background 255"</span>,
-        <span class="string">"//animationStyle motionBlur"</span>,
-        <span class="string">"//animationStyle paintOver"</span>,
-        <span class="string">"rotate frame/10"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// next-tutorial:do_once"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.doonceTutorial = [
-        <span class="string">"// delete either check mark below"</span>,
-        <span class="string">""</span>,
-        <span class="string">"rotate time/1000"</span>,
-        <span class="string">"✓doOnce -&gt;"</span>,
-        <span class="string">"▶background 255"</span>,
-        <span class="string">"▶fill 255,0,0"</span>,
-        <span class="string">"✓doOnce -&gt; ball"</span>,
-        <span class="string">"box"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// ...the line or block of code"</span>,
-        <span class="string">"// are ran one time only, after that the"</span>,
-        <span class="string">"// check marks immediately re-appear"</span>,
-        <span class="string">"// P.S. keep hitting the delete button"</span>,
-        <span class="string">"// on that first check mark for seizures."</span>,
-        <span class="string">"// next-tutorial:conditionals"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.conditionalsTutorial = [
-        <span class="string">"// you can draw different things"</span>,
-        <span class="string">"// (or in general do different things)"</span>,
-        <span class="string">"// based on any"</span>,
-        <span class="string">"// test condition you want:"</span>,
-        <span class="string">""</span>,
-        <span class="string">"rotate"</span>,
-        <span class="string">"if frame%3 == 0"</span>,
-        <span class="string">"▶box"</span>,
-        <span class="string">"else if frame%3 == 1"</span>,
-        <span class="string">"▶ball"</span>,
-        <span class="string">"else"</span>,
-        <span class="string">"▶peg"</span>,
-        <span class="string">""</span>,
-        <span class="string">"// next-tutorial:autocode"</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.program.autocodeTutorial = [
-        <span class="string">"// the Autocode button invents random"</span>,
-        <span class="string">"// variations for you."</span>,
-        <span class="string">""</span>,
-        <span class="string">"// You can interrupt the Autocoder at"</span>,
-        <span class="string">"// any time by pressing the button again,"</span>,
-        <span class="string">"// or you can press CTRL-Z"</span>,
-        <span class="string">"// (or CMD-Z on Macs) to undo (or re-do) some of"</span>,
-        <span class="string">"// the steps even WHILE the autocoder is running,"</span>,
-        <span class="string">"// if you see that things got"</span>,
-        <span class="string">"// boring down a particular path of changes."</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-
-    ProgramLoader.loadDemoOrTutorial = <span class="function"><span class="keyword">function</span> <span class="params">(demoName)</span> {</span>
-
-        <span class="keyword">if</span> ((!Detector.webgl || liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) &amp;&amp; !userWarnedAboutWebglExamples &amp;&amp; demoName.indexOf(<span class="string">'webgl'</span>) === <span class="number">0</span>) {
-            userWarnedAboutWebglExamples = <span class="literal">true</span>;
-            $(<span class="string">'#exampleNeedsWebgl'</span>).modal();
-            $(<span class="string">'#simplemodal-container'</span>).height(<span class="number">200</span>);
-        }
-
-
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>set the demo as a hash state
+<!DOCTYPE html>  <html> <head>   <title>demos-and-tutorials.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               demos-and-tutorials.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true, nomen: true, regexp: true </p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>global $, Detector </p>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">createProgramLoader</span></span> = (eventRouter, texteditor, liveCodeLabCoreInstance) -&gt;
+  
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>set the demo as a hash state
 so that ideally people can link directly to
-a specific demo they like.</p>             </td>             <td class="code">               <div class="highlight"><pre>        eventRouter.trigger(<span class="string">'set-url-hash'</span>, <span class="string">'bookmark='</span> + demoName);
-
-        eventRouter.trigger(<span class="string">'big-cursor-hide'</span>);
-
-        eventRouter.trigger(<span class="string">'editor-undim'</span>);
-
-        liveCodeLabCoreInstance.GraphicsCommands.doTheSpinThingy = <span class="literal">false</span>;
-
-        <span class="keyword">var</span> prependMessage = <span class="string">""</span>;
-        <span class="keyword">if</span> ((!Detector.webgl || liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) &amp;&amp; demoName.indexOf(<span class="string">'webgl'</span>) === <span class="number">0</span>) {
-            prependMessage = [
-                <span class="string">"// This drawing makes much more sense"</span>,
-                <span class="string">"// in a WebGL-enabled browser."</span>,
-                <span class="string">""</span>,
-                <span class="string">""</span>].join(<span class="string">"\n"</span>).replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>);
-        }
-
-
-        <span class="keyword">if</span> (ProgramLoader.program[demoName]) {
-            texteditor.setValue(prependMessage + ProgramLoader.program[demoName]);
-        }
-
-
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>bring the cursor to the top</p>             </td>             <td class="code">               <div class="highlight"><pre>        texteditor.setCursor(<span class="number">0</span>, <span class="number">0</span>);
-
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Note that setting the value of the texteditor (texteditor.setValue above) triggers the
+a specific demo they like.</p>             </td>             <td class="code">               <div class="highlight"><pre>  
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>bring the cursor to the top</p>             </td>             <td class="code">               <div class="highlight"><pre>  
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Note that setting the value of the texteditor (texteditor.setValue above) triggers the
 codeMirror onChange callback, which registers the new code - so the next draw()
 will run the new demo code. But before doing that will happen (when the timer
 for the next frame triggers), we'll have cleared the screen with the code
-below.</p>             </td>             <td class="code">               <div class="highlight"><pre>
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>we want to avoid that the selected example
+below.</p>             </td>             <td class="code">               <div class="highlight"><pre>  
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>we want to avoid that the selected example
 or tutorial when started paints over a screen with a previous drawing
 of the previous code.
 So basically we draw an empty frame.
-a) make sure that animationStyle</p>             </td>             <td class="code">               <div class="highlight"><pre>        liveCodeLabCoreInstance.BlendControls.animationStyle(liveCodeLabCoreInstance.BlendControls.animationStyles.normal);
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>b) apply the potentially new animationStyle</p>             </td>             <td class="code">               <div class="highlight"><pre>        liveCodeLabCoreInstance.BlendControls.animationStyleUpdateIfChanged();
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>render the empty frame</p>             </td>             <td class="code">               <div class="highlight"><pre>        liveCodeLabCoreInstance.Renderer.render(liveCodeLabCoreInstance.GraphicsCommands);
-
-    };
-
-
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>    eventRouter.bind(<span class="string">'load-program'</span>, ProgramLoader.loadDemoOrTutorial, ProgramLoader);
-
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>this paragraph from http://stackoverflow.com/a/629817
+a) make sure that animationStyle</p>             </td>             <td class="code">               <div class="highlight"><pre>  
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>b) apply the potentially new animationStyle</p>             </td>             <td class="code">               <div class="highlight"><pre>  
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>render the empty frame</p>             </td>             <td class="code">               <div class="highlight"><pre>  
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>  
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>this paragraph from http://stackoverflow.com/a/629817
 there are more elegant ways to track back/forward history
 but they are more complex than this. I don't mind having a bit of
-polling for this, not too big of a problem.</p>             </td>             <td class="code">               <div class="highlight"><pre>		<span class="keyword">var</span> lastHash = <span class="string">''</span>;
-		<span class="function"><span class="keyword">function</span> <span class="title">pollHash</span><span class="params">()</span> {</span>
-				<span class="keyword">if</span>(lastHash !== location.hash) {
-						lastHash = location.hash;
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>hash has changed, so do stuff:</p>             </td>             <td class="code">               <div class="highlight"><pre>						loadAppropriateDemoOrTutorialBasedOnHash(lastHash);
-				}
-		}		
-		setInterval(pollHash, <span class="number">100</span>);
+polling for this, not too big of a problem.</p>             </td>             <td class="code">               <div class="highlight"><pre>  lastHash = <span class="string">""</span>
+  <span class="function"><span class="title">pollHash</span></span> = -&gt;
+    <span class="keyword">if</span> lastHash <span class="keyword">isnt</span> location.hash
+      lastHash = location.hash
+      
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>hash has changed, so do stuff:</p>             </td>             <td class="code">               <div class="highlight"><pre>      loadAppropriateDemoOrTutorialBasedOnHash lastHash
+      <span class="literal">null</span>
+  <span class="string">"use strict"</span>
+  ProgramLoader = {}
+  userWarnedAboutWebglExamples = <span class="literal">false</span>
+  ProgramLoader.program = {}
 
-    eventRouter.bind(<span class="string">'url-hash-changed'</span>, <span class="function"><span class="keyword">function</span> <span class="params">(hash)</span> {</span>
-       loadAppropriateDemoOrTutorialBasedOnHash(hash);
-    }, ProgramLoader);
+  ProgramLoader.program.roseDemo =
+		<span class="string">"""
+		// 'B rose' by Guy John (@rumblesan)
+		// Mozilla Festival 2012
+		// adapted from 'A rose' by Lib4tech
+		
+		doOnce -&gt; frame = 0
+		background red
+		scale 1.5
+		animationStyle paintOver
+		rotate frame/100
+		fill 255-((frame/2)%255),0,0
+		stroke 255-((frame/2)%255),0,0
+		scale 1-((frame/2)%255) / 255
+		box
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.cheeseAndOlivesDemo =
+		<span class="string">"""
+		// 'Cheese and olives' by
+		// Davina Tirvengadum
+		// Mozilla festival 2012
+		
+		background white
+		scale .3
+		move 0,-1
+		fill yellow
+		stroke black
+		rotate
+		strokeSize 3
+		line 4
+		box
+		
+		rotate 2,3
+		move 0,3
+		scale .3
+		fill black
+		stroke black
+		ball
+		
+		rotate 3
+		move 5
+		scale 1
+		fill green
+		stroke green
+		ball
+		
+		rotate 1
+		move -3
+		scale 1
+		fill yellow
+		stroke yellow
+		ball
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.simpleCubeDemo =
+		<span class="string">"""
+		// there you go!
+		// a simple cube!
+		
+		background yellow
+		rotate 0,time/2000,time/2000
+		box
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.webgltwocubesDemo =
+		<span class="string">"""
+		background 155,255,255
+		2 times -&gt;
+		▶rotate 0, 1, time/2000
+		▶box
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.cubesAndSpikes =
+		<span class="string">"""
+		simpleGradient fuchsia,color(100,200,200),yellow
+		scale 2.1
+		5 times -&gt;
+		▶rotate 0,1,time/5000
+		▶box 0.1,0.1,0.1
+		▶move 0,0.1,0.1
+		▶3 times -&gt;
+		▶▶rotate 0,1,1
+		▶▶box 0.01,0.01,1
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.webglturbineDemo =
+		<span class="string">"""
+		background 155,55,255
+		70 times -&gt;
+		▶rotate time/100000,1,time/100000
+		▶box
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.webglzfightartDemo =
+		<span class="string">"""
+		// Explore the artifacts
+		// of your GPU!
+		// Go Z-fighting, go!
+		scale 5
+		rotate
+		fill red
+		box
+		rotate 0.000001
+		fill yellow
+		box
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.littleSpiralOfCubes =
+		<span class="string">"""
+		background orange
+		scale 0.1
+		10 times -&gt;
+		▶rotate 0,1,time/1000
+		▶move 1,1,1
+		▶box
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.tentacleDemo =
+		<span class="string">"""
+		background 155,255,155
+		scale 0.15
+		3 times -&gt;
+		▶rotate 0,1,1
+		▶10 times -&gt;
+		▶▶rotate 0,1,time/1000
+		▶▶scale 0.9
+		▶▶move 1,1,1
+		▶▶box
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.lampDemo =
+		<span class="string">"""
+		animationStyle motionBlur
+		simpleGradient red,yellow,color(255,0,255)
+		//animationStyle paintOver
+		scale 2
+		rotate time/4000, time/4000,  time/4000
+		90 times -&gt;
+		▶rotate time/200000, time/200000,  time/200000
+		▶line
+		▶move 0.5,0,0
+		▶line
+		▶move -0.5,0,0
+		▶line
+		▶line
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.trillionfeathersDemo =
+		<span class="string">"""
+		animationStyle paintOver
+		move 2,0,0
+		scale 2
+		rotate
+		20 times -&gt;
+		▶rotate
+		▶move 0.25,0,0
+		▶line
+		▶move -0.5,0,0
+		▶line
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.monsterblobDemo =
+		<span class="string">"""
+		ballDetail 6
+		animationStyle motionBlur
+		rotate time/5000
+		simpleGradient fuchsia,aqua,yellow
+		5 times -&gt;
+		▶rotate 0,1,time/5000
+		▶move 0.2,0,0
+		▶3 times -&gt;
+		▶▶rotate 1
+		▶▶ball -1
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.industrialMusicDemo =
+		<span class="string">"""
+		bpm 88
+		play 'alienBeep'  ,'zzxz zzzz zzxz zzzz'
+		play 'beepC'  ,'zxzz zzzz xzzx xxxz'
+		play 'beepA'  ,'zzxz zzzz zzxz zzzz'
+		play 'lowFlash'  ,'zzxz zzzz zzzz zzzz'
+		play 'beepB'  ,'xzzx zzzz zxzz zxzz'
+		play 'voltage'  ,'xzxz zxzz xzxx xzxx'
+		play 'tranceKick'  ,'zxzx zzzx xzzz zzxx'
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.trySoundsDemo =
+		<span class="string">"""
+		bpm 88
+		// leave this one as base
+		play 'tranceKick'  ,'zxzx zzzx xzzz zzxx'
+		
+		// uncomment the sounds you want to try
+		//play 'toc'  ,'zzxz zzzz zzxz zzzz'
+		//play 'highHatClosed'  ,'zzxz zzzz zzxz zzzz'
+		//play 'highHatOpen'  ,'zzxz zzzz zzxz zzzz'
+		//play 'toc2'  ,'zzxz zzzz zzxz zzzz'
+		//play 'toc3'  ,'zzxz zzzz zzxz zzzz'
+		//play 'toc4'  ,'zzxz zzzz zzxz zzzz'
+		//play 'snare'  ,'zzxz zzzz zzxz zzzz'
+		//play 'snare2'  ,'zzxz zzzz zzxz zzzz'
+		//play 'china'  ,'zzxz zzzz zzxz zzzz'
+		//play 'crash'  ,'zzxz zzzz zzxz zzzz'
+		//play 'crash2'  ,'zzxz zzzz zzxz zzzz'
+		//play 'crash3'  ,'zzxz zzzz zzxz zzzz'
+		//play 'ride'  ,'zzxz zzzz zzxz zzzz'
+		//play 'glass'  ,'zzxz zzzz zzxz zzzz'
+		//play 'glass1'  ,'zzxz zzzz zzxz zzzz'
+		//play 'glass2'  ,'zzxz zzzz zzxz zzzz'
+		//play 'glass3'  ,'zzxz zzzz zzxz zzzz'
+		//play 'thump'  ,'zzxz zzzz zzxz zzzz'
+		//play 'lowFlash'  ,'zzxz zzzz zzxz zzzz'
+		//play 'lowFlash2'  ,'zzxz zzzz zzxz zzzz'
+		//play 'tranceKick2'  ,'zzxz zzzz zzxz zzzz'
+		//play 'tranceKick'  ,'zzxz zzzz zzxz zzzz'
+		//play 'wosh'  ,'zzxz zzzz zzxz zzzz'
+		//play 'voltage'  ,'zzxz zzzz zzxz zzzz'
+		//play 'beepA'  ,'zzxz zzzz zzxz zzzz'
+		//play 'beepB'  ,'zzxz zzzz zzxz zzzz'
+		//play 'beepC'  ,'zzxz zzzz zzxz zzzz'
+		//play 'beepD'  ,'zzxz zzzz zzxz zzzz'
+		//play 'beep'  ,'zzxz zzzz zzxz zzzz'
+		//play 'hello'  ,'zzxz zzzz zzxz zzzz'
+		//play 'alienBeep'  ,'zzxz zzzz zzxz zzzz'
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.springysquaresDemo =
+		<span class="string">"""
+		animationStyle motionBlur
+		simpleGradient fuchsia,color(100,200,200),yellow
+		scale 0.3
+		3 times -&gt;
+		▶move 0,0,0.5
+		▶5 times -&gt;
+		▶▶rotate time/2000
+		▶▶move 0.7,0,0
+		▶▶rect
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.diceDemo =
+		<span class="string">"""
+		animationStyle motionBlur
+		simpleGradient color(255),moccasin,peachpuff
+		stroke 255,100,100,255
+		fill red,155
+		move -0.5,0,0
+		scale 0.3
+		3 times -&gt;
+		▶move 0,0,0.5
+		▶1 times -&gt;
+		▶▶rotate time/1000
+		▶▶move 2,0,0
+		▶▶box
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.webglalmostvoronoiDemo =
+		<span class="string">"""
+		scale 10
+		2 times -&gt;
+		▶rotate 0,1,time/10000
+		▶ball -1
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.webglshardsDemo =
+		<span class="string">"""
+		scale 10
+		fill 0
+		strokeSize 7
+		5 times -&gt;
+		▶rotate 0,1,time/20000
+		▶ball 
+		▶rotate 0,1,1
+		▶ball -1.01
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.webglredthreadsDemo =
+		<span class="string">"""
+		scale 10.5
+		background black
+		stroke red
+		noFill
+		strokeSize 7
+		5 times -&gt;
+		▶rotate time/20000
+		▶ball
+		▶rotate 0,1,1
+		▶ball
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.webglnuclearOctopusDemo =
+		<span class="string">"""
+		simpleGradient black,color(0,0,(time/5)%255),black
+		scale 0.2
+		move 5,0,0
+		animationStyle motionBlur
+		//animationStyle paintOver
+		stroke 255,0,0,120
+		fill time%255,0,0
+		pushMatrix
+		count = 0
+		3 times -&gt;
+		▶count++
+		▶pushMatrix
+		▶rotate count+3+time/1000,2+count + time/1000,4+count
+		▶120 times -&gt;
+		▶▶scale 0.9
+		▶▶move 1,1,0
+		▶▶rotate time/100
+		▶▶box
+		▶popMatrix
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.introTutorial =
+		<span class="string">"""
+		// Lines beginning with two
+		// slashes (like these) are just comments.
+		
+		// Everything else is run
+		// about 30 to 60 times per second
+		// in order to create an animation.
+		
+		// Click the link below to start the tutorial.
+		
+		// next-tutorial:hello_world
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.helloworldTutorial =
+		<span class="string">"""
+		// type these three letters
+		// in one of these empty lines below:
+		// 'b' and 'o' and 'x'
+		
+		
+		
+		// (you should then see a box facing you)
+		// click below for the next tutorial
+		// next-tutorial:some_notes
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.somenotesTutorial =
+		<span class="string">"""
+		// If this makes sense to you:
+		// the syntax is similar to Coffeescript
+		// and the commands are almost
+		// like Processing.
+		
+		// If this doesn't make sense to you
+		// don't worry.
+		
+		// next-tutorial:rotate
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.rotateTutorial =
+		<span class="string">"""
+		// now that we have a box
+		// let's rotate it:
+		// type 'rotate 1' in the
+		// line before the 'box'
+		
+		
+		box
+		
+		// click for the next tutorial:
+		// next-tutorial:frame
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.frameTutorial =
+		<span class="string">"""
+		// make the box spin
+		// by replacing '1' with 'frame'
+		
+		rotate 1
+		box
+		
+		// 'frame' contains a number
+		// always incrementing as
+		// the screen is re-drawn.
+		// (use 'frame/100' to slow it down)
+		// next-tutorial:time
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.timeTutorial =
+		<span class="string">"""
+		// 'frame/100' has one problem:
+		// faster computers will make
+		// the cube spin too fast.
+		// Replace it with 'time/2000'.
+		
+		rotate frame/100
+		box
+		
+		// 'time' counts the
+		// number of milliseconds since
+		// the program started, so it's
+		// independent of how fast
+		// the computer is at drawing.
+		// next-tutorial:move
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.moveTutorial =
+		<span class="string">"""
+		// you can move any object
+		// by using 'move'
+		
+		box
+		move 1,1,0
+		box
+		
+		// try to use a rotate before
+		// the first box to see how the
+		// scene changes.
+		// next-tutorial:scale
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.scaleTutorial =
+		<span class="string">"""
+		// you can make an object bigger
+		// or smaller by using 'scale'
+		
+		rotate 3
+		box
+		move 1
+		scale 2
+		box
+		
+		// try to use scale or move before
+		// the first box to see how the
+		// scene changes.
+		// next-tutorial:times
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.timesTutorial =
+		<span class="string">"""
+		// 'times' (not to be confused with
+		// 'time'!) can be used to
+		// repeat operations like so:
+		
+		rotate 1
+		3 times -&gt;
+		▶move 0.2,0.2,0.2
+		▶box
+		
+		// note how the tabs indicate
+		// exactly the block of code
+		// to be repeated.
+		// next-tutorial:fill
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.fillTutorial =
+		<span class="string">"""
+		// 'fill' changes the
+		// color of all the faces:
+		
+		rotate 1
+		fill 255,255,0
+		box
+		
+		// the three numbers indicate 
+		// red green and blue values.
+		// You can also use color names such as 'indigo'
+		// Try replacing the numbers with
+		// 'angleColor'
+		// next-tutorial:stroke
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.strokeTutorial =
+		<span class="string">"""
+		// 'stroke' changes all the
+		// edges:
+		
+		rotate 1
+		strokeSize 5
+		stroke 255,255,255
+		box
+		
+		// the three numbers are RGB
+		// but you can also use the color names
+		// or the special color 'angleColor'
+		// Also you can use 'strokeSize'
+		// to specify the thickness.
+		// next-tutorial:color_names
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.colornamesTutorial =
+		<span class="string">"""
+		// you can call colors by name
+		// try to un-comment one line:
+		//fill greenyellow
+		//fill indigo
+		//fill lemonchiffon // whaaaat?
+		
+		rotate 1
+		box
+		
+		// more color names here:
+		// http://html-color-codes.info/color-names/
+		// (just use them in lower case)
+		// next-tutorial:lights
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.lightsTutorial =
+		<span class="string">"""
+		// 'ambientLight' creates an
+		// ambient light so things have
+		// some sort of shading:
+		
+		ambientLight 0,255,255
+		rotate time/1000
+		box
+		
+		// you can turn that light on and 
+		// off while you build the scene
+		// by using 'lights' and 'noLights'
+		// next-tutorial:background
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.backgroundTutorial =
+		<span class="string">"""
+		// 'background' creates a
+		// solid background:
+		
+		background 0,0,255
+		rotate time/1000
+		box
+		
+		// next-tutorial:gradient
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.gradientTutorial =
+		<span class="string">"""
+		// even nicer, you can paint a
+		// background gradient:
+		
+		simpleGradient color(190,10,10),color(30,90,100),color(0)
+		rotate time/1000
+		box
+		
+		// next-tutorial:line
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.lineTutorial =
+		<span class="string">"""
+		// draw lines like this:
+		
+		20 times -&gt;
+		▶rotate time/9000
+		▶line
+		
+		// next-tutorial:ball
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.ballTutorial =
+		<span class="string">"""
+		// draw balls like this:
+		
+		ballDetail 10
+		3 times -&gt;
+		▶move 0.2,0.2,0.2
+		▶ball
+		
+		// ('ballDetail' is optional)
+		// next-tutorial:pushpopMatrix
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.pushpopMatrixTutorial =
+		<span class="string">"""
+		// pushMatrix creates a bookmark of
+		// the position, which you can
+		// return to later by using popMatrix.
+		// You can reset using 'resetMatrix'.
+		
+		rotate time/1000
+		pushMatrix // bookmark the position after the rotation
+		line
+		move 0.5,0,0
+		line
+		popMatrix // go back to the bookmarked position
+		move -0.5,0,0
+		line
+		resetMatrix // resets the position
+		line // not affected by initial rotation
+		// next-tutorial:animation_style
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.animationstyleTutorial =
+		<span class="string">"""
+		// try uncommenting either line
+		// with the animationStyle
+		
+		background 255
+		//animationStyle motionBlur
+		//animationStyle paintOver
+		rotate frame/10
+		box
+		
+		// next-tutorial:do_once
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.doonceTutorial =
+		<span class="string">"""
+		// delete either check mark below
+		
+		rotate time/1000
+		✓doOnce -&gt;
+		▶background 255
+		▶fill 255,0,0
+		✓doOnce -&gt; ball
+		box
+		
+		// ...the line or block of code
+		// are ran one time only, after that the
+		// check marks immediately re-appear
+		// P.S. keep hitting the delete button
+		// on that first check mark for seizures.
+		// next-tutorial:conditionals
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.conditionalsTutorial =
+		<span class="string">"""
+		// you can draw different things
+		// (or in general do different things)
+		// based on any
+		// test condition you want:
+		
+		rotate
+		if frame%3 == 0
+		▶box
+		else if frame%3 == 1
+		▶ball
+		else
+		▶peg
+		
+		// next-tutorial:autocode
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  
+  ProgramLoader.program.autocodeTutorial =
+		<span class="string">"""
+		// the Autocode button invents random
+		// variations for you.
+		
+		// You can interrupt the Autocoder at
+		// any time by pressing the button again,
+		// or you can press CTRL-Z
+		// (or CMD-Z on Macs) to undo (or re-do) some of
+		// the steps even WHILE the autocoder is running,
+		// if you see that things got
+		// boring down a particular path of changes.
+		"""</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+  ProgramLoader.<span class="function"><span class="title">loadDemoOrTutorial</span></span> = (demoName) -&gt;
+    <span class="keyword">if</span> (<span class="keyword">not</span> Detector.webgl <span class="keyword">or</span> liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) <span class="keyword">and</span> <span class="keyword">not</span> userWarnedAboutWebglExamples <span class="keyword">and</span> demoName.indexOf(<span class="string">"webgl"</span>) <span class="keyword">is</span> <span class="number">0</span>
+      userWarnedAboutWebglExamples = <span class="literal">true</span>
+      $(<span class="string">"#exampleNeedsWebgl"</span>).modal()
+      $(<span class="string">"#simplemodal-container"</span>).height <span class="number">200</span>
+    eventRouter.trigger <span class="string">"set-url-hash
+		bookmark="</span> + demoName
+    eventRouter.trigger <span class="string">"big-cursor-hide"</span>
+    eventRouter.trigger <span class="string">"editor-undim"</span>
+    liveCodeLabCoreInstance.GraphicsCommands.doTheSpinThingy = <span class="literal">false</span>
+    prependMessage = <span class="string">""</span>
+    <span class="keyword">if</span> (<span class="keyword">not</span> Detector.webgl <span class="keyword">or</span> liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) <span class="keyword">and</span> demoName.indexOf(<span class="string">"webgl"</span>) <span class="keyword">is</span> <span class="number">0</span>
+      prependMessage =
+      <span class="string">"""
+      // This drawing makes much more sense
+      // in a WebGL-enabled browser.
+      
+      
+      """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    texteditor.setValue prependMessage + ProgramLoader.program[demoName]  <span class="keyword">if</span> ProgramLoader.program[demoName]
+    texteditor.setCursor <span class="number">0</span>, <span class="number">0</span>
+    liveCodeLabCoreInstance.BlendControls.animationStyle liveCodeLabCoreInstance.BlendControls.animationStyles.normal
+    liveCodeLabCoreInstance.BlendControls.animationStyleUpdateIfChanged()
+    liveCodeLabCoreInstance.Renderer.render liveCodeLabCoreInstance.GraphicsCommands
+    <span class="literal">null</span>
+
+  eventRouter.bind <span class="string">"load-program"</span>, ProgramLoader.loadDemoOrTutorial, ProgramLoader
+  setInterval pollHash, <span class="number">100</span>
+  eventRouter.bind <span class="string">"url-hash-changed"</span>, ((hash) -&gt;
+    loadAppropriateDemoOrTutorialBasedOnHash hash
+    <span class="literal">null</span>
+  ), ProgramLoader
+  <span class="function"><span class="title">loadAppropriateDemoOrTutorialBasedOnHash</span></span> = (hash) -&gt;
+    matched = hash.match(<span class="regexp">/bookmark=(.*)/</span>)
     
-    <span class="keyword">var</span> loadAppropriateDemoOrTutorialBasedOnHash =  <span class="keyword">function</span>(hash) {
-        <span class="keyword">var</span> matched = hash.match(<span class="regexp">/bookmark=(.*)/</span>);
-</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>alert('matched: ' + matched)</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> (matched) {
-            ProgramLoader.loadDemoOrTutorial(matched[<span class="number">1</span>]);
-        }
-        <span class="keyword">else</span> {
-</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>user in on the root page without any hashes</p>             </td>             <td class="code">               <div class="highlight"><pre>						texteditor.setValue(<span class="string">''</span>);
-        }
-    }
+</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>alert('matched: ' + matched)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> matched
+      ProgramLoader.loadDemoOrTutorial matched[<span class="number">1</span>]
+    <span class="keyword">else</span>
+</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>user in on the root page without any hashes</p>             </td>             <td class="code">               <div class="highlight"><pre>      texteditor.setValue <span class="string">""</span>
+    <span class="literal">null</span>
 
-
-
-    <span class="keyword">return</span> ProgramLoader;
-
-};
-
+  ProgramLoader
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
