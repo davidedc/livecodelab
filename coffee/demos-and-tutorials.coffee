@@ -695,7 +695,8 @@ createProgramLoader = (eventRouter, texteditor, liveCodeLabCoreInstance) ->
 		// boring down a particular path of changes.
 		""".replace(/\u25B6/g, "\t")
   ProgramLoader.loadDemoOrTutorial = (demoName) ->
-    if (not Detector.webgl or liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) and not userWarnedAboutWebglExamples and demoName.indexOf("webgl") is 0
+    if (not Detector.webgl or liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) \
+        and not userWarnedAboutWebglExamples and demoName.indexOf("webgl") is 0
       userWarnedAboutWebglExamples = true
       $("#exampleNeedsWebgl").modal()
       $("#simplemodal-container").height 200
@@ -705,7 +706,8 @@ createProgramLoader = (eventRouter, texteditor, liveCodeLabCoreInstance) ->
     eventRouter.trigger "editor-undim"
     liveCodeLabCoreInstance.GraphicsCommands.doTheSpinThingy = false
     prependMessage = ""
-    if (not Detector.webgl or liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) and demoName.indexOf("webgl") is 0
+    if (not Detector.webgl or liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) \
+        and demoName.indexOf("webgl") is 0
       prependMessage =
       """
       // This drawing makes much more sense
@@ -713,10 +715,12 @@ createProgramLoader = (eventRouter, texteditor, liveCodeLabCoreInstance) ->
       
       
       """.replace(/\u25B6/g, "\t")
-    texteditor.setValue prependMessage + ProgramLoader.program[demoName]  if ProgramLoader.program[demoName]
+    if ProgramLoader.program[demoName]
+      texteditor.setValue prependMessage + ProgramLoader.program[demoName]
     texteditor.setCursor 0, 0
-    liveCodeLabCoreInstance.BlendControls.animationStyle liveCodeLabCoreInstance.BlendControls.animationStyles.normal
-    liveCodeLabCoreInstance.BlendControls.animationStyleUpdateIfChanged()
+    BlendControls = liveCodeLabCoreInstance.BlendControls
+    BlendControls.animationStyle BlendControls.animationStyles.normal
+    BlendControls.animationStyleUpdateIfChanged()
     liveCodeLabCoreInstance.Renderer.render liveCodeLabCoreInstance.GraphicsCommands
     null
 
