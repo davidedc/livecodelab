@@ -56,7 +56,7 @@ addCoffescriptPartToCodeTransformer = (CodeTransformer, eventRouter, CoffeeCompi
   	
   	#//////////////// Older code checks
   	
-  	updatedCodeAsString = CodeTransformer.basicSyntaxChecksFail(updatedCodeAsString)
+  	updatedCodeAsString = CodeTransformer.stripCommentsAndCheckBasicSyntax(updatedCodeAsString)
   	return if updatedCodeAsString is null
   	elaboratedSource = updatedCodeAsString
   	

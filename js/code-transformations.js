@@ -243,7 +243,7 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler, liveCodeLabCo
             }
     }
 
-    CodeTransformer.basicSyntaxChecksFail = function (updatedCodeAsString) { // was a standalone function
+    CodeTransformer.stripCommentsAndCheckBasicSyntax = function (updatedCodeAsString) { // was a standalone function
 			var codeWithoutComments, codeWithoutStringsOrComments;
 			
 			// check whether the program potentially
