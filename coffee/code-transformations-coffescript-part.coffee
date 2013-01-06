@@ -27,6 +27,169 @@ addCoffescriptPartToCodeTransformer = (CodeTransformer, eventRouter, CoffeeCompi
     newCode = newCode.replace(/\u2713/g, "//")
     newCode
 
+  CodeTransformer.addTracingInstructionsToDoOnceBlocks = (updatedCodeAsString) -> # was a standalone function
+    # ADDING TRACING INSTRUCTION TO THE DOONCE BLOCKS
+    # each doOnce block is made to start with an instruction that traces whether
+    # the block has been run or not. This allows us to put back the tick where
+    # necessary, so the doOnce block is not run again.
+    # Example - let's say one pastes in this code:
+    #      doOnce ->
+    #        background 255
+    #        fill 255,0,0
+    #
+    #      doOnce -> ball
+    #
+    # it becomes:
+    #      (1+0).times ->
+    #        addDoOnce(1); background 255
+    #        fill 255,0,0
+    #
+    #      ;addDoOnce(4);
+    #      (1+0).times -> ball
+    #    
+    # So: if there is at least one doOnce
+    #   split the source in lines
+    #   add line numbers tracing instructions so we can track which ones have been run
+    #   regroup the lines into a single string again
+    #
+    elaboratedSourceByLine = undefined
+    iteratingOverSource = undefined
+    if updatedCodeAsString.indexOf("doOnce") > -1
+      
+      #alert("a doOnce is potentially executable");
+      elaboratedSourceByLine = updatedCodeAsString.split("\n")
+      
+      #alert('splitting: ' + elaboratedSourceByLine.length );
+      iteratingOverSource = 0
+      while iteratingOverSource < elaboratedSourceByLine.length
+        
+        #alert('iterating: ' + iteratingOverSource );
+        
+        # add the line number tracing instruction to inline case
+        elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/g, "$1;addDoOnce(" + iteratingOverSource + "); (1+0).times -> $2")
+        
+        # add the line number tracing instruction to multiline case
+        if elaboratedSourceByLine[iteratingOverSource].match(/^(\s*)doOnce[ ]*\->[ ]*$/g)
+          
+          #alert('doOnce multiline!');
+          elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*$/g, "$1(1+0).times ->")
+          elaboratedSourceByLine[iteratingOverSource + 1] = elaboratedSourceByLine[iteratingOverSource + 1].replace(/^(\s*)(.+)$/g, "$1;addDoOnce(" + iteratingOverSource + "); $2")
+        iteratingOverSource += 1
+      updatedCodeAsString = elaboratedSourceByLine.join("\n")
+    
+    #alert('soon after replacing doOnces'+updatedCodeAsString);
+    updatedCodeAsString
+
+  doesProgramContainStringsOrComments = (updatedCodeAsString) ->    
+    # make a copy of the string because we are going to
+    # slice it in the process.
+    copyOfUpdatedCodeAsString = updatedCodeAsString
+    characterBeingExamined = undefined
+    nextCharacterBeingExamined = undefined
+    while copyOfUpdatedCodeAsString.length
+      characterBeingExamined = copyOfUpdatedCodeAsString.charAt(0)
+      nextCharacterBeingExamined = copyOfUpdatedCodeAsString.charAt(1)
+      return true  if characterBeingExamined is "'" or characterBeingExamined is "\"" or (characterBeingExamined is "/" and (nextCharacterBeingExamined is "*" or nextCharacterBeingExamined is "/"))
+      copyOfUpdatedCodeAsString = copyOfUpdatedCodeAsString.slice(1)
+
+  CodeTransformer.stripCommentsAndCheckBasicSyntax = (updatedCodeAsString) -> # was a standalone function
+    codeWithoutComments = undefined
+    codeWithoutStringsOrComments = undefined
+    
+    # check whether the program potentially
+    # contains strings or comments
+    # if it doesn't then we can do some
+    # simple syntactic checks that are likely
+    # to be much faster than attempting a
+    # coffescript to javascript translation
+    
+    # let's do a quick check:
+    # these groups of characters should be in even number:
+    # ", ', (), {}, []
+    # Note that this doesn't check nesting, so for example
+    # [{]} does pass the test.
+    if doesProgramContainStringsOrComments(updatedCodeAsString)
+      
+      # OK the program contains comments and/or strings
+      # so this is what we are going to do:
+      # first we remove all the comments for good
+      # then we create a version without the strings
+      # so we can perform some basic syntax checking.
+      # Note that when we remove the comments we also need to
+      # take into account strings because otherwise we mangle a line like
+      # print "frame/100 //"
+      # where we need to now that that single comment is actually the content
+      # of a string.
+      # modified from Processing.js (search for: "masks strings and regexs")
+      # this is useful to remove all comments but keeping all the strings
+      # the difference is that here I don't treat regular expressions.
+      # Note that string take precedence over comments i.e.
+      # is a string, not half a string with a quote in a comment
+      # get rid of the comments for good.
+      updatedCodeAsString = updatedCodeAsString.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')|(\/\/[^\n]*\n)|(\/\*(?:(?!\*\/)(?:.|\n))*\*\/)/g, (all, quoted, aposed, singleComment, comment) ->
+        numberOfLinesInMultilineComment = undefined
+        rebuiltNewLines = undefined
+        cycleToRebuildNewLines = undefined
+        
+        # strings are kept as they are
+        return quoted  if quoted
+        return aposed  if aposed
+        
+        # preserve the line because
+        # the doOnce mechanism needs to retrieve
+        # the line where it was
+        return "\n"  if singleComment
+        
+        # eliminate multiline comments preserving the lines
+        numberOfLinesInMultilineComment = comment.split("\n").length - 1
+        rebuiltNewLines = ""
+        cycleToRebuildNewLines = 0
+        while cycleToRebuildNewLines < numberOfLinesInMultilineComment
+          rebuiltNewLines = rebuiltNewLines + "\n"
+          cycleToRebuildNewLines += 1
+        rebuiltNewLines
+      )
+      codeWithoutComments = updatedCodeAsString
+      
+      # ok now in the version we use for syntax checking we delete all the strings
+      codeWithoutStringsOrComments = updatedCodeAsString.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')/g, "")
+    else
+      codeWithoutStringsOrComments = updatedCodeAsString
+    aposCount = 0
+    quoteCount = 0
+    roundBrackCount = 0
+    curlyBrackCount = 0
+    squareBrackCount = 0
+    characterBeingExamined = undefined
+    reasonOfBasicError = undefined
+    while codeWithoutStringsOrComments.length
+      characterBeingExamined = codeWithoutStringsOrComments.charAt(0)
+      if characterBeingExamined is "'"
+        aposCount += 1
+      else if characterBeingExamined is "\""
+        quoteCount += 1
+      else if characterBeingExamined is "(" or characterBeingExamined is ")"
+        roundBrackCount += 1
+      else if characterBeingExamined is "{" or characterBeingExamined is "}"
+        curlyBrackCount += 1
+      else squareBrackCount += 1  if characterBeingExamined is "[" or characterBeingExamined is "]"
+      codeWithoutStringsOrComments = codeWithoutStringsOrComments.slice(1)
+    
+    # according to jsperf, the fastest way to check if number is even/odd
+    if aposCount & 1 or quoteCount & 1 or roundBrackCount & 1 or curlyBrackCount & 1 or squareBrackCount & 1
+      programHasBasicError = true
+      reasonOfBasicError = "Missing '"  if aposCount & 1
+      reasonOfBasicError = "Missing \""  if quoteCount & 1
+      reasonOfBasicError = "Unbalanced ()"  if roundBrackCount & 1
+      reasonOfBasicError = "Unbalanced {}"  if curlyBrackCount & 1
+      reasonOfBasicError = "Unbalanced []"  if squareBrackCount & 1
+      eventRouter.trigger "compile-time-error-thrown", reasonOfBasicError
+      return null
+    
+    # no comments or strings were found, just return the same string
+    # that was passed
+    updatedCodeAsString
+
   CodeTransformer.updateCode = (updatedCodeAsString) ->
   	elaboratedSource = undefined
   	errResults = undefined
