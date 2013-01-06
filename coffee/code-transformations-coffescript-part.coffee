@@ -56,9 +56,8 @@ addCoffescriptPartToCodeTransformer = (CodeTransformer, eventRouter, CoffeeCompi
   	
   	#//////////////// Older code checks
   	
-  	# according to jsperf, this is the fastest way to count for
-  	# occurrences of a character. We count apostrophes
-  	return  if CodeTransformer.basicSyntaxChecksFail(updatedCodeAsString)
+  	updatedCodeAsString = CodeTransformer.basicSyntaxChecksFail(updatedCodeAsString)
+  	return if updatedCodeAsString is null
   	elaboratedSource = updatedCodeAsString
   	
   	# we make it so some common command forms can be used in postfix notation, e.g.

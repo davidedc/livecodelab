@@ -227,7 +227,7 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler, liveCodeLabCo
     };
 
     var doesProgramContainStringsOrComments = function (updatedCodeAsString) {
-            // keep a copy of the string because we are going to
+            // make a copy of the string because we are going to
             // slice it in the process.
             var copyOfUpdatedCodeAsString = updatedCodeAsString;
             var characterBeingExamined, nextCharacterBeingExamined;
@@ -244,7 +244,7 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler, liveCodeLabCo
     }
 
     CodeTransformer.basicSyntaxChecksFail = function (updatedCodeAsString) { // was a standalone function
-			var codeWithoutStringsOrComments;
+			var codeWithoutComments, codeWithoutStringsOrComments;
 			
 			// check whether the program potentially
 			// contains strings or comments
@@ -304,6 +304,7 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler, liveCodeLabCo
 							return rebuiltNewLines;
 					});
 
+					codeWithoutComments = updatedCodeAsString;
 					// ok now in the version we use for syntax checking we delete all the strings
 					codeWithoutStringsOrComments = updatedCodeAsString.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')/g, "");
 
@@ -360,8 +361,12 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler, liveCodeLabCo
 					eventRouter.trigger('compile-time-error-thrown', reasonOfBasicError);
 
 
-					return true;
+					return null;
 			}
+
+			// no comments or strings were found, just return the same string
+			// that was passed
+			return updatedCodeAsString
 
     }
 
