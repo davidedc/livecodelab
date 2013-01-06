@@ -110,7 +110,8 @@ var startEnvironment = function (paramsObject) {
     ///////////////////////////////////////////////////////
     var urlRouter = createUrlRouter(eventRouter); 
     var bigCursor = createBigCursor(eventRouter); // $ 
-    var editor = createEditor(eventRouter, CodeMirror); 
+    var editor = createEditor(eventRouter, CodeMirror);
+    attachMouseWheelHandler(editor); 
     //console.log('creating stats');
     var ui = createUi(eventRouter, stats); // $ 
     // requires: ColourNames
