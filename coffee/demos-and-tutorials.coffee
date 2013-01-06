@@ -700,8 +700,7 @@ createProgramLoader = (eventRouter, texteditor, liveCodeLabCoreInstance) ->
       userWarnedAboutWebglExamples = true
       $("#exampleNeedsWebgl").modal()
       $("#simplemodal-container").height 200
-    eventRouter.trigger "set-url-hash
-		bookmark=" + demoName
+    eventRouter.trigger "set-url-hash", "bookmark=" + demoName
     eventRouter.trigger "big-cursor-hide"
     eventRouter.trigger "editor-undim"
     liveCodeLabCoreInstance.GraphicsCommands.doTheSpinThingy = false
@@ -733,7 +732,6 @@ createProgramLoader = (eventRouter, texteditor, liveCodeLabCoreInstance) ->
   loadAppropriateDemoOrTutorialBasedOnHash = (hash) ->
     matched = hash.match(/bookmark=(.*)/)
     
-    #alert('matched: ' + matched)
     if matched
       ProgramLoader.loadDemoOrTutorial matched[1]
     else
