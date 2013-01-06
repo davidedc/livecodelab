@@ -64,7 +64,7 @@ createProgramLoader = function(eventRouter, texteditor, liveCodeLabCoreInstance)
       $("#exampleNeedsWebgl").modal();
       $("#simplemodal-container").height(200);
     }
-    eventRouter.trigger("set-url-hash		bookmark=" + demoName);
+    eventRouter.trigger("set-url-hash", "bookmark=" + demoName);
     eventRouter.trigger("big-cursor-hide");
     eventRouter.trigger("editor-undim");
     liveCodeLabCoreInstance.GraphicsCommands.doTheSpinThingy = false;

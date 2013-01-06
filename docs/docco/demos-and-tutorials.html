@@ -689,8 +689,7 @@ polling for this, not too big of a problem.</p>             </td>             <t
       userWarnedAboutWebglExamples = <span class="literal">true</span>
       $(<span class="string">"#exampleNeedsWebgl"</span>).modal()
       $(<span class="string">"#simplemodal-container"</span>).height <span class="number">200</span>
-    eventRouter.trigger <span class="string">"set-url-hash
-		bookmark="</span> + demoName
+    eventRouter.trigger <span class="string">"set-url-hash"</span>, <span class="string">"bookmark="</span> + demoName
     eventRouter.trigger <span class="string">"big-cursor-hide"</span>
     eventRouter.trigger <span class="string">"editor-undim"</span>
     liveCodeLabCoreInstance.GraphicsCommands.doTheSpinThingy = <span class="literal">false</span>
@@ -722,10 +721,10 @@ polling for this, not too big of a problem.</p>             </td>             <t
   <span class="function"><span class="title">loadAppropriateDemoOrTutorialBasedOnHash</span></span> = (hash) -&gt;
     matched = hash.match(<span class="regexp">/bookmark=(.*)/</span>)
     
-</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>alert('matched: ' + matched)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> matched
+    <span class="keyword">if</span> matched
       ProgramLoader.loadDemoOrTutorial matched[<span class="number">1</span>]
     <span class="keyword">else</span>
-</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>user in on the root page without any hashes</p>             </td>             <td class="code">               <div class="highlight"><pre>      texteditor.setValue <span class="string">""</span>
+</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>user in on the root page without any hashes</p>             </td>             <td class="code">               <div class="highlight"><pre>      texteditor.setValue <span class="string">""</span>
     <span class="literal">null</span>
 
   ProgramLoader
