@@ -38,25 +38,28 @@ module.exports = function (grunt) {
 				coffee: {
 							app: {
 								src: ['coffee/**/*.coffee'],
-								dest: 'js/translatedFromCoffescript/'
+								dest: 'js/translatedFromCoffescript/',
+								options: {
+										preserve_dirs: true
+								}
 							}
 				},
         concat: {
             dist: {
                 src: [
-                    'js/translatedFromCoffescript/livecodelab-core.js',
-                    'js/translatedFromCoffescript/events.js',
-                    'js/translatedFromCoffescript/simple-error-checker.js',
-                    'js/translatedFromCoffescript/url-router.js',
-                    'js/translatedFromCoffescript/big-cursor-animation.js',
-                    'js/translatedFromCoffescript/mclexer.js',
+                    'js/translatedFromCoffescript/coffee/livecodelab-core.js',
+                    'js/translatedFromCoffescript/coffee/events.js',
+                    'js/translatedFromCoffescript/coffee/simple-error-checker.js',
+                    'js/translatedFromCoffescript/coffee/url-router.js',
+                    'js/translatedFromCoffescript/coffee/big-cursor-animation.js',
+                    'js/translatedFromCoffescript/coffee/autocoder/mclexer.js',
                     'js/sound/samplebank.js',
                     'js/sound/sound-system.js',
                     'js/sound/buzz.js',
-                    'js/translatedFromCoffescript/animation-loop.js',
-                    'js/translatedFromCoffescript/init-threejs.js',
-                    'js/translatedFromCoffescript/renderer.js',
-                    'js/translatedFromCoffescript/colour-definitions.js',
+                    'js/translatedFromCoffescript/coffee/animation-loop.js',
+                    'js/translatedFromCoffescript/coffee/init-threejs.js',
+                    'js/translatedFromCoffescript/coffee/renderer.js',
+                    'js/translatedFromCoffescript/coffee/colour-definitions.js',
                     'js/three.js/Detector.js',
                     'js/three.js/Stats.js',
                     'js/threex/THREEx.WindowResize.js',
@@ -66,22 +69,22 @@ module.exports = function (grunt) {
                     'js/three.js/postprocessing/ShaderPass.js',
                     'js/three.js/postprocessing/MaskPass.js',
                     'js/three.js/postprocessing/SavePass.js',
-                    'js/translatedFromCoffescript/globals.js',
-                    'js/translatedFromCoffescript/background-painting.js',
+                    'js/translatedFromCoffescript/coffee/globals.js',
+                    'js/translatedFromCoffescript/coffee/background-painting.js',
                     'js/editor/editor.js',
-                    'js/translatedFromCoffescript/colour-functions.js',
-                    'js/translatedFromCoffescript/matrix-commands.js',
-                    'js/translatedFromCoffescript/graphic-primitives.js',
-                    'js/translatedFromCoffescript/math.js',
-                    'js/translatedFromCoffescript/draw-function-runner.js',
-                    'js/translatedFromCoffescript/code-transformations.js',
-                    'js/translatedFromCoffescript/demos-and-tutorials.js',
-                    'js/translatedFromCoffescript/autocode.js',
-                    'js/translatedFromCoffescript/text-dimming.js',
-                    'js/translatedFromCoffescript/time-keeper.js',
-                    'js/translatedFromCoffescript/blend-style.js',
-                    'js/translatedFromCoffescript/lights-functions.js',
-                    'js/translatedFromCoffescript/ui.js',
+                    'js/translatedFromCoffescript/coffee/colour-functions.js',
+                    'js/translatedFromCoffescript/coffee/matrix-commands.js',
+                    'js/translatedFromCoffescript/coffee/graphic-primitives.js',
+                    'js/translatedFromCoffescript/coffee/math.js',
+                    'js/translatedFromCoffescript/coffee/draw-function-runner.js',
+                    'js/translatedFromCoffescript/coffee/code-transformations.js',
+                    'js/translatedFromCoffescript/coffee/demos-and-tutorials.js',
+                    'js/translatedFromCoffescript/coffee/autocoder/autocode.js',
+                    'js/translatedFromCoffescript/coffee/text-dimming.js',
+                    'js/translatedFromCoffescript/coffee/time-keeper.js',
+                    'js/translatedFromCoffescript/coffee/blend-style.js',
+                    'js/translatedFromCoffescript/coffee/lights-functions.js',
+                    'js/translatedFromCoffescript/coffee/ui.js',
                     'js/browser-detection/bowser-2012-07-18.js'],
                 dest: 'dist/built.js'
             }
@@ -150,5 +153,17 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-targethtml');
     grunt.loadNpmTasks('grunt-coffee');
+    
+    process.stdout.write("\n\n\n\n");
+    process.stdout.write("****************************************************************\n");
+    process.stdout.write("* Note:\n");
+    process.stdout.write("* You can use jitter to automatically translate\n");
+    process.stdout.write("* the .coffee files - which is fine for testing\n");
+    process.stdout.write("* changes using the non-minified version of livecodelab,\n");
+    process.stdout.write("* just do:\n");
+    process.stdout.write("*    npm install -g jitter \n");
+    process.stdout.write("*    jitter --bare coffee/ js/translatedFromCoffescript/coffee/ \n");
+    process.stdout.write("****************************************************************\n");
+    process.stdout.write("\n\n\n\n");
 
 };
