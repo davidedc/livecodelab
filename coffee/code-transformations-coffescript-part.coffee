@@ -190,6 +190,26 @@ addCoffescriptPartToCodeTransformer = (CodeTransformer, eventRouter, CoffeeCompi
     # that was passed
     updatedCodeAsString
 
+  ###
+  Some of the functions can be used with postfix notation
+  
+  e.g.
+  
+  60 bpm
+  red fill
+  yellow stroke
+  black background
+  
+  We need to switch this round before coffee script compilation
+  ###
+  adjustPostfixNotations = (code) ->
+    elaboratedSource = undefined
+    elaboratedSource = code.replace(/(\d+)[ ]+bpm(\s)/g, "bpm $1$2")
+    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+fill(\s)/g, "fill $1$2")
+    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+stroke(\s)/g, "stroke $1$2")
+    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+background(\s)/g, "background $1$2")
+    elaboratedSource
+
   CodeTransformer.updateCode = (updatedCodeAsString) ->
   	elaboratedSource = undefined
   	errResults = undefined
@@ -235,7 +255,7 @@ addCoffescriptPartToCodeTransformer = (CodeTransformer, eventRouter, CoffeeCompi
   	#
   	#        elaboratedSource = updatedCodeAsString;
   	#
-  	#        elaboratedSource = preprocessingFunctions.postfixNotation(elaboratedSource);
+  	#        elaboratedSource = preprocessingFunctions.adjustPostfixNotations(elaboratedSource);
   	#
   	#        elaboratedSource = preprocessingFunctions.fixTimesFunctions(elaboratedSource);
   	#
@@ -255,10 +275,7 @@ addCoffescriptPartToCodeTransformer = (CodeTransformer, eventRouter, CoffeeCompi
   	#   red fill
   	#   yellow stroke
   	#   black background
-  	updatedCodeAsString = updatedCodeAsString.replace(/(\d+)[ ]+bpm(\s)/g, "bpm $1$2")
-  	updatedCodeAsString = updatedCodeAsString.replace(/([a-zA-Z]+)[ ]+fill(\s)/g, "fill $1$2")
-  	updatedCodeAsString = updatedCodeAsString.replace(/([a-zA-Z]+)[ ]+stroke(\s)/g, "stroke $1$2")
-  	updatedCodeAsString = updatedCodeAsString.replace(/([a-zA-Z]+)[ ]+background(\s)/g, "background $1$2")
+  	updatedCodeAsString = adjustPostfixNotations(updatedCodeAsString);
   	
   	# little trick. This is mangled up in the translation from coffeescript
   	# (1).times ->
