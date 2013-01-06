@@ -75,6 +75,7 @@ module.exports = function (grunt) {
                     'js/translatedFromCoffescript/math.js',
                     'js/translatedFromCoffescript/draw-function-runner.js',
                     'js/code-transformations.js',
+                    'js/translatedFromCoffescript/code-transformations-coffescript-part.js',
                     'js/translatedFromCoffescript/demos-and-tutorials.js',
                     'js/translatedFromCoffescript/autocode.js',
                     'js/translatedFromCoffescript/text-dimming.js',
