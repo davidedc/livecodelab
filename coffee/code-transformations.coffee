@@ -1,4 +1,82 @@
-addCoffescriptPartToCodeTransformer = (CodeTransformer, eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) ->
+createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) ->
+
+
+  CodeTransformer = {}
+  CodeTransformer.compiler = CoffeeCompiler
+  listOfPossibleFunctions = [
+    "function",
+    "alert",
+    # Geometry
+    "rect",
+    "line",
+    "box",
+    "ball",
+    "ballDetail",
+    "peg",
+    # Matrix manipulation
+    "rotate",
+    "move",
+    "scale",
+    "pushMatrix",
+    "popMatrix",
+    "resetMatrix",
+    # Sound
+    "bpm",
+    "play",
+    # Color and drawing styles
+    "fill",
+    "noFill",
+    "stroke",
+    "noStroke",
+    "strokeSize",
+    "animationStyle",
+    "background",
+    "simpleGradient",
+    "color",
+    # Lighting
+    # "ambient","reflect", "refract",
+    "lights",
+    "noLights",
+    "ambientLight",
+    "pointLight",
+    # Calculations
+    "abs",
+    "ceil",
+    "constrain",
+    "dist",
+    "exp",
+    "floor",
+    "lerp",
+    "log",
+    "mag",
+    "map",
+    "max",
+    "min",
+    "norm",
+    "pow",
+    "round",
+    "sq",
+    "sqrt",
+    # Trigonometry
+    "acos",
+    "asin",
+    "atan",
+    "atan2",
+    "cos",
+    "degrees",
+    "radians",
+    "sin",
+    "tan",
+    # Random
+    "random",
+    "randomSeed",
+    "noise",
+    "noiseDetail",
+    "noiseSeed",
+    # do once
+    "addDoOnce",
+    ""]
+
 
   ###
   Stops ticked doOnce blocks from running

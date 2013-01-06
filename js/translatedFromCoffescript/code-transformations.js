@@ -1,6 +1,173 @@
-var addCoffescriptPartToCodeTransformer;
+var createCodeTransformer;
 
-addCoffescriptPartToCodeTransformer = function(CodeTransformer, eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) {
+createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) {
+  var CodeTransformer, adjustPostfixNotations, doesProgramContainStringsOrComments, listOfPossibleFunctions;
+  CodeTransformer = {};
+  CodeTransformer.compiler = CoffeeCompiler;
+  listOfPossibleFunctions = ["function", "alert", "rect", "line", "box", "ball", "ballDetail", "peg", "rotate", "move", "scale", "pushMatrix", "popMatrix", "resetMatrix", "bpm", "play", "fill", "noFill", "stroke", "noStroke", "strokeSize", "animationStyle", "background", "simpleGradient", "color", "lights", "noLights", "ambientLight", "pointLight", "abs", "ceil", "constrain", "dist", "exp", "floor", "lerp", "log", "mag", "map", "max", "min", "norm", "pow", "round", "sq", "sqrt", "acos", "asin", "atan", "atan2", "cos", "degrees", "radians", "sin", "tan", "random", "randomSeed", "noise", "noiseDetail", "noiseSeed", "addDoOnce", ""];
+  /*
+    Stops ticked doOnce blocks from running
+    
+    doOnce statements which have a tick mark next to them
+    are not run. This is achieved by replacing the line with
+    the "doOnce" with "if false" or "//" depending on whether
+    the doOnce is a multiline or an inline one, like so:
+    ✓doOnce ->
+    background 255
+    fill 255,0,0
+    ✓doOnce -> ball
+    becomes:
+    if false ->
+    background 255
+    fill 255,0,0
+    //doOnce -> ball
+    
+    @param {string} code    the code to re-write
+    
+    @returns {string}
+  */
+
+  CodeTransformer.removeTickedDoOnce = function(code) {
+    var newCode;
+    newCode = void 0;
+    newCode = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false");
+    newCode = newCode.replace(/\u2713/g, "//");
+    return newCode;
+  };
+  CodeTransformer.addTracingInstructionsToDoOnceBlocks = function(updatedCodeAsString) {
+    var elaboratedSourceByLine, iteratingOverSource;
+    elaboratedSourceByLine = void 0;
+    iteratingOverSource = void 0;
+    if (updatedCodeAsString.indexOf("doOnce") > -1) {
+      elaboratedSourceByLine = updatedCodeAsString.split("\n");
+      iteratingOverSource = 0;
+      while (iteratingOverSource < elaboratedSourceByLine.length) {
+        elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/g, "$1;addDoOnce(" + iteratingOverSource + "); (1+0).times -> $2");
+        if (elaboratedSourceByLine[iteratingOverSource].match(/^(\s*)doOnce[ ]*\->[ ]*$/g)) {
+          elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*$/g, "$1(1+0).times ->");
+          elaboratedSourceByLine[iteratingOverSource + 1] = elaboratedSourceByLine[iteratingOverSource + 1].replace(/^(\s*)(.+)$/g, "$1;addDoOnce(" + iteratingOverSource + "); $2");
+        }
+        iteratingOverSource += 1;
+      }
+      updatedCodeAsString = elaboratedSourceByLine.join("\n");
+    }
+    return updatedCodeAsString;
+  };
+  doesProgramContainStringsOrComments = function(updatedCodeAsString) {
+    var characterBeingExamined, copyOfUpdatedCodeAsString, nextCharacterBeingExamined;
+    copyOfUpdatedCodeAsString = updatedCodeAsString;
+    characterBeingExamined = void 0;
+    nextCharacterBeingExamined = void 0;
+    while (copyOfUpdatedCodeAsString.length) {
+      characterBeingExamined = copyOfUpdatedCodeAsString.charAt(0);
+      nextCharacterBeingExamined = copyOfUpdatedCodeAsString.charAt(1);
+      if (characterBeingExamined === "'" || characterBeingExamined === "\"" || (characterBeingExamined === "/" && (nextCharacterBeingExamined === "*" || nextCharacterBeingExamined === "/"))) {
+        return true;
+      }
+      copyOfUpdatedCodeAsString = copyOfUpdatedCodeAsString.slice(1);
+    }
+  };
+  CodeTransformer.stripCommentsAndCheckBasicSyntax = function(updatedCodeAsString) {
+    var aposCount, characterBeingExamined, codeWithoutComments, codeWithoutStringsOrComments, curlyBrackCount, programHasBasicError, quoteCount, reasonOfBasicError, roundBrackCount, squareBrackCount;
+    codeWithoutComments = void 0;
+    codeWithoutStringsOrComments = void 0;
+    if (doesProgramContainStringsOrComments(updatedCodeAsString)) {
+      updatedCodeAsString = updatedCodeAsString.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')|(\/\/[^\n]*\n)|(\/\*(?:(?!\*\/)(?:.|\n))*\*\/)/g, function(all, quoted, aposed, singleComment, comment) {
+        var cycleToRebuildNewLines, numberOfLinesInMultilineComment, rebuiltNewLines;
+        numberOfLinesInMultilineComment = void 0;
+        rebuiltNewLines = void 0;
+        cycleToRebuildNewLines = void 0;
+        if (quoted) {
+          return quoted;
+        }
+        if (aposed) {
+          return aposed;
+        }
+        if (singleComment) {
+          return "\n";
+        }
+        numberOfLinesInMultilineComment = comment.split("\n").length - 1;
+        rebuiltNewLines = "";
+        cycleToRebuildNewLines = 0;
+        while (cycleToRebuildNewLines < numberOfLinesInMultilineComment) {
+          rebuiltNewLines = rebuiltNewLines + "\n";
+          cycleToRebuildNewLines += 1;
+        }
+        return rebuiltNewLines;
+      });
+      codeWithoutComments = updatedCodeAsString;
+      codeWithoutStringsOrComments = updatedCodeAsString.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')/g, "");
+    } else {
+      codeWithoutStringsOrComments = updatedCodeAsString;
+    }
+    aposCount = 0;
+    quoteCount = 0;
+    roundBrackCount = 0;
+    curlyBrackCount = 0;
+    squareBrackCount = 0;
+    characterBeingExamined = void 0;
+    reasonOfBasicError = void 0;
+    while (codeWithoutStringsOrComments.length) {
+      characterBeingExamined = codeWithoutStringsOrComments.charAt(0);
+      if (characterBeingExamined === "'") {
+        aposCount += 1;
+      } else if (characterBeingExamined === "\"") {
+        quoteCount += 1;
+      } else if (characterBeingExamined === "(" || characterBeingExamined === ")") {
+        roundBrackCount += 1;
+      } else if (characterBeingExamined === "{" || characterBeingExamined === "}") {
+        curlyBrackCount += 1;
+      } else {
+        if (characterBeingExamined === "[" || characterBeingExamined === "]") {
+          squareBrackCount += 1;
+        }
+      }
+      codeWithoutStringsOrComments = codeWithoutStringsOrComments.slice(1);
+    }
+    if (aposCount & 1 || quoteCount & 1 || roundBrackCount & 1 || curlyBrackCount & 1 || squareBrackCount & 1) {
+      programHasBasicError = true;
+      if (aposCount & 1) {
+        reasonOfBasicError = "Missing '";
+      }
+      if (quoteCount & 1) {
+        reasonOfBasicError = "Missing \"";
+      }
+      if (roundBrackCount & 1) {
+        reasonOfBasicError = "Unbalanced ()";
+      }
+      if (curlyBrackCount & 1) {
+        reasonOfBasicError = "Unbalanced {}";
+      }
+      if (squareBrackCount & 1) {
+        reasonOfBasicError = "Unbalanced []";
+      }
+      eventRouter.trigger("compile-time-error-thrown", reasonOfBasicError);
+      return null;
+    }
+    return updatedCodeAsString;
+  };
+  /*
+    Some of the functions can be used with postfix notation
+    
+    e.g.
+    
+    60 bpm
+    red fill
+    yellow stroke
+    black background
+    
+    We need to switch this round before coffee script compilation
+  */
+
+  adjustPostfixNotations = function(code) {
+    var elaboratedSource;
+    elaboratedSource = void 0;
+    elaboratedSource = code.replace(/(\d+)[ ]+bpm(\s)/g, "bpm $1$2");
+    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+fill(\s)/g, "fill $1$2");
+    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+stroke(\s)/g, "stroke $1$2");
+    elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+background(\s)/g, "background $1$2");
+    return elaboratedSource;
+  };
   CodeTransformer.updateCode = function(updatedCodeAsString) {
     var aposCount, characterBeingExamined, compiledOutput, curlyBrackCount, elaboratedSource, elaboratedSourceByLine, errResults, functionFromCompiledCode, iteratingOverSource, nextCharacterBeingExamined, programHasBasicError, quoteCount, reasonOfBasicError, roundBrackCount, squareBrackCount;
     elaboratedSource = void 0;
@@ -40,10 +207,7 @@ addCoffescriptPartToCodeTransformer = function(CodeTransformer, eventRouter, Cof
       return;
     }
     elaboratedSource = updatedCodeAsString;
-    updatedCodeAsString = updatedCodeAsString.replace(/(\d+)[ ]+bpm(\s)/g, "bpm $1$2");
-    updatedCodeAsString = updatedCodeAsString.replace(/([a-zA-Z]+)[ ]+fill(\s)/g, "fill $1$2");
-    updatedCodeAsString = updatedCodeAsString.replace(/([a-zA-Z]+)[ ]+stroke(\s)/g, "stroke $1$2");
-    updatedCodeAsString = updatedCodeAsString.replace(/([a-zA-Z]+)[ ]+background(\s)/g, "background $1$2");
+    updatedCodeAsString = adjustPostfixNotations(updatedCodeAsString);
     updatedCodeAsString = updatedCodeAsString.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->");
     updatedCodeAsString = CodeTransformer.addTracingInstructionsToDoOnceBlocks(updatedCodeAsString);
     updatedCodeAsString = updatedCodeAsString.replace(/^(\s*)([a-z]+[a-zA-Z0-9]*)[ ]*$/gm, "$1;$2()");

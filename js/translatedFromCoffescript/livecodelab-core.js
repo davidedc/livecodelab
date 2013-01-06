@@ -14,7 +14,6 @@ createLiveCodeLabCore = function(paramsObject) {
   liveCodeLabCoreInstance.BackgroundPainter = createBackgroundPainter(paramsObject.eventRouter, paramsObject.canvasForBackground, liveCodeLabCoreInstance);
   liveCodeLabCoreInstance.DrawFunctionRunner = createDrawFunctionRunner(paramsObject.eventRouter, liveCodeLabCoreInstance);
   liveCodeLabCoreInstance.CodeTransformer = createCodeTransformer(paramsObject.eventRouter, CoffeeScript, liveCodeLabCoreInstance);
-  liveCodeLabCoreInstance.CodeTransformer = addCoffescriptPartToCodeTransformer(liveCodeLabCoreInstance.CodeTransformer, paramsObject.eventRouter, CoffeeScript, liveCodeLabCoreInstance);
   liveCodeLabCoreInstance.AnimationLoop = createAnimationLoop(paramsObject.eventRouter, paramsObject.statsWidget, liveCodeLabCoreInstance);
   liveCodeLabCoreInstance.ThreeJsSystem = createThreeJsSystem(Detector, THREEx, paramsObject.blendedThreeJsSceneCanvas, paramsObject.forceCanvasRenderer, paramsObject.testMode, liveCodeLabCoreInstance.THREE);
   liveCodeLabCoreInstance.MatrixCommands = createMatrixCommands(liveCodeLabCoreInstance.THREE, liveCodeLabCoreInstance);

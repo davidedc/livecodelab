@@ -113,14 +113,9 @@ createLiveCodeLabCore = (paramsObject) ->
   liveCodeLabCoreInstance.DrawFunctionRunner =
     createDrawFunctionRunner(paramsObject.eventRouter, liveCodeLabCoreInstance)
   
-  # this one also interacts with GraphicsCommands, DrawFunctionRunner at runtime.
-  liveCodeLabCoreInstance.CodeTransformer =
-    createCodeTransformer(paramsObject.eventRouter, CoffeeScript,
-    liveCodeLabCoreInstance)
-
   # temporary to migrate CodeTransformed code from js to coffeescript.
   liveCodeLabCoreInstance.CodeTransformer =
-    addCoffescriptPartToCodeTransformer(liveCodeLabCoreInstance.CodeTransformer, paramsObject.eventRouter, CoffeeScript,
+    createCodeTransformer(paramsObject.eventRouter, CoffeeScript,
     liveCodeLabCoreInstance)
   
   # this one also interacts with TimeKeeper, MatrixCommands, BlendControls,
