@@ -116,34 +116,6 @@ var createCodeTransformer = function (eventRouter, CoffeeCompiler, liveCodeLabCo
 
 
     /**
-     * Stops ticked doOnce blocks from running
-     *
-     * doOnce statements which have a tick mark next to them
-     * are not run. This is achieved by replacing the line with
-     * the "doOnce" with "if false" or "//" depending on whether
-     * the doOnce is a multiline or an inline one, like so:
-     *      ✓doOnce ->
-     *        background 255
-     *        fill 255,0,0
-     *      ✓doOnce -> ball
-     * becomes:
-     *      if false ->
-     *        background 255
-     *        fill 255,0,0
-     *      //doOnce -> ball
-     *
-     * @param {string} code    the code to re-write
-     *
-     * @returns {string}
-     */
-    CodeTransformer.removeTickedDoOnce = function (code) { // was a preprocessing part
-        var newCode;
-        newCode = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false");
-        newCode = newCode.replace(/\u2713/g, "//");
-        return newCode;
-    };
-
-    /**
      * Some of the functions can be used with postfix notation
      *
      * e.g.
