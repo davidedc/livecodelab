@@ -117,6 +117,11 @@ createLiveCodeLabCore = (paramsObject) ->
   liveCodeLabCoreInstance.CodeTransformer =
     createCodeTransformer(paramsObject.eventRouter, CoffeeScript,
     liveCodeLabCoreInstance)
+
+  # temporary to migrate CodeTransformed code from js to coffeescript.
+  liveCodeLabCoreInstance.CodeTransformer =
+    addCoffescriptPartToCodeTransformer(liveCodeLabCoreInstance.CodeTransformer, paramsObject.eventRouter, CoffeeScript,
+    liveCodeLabCoreInstance)
   
   # this one also interacts with TimeKeeper, MatrixCommands, BlendControls,
   #    SoundSystem,
