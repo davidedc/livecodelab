@@ -3,6 +3,8 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
 
   CodeTransformer = {}
   CodeTransformer.compiler = CoffeeCompiler
+  
+  # note that this is not used anywhere for the time being.
   listOfPossibleFunctions = [
     "function",
     "alert",
