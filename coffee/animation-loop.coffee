@@ -1,7 +1,7 @@
 #jslint browser: true 
 
-# The animation loop is the loop that happens in each "frame", e.g. every 30 to 60 times
-# (or, indeed, "frames") per second - which is the following:
+# The animation loop is the loop that make each "frame" happen, i.e. whatever happend
+# every 30 to 60 times (or, indeed, "frames") per second - which is the following:
 # * the next frame is scheduled
 # * the current program (i.e. a draw() Function is run).
 #   Note that this might not be the very latest
@@ -24,25 +24,40 @@
 # * blinking of the cursor
 
 frame = 0
-AnimationLoop = (eventRouter, stats, liveCodeLabCoreInstance) ->
+AnimationLoop = (eventRouter, stats, liveCodeLabCoreInstance,
+  forceUseOfTimeoutForScheduling = false) ->
   "use strict"
+  
+  # Some basic initialisations and constant definitions
   AnimationLoop = {}
   loopInterval = undefined
-  
-  # if you put to -1 then it means that
-  # requestAnimationFrame will try to go as fast as it
-  # can.
-  AnimationLoop.wantedFramesPerSecond = -1
-  AnimationLoop.useRequestAnimationFrame = true
+  AnimationLoop.AS_HIGH_FPS_AS_POSSIBLE = -1
+  AnimationLoop.wantedFramesPerSecond = AnimationLoop.AS_HIGH_FPS_AS_POSSIBLE
+  AnimationLoop.forceUseOfTimeoutForScheduling = forceUseOfTimeoutForScheduling
 
-  scheduleNextFrame = ->    
-    # loop on request animation loop
-    # - it has to be at the begining of the function
-    # - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
-    # requestAnimationFrame seems to only do 60 fps, which in my case is too much,
-    # I rather prefer to have a slower framerate but steadier.
-    if AnimationLoop.useRequestAnimationFrame
-      if AnimationLoop.wantedFramesPerSecond is -1
+  # There are two different ways to schedule the next frame:
+  # 1) using a native window.requestAnimationFrame implementation (supported by some
+  #    browsers)
+  # 2) using timeouts
+  #
+  # Notes and constraints:
+  # * window.requestAnimationFrame cannot be used if user wants a specific fps (i.e. you
+  #   can't pick a specific framerate)
+  # * for browser that don't have a window.requestAnimationFrame, a shim at the end
+  #   of the page replaces that with an implementation based on timeouts
+  # * the user can decide to force the use of timeouts (for testing purposes)
+  scheduleNextFrame = ->
+    if AnimationLoop.forceUseOfTimeoutForScheduling
+      if AnimationLoop.wantedFramesPerSecond is AnimationLoop.AS_HIGH_FPS_AS_POSSIBLE
+        setTimeout (->
+          AnimationLoop.animate()
+        ), 1000 / 60
+      else
+        setTimeout (->
+          AnimationLoop.animate()
+        ), 1000 / AnimationLoop.wantedFramesPerSecond
+    else
+      if AnimationLoop.wantedFramesPerSecond is AnimationLoop.AS_HIGH_FPS_AS_POSSIBLE
         window.requestAnimationFrame ->
           AnimationLoop.animate()
       else
@@ -51,20 +66,10 @@ AnimationLoop = (eventRouter, stats, liveCodeLabCoreInstance) ->
             window.requestAnimationFrame ->
               AnimationLoop.animate()
           , 1000 / AnimationLoop.wantedFramesPerSecond)
-    else
-      if AnimationLoop.wantedFramesPerSecond is -1
-        setTimeout (->
-          AnimationLoop.animate()
-        ), 1000 / 60
-      else
-        setTimeout (->
-          AnimationLoop.animate()
-        ), 1000 / AnimationLoop.wantedFramesPerSecond
 
   
   # animation loop
   AnimationLoop.animate = ->
-    drawFunction = undefined
     liveCodeLabCoreInstance.MatrixCommands.resetMatrixStack()
     
     # the sound list needs to be cleaned
@@ -135,3 +140,25 @@ AnimationLoop = (eventRouter, stats, liveCodeLabCoreInstance) ->
     stats.update()  if stats isnt null
 
   AnimationLoop
+
+# Shim for browser that don't have requestAnimationFrame, see
+# http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+lastTime = 0
+vendors = ["ms", "moz", "webkit", "o"]
+x = 0
+while x < vendors.length and not window.requestAnimationFrame
+  window.requestAnimationFrame = window[vendors[x] + "RequestAnimationFrame"]
+  window.cancelAnimationFrame = window[vendors[x] + "CancelAnimationFrame"] or window[vendors[x] + "CancelRequestAnimationFrame"]
+  ++x
+unless window.requestAnimationFrame
+  window.requestAnimationFrame = (callback, element) ->
+    currTime = new Date().getTime()
+    timeToCall = Math.max(0, 16 - (currTime - lastTime))
+    id = window.setTimeout(->
+      callback currTime + timeToCall
+    , timeToCall)
+    lastTime = currTime + timeToCall
+    id
+unless window.cancelAnimationFrame
+  window.cancelAnimationFrame = (id) ->
+    clearTimeout id
