@@ -104,7 +104,8 @@ createAutocoder = (eventRouter, editor, colourNames) ->
     
     @mutate = ->
       idx = Math.floor(Math.random() * colourNames.length)
-      idx = Math.floor(Math.random() * colourNames.length)  while @string is colourNames[idx]
+      while @string is colourNames[idx]
+        idx = Math.floor(Math.random() * colourNames.length)
       @string = colourNames[idx]
     null
 
@@ -383,7 +384,8 @@ createAutocoder = (eventRouter, editor, colourNames) ->
     state.continuation rest
 
   
-  # Traverses the Tokens array and concatenates the strings, hence generating a possibly mutated program.
+  # Traverses the Tokens array and concatenates the strings,
+  # hence generating a possibly mutated program.
   emit = (stream) ->
     ret = ""
     scanningTheStream = undefined
@@ -402,7 +404,8 @@ createAutocoder = (eventRouter, editor, colourNames) ->
       false
 
   
-  # Scans the tokens and collects the mutatable ones. Then picks one random and invokes its mutate().
+  # Scans the tokens and collects the mutatable ones.
+  # Then picks one random and invokes its mutate().
   pickMutatableTokenAndMutateIt = (stream) ->
     mutatableTokens = []
     scanningTheStream = undefined
@@ -429,7 +432,8 @@ createAutocoder = (eventRouter, editor, colourNames) ->
     whichOneToChange = Math.floor(Math.random() * numberOfResults) + 1
     editorContent = editorContent.replace(rePattern, (match, text, urlId) ->
       countWhichOneToSwap++
-      return "" + Math.floor(Math.random() * 20) + 1  if countWhichOneToSwap is whichOneToChange
+      if countWhichOneToSwap is whichOneToChange
+        return "" + Math.floor(Math.random() * 20) + 1
       match
     )
     editor.setValue editorContent
@@ -439,24 +443,29 @@ createAutocoder = (eventRouter, editor, colourNames) ->
   #
   # * the program is scanned by a lexer
   # the lexer could maintain/change/act on an user-defined state based on what it
-  # encounters but for the time being that is not used. So for the time being in practice the lexer
+  # encounters but for the time being that is not used.
+  # So for the time being in practice the lexer
   # parses the tokens based on regular expressions without using states.
-  # The definitions of what constitutes a token is defined by regexes in the "rules" section
+  # The definitions of what constitutes a token is defined by regexes in the "rules"
+  # section
   #
-  # * for each token, a function is added to the Token array. For example "rotate 20" creates two
+  # * for each token, a function is added to the Token array. For example "rotate 20"
+  # creates two
   # tokens, which are two functions TRANSLATE and NUM
   #
-  # * each of the "token" functions contains a) a string representation from the text in the program
-  # e.g. in the example above "rotate" and "20" and b) an accessory function for printout of the token and
-  # c) optionally, a function mutate() that changes the string of the field of a) with a mutated string
+  # * each of the "token" functions contains a) a string representation from the text in
+  # the program e.g. in the example above "rotate" and "20" and b) an accessory function
+  # for printout of the token and c) optionally, a function mutate() that changes the
+  # string of the field of a) with a mutated string
   #
-  # * the token list is scanned. Each function is checked for whether it contains a "mutate"
-  # function. If yes, then it's added as a candidate to an "mutatableTokens" array.
+  # * the token list is scanned. Each function is checked for whether it contains a
+  # "mutate" function. If yes, then it's added as a candidate to an "mutatableTokens"
+  # array.
   #
   # * a random option is picked and mutate is ran for that token
   #
-  # * the token list is traversed and the strings are appended one to another, creating the new
-  # mutated program.
+  # * the token list is traversed and the strings are appended one
+  #   to another, creating the new mutated program.
   mutate = ->
     editorContent = editor.getValue()
     newContent = undefined
@@ -480,7 +489,10 @@ createAutocoder = (eventRouter, editor, colourNames) ->
       autocoder.active = active
     if autocoder.active
       autocoderMutateTimeout = setInterval(autocoderMutate, 1000)
-      eventRouter.trigger "load-program", "cubesAndSpikes"  if editor.getValue() is "" or ((window.location.hash.indexOf("bookmark") isnt -1) and (window.location.hash.indexOf("autocodeTutorial") isnt -1))
+      if editor.getValue() is "" or
+          ((window.location.hash.indexOf("bookmark") isnt -1) and
+          (window.location.hash.indexOf("autocodeTutorial") isnt -1))
+        eventRouter.trigger "load-program", "cubesAndSpikes"
     else
       clearInterval autocoderMutateTimeout
     eventRouter.trigger "autocoder-button-pressed", autocoder.active
