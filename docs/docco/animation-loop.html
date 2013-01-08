@@ -1,6 +1,6 @@
 <!DOCTYPE html>  <html> <head>   <title>animation-loop.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               animation-loop.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true </p>             </td>             <td class="code">               <div class="highlight"><pre>
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>The animation loop is the loop that happens in each "frame", e.g. every 30 to 60 times
-(or, indeed, "frames") per second - which is the following:
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>The animation loop is the loop that make each "frame" happen, i.e. whatever happend
+every 30 to 60 times (or, indeed, "frames") per second - which is the following:
 * the next frame is scheduled
 * the current program (i.e. a draw() Function is run).
   Note that this might not be the very latest
@@ -22,23 +22,38 @@
   animation loop.
 * blinking of the cursor</p>             </td>             <td class="code">               <div class="highlight"><pre>
 frame = <span class="number">0</span>
-<span class="function"><span class="title">AnimationLoop</span></span> = (eventRouter, stats, liveCodeLabCoreInstance) -&gt;
+AnimationLoop = (eventRouter, stats, liveCodeLabCoreInstance,
+  forceUseOfTimeoutForScheduling = <span class="literal">false</span>) -&gt;
   <span class="string">"use strict"</span>
-  AnimationLoop = {}
-  loopInterval = <span class="literal">undefined</span>
   
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>if you put to -1 then it means that
-requestAnimationFrame will try to go as fast as it
-can.</p>             </td>             <td class="code">               <div class="highlight"><pre>  AnimationLoop.wantedFramesPerSecond = -<span class="number">1</span>
-  AnimationLoop.useRequestAnimationFrame = <span class="literal">true</span>
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Some basic initialisations and constant definitions</p>             </td>             <td class="code">               <div class="highlight"><pre>  AnimationLoop = {}
+  loopInterval = <span class="literal">undefined</span>
+  AnimationLoop.AS_HIGH_FPS_AS_POSSIBLE = -<span class="number">1</span>
+  AnimationLoop.wantedFramesPerSecond = AnimationLoop.AS_HIGH_FPS_AS_POSSIBLE
+  AnimationLoop.forceUseOfTimeoutForScheduling = forceUseOfTimeoutForScheduling
 
-  <span class="function"><span class="title">scheduleNextFrame</span></span> = -&gt;    
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>loop on request animation loop
-- it has to be at the begining of the function
-- see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
-requestAnimationFrame seems to only do 60 fps, which in my case is too much,
-I rather prefer to have a slower framerate but steadier.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> AnimationLoop.useRequestAnimationFrame
-      <span class="keyword">if</span> AnimationLoop.wantedFramesPerSecond <span class="keyword">is</span> -<span class="number">1</span>
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>There are two different ways to schedule the next frame:
+1) using a native window.requestAnimationFrame implementation (supported by some
+   browsers)
+2) using timeouts</p>
+
+<p>Notes and constraints:
+* window.requestAnimationFrame cannot be used if user wants a specific fps (i.e. you
+  can't pick a specific framerate)
+* for browser that don't have a window.requestAnimationFrame, a shim at the end
+  of the page replaces that with an implementation based on timeouts
+* the user can decide to force the use of timeouts (for testing purposes)</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="function"><span class="title">scheduleNextFrame</span></span> = -&gt;
+    <span class="keyword">if</span> AnimationLoop.forceUseOfTimeoutForScheduling
+      <span class="keyword">if</span> AnimationLoop.wantedFramesPerSecond <span class="keyword">is</span> AnimationLoop.AS_HIGH_FPS_AS_POSSIBLE
+        setTimeout (-&gt;
+          AnimationLoop.animate()
+        ), <span class="number">1000</span> / <span class="number">60</span>
+      <span class="keyword">else</span>
+        setTimeout (-&gt;
+          AnimationLoop.animate()
+        ), <span class="number">1000</span> / AnimationLoop.wantedFramesPerSecond
+    <span class="keyword">else</span>
+      <span class="keyword">if</span> AnimationLoop.wantedFramesPerSecond <span class="keyword">is</span> AnimationLoop.AS_HIGH_FPS_AS_POSSIBLE
         window.requestAnimationFrame -&gt;
           AnimationLoop.animate()
       <span class="keyword">else</span>
@@ -47,19 +62,9 @@ I rather prefer to have a slower framerate but steadier.</p>             </td>  
             window.requestAnimationFrame -&gt;
               AnimationLoop.animate()
           , <span class="number">1000</span> / AnimationLoop.wantedFramesPerSecond)
-    <span class="keyword">else</span>
-      <span class="keyword">if</span> AnimationLoop.wantedFramesPerSecond <span class="keyword">is</span> -<span class="number">1</span>
-        setTimeout (-&gt;
-          AnimationLoop.animate()
-        ), <span class="number">1000</span> / <span class="number">60</span>
-      <span class="keyword">else</span>
-        setTimeout (-&gt;
-          AnimationLoop.animate()
-        ), <span class="number">1000</span> / AnimationLoop.wantedFramesPerSecond
 
   
 </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>animation loop</p>             </td>             <td class="code">               <div class="highlight"><pre>  AnimationLoop.<span class="function"><span class="title">animate</span></span> = -&gt;
-    drawFunction = <span class="literal">undefined</span>
     liveCodeLabCoreInstance.MatrixCommands.resetMatrixStack()
     
 </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>the sound list needs to be cleaned
@@ -121,4 +126,25 @@ function has been run.</p>             </td>             <td class="code">      
 </pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>update stats</p>             </td>             <td class="code">               <div class="highlight"><pre>    stats.update()  <span class="keyword">if</span> stats <span class="keyword">isnt</span> <span class="literal">null</span>
 
   AnimationLoop
+
+</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>Shim for browser that don't have requestAnimationFrame, see
+http://paulirish.com/2011/requestanimationframe-for-smart-animating/</p>             </td>             <td class="code">               <div class="highlight"><pre>lastTime = <span class="number">0</span>
+vendors = [<span class="string">"ms"</span>, <span class="string">"moz"</span>, <span class="string">"webkit"</span>, <span class="string">"o"</span>]
+x = <span class="number">0</span>
+<span class="keyword">while</span> x &lt; vendors.length <span class="keyword">and</span> <span class="keyword">not</span> window.requestAnimationFrame
+  window.requestAnimationFrame = window[vendors[x] + <span class="string">"RequestAnimationFrame"</span>]
+  window.cancelAnimationFrame = window[vendors[x] + <span class="string">"CancelAnimationFrame"</span>] <span class="keyword">or</span> window[vendors[x] + <span class="string">"CancelRequestAnimationFrame"</span>]
+  ++x
+<span class="keyword">unless</span> window.requestAnimationFrame
+  window.<span class="function"><span class="title">requestAnimationFrame</span></span> = (callback, element) -&gt;
+    currTime = <span class="keyword">new</span> Date().getTime()
+    timeToCall = Math.max(<span class="number">0</span>, <span class="number">16</span> - (currTime - lastTime))
+    id = window.setTimeout(-&gt;
+      callback currTime + timeToCall
+    , timeToCall)
+    lastTime = currTime + timeToCall
+    id
+<span class="keyword">unless</span> window.cancelAnimationFrame
+  window.<span class="function"><span class="title">cancelAnimationFrame</span></span> = (id) -&gt;
+    clearTimeout id
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
