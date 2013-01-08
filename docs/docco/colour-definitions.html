@@ -167,7 +167,8 @@ normal material.</p>             </td>             <td class="code">            
   <span class="keyword">while</span> ColourIteration &lt; colourNamesValues.length
     
 </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Adding colours to the global namespace is avoidable once we have a "scope" object in
-which the code will be executed, then we can just dynamically add fields to that scope</p>             </td>             <td class="code">               <div class="highlight"><pre>    window[colourNamesValues[ColourIteration]] = parseInt(colourNamesValues[ColourIteration + <span class="number">1</span>], <span class="number">16</span>)
+which the code will be executed, then we can just dynamically add fields to that scope</p>             </td>             <td class="code">               <div class="highlight"><pre>    window[colourNamesValues[ColourIteration]] =
+      parseInt(colourNamesValues[ColourIteration + <span class="number">1</span>], <span class="number">16</span>)
     ColourNames.push colourNamesValues[ColourIteration]
     ColourIteration += <span class="number">2</span>
   ColourNames

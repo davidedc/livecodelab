@@ -1,7 +1,7 @@
 var createCodeTransformer;
 
 createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) {
-  var CodeTransformer, adjustPostfixNotations, doesProgramContainStringsOrComments, listOfPossibleFunctions;
+  var CodeTransformer, addTracingInstructionsToDoOnceBlocks, adjustPostfixNotations, doesProgramContainStringsOrComments, listOfPossibleFunctions, removeTickedDoOnce, stripCommentsAndCheckBasicSyntax;
   CodeTransformer = {};
   CodeTransformer.compiler = CoffeeCompiler;
   listOfPossibleFunctions = ["function", "alert", "rect", "line", "box", "ball", "ballDetail", "peg", "rotate", "move", "scale", "pushMatrix", "popMatrix", "resetMatrix", "bpm", "play", "fill", "noFill", "stroke", "noStroke", "strokeSize", "animationStyle", "background", "simpleGradient", "color", "lights", "noLights", "ambientLight", "pointLight", "abs", "ceil", "constrain", "dist", "exp", "floor", "lerp", "log", "mag", "map", "max", "min", "norm", "pow", "round", "sq", "sqrt", "acos", "asin", "atan", "atan2", "cos", "degrees", "radians", "sin", "tan", "random", "randomSeed", "noise", "noiseDetail", "noiseSeed", "addDoOnce", ""];
@@ -27,19 +27,19 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
     @returns {string}
   */
 
-  CodeTransformer.removeTickedDoOnce = function(code) {
+  removeTickedDoOnce = function(code) {
     var newCode;
     newCode = void 0;
     newCode = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false");
     newCode = newCode.replace(/\u2713/g, "//");
     return newCode;
   };
-  CodeTransformer.addTracingInstructionsToDoOnceBlocks = function(updatedCodeAsString) {
+  addTracingInstructionsToDoOnceBlocks = function(code) {
     var elaboratedSourceByLine, iteratingOverSource;
     elaboratedSourceByLine = void 0;
     iteratingOverSource = void 0;
-    if (updatedCodeAsString.indexOf("doOnce") > -1) {
-      elaboratedSourceByLine = updatedCodeAsString.split("\n");
+    if (code.indexOf("doOnce") > -1) {
+      elaboratedSourceByLine = code.split("\n");
       iteratingOverSource = 0;
       while (iteratingOverSource < elaboratedSourceByLine.length) {
         elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/g, "$1;addDoOnce(" + iteratingOverSource + "); (1+0).times -> $2");
@@ -49,30 +49,30 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
         }
         iteratingOverSource += 1;
       }
-      updatedCodeAsString = elaboratedSourceByLine.join("\n");
+      code = elaboratedSourceByLine.join("\n");
     }
-    return updatedCodeAsString;
+    return code;
   };
-  doesProgramContainStringsOrComments = function(updatedCodeAsString) {
-    var characterBeingExamined, copyOfUpdatedCodeAsString, nextCharacterBeingExamined;
-    copyOfUpdatedCodeAsString = updatedCodeAsString;
+  doesProgramContainStringsOrComments = function(code) {
+    var characterBeingExamined, copyOfcode, nextCharacterBeingExamined;
+    copyOfcode = code;
     characterBeingExamined = void 0;
     nextCharacterBeingExamined = void 0;
-    while (copyOfUpdatedCodeAsString.length) {
-      characterBeingExamined = copyOfUpdatedCodeAsString.charAt(0);
-      nextCharacterBeingExamined = copyOfUpdatedCodeAsString.charAt(1);
+    while (copyOfcode.length) {
+      characterBeingExamined = copyOfcode.charAt(0);
+      nextCharacterBeingExamined = copyOfcode.charAt(1);
       if (characterBeingExamined === "'" || characterBeingExamined === "\"" || (characterBeingExamined === "/" && (nextCharacterBeingExamined === "*" || nextCharacterBeingExamined === "/"))) {
         return true;
       }
-      copyOfUpdatedCodeAsString = copyOfUpdatedCodeAsString.slice(1);
+      copyOfcode = copyOfcode.slice(1);
     }
   };
-  CodeTransformer.stripCommentsAndCheckBasicSyntax = function(updatedCodeAsString) {
+  stripCommentsAndCheckBasicSyntax = function(code) {
     var aposCount, characterBeingExamined, codeWithoutComments, codeWithoutStringsOrComments, curlyBrackCount, programHasBasicError, quoteCount, reasonOfBasicError, roundBrackCount, squareBrackCount;
     codeWithoutComments = void 0;
     codeWithoutStringsOrComments = void 0;
-    if (doesProgramContainStringsOrComments(updatedCodeAsString)) {
-      updatedCodeAsString = updatedCodeAsString.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')|(\/\/[^\n]*\n)|(\/\*(?:(?!\*\/)(?:.|\n))*\*\/)/g, function(all, quoted, aposed, singleComment, comment) {
+    if (doesProgramContainStringsOrComments(code)) {
+      code = code.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')|(\/\/[^\n]*\n)|(\/\*(?:(?!\*\/)(?:.|\n))*\*\/)/g, function(all, quoted, aposed, singleComment, comment) {
         var cycleToRebuildNewLines, numberOfLinesInMultilineComment, rebuiltNewLines;
         numberOfLinesInMultilineComment = void 0;
         rebuiltNewLines = void 0;
@@ -95,10 +95,10 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
         }
         return rebuiltNewLines;
       });
-      codeWithoutComments = updatedCodeAsString;
-      codeWithoutStringsOrComments = updatedCodeAsString.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')/g, "");
+      codeWithoutComments = code;
+      codeWithoutStringsOrComments = code.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')/g, "");
     } else {
-      codeWithoutStringsOrComments = updatedCodeAsString;
+      codeWithoutStringsOrComments = code;
     }
     aposCount = 0;
     quoteCount = 0;
@@ -117,10 +117,8 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
         roundBrackCount += 1;
       } else if (characterBeingExamined === "{" || characterBeingExamined === "}") {
         curlyBrackCount += 1;
-      } else {
-        if (characterBeingExamined === "[" || characterBeingExamined === "]") {
-          squareBrackCount += 1;
-        }
+      } else if (characterBeingExamined === "[" || characterBeingExamined === "]") {
+        squareBrackCount += 1;
       }
       codeWithoutStringsOrComments = codeWithoutStringsOrComments.slice(1);
     }
@@ -144,7 +142,7 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
       eventRouter.trigger("compile-time-error-thrown", reasonOfBasicError);
       return null;
     }
-    return updatedCodeAsString;
+    return code;
   };
   /*
     Some of the functions can be used with postfix notation
@@ -168,7 +166,7 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
     elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+background(\s)/g, "background $1$2");
     return elaboratedSource;
   };
-  CodeTransformer.updateCode = function(updatedCodeAsString) {
+  CodeTransformer.updateCode = function(code) {
     var aposCount, characterBeingExamined, compiledOutput, curlyBrackCount, elaboratedSource, elaboratedSourceByLine, errResults, functionFromCompiledCode, iteratingOverSource, nextCharacterBeingExamined, programHasBasicError, quoteCount, reasonOfBasicError, roundBrackCount, squareBrackCount;
     elaboratedSource = void 0;
     errResults = void 0;
@@ -182,7 +180,7 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
     elaboratedSourceByLine = void 0;
     iteratingOverSource = void 0;
     reasonOfBasicError = void 0;
-    CodeTransformer.currentCodeString = updatedCodeAsString;
+    CodeTransformer.currentCodeString = code;
     if (CodeTransformer.currentCodeString === "") {
       liveCodeLabCoreInstance.GraphicsCommands.resetTheSpinThingy = true;
       programHasBasicError = false;
@@ -193,7 +191,7 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
       liveCodeLabCoreInstance.DrawFunctionRunner.lastStableDrawFunction = null;
       return functionFromCompiledCode;
     }
-    updatedCodeAsString = CodeTransformer.removeTickedDoOnce(updatedCodeAsString);
+    code = removeTickedDoOnce(code);
     /*
       	The CodeChecker will check for unbalanced brackets
       	and unfinished strings
@@ -202,89 +200,89 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
       	and display an error message
     */
 
-    updatedCodeAsString = CodeTransformer.stripCommentsAndCheckBasicSyntax(updatedCodeAsString);
-    if (updatedCodeAsString === null) {
+    code = stripCommentsAndCheckBasicSyntax(code);
+    if (code === null) {
       return;
     }
-    elaboratedSource = updatedCodeAsString;
-    updatedCodeAsString = adjustPostfixNotations(updatedCodeAsString);
-    updatedCodeAsString = updatedCodeAsString.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->");
-    updatedCodeAsString = CodeTransformer.addTracingInstructionsToDoOnceBlocks(updatedCodeAsString);
-    updatedCodeAsString = updatedCodeAsString.replace(/^(\s*)([a-z]+[a-zA-Z0-9]*)[ ]*$/gm, "$1;$2()");
-    updatedCodeAsString = updatedCodeAsString.replace(/;\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2");
-    updatedCodeAsString = updatedCodeAsString.replace(/\->\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2");
-    if (updatedCodeAsString.match(/[\s\+\;]+draw\s*\(/) || false) {
+    elaboratedSource = code;
+    code = adjustPostfixNotations(code);
+    code = code.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->");
+    code = addTracingInstructionsToDoOnceBlocks(code);
+    code = code.replace(/^(\s*)([a-z]+[a-zA-Z0-9]*)[ ]*$/gm, "$1;$2()");
+    code = code.replace(/;\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2");
+    code = code.replace(/\->\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2");
+    if (code.match(/[\s\+\;]+draw\s*\(/) || false) {
       programHasBasicError = true;
       eventRouter.trigger("compile-time-error-thrown", "You can't call draw()");
       return;
     }
-    updatedCodeAsString = updatedCodeAsString.replace(/;(if)\(\)/g, ";$1");
-    updatedCodeAsString = updatedCodeAsString.replace(/;(else)\(\)/g, ";$1");
-    updatedCodeAsString = updatedCodeAsString.replace(/;(for)\(\)/g, ";$1");
-    updatedCodeAsString = updatedCodeAsString.replace(/\/\//g, "#");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(scale)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(rotate)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(move)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(rect)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(line)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(bpm)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(play)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(pushMatrix)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(popMatrix)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(resetMatrix)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(fill)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(noFill)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(stroke)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(noStroke)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(strokeSize)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(animationStyle)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(simpleGradient)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(background)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(color)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(lights)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(noLights)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(ambientLight)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(pointLight)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(ball)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(ballDetail)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(peg)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(abs)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(ceil)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(constrain)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(dist)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(exp)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(floor)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(lerp)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(log)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(mag)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(map)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(max)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(min)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(norm)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(pow)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(round)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(sq)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(sqrt)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(acos)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(asin)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(atan)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(atan2)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(cos)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(degrees)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(radians)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(sin)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(tan)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(random)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(randomSeed)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(noise)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(noiseDetail)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/([^a-zA-Z0-9])(noiseSeed)(\s)+/g, "$1;$2$3");
-    updatedCodeAsString = updatedCodeAsString.replace(/->(\s+);/g, "->$1");
-    updatedCodeAsString = updatedCodeAsString.replace(/(\sif\s*.*\s*);/g, "$1");
-    updatedCodeAsString = updatedCodeAsString.replace(/(\s);(else\s*if\s*.*\s*);/g, "$1$2");
-    updatedCodeAsString = updatedCodeAsString.replace(/(\s);(else.*\s*);/g, "$1$2");
+    code = code.replace(/;(if)\(\)/g, ";$1");
+    code = code.replace(/;(else)\(\)/g, ";$1");
+    code = code.replace(/;(for)\(\)/g, ";$1");
+    code = code.replace(/\/\//g, "#");
+    code = code.replace(/([^a-zA-Z0-9])(scale)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(rotate)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(move)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(rect)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(line)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(bpm)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(play)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(pushMatrix)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(popMatrix)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(resetMatrix)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(fill)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(noFill)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(stroke)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(noStroke)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(strokeSize)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(animationStyle)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(simpleGradient)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(background)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(color)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(lights)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(noLights)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(ambientLight)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(pointLight)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(ball)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(ballDetail)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(peg)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(abs)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(ceil)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(constrain)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(dist)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(exp)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(floor)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(lerp)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(log)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(mag)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(map)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(max)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(min)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(norm)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(pow)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(round)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(sq)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(sqrt)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(acos)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(asin)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(atan)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(atan2)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(cos)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(degrees)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(radians)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(sin)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(tan)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(random)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(randomSeed)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(noise)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(noiseDetail)(\s)+/g, "$1;$2$3");
+    code = code.replace(/([^a-zA-Z0-9])(noiseSeed)(\s)+/g, "$1;$2$3");
+    code = code.replace(/->(\s+);/g, "->$1");
+    code = code.replace(/(\sif\s*.*\s*);/g, "$1");
+    code = code.replace(/(\s);(else\s*if\s*.*\s*);/g, "$1$2");
+    code = code.replace(/(\s);(else.*\s*);/g, "$1$2");
     try {
-      compiledOutput = CodeTransformer.compiler.compile(updatedCodeAsString, {
+      compiledOutput = CodeTransformer.compiler.compile(code, {
         bare: "on"
       });
     } catch (e) {
