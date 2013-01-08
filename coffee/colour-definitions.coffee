@@ -171,7 +171,8 @@ createColours = ->
     
     # Adding colours to the global namespace is avoidable once we have a "scope" object in
     # which the code will be executed, then we can just dynamically add fields to that scope
-    window[colourNamesValues[ColourIteration]] = parseInt(colourNamesValues[ColourIteration + 1], 16)
+    window[colourNamesValues[ColourIteration]] =
+      parseInt(colourNamesValues[ColourIteration + 1], 16)
     ColourNames.push colourNamesValues[ColourIteration]
     ColourIteration += 2
   ColourNames
