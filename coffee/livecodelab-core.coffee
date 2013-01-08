@@ -124,7 +124,7 @@ createLiveCodeLabCore = (paramsObject) ->
   #    CodeTransformer, Renderer
   # ...at runtime
   liveCodeLabCoreInstance.AnimationLoop =
-    createAnimationLoop(
+    new AnimationLoop(
       paramsObject.eventRouter, paramsObject.statsWidget, liveCodeLabCoreInstance)
   
   #//////////////////////////////////////////////

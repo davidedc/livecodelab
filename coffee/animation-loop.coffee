@@ -1,7 +1,7 @@
 #jslint browser: true 
 
 frame = 0
-createAnimationLoop = (eventRouter, stats, liveCodeLabCoreInstance) ->
+AnimationLoop = (eventRouter, stats, liveCodeLabCoreInstance) ->
   "use strict"
   AnimationLoop = {}
   loopInterval = undefined
