@@ -101,13 +101,13 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   
   @returns {string}
   ###
-  CodeTransformer.removeTickedDoOnce = (code) -> # was a preprocessing part
+  removeTickedDoOnce = (code) ->
     newCode = undefined
     newCode = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false")
     newCode = newCode.replace(/\u2713/g, "//")
     newCode
 
-  CodeTransformer.addTracingInstructionsToDoOnceBlocks = (updatedCodeAsString) -> # was a standalone function
+  addTracingInstructionsToDoOnceBlocks = (updatedCodeAsString) ->
     # ADDING TRACING INSTRUCTION TO THE DOONCE BLOCKS
     # each doOnce block is made to start with an instruction that traces whether
     # the block has been run or not. This allows us to put back the tick where
@@ -172,7 +172,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
       return true  if characterBeingExamined is "'" or characterBeingExamined is "\"" or (characterBeingExamined is "/" and (nextCharacterBeingExamined is "*" or nextCharacterBeingExamined is "/"))
       copyOfUpdatedCodeAsString = copyOfUpdatedCodeAsString.slice(1)
 
-  CodeTransformer.stripCommentsAndCheckBasicSyntax = (updatedCodeAsString) -> # was a standalone function
+  stripCommentsAndCheckBasicSyntax = (updatedCodeAsString) ->
     codeWithoutComments = undefined
     codeWithoutStringsOrComments = undefined
     
@@ -313,7 +313,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
       liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction null
       liveCodeLabCoreInstance.DrawFunctionRunner.lastStableDrawFunction = null
       return functionFromCompiledCode
-  	updatedCodeAsString = CodeTransformer.removeTickedDoOnce(updatedCodeAsString)
+  	updatedCodeAsString = removeTickedDoOnce(updatedCodeAsString)
   	
   	#////////////////// Newer code checks
   	###
@@ -346,7 +346,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   	
   	#//////////////// Older code checks
   	
-  	updatedCodeAsString = CodeTransformer.stripCommentsAndCheckBasicSyntax(updatedCodeAsString)
+  	updatedCodeAsString = stripCommentsAndCheckBasicSyntax(updatedCodeAsString)
   	return if updatedCodeAsString is null
   	elaboratedSource = updatedCodeAsString
   	
@@ -385,7 +385,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   	# causing mayhem.
   	# Instead, all is good if rotate is prepended with a semicolon.
   	updatedCodeAsString = updatedCodeAsString.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->")
-  	updatedCodeAsString = CodeTransformer.addTracingInstructionsToDoOnceBlocks(updatedCodeAsString)
+  	updatedCodeAsString = addTracingInstructionsToDoOnceBlocks(updatedCodeAsString)
   	
   	# adding () to single tokens left on their own
   	updatedCodeAsString = updatedCodeAsString.replace(/^(\s*)([a-z]+[a-zA-Z0-9]*)[ ]*$/gm, "$1;$2()")
