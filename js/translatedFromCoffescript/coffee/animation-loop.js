@@ -1,11 +1,11 @@
-var createAnimationLoop, frame;
+var AnimationLoop, frame;
 
 frame = 0;
 
-createAnimationLoop = function(eventRouter, stats, liveCodeLabCoreInstance) {
+AnimationLoop = function(eventRouter, stats, liveCodeLabCoreInstance) {
   "use strict";
 
-  var AnimationLoop, loopInterval, scheduleNextFrame;
+  var loopInterval, scheduleNextFrame;
   AnimationLoop = {};
   loopInterval = void 0;
   AnimationLoop.wantedFramesPerSecond = -1;
