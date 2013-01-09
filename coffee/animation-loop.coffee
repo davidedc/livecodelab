@@ -23,7 +23,12 @@
 #   animation loop.
 # * blinking of the cursor
 
+# global variale, keeps the count of how many frames
+# since beginning of session (or since the
+# program was last cleared). This variable is incremented and reset in the animation
+# loop "animate" function.
 frame = 0
+
 AnimationLoop = (eventRouter, stats, liveCodeLabCoreInstance,
   forceUseOfTimeoutForScheduling = false) ->
   "use strict"
