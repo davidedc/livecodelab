@@ -69,6 +69,7 @@ AnimationLoop = function(eventRouter, stats, liveCodeLabCoreInstance, forceUseOf
       DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(liveCodeLabCoreInstance.CodeTransformer);
     } else {
       liveCodeLabCoreInstance.dozingOff = true;
+      frame = 0;
     }
     if (frame === 0) {
       liveCodeLabCoreInstance.TimeKeeper.resetTime();
