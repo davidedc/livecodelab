@@ -135,7 +135,8 @@ vendors = [<span class="string">"ms"</span>, <span class="string">"moz"</span>, 
 x = <span class="number">0</span>
 <span class="keyword">while</span> x &lt; vendors.length <span class="keyword">and</span> <span class="keyword">not</span> window.requestAnimationFrame
   window.requestAnimationFrame = window[vendors[x] + <span class="string">"RequestAnimationFrame"</span>]
-  window.cancelAnimationFrame = window[vendors[x] + <span class="string">"CancelAnimationFrame"</span>] <span class="keyword">or</span> window[vendors[x] + <span class="string">"CancelRequestAnimationFrame"</span>]
+  window.cancelAnimationFrame = window[vendors[x] + <span class="string">"CancelAnimationFrame"</span>] <span class="keyword">or</span>
+     window[vendors[x] + <span class="string">"CancelRequestAnimationFrame"</span>]
   ++x
 <span class="keyword">unless</span> window.requestAnimationFrame
   window.<span class="function"><span class="title">requestAnimationFrame</span></span> = (callback, element) -&gt;
