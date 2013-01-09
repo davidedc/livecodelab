@@ -117,6 +117,9 @@ AnimationLoop = (eventRouter, stats, liveCodeLabCoreInstance,
         liveCodeLabCoreInstance.CodeTransformer
     else
       liveCodeLabCoreInstance.dozingOff = true
+      # the program is empty and so it's the screen. Effectively, the user
+      # is starting from scratch, so the frame variable should be reset to zero.
+      frame = 0
     
     #console.log('dozing off');
     
