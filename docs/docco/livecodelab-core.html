@@ -103,9 +103,8 @@ function we are in.</p>
       paramsObject.eventRouter, buzz, createBowser(), createSampleBank(buzz))
   
 </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>this one also interacts with ColourFunctions, backgroundSceneContext,
-canvasForBackground at runtime</p>             </td>             <td class="code">               <div class="highlight"><pre>  liveCodeLabCoreInstance.BackgroundPainter =
-    createBackgroundPainter(
-      paramsObject.eventRouter, paramsObject.canvasForBackground,
+canvasForBackground at runtime</p>             </td>             <td class="code">               <div class="highlight"><pre>  liveCodeLabCoreInstance.BackgroundPainter = <span class="keyword">new</span> BackgroundPainter(
+      paramsObject.canvasForBackground,
       liveCodeLabCoreInstance)
   
 </pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>this one also interacts with CodeTransformer at runtime.</p>             </td>             <td class="code">               <div class="highlight"><pre>  liveCodeLabCoreInstance.DrawFunctionRunner =
