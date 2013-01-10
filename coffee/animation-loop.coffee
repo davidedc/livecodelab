@@ -29,16 +29,16 @@
 # loop "animate" function.
 frame = 0
 
-AnimationLoop = (eventRouter, stats, liveCodeLabCoreInstance,
-  forceUseOfTimeoutForScheduling = false) ->
-  "use strict"
-  
-  # Some basic initialisations and constant definitions
-  AnimationLoop = {}
-  loopInterval = undefined
-  AnimationLoop.AS_HIGH_FPS_AS_POSSIBLE = -1
-  AnimationLoop.wantedFramesPerSecond = AnimationLoop.AS_HIGH_FPS_AS_POSSIBLE
-  AnimationLoop.forceUseOfTimeoutForScheduling = forceUseOfTimeoutForScheduling
+"use strict"
+class AnimationLoop
+  loopInterval: null
+  wantedFramesPerSecond: null
+  liveCodeLabCoreInstance: undefined
+  AS_HIGH_FPS_AS_POSSIBLE: -1
+
+  constructor: (@eventRouter, @stats, @liveCodeLabCoreInstance, @forceUseOfTimeoutForScheduling = false) ->
+    # Some basic initialisations and constant definitions
+    @wantedFramesPerSecond = @AS_HIGH_FPS_AS_POSSIBLE
 
   # There are two different ways to schedule the next frame:
   # 1) using a native window.requestAnimationFrame implementation (supported by some
@@ -51,55 +51,55 @@ AnimationLoop = (eventRouter, stats, liveCodeLabCoreInstance,
   # * for browser that don't have a window.requestAnimationFrame, a shim at the end
   #   of the page replaces that with an implementation based on timeouts
   # * the user can decide to force the use of timeouts (for testing purposes)
-  scheduleNextFrame = ->
-    if AnimationLoop.forceUseOfTimeoutForScheduling
-      if AnimationLoop.wantedFramesPerSecond is AnimationLoop.AS_HIGH_FPS_AS_POSSIBLE
-        setTimeout (->
-          AnimationLoop.animate()
+  scheduleNextFrame: ->
+    if @forceUseOfTimeoutForScheduling
+      if @wantedFramesPerSecond is @AS_HIGH_FPS_AS_POSSIBLE
+        setTimeout (=>
+          @animate()
         ), 1000 / 60
       else
-        setTimeout (->
-          AnimationLoop.animate()
-        ), 1000 / AnimationLoop.wantedFramesPerSecond
+        setTimeout (=>
+          @animate()
+        ), 1000 / @wantedFramesPerSecond
     else
-      if AnimationLoop.wantedFramesPerSecond is AnimationLoop.AS_HIGH_FPS_AS_POSSIBLE
-        window.requestAnimationFrame ->
-          AnimationLoop.animate()
+      if @wantedFramesPerSecond is @AS_HIGH_FPS_AS_POSSIBLE
+        window.requestAnimationFrame =>
+          @animate()
       else
         if loopInterval is `undefined`
-          loopInterval = setInterval(->
+          loopInterval = setInterval(=>
             window.requestAnimationFrame ->
-              AnimationLoop.animate()
-          , 1000 / AnimationLoop.wantedFramesPerSecond)
+              @animate()
+          , 1000 / @wantedFramesPerSecond)
 
   
   # animation loop
-  AnimationLoop.animate = ->
-    liveCodeLabCoreInstance.MatrixCommands.resetMatrixStack()
+  animate: ->
+    @liveCodeLabCoreInstance.MatrixCommands.resetMatrixStack()
     
     # the sound list needs to be cleaned
     # so that the user program can create its own from scratch
-    liveCodeLabCoreInstance.SoundSystem.resetLoops()
+    @liveCodeLabCoreInstance.SoundSystem.resetLoops()
     if frame is 0
-      liveCodeLabCoreInstance.TimeKeeper.resetTime()
+      @liveCodeLabCoreInstance.TimeKeeper.resetTime()
     else
-      liveCodeLabCoreInstance.TimeKeeper.updateTime()
-    liveCodeLabCoreInstance.DrawFunctionRunner.resetTrackingOfDoOnceOccurrences()
-    liveCodeLabCoreInstance.SoundSystem.anyCodeReactingTobpm = false
-    liveCodeLabCoreInstance.SoundSystem.SetUpdatesPerMinute 60 * 4
-    liveCodeLabCoreInstance.LightSystem.noLights()
-    liveCodeLabCoreInstance.GraphicsCommands.reset()
-    liveCodeLabCoreInstance.BlendControls.animationStyle \
-      liveCodeLabCoreInstance.BlendControls.animationStyles.normal
-    liveCodeLabCoreInstance.BackgroundPainter.resetGradientStack()
+      @liveCodeLabCoreInstance.TimeKeeper.updateTime()
+    @liveCodeLabCoreInstance.DrawFunctionRunner.resetTrackingOfDoOnceOccurrences()
+    @liveCodeLabCoreInstance.SoundSystem.anyCodeReactingTobpm = false
+    @liveCodeLabCoreInstance.SoundSystem.SetUpdatesPerMinute 60 * 4
+    @liveCodeLabCoreInstance.LightSystem.noLights()
+    @liveCodeLabCoreInstance.GraphicsCommands.reset()
+    @liveCodeLabCoreInstance.BlendControls.animationStyle \
+      @liveCodeLabCoreInstance.BlendControls.animationStyles.normal
+    @liveCodeLabCoreInstance.BackgroundPainter.resetGradientStack()
     
     # if the draw function is empty, then don't schedule the
     # next animation frame and set a "I'm sleeping" flag.
     # We'll re-start the animation when the editor content
     # changes. Note that this frame goes to completion anyways, because
     # we actually do want to render one "empty screen" frame.
-    if liveCodeLabCoreInstance.DrawFunctionRunner.drawFunction
-      scheduleNextFrame()
+    if @liveCodeLabCoreInstance.DrawFunctionRunner.drawFunction
+      @scheduleNextFrame()
       
       # Now here there is another try/catch check when the draw function is ran.
       # The reason is that there might be references to uninitialised or inexistent
@@ -111,17 +111,17 @@ AnimationLoop = (eventRouter, stats, liveCodeLabCoreInstance,
       # So in that case we need to a) highlight the error and b) run the previously
       # known good program.
       try
-        liveCodeLabCoreInstance.DrawFunctionRunner.runDrawFunction()
+        @liveCodeLabCoreInstance.DrawFunctionRunner.runDrawFunction()
       catch e
         
         #alert('runtime error');
-        eventRouter.trigger "runtime-error-thrown", e
+        @eventRouter.trigger "runtime-error-thrown", e
         return
-      DrawFunctionRunner = liveCodeLabCoreInstance.DrawFunctionRunner
+      DrawFunctionRunner = @liveCodeLabCoreInstance.DrawFunctionRunner
       DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun \
-        liveCodeLabCoreInstance.CodeTransformer
+        @liveCodeLabCoreInstance.CodeTransformer
     else
-      liveCodeLabCoreInstance.dozingOff = true
+      @liveCodeLabCoreInstance.dozingOff = true
       # the program is empty and so it's the screen. Effectively, the user
       # is starting from scratch, so the frame variable should be reset to zero.
       frame = 0
@@ -132,22 +132,20 @@ AnimationLoop = (eventRouter, stats, liveCodeLabCoreInstance,
     # the user has set frame = 0,
     # then we have to catch that case here
     # after the program has executed
-    liveCodeLabCoreInstance.TimeKeeper.resetTime()  if frame is 0
-    liveCodeLabCoreInstance.BlendControls.animationStyleUpdateIfChanged()
-    liveCodeLabCoreInstance.BackgroundPainter.simpleGradientUpdateIfChanged()
-    liveCodeLabCoreInstance.SoundSystem.changeUpdatesPerMinuteIfNeeded()
+    @liveCodeLabCoreInstance.TimeKeeper.resetTime()  if frame is 0
+    @liveCodeLabCoreInstance.BlendControls.animationStyleUpdateIfChanged()
+    @liveCodeLabCoreInstance.BackgroundPainter.simpleGradientUpdateIfChanged()
+    @liveCodeLabCoreInstance.SoundSystem.changeUpdatesPerMinuteIfNeeded()
     
     # "frame" starts at zero, so we increment after the first time the draw
     # function has been run.
     frame++
     
     # do the render
-    liveCodeLabCoreInstance.Renderer.render liveCodeLabCoreInstance.GraphicsCommands
+    @liveCodeLabCoreInstance.Renderer.render @liveCodeLabCoreInstance.GraphicsCommands
     
     # update stats
-    stats.update()  if stats isnt null
-
-  AnimationLoop
+    @stats.update()  if @stats isnt null
 
 # Shim for browser that don't have requestAnimationFrame, see
 # http://paulirish.com/2011/requestanimationframe-for-smart-animating/
