@@ -104,9 +104,8 @@ createLiveCodeLabCore = (paramsObject) ->
   
   # this one also interacts with ColourFunctions, backgroundSceneContext,
   # canvasForBackground at runtime
-  liveCodeLabCoreInstance.BackgroundPainter =
-    createBackgroundPainter(
-      paramsObject.eventRouter, paramsObject.canvasForBackground,
+  liveCodeLabCoreInstance.BackgroundPainter = new BackgroundPainter(
+      paramsObject.canvasForBackground,
       liveCodeLabCoreInstance)
   
   # this one also interacts with CodeTransformer at runtime.
