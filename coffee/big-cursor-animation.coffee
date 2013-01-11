@@ -1,38 +1,37 @@
 #jslint browser: true, devel: true 
 #global $ 
 
-createBigCursor = (eventRouter) ->
-  "use strict"
-  BigCursor = {}
-  startBigCursorBlinkingAnimation = undefined
-  fakeCursorInterval = undefined
-  shrinkBigCursor = undefined
-  unshrinkBigCursor = undefined
-  
-  # Do we show the big cursor or not
-  # If there's any text in the editor
-  # then we shouldn't be showing it
-  BigCursor.isShowing = true
-  startBigCursorBlinkingAnimation = ->
-    $("#fakeStartingBlinkingCursor").animate(
-      opacity: 0.2
-    , "fast", "swing").animate
-      opacity: 1
-    , "fast", "swing"
+"use strict"
 
-  BigCursor.toggleBlink = (active) ->
+class BigCursor
+  constructor: (eventRouter) ->
+    @fakeCursorInterval = undefined
+    
+    # Do we show the big cursor or not
+    # If there's any text in the editor
+    # then we shouldn't be showing it
+    @isShowing = true
+
+  startBigCursorBlinkingAnimation: ->
+    $("#fakeStartingBlinkingCursor").animate(
+        opacity: 0.2
+      , "fast", "swing").animate
+        opacity: 1
+      , "fast", "swing"
+
+  toggleBlink: (active) ->
     if active
       #avoid setting the animation twice, which causes
       # the cursor to start blinking twice as fast.
-      fakeCursorInterval = setInterval(startBigCursorBlinkingAnimation, 800)  unless fakeCursorInterval
+      @fakeCursorInterval = setInterval(@startBigCursorBlinkingAnimation, 800)  unless @fakeCursorInterval
     else
-      clearTimeout fakeCursorInterval
-      fakeCursorInterval = null
+      clearTimeout @fakeCursorInterval
+      @fakeCursorInterval = null
 
-  shrinkBigCursor = ->
+  shrinkBigCursor: ->
     currentCaption = undefined
     shorterCaption = undefined
-    if BigCursor.isShowing
+    if @isShowing
       currentCaption = $("#caption").html()
       shorterCaption = currentCaption.substring(0, currentCaption.length - 1)
       $("#caption").html shorterCaption + "|"
@@ -46,11 +45,11 @@ createBigCursor = (eventRouter) ->
       setTimeout "$(\"#formCode\").animate({opacity: 1}, \"fast\");", 120
       setTimeout "$(\"#justForFakeCursor\").hide();", 200
       setTimeout "$(\"#toMove\").hide();", 200
-      BigCursor.isShowing = false
-      BigCursor.toggleBlink false
+      @isShowing = false
+      @toggleBlink false
 
-  unshrinkBigCursor = ->
-    unless BigCursor.isShowing
+  unshrinkBigCursor: ->
+    unless @isShowing
       $("#formCode").animate
         opacity: 0
       , "fast"
@@ -65,16 +64,6 @@ createBigCursor = (eventRouter) ->
       , "fast", ->
         $("#caption").html ""
         $("#fakeStartingBlinkingCursor").html "|"
-
-      BigCursor.isShowing = true
-      BigCursor.toggleBlink true
-
-  
-  # Setup Event Listeners
-  eventRouter.bind "big-cursor-show", ->
-    unshrinkBigCursor()
-
-  eventRouter.bind "big-cursor-hide", ->
-    shrinkBigCursor()
-
-  BigCursor
+      
+      @isShowing = true
+      @toggleBlink true
