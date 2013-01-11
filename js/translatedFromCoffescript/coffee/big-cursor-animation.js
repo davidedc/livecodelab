@@ -1,37 +1,38 @@
-var createBigCursor;
+"use strict";
 
-createBigCursor = function(eventRouter) {
-  "use strict";
+var BigCursor;
 
-  var BigCursor, fakeCursorInterval, shrinkBigCursor, startBigCursorBlinkingAnimation, unshrinkBigCursor;
-  BigCursor = {};
-  startBigCursorBlinkingAnimation = void 0;
-  fakeCursorInterval = void 0;
-  shrinkBigCursor = void 0;
-  unshrinkBigCursor = void 0;
-  BigCursor.isShowing = true;
-  startBigCursorBlinkingAnimation = function() {
+BigCursor = (function() {
+
+  function BigCursor(eventRouter) {
+    this.fakeCursorInterval = void 0;
+    this.isShowing = true;
+  }
+
+  BigCursor.prototype.startBigCursorBlinkingAnimation = function() {
     return $("#fakeStartingBlinkingCursor").animate({
       opacity: 0.2
     }, "fast", "swing").animate({
       opacity: 1
     }, "fast", "swing");
   };
-  BigCursor.toggleBlink = function(active) {
+
+  BigCursor.prototype.toggleBlink = function(active) {
     if (active) {
-      if (!fakeCursorInterval) {
-        return fakeCursorInterval = setInterval(startBigCursorBlinkingAnimation, 800);
+      if (!this.fakeCursorInterval) {
+        return this.fakeCursorInterval = setInterval(this.startBigCursorBlinkingAnimation, 800);
       }
     } else {
-      clearTimeout(fakeCursorInterval);
-      return fakeCursorInterval = null;
+      clearTimeout(this.fakeCursorInterval);
+      return this.fakeCursorInterval = null;
     }
   };
-  shrinkBigCursor = function() {
+
+  BigCursor.prototype.shrinkBigCursor = function() {
     var currentCaption, shorterCaption;
     currentCaption = void 0;
     shorterCaption = void 0;
-    if (BigCursor.isShowing) {
+    if (this.isShowing) {
       currentCaption = $("#caption").html();
       shorterCaption = currentCaption.substring(0, currentCaption.length - 1);
       $("#caption").html(shorterCaption + "|");
@@ -45,12 +46,13 @@ createBigCursor = function(eventRouter) {
       setTimeout("$(\"#formCode\").animate({opacity: 1}, \"fast\");", 120);
       setTimeout("$(\"#justForFakeCursor\").hide();", 200);
       setTimeout("$(\"#toMove\").hide();", 200);
-      BigCursor.isShowing = false;
-      return BigCursor.toggleBlink(false);
+      this.isShowing = false;
+      return this.toggleBlink(false);
     }
   };
-  unshrinkBigCursor = function() {
-    if (!BigCursor.isShowing) {
+
+  BigCursor.prototype.unshrinkBigCursor = function() {
+    if (!this.isShowing) {
       $("#formCode").animate({
         opacity: 0
       }, "fast");
@@ -66,15 +68,11 @@ createBigCursor = function(eventRouter) {
         $("#caption").html("");
         return $("#fakeStartingBlinkingCursor").html("|");
       });
-      BigCursor.isShowing = true;
-      return BigCursor.toggleBlink(true);
+      this.isShowing = true;
+      return this.toggleBlink(true);
     }
   };
-  eventRouter.bind("big-cursor-show", function() {
-    return unshrinkBigCursor();
-  });
-  eventRouter.bind("big-cursor-hide", function() {
-    return shrinkBigCursor();
-  });
+
   return BigCursor;
-};
+
+})();

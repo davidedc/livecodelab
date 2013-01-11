@@ -1,35 +1,34 @@
-<!DOCTYPE html>  <html> <head>   <title>big-cursor-animation.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               big-cursor-animation.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true, devel: true 
+<!DOCTYPE html>  <html> <head>   <title>big-cursor-animation.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               big-cursor-animation.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true, devel: true 
 global $ </p>             </td>             <td class="code">               <div class="highlight"><pre>
-<span class="function"><span class="title">createBigCursor</span></span> = (eventRouter) -&gt;
-  <span class="string">"use strict"</span>
-  BigCursor = {}
-  startBigCursorBlinkingAnimation = <span class="literal">undefined</span>
-  fakeCursorInterval = <span class="literal">undefined</span>
-  shrinkBigCursor = <span class="literal">undefined</span>
-  unshrinkBigCursor = <span class="literal">undefined</span>
-  
+<span class="string">"use strict"</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">BigCursor</span></span>
+  constructor: (eventRouter) -&gt;
+    <span class="property">@fakeCursorInterval</span> = <span class="literal">undefined</span>
+    
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Do we show the big cursor or not
 If there's any text in the editor
-then we shouldn't be showing it</p>             </td>             <td class="code">               <div class="highlight"><pre>  BigCursor.isShowing = <span class="literal">true</span>
-  <span class="function"><span class="title">startBigCursorBlinkingAnimation</span></span> = -&gt;
-    $(<span class="string">"#fakeStartingBlinkingCursor"</span>).animate(
-      opacity: <span class="number">0.2</span>
-    , <span class="string">"fast"</span>, <span class="string">"swing"</span>).animate
-      opacity: <span class="number">1</span>
-    , <span class="string">"fast"</span>, <span class="string">"swing"</span>
+then we shouldn't be showing it</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@isShowing</span> = <span class="literal">true</span>
 
-  BigCursor.<span class="function"><span class="title">toggleBlink</span></span> = (active) -&gt;
+  startBigCursorBlinkingAnimation: -&gt;
+    $(<span class="string">"#fakeStartingBlinkingCursor"</span>).animate(
+        opacity: <span class="number">0.2</span>
+      , <span class="string">"fast"</span>, <span class="string">"swing"</span>).animate
+        opacity: <span class="number">1</span>
+      , <span class="string">"fast"</span>, <span class="string">"swing"</span>
+
+  toggleBlink: (active) -&gt;
     <span class="keyword">if</span> active
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>avoid setting the animation twice, which causes
-the cursor to start blinking twice as fast.</p>             </td>             <td class="code">               <div class="highlight"><pre>      fakeCursorInterval = setInterval(startBigCursorBlinkingAnimation, <span class="number">800</span>)  <span class="keyword">unless</span> fakeCursorInterval
+the cursor to start blinking twice as fast.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@fakeCursorInterval</span> = setInterval(<span class="property">@startBigCursorBlinkingAnimation</span>, <span class="number">800</span>)  <span class="keyword">unless</span> <span class="property">@fakeCursorInterval</span>
     <span class="keyword">else</span>
-      clearTimeout fakeCursorInterval
-      fakeCursorInterval = <span class="literal">null</span>
+      clearTimeout <span class="property">@fakeCursorInterval</span>
+      <span class="property">@fakeCursorInterval</span> = <span class="literal">null</span>
 
-  <span class="function"><span class="title">shrinkBigCursor</span></span> = -&gt;
+  shrinkBigCursor: -&gt;
     currentCaption = <span class="literal">undefined</span>
     shorterCaption = <span class="literal">undefined</span>
-    <span class="keyword">if</span> BigCursor.isShowing
+    <span class="keyword">if</span> <span class="property">@isShowing</span>
       currentCaption = $(<span class="string">"#caption"</span>).html()
       shorterCaption = currentCaption.substring(<span class="number">0</span>, currentCaption.length - <span class="number">1</span>)
       $(<span class="string">"#caption"</span>).html shorterCaption + <span class="string">"|"</span>
@@ -43,11 +42,11 @@ the cursor to start blinking twice as fast.</p>             </td>             <t
       setTimeout <span class="string">"$(\"#formCode\").animate({opacity: 1}, \"fast\");"</span>, <span class="number">120</span>
       setTimeout <span class="string">"$(\"#justForFakeCursor\").hide();"</span>, <span class="number">200</span>
       setTimeout <span class="string">"$(\"#toMove\").hide();"</span>, <span class="number">200</span>
-      BigCursor.isShowing = <span class="literal">false</span>
-      BigCursor.toggleBlink <span class="literal">false</span>
+      <span class="property">@isShowing</span> = <span class="literal">false</span>
+      <span class="property">@toggleBlink</span> <span class="literal">false</span>
 
-  <span class="function"><span class="title">unshrinkBigCursor</span></span> = -&gt;
-    <span class="keyword">unless</span> BigCursor.isShowing
+  unshrinkBigCursor: -&gt;
+    <span class="keyword">unless</span> <span class="property">@isShowing</span>
       $(<span class="string">"#formCode"</span>).animate
         opacity: <span class="number">0</span>
       , <span class="string">"fast"</span>
@@ -62,16 +61,8 @@ the cursor to start blinking twice as fast.</p>             </td>             <t
       , <span class="string">"fast"</span>, -&gt;
         $(<span class="string">"#caption"</span>).html <span class="string">""</span>
         $(<span class="string">"#fakeStartingBlinkingCursor"</span>).html <span class="string">"|"</span>
+      
+      <span class="property">@isShowing</span> = <span class="literal">true</span>
+      <span class="property">@toggleBlink</span> <span class="literal">true</span>
 
-      BigCursor.isShowing = <span class="literal">true</span>
-      BigCursor.toggleBlink <span class="literal">true</span>
-
-  
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>  eventRouter.bind <span class="string">"big-cursor-show"</span>, -&gt;
-    unshrinkBigCursor()
-
-  eventRouter.bind <span class="string">"big-cursor-hide"</span>, -&gt;
-    shrinkBigCursor()
-
-  BigCursor
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
