@@ -48,7 +48,7 @@ createLiveCodeLabCore = function(paramsObject) {
   liveCodeLabCoreInstance.getForeground3DSceneImage = function(backgroundColor) {
     var blendedThreeJsSceneCanvas, ctx, ctxContext, img;
     blendedThreeJsSceneCanvas = liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas;
-    img = new Image();
+    img = new Image;
     img.src = blendedThreeJsSceneCanvas.toDataURL();
     if (backgroundColor) {
       ctx = document.createElement("canvas");
@@ -59,7 +59,7 @@ createLiveCodeLabCore = function(paramsObject) {
       ctxContext.globalCompositeOperation = "destination-over";
       ctxContext.fillStyle = backgroundColor;
       ctxContext.fillRect(0, 0, blendedThreeJsSceneCanvas.width, blendedThreeJsSceneCanvas.height);
-      img = new Image();
+      img = new Image;
       img.src = ctx.toDataURL();
     }
     return img;

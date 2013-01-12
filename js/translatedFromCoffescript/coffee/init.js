@@ -34,14 +34,14 @@ startEnvironment = function(paramsObject) {
     return;
   }
   eventRouter = createEventRouter();
-  stats = new Stats();
+  stats = new Stats;
   if (paramsObject.forceCanvasRenderer === undefined) {
     paramsObject.forceCanvasRenderer = false;
   }
   if (paramsObject.forceCanvasRenderer === null) {
     paramsObject.forceCanvasRenderer = false;
   }
-  colourNames = createColours();
+  colourNames = new Colours;
   liveCodeLabCore = createLiveCodeLabCore({
     blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas,
     canvasForBackground: paramsObject.canvasForBackground,

@@ -45,7 +45,7 @@ because there might be some overhead in the triggering of events using this.
 (to be tested. just throwing it out there.)</p>             </td>             <td class="code">               <div class="highlight"><pre>  eventRouter = createEventRouter()
   
 </pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Stats are updated in the AnimationLoop
-add Stats.js - https://github.com/mrdoob/stats.js</p>             </td>             <td class="code">               <div class="highlight"><pre>  stats = <span class="keyword">new</span> Stats()
+add Stats.js - https://github.com/mrdoob/stats.js</p>             </td>             <td class="code">               <div class="highlight"><pre>  stats = <span class="keyword">new</span> Stats
   paramsObject.forceCanvasRenderer = <span class="literal">false</span>  <span class="keyword">if</span> paramsObject.forceCanvasRenderer <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`
   paramsObject.forceCanvasRenderer = <span class="literal">false</span>  <span class="keyword">if</span> paramsObject.forceCanvasRenderer <span class="keyword">is</span> <span class="literal">null</span>
   
@@ -53,7 +53,7 @@ add Stats.js - https://github.com/mrdoob/stats.js</p>             </td>         
 Since background-painting.js initialises the background by means of
 CSS colors, this needs to be run before creating LiveCodeLabCore. This is also
 used by the autocoder because it needs to be able to swap color names that it
-finds as CSS color strings in the user program.</p>             </td>             <td class="code">               <div class="highlight"><pre>  colourNames = createColours()
+finds as CSS color strings in the user program.</p>             </td>             <td class="code">               <div class="highlight"><pre>  colourNames = <span class="keyword">new</span> Colours
   
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>//////////////////////////////////////////////////////
 Phase 2 - Initialise the core of livecodelab.
