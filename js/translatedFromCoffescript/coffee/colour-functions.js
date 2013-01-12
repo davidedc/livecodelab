@@ -96,6 +96,9 @@ createColourFunctions = function() {
     }
   };
   color$1 = function(aValue1) {
+    if ((typeof aValue1) === "string") {
+      return aValue1;
+    }
     if (aValue1 <= colorModeX && aValue1 >= 0) {
       if (curColorMode === Constants.RGB) {
         return color$4(aValue1, aValue1, aValue1, ColourFunctions.colorModeA);
@@ -139,7 +142,7 @@ createColourFunctions = function() {
     if (aValue1 !== undefined && aValue2 !== undefined) {
       return color$2(aValue1, aValue2);
     }
-    if (typeof aValue1 === "number") {
+    if (typeof aValue1 === "number" || typeof aValue1 === "string") {
       return color$1(aValue1);
     }
     return color$4(colorModeX, colorModeY, colorModeZ, ColourFunctions.colorModeA);
