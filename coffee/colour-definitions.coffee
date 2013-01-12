@@ -159,11 +159,13 @@ createColours = ->
     "whitesmoke", "0xfff5f5f5"
     "yellow", "0xffffff00"
     "yellowgreen", "0xff9acd32",
-    # anglecolor is a number
-    # lower than any 32 bit color and is a special
+    # anglecolor is a special
     # color that tells the engine to use the
     # normal material.
-    "angleColor", "-16777217"
+    # It would be tempting to set it to a numeric value such as
+    # 1 unit higher than then any max 32 bit integer, but it's such a special
+    # case that it's OK to use a non-integer.
+    "angleColor", "angleColor"
   ]
 
   ColourNames = []
@@ -173,7 +175,12 @@ createColours = ->
     # Adding colours to the global namespace is avoidable once we have a "scope" object in
     # which the code will be executed, then we can just dynamically add fields to that scope
     window[colourNamesValues[ColourIteration]] =
-      parseInt(colourNamesValues[ColourIteration + 1], 16)
+      parseInt(colourNamesValues[ColourIteration + 1])
+    if isNaN(window[colourNamesValues[ColourIteration]])
+      # this is the case of special colors that have string values
+      window[colourNamesValues[ColourIteration]] =
+        colourNamesValues[ColourIteration + 1]
+
     ColourNames.push colourNamesValues[ColourIteration]
     ColourIteration += 2
   ColourNames

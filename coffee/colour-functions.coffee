@@ -105,18 +105,42 @@ createColourFunctions = ->
     return color$4(aValue1, aValue1, aValue1, aValue2)  if curColorMode is Constants.RGB
     color$4 0, 0, (aValue1 / colorModeX) * colorModeZ, aValue2  if curColorMode is Constants.HSB
 
+  # so, color in both processing and processing.js is slightly weird, because
+  # color is just a Java integer, which is a little bit of a headache to
+  # fold into a Javascript number, which is a float and it's 64 bits.
+  # For example, the color black is 0xFF000000, which
+  # in unsigned integer (or 64 bits float) would be 4278190080.
+  # OK, instead color(0) in Java return -16777216, because Java integers are signed in
+  # two's complement and they go from -2147483648 to 2147483647 included
   color$1 = (aValue1) ->
     
+    # so that special colors still work with "color", e.g.
+    # fill(color(angleColor))
+    if (typeof aValue1) == "string"
+      return aValue1
+
     # Grayscale
     if aValue1 <= colorModeX and aValue1 >= 0
       return color$4(aValue1, aValue1, aValue1, ColourFunctions.colorModeA)  if curColorMode is Constants.RGB
       return color$4(0, 0, (aValue1 / colorModeX) * colorModeZ, ColourFunctions.colorModeA)  if curColorMode is Constants.HSB
     
     # Color int
-    if aValue1
-      
+    if aValue1      
       # Java Overflow
+      # in two's complement, 2147483647 is 0xFFFFFFFF i.e. the very max of
+      # java integer's 32 bits, so if you add one you go back to the java int minimum
+      # so in java the following program gives -2147483648
+      #    int a = 2147483647 + 1; // equivalent to int a = color(2147483647 + 1)
+      #    println("a " + a); 
+      # so we are emulating this here with this subtraction.
+      # note that this stops being correct at 2147483647*3 + 3, i.e.
+      #   int a = color(2147483647*3 + 3 ) ;
+      #   println("a " + a);
+      # in Java gives -2147483648
+      # while this routine gives 2147483648
       aValue1 -= 4294967296  if aValue1 > 2147483647
+      # note that folding below the lower bound is not handled, i.e. -2147483648 -1
+      # doesn't fold to 2147483647
       aValue1
 
   
@@ -149,7 +173,10 @@ createColourFunctions = ->
     return color$2(aValue1, aValue2)  if aValue1 isnt `undefined` and aValue2 isnt `undefined`
     
     # 1 argument: (Grayscale) or (Color)
-    return color$1(aValue1)  if typeof aValue1 is "number"
+    # we also accept strings because special colors such as angleColor are encoded
+    # through strings
+    if typeof aValue1 is "number" or typeof aValue1 is "string" 
+      return color$1(aValue1)
     
     # Default
     color$4 colorModeX, colorModeY, colorModeZ, ColourFunctions.colorModeA
