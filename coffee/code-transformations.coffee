@@ -1,83 +1,82 @@
-createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) ->
-
-
-  CodeTransformer = {}
-  CodeTransformer.compiler = CoffeeCompiler
+class CodeTransformer
+  @currentCodeString = null
   
-  # note that this is not used anywhere for the time being.
-  listOfPossibleFunctions = [
-    "function",
-    "alert",
-    # Geometry
-    "rect",
-    "line",
-    "box",
-    "ball",
-    "ballDetail",
-    "peg",
-    # Matrix manipulation
-    "rotate",
-    "move",
-    "scale",
-    "pushMatrix",
-    "popMatrix",
-    "resetMatrix",
-    # Sound
-    "bpm",
-    "play",
-    # Color and drawing styles
-    "fill",
-    "noFill",
-    "stroke",
-    "noStroke",
-    "strokeSize",
-    "animationStyle",
-    "background",
-    "simpleGradient",
-    "color",
-    # Lighting
-    # "ambient","reflect", "refract",
-    "lights",
-    "noLights",
-    "ambientLight",
-    "pointLight",
-    # Calculations
-    "abs",
-    "ceil",
-    "constrain",
-    "dist",
-    "exp",
-    "floor",
-    "lerp",
-    "log",
-    "mag",
-    "map",
-    "max",
-    "min",
-    "norm",
-    "pow",
-    "round",
-    "sq",
-    "sqrt",
-    # Trigonometry
-    "acos",
-    "asin",
-    "atan",
-    "atan2",
-    "cos",
-    "degrees",
-    "radians",
-    "sin",
-    "tan",
-    # Random
-    "random",
-    "randomSeed",
-    "noise",
-    "noiseDetail",
-    "noiseSeed",
-    # do once
-    "addDoOnce",
-    ""]
+  constructor: (@eventRouter, @CoffeeCompiler, @liveCodeLabCoreInstance) ->
+    
+      # note that this is not used anywhere for the time being.
+    listOfPossibleFunctions = [
+      "function",
+      "alert",
+      # Geometry
+      "rect",
+      "line",
+      "box",
+      "ball",
+      "ballDetail",
+      "peg",
+      # Matrix manipulation
+      "rotate",
+      "move",
+      "scale",
+      "pushMatrix",
+      "popMatrix",
+      "resetMatrix",
+      # Sound
+      "bpm",
+      "play",
+      # Color and drawing styles
+      "fill",
+      "noFill",
+      "stroke",
+      "noStroke",
+      "strokeSize",
+      "animationStyle",
+      "background",
+      "simpleGradient",
+      "color",
+      # Lighting
+      # "ambient","reflect", "refract",
+      "lights",
+      "noLights",
+      "ambientLight",
+      "pointLight",
+      # Calculations
+      "abs",
+      "ceil",
+      "constrain",
+      "dist",
+      "exp",
+      "floor",
+      "lerp",
+      "log",
+      "mag",
+      "map",
+      "max",
+      "min",
+      "norm",
+      "pow",
+      "round",
+      "sq",
+      "sqrt",
+      # Trigonometry
+      "acos",
+      "asin",
+      "atan",
+      "atan2",
+      "cos",
+      "degrees",
+      "radians",
+      "sin",
+      "tan",
+      # Random
+      "random",
+      "randomSeed",
+      "noise",
+      "noiseDetail",
+      "noiseSeed",
+      # do once
+      "addDoOnce",
+      ""]
 
 
   ###
@@ -101,13 +100,13 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   
   @returns {string}
   ###
-  removeTickedDoOnce = (code) ->
+  removeTickedDoOnce: (code) ->
     newCode = undefined
     newCode = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false")
     newCode = newCode.replace(/\u2713/g, "//")
     newCode
 
-  addTracingInstructionsToDoOnceBlocks = (code) ->
+  addTracingInstructionsToDoOnceBlocks: (code) ->
     # ADDING TRACING INSTRUCTION TO THE DOONCE BLOCKS
     # each doOnce block is made to start with an instruction that traces whether
     # the block has been run or not. This allows us to put back the tick where
@@ -167,7 +166,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
     #alert('soon after replacing doOnces'+code);
     code
 
-  doesProgramContainStringsOrComments = (code) ->    
+  doesProgramContainStringsOrComments: (code) ->    
     # make a copy of the string because we are going to
     # slice it in the process.
     copyOfcode = code
@@ -184,7 +183,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
         return true
       copyOfcode = copyOfcode.slice(1)
 
-  stripCommentsAndCheckBasicSyntax = (code) ->
+  stripCommentsAndCheckBasicSyntax: (code) ->
     codeWithoutComments = undefined
     codeWithoutStringsOrComments = undefined
     
@@ -200,7 +199,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
     # ", ', (), {}, []
     # Note that this doesn't check nesting, so for example
     # [{]} does pass the test.
-    if doesProgramContainStringsOrComments(code)
+    if @doesProgramContainStringsOrComments(code)
       
       # OK the program contains comments and/or strings
       # so this is what we are going to do:
@@ -288,7 +287,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
       reasonOfBasicError = "Unbalanced ()"  if roundBrackCount & 1
       reasonOfBasicError = "Unbalanced {}"  if curlyBrackCount & 1
       reasonOfBasicError = "Unbalanced []"  if squareBrackCount & 1
-      eventRouter.trigger "compile-time-error-thrown", reasonOfBasicError
+      @eventRouter.trigger "compile-time-error-thrown", reasonOfBasicError
       return null
     
     # no comments or strings were found, just return the same string
@@ -307,7 +306,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   
   We need to switch this round before coffee script compilation
   ###
-  adjustPostfixNotations = (code) ->
+  adjustPostfixNotations: (code) ->
     elaboratedSource = undefined
     elaboratedSource = code.replace(/(\d+)[ ]+bpm(\s)/g, "bpm $1$2")
     elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+fill(\s)/g, "fill $1$2")
@@ -317,7 +316,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
       /([a-zA-Z]+)[ ]+background(\s)/g, "background $1$2")
     elaboratedSource
 
-  CodeTransformer.updateCode = (code) ->
+  updateCode: (code) ->
   	elaboratedSource = undefined
   	errResults = undefined
   	characterBeingExamined = undefined
@@ -330,17 +329,17 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   	elaboratedSourceByLine = undefined
   	iteratingOverSource = undefined
   	reasonOfBasicError = undefined
-  	CodeTransformer.currentCodeString = code
-  	if CodeTransformer.currentCodeString is ""
-      liveCodeLabCoreInstance.GraphicsCommands.resetTheSpinThingy = true
+  	@currentCodeString = code
+  	if @currentCodeString is ""
+      @liveCodeLabCoreInstance.GraphicsCommands.resetTheSpinThingy = true
       programHasBasicError = false
-      eventRouter.trigger "clear-error"
-      liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
+      @eventRouter.trigger "clear-error"
+      @liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
       functionFromCompiledCode = new Function("")
-      liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction null
-      liveCodeLabCoreInstance.DrawFunctionRunner.lastStableDrawFunction = null
+      @liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction null
+      @liveCodeLabCoreInstance.DrawFunctionRunner.lastStableDrawFunction = null
       return functionFromCompiledCode
-  	code = removeTickedDoOnce(code)
+  	code = @removeTickedDoOnce(code)
   	
   	#////////////////// Newer code checks
   	###
@@ -355,7 +354,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   	# errResults = CodeChecker.parse(code);
   	#
   	# if (errResults.err === true) {
-  	#     eventRouter.trigger('compile-time-error-thrown', errResults.message);
+  	#     @eventRouter.trigger('compile-time-error-thrown', errResults.message);
   	#     return;
   	# }
   	#
@@ -368,7 +367,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   	
   	#//////////////// Older code checks
   	
-  	code = stripCommentsAndCheckBasicSyntax(code)
+  	code = @stripCommentsAndCheckBasicSyntax(code)
   	return if code is null
   	elaboratedSource = code
   	
@@ -377,7 +376,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   	#   red fill
   	#   yellow stroke
   	#   black background
-  	code = adjustPostfixNotations(code);
+  	code = @adjustPostfixNotations(code);
   	
   	# little trick. This is mangled up in the translation from coffeescript
   	# (1).times ->
@@ -410,7 +409,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   	code =
   	  code.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->")
   	code =
-  	  addTracingInstructionsToDoOnceBlocks(code)
+  	  @addTracingInstructionsToDoOnceBlocks(code)
   	
   	# adding () to single tokens left on their own
   	code =
@@ -436,7 +435,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   	# likely to use by mistake and take away this check.
   	if code.match(/[\s\+\;]+draw\s*\(/) or false
       programHasBasicError = true
-      eventRouter.trigger "compile-time-error-thrown", "You can't call draw()"
+      @eventRouter.trigger "compile-time-error-thrown", "You can't call draw()"
       return
   	
   	# we don't want if and for to undergo the same tratment as, say, box
@@ -532,23 +531,23 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   	# the semicolon mangles the first line of else statements
   	code = code.replace(/(\s);(else.*\s*);/g, "$1$2")
   	try
-      compiledOutput = CodeTransformer.compiler.compile(code,
+      compiledOutput = @CoffeeCompiler.compile(code,
       	bare: "on"
       )
   	catch e
       # coffescript compiler has caught a syntax error.
       # we are going to display the error and we WON'T register
       # the new code
-      eventRouter.trigger "compile-time-error-thrown", e
+      @eventRouter.trigger "compile-time-error-thrown", e
       return
   	#alert compiledOutput
   	programHasBasicError = false
-  	eventRouter.trigger "clear-error"
+  	@eventRouter.trigger "clear-error"
   	
   	# see here for the deepest examination ever of "eval"
   	# http://perfectionkills.com/global-eval-what-are-the-options/
   	# note that exceptions are caught by the window.onerror callback
-  	liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
+  	@liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
   	
   	# You might want to change the frame count from the program
   	# just like you can in Processing, but it turns out that when
@@ -562,12 +561,12 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   	# coffeescript to javascript translator inserts.
   	compiledOutput = compiledOutput.replace(/var frame/, ";")
   	functionFromCompiledCode = new Function(compiledOutput)
-  	liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction functionFromCompiledCode
+  	@liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction functionFromCompiledCode
   	functionFromCompiledCode
 
   # this function is used externally after the code has been
   # run, so we need to attach it to the CodeTransformer object.
-  CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange = \
+  addCheckMarksAndUpdateCodeAndNotifyChange: \
       (CodeTransformer, doOnceOccurrencesLineNumbers) ->
   	elaboratedSource = undefined
   	elaboratedSourceByLine = undefined
@@ -583,7 +582,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   	# of each doOnce block that has been run. Which could be more than one, because
   	# when we start the program we could have more than one doOnce that has
   	# to run.
-  	elaboratedSource = CodeTransformer.currentCodeString
+  	elaboratedSource = @currentCodeString
   	
   	# we know the line number of each doOnce block that has been run
   	# so we go there and add a tick next to each doOnce to indicate
@@ -600,7 +599,7 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   	# puts the new code (where the doOnce that have been executed have
   	# tickboxes put back) in the editor. Which will trigger a re-registration
   	# of the new code.
-  	eventRouter.trigger "code-updated-by-livecodelab", elaboratedSource
+  	@eventRouter.trigger "code-updated-by-livecodelab", elaboratedSource
   	#alert elaboratedSource
   	# we want to avoid that another frame is run with the old
   	# code, as this would mean that the
@@ -613,7 +612,5 @@ createCodeTransformer = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -
   	# Also updateCode() may split the source code by line, so we can
   	# avoid that since we've just split it, we could pass
   	# the already split code.
-  	drawFunction = CodeTransformer.updateCode(elaboratedSource)
+  	drawFunction = @updateCode(elaboratedSource)
   	drawFunction
-
-  CodeTransformer
