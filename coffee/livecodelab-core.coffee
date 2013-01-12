@@ -227,7 +227,7 @@ createLiveCodeLabCore = (paramsObject) ->
     blendedThreeJsSceneCanvas =
       liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas
 
-    img = new Image()
+    img = new Image
     img.src = blendedThreeJsSceneCanvas.toDataURL()
 
     if backgroundColor
@@ -240,7 +240,7 @@ createLiveCodeLabCore = (paramsObject) ->
       ctxContext.fillStyle = backgroundColor
       ctxContext.fillRect \
         0, 0, blendedThreeJsSceneCanvas.width, blendedThreeJsSceneCanvas.height
-      img = new Image()
+      img = new Image
       img.src = ctx.toDataURL()
     img
 

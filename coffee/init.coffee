@@ -55,7 +55,7 @@ startEnvironment = (paramsObject) ->
   
   # Stats are updated in the AnimationLoop
   # add Stats.js - https://github.com/mrdoob/stats.js
-  stats = new Stats()
+  stats = new Stats
   paramsObject.forceCanvasRenderer = false  if paramsObject.forceCanvasRenderer is `undefined`
   paramsObject.forceCanvasRenderer = false  if paramsObject.forceCanvasRenderer is null
   
@@ -64,7 +64,7 @@ startEnvironment = (paramsObject) ->
   # CSS colors, this needs to be run before creating LiveCodeLabCore. This is also
   # used by the autocoder because it needs to be able to swap color names that it
   # finds as CSS color strings in the user program.
-  colourNames = new Colours()
+  colourNames = new Colours
   
   #//////////////////////////////////////////////////////
   # Phase 2 - Initialise the core of livecodelab.
