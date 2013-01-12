@@ -1,10 +1,17 @@
-var createCodeTransformer;
+var CodeTransformer;
 
-createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) {
-  var CodeTransformer, addTracingInstructionsToDoOnceBlocks, adjustPostfixNotations, doesProgramContainStringsOrComments, listOfPossibleFunctions, removeTickedDoOnce, stripCommentsAndCheckBasicSyntax;
-  CodeTransformer = {};
-  CodeTransformer.compiler = CoffeeCompiler;
-  listOfPossibleFunctions = ["function", "alert", "rect", "line", "box", "ball", "ballDetail", "peg", "rotate", "move", "scale", "pushMatrix", "popMatrix", "resetMatrix", "bpm", "play", "fill", "noFill", "stroke", "noStroke", "strokeSize", "animationStyle", "background", "simpleGradient", "color", "lights", "noLights", "ambientLight", "pointLight", "abs", "ceil", "constrain", "dist", "exp", "floor", "lerp", "log", "mag", "map", "max", "min", "norm", "pow", "round", "sq", "sqrt", "acos", "asin", "atan", "atan2", "cos", "degrees", "radians", "sin", "tan", "random", "randomSeed", "noise", "noiseDetail", "noiseSeed", "addDoOnce", ""];
+CodeTransformer = (function() {
+
+  CodeTransformer.currentCodeString = null;
+
+  function CodeTransformer(eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) {
+    var listOfPossibleFunctions;
+    this.eventRouter = eventRouter;
+    this.CoffeeCompiler = CoffeeCompiler;
+    this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
+    listOfPossibleFunctions = ["function", "alert", "rect", "line", "box", "ball", "ballDetail", "peg", "rotate", "move", "scale", "pushMatrix", "popMatrix", "resetMatrix", "bpm", "play", "fill", "noFill", "stroke", "noStroke", "strokeSize", "animationStyle", "background", "simpleGradient", "color", "lights", "noLights", "ambientLight", "pointLight", "abs", "ceil", "constrain", "dist", "exp", "floor", "lerp", "log", "mag", "map", "max", "min", "norm", "pow", "round", "sq", "sqrt", "acos", "asin", "atan", "atan2", "cos", "degrees", "radians", "sin", "tan", "random", "randomSeed", "noise", "noiseDetail", "noiseSeed", "addDoOnce", ""];
+  }
+
   /*
     Stops ticked doOnce blocks from running
     
@@ -27,14 +34,16 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
     @returns {string}
   */
 
-  removeTickedDoOnce = function(code) {
+
+  CodeTransformer.prototype.removeTickedDoOnce = function(code) {
     var newCode;
     newCode = void 0;
     newCode = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false");
     newCode = newCode.replace(/\u2713/g, "//");
     return newCode;
   };
-  addTracingInstructionsToDoOnceBlocks = function(code) {
+
+  CodeTransformer.prototype.addTracingInstructionsToDoOnceBlocks = function(code) {
     var elaboratedSourceByLine, iteratingOverSource;
     elaboratedSourceByLine = void 0;
     iteratingOverSource = void 0;
@@ -53,7 +62,8 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
     }
     return code;
   };
-  doesProgramContainStringsOrComments = function(code) {
+
+  CodeTransformer.prototype.doesProgramContainStringsOrComments = function(code) {
     var characterBeingExamined, copyOfcode, nextCharacterBeingExamined;
     copyOfcode = code;
     characterBeingExamined = void 0;
@@ -67,11 +77,12 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
       copyOfcode = copyOfcode.slice(1);
     }
   };
-  stripCommentsAndCheckBasicSyntax = function(code) {
+
+  CodeTransformer.prototype.stripCommentsAndCheckBasicSyntax = function(code) {
     var aposCount, characterBeingExamined, codeWithoutComments, codeWithoutStringsOrComments, curlyBrackCount, programHasBasicError, quoteCount, reasonOfBasicError, roundBrackCount, squareBrackCount;
     codeWithoutComments = void 0;
     codeWithoutStringsOrComments = void 0;
-    if (doesProgramContainStringsOrComments(code)) {
+    if (this.doesProgramContainStringsOrComments(code)) {
       code = code.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')|(\/\/[^\n]*\n)|(\/\*(?:(?!\*\/)(?:.|\n))*\*\/)/g, function(all, quoted, aposed, singleComment, comment) {
         var cycleToRebuildNewLines, numberOfLinesInMultilineComment, rebuiltNewLines;
         numberOfLinesInMultilineComment = void 0;
@@ -139,11 +150,12 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
       if (squareBrackCount & 1) {
         reasonOfBasicError = "Unbalanced []";
       }
-      eventRouter.trigger("compile-time-error-thrown", reasonOfBasicError);
+      this.eventRouter.trigger("compile-time-error-thrown", reasonOfBasicError);
       return null;
     }
     return code;
   };
+
   /*
     Some of the functions can be used with postfix notation
     
@@ -157,7 +169,8 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
     We need to switch this round before coffee script compilation
   */
 
-  adjustPostfixNotations = function(code) {
+
+  CodeTransformer.prototype.adjustPostfixNotations = function(code) {
     var elaboratedSource;
     elaboratedSource = void 0;
     elaboratedSource = code.replace(/(\d+)[ ]+bpm(\s)/g, "bpm $1$2");
@@ -166,7 +179,8 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
     elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+background(\s)/g, "background $1$2");
     return elaboratedSource;
   };
-  CodeTransformer.updateCode = function(code) {
+
+  CodeTransformer.prototype.updateCode = function(code) {
     var aposCount, characterBeingExamined, compiledOutput, curlyBrackCount, elaboratedSource, elaboratedSourceByLine, errResults, functionFromCompiledCode, iteratingOverSource, nextCharacterBeingExamined, programHasBasicError, quoteCount, reasonOfBasicError, roundBrackCount, squareBrackCount;
     elaboratedSource = void 0;
     errResults = void 0;
@@ -180,18 +194,18 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
     elaboratedSourceByLine = void 0;
     iteratingOverSource = void 0;
     reasonOfBasicError = void 0;
-    CodeTransformer.currentCodeString = code;
-    if (CodeTransformer.currentCodeString === "") {
-      liveCodeLabCoreInstance.GraphicsCommands.resetTheSpinThingy = true;
+    this.currentCodeString = code;
+    if (this.currentCodeString === "") {
+      this.liveCodeLabCoreInstance.GraphicsCommands.resetTheSpinThingy = true;
       programHasBasicError = false;
-      eventRouter.trigger("clear-error");
-      liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
+      this.eventRouter.trigger("clear-error");
+      this.liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
       functionFromCompiledCode = new Function("");
-      liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction(null);
-      liveCodeLabCoreInstance.DrawFunctionRunner.lastStableDrawFunction = null;
+      this.liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction(null);
+      this.liveCodeLabCoreInstance.DrawFunctionRunner.lastStableDrawFunction = null;
       return functionFromCompiledCode;
     }
-    code = removeTickedDoOnce(code);
+    code = this.removeTickedDoOnce(code);
     /*
       	The CodeChecker will check for unbalanced brackets
       	and unfinished strings
@@ -200,20 +214,20 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
       	and display an error message
     */
 
-    code = stripCommentsAndCheckBasicSyntax(code);
+    code = this.stripCommentsAndCheckBasicSyntax(code);
     if (code === null) {
       return;
     }
     elaboratedSource = code;
-    code = adjustPostfixNotations(code);
+    code = this.adjustPostfixNotations(code);
     code = code.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->");
-    code = addTracingInstructionsToDoOnceBlocks(code);
+    code = this.addTracingInstructionsToDoOnceBlocks(code);
     code = code.replace(/^(\s*)([a-z]+[a-zA-Z0-9]*)[ ]*$/gm, "$1;$2()");
     code = code.replace(/;\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2");
     code = code.replace(/\->\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2");
     if (code.match(/[\s\+\;]+draw\s*\(/) || false) {
       programHasBasicError = true;
-      eventRouter.trigger("compile-time-error-thrown", "You can't call draw()");
+      this.eventRouter.trigger("compile-time-error-thrown", "You can't call draw()");
       return;
     }
     code = code.replace(/;(if)\(\)/g, ";$1");
@@ -282,28 +296,29 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
     code = code.replace(/(\s);(else\s*if\s*.*\s*);/g, "$1$2");
     code = code.replace(/(\s);(else.*\s*);/g, "$1$2");
     try {
-      compiledOutput = CodeTransformer.compiler.compile(code, {
+      compiledOutput = this.CoffeeCompiler.compile(code, {
         bare: "on"
       });
     } catch (e) {
-      eventRouter.trigger("compile-time-error-thrown", e);
+      this.eventRouter.trigger("compile-time-error-thrown", e);
       return;
     }
     programHasBasicError = false;
-    eventRouter.trigger("clear-error");
-    liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
+    this.eventRouter.trigger("clear-error");
+    this.liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
     compiledOutput = compiledOutput.replace(/var frame/, ";");
     functionFromCompiledCode = new Function(compiledOutput);
-    liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction(functionFromCompiledCode);
+    this.liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction(functionFromCompiledCode);
     return functionFromCompiledCode;
   };
-  CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange = function(CodeTransformer, doOnceOccurrencesLineNumbers) {
+
+  CodeTransformer.prototype.addCheckMarksAndUpdateCodeAndNotifyChange = function(CodeTransformer, doOnceOccurrencesLineNumbers) {
     var drawFunction, elaboratedSource, elaboratedSourceByLine, iteratingOverSource;
     elaboratedSource = void 0;
     elaboratedSourceByLine = void 0;
     iteratingOverSource = void 0;
     drawFunction = void 0;
-    elaboratedSource = CodeTransformer.currentCodeString;
+    elaboratedSource = this.currentCodeString;
     elaboratedSourceByLine = elaboratedSource.split("\n");
     iteratingOverSource = 0;
     while (iteratingOverSource < doOnceOccurrencesLineNumbers.length) {
@@ -311,9 +326,11 @@ createCodeTransformer = function(eventRouter, CoffeeCompiler, liveCodeLabCoreIns
       iteratingOverSource += 1;
     }
     elaboratedSource = elaboratedSourceByLine.join("\n");
-    eventRouter.trigger("code-updated-by-livecodelab", elaboratedSource);
-    drawFunction = CodeTransformer.updateCode(elaboratedSource);
+    this.eventRouter.trigger("code-updated-by-livecodelab", elaboratedSource);
+    drawFunction = this.updateCode(elaboratedSource);
     return drawFunction;
   };
+
   return CodeTransformer;
-};
+
+})();

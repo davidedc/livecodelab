@@ -1,73 +1,72 @@
-<!DOCTYPE html>  <html> <head>   <title>code-transformations.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               code-transformations.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">createCodeTransformer</span></span> = (eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) -&gt;
-
-
-  CodeTransformer = {}
-  CodeTransformer.compiler = CoffeeCompiler
+<!DOCTYPE html>  <html> <head>   <title>code-transformations.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               code-transformations.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="class"><span class="keyword">class</span> <span class="title">CodeTransformer</span></span>
+  <span class="property">@currentCodeString</span> = <span class="literal">null</span>
   
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>note that this is not used anywhere for the time being.</p>             </td>             <td class="code">               <div class="highlight"><pre>  listOfPossibleFunctions = [
-    <span class="string">"function"</span>,
-    <span class="string">"alert"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Geometry</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"rect"</span>,
-    <span class="string">"line"</span>,
-    <span class="string">"box"</span>,
-    <span class="string">"ball"</span>,
-    <span class="string">"ballDetail"</span>,
-    <span class="string">"peg"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Matrix manipulation</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"rotate"</span>,
-    <span class="string">"move"</span>,
-    <span class="string">"scale"</span>,
-    <span class="string">"pushMatrix"</span>,
-    <span class="string">"popMatrix"</span>,
-    <span class="string">"resetMatrix"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Sound</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"bpm"</span>,
-    <span class="string">"play"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Color and drawing styles</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"fill"</span>,
-    <span class="string">"noFill"</span>,
-    <span class="string">"stroke"</span>,
-    <span class="string">"noStroke"</span>,
-    <span class="string">"strokeSize"</span>,
-    <span class="string">"animationStyle"</span>,
-    <span class="string">"background"</span>,
-    <span class="string">"simpleGradient"</span>,
-    <span class="string">"color"</span>,
+  constructor: (<span class="property">@eventRouter</span>, <span class="property">@CoffeeCompiler</span>, <span class="property">@liveCodeLabCoreInstance</span>) -&gt;
+    
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>note that this is not used anywhere for the time being.</p>             </td>             <td class="code">               <div class="highlight"><pre>    listOfPossibleFunctions = [
+      <span class="string">"function"</span>,
+      <span class="string">"alert"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Geometry</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"rect"</span>,
+      <span class="string">"line"</span>,
+      <span class="string">"box"</span>,
+      <span class="string">"ball"</span>,
+      <span class="string">"ballDetail"</span>,
+      <span class="string">"peg"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Matrix manipulation</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"rotate"</span>,
+      <span class="string">"move"</span>,
+      <span class="string">"scale"</span>,
+      <span class="string">"pushMatrix"</span>,
+      <span class="string">"popMatrix"</span>,
+      <span class="string">"resetMatrix"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Sound</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"bpm"</span>,
+      <span class="string">"play"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Color and drawing styles</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"fill"</span>,
+      <span class="string">"noFill"</span>,
+      <span class="string">"stroke"</span>,
+      <span class="string">"noStroke"</span>,
+      <span class="string">"strokeSize"</span>,
+      <span class="string">"animationStyle"</span>,
+      <span class="string">"background"</span>,
+      <span class="string">"simpleGradient"</span>,
+      <span class="string">"color"</span>,
 </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Lighting
-"ambient","reflect", "refract",</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"lights"</span>,
-    <span class="string">"noLights"</span>,
-    <span class="string">"ambientLight"</span>,
-    <span class="string">"pointLight"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Calculations</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"abs"</span>,
-    <span class="string">"ceil"</span>,
-    <span class="string">"constrain"</span>,
-    <span class="string">"dist"</span>,
-    <span class="string">"exp"</span>,
-    <span class="string">"floor"</span>,
-    <span class="string">"lerp"</span>,
-    <span class="string">"log"</span>,
-    <span class="string">"mag"</span>,
-    <span class="string">"map"</span>,
-    <span class="string">"max"</span>,
-    <span class="string">"min"</span>,
-    <span class="string">"norm"</span>,
-    <span class="string">"pow"</span>,
-    <span class="string">"round"</span>,
-    <span class="string">"sq"</span>,
-    <span class="string">"sqrt"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Trigonometry</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"acos"</span>,
-    <span class="string">"asin"</span>,
-    <span class="string">"atan"</span>,
-    <span class="string">"atan2"</span>,
-    <span class="string">"cos"</span>,
-    <span class="string">"degrees"</span>,
-    <span class="string">"radians"</span>,
-    <span class="string">"sin"</span>,
-    <span class="string">"tan"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Random</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"random"</span>,
-    <span class="string">"randomSeed"</span>,
-    <span class="string">"noise"</span>,
-    <span class="string">"noiseDetail"</span>,
-    <span class="string">"noiseSeed"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>do once</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="string">"addDoOnce"</span>,
-    <span class="string">""</span>]
+"ambient","reflect", "refract",</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"lights"</span>,
+      <span class="string">"noLights"</span>,
+      <span class="string">"ambientLight"</span>,
+      <span class="string">"pointLight"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Calculations</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"abs"</span>,
+      <span class="string">"ceil"</span>,
+      <span class="string">"constrain"</span>,
+      <span class="string">"dist"</span>,
+      <span class="string">"exp"</span>,
+      <span class="string">"floor"</span>,
+      <span class="string">"lerp"</span>,
+      <span class="string">"log"</span>,
+      <span class="string">"mag"</span>,
+      <span class="string">"map"</span>,
+      <span class="string">"max"</span>,
+      <span class="string">"min"</span>,
+      <span class="string">"norm"</span>,
+      <span class="string">"pow"</span>,
+      <span class="string">"round"</span>,
+      <span class="string">"sq"</span>,
+      <span class="string">"sqrt"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Trigonometry</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"acos"</span>,
+      <span class="string">"asin"</span>,
+      <span class="string">"atan"</span>,
+      <span class="string">"atan2"</span>,
+      <span class="string">"cos"</span>,
+      <span class="string">"degrees"</span>,
+      <span class="string">"radians"</span>,
+      <span class="string">"sin"</span>,
+      <span class="string">"tan"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Random</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"random"</span>,
+      <span class="string">"randomSeed"</span>,
+      <span class="string">"noise"</span>,
+      <span class="string">"noiseDetail"</span>,
+      <span class="string">"noiseSeed"</span>,
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>do once</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"addDoOnce"</span>,
+      <span class="string">""</span>]
 
 
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  Stops ticked doOnce blocks from running
@@ -89,13 +88,13 @@
   <span class="property">@param</span> {string} code    the code to re-write
   
   <span class="property">@returns</span> {string}
-</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="function"><span class="title">removeTickedDoOnce</span></span> = (code) -&gt;
+</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  removeTickedDoOnce: (code) -&gt;
     newCode = <span class="literal">undefined</span>
     newCode = code.replace(<span class="regexp">/^(\s)*✓[ ]*doOnce[ ]*\-\&gt;[ ]*$/gm</span>, <span class="string">"$1if false"</span>)
     newCode = newCode.replace(<span class="regexp">/\u2713/g, "//</span><span class="string">")
     newCode
 
-  addTracingInstructionsToDoOnceBlocks = (code) -&gt;
+  addTracingInstructionsToDoOnceBlocks: (code) -&gt;
 </pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>ADDING TRACING INSTRUCTION TO THE DOONCE BLOCKS
 each doOnce block is made to start with an instruction that traces whether
 the block has been run or not. This allows us to put back the tick where
@@ -148,7 +147,7 @@ Example - let's say one pastes in this code:
     
 </pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>alert('soon after replacing doOnces'+code);</p>             </td>             <td class="code">               <div class="highlight"><pre>    code
 
-  <span class="function"><span class="title">doesProgramContainStringsOrComments</span></span> = (code) -&gt;    
+  doesProgramContainStringsOrComments: (code) -&gt;    
 </pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>make a copy of the string because we are going to
 slice it in the process.</p>             </td>             <td class="code">               <div class="highlight"><pre>    copyOfcode = code
     characterBeingExamined = <span class="literal">undefined</span>
@@ -164,7 +163,7 @@ slice it in the process.</p>             </td>             <td class="code">    
         <span class="keyword">return</span> <span class="literal">true</span>
       copyOfcode = copyOfcode.slice(<span class="number">1</span>)
 
-  <span class="function"><span class="title">stripCommentsAndCheckBasicSyntax</span></span> = (code) -&gt;
+  stripCommentsAndCheckBasicSyntax: (code) -&gt;
     codeWithoutComments = <span class="literal">undefined</span>
     codeWithoutStringsOrComments = <span class="literal">undefined</span>
     
@@ -178,7 +177,7 @@ coffescript to javascript translation</p>             </td>             <td clas
 these groups of characters should be in even number:
 ", ', (), {}, []
 Note that this doesn't check nesting, so for example
-[{]} does pass the test.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> doesProgramContainStringsOrComments(code)
+[{]} does pass the test.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> <span class="property">@doesProgramContainStringsOrComments</span>(code)
       
 </pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>OK the program contains comments and/or strings
 so this is what we are going to do:
@@ -260,7 +259,7 @@ the line where it was</p>             </td>             <td class="code">       
       reasonOfBasicError = <span class="string">"Unbalanced ()"</span>  <span class="keyword">if</span> roundBrackCount &amp; <span class="number">1</span>
       reasonOfBasicError = <span class="string">"Unbalanced {}"</span>  <span class="keyword">if</span> curlyBrackCount &amp; <span class="number">1</span>
       reasonOfBasicError = <span class="string">"Unbalanced []"</span>  <span class="keyword">if</span> squareBrackCount &amp; <span class="number">1</span>
-      eventRouter.trigger <span class="string">"compile-time-error-thrown"</span>, reasonOfBasicError
+      <span class="property">@eventRouter</span>.trigger <span class="string">"compile-time-error-thrown"</span>, reasonOfBasicError
       <span class="keyword">return</span> <span class="literal">null</span>
     
 </pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>no comments or strings were found, just return the same string
@@ -276,7 +275,7 @@ that was passed</p>             </td>             <td class="code">             
   black background
   
   We need to <span class="keyword">switch</span> <span class="keyword">this</span> round before coffee script compilation
-</pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="function"><span class="title">adjustPostfixNotations</span></span> = (code) -&gt;
+</pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  adjustPostfixNotations: (code) -&gt;
     elaboratedSource = <span class="literal">undefined</span>
     elaboratedSource = code.replace(<span class="regexp">/(\d+)[ ]+bpm(\s)/g</span>, <span class="string">"bpm $1$2"</span>)
     elaboratedSource = elaboratedSource.replace(<span class="regexp">/([a-zA-Z]+)[ ]+fill(\s)/g</span>, <span class="string">"fill $1$2"</span>)
@@ -286,7 +285,7 @@ that was passed</p>             </td>             <td class="code">             
       <span class="regexp">/([a-zA-Z]+)[ ]+background(\s)/g</span>, <span class="string">"background $1$2"</span>)
     elaboratedSource
 
-  CodeTransformer.<span class="function"><span class="title">updateCode</span></span> = (code) -&gt;
+  updateCode: (code) -&gt;
   	elaboratedSource = <span class="literal">undefined</span>
   	errResults = <span class="literal">undefined</span>
   	characterBeingExamined = <span class="literal">undefined</span>
@@ -299,17 +298,17 @@ that was passed</p>             </td>             <td class="code">             
   	elaboratedSourceByLine = <span class="literal">undefined</span>
   	iteratingOverSource = <span class="literal">undefined</span>
   	reasonOfBasicError = <span class="literal">undefined</span>
-  	CodeTransformer.currentCodeString = code
-  	<span class="keyword">if</span> CodeTransformer.currentCodeString <span class="keyword">is</span> <span class="string">""</span>
-      liveCodeLabCoreInstance.GraphicsCommands.resetTheSpinThingy = <span class="literal">true</span>
+  	<span class="property">@currentCodeString</span> = code
+  	<span class="keyword">if</span> <span class="property">@currentCodeString</span> <span class="keyword">is</span> <span class="string">""</span>
+      <span class="property">@liveCodeLabCoreInstance</span>.GraphicsCommands.resetTheSpinThingy = <span class="literal">true</span>
       programHasBasicError = <span class="literal">false</span>
-      eventRouter.trigger <span class="string">"clear-error"</span>
-      liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>
+      <span class="property">@eventRouter</span>.trigger <span class="string">"clear-error"</span>
+      <span class="property">@liveCodeLabCoreInstance</span>.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>
       functionFromCompiledCode = <span class="keyword">new</span> Function(<span class="string">""</span>)
-      liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction <span class="literal">null</span>
-      liveCodeLabCoreInstance.DrawFunctionRunner.lastStableDrawFunction = <span class="literal">null</span>
+      <span class="property">@liveCodeLabCoreInstance</span>.DrawFunctionRunner.setDrawFunction <span class="literal">null</span>
+      <span class="property">@liveCodeLabCoreInstance</span>.DrawFunctionRunner.lastStableDrawFunction = <span class="literal">null</span>
       <span class="keyword">return</span> functionFromCompiledCode
-  	code = removeTickedDoOnce(code)
+  	code = <span class="property">@removeTickedDoOnce</span>(code)
   	
 </pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>////////////////// Newer code checks</p>
 
@@ -322,7 +321,7 @@ that was passed</p>             </td>             <td class="code">             
 </pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <p>errResults = CodeChecker.parse(code);</p>
 
 <p>if (errResults.err === true) {
-    eventRouter.trigger('compile-time-error-thrown', errResults.message);
+    @eventRouter.trigger('compile-time-error-thrown', errResults.message);
     return;
 }</p>
 
@@ -332,7 +331,7 @@ elaboratedSource = preprocessingFunctions.fixTimesFunctions(elaboratedSource);
 elaboratedSource = preprocessingFunctions.addDoOnceTracing(elaboratedSource);</p>             </td>             <td class="code">               <div class="highlight"><pre>  	
 </pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>  	
 </pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>//////////////// Older code checks</p>             </td>             <td class="code">               <div class="highlight"><pre>  	
-  	code = stripCommentsAndCheckBasicSyntax(code)
+  	code = <span class="property">@stripCommentsAndCheckBasicSyntax</span>(code)
   	<span class="keyword">return</span> <span class="keyword">if</span> code <span class="keyword">is</span> <span class="literal">null</span>
   	elaboratedSource = code
   	
@@ -340,7 +339,7 @@ elaboratedSource = preprocessingFunctions.addDoOnceTracing(elaboratedSource);</p
   60 bpm
   red fill
   yellow stroke
-  black background</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = adjustPostfixNotations(code);
+  black background</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = <span class="property">@adjustPostfixNotations</span>(code);
   	
 </pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>little trick. This is mangled up in the translation from coffeescript
 (1).times ->
@@ -371,7 +370,7 @@ causing mayhem.
 Instead, all is good if rotate is prepended with a semicolon.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code =
   	  code.replace(<span class="regexp">/(\d+)\s+times[ ]*\-&gt;/g</span>, <span class="string">";( $1 + 0).times -&gt;"</span>)
   	code =
-  	  addTracingInstructionsToDoOnceBlocks(code)
+  	  <span class="property">@addTracingInstructionsToDoOnceBlocks</span>(code)
   	
 </pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>adding () to single tokens left on their own</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code =
   	  code.replace(<span class="regexp">/^(\s*)([a-z]+[a-zA-Z0-9]*)[ ]*$/gm</span>, <span class="string">"$1;$2()"</span>)
@@ -393,7 +392,7 @@ why should he/she call it?
 TODO: call draw() something else that the user is not
 likely to use by mistake and take away this check.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	<span class="keyword">if</span> code.match(<span class="regexp">/[\s\+\;]+draw\s*\(/</span>) <span class="keyword">or</span> <span class="literal">false</span>
       programHasBasicError = <span class="literal">true</span>
-      eventRouter.trigger <span class="string">"compile-time-error-thrown"</span>, <span class="string">"You can't call draw()"</span>
+      <span class="property">@eventRouter</span>.trigger <span class="string">"compile-time-error-thrown"</span>, <span class="string">"You can't call draw()"</span>
       <span class="keyword">return</span>
   	
 </pre></div>             </td>           </tr>                               <tr id="section-46">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-46">&#182;</a>               </div>               <p>we don't want if and for to undergo the same tratment as, say, box
@@ -479,20 +478,20 @@ the semicolon mangles the first line of the function definitions:</p>           
   	
 </pre></div>             </td>           </tr>                               <tr id="section-55">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-55">&#182;</a>               </div>               <p>the semicolon mangles the first line of else statements</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/(\s);(else.*\s*);/g</span>, <span class="string">"$1$2"</span>)
   	<span class="keyword">try</span>
-      compiledOutput = CodeTransformer.compiler.compile(code,
+      compiledOutput = <span class="property">@CoffeeCompiler</span>.compile(code,
       	bare: <span class="string">"on"</span>
       )
   	<span class="keyword">catch</span> e
 </pre></div>             </td>           </tr>                               <tr id="section-56">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-56">&#182;</a>               </div>               <p>coffescript compiler has caught a syntax error.
 we are going to display the error and we WON'T register
-the new code</p>             </td>             <td class="code">               <div class="highlight"><pre>      eventRouter.trigger <span class="string">"compile-time-error-thrown"</span>, e
+the new code</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@eventRouter</span>.trigger <span class="string">"compile-time-error-thrown"</span>, e
       <span class="keyword">return</span>
 </pre></div>             </td>           </tr>                               <tr id="section-57">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-57">&#182;</a>               </div>               <p>alert compiledOutput</p>             </td>             <td class="code">               <div class="highlight"><pre>  	programHasBasicError = <span class="literal">false</span>
-  	eventRouter.trigger <span class="string">"clear-error"</span>
+  	<span class="property">@eventRouter</span>.trigger <span class="string">"clear-error"</span>
   	
 </pre></div>             </td>           </tr>                               <tr id="section-58">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-58">&#182;</a>               </div>               <p>see here for the deepest examination ever of "eval"
 http://perfectionkills.com/global-eval-what-are-the-options/
-note that exceptions are caught by the window.onerror callback</p>             </td>             <td class="code">               <div class="highlight"><pre>  	liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>
+note that exceptions are caught by the window.onerror callback</p>             </td>             <td class="code">               <div class="highlight"><pre>  	<span class="property">@liveCodeLabCoreInstance</span>.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>
   	
 </pre></div>             </td>           </tr>                               <tr id="section-59">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-59">&#182;</a>               </div>               <p>You might want to change the frame count from the program
 just like you can in Processing, but it turns out that when
@@ -505,11 +504,11 @@ some variables as global, for the time being let's put
 the cheap hack in place i.e. remove any local declaration that the
 coffeescript to javascript translator inserts.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	compiledOutput = compiledOutput.replace(<span class="regexp">/var frame/</span>, <span class="string">";"</span>)
   	functionFromCompiledCode = <span class="keyword">new</span> Function(compiledOutput)
-  	liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction functionFromCompiledCode
+  	<span class="property">@liveCodeLabCoreInstance</span>.DrawFunctionRunner.setDrawFunction functionFromCompiledCode
   	functionFromCompiledCode
 
 </pre></div>             </td>           </tr>                               <tr id="section-60">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-60">&#182;</a>               </div>               <p>this function is used externally after the code has been
-run, so we need to attach it to the CodeTransformer object.</p>             </td>             <td class="code">               <div class="highlight"><pre>  CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange = \
+run, so we need to attach it to the CodeTransformer object.</p>             </td>             <td class="code">               <div class="highlight"><pre>  addCheckMarksAndUpdateCodeAndNotifyChange: \
       (CodeTransformer, doOnceOccurrencesLineNumbers) -&gt;
   	elaboratedSource = <span class="literal">undefined</span>
   	elaboratedSourceByLine = <span class="literal">undefined</span>
@@ -524,7 +523,7 @@ the doOnceOccurrencesLineNumbers array.
 So, the doOnceOccurrencesLineNumbers array contains all and only the lines
 of each doOnce block that has been run. Which could be more than one, because
 when we start the program we could have more than one doOnce that has
-to run.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	elaboratedSource = CodeTransformer.currentCodeString
+to run.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	elaboratedSource = <span class="property">@currentCodeString</span>
   	
 </pre></div>             </td>           </tr>                               <tr id="section-62">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-62">&#182;</a>               </div>               <p>we know the line number of each doOnce block that has been run
 so we go there and add a tick next to each doOnce to indicate
@@ -539,7 +538,7 @@ that it has been run.</p>             </td>             <td class="code">       
   	
 </pre></div>             </td>           </tr>                               <tr id="section-63">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-63">&#182;</a>               </div>               <p>puts the new code (where the doOnce that have been executed have
 tickboxes put back) in the editor. Which will trigger a re-registration
-of the new code.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	eventRouter.trigger <span class="string">"code-updated-by-livecodelab"</span>, elaboratedSource
+of the new code.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	<span class="property">@eventRouter</span>.trigger <span class="string">"code-updated-by-livecodelab"</span>, elaboratedSource
 </pre></div>             </td>           </tr>                               <tr id="section-64">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-64">&#182;</a>               </div>               <p>alert elaboratedSource
 we want to avoid that another frame is run with the old
 code, as this would mean that the
@@ -551,8 +550,7 @@ because we don't know what that entails. We should
 just pass the code we already have.
 Also updateCode() may split the source code by line, so we can
 avoid that since we've just split it, we could pass
-the already split code.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	drawFunction = CodeTransformer.updateCode(elaboratedSource)
+the already split code.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	drawFunction = <span class="property">@updateCode</span>(elaboratedSource)
   	drawFunction
 
-  CodeTransformer
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
