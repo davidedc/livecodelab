@@ -116,7 +116,9 @@ startEnvironment = (paramsObject) ->
   # requires ThreeJsSystem, BlendControls, GraphicsCommands, Renderer
   # note that the programLoader variable below is never used. Leaving it
   # in for consistency.
-  programLoader = createProgramLoader(eventRouter, editor, liveCodeLabCore) # $, Detector, BlendControls
+  programLoader = new ProgramLoader(eventRouter, editor, liveCodeLabCore) # $, Detector, BlendControls
+  eventRouter.bind "load-program", programLoader.loadDemoOrTutorial, programLoader
+
   
   #/////////////////////////////////////////////////////
   # Phase 4 - Setup Of Event Listeners, including handling of
