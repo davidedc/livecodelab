@@ -112,6 +112,7 @@ compile time and runtime errors.
     <span class="keyword">if</span> updatedCodeAsString <span class="keyword">isnt</span> <span class="string">""</span>
       eventRouter.trigger <span class="string">"big-cursor-hide"</span>
     <span class="keyword">else</span>
+      setTimeout((()=&gt;<span class="property">@editor</span>.clearHistory()),<span class="number">30</span>)
       eventRouter.trigger <span class="string">"set-url-hash"</span>, <span class="string">""</span>
       eventRouter.trigger <span class="string">"big-cursor-show"</span>
       ui.hideStatsWidget()

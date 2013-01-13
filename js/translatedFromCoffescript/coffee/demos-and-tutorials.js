@@ -93,12 +93,16 @@ ProgramLoader = (function() {
   };
 
   ProgramLoader.prototype.loadAppropriateDemoOrTutorialBasedOnHash = function(hash) {
-    var matched;
+    var matched,
+      _this = this;
     matched = hash.match(/bookmark=(.*)/);
     if (matched) {
       return this.loadDemoOrTutorial(matched[1]);
     } else {
-      return this.texteditor.setValue("");
+      this.texteditor.setValue("");
+      return setTimeout((function() {
+        return _this.texteditor.clearHistory();
+      }), 30);
     }
   };
 

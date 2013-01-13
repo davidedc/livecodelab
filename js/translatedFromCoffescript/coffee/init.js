@@ -69,9 +69,13 @@ startEnvironment = function(paramsObject) {
   eventRouter.trigger("editor-toggle-dim", true);
   eventRouter.bind("livecodelab-running-stably", ui.showStatsWidget);
   eventRouter.bind("code_changed", function(updatedCodeAsString) {
+    var _this = this;
     if (updatedCodeAsString !== "") {
       eventRouter.trigger("big-cursor-hide");
     } else {
+      setTimeout((function() {
+        return editor.clearHistory();
+      }), 30);
       eventRouter.trigger("set-url-hash", "");
       eventRouter.trigger("big-cursor-show");
       ui.hideStatsWidget();
