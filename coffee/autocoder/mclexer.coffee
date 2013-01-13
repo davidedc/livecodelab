@@ -49,9 +49,7 @@ McState = ->
 
   state.rules = rules
   state.lex = (input) ->
-    nextCont = state.run(input)
-    
-    #console.log("mclexer: " + nextCont);
+    nextCont = state.run(input)    
     nextCont = nextCont()  while typeof nextCont is "function"
     nextCont
 
@@ -78,19 +76,16 @@ McRunMethod = (input) ->
 
   while i >= 0
     r = @rules[i]
-    
-    #console.log("scanning rules: " + r)
+
     m = r.matches(input)
-    
-    #console.log("matches? " + m)
+
     if m and (m[0].length >= longestMatchedLength)
-      
-      #console.log("this is the longest matching rule")
       longestMatchedRule = r
       longestMatch = m
       longestMatchedLength = m[0].length
     --i
   if longestMatchedRule
+    #console.log("found a matching rule")
     longestMatchedRule.action longestMatch, input.substring(longestMatchedLength), this
   else
     throw ("Lexing error; no match found for: '" + input + "'")
