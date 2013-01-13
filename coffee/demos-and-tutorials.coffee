@@ -732,6 +732,8 @@ class ProgramLoader
     else
       # user in on the root page without any hashes
       @texteditor.setValue ""
+      # reset undo history
+      setTimeout((()=>@texteditor.clearHistory()),30)
   
   # this paragraph from http://stackoverflow.com/a/629817
   # there are more elegant ways to track back/forward history

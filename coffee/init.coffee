@@ -131,6 +131,9 @@ startEnvironment = (paramsObject) ->
     if updatedCodeAsString isnt ""
       eventRouter.trigger "big-cursor-hide"
     else
+      # clearing history, otherwise the user can undo her way into a previous example
+      # but the hash in the URL would be misaligned.
+      setTimeout((()=>editor.clearHistory()),30)
       eventRouter.trigger "set-url-hash", ""
       eventRouter.trigger "big-cursor-show"
       ui.hideStatsWidget()
