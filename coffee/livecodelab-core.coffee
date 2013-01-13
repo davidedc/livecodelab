@@ -149,7 +149,7 @@ createLiveCodeLabCore = (paramsObject) ->
   
   # this one interacts with TimeKeeper at runtime
   liveCodeLabCoreInstance.MatrixCommands =
-    createMatrixCommands(
+    new MatrixCommands(
       liveCodeLabCoreInstance.THREE, liveCodeLabCoreInstance)
   
   # this one also interacts with ColourFunctions, LightSystem, MatrixCommands
