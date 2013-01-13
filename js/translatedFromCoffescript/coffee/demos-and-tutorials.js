@@ -64,7 +64,8 @@ ProgramLoader = (function() {
   }
 
   ProgramLoader.prototype.loadDemoOrTutorial = function(demoName) {
-    var BlendControls, prependMessage, userWarnedAboutWebglExamples;
+    var BlendControls, prependMessage, userWarnedAboutWebglExamples,
+      _this = this;
     if ((!Detector.webgl || this.liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) && !userWarnedAboutWebglExamples && demoName.indexOf("webgl") === 0) {
       userWarnedAboutWebglExamples = true;
       $("#exampleNeedsWebgl").modal();
@@ -80,6 +81,9 @@ ProgramLoader = (function() {
     }
     if (this.program[demoName]) {
       this.texteditor.setValue(prependMessage + this.program[demoName]);
+      setTimeout((function() {
+        return _this.texteditor.clearHistory();
+      }), 30);
     }
     this.texteditor.setCursor(0, 0);
     BlendControls = this.liveCodeLabCoreInstance.BlendControls;

@@ -695,10 +695,18 @@ will run the new demo code. But before doing that will happen (when the timer
 for the next frame triggers), we'll have cleared the screen with the code
 below.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> <span class="property">@program</span>[demoName]
       <span class="property">@texteditor</span>.setValue prependMessage + <span class="property">@program</span>[demoName]
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>clear history. Why? Because we want to avoid the follwing:
+user opens an example. User opens another example.
+User performs undo. Result: previous example is open, but the hashtag
+doesn't match the example. It's just confusing - we assume here that is
+the user selects another tutorial and example then she is not expecting
+the undo history to bring her back to previous demos/examples.
+Note that, again, this is quite common in CodeMirror, the clearHistory
+invokation below only works if slightly postponed. Not sure why.</p>             </td>             <td class="code">               <div class="highlight"><pre>      setTimeout((()=&gt;<span class="property">@texteditor</span>.clearHistory()),<span class="number">30</span>)
 
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>bring the cursor to the top</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@texteditor</span>.setCursor <span class="number">0</span>, <span class="number">0</span>
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>bring the cursor to the top</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@texteditor</span>.setCursor <span class="number">0</span>, <span class="number">0</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>we want to avoid that the selected example
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>we want to avoid that the selected example
 or tutorial when started paints over a screen with a previous drawing
 of the previous code.
 So basically we draw an empty frame.
@@ -715,16 +723,16 @@ So basically we draw an empty frame.
     <span class="keyword">if</span> matched
       <span class="property">@loadDemoOrTutorial</span> matched[<span class="number">1</span>]
     <span class="keyword">else</span>
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>user in on the root page without any hashes</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@texteditor</span>.setValue <span class="string">""</span>
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>user in on the root page without any hashes</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@texteditor</span>.setValue <span class="string">""</span>
   
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>this paragraph from http://stackoverflow.com/a/629817
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>this paragraph from http://stackoverflow.com/a/629817
 there are more elegant ways to track back/forward history
 but they are more complex than this. I don't mind having a bit of
 polling for this, not too big of a problem.</p>             </td>             <td class="code">               <div class="highlight"><pre>  pollHash: -&gt;
     <span class="keyword">if</span> <span class="property">@lastHash</span> <span class="keyword">isnt</span> location.hash
       <span class="property">@lastHash</span> = location.hash
       
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>hash has changed, so do stuff:</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@loadAppropriateDemoOrTutorialBasedOnHash</span> <span class="property">@lastHash</span>
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>hash has changed, so do stuff:</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@loadAppropriateDemoOrTutorialBasedOnHash</span> <span class="property">@lastHash</span>
 
 
 
