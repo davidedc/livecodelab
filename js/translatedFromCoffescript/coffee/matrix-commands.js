@@ -1,70 +1,99 @@
-var createMatrixCommands;
+"use strict";
 
-createMatrixCommands = function(liveCodeLabCore_THREE, liveCodeLabCoreInstance) {
-  "use strict";
+var MatrixCommands;
 
-  var MatrixCommands, currentObject, matrixStack, parentObject, rootObject, worldMatrix;
-  MatrixCommands = {};
-  parentObject = 0;
-  rootObject = 0;
-  currentObject = void 0;
+MatrixCommands = (function() {
+  var matrixStack;
+
   matrixStack = [];
-  worldMatrix = new liveCodeLabCore_THREE.Matrix4();
-  MatrixCommands.getWorldMatrix = function() {
-    return worldMatrix;
+
+  function MatrixCommands(liveCodeLabCore_THREE, liveCodeLabCoreInstance) {
+    var _this = this;
+    this.liveCodeLabCore_THREE = liveCodeLabCore_THREE;
+    this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
+    this.worldMatrix = new this.liveCodeLabCore_THREE.Matrix4();
+    window.pushMatrix = function() {
+      return _this.pushMatrix();
+    };
+    window.popMatrix = function() {
+      return _this.popMatrix();
+    };
+    window.resetMatrix = function() {
+      return _this.resetMatrix();
+    };
+    window.move = function(a, b, c) {
+      return _this.move(a, b, c);
+    };
+    window.rotate = function(a, b, c) {
+      return _this.rotate(a, b, c);
+    };
+    window.scale = function(a, b, c) {
+      return _this.scale(a, b, c);
+    };
+  }
+
+  MatrixCommands.prototype.getWorldMatrix = function() {
+    return this.worldMatrix;
   };
-  MatrixCommands.resetMatrixStack = function() {
-    matrixStack = [];
-    return worldMatrix.identity();
+
+  MatrixCommands.prototype.resetMatrixStack = function() {
+    this.matrixStack = [];
+    return this.worldMatrix.identity();
   };
-  window.pushMatrix = MatrixCommands.pushMatrix = function() {
-    matrixStack.push(worldMatrix);
-    return worldMatrix = (new liveCodeLabCore_THREE.Matrix4()).copy(worldMatrix);
+
+  MatrixCommands.prototype.pushMatrix = function() {
+    this.matrixStack.push(this.worldMatrix);
+    return this.worldMatrix = (new this.liveCodeLabCore_THREE.Matrix4()).copy(this.worldMatrix);
   };
-  window.popMatrix = MatrixCommands.popMatrix = function() {
-    if (matrixStack.length !== 0) {
-      return worldMatrix = matrixStack.pop();
+
+  MatrixCommands.prototype.popMatrix = function() {
+    if (this.matrixStack.length !== 0) {
+      return this.worldMatrix = this.matrixStack.pop();
     } else {
-      return worldMatrix.identity();
+      return this.worldMatrix.identity();
     }
   };
-  window.resetMatrix = MatrixCommands.resetMatrix = function() {
-    return worldMatrix.identity();
+
+  MatrixCommands.prototype.resetMatrix = function() {
+    return this.worldMatrix.identity();
   };
-  window.move = MatrixCommands.move = function(a, b, c) {
+
+  MatrixCommands.prototype.move = function(a, b, c) {
     if (c == null) {
       c = 0;
     }
     if (typeof a !== "number") {
-      a = Math.sin(liveCodeLabCoreInstance.TimeKeeper.getTime() / 500);
-      b = Math.cos(liveCodeLabCoreInstance.TimeKeeper.getTime() / 500);
+      a = Math.sin(this.liveCodeLabCoreInstance.TimeKeeper.getTime() / 500);
+      b = Math.cos(this.liveCodeLabCoreInstance.TimeKeeper.getTime() / 500);
       c = a;
     } else if (typeof b !== "number") {
       b = a;
       c = a;
     }
-    return worldMatrix.translate(new liveCodeLabCore_THREE.Vector3(a, b, c));
+    return this.worldMatrix.translate(new this.liveCodeLabCore_THREE.Vector3(a, b, c));
   };
-  window.rotate = MatrixCommands.rotate = function(a, b, c) {
+
+  MatrixCommands.prototype.rotate = function(a, b, c) {
     if (c == null) {
       c = 0;
     }
     if (typeof a !== "number") {
-      a = liveCodeLabCoreInstance.TimeKeeper.getTime() / 1000;
+      a = this.liveCodeLabCoreInstance.TimeKeeper.getTime() / 1000;
       b = a;
       c = a;
     } else if (typeof b !== "number") {
       b = a;
       c = a;
     }
-    return worldMatrix.rotateX(a).rotateY(b).rotateZ(c);
+    return this.worldMatrix.rotateX(a).rotateY(b).rotateZ(c);
   };
-  window.scale = MatrixCommands.scale = function(a, b, c) {
+
+  MatrixCommands.prototype.scale = function(a, b, c) {
     if (c == null) {
       c = 1;
     }
     if (typeof a !== "number") {
-      a = 1 + Math.sin(liveCodeLabCoreInstance.TimeKeeper.getTime() / 500) / 4;
+      a = 1 + Math.sin(this.liveCodeLabCoreInstance.TimeKeeper.getTime() / 500) / 4;
       b = a;
       c = a;
     } else if (typeof b !== "number") {
@@ -80,7 +109,9 @@ createMatrixCommands = function(liveCodeLabCore_THREE, liveCodeLabCoreInstance) 
     if (c > -0.000000001 && c < 0.000000001) {
       c = 0.000000001;
     }
-    return worldMatrix.scale(new liveCodeLabCore_THREE.Vector3(a, b, c));
+    return this.worldMatrix.scale(new this.liveCodeLabCore_THREE.Vector3(a, b, c));
   };
+
   return MatrixCommands;
-};
+
+})();
