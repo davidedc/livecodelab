@@ -2,81 +2,80 @@ class CodeTransformer
   @currentCodeString = null
   
   constructor: (@eventRouter, @CoffeeCompiler, @liveCodeLabCoreInstance) ->
-    
-      # note that this is not used anywhere for the time being.
+    # note that this is not used anywhere for the time being.
     listOfPossibleFunctions = [
-      "function",
-      "alert",
+      "function"
+      "alert"
       # Geometry
-      "rect",
-      "line",
-      "box",
-      "ball",
-      "ballDetail",
-      "peg",
+      "rect"
+      "line"
+      "box"
+      "ball"
+      "ballDetail"
+      "peg"
       # Matrix manipulation
-      "rotate",
-      "move",
-      "scale",
-      "pushMatrix",
-      "popMatrix",
-      "resetMatrix",
+      "rotate"
+      "move"
+      "scale"
+      "pushMatrix"
+      "popMatrix"
+      "resetMatrix"
       # Sound
-      "bpm",
-      "play",
+      "bpm"
+      "play"
       # Color and drawing styles
-      "fill",
-      "noFill",
-      "stroke",
-      "noStroke",
-      "strokeSize",
-      "animationStyle",
-      "background",
-      "simpleGradient",
-      "color",
+      "fill"
+      "noFill"
+      "stroke"
+      "noStroke"
+      "strokeSize"
+      "animationStyle"
+      "background"
+      "simpleGradient"
+      "color"
       # Lighting
-      # "ambient","reflect", "refract",
-      "lights",
-      "noLights",
-      "ambientLight",
-      "pointLight",
+      # "ambient""reflect" "refract"
+      "lights"
+      "noLights"
+      "ambientLight"
+      "pointLight"
       # Calculations
-      "abs",
-      "ceil",
-      "constrain",
-      "dist",
-      "exp",
-      "floor",
-      "lerp",
-      "log",
-      "mag",
-      "map",
-      "max",
-      "min",
-      "norm",
-      "pow",
-      "round",
-      "sq",
-      "sqrt",
+      "abs"
+      "ceil"
+      "constrain"
+      "dist"
+      "exp"
+      "floor"
+      "lerp"
+      "log"
+      "mag"
+      "map"
+      "max"
+      "min"
+      "norm"
+      "pow"
+      "round"
+      "sq"
+      "sqrt"
       # Trigonometry
-      "acos",
-      "asin",
-      "atan",
-      "atan2",
-      "cos",
-      "degrees",
-      "radians",
-      "sin",
-      "tan",
+      "acos"
+      "asin"
+      "atan"
+      "atan2"
+      "cos"
+      "degrees"
+      "radians"
+      "sin"
+      "tan"
       # Random
-      "random",
-      "randomSeed",
-      "noise",
-      "noiseDetail",
-      "noiseSeed",
+      "random"
+      "randomSeed"
+      "noise"
+      "noiseDetail"
+      "noiseSeed"
       # do once
-      "addDoOnce",
-      ""]
+      "addDoOnce"
+    ]
 
 
   ###
