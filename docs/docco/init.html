@@ -92,17 +92,20 @@ Phase 3 - Other satellite parts
   attachMouseWheelHandler editor
   
 </pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>console.log('creating stats');</p>             </td>             <td class="code">               <div class="highlight"><pre>  ui = createUi(eventRouter, stats) <span class="comment"># $</span>
-</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>requires: ColourNames</p>             </td>             <td class="code">               <div class="highlight"><pre>  autocoder = createAutocoder(eventRouter, editor, colourNames) <span class="comment"># McLexer</span>
-</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>EditorDimmer functions should probablly be rolled into the editor itself
+</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>requires: ColourNames</p>             </td>             <td class="code">               <div class="highlight"><pre>  autocoder = <span class="keyword">new</span> Autocoder(eventRouter, editor, colourNames) <span class="comment"># McLexer</span>
+</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>  eventRouter.bind(<span class="string">"reset"</span>, =&gt; autocoder.toggle(<span class="literal">false</span>))  
+  eventRouter.bind(<span class="string">"toggle-autocoder"</span>, =&gt; autocoder.toggle())
+  
+</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>EditorDimmer functions should probablly be rolled into the editor itself
 note that the editorDimmer variable below is never used. Leaving it
 in for consistency.</p>             </td>             <td class="code">               <div class="highlight"><pre>  editorDimmer = createEditorDimmer(eventRouter, bigCursor) <span class="comment"># $</span>
-</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>requires ThreeJsSystem, BlendControls, GraphicsCommands, Renderer
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>requires ThreeJsSystem, BlendControls, GraphicsCommands, Renderer
 note that the programLoader variable below is never used. Leaving it
 in for consistency.</p>             </td>             <td class="code">               <div class="highlight"><pre>  programLoader = <span class="keyword">new</span> ProgramLoader(eventRouter, editor, liveCodeLabCore) <span class="comment"># $, Detector, BlendControls</span>
   eventRouter.bind <span class="string">"load-program"</span>, programLoader.loadDemoOrTutorial, programLoader
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>/////////////////////////////////////////////////////
+</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>/////////////////////////////////////////////////////
 Phase 4 - Setup Of Event Listeners, including handling of
 compile time and runtime errors.
 /////////////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>  eventRouter.bind <span class="string">"reset"</span>, liveCodeLabCore.paintARandomBackground
@@ -112,7 +115,7 @@ compile time and runtime errors.
     <span class="keyword">if</span> updatedCodeAsString <span class="keyword">isnt</span> <span class="string">""</span>
       eventRouter.trigger <span class="string">"big-cursor-hide"</span>
     <span class="keyword">else</span>
-</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>clearing history, otherwise the user can undo her way into a previous example
+</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>clearing history, otherwise the user can undo her way into a previous example
 but the hash in the URL would be misaligned.</p>             </td>             <td class="code">               <div class="highlight"><pre>      setTimeout((()=&gt;editor.clearHistory()),<span class="number">30</span>)
       eventRouter.trigger <span class="string">"set-url-hash"</span>, <span class="string">""</span>
       eventRouter.trigger <span class="string">"big-cursor-show"</span>
@@ -120,7 +123,7 @@ but the hash in the URL would be misaligned.</p>             </td>             <
     liveCodeLabCore.updateCode updatedCodeAsString
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>runtime and compile-time error management //////////
+</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>runtime and compile-time error management //////////
 /////////////////////////////////////////////////////
 Two different types of errors are managed in
 two slightly different ways.</p>
@@ -193,12 +196,12 @@ is found.</p>             </td>             <td class="code">               <div
     eventRouter.trigger <span class="string">"report-runtime-or-compile-time-error"</span>, e
     <span class="keyword">if</span> autocoder.active
       
-</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>alert('editor: ' + editor);</p>             </td>             <td class="code">               <div class="highlight"><pre>      editor.undo()
+</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>alert('editor: ' + editor);</p>             </td>             <td class="code">               <div class="highlight"><pre>      editor.undo()
     
-</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>alert('undoing');</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">else</span>
+</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>alert('undoing');</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">else</span>
       liveCodeLabCore.runLastWorkingDrawFunction()
     
-</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>re-throw the error so that the top-level debuggers
+</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>re-throw the error so that the top-level debuggers
 (firebug, built-in, whathaveyous) can properly
 catch the error and let the user inspect things.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">throw</span> (e)  <span class="keyword">if</span> paramsObject.bubbleUpErrorsForDebugging
 
@@ -208,9 +211,9 @@ catch the error and let the user inspect things.</p>             </td>          
 
   eventRouter.bind <span class="string">"clear-error"</span>, ui.clearError, ui
   
-</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>create this binding before the sounds are loaded</p>             </td>             <td class="code">               <div class="highlight"><pre>  eventRouter.bind <span class="string">"all-sounds-loaded-and tested"</span>, ui.soundSystemOk
+</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>create this binding before the sounds are loaded</p>             </td>             <td class="code">               <div class="highlight"><pre>  eventRouter.bind <span class="string">"all-sounds-loaded-and tested"</span>, ui.soundSystemOk
   
-</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>/////////////////////////////////////////////////////
+</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>/////////////////////////////////////////////////////
 Phase 5- Kick-off the system and start of the
 animation loop. Events will start
 being triggered from here on.
@@ -222,13 +225,13 @@ being triggered from here on.
     $(<span class="string">"#simplemodal-container"</span>).height <span class="number">200</span>
   editor.focus()
   
-</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>check if the url points to a particular demo,
+</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>check if the url points to a particular demo,
 in which case we load the demo directly.
 otherwise we do as usual.    </p>             </td>             <td class="code">               <div class="highlight"><pre>  setTimeout liveCodeLabCore.playStartupSound, <span class="number">650</span>  <span class="keyword">unless</span> urlRouter.urlPointsToDemoOrTutorial()
   bigCursor.toggleBlink <span class="literal">true</span>
   ui.setup()
 
-</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>var printoutImageData = function(){
+</pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>var printoutImageData = function(){
        console.log(liveCodeLabCore.getForeground3DSceneImageData());
    }</p>
 

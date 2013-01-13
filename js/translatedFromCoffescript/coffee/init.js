@@ -61,7 +61,13 @@ startEnvironment = function(paramsObject) {
   editor = createEditor(eventRouter, CodeMirror);
   attachMouseWheelHandler(editor);
   ui = createUi(eventRouter, stats);
-  autocoder = createAutocoder(eventRouter, editor, colourNames);
+  autocoder = new Autocoder(eventRouter, editor, colourNames);
+  eventRouter.bind("reset", function() {
+    return autocoder.toggle(false);
+  });
+  eventRouter.bind("toggle-autocoder", function() {
+    return autocoder.toggle();
+  });
   editorDimmer = createEditorDimmer(eventRouter, bigCursor);
   programLoader = new ProgramLoader(eventRouter, editor, liveCodeLabCore);
   eventRouter.bind("load-program", programLoader.loadDemoOrTutorial, programLoader);
