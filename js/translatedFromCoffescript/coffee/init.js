@@ -63,7 +63,8 @@ startEnvironment = function(paramsObject) {
   ui = createUi(eventRouter, stats);
   autocoder = createAutocoder(eventRouter, editor, colourNames);
   editorDimmer = createEditorDimmer(eventRouter, bigCursor);
-  programLoader = createProgramLoader(eventRouter, editor, liveCodeLabCore);
+  programLoader = new ProgramLoader(eventRouter, editor, liveCodeLabCore);
+  eventRouter.bind("load-program", programLoader.loadDemoOrTutorial, programLoader);
   eventRouter.bind("reset", liveCodeLabCore.paintARandomBackground);
   eventRouter.trigger("editor-toggle-dim", true);
   eventRouter.bind("livecodelab-running-stably", ui.showStatsWidget);
