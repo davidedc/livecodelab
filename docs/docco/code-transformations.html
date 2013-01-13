@@ -2,71 +2,70 @@
   <span class="property">@currentCodeString</span> = <span class="literal">null</span>
   
   constructor: (<span class="property">@eventRouter</span>, <span class="property">@CoffeeCompiler</span>, <span class="property">@liveCodeLabCoreInstance</span>) -&gt;
-    
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>note that this is not used anywhere for the time being.</p>             </td>             <td class="code">               <div class="highlight"><pre>    listOfPossibleFunctions = [
-      <span class="string">"function"</span>,
-      <span class="string">"alert"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Geometry</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"rect"</span>,
-      <span class="string">"line"</span>,
-      <span class="string">"box"</span>,
-      <span class="string">"ball"</span>,
-      <span class="string">"ballDetail"</span>,
-      <span class="string">"peg"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Matrix manipulation</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"rotate"</span>,
-      <span class="string">"move"</span>,
-      <span class="string">"scale"</span>,
-      <span class="string">"pushMatrix"</span>,
-      <span class="string">"popMatrix"</span>,
-      <span class="string">"resetMatrix"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Sound</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"bpm"</span>,
-      <span class="string">"play"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Color and drawing styles</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"fill"</span>,
-      <span class="string">"noFill"</span>,
-      <span class="string">"stroke"</span>,
-      <span class="string">"noStroke"</span>,
-      <span class="string">"strokeSize"</span>,
-      <span class="string">"animationStyle"</span>,
-      <span class="string">"background"</span>,
-      <span class="string">"simpleGradient"</span>,
-      <span class="string">"color"</span>,
+      <span class="string">"function"</span>
+      <span class="string">"alert"</span>
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Geometry</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"rect"</span>
+      <span class="string">"line"</span>
+      <span class="string">"box"</span>
+      <span class="string">"ball"</span>
+      <span class="string">"ballDetail"</span>
+      <span class="string">"peg"</span>
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Matrix manipulation</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"rotate"</span>
+      <span class="string">"move"</span>
+      <span class="string">"scale"</span>
+      <span class="string">"pushMatrix"</span>
+      <span class="string">"popMatrix"</span>
+      <span class="string">"resetMatrix"</span>
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Sound</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"bpm"</span>
+      <span class="string">"play"</span>
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Color and drawing styles</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"fill"</span>
+      <span class="string">"noFill"</span>
+      <span class="string">"stroke"</span>
+      <span class="string">"noStroke"</span>
+      <span class="string">"strokeSize"</span>
+      <span class="string">"animationStyle"</span>
+      <span class="string">"background"</span>
+      <span class="string">"simpleGradient"</span>
+      <span class="string">"color"</span>
 </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Lighting
-"ambient","reflect", "refract",</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"lights"</span>,
-      <span class="string">"noLights"</span>,
-      <span class="string">"ambientLight"</span>,
-      <span class="string">"pointLight"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Calculations</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"abs"</span>,
-      <span class="string">"ceil"</span>,
-      <span class="string">"constrain"</span>,
-      <span class="string">"dist"</span>,
-      <span class="string">"exp"</span>,
-      <span class="string">"floor"</span>,
-      <span class="string">"lerp"</span>,
-      <span class="string">"log"</span>,
-      <span class="string">"mag"</span>,
-      <span class="string">"map"</span>,
-      <span class="string">"max"</span>,
-      <span class="string">"min"</span>,
-      <span class="string">"norm"</span>,
-      <span class="string">"pow"</span>,
-      <span class="string">"round"</span>,
-      <span class="string">"sq"</span>,
-      <span class="string">"sqrt"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Trigonometry</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"acos"</span>,
-      <span class="string">"asin"</span>,
-      <span class="string">"atan"</span>,
-      <span class="string">"atan2"</span>,
-      <span class="string">"cos"</span>,
-      <span class="string">"degrees"</span>,
-      <span class="string">"radians"</span>,
-      <span class="string">"sin"</span>,
-      <span class="string">"tan"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Random</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"random"</span>,
-      <span class="string">"randomSeed"</span>,
-      <span class="string">"noise"</span>,
-      <span class="string">"noiseDetail"</span>,
-      <span class="string">"noiseSeed"</span>,
-</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>do once</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"addDoOnce"</span>,
-      <span class="string">""</span>]
+"ambient""reflect" "refract"</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"lights"</span>
+      <span class="string">"noLights"</span>
+      <span class="string">"ambientLight"</span>
+      <span class="string">"pointLight"</span>
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Calculations</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"abs"</span>
+      <span class="string">"ceil"</span>
+      <span class="string">"constrain"</span>
+      <span class="string">"dist"</span>
+      <span class="string">"exp"</span>
+      <span class="string">"floor"</span>
+      <span class="string">"lerp"</span>
+      <span class="string">"log"</span>
+      <span class="string">"mag"</span>
+      <span class="string">"map"</span>
+      <span class="string">"max"</span>
+      <span class="string">"min"</span>
+      <span class="string">"norm"</span>
+      <span class="string">"pow"</span>
+      <span class="string">"round"</span>
+      <span class="string">"sq"</span>
+      <span class="string">"sqrt"</span>
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Trigonometry</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"acos"</span>
+      <span class="string">"asin"</span>
+      <span class="string">"atan"</span>
+      <span class="string">"atan2"</span>
+      <span class="string">"cos"</span>
+      <span class="string">"degrees"</span>
+      <span class="string">"radians"</span>
+      <span class="string">"sin"</span>
+      <span class="string">"tan"</span>
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Random</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"random"</span>
+      <span class="string">"randomSeed"</span>
+      <span class="string">"noise"</span>
+      <span class="string">"noiseDetail"</span>
+      <span class="string">"noiseSeed"</span>
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>do once</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"addDoOnce"</span>
+    ]
 
 
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  Stops ticked doOnce blocks from running
