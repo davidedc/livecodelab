@@ -699,6 +699,15 @@ class ProgramLoader
     # below.
     if @program[demoName]
       @texteditor.setValue prependMessage + @program[demoName]
+      # clear history. Why? Because we want to avoid the follwing:
+      # user opens an example. User opens another example.
+      # User performs undo. Result: previous example is open, but the hashtag
+      # doesn't match the example. It's just confusing - we assume here that is
+      # the user selects another tutorial and example then she is not expecting
+      # the undo history to bring her back to previous demos/examples.
+      # Note that, again, this is quite common in CodeMirror, the clearHistory
+      # invokation below only works if slightly postponed. Not sure why.
+      setTimeout((()=>@texteditor.clearHistory()),30)
 
     # bring the cursor to the top
     @texteditor.setCursor 0, 0
