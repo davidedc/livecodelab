@@ -108,7 +108,11 @@ startEnvironment = (paramsObject) ->
   #console.log('creating stats');
   ui = createUi(eventRouter, stats) # $
   # requires: ColourNames
-  autocoder = createAutocoder(eventRouter, editor, colourNames) # McLexer
+  autocoder = new Autocoder(eventRouter, editor, colourNames) # McLexer
+  # Setup Event Listeners
+  eventRouter.bind("reset", => autocoder.toggle(false))  
+  eventRouter.bind("toggle-autocoder", => autocoder.toggle())
+  
   # EditorDimmer functions should probablly be rolled into the editor itself
   # note that the editorDimmer variable below is never used. Leaving it
   # in for consistency.
