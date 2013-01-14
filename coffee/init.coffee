@@ -51,7 +51,7 @@ startEnvironment = (paramsObject) ->
   # For "heavy fire" callbacks one might want to use a classic callback system,
   # because there might be some overhead in the triggering of events using this.
   # (to be tested. just throwing it out there.)
-  eventRouter = createEventRouter()
+  eventRouter = new EventRouter()
   
   # Stats are updated in the AnimationLoop
   # add Stats.js - https://github.com/mrdoob/stats.js
@@ -118,9 +118,9 @@ startEnvironment = (paramsObject) ->
   # in for consistency.
   editorDimmer = new EditorDimmer(eventRouter, bigCursor) # $
   # Setup Event Listeners
-  eventRouter.bind "editor-dim", (=> editorDimmer.dimEditor()), @
-  eventRouter.bind "editor-undim", (=> editorDimmer.undimEditor()), @
-  eventRouter.bind "editor-toggle-dim", (=> editorDimmer.toggleDimCode()), @
+  eventRouter.bind "editor-dim", (=> editorDimmer.dimEditor()), editorDimmer
+  eventRouter.bind "editor-undim", (=> editorDimmer.undimEditor()), editorDimmer
+  eventRouter.bind "editor-toggle-dim", (=> editorDimmer.toggleDimCode()), editorDimmer
   
   # requires ThreeJsSystem, BlendControls, GraphicsCommands, Renderer
   # note that the programLoader variable below is never used. Leaving it
