@@ -163,7 +163,7 @@ createLiveCodeLabCore = (paramsObject) ->
   # this one also interacts with THREE,
   # ThreeJsSystem, ColourFunctions at runtime
   liveCodeLabCoreInstance.LightSystem =
-    createLightSystem(liveCodeLabCoreInstance.GraphicsCommands, liveCodeLabCoreInstance)
+    new LightSystem(liveCodeLabCoreInstance.GraphicsCommands, liveCodeLabCoreInstance)
   
   #//////////////////////////////////////////////
   #

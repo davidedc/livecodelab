@@ -1,26 +1,30 @@
 #jslint browser: true 
 
-createLightSystem = (liveCodeLabCore_GraphicsCommands, liveCodeLabCoreInstance) ->
-  "use strict"
-  LightSystem = {}
+"use strict"
+class LightSystem
+  lightsAreOn: false
+  constructor: (@liveCodeLabCore_GraphicsCommands, @liveCodeLabCoreInstance) ->
 
-  # defining a couple of shorthands
-  objectPools = liveCodeLabCore_GraphicsCommands.objectPools
-  primitiveTypes = liveCodeLabCore_GraphicsCommands.primitiveTypes
-  objectsUsedInFrameCounts = liveCodeLabCore_GraphicsCommands.objectsUsedInFrameCounts
+    # defining a couple of shorthands
+    @objectPools = @liveCodeLabCore_GraphicsCommands.objectPools
+    @primitiveTypes = @liveCodeLabCore_GraphicsCommands.primitiveTypes
+    @objectsUsedInFrameCounts = @liveCodeLabCore_GraphicsCommands.objectsUsedInFrameCounts
 
-  objectPools[primitiveTypes.ambientLight] = []
-  objectsUsedInFrameCounts[primitiveTypes.ambientLight] = 0
-  LightSystem.lightsAreOn = false
+    @objectPools[@primitiveTypes.ambientLight] = []
+    @objectsUsedInFrameCounts[@primitiveTypes.ambientLight] = 0
+    
+    window.lights = () => @lights()
+    window.noLights = () => @noLights()
+    window.ambientLight = (a,b,c,d) => @ambientLight(a,b,c,d)
 
-  window.lights = LightSystem.lights = ->
-    LightSystem.lightsAreOn = true
+  lights: ->
+    @lightsAreOn = true
 
-  window.noLights = LightSystem.noLights = ->
-    LightSystem.lightsAreOn = false
+  noLights: ->
+    @lightsAreOn = false
   
   # ambientLight needs to be global
-  window.ambientLight = LightSystem.ambientLight = (r, g, b, a) ->
+  ambientLight: (r, g, b, a) ->
     colorToBeUsed = undefined
     newLightCreated = false
     ambientLightsPool = undefined
@@ -32,18 +36,18 @@ createLightSystem = (liveCodeLabCore_GraphicsCommands, liveCodeLabCoreInstance) 
       # black is too stark and white
       # doesn't show the effect with the
       # default white fill
-      colorToBeUsed = liveCodeLabCoreInstance.ColourFunctions.color(255)
+      colorToBeUsed = @liveCodeLabCoreInstance.ColourFunctions.color(255)
     else
-      colorToBeUsed = liveCodeLabCoreInstance.ColourFunctions.color(r, g, b, a)
-    LightSystem.lightsAreOn = true
+      colorToBeUsed = @liveCodeLabCoreInstance.ColourFunctions.color(r, g, b, a)
+    @lightsAreOn = true
     
     # used by graphic-primitives
-    liveCodeLabCore_GraphicsCommands.defaultNormalFill = false
+    @liveCodeLabCore_GraphicsCommands.defaultNormalFill = false
     
     # used by graphic-primitives
-    liveCodeLabCore_GraphicsCommands.defaultNormalStroke = false
-    ambientLightsPool = objectPools[primitiveTypes.ambientLight]
-    pooledAmbientLight = ambientLightsPool[objectsUsedInFrameCounts[primitiveTypes.ambientLight]]
+    @liveCodeLabCore_GraphicsCommands.defaultNormalStroke = false
+    ambientLightsPool = @objectPools[@primitiveTypes.ambientLight]
+    pooledAmbientLight = ambientLightsPool[@objectsUsedInFrameCounts[@primitiveTypes.ambientLight]]
 
     if pooledAmbientLight is `undefined`      
       # So here is the thing, the command is currently called AmbientLight but
@@ -52,19 +56,17 @@ createLightSystem = (liveCodeLabCore_GraphicsCommands, liveCodeLabCoreInstance) 
       # so the faces of the cube would all be of the same
       # exact color. Note that in Three.js versions before r50 the AmbientLight
       # would work like a PointLight does now.
-      pooledAmbientLight = new liveCodeLabCoreInstance.THREE.PointLight(colorToBeUsed)
+      pooledAmbientLight = new @liveCodeLabCoreInstance.THREE.PointLight(colorToBeUsed)
       pooledAmbientLight.position.set 10, 50, 130
       newLightCreated = true
       ambientLightsPool.push pooledAmbientLight
       pooledAmbientLight.detailLevel = 0
-      pooledAmbientLight.primitiveType = primitiveTypes.ambientLight
+      pooledAmbientLight.primitiveType = @primitiveTypes.ambientLight
     else
       pooledAmbientLight.color.setHex colorToBeUsed
 
-    objectsUsedInFrameCounts[primitiveTypes.ambientLight] += 1
+    @objectsUsedInFrameCounts[@primitiveTypes.ambientLight] += 1
     
     # NOTE that an ambient light is not actually added as an object.
     # i.e. if you navigate the objects you don't find it.
-    liveCodeLabCoreInstance.ThreeJsSystem.scene.add pooledAmbientLight  if newLightCreated
-
-  LightSystem
+    @liveCodeLabCoreInstance.ThreeJsSystem.scene.add pooledAmbientLight  if newLightCreated
