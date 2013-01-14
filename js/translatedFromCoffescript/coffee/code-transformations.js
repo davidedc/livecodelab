@@ -2,7 +2,7 @@ var CodeTransformer;
 
 CodeTransformer = (function() {
 
-  CodeTransformer.currentCodeString = null;
+  CodeTransformer.prototype.currentCodeString = null;
 
   function CodeTransformer(eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) {
     var listOfPossibleFunctions;

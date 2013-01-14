@@ -3,15 +3,14 @@
 var Autocoder, TOKEN_ARGDLIM, TOKEN_COLOUR, TOKEN_COLOUROP, TOKEN_COMMENT, TOKEN_DOONCE, TOKEN_ITERATION, TOKEN_MESH, TOKEN_NEWLINE, TOKEN_NUM, TOKEN_OP, TOKEN_SPACE, TOKEN_STATEFUN, TOKEN_TAB, TOKEN_TRANSLATION, TOKEN_UNKNOWN, TOKEN_VARIABLE;
 
 Autocoder = (function() {
-  var active, autocoderMutateTimeout, numberOfResults, whichOneToChange;
 
-  active = false;
+  Autocoder.prototype.active = false;
 
-  autocoderMutateTimeout = void 0;
+  Autocoder.prototype.autocoderMutateTimeout = void 0;
 
-  numberOfResults = 0;
+  Autocoder.prototype.numberOfResults = 0;
 
-  whichOneToChange = 0;
+  Autocoder.prototype.whichOneToChange = 0;
 
   function Autocoder(eventRouter, editor, colourNames) {
     var scanningAllColors,

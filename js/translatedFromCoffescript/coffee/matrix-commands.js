@@ -3,9 +3,8 @@
 var MatrixCommands;
 
 MatrixCommands = (function() {
-  var matrixStack;
 
-  matrixStack = [];
+  MatrixCommands.prototype.matrixStack = [];
 
   function MatrixCommands(liveCodeLabCore_THREE, liveCodeLabCoreInstance) {
     var _this = this;
