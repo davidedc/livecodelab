@@ -42,7 +42,7 @@ before LiveCodeCore.
 of livecodelab.
 For "heavy fire" callbacks one might want to use a classic callback system,
 because there might be some overhead in the triggering of events using this.
-(to be tested. just throwing it out there.)</p>             </td>             <td class="code">               <div class="highlight"><pre>  eventRouter = createEventRouter()
+(to be tested. just throwing it out there.)</p>             </td>             <td class="code">               <div class="highlight"><pre>  eventRouter = <span class="keyword">new</span> EventRouter()
   
 </pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Stats are updated in the AnimationLoop
 add Stats.js - https://github.com/mrdoob/stats.js</p>             </td>             <td class="code">               <div class="highlight"><pre>  stats = <span class="keyword">new</span> Stats
@@ -99,9 +99,9 @@ Phase 3 - Other satellite parts
 </pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>EditorDimmer functions should probablly be rolled into the editor itself
 note that the editorDimmer variable below is never used. Leaving it
 in for consistency.</p>             </td>             <td class="code">               <div class="highlight"><pre>  editorDimmer = <span class="keyword">new</span> EditorDimmer(eventRouter, bigCursor) <span class="comment"># $</span>
-</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>  eventRouter.bind <span class="string">"editor-dim"</span>, (=&gt; editorDimmer.dimEditor()), @
-  eventRouter.bind <span class="string">"editor-undim"</span>, (=&gt; editorDimmer.undimEditor()), @
-  eventRouter.bind <span class="string">"editor-toggle-dim"</span>, (=&gt; editorDimmer.toggleDimCode()), @
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>  eventRouter.bind <span class="string">"editor-dim"</span>, (=&gt; editorDimmer.dimEditor()), editorDimmer
+  eventRouter.bind <span class="string">"editor-undim"</span>, (=&gt; editorDimmer.undimEditor()), editorDimmer
+  eventRouter.bind <span class="string">"editor-toggle-dim"</span>, (=&gt; editorDimmer.toggleDimCode()), editorDimmer
   
 </pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>requires ThreeJsSystem, BlendControls, GraphicsCommands, Renderer
 note that the programLoader variable below is never used. Leaving it

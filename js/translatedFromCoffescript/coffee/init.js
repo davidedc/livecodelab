@@ -33,7 +33,7 @@ startEnvironment = function(paramsObject) {
     $("#simplemodal-container").height(200);
     return;
   }
-  eventRouter = createEventRouter();
+  eventRouter = new EventRouter();
   stats = new Stats;
   if (paramsObject.forceCanvasRenderer === undefined) {
     paramsObject.forceCanvasRenderer = false;
@@ -71,13 +71,13 @@ startEnvironment = function(paramsObject) {
   editorDimmer = new EditorDimmer(eventRouter, bigCursor);
   eventRouter.bind("editor-dim", (function() {
     return editorDimmer.dimEditor();
-  }), this);
+  }), editorDimmer);
   eventRouter.bind("editor-undim", (function() {
     return editorDimmer.undimEditor();
-  }), this);
+  }), editorDimmer);
   eventRouter.bind("editor-toggle-dim", (function() {
     return editorDimmer.toggleDimCode();
-  }), this);
+  }), editorDimmer);
   programLoader = new ProgramLoader(eventRouter, editor, liveCodeLabCore);
   eventRouter.bind("load-program", programLoader.loadDemoOrTutorial, programLoader);
   eventRouter.bind("reset", liveCodeLabCore.paintARandomBackground);
