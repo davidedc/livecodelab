@@ -1,6 +1,6 @@
 "use strict";
 
-var Autocoder;
+var Autocoder, TOKEN_ARGDLIM, TOKEN_COLOUR, TOKEN_COLOUROP, TOKEN_COMMENT, TOKEN_DOONCE, TOKEN_ITERATION, TOKEN_MESH, TOKEN_NEWLINE, TOKEN_NUM, TOKEN_OP, TOKEN_SPACE, TOKEN_STATEFUN, TOKEN_TAB, TOKEN_TRANSLATION, TOKEN_UNKNOWN, TOKEN_VARIABLE;
 
 Autocoder = (function() {
   var active, autocoderMutateTimeout, numberOfResults, whichOneToChange;
@@ -14,368 +14,205 @@ Autocoder = (function() {
   whichOneToChange = 0;
 
   function Autocoder(eventRouter, editor, colourNames) {
-    var ARGDLIM, COLOUR, COLOUROP, COMMENT, DOONCE, ITERATION, MESH, NEWLINE, NUM, OP, SPACE, STATEFUN, TAB, TRANSLATION, UNKNOWN, VARIABLE, scanningAllColors,
+    var scanningAllColors,
       _this = this;
     this.eventRouter = eventRouter;
     this.editor = editor;
     this.colourNames = colourNames;
     this.Tokens = [];
-    this.LexersOnlyState = new McLexer.State();
-    this.LexersOnlyState(/\/\/.*\n/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new COMMENT(matchedPartOfInput[0]));
+    this.LexersOnlyState = new LexerState();
+    this.LexersOnlyState.addRule(/\/\/.*\n/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_COMMENT(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/\t/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new TAB(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/\t/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_TAB(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/-?[0-9]+\.?[0-9]*/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new NUM(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/-?[0-9]+\.?[0-9]*/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_NUM(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/-?\.[0-9]*/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new NUM(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/-?\.[0-9]*/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_NUM(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/[*|\/|+|\-|=]/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new OP(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/[*|\/|+|\-|=]/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_OP(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/,/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new ARGDLIM(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/,/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_ARGDLIM(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/[\n|\r]{1,2}/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new NEWLINE(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/[\n|\r]{1,2}/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_NEWLINE(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/rotate/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new TRANSLATION(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/rotate/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_TRANSLATION(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/move/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new TRANSLATION(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/move/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_TRANSLATION(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/scale/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new TRANSLATION(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/scale/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_TRANSLATION(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
     scanningAllColors = 0;
     while (scanningAllColors < this.colourNames.length) {
-      this.LexersOnlyState(new RegExp(this.colourNames[scanningAllColors]))(function(matchedPartOfInput, remainingInput, state) {
-        _this.Tokens.push(new COLOUR(matchedPartOfInput[0]));
+      this.LexersOnlyState.addRule(new RegExp(this.colourNames[scanningAllColors]), function(matchedPartOfInput, remainingInput, state) {
+        _this.Tokens.push(new TOKEN_COLOUR(matchedPartOfInput[0], _this.colourNames));
         return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
       });
       scanningAllColors++;
     }
-    this.LexersOnlyState(/background/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new COLOUROP(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/background/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_COLOUROP(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/fill/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new COLOUROP(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/fill/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_COLOUROP(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/stroke/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new COLOUROP(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/stroke/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_COLOUROP(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/simpleGradient/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new COLOUROP(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/simpleGradient/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_COLOUROP(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/box/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new MESH(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/box/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_MESH(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/ball/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new MESH(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/ball/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_MESH(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/peg/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new MESH(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/peg/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_MESH(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/rect/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new MESH(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/rect/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_MESH(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/line/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new MESH(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/line/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_MESH(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/ambientLight/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new STATEFUN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/ambientLight/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_STATEFUN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/noStroke/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new STATEFUN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/noStroke/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_STATEFUN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/ballDetail/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new STATEFUN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/ballDetail/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_STATEFUN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/animationStyle\s\w+/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new STATEFUN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/animationStyle\s\w+/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_STATEFUN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/\d+\s+times\s+->/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new ITERATION(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/\d+\s+times\s+->/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_ITERATION(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/time/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new VARIABLE(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/time/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_VARIABLE(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/delay/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new VARIABLE(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/delay/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_VARIABLE(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/\?doOnce\s+->\s*/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new DOONCE(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/\?doOnce\s+->\s*/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_DOONCE(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(RegExp(" +"))(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new SPACE(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(RegExp(" +"), function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_SPACE(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/'/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/'/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/[✓]?doOnce\s+\->?/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/[✓]?doOnce\s+\->?/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(RegExp("=="))(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(RegExp("=="), function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/else/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/else/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/next-tutorial:\w+/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/next-tutorial:\w+/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/\w+/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/\w+/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/if/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/if/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/pushMatrix/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/pushMatrix/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/popMatrix/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/popMatrix/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/play/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/play/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/bpm/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/bpm/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/color\s*\(.+\)/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/color\s*\(.+\)/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/noFill/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/noFill/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/frame/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/frame/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/strokeSize/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/strokeSize/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/\(/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/\(/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/\)/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/\)/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    this.LexersOnlyState(/%/)(function(matchedPartOfInput, remainingInput, state) {
-      _this.Tokens.push(new UNKNOWN(matchedPartOfInput[0]));
+    this.LexersOnlyState.addRule(/%/, function(matchedPartOfInput, remainingInput, state) {
+      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
       return state.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    COMMENT = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "COMMENT(" + string + ")";
-      };
-      return null;
-    };
-    SPACE = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "SPACE(" + string + ")";
-      };
-      return null;
-    };
-    NEWLINE = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "<br/>";
-      };
-      return null;
-    };
-    TRANSLATION = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "TRANSLATION(" + string + ")";
-      };
-      return null;
-    };
-    VARIABLE = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "VARIABLE(" + string + ")";
-      };
-      return null;
-    };
-    NUM = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "NUM(" + string + ")";
-      };
-      this.mutate = function() {
-        var num, offset, scalar;
-        num = new Number(this.string);
-        scalar = void 0;
-        if (0 === num) {
-          num = 0.1;
-        }
-        if (Math.random() > 0.5) {
-          scalar = 0 - Math.random();
-        } else {
-          scalar = Math.random();
-        }
-        offset = num * Math.random();
-        num += offset;
-        num = num.toFixed(2);
-        return this.string = num.toString();
-      };
-      return null;
-    };
-    OP = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "OP(" + string + ")";
-      };
-      return null;
-    };
-    ARGDLIM = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "ARGDLIM(" + string + ")";
-      };
-      return null;
-    };
-    TAB = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "TAB(" + string + ")";
-      };
-      return null;
-    };
-    DOONCE = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "DOONCE(" + string + ")";
-      };
-      return null;
-    };
-    COLOUROP = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "COLOUROP(" + string + ")";
-      };
-      return null;
-    };
-    COLOUR = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "COLOUR(" + string + ")";
-      };
-      this.mutate = function() {
-        var idx;
-        idx = Math.floor(Math.random() * this.colourNames.length);
-        while (this.string === this.colourNames[idx]) {
-          idx = Math.floor(Math.random() * this.colourNames.length);
-        }
-        return this.string = this.colourNames[idx];
-      };
-      return null;
-    };
-    MESH = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "MESH(" + string + ")";
-      };
-      this.mutate = function() {
-        switch (this.string) {
-          case "box":
-            this.string = "ball";
-            break;
-          case "ball":
-            this.string = "box";
-            break;
-          case "line":
-            this.string = "rect";
-            break;
-          case "rect":
-            this.string = "line";
-        }
-      };
-      return null;
-    };
-    STATEFUN = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "STATEFUN(" + string + ")";
-      };
-      return null;
-    };
-    ITERATION = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "ITERATION(" + string + ")";
-      };
-      this.mutate = function() {
-        var num, pat;
-        pat = /\d/;
-        num = pat.exec(this.string);
-        if (Math.random() > 0.5) {
-          num++;
-        } else {
-          num--;
-        }
-        return this.string = num.toString() + " times ->";
-      };
-      return null;
-    };
-    UNKNOWN = function(string) {
-      this.string = string;
-      this.toString = function() {
-        return "UNKNOWN(" + string + ")";
-      };
-      return null;
-    };
   }
 
   Autocoder.prototype.emit = function(stream) {
@@ -478,5 +315,286 @@ Autocoder = (function() {
   };
 
   return Autocoder;
+
+})();
+
+TOKEN_COMMENT = (function() {
+
+  function TOKEN_COMMENT(string) {
+    this.string = string;
+  }
+
+  TOKEN_COMMENT.prototype.toString = function() {
+    return "COMMENT(" + string + ")";
+  };
+
+  return TOKEN_COMMENT;
+
+})();
+
+TOKEN_SPACE = (function() {
+
+  function TOKEN_SPACE(string) {
+    this.string = string;
+  }
+
+  TOKEN_SPACE.prototype.toString = function() {
+    return "SPACE(" + string + ")";
+  };
+
+  return TOKEN_SPACE;
+
+})();
+
+TOKEN_NEWLINE = (function() {
+
+  function TOKEN_NEWLINE(string) {
+    this.string = string;
+  }
+
+  TOKEN_NEWLINE.prototype.toString = function() {
+    return "<br/>";
+  };
+
+  return TOKEN_NEWLINE;
+
+})();
+
+TOKEN_TRANSLATION = (function() {
+
+  function TOKEN_TRANSLATION(string) {
+    this.string = string;
+  }
+
+  TOKEN_TRANSLATION.prototype.toString = function() {
+    return "TOKEN_TRANSLATION(" + this.string + ")";
+  };
+
+  return TOKEN_TRANSLATION;
+
+})();
+
+TOKEN_VARIABLE = (function() {
+
+  function TOKEN_VARIABLE(string) {
+    this.string = string;
+  }
+
+  TOKEN_VARIABLE.prototype.toString = function() {
+    return "TOKEN_VARIABLE(" + this.string + ")";
+  };
+
+  return TOKEN_VARIABLE;
+
+})();
+
+TOKEN_NUM = (function() {
+
+  function TOKEN_NUM(string) {
+    this.string = string;
+  }
+
+  TOKEN_NUM.prototype.toString = function() {
+    return "TOKEN_NUM(" + this.string + ")";
+  };
+
+  TOKEN_NUM.prototype.mutate = function() {
+    var num, offset, scalar;
+    num = new Number(this.string);
+    scalar = void 0;
+    if (0 === num) {
+      num = 0.1;
+    }
+    if (Math.random() > 0.5) {
+      scalar = 0 - Math.random();
+    } else {
+      scalar = Math.random();
+    }
+    offset = num * Math.random();
+    num += offset;
+    num = num.toFixed(2);
+    return this.string = num.toString();
+  };
+
+  return TOKEN_NUM;
+
+})();
+
+TOKEN_OP = (function() {
+
+  function TOKEN_OP(string) {
+    this.string = string;
+  }
+
+  TOKEN_OP.prototype.toString = function() {
+    return "TOKEN_OP(" + this.string + ")";
+  };
+
+  return TOKEN_OP;
+
+})();
+
+TOKEN_ARGDLIM = (function() {
+
+  function TOKEN_ARGDLIM(string) {
+    this.string = string;
+  }
+
+  TOKEN_ARGDLIM.prototype.toString = function() {
+    return "TOKEN_ARGDLIM(" + this.string + ")";
+  };
+
+  return TOKEN_ARGDLIM;
+
+})();
+
+TOKEN_TAB = (function() {
+
+  function TOKEN_TAB(string) {
+    this.string = string;
+  }
+
+  TOKEN_TAB.prototype.toString = function() {
+    return "TOKEN_TAB(" + this.string + ")";
+  };
+
+  return TOKEN_TAB;
+
+})();
+
+TOKEN_DOONCE = (function() {
+
+  function TOKEN_DOONCE(string) {
+    this.string = string;
+  }
+
+  TOKEN_DOONCE.prototype.toString = function() {
+    return "TOKEN_DOONCE(" + this.string + ")";
+  };
+
+  return TOKEN_DOONCE;
+
+})();
+
+TOKEN_MESH = (function() {
+
+  function TOKEN_MESH(string) {
+    this.string = string;
+  }
+
+  TOKEN_MESH.prototype.toString = function() {
+    return "TOKEN_MESH(" + this.string + ")";
+  };
+
+  TOKEN_MESH.prototype.mutate = function() {
+    switch (this.string) {
+      case "box":
+        this.string = "ball";
+        break;
+      case "ball":
+        this.string = "box";
+        break;
+      case "line":
+        this.string = "rect";
+        break;
+      case "rect":
+        this.string = "line";
+    }
+  };
+
+  return TOKEN_MESH;
+
+})();
+
+TOKEN_STATEFUN = (function() {
+
+  function TOKEN_STATEFUN(string) {
+    this.string = string;
+  }
+
+  TOKEN_STATEFUN.prototype.toString = function() {
+    return "TOKEN_STATEFUN(" + this.string + ")";
+  };
+
+  return TOKEN_STATEFUN;
+
+})();
+
+TOKEN_ITERATION = (function() {
+
+  function TOKEN_ITERATION(string) {
+    this.string = string;
+  }
+
+  TOKEN_ITERATION.prototype.toString = function() {
+    return "TOKEN_ITERATION(" + this.string + ")";
+  };
+
+  TOKEN_ITERATION.prototype.mutate = function() {
+    var num, pat;
+    pat = /\d/;
+    num = pat.exec(this.string);
+    if (Math.random() > 0.5) {
+      num++;
+    } else {
+      num--;
+    }
+    return this.string = num.toString() + " times ->";
+  };
+
+  return TOKEN_ITERATION;
+
+})();
+
+TOKEN_UNKNOWN = (function() {
+
+  function TOKEN_UNKNOWN(string) {
+    this.string = string;
+  }
+
+  TOKEN_UNKNOWN.prototype.toString = function() {
+    return "TOKEN_UNKNOWN(" + this.string + ")";
+  };
+
+  return TOKEN_UNKNOWN;
+
+})();
+
+TOKEN_COLOUR = (function() {
+
+  function TOKEN_COLOUR(string, colourNames) {
+    this.string = string;
+    this.colourNames = colourNames;
+  }
+
+  TOKEN_COLOUR.prototype.toString = function() {
+    return "TOKEN_COLOUR(" + this.string + ")";
+  };
+
+  TOKEN_COLOUR.prototype.mutate = function() {
+    var idx;
+    idx = Math.floor(Math.random() * this.colourNames.length);
+    while (this.string === this.colourNames[idx]) {
+      idx = Math.floor(Math.random() * this.colourNames.length);
+    }
+    this.string = this.colourNames[idx];
+    return null;
+  };
+
+  return TOKEN_COLOUR;
+
+})();
+
+TOKEN_COLOUROP = (function() {
+
+  function TOKEN_COLOUROP(string) {
+    this.string = string;
+  }
+
+  TOKEN_COLOUROP.prototype.toString = function() {
+    return "TOKEN_COLOUROP(" + this.string + ")";
+  };
+
+  return TOKEN_COLOUROP;
 
 })();

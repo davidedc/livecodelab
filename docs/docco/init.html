@@ -53,7 +53,7 @@ add Stats.js - https://github.com/mrdoob/stats.js</p>             </td>         
 Since background-painting.js initialises the background by means of
 CSS colors, this needs to be run before creating LiveCodeLabCore. This is also
 used by the autocoder because it needs to be able to swap color names that it
-finds as CSS color strings in the user program.</p>             </td>             <td class="code">               <div class="highlight"><pre>  colourNames = <span class="keyword">new</span> Colours
+finds as CSS color strings in the user program.</p>             </td>             <td class="code">               <div class="highlight"><pre>  colourNames = (<span class="keyword">new</span> Colours()).colourNames
   
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>//////////////////////////////////////////////////////
 Phase 2 - Initialise the core of livecodelab.

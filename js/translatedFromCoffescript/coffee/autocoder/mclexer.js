@@ -1,24 +1,26 @@
-var McCONTINUE, McLexer, McRule, McState;
+var LexerRule, LexerState;
 
-McState = function() {
-  var rules, state;
-  rules = [];
-  state = function(regex) {
-    return function(action) {
-      rules.push(new McRule(regex, action));
-      return null;
-    };
+LexerState = (function() {
+
+  function LexerState() {}
+
+  LexerState.prototype.rules = [];
+
+  LexerState.prototype.addRule = function(regex, action) {
+    this.rules.push(new LexerRule(regex, action));
+    return null;
   };
-  state.rules = rules;
-  state.lex = function(input) {
+
+  LexerState.prototype.lex = function(input) {
     var nextAction;
-    nextAction = state.findAndRunActionPairedToLongestAppliableRegex(input);
+    nextAction = this.findAndRunActionPairedToLongestAppliableRegex(input);
     while (typeof nextAction === "function") {
       nextAction = nextAction();
     }
     return nextAction;
   };
-  state.findAndRunActionPairedToLongestAppliableRegex = function(input) {
+
+  LexerState.prototype.findAndRunActionPairedToLongestAppliableRegex = function(input) {
     var i, longestMatch, longestMatchedLength, longestMatchedRule, m, r;
     longestMatchedRule = null;
     longestMatch = null;
@@ -40,38 +42,39 @@ McState = function() {
       throw "Lexing error; no match found for: '" + input + "'";
     }
   };
-  state.returnAFunctionThatAppliesRulesAndRunsActionFor = function(input) {
+
+  LexerState.prototype.returnAFunctionThatAppliesRulesAndRunsActionFor = function(input) {
+    var _this = this;
     return function() {
-      return state.findAndRunActionPairedToLongestAppliableRegex(input);
+      return _this.findAndRunActionPairedToLongestAppliableRegex(input);
     };
   };
-  return state;
-};
 
-McRule = function(regex, action) {
-  this.regex = new RegExp("^(" + regex.source + ")");
-  if (this.regex.compile) {
-    this.regex.compile(this.regex);
+  return LexerState;
+
+})();
+
+LexerRule = (function() {
+
+  function LexerRule(regex, action) {
+    this.regex = regex;
+    this.action = action;
+    this.regex = new RegExp("^(" + this.regex.source + ")");
+    if (this.regex.compile) {
+      this.regex.compile(this.regex);
+    }
+    null;
   }
-  this.action = action;
-  return null;
-};
 
-McCONTINUE = function(state) {
-  return function(match, rest) {
-    return state.findAndRunActionPairedToLongestAppliableRegex(rest);
+  LexerRule.prototype.matches = function(s) {
+    var m;
+    m = s.match(this.regex);
+    if (m) {
+      m.shift();
+    }
+    return m;
   };
-};
 
-McRule.prototype.matches = function(s) {
-  var m;
-  m = s.match(this.regex);
-  if (m) {
-    m.shift();
-  }
-  return m;
-};
+  return LexerRule;
 
-McLexer = {
-  State: McState
-};
+})();
