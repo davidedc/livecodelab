@@ -93,7 +93,7 @@ createLiveCodeLabCore = (paramsObject) ->
   liveCodeLabCoreInstance.TimeKeeper = createTimeKeeper()
   
   # this one also interacts with ThreeJsSystem at runtime
-  liveCodeLabCoreInstance.BlendControls = createBlendControls(liveCodeLabCoreInstance)
+  liveCodeLabCoreInstance.BlendControls = new BlendControls(liveCodeLabCoreInstance)
   liveCodeLabCoreInstance.ColourFunctions = createColourFunctions()
   
   # this one also interacts with ThreeJsSystem and BlendControls at runtime
