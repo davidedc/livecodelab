@@ -1,16 +1,17 @@
 <!DOCTYPE html>  <html> <head>   <title>renderer.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               renderer.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint maxerr: 200, browser: true, devel: true, bitwise: true </p>             </td>             <td class="code">               <div class="highlight"><pre>
-<span class="function"><span class="title">createRenderer</span></span> = (liveCodeLabCoreInstance) -&gt;
-  <span class="string">"use strict"</span>
-  Renderer = {}
-  Renderer.<span class="function"><span class="title">render</span></span> = (graphics) -&gt;
+<span class="string">"use strict"</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Renderer</span></span>
+  constructor: (<span class="property">@liveCodeLabCoreInstance</span>) -&gt;
+  
+  render: (graphics) -&gt;
     
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>    ThreeJsSystem = liveCodeLabCoreInstance.ThreeJsSystem
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>    ThreeJsSystem = <span class="property">@liveCodeLabCoreInstance</span>.ThreeJsSystem
     renderer = ThreeJsSystem.renderer
     blendedThreeJsSceneCanvasContext = ThreeJsSystem.blendedThreeJsSceneCanvasContext
     previousFrameThreeJSSceneRenderForBlendingCanvasContext =
       ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext
     
-    combDisplayList graphics
+    <span class="property">@combDisplayList</span> graphics
     <span class="keyword">if</span> ThreeJsSystem.isWebGLUsed
       ThreeJsSystem.composer.render()
     <span class="keyword">else</span>
@@ -25,7 +26,7 @@ this needs a few steps so we can get the motionBlur or the paintOver effects rig
 TODO: I'm sure that this can be optimised for the case where there is no
 motionBlur and no paintOver, because we don't need to keep and blend with
 the previous frame in that case.</p>             </td>             <td class="code">               <div class="highlight"><pre>      blendedThreeJsSceneCanvasContext.globalAlpha =
-        liveCodeLabCoreInstance.BlendControls.blendAmount
+        <span class="property">@liveCodeLabCoreInstance</span>.BlendControls.blendAmount
       blendedThreeJsSceneCanvasContext.drawImage \
         ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, <span class="number">0</span>, <span class="number">0</span>
       blendedThreeJsSceneCanvasContext.globalAlpha = <span class="number">1.0</span>
@@ -67,12 +68,12 @@ TODO a way to shrink the scene and delete from the scene objects that have
 not been used for a long time.
 Note: Mr Doob said that the new scene destruction/creation primitives of Three.js
       are much faster. Also the objects of the scene are harder to reach, so
-      it could be the case that this mechanism is not needed anymore.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="function"><span class="title">combDisplayList</span></span> = (graphics) -&gt;
+      it could be the case that this mechanism is not needed anymore.</p>             </td>             <td class="code">               <div class="highlight"><pre>  combDisplayList: (graphics) -&gt;
     i = <span class="literal">undefined</span>
     sceneObject = <span class="literal">undefined</span>
     primitiveType = <span class="literal">undefined</span>
     
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>    ThreeJsSystem = liveCodeLabCoreInstance.ThreeJsSystem
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>    ThreeJsSystem = <span class="property">@liveCodeLabCoreInstance</span>.ThreeJsSystem
     objectsUsedInFrameCounts = graphics.objectsUsedInFrameCounts
     
 </pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>scan all the objects in the display list</p>             </td>             <td class="code">               <div class="highlight"><pre>    i = <span class="number">0</span>
@@ -91,5 +92,4 @@ Only tiny exception is that the ball has one pool for each detail level.</p>    
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>... and the others to invisible</p>             </td>             <td class="code">               <div class="highlight"><pre>        sceneObject.visible = <span class="literal">false</span>
       i += <span class="number">1</span>
 
-  Renderer
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

@@ -1,24 +1,27 @@
-var createRenderer;
+"use strict";
 
-createRenderer = function(liveCodeLabCoreInstance) {
-  "use strict";
+var Renderer;
 
-  var Renderer, combDisplayList;
-  Renderer = {};
-  Renderer.render = function(graphics) {
+Renderer = (function() {
+
+  function Renderer(liveCodeLabCoreInstance) {
+    this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
+  }
+
+  Renderer.prototype.render = function(graphics) {
     var ThreeJsSystem, blendedThreeJsSceneCanvasContext, previousFrameThreeJSSceneRenderForBlendingCanvasContext, renderer;
-    ThreeJsSystem = liveCodeLabCoreInstance.ThreeJsSystem;
+    ThreeJsSystem = this.liveCodeLabCoreInstance.ThreeJsSystem;
     renderer = ThreeJsSystem.renderer;
     blendedThreeJsSceneCanvasContext = ThreeJsSystem.blendedThreeJsSceneCanvasContext;
     previousFrameThreeJSSceneRenderForBlendingCanvasContext = ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext;
-    combDisplayList(graphics);
+    this.combDisplayList(graphics);
     if (ThreeJsSystem.isWebGLUsed) {
       return ThreeJsSystem.composer.render();
     } else {
       renderer.render(ThreeJsSystem.scene, ThreeJsSystem.camera);
       blendedThreeJsSceneCanvasContext.globalAlpha = 1.0;
       blendedThreeJsSceneCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      blendedThreeJsSceneCanvasContext.globalAlpha = liveCodeLabCoreInstance.BlendControls.blendAmount;
+      blendedThreeJsSceneCanvasContext.globalAlpha = this.liveCodeLabCoreInstance.BlendControls.blendAmount;
       blendedThreeJsSceneCanvasContext.drawImage(ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, 0, 0);
       blendedThreeJsSceneCanvasContext.globalAlpha = 1.0;
       blendedThreeJsSceneCanvasContext.drawImage(ThreeJsSystem.currentFrameThreeJsSceneCanvas, 0, 0);
@@ -27,12 +30,13 @@ createRenderer = function(liveCodeLabCoreInstance) {
       return ThreeJsSystem.currentFrameThreeJsSceneCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
     }
   };
-  combDisplayList = function(graphics) {
+
+  Renderer.prototype.combDisplayList = function(graphics) {
     var ThreeJsSystem, i, objectsUsedInFrameCounts, primitiveType, sceneObject, _results;
     i = void 0;
     sceneObject = void 0;
     primitiveType = void 0;
-    ThreeJsSystem = liveCodeLabCoreInstance.ThreeJsSystem;
+    ThreeJsSystem = this.liveCodeLabCoreInstance.ThreeJsSystem;
     objectsUsedInFrameCounts = graphics.objectsUsedInFrameCounts;
     i = 0;
     _results = [];
@@ -48,5 +52,7 @@ createRenderer = function(liveCodeLabCoreInstance) {
     }
     return _results;
   };
+
   return Renderer;
-};
+
+})();
