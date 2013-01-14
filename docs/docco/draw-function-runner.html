@@ -1,46 +1,48 @@
 <!DOCTYPE html>  <html> <head>   <title>draw-function-runner.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               draw-function-runner.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint maxerr: 200, browser: true, devel: true, bitwise: true </p>             </td>             <td class="code">               <div class="highlight"><pre>
-<span class="function"><span class="title">createDrawFunctionRunner</span></span> = (eventRouter, liveCodeLabCoreInstance) -&gt;
-  <span class="string">"use strict"</span>
-  DrawFunctionRunner = {}
+<span class="string">"use strict"</span>
+<span class="class"><span class="keyword">class</span> <span class="title">DrawFunctionRunner</span></span>
   
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>this array is used to keep track of all the instances of "doOnce" in the code
 we need to keep this so we can put the ticks next to doOnce once that doOnce
 block has run.</p>             </td>             <td class="code">               <div class="highlight"><pre>  doOnceOccurrencesLineNumbers = []
   
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>contains the draw function as a Function object. Never mind the
-initialisation as an empty string.</p>             </td>             <td class="code">               <div class="highlight"><pre>  DrawFunctionRunner.drawFunction = <span class="string">""</span>
-  DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>
+initialisation as an empty string.</p>             </td>             <td class="code">               <div class="highlight"><pre>  drawFunction = <span class="string">""</span>
   
+  consecutiveFramesWithoutRunTimeError = <span class="number">0</span>  
+
 </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>contains the last stable draw function as a Function object. Never mind the
-initialisation as an empty string.</p>             </td>             <td class="code">               <div class="highlight"><pre>  DrawFunctionRunner.lastStableDrawFunction = <span class="literal">null</span>
-  
+initialisation as an empty string.</p>             </td>             <td class="code">               <div class="highlight"><pre>  lastStableDrawFunction = <span class="literal">null</span>
+
 </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>contains the code that is meant to be run, as a string.
 note that it might be impossible to run it because of errors, in which case
-LiveCodeLab might be running an older version.</p>             </td>             <td class="code">               <div class="highlight"><pre>  DrawFunctionRunner.currentCodeString = <span class="string">""</span>
+LiveCodeLab might be running an older version.</p>             </td>             <td class="code">               <div class="highlight"><pre>  currentCodeString = <span class="string">""</span>
   
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>This is the function called from the compiled code to add the doOnce line</p>             </td>             <td class="code">               <div class="highlight"><pre>  window.addDoOnce = DrawFunctionRunner.<span class="function"><span class="title">addDoOnce</span></span> = (lineNum) -&gt;
-    doOnceOccurrencesLineNumbers.push lineNum
+  constructor: (<span class="property">@eventRouter</span>, <span class="property">@liveCodeLabCoreInstance</span>) -&gt;
+    window.<span class="function"><span class="title">addDoOnce</span></span> = (a) =&gt; <span class="property">@addDoOnce</span>(a)
 
-  DrawFunctionRunner.<span class="function"><span class="title">setDrawFunction</span></span> = (drawFunc) -&gt;
-    DrawFunctionRunner.drawFunction = drawFunc
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>This is the function called from the compiled code to add the doOnce line</p>             </td>             <td class="code">               <div class="highlight"><pre>  addDoOnce: (lineNum) -&gt;
+    <span class="property">@doOnceOccurrencesLineNumbers</span>.push lineNum
 
-  DrawFunctionRunner.<span class="function"><span class="title">resetTrackingOfDoOnceOccurrences</span></span> = -&gt;
-    doOnceOccurrencesLineNumbers = []
+  setDrawFunction: (drawFunc) -&gt;
+    <span class="property">@drawFunction</span> = drawFunc
 
-  DrawFunctionRunner.<span class="function"><span class="title">putTicksNextToDoOnceBlocksThatHaveBeenRun</span></span> = -&gt;
-    CodeTransformer = liveCodeLabCoreInstance.CodeTransformer
-    <span class="keyword">if</span> doOnceOccurrencesLineNumbers.length <span class="keyword">isnt</span> <span class="number">0</span>
-      DrawFunctionRunner.setDrawFunction \
+  resetTrackingOfDoOnceOccurrences: -&gt;
+    <span class="property">@doOnceOccurrencesLineNumbers</span> = []
+
+  putTicksNextToDoOnceBlocksThatHaveBeenRun: -&gt;
+    CodeTransformer = <span class="property">@liveCodeLabCoreInstance</span>.CodeTransformer
+    <span class="keyword">if</span> <span class="property">@doOnceOccurrencesLineNumbers</span>.length <span class="keyword">isnt</span> <span class="number">0</span>
+      <span class="property">@setDrawFunction</span> \
         CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(
-          CodeTransformer, doOnceOccurrencesLineNumbers
+          CodeTransformer, <span class="property">@doOnceOccurrencesLineNumbers</span>
         )
 
-  DrawFunctionRunner.<span class="function"><span class="title">runDrawFunction</span></span> = -&gt;
-    
+  runDrawFunction: -&gt;
 </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>this invokation below could be throwing an error,
 in which case the lines afterwards are not executed
 and the exception is propagated to the callee of this function,
-which is the main animation loop.</p>             </td>             <td class="code">               <div class="highlight"><pre>    DrawFunctionRunner.drawFunction()
+which is the main animation loop.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@drawFunction</span>()
     
 </pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>if we are here it means that the draw function didn't generate
 any runtime errors, so we increment a counter that tells how long
@@ -48,15 +50,13 @@ this program has been stable for.
 Beyond 5 frames, we consider this program as "stable" and we save
 it in a special variable.
 This "stability" counter is obviously reset anytime the program is changed
-so the new version too gets an opportunity to be tested and saved.</p>             </td>             <td class="code">               <div class="highlight"><pre>    DrawFunctionRunner.consecutiveFramesWithoutRunTimeError += <span class="number">1</span>
-    <span class="keyword">if</span> DrawFunctionRunner.consecutiveFramesWithoutRunTimeError <span class="keyword">is</span> <span class="number">5</span>
-      DrawFunctionRunner.lastStableDrawFunction = DrawFunctionRunner.drawFunction
-      eventRouter.trigger <span class="string">"livecodelab-running-stably"</span>
+so the new version too gets an opportunity to be tested and saved.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@consecutiveFramesWithoutRunTimeError</span> += <span class="number">1</span>
+    <span class="keyword">if</span> <span class="property">@consecutiveFramesWithoutRunTimeError</span> <span class="keyword">is</span> <span class="number">5</span>
+      <span class="property">@lastStableDrawFunction</span> = <span class="property">@drawFunction</span>
+      <span class="property">@eventRouter</span>.trigger <span class="string">"livecodelab-running-stably"</span>
 
-  DrawFunctionRunner.<span class="function"><span class="title">reinstateLastWorkingDrawFunction</span></span> = -&gt;
-    
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>mark the program as flawed and register the previous stable one.</p>             </td>             <td class="code">               <div class="highlight"><pre>    DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>
-    DrawFunctionRunner.drawFunction = DrawFunctionRunner.lastStableDrawFunction
+  reinstateLastWorkingDrawFunction: -&gt;
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>mark the program as flawed and register the previous stable one.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@consecutiveFramesWithoutRunTimeError</span> = <span class="number">0</span>
+    <span class="property">@drawFunction</span> = <span class="property">@lastStableDrawFunction</span>
 
-  DrawFunctionRunner
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

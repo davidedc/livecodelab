@@ -1,42 +1,63 @@
-var createDrawFunctionRunner;
+"use strict";
 
-createDrawFunctionRunner = function(eventRouter, liveCodeLabCoreInstance) {
-  "use strict";
+var DrawFunctionRunner;
 
-  var DrawFunctionRunner, doOnceOccurrencesLineNumbers;
-  DrawFunctionRunner = {};
+DrawFunctionRunner = (function() {
+  var consecutiveFramesWithoutRunTimeError, currentCodeString, doOnceOccurrencesLineNumbers, drawFunction, lastStableDrawFunction;
+
   doOnceOccurrencesLineNumbers = [];
-  DrawFunctionRunner.drawFunction = "";
-  DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
-  DrawFunctionRunner.lastStableDrawFunction = null;
-  DrawFunctionRunner.currentCodeString = "";
-  window.addDoOnce = DrawFunctionRunner.addDoOnce = function(lineNum) {
-    return doOnceOccurrencesLineNumbers.push(lineNum);
+
+  drawFunction = "";
+
+  consecutiveFramesWithoutRunTimeError = 0;
+
+  lastStableDrawFunction = null;
+
+  currentCodeString = "";
+
+  function DrawFunctionRunner(eventRouter, liveCodeLabCoreInstance) {
+    var _this = this;
+    this.eventRouter = eventRouter;
+    this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
+    window.addDoOnce = function(a) {
+      return _this.addDoOnce(a);
+    };
+  }
+
+  DrawFunctionRunner.prototype.addDoOnce = function(lineNum) {
+    return this.doOnceOccurrencesLineNumbers.push(lineNum);
   };
-  DrawFunctionRunner.setDrawFunction = function(drawFunc) {
-    return DrawFunctionRunner.drawFunction = drawFunc;
+
+  DrawFunctionRunner.prototype.setDrawFunction = function(drawFunc) {
+    return this.drawFunction = drawFunc;
   };
-  DrawFunctionRunner.resetTrackingOfDoOnceOccurrences = function() {
-    return doOnceOccurrencesLineNumbers = [];
+
+  DrawFunctionRunner.prototype.resetTrackingOfDoOnceOccurrences = function() {
+    return this.doOnceOccurrencesLineNumbers = [];
   };
-  DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun = function() {
+
+  DrawFunctionRunner.prototype.putTicksNextToDoOnceBlocksThatHaveBeenRun = function() {
     var CodeTransformer;
-    CodeTransformer = liveCodeLabCoreInstance.CodeTransformer;
-    if (doOnceOccurrencesLineNumbers.length !== 0) {
-      return DrawFunctionRunner.setDrawFunction(CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(CodeTransformer, doOnceOccurrencesLineNumbers));
+    CodeTransformer = this.liveCodeLabCoreInstance.CodeTransformer;
+    if (this.doOnceOccurrencesLineNumbers.length !== 0) {
+      return this.setDrawFunction(CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(CodeTransformer, this.doOnceOccurrencesLineNumbers));
     }
   };
-  DrawFunctionRunner.runDrawFunction = function() {
-    DrawFunctionRunner.drawFunction();
-    DrawFunctionRunner.consecutiveFramesWithoutRunTimeError += 1;
-    if (DrawFunctionRunner.consecutiveFramesWithoutRunTimeError === 5) {
-      DrawFunctionRunner.lastStableDrawFunction = DrawFunctionRunner.drawFunction;
-      return eventRouter.trigger("livecodelab-running-stably");
+
+  DrawFunctionRunner.prototype.runDrawFunction = function() {
+    this.drawFunction();
+    this.consecutiveFramesWithoutRunTimeError += 1;
+    if (this.consecutiveFramesWithoutRunTimeError === 5) {
+      this.lastStableDrawFunction = this.drawFunction;
+      return this.eventRouter.trigger("livecodelab-running-stably");
     }
   };
-  DrawFunctionRunner.reinstateLastWorkingDrawFunction = function() {
-    DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
-    return DrawFunctionRunner.drawFunction = DrawFunctionRunner.lastStableDrawFunction;
+
+  DrawFunctionRunner.prototype.reinstateLastWorkingDrawFunction = function() {
+    this.consecutiveFramesWithoutRunTimeError = 0;
+    return this.drawFunction = this.lastStableDrawFunction;
   };
+
   return DrawFunctionRunner;
-};
+
+})();

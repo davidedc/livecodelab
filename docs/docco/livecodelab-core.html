@@ -108,7 +108,7 @@ canvasForBackground at runtime</p>             </td>             <td class="code
       liveCodeLabCoreInstance)
   
 </pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>this one also interacts with CodeTransformer at runtime.</p>             </td>             <td class="code">               <div class="highlight"><pre>  liveCodeLabCoreInstance.DrawFunctionRunner =
-    createDrawFunctionRunner(paramsObject.eventRouter, liveCodeLabCoreInstance)
+    <span class="keyword">new</span> DrawFunctionRunner(paramsObject.eventRouter, liveCodeLabCoreInstance)
   
 </pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>temporary to migrate CodeTransformed code from js to coffeescript.</p>             </td>             <td class="code">               <div class="highlight"><pre>  liveCodeLabCoreInstance.CodeTransformer =
     <span class="keyword">new</span> CodeTransformer(paramsObject.eventRouter, CoffeeScript,
