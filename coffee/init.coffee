@@ -116,7 +116,12 @@ startEnvironment = (paramsObject) ->
   # EditorDimmer functions should probablly be rolled into the editor itself
   # note that the editorDimmer variable below is never used. Leaving it
   # in for consistency.
-  editorDimmer = createEditorDimmer(eventRouter, bigCursor) # $
+  editorDimmer = new EditorDimmer(eventRouter, bigCursor) # $
+  # Setup Event Listeners
+  eventRouter.bind "editor-dim", (=> editorDimmer.dimEditor()), @
+  eventRouter.bind "editor-undim", (=> editorDimmer.undimEditor()), @
+  eventRouter.bind "editor-toggle-dim", (=> editorDimmer.toggleDimCode()), @
+  
   # requires ThreeJsSystem, BlendControls, GraphicsCommands, Renderer
   # note that the programLoader variable below is never used. Leaving it
   # in for consistency.
