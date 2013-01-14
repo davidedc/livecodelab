@@ -68,7 +68,16 @@ startEnvironment = function(paramsObject) {
   eventRouter.bind("toggle-autocoder", function() {
     return autocoder.toggle();
   });
-  editorDimmer = createEditorDimmer(eventRouter, bigCursor);
+  editorDimmer = new EditorDimmer(eventRouter, bigCursor);
+  eventRouter.bind("editor-dim", (function() {
+    return editorDimmer.dimEditor();
+  }), this);
+  eventRouter.bind("editor-undim", (function() {
+    return editorDimmer.undimEditor();
+  }), this);
+  eventRouter.bind("editor-toggle-dim", (function() {
+    return editorDimmer.toggleDimCode();
+  }), this);
   programLoader = new ProgramLoader(eventRouter, editor, liveCodeLabCore);
   eventRouter.bind("load-program", programLoader.loadDemoOrTutorial, programLoader);
   eventRouter.bind("reset", liveCodeLabCore.paintARandomBackground);

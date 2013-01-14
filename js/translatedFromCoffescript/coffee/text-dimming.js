@@ -1,15 +1,22 @@
-var createEditorDimmer;
+"use strict";
 
-createEditorDimmer = function(eventRouter, bigCursor) {
-  "use strict";
+var EditorDimmer;
 
-  var EditorDimmer, cursorActivity, dimCodeOn, dimIntervalID;
-  cursorActivity = true;
-  dimIntervalID = void 0;
-  EditorDimmer = {};
-  dimCodeOn = false;
-  EditorDimmer.undimEditor = function() {
-    if (!bigCursor.isShowing) {
+EditorDimmer = (function() {
+
+  EditorDimmer.prototype.cursorActivity = true;
+
+  EditorDimmer.prototype.dimIntervalID = void 0;
+
+  EditorDimmer.prototype.dimCodeOn = false;
+
+  function EditorDimmer(eventRouter, bigCursor) {
+    this.eventRouter = eventRouter;
+    this.bigCursor = bigCursor;
+  }
+
+  EditorDimmer.prototype.undimEditor = function() {
+    if (!this.bigCursor.isShowing) {
       if ($("#formCode").css("opacity") < 0.99) {
         return $("#formCode").animate({
           opacity: 1
@@ -17,36 +24,41 @@ createEditorDimmer = function(eventRouter, bigCursor) {
       }
     }
   };
-  EditorDimmer.dimEditor = function() {
+
+  EditorDimmer.prototype.dimEditor = function() {
     if ($("#formCode").css("opacity") > 0) {
       return $("#formCode").animate({
         opacity: 0
       }, "slow");
     }
   };
-  EditorDimmer.dimIfNoCursorActivity = function() {
-    if (cursorActivity) {
-      return cursorActivity = false;
+
+  EditorDimmer.prototype.dimIfNoCursorActivity = function() {
+    if (this.cursorActivity) {
+      return this.cursorActivity = false;
     } else {
-      return EditorDimmer.dimEditor();
+      return this.dimEditor();
     }
   };
-  EditorDimmer.toggleDimCode = function(dimmingActive) {
+
+  EditorDimmer.prototype.toggleDimCode = function(dimmingActive) {
+    var _this = this;
     if (dimmingActive === undefined) {
-      dimCodeOn = !dimCodeOn;
+      this.dimCodeOn = !this.dimCodeOn;
     } else {
-      dimCodeOn = dimmingActive;
+      this.dimCodeOn = dimmingActive;
     }
-    if (dimCodeOn) {
-      dimIntervalID = setInterval(EditorDimmer.dimIfNoCursorActivity, 5000);
+    if (this.dimCodeOn) {
+      this.dimIntervalID = setInterval((function() {
+        return _this.dimIfNoCursorActivity();
+      }), 5000);
     } else {
-      clearInterval(dimIntervalID);
-      EditorDimmer.undimEditor();
+      clearInterval(this.dimIntervalID);
+      this.undimEditor();
     }
-    return eventRouter.trigger("auto-hide-code-button-pressed", dimCodeOn);
+    return this.eventRouter.trigger("auto-hide-code-button-pressed", this.dimCodeOn);
   };
-  eventRouter.bind("editor-dim", EditorDimmer.dimEditor, EditorDimmer);
-  eventRouter.bind("editor-undim", EditorDimmer.undimEditor, EditorDimmer);
-  eventRouter.bind("editor-toggle-dim", EditorDimmer.toggleDimCode, EditorDimmer);
+
   return EditorDimmer;
-};
+
+})();
