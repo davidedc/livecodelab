@@ -99,102 +99,109 @@
 # is 3d, the lighting is special by default and all faces have primary colors, things
 # animate. Without spinning, all those cues need to be further explained and demonstra
 # ted.
-createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
-  "use strict"
-  GraphicsCommands = {}
-  primitiveTypes = {}
-  minimumBallDetail = undefined
-  maximumBallDetail = undefined
-  doFill = true
-  doStroke = true
-  reflectValue = 1
-  refractValue = 0.98
-  currentStrokeAlpha = undefined
-  currentStrokeColor = undefined
-  i = undefined
-  geometriesBank = []
-  createObjectIfNeededAndDressWithCorrectMaterial = undefined
-  commonPrimitiveDrawingLogic = undefined
-  SPIN_DURATION_IN_FRAMES = 30
-  currentFillAlpha = undefined
-  currentFillColor = undefined
-  objectPools = []
-  GraphicsCommands.objectPools = objectPools
-  GraphicsCommands.ballDetLevel = 8
-  GraphicsCommands.currentStrokeSize = 1
-  GraphicsCommands.minimumBallDetail = minimumBallDetail = 2
-  GraphicsCommands.maximumBallDetail = maximumBallDetail = 30
-  primitiveTypes.ambientLight = 0
-  primitiveTypes.line = 1
-  primitiveTypes.rect = 2
-  primitiveTypes.box = 3
-  primitiveTypes.peg = 4
-  primitiveTypes.ball = 5
-  GraphicsCommands.primitiveTypes = primitiveTypes
-  objectPools[primitiveTypes.line] = []
-  objectPools[primitiveTypes.rect] = []
-  objectPools[primitiveTypes.box] = []
-  objectPools[primitiveTypes.peg] = []
-  
-  # creating ball pools
-  i = 0
-  while i < (maximumBallDetail - minimumBallDetail + 1)
-    objectPools[primitiveTypes.ball + i] = []
-    i += 1
-  
-  # Since you can't change the geometry of an object once it's created, we keep around
-  # a pool of objects for each mesh type. There is one pool for lines, one for rectangles,
-  # one for boxes. There is one pool for each detail level of balls (since they are
-  # different) meshes. For the time being there is no detail level for cylinders so there
-  # is only one pool for cylinders.
-  
-  # For how the mechanism works now, all pooled objects end up in the scene graph.
-  # The scene graph is traversed at each frame and only the used objects are marked as
-  # visible, the other unused objects are hidden. This is because adding/removing
-  # objects from the scene is expensive. Note that this might have changed with more
-  # recent versions of Three.js of the past 4 months.
-  
-  # All object pools start empty. Note that each ball detail level must have
-  # its own pool, because you can't change the geometry of an object.
-  # If one doesn't like the idea of creating dozens of empty arrays that won't ever be
-  # used (since probably only a few ball detail levels will be used in a session)
-  # then one could leave all these arrays undefined and define them at runtime
-  # only when needed.
-  
-  geometriesBank[primitiveTypes.line] = new liveCodeLabCore_THREE.Geometry()
-  geometriesBank[primitiveTypes.line].vertices.push \
-    new liveCodeLabCore_THREE.Vector3(0, -0.5, 0)
-  geometriesBank[primitiveTypes.line].vertices.push \
-    new liveCodeLabCore_THREE.Vector3(0, 0.5, 0)
-  geometriesBank[primitiveTypes.rect] = new liveCodeLabCore_THREE.PlaneGeometry(1, 1)
-  geometriesBank[primitiveTypes.box] = new liveCodeLabCore_THREE.CubeGeometry(1, 1, 1)
-  geometriesBank[primitiveTypes.peg] =
-    new liveCodeLabCore_THREE.CylinderGeometry(0.5, 0.5, 1, 32)
-  
-  # creating ball geometries
-  i = 0
-  while i < (maximumBallDetail - minimumBallDetail + 1)
-    geometriesBank[primitiveTypes.ball + i] =
-      new liveCodeLabCore_THREE.SphereGeometry(
-        1, minimumBallDetail + i, minimumBallDetail + i)
-    i += 1
-  
+"use strict"
+class GraphicsCommands
+  primitiveTypes: {}
+  minimumBallDetail: 2
+  maximumBallDetail: 30
+  doFill: true
+  doStroke: true
+  reflectValue: 1
+  refractValue: 0.98
+  currentStrokeAlpha: undefined
+  currentStrokeColor: undefined
+  geometriesBank: []
+  SPIN_DURATION_IN_FRAMES: 30
+  currentFillAlpha: undefined
+  currentFillColor: undefined
+  objectPools: []
+  ballDetLevel: 8
+  currentStrokeSize: 1
   # For each pool we have a count of how many of those entries
   # are actually used in the current frame.
   # This is so that we can go through the scene graph and hide the unused objects.
-  objectsUsedInFrameCounts = []
-  GraphicsCommands.objectsUsedInFrameCounts = objectsUsedInFrameCounts
-  
+  objectsUsedInFrameCounts: []
   # the "spinthingy" is because we want
   # users who type "box" to see that it's actually
   # a 3d environment. So the first few primitives
   # spin for a few moments when they are created.
-  GraphicsCommands.doTheSpinThingy = true
-  GraphicsCommands.resetTheSpinThingy = false
-  GraphicsCommands.defaultNormalFill = true
-  GraphicsCommands.defaultNormalStroke = true
-
-  createObjectIfNeededAndDressWithCorrectMaterial = (
+  doTheSpinThingy: true
+  resetTheSpinThingy: false
+  defaultNormalFill: true
+  defaultNormalStroke: true
+  
+  constructor: (@liveCodeLabCore_THREE, @liveCodeLabCoreInstance) ->
+    window.line = (a,b,c) => @line(a,b,c)
+    window.rect = (a,b,c) => @rect(a,b,c)
+    window.box = (a,b,c) => @box(a,b,c)
+    window.peg = (a,b,c) => @peg(a,b,c)
+    window.ball = (a,b,c) => @ball(a,b,c)
+    window.ballDetail = (a) => @ballDetail(a)
+    window.fill = (a,b,c,d) => @fill(a,b,c,d)
+    window.noFill = () => @noFill()
+    window.stroke = (a,b,c,d) => @stroke(a,b,c,d)
+    window.noStroke = () => @noStroke()
+    window.strokeSize = (a) => @strokeSize(a)
+    
+    @primitiveTypes.ambientLight = 0
+    @primitiveTypes.line = 1
+    @primitiveTypes.rect = 2
+    @primitiveTypes.box = 3
+    @primitiveTypes.peg = 4
+    @primitiveTypes.ball = 5
+    
+    # apparently in Coffeescript I can't initialise fields in the section
+    # before the constructor, so initialising them here in the constructor
+    @objectPools[@primitiveTypes.line] = []
+    @objectPools[@primitiveTypes.rect] = []
+    @objectPools[@primitiveTypes.box] = []
+    @objectPools[@primitiveTypes.peg] = []
+    
+    # creating ball pools
+    i = 0
+    while i < (@maximumBallDetail - @minimumBallDetail + 1)
+      @objectPools[@primitiveTypes.ball + i] = []
+      i += 1
+    
+    # Since you can't change the geometry of an object once it's created, we keep around
+    # a pool of objects for each mesh type. There is one pool for lines, one for rectangles,
+    # one for boxes. There is one pool for each detail level of balls (since they are
+    # different) meshes. For the time being there is no detail level for cylinders so there
+    # is only one pool for cylinders.
+    
+    # For how the mechanism works now, all pooled objects end up in the scene graph.
+    # The scene graph is traversed at each frame and only the used objects are marked as
+    # visible, the other unused objects are hidden. This is because adding/removing
+    # objects from the scene is expensive. Note that this might have changed with more
+    # recent versions of Three.js of the past 4 months.
+    
+    # All object pools start empty. Note that each ball detail level must have
+    # its own pool, because you can't change the geometry of an object.
+    # If one doesn't like the idea of creating dozens of empty arrays that won't ever be
+    # used (since probably only a few ball detail levels will be used in a session)
+    # then one could leave all these arrays undefined and define them at runtime
+    # only when needed.
+    
+    @geometriesBank[@primitiveTypes.line] = new @liveCodeLabCore_THREE.Geometry()
+    @geometriesBank[@primitiveTypes.line].vertices.push \
+      new @liveCodeLabCore_THREE.Vector3(0, -0.5, 0)
+    @geometriesBank[@primitiveTypes.line].vertices.push \
+      new @liveCodeLabCore_THREE.Vector3(0, 0.5, 0)
+    @geometriesBank[@primitiveTypes.rect] = new @liveCodeLabCore_THREE.PlaneGeometry(1, 1)
+    @geometriesBank[@primitiveTypes.box] = new @liveCodeLabCore_THREE.CubeGeometry(1, 1, 1)
+    @geometriesBank[@primitiveTypes.peg] =
+      new @liveCodeLabCore_THREE.CylinderGeometry(0.5, 0.5, 1, 32)
+    
+    # creating ball geometries
+    i = 0
+    while i < (@maximumBallDetail - @minimumBallDetail + 1)
+      @geometriesBank[@primitiveTypes.ball + i] =
+        new @liveCodeLabCore_THREE.SphereGeometry(
+          1, @minimumBallDetail + i, @minimumBallDetail + i)
+      i += 1
+    
+  
+  createObjectIfNeededAndDressWithCorrectMaterial: (
       a, b, c, primitiveProperties, strokeTime, colorToBeUsed,
       alphaToBeUsed, applyDefaultNormalColor) ->
     objectIsNew = false
@@ -208,8 +215,8 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
     # Note that primitives that have an associated detail level span across
     # multiple IDs, because geometries at different details levels are different.
     primitiveID = primitiveProperties.primitiveType + primitiveProperties.detailLevel
-    objectPool = objectPools[primitiveID]
-    pooledObjectWithMaterials = objectPool[objectsUsedInFrameCounts[primitiveID]]
+    objectPool = @objectPools[primitiveID]
+    pooledObjectWithMaterials = objectPool[@objectsUsedInFrameCounts[primitiveID]]
     if pooledObjectWithMaterials is `undefined`
       
       # each pooled object contains a geometry, and all the materials it could
@@ -247,30 +254,30 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
         # for each different type of material.
         normalMaterial: `undefined`
         threejsObject3D: \
-          new primitiveProperties.THREEObjectConstructor(geometriesBank[primitiveID])
-        initialSpinCountdown: SPIN_DURATION_IN_FRAMES
+          new primitiveProperties.THREEObjectConstructor(@geometriesBank[primitiveID])
+        initialSpinCountdown: @SPIN_DURATION_IN_FRAMES
 
       objectIsNew = true
       objectPool.push pooledObjectWithMaterials
-    if primitiveProperties.primitiveType is primitiveTypes.line
+    if primitiveProperties.primitiveType is @primitiveTypes.line
       if pooledObjectWithMaterials.lineMaterial is `undefined`
         pooledObjectWithMaterials.lineMaterial =
-          new liveCodeLabCore_THREE.LineBasicMaterial()
+          new @liveCodeLabCore_THREE.LineBasicMaterial()
       
       # associating normal material to threejs' Object3D
-      if currentStrokeColor is angleColor or GraphicsCommands.defaultNormalStroke
+      if @currentStrokeColor is angleColor or @defaultNormalStroke
         theAngle =
           pooledObjectWithMaterials.threejsObject3D.matrix.multiplyVector3(
-            new liveCodeLabCore_THREE.Vector3(0, 1, 0)).normalize()
+            new @liveCodeLabCore_THREE.Vector3(0, 1, 0)).normalize()
         pooledObjectWithMaterials.lineMaterial.color.setHex \
           color(
             ((theAngle.x + 1) / 2) * 255,
             ((theAngle.y + 1) / 2) * 255,
             ((theAngle.z + 1) / 2) * 255)
       else
-        pooledObjectWithMaterials.lineMaterial.color.setHex currentStrokeColor
+        pooledObjectWithMaterials.lineMaterial.color.setHex @currentStrokeColor
       pooledObjectWithMaterials.lineMaterial.linewidth =
-        GraphicsCommands.currentStrokeSize
+        @currentStrokeSize
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.lineMaterial
     else if objectIsNew or (colorToBeUsed is angleColor or applyDefaultNormalColor)
@@ -283,13 +290,13 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
       # for each different type of material.
       if pooledObjectWithMaterials.normalMaterial is `undefined`
         pooledObjectWithMaterials.normalMaterial =
-          new liveCodeLabCore_THREE.MeshNormalMaterial()
+          new @liveCodeLabCore_THREE.MeshNormalMaterial()
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.normalMaterial
-    else unless liveCodeLabCoreInstance.LightSystem.lightsAreOn
+    else unless @liveCodeLabCoreInstance.LightSystem.lightsAreOn
       if pooledObjectWithMaterials.basicMaterial is `undefined`
         pooledObjectWithMaterials.basicMaterial =
-          new liveCodeLabCore_THREE.MeshBasicMaterial()
+          new @liveCodeLabCore_THREE.MeshBasicMaterial()
       pooledObjectWithMaterials.basicMaterial.color.setHex colorToBeUsed
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.basicMaterial
@@ -298,7 +305,7 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
       # lights are on
       if pooledObjectWithMaterials.lambertMaterial is `undefined`
         pooledObjectWithMaterials.lambertMaterial =
-          new liveCodeLabCore_THREE.MeshLambertMaterial()
+          new @liveCodeLabCore_THREE.MeshLambertMaterial()
       pooledObjectWithMaterials.lambertMaterial.color.setHex colorToBeUsed
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.lambertMaterial
@@ -314,26 +321,26 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
       pooledObjectWithMaterials.threejsObject3D.material.transparent = true
     pooledObjectWithMaterials.threejsObject3D.material.wireframe = strokeTime
     pooledObjectWithMaterials.threejsObject3D.material.wireframeLinewidth =
-      GraphicsCommands.currentStrokeSize
-    pooledObjectWithMaterials.threejsObject3D.material.reflectivity = reflectValue
-    pooledObjectWithMaterials.threejsObject3D.material.refractionRatio = refractValue
-    if GraphicsCommands.resetTheSpinThingy
-      pooledObjectWithMaterials.initialSpinCountdown = SPIN_DURATION_IN_FRAMES
-      GraphicsCommands.resetTheSpinThingy = false
-      GraphicsCommands.doTheSpinThingy = true
-    if GraphicsCommands.doTheSpinThingy
+      @currentStrokeSize
+    pooledObjectWithMaterials.threejsObject3D.material.reflectivity = @reflectValue
+    pooledObjectWithMaterials.threejsObject3D.material.refractionRatio = @refractValue
+    if @resetTheSpinThingy
+      pooledObjectWithMaterials.initialSpinCountdown = @SPIN_DURATION_IN_FRAMES
+      @resetTheSpinThingy = false
+      @doTheSpinThingy = true
+    if @doTheSpinThingy
       pooledObjectWithMaterials.initialSpinCountdown -= 1
     if pooledObjectWithMaterials.initialSpinCountdown is -1
-      GraphicsCommands.doTheSpinThingy = false
+      @doTheSpinThingy = false
     pooledObjectWithMaterials.threejsObject3D.primitiveType =
       primitiveProperties.primitiveType
     pooledObjectWithMaterials.threejsObject3D.detailLevel =
       primitiveProperties.detailLevel
-    objectsUsedInFrameCounts[primitiveID] += 1
-    if GraphicsCommands.doTheSpinThingy and
+    @objectsUsedInFrameCounts[primitiveID] += 1
+    if @doTheSpinThingy and
         pooledObjectWithMaterials.initialSpinCountdown > 0
-      liveCodeLabCoreInstance.MatrixCommands.pushMatrix()
-      liveCodeLabCoreInstance.MatrixCommands.rotate \
+      @liveCodeLabCoreInstance.MatrixCommands.pushMatrix()
+      @liveCodeLabCoreInstance.MatrixCommands.rotate \
         pooledObjectWithMaterials.initialSpinCountdown / 50
     
     # see https://github.com/mrdoob/three.js/wiki/Using-Matrices-&-Object3Ds-in-THREE
@@ -342,11 +349,11 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
     # happens every time there is a scale or rotate or move.
     pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = false
     pooledObjectWithMaterials.threejsObject3D.matrix.copy \
-      liveCodeLabCoreInstance.MatrixCommands.getWorldMatrix()
+      @liveCodeLabCoreInstance.MatrixCommands.getWorldMatrix()
     pooledObjectWithMaterials.threejsObject3D.matrixWorldNeedsUpdate = true
-    if GraphicsCommands.doTheSpinThingy and
+    if @doTheSpinThingy and
         pooledObjectWithMaterials.initialSpinCountdown > 0
-      liveCodeLabCoreInstance.MatrixCommands.popMatrix()
+      @liveCodeLabCoreInstance.MatrixCommands.popMatrix()
     if objectIsNew
       
       # if the object is new it means that the normal material
@@ -357,7 +364,7 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
       # the rendering step, so the memory for the material is initialised
       # correctly.
       pooledObjectWithMaterials.threejsObject3D.matrix.scale \
-        new liveCodeLabCore_THREE.Vector3(0.0001, 0.0001, 0.0001)
+        new @liveCodeLabCore_THREE.Vector3(0.0001, 0.0001, 0.0001)
     else if a isnt 1 or b isnt 1 or c isnt 1
       if strokeTime        
         # wireframes are built via separate objects with geometries that are
@@ -365,14 +372,14 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
         # is no z-fighting and the stroke is drawn neatly on top of the fill
         # constant 0.001 below is to avoid z-fighting
         pooledObjectWithMaterials.threejsObject3D.matrix.scale \
-          new liveCodeLabCore_THREE.Vector3(a + 0.001, b + 0.001, c + 0.001)
+          new @liveCodeLabCore_THREE.Vector3(a + 0.001, b + 0.001, c + 0.001)
       else
         pooledObjectWithMaterials.threejsObject3D.matrix.scale \
-          new liveCodeLabCore_THREE.Vector3(a, b, c)
-    liveCodeLabCoreInstance.ThreeJsSystem.scene.add \
+          new @liveCodeLabCore_THREE.Vector3(a, b, c)
+    @liveCodeLabCoreInstance.ThreeJsSystem.scene.add \
       pooledObjectWithMaterials.threejsObject3D  if objectIsNew
 
-  commonPrimitiveDrawingLogic = (a, b, c, primitiveProperties) ->
+  commonPrimitiveDrawingLogic: (a, b, c, primitiveProperties) ->
     
     # b and c are not functional in some geometric
     # primitives, but we handle them here in all cases
@@ -391,62 +398,62 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
     # Also, even if we aren'd under a noFill command spell, some geometries
     # inherently don't have a fill, so we return if there is no stroke either.
     # (right now that applies only lines).
-    return  if not doStroke and (not doFill or not primitiveProperties.canFill)
+    return  if not @doStroke and (not @doFill or not primitiveProperties.canFill)
     
     # if we are under the influence of a noFill command OR
     # the wireframe is not going to be visible on top of the
     # fill then don't draw the stroke, only draw the fill
-    if (primitiveProperties.canFill and doFill and (
-        GraphicsCommands.currentStrokeSize is 0 or not doStroke or
-        (GraphicsCommands.currentStrokeSize <= 1 and
-        not GraphicsCommands.defaultNormalFill and
-        not GraphicsCommands.defaultNormalStroke and
-        currentStrokeColor is currentFillColor and
-        currentFillAlpha is 1 and currentStrokeAlpha is 1))) or
-        (GraphicsCommands.currentStrokeSize <= 1 and
-        GraphicsCommands.defaultNormalFill and
-        GraphicsCommands.defaultNormalStroke)
-      createObjectIfNeededAndDressWithCorrectMaterial \
-        a, b, c, primitiveProperties, false, currentFillColor, currentFillAlpha,
-        GraphicsCommands.defaultNormalFill
-    else if (not doFill or not primitiveProperties.canFill) and doStroke
+    if (primitiveProperties.canFill and @doFill and (
+        @currentStrokeSize is 0 or not @doStroke or
+        (@currentStrokeSize <= 1 and
+        not @defaultNormalFill and
+        not @defaultNormalStroke and
+        @currentStrokeColor is @currentFillColor and
+        @currentFillAlpha is 1 and @currentStrokeAlpha is 1))) or
+        (@currentStrokeSize <= 1 and
+        @defaultNormalFill and
+        @defaultNormalStroke)
+      @createObjectIfNeededAndDressWithCorrectMaterial \
+        a, b, c, primitiveProperties, false, @currentFillColor, @currentFillAlpha,
+        @defaultNormalFill
+    else if (not @doFill or not primitiveProperties.canFill) and @doStroke
       
       # only doing the stroke
-      createObjectIfNeededAndDressWithCorrectMaterial \
-        a, b, c, primitiveProperties, true, currentStrokeColor, currentStrokeAlpha,
-        GraphicsCommands.defaultNormalStroke
+      @createObjectIfNeededAndDressWithCorrectMaterial \
+        a, b, c, primitiveProperties, true, @currentStrokeColor, @currentStrokeAlpha,
+        @defaultNormalStroke
     
     # doing both the fill and the stroke
     else
-      createObjectIfNeededAndDressWithCorrectMaterial \
-        a, b, c, primitiveProperties, true, currentStrokeColor, currentStrokeAlpha,
-        GraphicsCommands.defaultNormalStroke
-      createObjectIfNeededAndDressWithCorrectMaterial \
-        a, b, c, primitiveProperties, false, currentFillColor, currentFillAlpha,
-        GraphicsCommands.defaultNormalFill
+      @createObjectIfNeededAndDressWithCorrectMaterial \
+        a, b, c, primitiveProperties, true, @currentStrokeColor, @currentStrokeAlpha,
+        @defaultNormalStroke
+      @createObjectIfNeededAndDressWithCorrectMaterial \
+        a, b, c, primitiveProperties, false, @currentFillColor, @currentFillAlpha,
+        @defaultNormalFill
 
-  GraphicsCommands.reset = ->
-    GraphicsCommands.fill 0xFFFFFFFF
-    GraphicsCommands.stroke 0xFFFFFFFF
-    GraphicsCommands.currentStrokeSize = 1
-    GraphicsCommands.defaultNormalFill = true
-    GraphicsCommands.defaultNormalStroke = true
-    GraphicsCommands.ballDetLevel =
-      liveCodeLabCoreInstance.ThreeJsSystem.ballDefaultDetLevel
-    GraphicsCommands.objectsUsedInFrameCounts\
-      [GraphicsCommands.primitiveTypes.ambientLight] = 0
-    GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.line] = 0
-    GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.rect] = 0
-    GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.box] = 0
-    GraphicsCommands.objectsUsedInFrameCounts[GraphicsCommands.primitiveTypes.peg] = 0
+  reset: ->
+    @fill 0xFFFFFFFF
+    @stroke 0xFFFFFFFF
+    @currentStrokeSize = 1
+    @defaultNormalFill = true
+    @defaultNormalStroke = true
+    @ballDetLevel =
+      @liveCodeLabCoreInstance.ThreeJsSystem.ballDefaultDetLevel
+    @objectsUsedInFrameCounts\
+      [@primitiveTypes.ambientLight] = 0
+    @objectsUsedInFrameCounts[@primitiveTypes.line] = 0
+    @objectsUsedInFrameCounts[@primitiveTypes.rect] = 0
+    @objectsUsedInFrameCounts[@primitiveTypes.box] = 0
+    @objectsUsedInFrameCounts[@primitiveTypes.peg] = 0
     
     # initialising ball counts
     i = undefined
     i = 0
     while i <
-        (GraphicsCommands.maximumBallDetail - GraphicsCommands.minimumBallDetail + 1)
-      GraphicsCommands.objectsUsedInFrameCounts\
-        [GraphicsCommands.primitiveTypes.ball + i] = 0
+        (@maximumBallDetail - @minimumBallDetail + 1)
+      @objectsUsedInFrameCounts\
+        [@primitiveTypes.ball + i] = 0
       i += 1
 
   
@@ -458,7 +465,7 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
   # an ambient light to the color of the stroke
   # (although which ambient light do you pick if there
   # is more than one?)
-  window.line = GraphicsCommands.line = (a, b, c) ->
+  line: (a, b, c) ->
     
     # lines can only have one material, which is LineBasicMaterial
     # which doesn't react to lights (as opposed to MeshLambertMaterial, which
@@ -468,94 +475,89 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
     # Since the stroke and the fill are drawn with two different objects and the
     # fill is not needed, we temporarily switch off the fill and then put it back
     # to whichever value it was.
-    if liveCodeLabCoreInstance.LightSystem.lightsAreOn
-      rememberIfThereWasAFill = doFill
-      rememberPreviousStrokeSize = GraphicsCommands.currentStrokeSize
-      GraphicsCommands.currentStrokeSize = 2  if GraphicsCommands.currentStrokeSize < 2
+    if @liveCodeLabCoreInstance.LightSystem.lightsAreOn
+      rememberIfThereWasAFill = @doFill
+      rememberPreviousStrokeSize = @currentStrokeSize
+      @currentStrokeSize = 2  if @currentStrokeSize < 2
       a = 1  if a is `undefined`
-      rect 0, a, 0
-      doFill = rememberIfThereWasAFill
-      GraphicsCommands.currentStrokeSize = rememberPreviousStrokeSize
+      @rect 0, a, 0
+      @doFill = rememberIfThereWasAFill
+      @currentStrokeSize = rememberPreviousStrokeSize
       return
     
     # primitive-specific initialisations:
     primitiveProperties =
       canFill: false
-      primitiveType: primitiveTypes.line
-      sidedness: liveCodeLabCore_THREE.FrontSide
-      THREEObjectConstructor: liveCodeLabCore_THREE.Line
+      primitiveType: @primitiveTypes.line
+      sidedness: @liveCodeLabCore_THREE.FrontSide
+      THREEObjectConstructor: @liveCodeLabCore_THREE.Line
       detailLevel: 0
 
     
     # end of primitive-specific initialisations:
-    commonPrimitiveDrawingLogic a, b, c, primitiveProperties
+    @commonPrimitiveDrawingLogic a, b, c, primitiveProperties
 
-  window.rect = GraphicsCommands.rect = (a, b, c) ->
-    
+  rect: (a, b, c) ->    
     # primitive-specific initialisations:
     primitiveProperties =
       canFill: true
-      primitiveType: primitiveTypes.rect
-      sidedness: liveCodeLabCore_THREE.DoubleSide
-      THREEObjectConstructor: liveCodeLabCore_THREE.Mesh
+      primitiveType: @primitiveTypes.rect
+      sidedness: @liveCodeLabCore_THREE.DoubleSide
+      THREEObjectConstructor: @liveCodeLabCore_THREE.Mesh
       detailLevel: 0
 
     
     # end of primitive-specific initialisations:
-    commonPrimitiveDrawingLogic a, b, c, primitiveProperties
+    @commonPrimitiveDrawingLogic a, b, c, primitiveProperties
 
-  window.box = GraphicsCommands.box = (a, b, c) ->
-    
+  box: (a, b, c) ->    
     # primitive-specific initialisations:
     primitiveProperties =
       canFill: true
-      primitiveType: primitiveTypes.box
-      sidedness: liveCodeLabCore_THREE.FrontSide
-      THREEObjectConstructor: liveCodeLabCore_THREE.Mesh
+      primitiveType: @primitiveTypes.box
+      sidedness: @liveCodeLabCore_THREE.FrontSide
+      THREEObjectConstructor: @liveCodeLabCore_THREE.Mesh
       detailLevel: 0
 
     
     # end of primitive-specific initialisations:
-    commonPrimitiveDrawingLogic a, b, c, primitiveProperties
+    @commonPrimitiveDrawingLogic a, b, c, primitiveProperties
 
-  window.peg = GraphicsCommands.peg = (a, b, c) ->
-    
+  peg: (a, b, c) ->    
     # primitive-specific initialisations:
     primitiveProperties =
       canFill: true
-      primitiveType: primitiveTypes.peg
-      sidedness: liveCodeLabCore_THREE.FrontSide
-      THREEObjectConstructor: liveCodeLabCore_THREE.Mesh
+      primitiveType: @primitiveTypes.peg
+      sidedness: @liveCodeLabCore_THREE.FrontSide
+      THREEObjectConstructor: @liveCodeLabCore_THREE.Mesh
       detailLevel: 0
 
     
     # end of primitive-specific initialisations:
-    commonPrimitiveDrawingLogic a, b, c, primitiveProperties
+    @commonPrimitiveDrawingLogic a, b, c, primitiveProperties
 
-  window.ballDetail = GraphicsCommands.ballDetail = (a) ->
+  ballDetail: (a) ->
     return  if a is `undefined`
     a = 2  if a < 2
     a = 30  if a > 30
-    GraphicsCommands.ballDetLevel = Math.round(a)
+    @ballDetLevel = Math.round(a)
 
-  window.ball = GraphicsCommands.ball = (a, b, c) ->
-    
+  ball: (a, b, c) ->    
     # primitive-specific initialisations:
     primitiveProperties =
       canFill: true
-      primitiveType: primitiveTypes.ball
-      sidedness: liveCodeLabCore_THREE.FrontSide
-      THREEObjectConstructor: liveCodeLabCore_THREE.Mesh
-      detailLevel: GraphicsCommands.ballDetLevel - minimumBallDetail
+      primitiveType: @primitiveTypes.ball
+      sidedness: @liveCodeLabCore_THREE.FrontSide
+      THREEObjectConstructor: @liveCodeLabCore_THREE.Mesh
+      detailLevel: @ballDetLevel - @minimumBallDetail
 
     
     # end of primitive-specific initialisations:
-    commonPrimitiveDrawingLogic a, b, c, primitiveProperties
+    @commonPrimitiveDrawingLogic a, b, c, primitiveProperties
 
   
   # Modified from Processing.js
-  window.fill = GraphicsCommands.fill = (r, g, b, a) ->
-    
+  fill: (r, g, b, a) ->    
     # Three.js needs two integers to define an RGBA: the rgb as a 24 bit integer
     # and the alpha (from zero to one).
     # Now the thing is that the color gan be given in different
@@ -571,11 +573,11 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
     # So in that case, again, there are two forms of invokation
     #   angleColor
     #   angleColor, alpha
-    doFill = true
+    @doFill = true
     if r isnt angleColor
-      GraphicsCommands.defaultNormalFill = false
-      currentFillColor = color(r, g, b)
-      currentFillAlpha = alphaZeroToOne(color(r, g, b, a))
+      @defaultNormalFill = false
+      @currentFillColor = color(r, g, b)
+      @currentFillAlpha = alphaZeroToOne(color(r, g, b, a))
     else
       
       # we keep track of the "normal fill" flag and the fill color
@@ -583,12 +585,12 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
       # we can do some smart optimisation later
       # and not draw the wireframe is it happens to be the same color as
       # the fill
-      GraphicsCommands.defaultNormalFill = true
-      currentFillColor = angleColor
+      @defaultNormalFill = true
+      @currentFillColor = angleColor
       if b is `undefined` and g isnt `undefined`
-        currentFillAlpha = g / liveCodeLabCoreInstance.ColourFunctions.colorModeA
+        @currentFillAlpha = g / @liveCodeLabCoreInstance.ColourFunctions.colorModeA
       else
-        currentFillAlpha = 1
+        @currentFillAlpha = 1
 
   
   ###
@@ -598,9 +600,9 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
   
   @see #fill()
   ###
-  window.noFill = GraphicsCommands.noFill = ->
-    doFill = false
-    GraphicsCommands.defaultNormalFill = false
+  noFill: ->
+    @doFill = false
+    @defaultNormalFill = false
 
   
   ###
@@ -633,15 +635,14 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
   @see #background()
   @see #colorMode()
   ###
-  window.stroke = GraphicsCommands.stroke = (r, g, b, a) ->
-    
+  stroke: (r, g, b, a) ->    
     # see comment on fill method above
     # for some comments on how this method works.
-    doStroke = true
+    @doStroke = true
     if r isnt angleColor
-      GraphicsCommands.defaultNormalStroke = false
-      currentStrokeColor = color(r, g, b)
-      currentStrokeAlpha = alphaZeroToOne(color(r, g, b, a))
+      @defaultNormalStroke = false
+      @currentStrokeColor = color(r, g, b)
+      @currentStrokeAlpha = alphaZeroToOne(color(r, g, b, a))
     else
       
       # we keep track of the "normal stroke" flag and the stroke color
@@ -649,12 +650,12 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
       # we can do some smart optimisation later
       # and not draw the wireframe is it happens to be the same color as
       # the fill
-      GraphicsCommands.defaultNormalStroke = true
-      currentStrokeColor = angleColor
+      @defaultNormalStroke = true
+      @currentStrokeColor = angleColor
       if b is `undefined` and g isnt `undefined`
-        currentStrokeAlpha = g / liveCodeLabCoreInstance.ColourFunctions.colorModeA
+        @currentStrokeAlpha = g / @liveCodeLabCoreInstance.ColourFunctions.colorModeA
       else
-        currentStrokeAlpha = 1
+        @currentStrokeAlpha = 1
 
   
   ###
@@ -664,11 +665,10 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
   
   @see #stroke()
   ###
-  window.noStroke = GraphicsCommands.noStroke = ->
-    doStroke = false
+  noStroke: ->
+    @doStroke = false
 
-  window.strokeSize = GraphicsCommands.strokeSize = (a) ->
-    
+  strokeSize: (a) ->    
     # note that either Three.js of the graphic card limit the size
     # of the stroke. This is because openGL strokes are VERY crude
     # (the cap is not even square, it's worse than that:
@@ -678,6 +678,4 @@ createGraphicsCommands = (liveCodeLabCore_THREE, liveCodeLabCoreInstance) ->
     if a is `undefined`
       a = 1
     else a = 0  if a < 0
-    GraphicsCommands.currentStrokeSize = a
-
-  GraphicsCommands
+    @currentStrokeSize = a

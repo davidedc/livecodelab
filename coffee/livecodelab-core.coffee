@@ -155,7 +155,7 @@ createLiveCodeLabCore = (paramsObject) ->
   # this one also interacts with ColourFunctions, LightSystem, MatrixCommands
   # ThreeJsSystem at runtime
   liveCodeLabCoreInstance.GraphicsCommands =
-    createGraphicsCommands(
+    new GraphicsCommands(
       liveCodeLabCoreInstance.THREE, liveCodeLabCoreInstance)
       # color, LightSystem, MatrixCommands, ThreeJsSystem, colorModeA, redF, greenF,
       # blueF, alphaZeroToOne
