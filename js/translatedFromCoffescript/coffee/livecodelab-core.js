@@ -17,7 +17,7 @@ createLiveCodeLabCore = function(paramsObject) {
   liveCodeLabCoreInstance.AnimationLoop = new AnimationLoop(paramsObject.eventRouter, paramsObject.statsWidget, liveCodeLabCoreInstance);
   liveCodeLabCoreInstance.ThreeJsSystem = createThreeJsSystem(Detector, THREEx, paramsObject.blendedThreeJsSceneCanvas, paramsObject.forceCanvasRenderer, paramsObject.testMode, liveCodeLabCoreInstance.THREE);
   liveCodeLabCoreInstance.MatrixCommands = new MatrixCommands(liveCodeLabCoreInstance.THREE, liveCodeLabCoreInstance);
-  liveCodeLabCoreInstance.GraphicsCommands = createGraphicsCommands(liveCodeLabCoreInstance.THREE, liveCodeLabCoreInstance);
+  liveCodeLabCoreInstance.GraphicsCommands = new GraphicsCommands(liveCodeLabCoreInstance.THREE, liveCodeLabCoreInstance);
   liveCodeLabCoreInstance.LightSystem = createLightSystem(liveCodeLabCoreInstance.GraphicsCommands, liveCodeLabCoreInstance);
   liveCodeLabCoreInstance.paintARandomBackground = function() {
     return liveCodeLabCoreInstance.BackgroundPainter.paintARandomBackground();
