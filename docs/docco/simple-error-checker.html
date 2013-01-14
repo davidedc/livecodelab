@@ -1,71 +1,136 @@
 <!DOCTYPE html>  <html> <head>   <title>simple-error-checker.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               simple-error-checker.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>this file isn't currently used</p>             </td>             <td class="code">               <div class="highlight"><pre>
-<span class="function"><span class="title">createParsingFunctions</span></span> = -&gt;
-  <span class="string">"use strict"</span>
-  Parser = {}
+<span class="string">"use strict"</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Parser</span></span>
   source = <span class="literal">undefined</span>
   sourceLength = <span class="literal">undefined</span>
   position = <span class="literal">undefined</span>
-  Parser.finished = <span class="literal">true</span>
-  Parser.<span class="function"><span class="title">setString</span></span> = (parseString) -&gt;
-    position = <span class="number">0</span>
-    source = parseString
-    sourceLength = source.length
-    <span class="keyword">if</span> parseString <span class="keyword">isnt</span> <span class="string">""</span>
-      Parser.finished = <span class="literal">false</span>
-    <span class="keyword">else</span>
-      Parser.finished = <span class="literal">true</span>
+  finished = <span class="literal">true</span>
+  
+  constructor: -&gt;
 
-  Parser.<span class="function"><span class="title">pop</span></span> = -&gt;
-    <span class="keyword">return</span> `<span class="javascript"><span class="literal">undefined</span></span>`  <span class="keyword">if</span> position &gt;= sourceLength
-    c = source.charAt(position)
-    position += <span class="number">1</span>
-    Parser.finished = <span class="literal">true</span>  <span class="keyword">if</span> position &gt;= sourceLength
+  setString: (parseString) -&gt;
+    <span class="property">@position</span> = <span class="number">0</span>
+    <span class="property">@source</span> = parseString
+    <span class="property">@sourceLength</span> = <span class="property">@source</span>.length
+    <span class="keyword">if</span> parseString <span class="keyword">isnt</span> <span class="string">""</span>
+      <span class="property">@finished</span> = <span class="literal">false</span>
+    <span class="keyword">else</span>
+      <span class="property">@finished</span> = <span class="literal">true</span>
+
+  pop: -&gt;
+    <span class="keyword">return</span> `<span class="javascript"><span class="literal">undefined</span></span>`  <span class="keyword">if</span> <span class="property">@position</span> &gt;= <span class="property">@sourceLength</span>
+    c = <span class="property">@source</span>.charAt(<span class="property">@position</span>)
+    <span class="property">@position</span> += <span class="number">1</span>
+    <span class="property">@finished</span> = <span class="literal">true</span>  <span class="keyword">if</span> <span class="property">@position</span> &gt;= <span class="property">@sourceLength</span>
     c
 
-  Parser.<span class="function"><span class="title">peek</span></span> = -&gt;
-    source.charAt position  <span class="keyword">if</span> position &lt; sourceLength
+  peek: -&gt;
+    <span class="property">@source</span>.charAt <span class="property">@position</span>  <span class="keyword">if</span> <span class="property">@position</span> &lt; <span class="property">@sourceLength</span>
 
-  Parser
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>This should check to see that brackets and string quotes are balanced</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="class"><span class="keyword">class</span> <span class="title">CodeChecker</span> <span class="keyword">extends</span> <span class="title">Parser</span></span>
+  states: {}
+  constructor: -&gt;
+    <span class="property">@charHandlers</span> =
+    <span class="string">"["</span>: -&gt;
+      <span class="property">@states</span>.bracketStack.push <span class="string">"["</span>  <span class="keyword">if</span> <span class="keyword">not</span> <span class="property">@states</span>.inSingleString <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.inDoubleString <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.inComment
 
+    <span class="string">"]"</span>: -&gt;
+      <span class="keyword">if</span> <span class="keyword">not</span> <span class="property">@states</span>.inSingleString <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.inDoubleString <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.inComment
+        b = <span class="property">@states</span>.bracketStack.pop()
+        <span class="keyword">if</span> b <span class="keyword">isnt</span> <span class="string">"["</span>
+          <span class="property">@states</span>.err = <span class="literal">true</span>
+          <span class="property">@states</span>.message = <span class="property">@generateErrMessage</span>(b)
 
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>This should check to see that brackets and string quotes are balanced</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">createCodeChecker</span></span> = -&gt;
-  <span class="string">"use strict"</span>
-  CodeChecker = createParsingFunctions()
-  states = {}
-  isErr = <span class="literal">undefined</span>
-  setState = <span class="literal">undefined</span>
-  generateErrMessage = <span class="literal">undefined</span>
-  <span class="function"><span class="title">setState</span></span> = -&gt;
-    state =
+    <span class="string">"("</span>: -&gt;
+      <span class="property">@states</span>.bracketStack.push <span class="string">"("</span>  <span class="keyword">if</span> <span class="keyword">not</span> <span class="property">@states</span>.inSingleString <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.inDoubleString <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.inComment
+
+    <span class="string">")"</span>: -&gt;
+      <span class="keyword">if</span> <span class="keyword">not</span> <span class="property">@states</span>.inSingleString <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.inDoubleString <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.inComment
+        b = <span class="property">@states</span>.bracketStack.pop()
+        <span class="keyword">if</span> b <span class="keyword">isnt</span> <span class="string">"("</span>
+          <span class="property">@states</span>.err = <span class="literal">true</span>
+          <span class="property">@states</span>.message = <span class="property">@generateErrMessage</span>(b)
+
+    <span class="string">"{"</span>: -&gt;
+      <span class="property">@states</span>.bracketStack.push <span class="string">"{"</span>  <span class="keyword">if</span> <span class="keyword">not</span> <span class="property">@states</span>.inSingleString <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.inDoubleString <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.inComment
+
+    <span class="string">"}"</span>: -&gt;
+      <span class="keyword">if</span> <span class="keyword">not</span> <span class="property">@states</span>.inSingleString <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.inDoubleString <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.inComment
+        b = <span class="property">@states</span>.bracketStack.pop()
+        <span class="keyword">if</span> b <span class="keyword">isnt</span> <span class="string">"{"</span>
+          <span class="property">@states</span>.err = <span class="literal">true</span>
+          <span class="property">@states</span>.message = <span class="property">@generateErrMessage</span>(b)
+
+    <span class="string">"'"</span>: -&gt;
+      <span class="keyword">if</span> <span class="property">@states</span>.inComment
+
+      
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>We can ignore quotes in comments</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">else</span> <span class="keyword">if</span> <span class="property">@states</span>.inSingleString
+        <span class="property">@states</span>.inSingleString = <span class="literal">false</span>
+        <span class="property">@states</span>.singleQ -= <span class="number">1</span>
+      <span class="keyword">else</span> <span class="keyword">unless</span> <span class="property">@states</span>.inDoubleString
+        <span class="property">@states</span>.inSingleString = <span class="literal">true</span>
+        <span class="property">@states</span>.singleQ += <span class="number">1</span>
+
+    <span class="string">"\""</span>: -&gt;
+      <span class="keyword">if</span> <span class="property">@states</span>.inComment
+
+      
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>We can ignore quotes in comments</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">else</span> <span class="keyword">if</span> <span class="property">@states</span>.inDoubleString
+        <span class="property">@states</span>.inDoubleString = <span class="literal">false</span>
+        <span class="property">@states</span>.doubleQ -= <span class="number">1</span>
+      <span class="keyword">else</span> <span class="keyword">unless</span> <span class="property">@states</span>.inSingleString
+        <span class="property">@states</span>.inDoubleString = <span class="literal">true</span>
+        <span class="property">@states</span>.doubleQ += <span class="number">1</span>
+
+    <span class="string">"/"</span>: -&gt;
+      <span class="keyword">if</span> <span class="keyword">not</span> <span class="property">@states</span>.inSingleString <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.inDoubleString <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.inComment
+        <span class="keyword">if</span> <span class="property">@peek</span>() <span class="keyword">is</span> <span class="string">"/"</span>
+          <span class="property">@pop</span>()
+          <span class="property">@states</span>.inComment = <span class="literal">true</span>
+
+    <span class="string">"\\"</span>: -&gt;
+      
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Escaping next character</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@pop</span>()
+
+    <span class="string">"\n"</span>: -&gt;
+      <span class="keyword">if</span> <span class="property">@states</span>.inSingleString
+        <span class="property">@states</span>.message = <span class="property">@generateErrMessage</span>(<span class="string">"'"</span>)
+        <span class="property">@states</span>.err = <span class="literal">true</span>
+      <span class="keyword">else</span> <span class="keyword">if</span> <span class="property">@states</span>.inDoubleString
+        <span class="property">@states</span>.message = <span class="property">@generateErrMessage</span>(<span class="string">"\""</span>)
+        <span class="property">@states</span>.err = <span class="literal">true</span>
+      <span class="keyword">else</span> <span class="property">@states</span>.inComment = <span class="literal">false</span>  <span class="keyword">if</span> <span class="property">@states</span>.inComment
+
+  resetState: -&gt;
+    <span class="keyword">return</span> aFreshlyMadeState =
       err: <span class="literal">false</span>
       
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>number of each bracket found</p>             </td>             <td class="code">               <div class="highlight"><pre>      bracketStack: []
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>number of each bracket found</p>             </td>             <td class="code">               <div class="highlight"><pre>      bracketStack: []
       
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>string quotes</p>             </td>             <td class="code">               <div class="highlight"><pre>      doubleQ: <span class="number">0</span>
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>string quotes</p>             </td>             <td class="code">               <div class="highlight"><pre>      doubleQ: <span class="number">0</span>
       singleQ: <span class="number">0</span>
       
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>states the parser could be in</p>             </td>             <td class="code">               <div class="highlight"><pre>      inSingleString: <span class="literal">false</span>
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>states the parser could be in</p>             </td>             <td class="code">               <div class="highlight"><pre>      inSingleString: <span class="literal">false</span>
       inDoubleString: <span class="literal">false</span>
       inComment: <span class="literal">false</span>
       
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>any error message</p>             </td>             <td class="code">               <div class="highlight"><pre>      message: <span class="string">""</span>
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>any error message</p>             </td>             <td class="code">               <div class="highlight"><pre>      message: <span class="string">""</span>
 
-    state
-
-  <span class="function"><span class="title">isErr</span></span> = (s) -&gt;
+  isErr: (s) -&gt;
     <span class="keyword">if</span> s.bracketStack.length &gt; <span class="number">0</span>
       b = s.bracketStack.pop()
-      states.message = generateErrMessage(b)
+      <span class="property">@states</span>.message = <span class="property">@generateErrMessage</span>(b)
       s.err = <span class="literal">true</span>
     <span class="keyword">else</span> <span class="keyword">if</span> s.inSingleString
-      states.message = generateErrMessage(<span class="string">"'"</span>)
+      <span class="property">@states</span>.message = <span class="property">@generateErrMessage</span>(<span class="string">"'"</span>)
       s.err = <span class="literal">true</span>
     <span class="keyword">else</span> <span class="keyword">if</span> s.inDoubleString
-      states.message = generateErrMessage(<span class="string">"\""</span>)
+      <span class="property">@states</span>.message = <span class="property">@generateErrMessage</span>(<span class="string">"\""</span>)
       s.err = <span class="literal">true</span>
     s
 
-  <span class="function"><span class="title">generateErrMessage</span></span> = (token) -&gt;
+  generateErrMessage: (token) -&gt;
     message = <span class="literal">undefined</span>
     <span class="keyword">switch</span> token
       <span class="keyword">when</span> <span class="string">"{"</span>
@@ -82,96 +147,16 @@
         message = <span class="string">"Unexpected "</span> + token
     message
 
-  CodeChecker.charHandlers =
-    <span class="string">"["</span>: -&gt;
-      states.bracketStack.push <span class="string">"["</span>  <span class="keyword">if</span> <span class="keyword">not</span> states.inSingleString <span class="keyword">and</span> <span class="keyword">not</span> states.inDoubleString <span class="keyword">and</span> <span class="keyword">not</span> states.inComment
+  parseChar: (c) -&gt;
+    <span class="property">@charHandlers</span>[c]()  <span class="keyword">if</span> <span class="property">@charHandlers</span>[c]
 
-    <span class="string">"]"</span>: -&gt;
-      <span class="keyword">if</span> <span class="keyword">not</span> states.inSingleString <span class="keyword">and</span> <span class="keyword">not</span> states.inDoubleString <span class="keyword">and</span> <span class="keyword">not</span> states.inComment
-        b = states.bracketStack.pop()
-        <span class="keyword">if</span> b <span class="keyword">isnt</span> <span class="string">"["</span>
-          states.err = <span class="literal">true</span>
-          states.message = generateErrMessage(b)
-
-    <span class="string">"("</span>: -&gt;
-      states.bracketStack.push <span class="string">"("</span>  <span class="keyword">if</span> <span class="keyword">not</span> states.inSingleString <span class="keyword">and</span> <span class="keyword">not</span> states.inDoubleString <span class="keyword">and</span> <span class="keyword">not</span> states.inComment
-
-    <span class="string">")"</span>: -&gt;
-      <span class="keyword">if</span> <span class="keyword">not</span> states.inSingleString <span class="keyword">and</span> <span class="keyword">not</span> states.inDoubleString <span class="keyword">and</span> <span class="keyword">not</span> states.inComment
-        b = states.bracketStack.pop()
-        <span class="keyword">if</span> b <span class="keyword">isnt</span> <span class="string">"("</span>
-          states.err = <span class="literal">true</span>
-          states.message = generateErrMessage(b)
-
-    <span class="string">"{"</span>: -&gt;
-      states.bracketStack.push <span class="string">"{"</span>  <span class="keyword">if</span> <span class="keyword">not</span> states.inSingleString <span class="keyword">and</span> <span class="keyword">not</span> states.inDoubleString <span class="keyword">and</span> <span class="keyword">not</span> states.inComment
-
-    <span class="string">"}"</span>: -&gt;
-      <span class="keyword">if</span> <span class="keyword">not</span> states.inSingleString <span class="keyword">and</span> <span class="keyword">not</span> states.inDoubleString <span class="keyword">and</span> <span class="keyword">not</span> states.inComment
-        b = states.bracketStack.pop()
-        <span class="keyword">if</span> b <span class="keyword">isnt</span> <span class="string">"{"</span>
-          states.err = <span class="literal">true</span>
-          states.message = generateErrMessage(b)
-
-    <span class="string">"'"</span>: -&gt;
-      <span class="keyword">if</span> states.inComment
-
-      
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>We can ignore quotes in comments</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">else</span> <span class="keyword">if</span> states.inSingleString
-        states.inSingleString = <span class="literal">false</span>
-        states.singleQ -= <span class="number">1</span>
-      <span class="keyword">else</span> <span class="keyword">unless</span> states.inDoubleString
-        states.inSingleString = <span class="literal">true</span>
-        states.singleQ += <span class="number">1</span>
-
-    <span class="string">"\""</span>: -&gt;
-      <span class="keyword">if</span> states.inComment
-
-      
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>We can ignore quotes in comments</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">else</span> <span class="keyword">if</span> states.inDoubleString
-        states.inDoubleString = <span class="literal">false</span>
-        states.doubleQ -= <span class="number">1</span>
-      <span class="keyword">else</span> <span class="keyword">unless</span> states.inSingleString
-        states.inDoubleString = <span class="literal">true</span>
-        states.doubleQ += <span class="number">1</span>
-
-    <span class="string">"/"</span>: -&gt;
-      <span class="keyword">if</span> <span class="keyword">not</span> states.inSingleString <span class="keyword">and</span> <span class="keyword">not</span> states.inDoubleString <span class="keyword">and</span> <span class="keyword">not</span> states.inComment
-        <span class="keyword">if</span> CodeChecker.peek() <span class="keyword">is</span> <span class="string">"/"</span>
-          CodeChecker.pop()
-          states.inComment = <span class="literal">true</span>
-
-    <span class="string">"\\"</span>: -&gt;
-      
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Escaping next character</p>             </td>             <td class="code">               <div class="highlight"><pre>      CodeChecker.pop()
-
-    <span class="string">"\n"</span>: -&gt;
-      <span class="keyword">if</span> states.inSingleString
-        states.message = generateErrMessage(<span class="string">"'"</span>)
-        states.err = <span class="literal">true</span>
-      <span class="keyword">else</span> <span class="keyword">if</span> states.inDoubleString
-        states.message = generateErrMessage(<span class="string">"\""</span>)
-        states.err = <span class="literal">true</span>
-      <span class="keyword">else</span> states.inComment = <span class="literal">false</span>  <span class="keyword">if</span> states.inComment
-
-  CodeChecker.<span class="function"><span class="title">parseChar</span></span> = (c) -&gt;
-    CodeChecker.charHandlers[c]()  <span class="keyword">if</span> CodeChecker.charHandlers[c]
-
-  CodeChecker.<span class="function"><span class="title">parse</span></span> = (source) -&gt;
+  parse: (source) -&gt;
     c = <span class="literal">undefined</span>
-    states = setState()
-    CodeChecker.setString source
-    <span class="keyword">while</span> <span class="keyword">not</span> CodeChecker.finished <span class="keyword">and</span> <span class="keyword">not</span> states.err
-      c = CodeChecker.pop()
-      CodeChecker.parseChar c
-    isErr states
+    <span class="property">@states</span> = <span class="property">@resetState</span>()
+    <span class="property">@setString</span> source
+    <span class="keyword">while</span> <span class="keyword">not</span> <span class="property">@finished</span> <span class="keyword">and</span> <span class="keyword">not</span> <span class="property">@states</span>.err
+      c = <span class="property">@pop</span>()
+      <span class="property">@parseChar</span> c
+    <span class="property">@isErr</span> <span class="property">@states</span>
 
-  CodeChecker
-
-
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Add support for CommonJS. Just put this file somewhere on your require.paths
-and you will be able to <code>var js_beautify = require("beautify").js_beautify</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="keyword">if</span> <span class="keyword">typeof</span> exports <span class="keyword">isnt</span> <span class="string">"undefined"</span>
-  exports.simple_checker =
-    createChecker: createCodeChecker
-    createParsingFunctions: createParsingFunctions
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

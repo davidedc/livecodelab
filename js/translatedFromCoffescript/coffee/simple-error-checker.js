@@ -1,56 +1,161 @@
-var createCodeChecker, createParsingFunctions;
+"use strict";
 
-createParsingFunctions = function() {
-  "use strict";
+var CodeChecker, Parser,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  var Parser, position, source, sourceLength;
-  Parser = {};
+Parser = (function() {
+  var finished, position, source, sourceLength;
+
   source = void 0;
+
   sourceLength = void 0;
+
   position = void 0;
-  Parser.finished = true;
-  Parser.setString = function(parseString) {
-    position = 0;
-    source = parseString;
-    sourceLength = source.length;
+
+  finished = true;
+
+  function Parser() {}
+
+  Parser.prototype.setString = function(parseString) {
+    this.position = 0;
+    this.source = parseString;
+    this.sourceLength = this.source.length;
     if (parseString !== "") {
-      return Parser.finished = false;
+      return this.finished = false;
     } else {
-      return Parser.finished = true;
+      return this.finished = true;
     }
   };
-  Parser.pop = function() {
+
+  Parser.prototype.pop = function() {
     var c;
-    if (position >= sourceLength) {
+    if (this.position >= this.sourceLength) {
       return undefined;
     }
-    c = source.charAt(position);
-    position += 1;
-    if (position >= sourceLength) {
-      Parser.finished = true;
+    c = this.source.charAt(this.position);
+    this.position += 1;
+    if (this.position >= this.sourceLength) {
+      this.finished = true;
     }
     return c;
   };
-  Parser.peek = function() {
-    if (position < sourceLength) {
-      return source.charAt(position);
+
+  Parser.prototype.peek = function() {
+    if (this.position < this.sourceLength) {
+      return this.source.charAt(this.position);
     }
   };
+
   return Parser;
-};
 
-createCodeChecker = function() {
-  "use strict";
+})();
 
-  var CodeChecker, generateErrMessage, isErr, setState, states;
-  CodeChecker = createParsingFunctions();
-  states = {};
-  isErr = void 0;
-  setState = void 0;
-  generateErrMessage = void 0;
-  setState = function() {
-    var state;
-    state = {
+CodeChecker = (function(_super) {
+
+  __extends(CodeChecker, _super);
+
+  CodeChecker.prototype.states = {};
+
+  function CodeChecker() {
+    this.charHandlers = {
+      "[": function() {
+        if (!this.states.inSingleString && !this.states.inDoubleString && !this.states.inComment) {
+          return this.states.bracketStack.push("[");
+        }
+      },
+      "]": function() {
+        var b;
+        if (!this.states.inSingleString && !this.states.inDoubleString && !this.states.inComment) {
+          b = this.states.bracketStack.pop();
+          if (b !== "[") {
+            this.states.err = true;
+            return this.states.message = this.generateErrMessage(b);
+          }
+        }
+      },
+      "(": function() {
+        if (!this.states.inSingleString && !this.states.inDoubleString && !this.states.inComment) {
+          return this.states.bracketStack.push("(");
+        }
+      },
+      ")": function() {
+        var b;
+        if (!this.states.inSingleString && !this.states.inDoubleString && !this.states.inComment) {
+          b = this.states.bracketStack.pop();
+          if (b !== "(") {
+            this.states.err = true;
+            return this.states.message = this.generateErrMessage(b);
+          }
+        }
+      },
+      "{": function() {
+        if (!this.states.inSingleString && !this.states.inDoubleString && !this.states.inComment) {
+          return this.states.bracketStack.push("{");
+        }
+      },
+      "}": function() {
+        var b;
+        if (!this.states.inSingleString && !this.states.inDoubleString && !this.states.inComment) {
+          b = this.states.bracketStack.pop();
+          if (b !== "{") {
+            this.states.err = true;
+            return this.states.message = this.generateErrMessage(b);
+          }
+        }
+      },
+      "'": function() {
+        if (this.states.inComment) {
+
+        } else if (this.states.inSingleString) {
+          this.states.inSingleString = false;
+          return this.states.singleQ -= 1;
+        } else if (!this.states.inDoubleString) {
+          this.states.inSingleString = true;
+          return this.states.singleQ += 1;
+        }
+      },
+      "\"": function() {
+        if (this.states.inComment) {
+
+        } else if (this.states.inDoubleString) {
+          this.states.inDoubleString = false;
+          return this.states.doubleQ -= 1;
+        } else if (!this.states.inSingleString) {
+          this.states.inDoubleString = true;
+          return this.states.doubleQ += 1;
+        }
+      },
+      "/": function() {
+        if (!this.states.inSingleString && !this.states.inDoubleString && !this.states.inComment) {
+          if (this.peek() === "/") {
+            this.pop();
+            return this.states.inComment = true;
+          }
+        }
+      },
+      "\\": function() {
+        return this.pop();
+      },
+      "\n": function() {
+        if (this.states.inSingleString) {
+          this.states.message = this.generateErrMessage("'");
+          return this.states.err = true;
+        } else if (this.states.inDoubleString) {
+          this.states.message = this.generateErrMessage("\"");
+          return this.states.err = true;
+        } else {
+          if (this.states.inComment) {
+            return this.states.inComment = false;
+          }
+        }
+      }
+    };
+  }
+
+  CodeChecker.prototype.resetState = function() {
+    var aFreshlyMadeState;
+    return aFreshlyMadeState = {
       err: false,
       bracketStack: [],
       doubleQ: 0,
@@ -60,24 +165,25 @@ createCodeChecker = function() {
       inComment: false,
       message: ""
     };
-    return state;
   };
-  isErr = function(s) {
+
+  CodeChecker.prototype.isErr = function(s) {
     var b;
     if (s.bracketStack.length > 0) {
       b = s.bracketStack.pop();
-      states.message = generateErrMessage(b);
+      this.states.message = this.generateErrMessage(b);
       s.err = true;
     } else if (s.inSingleString) {
-      states.message = generateErrMessage("'");
+      this.states.message = this.generateErrMessage("'");
       s.err = true;
     } else if (s.inDoubleString) {
-      states.message = generateErrMessage("\"");
+      this.states.message = this.generateErrMessage("\"");
       s.err = true;
     }
     return s;
   };
-  generateErrMessage = function(token) {
+
+  CodeChecker.prototype.generateErrMessage = function(token) {
     var message;
     message = void 0;
     switch (token) {
@@ -101,121 +207,25 @@ createCodeChecker = function() {
     }
     return message;
   };
-  CodeChecker.charHandlers = {
-    "[": function() {
-      if (!states.inSingleString && !states.inDoubleString && !states.inComment) {
-        return states.bracketStack.push("[");
-      }
-    },
-    "]": function() {
-      var b;
-      if (!states.inSingleString && !states.inDoubleString && !states.inComment) {
-        b = states.bracketStack.pop();
-        if (b !== "[") {
-          states.err = true;
-          return states.message = generateErrMessage(b);
-        }
-      }
-    },
-    "(": function() {
-      if (!states.inSingleString && !states.inDoubleString && !states.inComment) {
-        return states.bracketStack.push("(");
-      }
-    },
-    ")": function() {
-      var b;
-      if (!states.inSingleString && !states.inDoubleString && !states.inComment) {
-        b = states.bracketStack.pop();
-        if (b !== "(") {
-          states.err = true;
-          return states.message = generateErrMessage(b);
-        }
-      }
-    },
-    "{": function() {
-      if (!states.inSingleString && !states.inDoubleString && !states.inComment) {
-        return states.bracketStack.push("{");
-      }
-    },
-    "}": function() {
-      var b;
-      if (!states.inSingleString && !states.inDoubleString && !states.inComment) {
-        b = states.bracketStack.pop();
-        if (b !== "{") {
-          states.err = true;
-          return states.message = generateErrMessage(b);
-        }
-      }
-    },
-    "'": function() {
-      if (states.inComment) {
 
-      } else if (states.inSingleString) {
-        states.inSingleString = false;
-        return states.singleQ -= 1;
-      } else if (!states.inDoubleString) {
-        states.inSingleString = true;
-        return states.singleQ += 1;
-      }
-    },
-    "\"": function() {
-      if (states.inComment) {
-
-      } else if (states.inDoubleString) {
-        states.inDoubleString = false;
-        return states.doubleQ -= 1;
-      } else if (!states.inSingleString) {
-        states.inDoubleString = true;
-        return states.doubleQ += 1;
-      }
-    },
-    "/": function() {
-      if (!states.inSingleString && !states.inDoubleString && !states.inComment) {
-        if (CodeChecker.peek() === "/") {
-          CodeChecker.pop();
-          return states.inComment = true;
-        }
-      }
-    },
-    "\\": function() {
-      return CodeChecker.pop();
-    },
-    "\n": function() {
-      if (states.inSingleString) {
-        states.message = generateErrMessage("'");
-        return states.err = true;
-      } else if (states.inDoubleString) {
-        states.message = generateErrMessage("\"");
-        return states.err = true;
-      } else {
-        if (states.inComment) {
-          return states.inComment = false;
-        }
-      }
+  CodeChecker.prototype.parseChar = function(c) {
+    if (this.charHandlers[c]) {
+      return this.charHandlers[c]();
     }
   };
-  CodeChecker.parseChar = function(c) {
-    if (CodeChecker.charHandlers[c]) {
-      return CodeChecker.charHandlers[c]();
-    }
-  };
-  CodeChecker.parse = function(source) {
+
+  CodeChecker.prototype.parse = function(source) {
     var c;
     c = void 0;
-    states = setState();
-    CodeChecker.setString(source);
-    while (!CodeChecker.finished && !states.err) {
-      c = CodeChecker.pop();
-      CodeChecker.parseChar(c);
+    this.states = this.resetState();
+    this.setString(source);
+    while (!this.finished && !this.states.err) {
+      c = this.pop();
+      this.parseChar(c);
     }
-    return isErr(states);
+    return this.isErr(this.states);
   };
-  return CodeChecker;
-};
 
-if (typeof exports !== "undefined") {
-  exports.simple_checker = {
-    createChecker: createCodeChecker,
-    createParsingFunctions: createParsingFunctions
-  };
-}
+  return CodeChecker;
+
+})(Parser);
