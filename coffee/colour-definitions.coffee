@@ -1,6 +1,8 @@
 #jslint browser: true 
 "use strict"
 class Colours
+  colourNames: []
+
   constructor: ->
     # Color constants, modified from processing.js
     # with added the missing ones from the CSS standard,
@@ -165,7 +167,6 @@ class Colours
       "angleColor", "angleColor"
     ]
 
-    ColourNames = []
     ColourIteration = 0
     while ColourIteration < colourNamesValues.length
       # Adding colours to the global namespace is avoidable once we have a "scope" object in
@@ -177,5 +178,5 @@ class Colours
         window[colourNamesValues[ColourIteration]] =
           colourNamesValues[ColourIteration + 1]
 
-      ColourNames.push colourNamesValues[ColourIteration]
+      @colourNames.push colourNamesValues[ColourIteration]
       ColourIteration += 2

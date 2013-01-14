@@ -64,7 +64,7 @@ startEnvironment = (paramsObject) ->
   # CSS colors, this needs to be run before creating LiveCodeLabCore. This is also
   # used by the autocoder because it needs to be able to swap color names that it
   # finds as CSS color strings in the user program.
-  colourNames = new Colours
+  colourNames = (new Colours()).colourNames
   
   #//////////////////////////////////////////////////////
   # Phase 2 - Initialise the core of livecodelab.

@@ -32,29 +32,25 @@
 #    the next one (that would be recursion). Rather, it returns a function to find and
 #    run the next one
 #
-#  Why this "step by step" approach instead of a normal recursion? The advantage is
-#  that you can stop the parsing and resume it any time you want. Suppose that
-#  you have a huge program to parse. With recursion, once you start you can't
-#  stop until the end (at least if you are using normal recursion as provided by
-#  the language runtime. If you implement your own recursion using your own stack
-#  then you could indeed pause/resume things). A "continuations" approach lets you
-#  stop and resume the parsing more easily, since you lex the program step by step
-#  in a manner that does not rely on the runtime stack. There is no recursion.
+# Why this "step by step" approach instead of a normal recursion? The advantage is
+# that you can stop the parsing and resume it any time you want. Suppose that
+# you have a huge program to parse. With recursion, once you start you can't
+# stop until the end (at least if you are using normal recursion as provided by
+# the language runtime. If you implement your own recursion using your own stack
+# then you could indeed pause/resume things). In a single-threaded language like
+# Javascript this results in everything else "blocking". A "continuations" approach
+# lets you stop and resume the parsing more easily, since you lex the program step
+# by step in a manner that does not rely on the runtime stack. There is no recursion.
 #                       
 
-McState = ->
-  rules = []
-  # McState.State() returns a function that takes a regex and returns a function that
-  # takes an action and pushes it into a rules array (which is made of pairs of regexes,
-  # actions)
-  state = (regex) ->
-    (action) ->
-      rules.push new McRule(regex, action)
-      null
+class LexerState
+  rules: []
 
-  state.rules = rules
+  addRule: (regex, action) ->
+      @rules.push new LexerRule(regex, action)
+      null
   
-  state.lex = (input) ->
+  lex: (input) ->
     # findAndRunActionPairedToLongestAppliableRegex returns an action triggered by the
     # longest regex appliable. An action is a function that takes the current matched
     # part of the input, the remaining part of the input and the current state. It can
@@ -62,7 +58,7 @@ McState = ->
     # part of the input and finds the next action.
     # So note here that nextAction is a function that does stuff and returns a function
     # to find the next action. We are not running it yet.
-    nextAction = state.findAndRunActionPairedToLongestAppliableRegex(input)    
+    nextAction = @findAndRunActionPairedToLongestAppliableRegex(input)    
     while typeof nextAction is "function"
       # OK an action has been returned. Now by running it the action does some custom
       # stuff and then it returns a function that finds the next action. So continue to
@@ -70,7 +66,7 @@ McState = ->
       nextAction = nextAction()
     return nextAction
 
-  state.findAndRunActionPairedToLongestAppliableRegex = (input) ->
+  findAndRunActionPairedToLongestAppliableRegex: (input) ->
     longestMatchedRule = null
     longestMatch = null
     longestMatchedLength = -1
@@ -89,35 +85,29 @@ McState = ->
         longestMatchedLength = m[0].length
       --i
     if longestMatchedRule
-      # console.log("found a matching rule")
+      #console.log("found a matching rule")
       # now return the result of the action, which is the next action
       return (longestMatchedRule.action(longestMatch, input.substring(longestMatchedLength), this))
     else
       throw ("Lexing error; no match found for: '" + input + "'")
 
-  state.returnAFunctionThatAppliesRulesAndRunsActionFor = (input) ->
-    ->
-      state.findAndRunActionPairedToLongestAppliableRegex input
+  returnAFunctionThatAppliesRulesAndRunsActionFor: (input) ->
+    =>
+      @findAndRunActionPairedToLongestAppliableRegex input
 
-  return state
-
-McRule = (regex, action) ->  
-  # Each rule is re-written to match prefixes of the input string.
-  @regex = new RegExp("^(" + regex.source + ")")
-  @regex.compile @regex  if @regex.compile
-  @action = action
-  null
+class LexerRule
+  constructor: (@regex, @action) ->  
+    # Each rule is re-written to match prefixes of the input string.
+    @regex = new RegExp("^(" + @regex.source + ")")
+    @regex.compile @regex  if @regex.compile
+    null
+  matches: (s) ->
+    m = s.match(@regex)
+    m.shift()  if m
+    m
 
 # Creates a continuation that switches analysis to another lexical state.  
-McCONTINUE = (state) ->
-  (match, rest) ->
-    state.findAndRunActionPairedToLongestAppliableRegex rest
+#McCONTINUE = (state) ->
+#  (match, rest) ->
+#    state.findAndRunActionPairedToLongestAppliableRegex rest
 
-McRule::matches = (s) ->
-  m = s.match(@regex)
-  m.shift()  if m
-  m
-
-
-# For "package-style" access:
-McLexer = State: McState
