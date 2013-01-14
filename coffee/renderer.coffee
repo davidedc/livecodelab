@@ -1,18 +1,19 @@
 #jslint maxerr: 200, browser: true, devel: true, bitwise: true 
 
-createRenderer = (liveCodeLabCoreInstance) ->
-  "use strict"
-  Renderer = {}
-  Renderer.render = (graphics) ->
+"use strict"
+class Renderer
+  constructor: (@liveCodeLabCoreInstance) ->
+  
+  render: (graphics) ->
     
     # some shorthands
-    ThreeJsSystem = liveCodeLabCoreInstance.ThreeJsSystem
+    ThreeJsSystem = @liveCodeLabCoreInstance.ThreeJsSystem
     renderer = ThreeJsSystem.renderer
     blendedThreeJsSceneCanvasContext = ThreeJsSystem.blendedThreeJsSceneCanvasContext
     previousFrameThreeJSSceneRenderForBlendingCanvasContext =
       ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext
     
-    combDisplayList graphics
+    @combDisplayList graphics
     if ThreeJsSystem.isWebGLUsed
       ThreeJsSystem.composer.render()
     else
@@ -30,7 +31,7 @@ createRenderer = (liveCodeLabCoreInstance) ->
       # motionBlur and no paintOver, because we don't need to keep and blend with
       # the previous frame in that case.
       blendedThreeJsSceneCanvasContext.globalAlpha =
-        liveCodeLabCoreInstance.BlendControls.blendAmount
+        @liveCodeLabCoreInstance.BlendControls.blendAmount
       blendedThreeJsSceneCanvasContext.drawImage \
         ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, 0, 0
       blendedThreeJsSceneCanvasContext.globalAlpha = 1.0
@@ -74,13 +75,13 @@ createRenderer = (liveCodeLabCoreInstance) ->
   # Note: Mr Doob said that the new scene destruction/creation primitives of Three.js
   #       are much faster. Also the objects of the scene are harder to reach, so
   #       it could be the case that this mechanism is not needed anymore.
-  combDisplayList = (graphics) ->
+  combDisplayList: (graphics) ->
     i = undefined
     sceneObject = undefined
     primitiveType = undefined
     
     # some shorthands
-    ThreeJsSystem = liveCodeLabCoreInstance.ThreeJsSystem
+    ThreeJsSystem = @liveCodeLabCoreInstance.ThreeJsSystem
     objectsUsedInFrameCounts = graphics.objectsUsedInFrameCounts
     
     # scan all the objects in the display list
@@ -102,5 +103,3 @@ createRenderer = (liveCodeLabCoreInstance) ->
         # ... and the others to invisible
         sceneObject.visible = false
       i += 1
-
-  Renderer

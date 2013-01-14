@@ -97,7 +97,7 @@ createLiveCodeLabCore = (paramsObject) ->
   liveCodeLabCoreInstance.ColourFunctions = createColourFunctions()
   
   # this one also interacts with ThreeJsSystem and BlendControls at runtime
-  liveCodeLabCoreInstance.Renderer = createRenderer(liveCodeLabCoreInstance)
+  liveCodeLabCoreInstance.Renderer = new Renderer(liveCodeLabCoreInstance)
   liveCodeLabCoreInstance.SoundSystem =
     createSoundSystem(
       paramsObject.eventRouter, buzz, createBowser(), createSampleBank(buzz))
