@@ -3,7 +3,7 @@
 
 "use strict"
 class MatrixCommands
-  matrixStack = []
+  matrixStack: []
 
   constructor: (@liveCodeLabCore_THREE, @liveCodeLabCoreInstance) ->
     @worldMatrix = new @liveCodeLabCore_THREE.Matrix4()

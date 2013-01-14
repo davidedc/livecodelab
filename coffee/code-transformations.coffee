@@ -1,5 +1,5 @@
 class CodeTransformer
-  @currentCodeString = null
+  currentCodeString: null
   
   constructor: (@eventRouter, @CoffeeCompiler, @liveCodeLabCoreInstance) ->
     # note that this is not used anywhere for the time being.

@@ -4,10 +4,10 @@
 "use strict"
 class Autocoder
   
-  active = false
-  autocoderMutateTimeout = undefined
-  numberOfResults = 0
-  whichOneToChange = 0
+  active: false
+  autocoderMutateTimeout: undefined
+  numberOfResults: 0
+  whichOneToChange: 0
   
   constructor: (@eventRouter, @editor, @colourNames) ->
     
