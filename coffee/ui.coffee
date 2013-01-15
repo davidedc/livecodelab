@@ -1,14 +1,28 @@
 #jslint browser: true 
 #global $ 
 
-createUi = (eventRouter, stats) ->
-  "use strict"
-  Ui = {}
-  resizeCanvas = undefined
-  adjustCodeMirrorHeight = undefined
-  resizeCanvas = (canvasId) ->
-    canvas = undefined
-    scale = undefined
+"use strict"
+class Ui
+  constructor: (@eventRouter, @stats) ->
+    # Setup Event Listeners
+    @eventRouter.bind "report-runtime-or-compile-time-error", (=>@checkErrorAndReport()), @
+    @eventRouter.bind "clear-error", (=>@clearError()), @
+    @eventRouter.bind "autocoder-button-pressed", (state) =>
+      if state is true
+        $("#autocodeIndicator").html("Autocode: on").css "background-color", "#FF0000"
+      else
+        $("#autocodeIndicator").html("Autocode: off").css "background-color", ""
+
+    @eventRouter.bind "autocoderbutton-flash", =>
+      $("#autocodeIndicator").fadeOut(100).fadeIn 100
+
+    @eventRouter.bind "auto-hide-code-button-pressed", (state) =>
+      if state is true
+        $("#dimCodeIndicator").html "Hide Code: on"
+      else
+        $("#dimCodeIndicator").html "Hide Code: off"
+
+  resizeCanvas: (canvasId) ->
     canvas = $(canvasId)
     scale =
       x: 1
@@ -36,7 +50,7 @@ createUi = (eventRouter, stats) ->
   # aspect ration might have changed.
   # But for the time being we only have vertical
   # gradients so that's not going to be a problem.
-  Ui.adjustCodeMirrorHeight = ->
+  adjustCodeMirrorHeight: ->
     $(".CodeMirror-scroll").css "height", window.innerHeight - $("#theMenu").height()
 
   
@@ -48,14 +62,14 @@ createUi = (eventRouter, stats) ->
   # the menu disappears
   # so we have to resize it at launch and also every time the window
   # is resized.
-  Ui.fullscreenify = (canvasId) ->
-    window.addEventListener "resize", (->
-      Ui.adjustCodeMirrorHeight()
-      resizeCanvas canvasId
+  fullscreenify: (canvasId) ->
+    window.addEventListener "resize", (=>
+      @adjustCodeMirrorHeight()
+      @resizeCanvas canvasId
     ), false
-    resizeCanvas canvasId
+    @resizeCanvas canvasId
 
-  Ui.checkErrorAndReport = (e) ->
+  checkErrorAndReport: (e) ->
     $("#dangerSignText").css "color", "red"
     
     # if the object is an exception then get the message
@@ -80,19 +94,19 @@ createUi = (eventRouter, stats) ->
     else errorMessage = errorMessage.replace(/ReferenceError:\s/g, "")  if errorMessage.indexOf("ReferenceError") > -1
     $("#errorMessageText").text errorMessage
 
-  Ui.clearError = ->
+  clearError: ->
     $("#dangerSignText").css "color", "#000000"
     $("#errorMessageText").text ""
 
-  Ui.soundSystemOk = ->
+  soundSystemOk: ->
     $("#soundSystemStatus").text("Sound System On").removeClass("off").addClass "on"
 
-  Ui.hideStatsWidget = ->
+  hideStatsWidget: ->
     $("#statsWidget").hide()
 
   
   #console.log('hiding stats widget');
-  Ui.showStatsWidget = ->
+  showStatsWidget: ->
     
     # I wish I could tell you why showing the widget straight away doesn't work.
     # Postponing a little bit makes this work. It doesn't make any sense.
@@ -100,19 +114,24 @@ createUi = (eventRouter, stats) ->
 
   
   #console.log('showing stats widget');
-  Ui.setup = ->
-    $(document).ready ->
+  setup: ->
+    $(document).ready =>
+      # we need a way to reference the eventRouter without
+      # resorting to "@", because the "@"s below need to stick
+      # to the UI elements that generated the events
+      eventRouter = @eventRouter
+      
       $("#aboutMenu").click ->
         $("#aboutWindow").modal()
         $("#simplemodal-container").height 250
         false
 
       $("#demos li a").click ->
-        eventRouter.trigger "load-program", $(this).attr("id")
+        eventRouter.trigger "load-program", $(@).attr("id")
         false
 
       $("#tutorials li a").click ->
-        eventRouter.trigger "load-program", $(this).attr("id")
+        eventRouter.trigger "load-program", $(@).attr("id")
         false
 
       $("#autocodeIndicatorContainer").click ->
@@ -125,38 +144,16 @@ createUi = (eventRouter, stats) ->
 
       $("#resetButtonContainer").click ->
         eventRouter.trigger "reset"
-        $(this).stop().fadeOut(100).fadeIn 100
+        $(@).stop().fadeOut(100).fadeIn 100
         false
 
       
       # Align bottom-left
-      stats.getDomElement().style.position = "absolute"
-      stats.getDomElement().style.right = "0px"
-      stats.getDomElement().style.top = "0px"
-      document.body.appendChild stats.getDomElement()
+      @stats.getDomElement().style.position = "absolute"
+      @stats.getDomElement().style.right = "0px"
+      @stats.getDomElement().style.top = "0px"
+      document.body.appendChild @stats.getDomElement()
       $("#startingCourtainScreen").fadeOut()
       $("#formCode").css "opacity", 0
-      Ui.fullscreenify "#backGroundCanvas"
-      Ui.adjustCodeMirrorHeight()
-
-
-  
-  # Setup Event Listeners
-  eventRouter.bind "report-runtime-or-compile-time-error", Ui.checkErrorAndReport, Ui
-  eventRouter.bind "clear-error", Ui.clearError, Ui
-  eventRouter.bind "autocoder-button-pressed", (state) ->
-    if state is true
-      $("#autocodeIndicator").html("Autocode: on").css "background-color", "#FF0000"
-    else
-      $("#autocodeIndicator").html("Autocode: off").css "background-color", ""
-
-  eventRouter.bind "autocoderbutton-flash", ->
-    $("#autocodeIndicator").fadeOut(100).fadeIn 100
-
-  eventRouter.bind "auto-hide-code-button-pressed", (state) ->
-    if state is true
-      $("#dimCodeIndicator").html "Hide Code: on"
-    else
-      $("#dimCodeIndicator").html "Hide Code: off"
-
-  Ui
+      @fullscreenify "#backGroundCanvas"
+      @adjustCodeMirrorHeight()

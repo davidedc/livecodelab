@@ -108,7 +108,7 @@ startEnvironment = (paramsObject) ->
   attachMouseWheelHandler editor
   
   #console.log('creating stats');
-  ui = createUi(eventRouter, stats) # $
+  ui = new Ui(eventRouter, stats) # $
   # requires: ColourNames
   autocoder = new Autocoder(eventRouter, editor, colourNames) # McLexer
   # Setup Event Listeners
