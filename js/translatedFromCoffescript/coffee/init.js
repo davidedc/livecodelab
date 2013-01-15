@@ -127,7 +127,9 @@ startEnvironment = function(paramsObject) {
   }
   editor.focus();
   if (!urlRouter.urlPointsToDemoOrTutorial()) {
-    setTimeout(liveCodeLabCore.playStartupSound, 650);
+    setTimeout((function() {
+      return liveCodeLabCore.playStartupSound();
+    }), 650);
   }
   bigCursor.toggleBlink(true);
   return ui.setup();

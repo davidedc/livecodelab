@@ -232,7 +232,8 @@ being triggered from here on.
   
 </pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>check if the url points to a particular demo,
 in which case we load the demo directly.
-otherwise we do as usual.    </p>             </td>             <td class="code">               <div class="highlight"><pre>  setTimeout liveCodeLabCore.playStartupSound, <span class="number">650</span>  <span class="keyword">unless</span> urlRouter.urlPointsToDemoOrTutorial()
+otherwise we do as usual.    </p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="keyword">if</span> !urlRouter.urlPointsToDemoOrTutorial()
+    setTimeout (()=&gt;liveCodeLabCore.playStartupSound()), <span class="number">650</span>
   bigCursor.toggleBlink <span class="literal">true</span>
   ui.setup()
 
