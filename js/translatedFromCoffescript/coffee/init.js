@@ -60,7 +60,7 @@ startEnvironment = function(paramsObject) {
   });
   editor = createEditor(eventRouter, CodeMirror);
   attachMouseWheelHandler(editor);
-  ui = createUi(eventRouter, stats);
+  ui = new Ui(eventRouter, stats);
   autocoder = new Autocoder(eventRouter, editor, colourNames);
   eventRouter.bind("reset", function() {
     return autocoder.toggle(false);

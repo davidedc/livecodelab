@@ -1,16 +1,40 @@
-var createUi;
+"use strict";
 
-createUi = function(eventRouter, stats) {
-  "use strict";
+var Ui;
 
-  var Ui, adjustCodeMirrorHeight, resizeCanvas;
-  Ui = {};
-  resizeCanvas = void 0;
-  adjustCodeMirrorHeight = void 0;
-  resizeCanvas = function(canvasId) {
+Ui = (function() {
+
+  function Ui(eventRouter, stats) {
+    var _this = this;
+    this.eventRouter = eventRouter;
+    this.stats = stats;
+    this.eventRouter.bind("report-runtime-or-compile-time-error", (function() {
+      return _this.checkErrorAndReport();
+    }), this);
+    this.eventRouter.bind("clear-error", (function() {
+      return _this.clearError();
+    }), this);
+    this.eventRouter.bind("autocoder-button-pressed", function(state) {
+      if (state === true) {
+        return $("#autocodeIndicator").html("Autocode: on").css("background-color", "#FF0000");
+      } else {
+        return $("#autocodeIndicator").html("Autocode: off").css("background-color", "");
+      }
+    });
+    this.eventRouter.bind("autocoderbutton-flash", function() {
+      return $("#autocodeIndicator").fadeOut(100).fadeIn(100);
+    });
+    this.eventRouter.bind("auto-hide-code-button-pressed", function(state) {
+      if (state === true) {
+        return $("#dimCodeIndicator").html("Hide Code: on");
+      } else {
+        return $("#dimCodeIndicator").html("Hide Code: off");
+      }
+    });
+  }
+
+  Ui.prototype.resizeCanvas = function(canvasId) {
     var canvas, scale;
-    canvas = void 0;
-    scale = void 0;
     canvas = $(canvasId);
     scale = {
       x: 1,
@@ -21,17 +45,21 @@ createUi = function(eventRouter, stats) {
     scale = scale.x + ", " + scale.y;
     return canvas.css("-ms-transform-origin", "left top").css("-webkit-transform-origin", "left top").css("-moz-transform-origin", "left top").css("-o-transform-origin", "left top").css("transform-origin", "left top").css("-ms-transform", "scale(" + scale + ")").css("-webkit-transform", "scale3d(" + scale + ", 1)").css("-moz-transform", "scale(" + scale + ")").css("-o-transform", "scale(" + scale + ")").css("transform", "scale(" + scale + ")");
   };
-  Ui.adjustCodeMirrorHeight = function() {
+
+  Ui.prototype.adjustCodeMirrorHeight = function() {
     return $(".CodeMirror-scroll").css("height", window.innerHeight - $("#theMenu").height());
   };
-  Ui.fullscreenify = function(canvasId) {
+
+  Ui.prototype.fullscreenify = function(canvasId) {
+    var _this = this;
     window.addEventListener("resize", (function() {
-      Ui.adjustCodeMirrorHeight();
-      return resizeCanvas(canvasId);
+      _this.adjustCodeMirrorHeight();
+      return _this.resizeCanvas(canvasId);
     }), false);
-    return resizeCanvas(canvasId);
+    return this.resizeCanvas(canvasId);
   };
-  Ui.checkErrorAndReport = function(e) {
+
+  Ui.prototype.checkErrorAndReport = function(e) {
     var errorMessage;
     $("#dangerSignText").css("color", "red");
     errorMessage = e.message || e;
@@ -58,21 +86,29 @@ createUi = function(eventRouter, stats) {
     }
     return $("#errorMessageText").text(errorMessage);
   };
-  Ui.clearError = function() {
+
+  Ui.prototype.clearError = function() {
     $("#dangerSignText").css("color", "#000000");
     return $("#errorMessageText").text("");
   };
-  Ui.soundSystemOk = function() {
+
+  Ui.prototype.soundSystemOk = function() {
     return $("#soundSystemStatus").text("Sound System On").removeClass("off").addClass("on");
   };
-  Ui.hideStatsWidget = function() {
+
+  Ui.prototype.hideStatsWidget = function() {
     return $("#statsWidget").hide();
   };
-  Ui.showStatsWidget = function() {
+
+  Ui.prototype.showStatsWidget = function() {
     return setTimeout("$(\"#statsWidget\").show()", 1);
   };
-  Ui.setup = function() {
+
+  Ui.prototype.setup = function() {
+    var _this = this;
     return $(document).ready(function() {
+      var eventRouter;
+      eventRouter = _this.eventRouter;
       $("#aboutMenu").click(function() {
         $("#aboutWindow").modal();
         $("#simplemodal-container").height(250);
@@ -99,34 +135,17 @@ createUi = function(eventRouter, stats) {
         $(this).stop().fadeOut(100).fadeIn(100);
         return false;
       });
-      stats.getDomElement().style.position = "absolute";
-      stats.getDomElement().style.right = "0px";
-      stats.getDomElement().style.top = "0px";
-      document.body.appendChild(stats.getDomElement());
+      _this.stats.getDomElement().style.position = "absolute";
+      _this.stats.getDomElement().style.right = "0px";
+      _this.stats.getDomElement().style.top = "0px";
+      document.body.appendChild(_this.stats.getDomElement());
       $("#startingCourtainScreen").fadeOut();
       $("#formCode").css("opacity", 0);
-      Ui.fullscreenify("#backGroundCanvas");
-      return Ui.adjustCodeMirrorHeight();
+      _this.fullscreenify("#backGroundCanvas");
+      return _this.adjustCodeMirrorHeight();
     });
   };
-  eventRouter.bind("report-runtime-or-compile-time-error", Ui.checkErrorAndReport, Ui);
-  eventRouter.bind("clear-error", Ui.clearError, Ui);
-  eventRouter.bind("autocoder-button-pressed", function(state) {
-    if (state === true) {
-      return $("#autocodeIndicator").html("Autocode: on").css("background-color", "#FF0000");
-    } else {
-      return $("#autocodeIndicator").html("Autocode: off").css("background-color", "");
-    }
-  });
-  eventRouter.bind("autocoderbutton-flash", function() {
-    return $("#autocodeIndicator").fadeOut(100).fadeIn(100);
-  });
-  eventRouter.bind("auto-hide-code-button-pressed", function(state) {
-    if (state === true) {
-      return $("#dimCodeIndicator").html("Hide Code: on");
-    } else {
-      return $("#dimCodeIndicator").html("Hide Code: off");
-    }
-  });
+
   return Ui;
-};
+
+})();
