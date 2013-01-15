@@ -98,7 +98,7 @@ module.exports = function (grunt) {
 							}
             },
             Coffee: {
-							src: ['coffee/*.coffee'],
+							src: ['coffee/**/*.coffee'],
 							options: {
 										output: 'docs/docco/'
 							}
