@@ -27,6 +27,7 @@
       <span class="string">"animationStyle"</span>
       <span class="string">"background"</span>
       <span class="string">"simpleGradient"</span>
+      <span class="string">"colorMode"</span>
       <span class="string">"color"</span>
 </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Lighting
 "ambient""reflect" "refract"</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"lights"</span>
@@ -421,6 +422,7 @@ Checking whether the keyword is "on its own" avoid those interferences.</p>     
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(animationStyle)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(simpleGradient)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(background)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
+  	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(colorMode)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(color)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	
 </pre></div>             </td>           </tr>                               <tr id="section-48">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-48">&#182;</a>               </div>               <p>code =  code.replace(/([^a-zA-Z0-9])(ambient)(\s)+/g, "$1;$2$3" );

@@ -8,8 +8,8 @@ Ui = (function() {
     var _this = this;
     this.eventRouter = eventRouter;
     this.stats = stats;
-    this.eventRouter.bind("report-runtime-or-compile-time-error", (function() {
-      return _this.checkErrorAndReport();
+    this.eventRouter.bind("report-runtime-or-compile-time-error", (function(e) {
+      return _this.checkErrorAndReport(e);
     }), this);
     this.eventRouter.bind("clear-error", (function() {
       return _this.clearError();
