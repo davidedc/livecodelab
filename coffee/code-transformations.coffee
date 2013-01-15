@@ -330,13 +330,13 @@ class CodeTransformer
   	reasonOfBasicError = undefined
   	@currentCodeString = code
   	if @currentCodeString is ""
-      @liveCodeLabCoreInstance.GraphicsCommands.resetTheSpinThingy = true
+      @liveCodeLabCoreInstance.graphicsCommands.resetTheSpinThingy = true
       programHasBasicError = false
       @eventRouter.trigger "clear-error"
-      @liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
+      @liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
       functionFromCompiledCode = new Function("")
-      @liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction null
-      @liveCodeLabCoreInstance.DrawFunctionRunner.lastStableDrawFunction = null
+      @liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction null
+      @liveCodeLabCoreInstance.drawFunctionRunner.lastStableDrawFunction = null
       return functionFromCompiledCode
   	code = @removeTickedDoOnce(code)
   	
@@ -546,7 +546,7 @@ class CodeTransformer
   	# see here for the deepest examination ever of "eval"
   	# http://perfectionkills.com/global-eval-what-are-the-options/
   	# note that exceptions are caught by the window.onerror callback
-  	@liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
+  	@liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
   	
   	# You might want to change the frame count from the program
   	# just like you can in Processing, but it turns out that when
@@ -560,7 +560,7 @@ class CodeTransformer
   	# coffeescript to javascript translator inserts.
   	compiledOutput = compiledOutput.replace(/var frame/, ";")
   	functionFromCompiledCode = new Function(compiledOutput)
-  	@liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction functionFromCompiledCode
+  	@liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction functionFromCompiledCode
   	functionFromCompiledCode
 
   # this function is used externally after the code has been

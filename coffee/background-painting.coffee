@@ -72,10 +72,10 @@ class BackgroundPainter
     @currentGradientStackValue =
       @currentGradientStackValue + " " + a + "" + b + "" + c + "" + d + "null "
     @gradStack.push
-      gradStacka: @liveCodeLabCoreInstance.ColourFunctions.color(a)
-      gradStackb: @liveCodeLabCoreInstance.ColourFunctions.color(b)
-      gradStackc: @liveCodeLabCoreInstance.ColourFunctions.color(c)
-      gradStackd: @liveCodeLabCoreInstance.ColourFunctions.color(d)
+      gradStacka: @liveCodeLabCoreInstance.colourFunctions.color(a)
+      gradStackb: @liveCodeLabCoreInstance.colourFunctions.color(b)
+      gradStackc: @liveCodeLabCoreInstance.colourFunctions.color(c)
+      gradStackd: @liveCodeLabCoreInstance.colourFunctions.color(d)
       solid: null
 
 
@@ -85,7 +85,7 @@ class BackgroundPainter
     
     # [todo] should the screen be cleared when you invoke
     # the background command? (In processing it's not)
-    a = @liveCodeLabCoreInstance.ColourFunctions.color(
+    a = @liveCodeLabCoreInstance.colourFunctions.color(
       arguments[0], arguments[1], arguments[2], arguments[3])
     @currentGradientStackValue =
       @currentGradientStackValue + " null null null null " + a + " "
@@ -124,9 +124,9 @@ class BackgroundPainter
         @defaultGradientColor3 = gainsboro
         $("#fakeStartingBlinkingCursor").css "color", "white"
       when 4
-        @defaultGradientColor1 = @liveCodeLabCoreInstance.ColourFunctions.color(155,255,155)
-        @defaultGradientColor2 = @liveCodeLabCoreInstance.ColourFunctions.color(155,255,155)
-        @defaultGradientColor3 = @liveCodeLabCoreInstance.ColourFunctions.color(155,255,155)
+        @defaultGradientColor1 = @liveCodeLabCoreInstance.colourFunctions.color(155,255,155)
+        @defaultGradientColor2 = @liveCodeLabCoreInstance.colourFunctions.color(155,255,155)
+        @defaultGradientColor3 = @liveCodeLabCoreInstance.colourFunctions.color(155,255,155)
         $("#fakeStartingBlinkingCursor").css "color", "DarkOliveGreen"
     
     # in theory we should wait for the next frame to repaing the background,
@@ -156,7 +156,7 @@ class BackgroundPainter
     scanningGradStack = undefined
 
     # some shorthands
-    color = @liveCodeLabCoreInstance.ColourFunctions.color
+    color = @liveCodeLabCoreInstance.colourFunctions.color
 
     if @currentGradientStackValue isnt @previousGradientStackValue      
       #alert('repainting the background');

@@ -29,20 +29,20 @@ class BlendControls
     @previousanimationStyleValue = @animationStyleValue
 
     # defining a couple of shorthands to avoid super-long lines
-    isWebGLUsed = @liveCodeLabCoreInstance.ThreeJsSystem.isWebGLUsed
+    isWebGLUsed = @liveCodeLabCoreInstance.threeJsSystem.isWebGLUsed
     @animationStyles = @animationStyles
 
     if isWebGLUsed and @animationStyleValue is @animationStyles.motionBlur
-      @liveCodeLabCoreInstance.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = 0.7
+      @liveCodeLabCoreInstance.threeJsSystem.effectBlend.uniforms.mixRatio.value = 0.7
     else if not isWebGLUsed and @animationStyleValue is @animationStyles.motionBlur
       @blendAmount = 0.6
 
     if isWebGLUsed and @animationStyleValue is @animationStyles.paintOver
-      @liveCodeLabCoreInstance.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = 1
+      @liveCodeLabCoreInstance.threeJsSystem.effectBlend.uniforms.mixRatio.value = 1
     else if not isWebGLUsed and @animationStyleValue is @animationStyles.paintOver
       @blendAmount = 1
 
     if isWebGLUsed and @animationStyleValue is @animationStyles.normal
-      @liveCodeLabCoreInstance.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = 0
+      @liveCodeLabCoreInstance.threeJsSystem.effectBlend.uniforms.mixRatio.value = 0
     else if not isWebGLUsed and @animationStyleValue is @animationStyles.normal
       @blendAmount = 0

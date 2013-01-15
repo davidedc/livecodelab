@@ -1,19 +1,19 @@
 # a LiveCodeLabCore instance packs together the following parts:
 #
-# - TimeKeeper
-# - THREE
-# - ThreeJsSystem
-# - MatrixCommands
-# - BlendControls
-# - SoundSystem
-# - ColourFunctions
-# - BackgroundPainter
-# - GraphicsCommands
-# - LightSystem 
-# - DrawFunctionRunner
-# - CodeTransformer
-# - Renderer
-# - AnimationLoop
+# - timeKeeper
+# - three
+# - threeJsSystem
+# - matrixCommands
+# - blendControls
+# - soundSystem
+# - colourFunctions
+# - backgroundPainter
+# - graphicsCommands
+# - lightSystem 
+# - drawFunctionRunner
+# - codeTransformer
+# - renderer
+# - animationLoop
 #
 # LiveCodeLab is built one part at a time, and the arguments in the constructor
 # tell how they depend on each other at construction time and how they
@@ -25,10 +25,10 @@
 #   that does not need any other part at construction time and it doesn't interact
 #   with any of the other parts at run time.
 # - _A constructor with arguments other than "liveCodeLabCoreInstance"_
-#   (such as ThreeJsSystem) only needs the parts passed at construction time for its
+#   (such as threeJsSystem) only needs the parts passed at construction time for its
 #   own construction, and it can only interact with such parts at runtime.
 # - _A constructor which contains the "liveCodeLabCoreInstance" argument_, such as
-#   CodeTransformer, might or might not need other parts for its own construction
+#   codeTransformer, might or might not need other parts for its own construction
 #   (if they are passed as arguments in addition to the "liveCodeLabCoreInstance" argument)
 #   but it does interact at runtime with other parts not passed in the constructor
 #   argument.
@@ -53,117 +53,117 @@
 # "liveCodeLabCoreInstance" is passed to the constructor, then one case to look for
 # all "liveCodeLabCoreInstance" occurrences and see which of its children are
 # accessed.
-createLiveCodeLabCore = (paramsObject) ->
-  "use strict"
-  liveCodeLabCoreInstance = {}
-  
-  #//////////////////////////////////////////////
-  #
-  # ### Phase 1
-  # initialise all the fields first
-  #
-  #//////////////////////////////////////////////
-  
-  # THREE is a global defined in three.min.js and used in:
-  # ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
-  # The difference between THREE and the ThreeJsSystem initialised later is that
-  # a) THREE is the raw Three.js system without for example the blend options.
-  # b) ThreeJsSystem contains some convenience fields and abstractions, for example
-  #    it keeps the renderer (whether it's canvas-based or WebGL based) in a
-  #    "renderer" field.
-  # Several fields/methids in ThreeJsSystem are just conveniency mappings into
-  # the raw THREE object.
-  # But often in LiveCodeLab there are direct reference to THREE fields/methods.
-  # So, ThreeJsSystem provides some abstraction without attempting to be a complete
-  # abstraction layer.
-  liveCodeLabCoreInstance.THREE = THREE
-  
-  #//////////////////////////////////////////////
-  #
-  # ### Phase 2
-  # initialise all the parts that don't
-  # have any dependencies for construction
-  # note that the "liveCodeLabCoreInstance" doesn't
-  # count because it's only used for interactions at
-  # runtime. Same for the arguments that come
-  # directly from the caller of this createLiveCodeLabCore
-  # function we are in.
-  #
-  #//////////////////////////////////////////////
-  liveCodeLabCoreInstance.TimeKeeper = new TimeKeeper()
-  
-  # this one also interacts with ThreeJsSystem at runtime
-  liveCodeLabCoreInstance.BlendControls = new BlendControls(liveCodeLabCoreInstance)
-  liveCodeLabCoreInstance.ColourFunctions = createColourFunctions()
-  
-  # this one also interacts with ThreeJsSystem and BlendControls at runtime
-  liveCodeLabCoreInstance.Renderer = new Renderer(liveCodeLabCoreInstance)
-  liveCodeLabCoreInstance.SoundSystem =
-    createSoundSystem(
-      paramsObject.eventRouter, buzz, createBowser(), createSampleBank(buzz))
-  
-  # this one also interacts with ColourFunctions, backgroundSceneContext,
-  # canvasForBackground at runtime
-  liveCodeLabCoreInstance.BackgroundPainter = new BackgroundPainter(
-      paramsObject.canvasForBackground,
-      liveCodeLabCoreInstance)
-  
-  # this one also interacts with CodeTransformer at runtime.
-  liveCodeLabCoreInstance.DrawFunctionRunner =
-    new DrawFunctionRunner(paramsObject.eventRouter, liveCodeLabCoreInstance)
-  
-  # temporary to migrate CodeTransformed code from js to coffeescript.
-  liveCodeLabCoreInstance.CodeTransformer =
-    new CodeTransformer(paramsObject.eventRouter, CoffeeScript,
-    liveCodeLabCoreInstance)
-  
-  # this one also interacts with TimeKeeper, MatrixCommands, BlendControls,
-  #    SoundSystem,
-  #    BackgroundPainter, GraphicsCommands, LightSystem, DrawFunctionRunner,
-  #    CodeTransformer, Renderer
-  # ...at runtime
-  liveCodeLabCoreInstance.AnimationLoop =
-    new AnimationLoop(
-      paramsObject.eventRouter, paramsObject.statsWidget, liveCodeLabCoreInstance)
-  
-  #//////////////////////////////////////////////
-  #
-  # ### Phase 3
-  # initialise all the parts that do
-  # have dependencies with other parts
-  # for their construction.
-  # Note again that the "liveCodeLabCoreInstance" doesn't
-  # count because it's only used for interactions at
-  # runtime.
-  # If the other dependencies forms a cycle, something
-  # is wrong.
-  #
-  #//////////////////////////////////////////////
-  
-  # this one doesn't interact with any other part at runtime.
-  liveCodeLabCoreInstance.ThreeJsSystem =
-    new ThreeJsSystem(
-      Detector, THREEx, paramsObject.blendedThreeJsSceneCanvas,
-      paramsObject.forceCanvasRenderer, paramsObject.testMode,
-      liveCodeLabCoreInstance.THREE)
-  
-  # this one interacts with TimeKeeper at runtime
-  liveCodeLabCoreInstance.MatrixCommands =
-    new MatrixCommands(
-      liveCodeLabCoreInstance.THREE, liveCodeLabCoreInstance)
-  
-  # this one also interacts with ColourFunctions, LightSystem, MatrixCommands
-  # ThreeJsSystem at runtime
-  liveCodeLabCoreInstance.GraphicsCommands =
-    new GraphicsCommands(
-      liveCodeLabCoreInstance.THREE, liveCodeLabCoreInstance)
-      # color, LightSystem, MatrixCommands, ThreeJsSystem, colorModeA, redF, greenF,
-      # blueF, alphaZeroToOne
-  
-  # this one also interacts with THREE,
-  # ThreeJsSystem, ColourFunctions at runtime
-  liveCodeLabCoreInstance.LightSystem =
-    new LightSystem(liveCodeLabCoreInstance.GraphicsCommands, liveCodeLabCoreInstance)
+"use strict"
+class LiveCodeLabCore
+  constructor: (@paramsObject) ->
+    
+    #//////////////////////////////////////////////
+    #
+    # ### Phase 1
+    # initialise all the fields first
+    #
+    #//////////////////////////////////////////////
+    
+    # three is a global defined in three.min.js and used in:
+    # ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
+    # The difference between three and the threeJsSystem initialised later is that
+    # a) three is the raw Three.js system without for example the blend options.
+    # b) threeJsSystem contains some convenience fields and abstractions, for example
+    #    it keeps the renderer (whether it's canvas-based or WebGL based) in a
+    #    "renderer" field.
+    # Several fields/methids in threeJsSystem are just conveniency mappings into
+    # the raw three object.
+    # But often in LiveCodeLab there are direct reference to three fields/methods.
+    # So, threeJsSystem provides some abstraction without attempting to be a complete
+    # abstraction layer.
+    @three = THREE
+    
+    #//////////////////////////////////////////////
+    #
+    # ### Phase 2
+    # initialise all the parts that don't
+    # have any dependencies for construction
+    # note that the "liveCodeLabCoreInstance" doesn't
+    # count because it's only used for interactions at
+    # runtime. Same for the arguments that come
+    # directly from the caller of this createLiveCodeLabCore
+    # function we are in.
+    #
+    #//////////////////////////////////////////////
+    @timeKeeper = new TimeKeeper()
+    
+    # this one also interacts with threeJsSystem at runtime
+    @blendControls = new BlendControls(@)
+    @colourFunctions = createColourFunctions()
+    
+    # this one also interacts with threeJsSystem and blendControls at runtime
+    @renderer = new Renderer(@)
+    @soundSystem =
+      createSoundSystem(
+        @paramsObject.eventRouter, buzz, createBowser(), createSampleBank(buzz))
+    
+    # this one also interacts with colourFunctions, backgroundSceneContext,
+    # canvasForBackground at runtime
+    @backgroundPainter = new BackgroundPainter(
+        @paramsObject.canvasForBackground,
+        @)
+    
+    # this one also interacts with codeTransformer at runtime.
+    @drawFunctionRunner =
+      new DrawFunctionRunner(@paramsObject.eventRouter, @)
+    
+    # temporary to migrate CodeTransformed code from js to coffeescript.
+    @codeTransformer =
+      new CodeTransformer(@paramsObject.eventRouter, CoffeeScript,
+      @)
+    
+    # this one also interacts with timeKeeper, matrixCommands, blendControls,
+    #    soundSystem,
+    #    backgroundPainter, graphicsCommands, lightSystem, drawFunctionRunner,
+    #    codeTransformer, renderer
+    # ...at runtime
+    @animationLoop =
+      new AnimationLoop(
+        @paramsObject.eventRouter, @paramsObject.statsWidget, @)
+    
+    #//////////////////////////////////////////////
+    #
+    # ### Phase 3
+    # initialise all the parts that do
+    # have dependencies with other parts
+    # for their construction.
+    # Note again that the "liveCodeLabCoreInstance" doesn't
+    # count because it's only used for interactions at
+    # runtime.
+    # If the other dependencies forms a cycle, something
+    # is wrong.
+    #
+    #//////////////////////////////////////////////
+    
+    # this one doesn't interact with any other part at runtime.
+    @threeJsSystem =
+      new ThreeJsSystem(
+        Detector, THREEx, @paramsObject.blendedThreeJsSceneCanvas,
+        @paramsObject.forceCanvasRenderer, @paramsObject.testMode,
+        @three)
+    
+    # this one interacts with timeKeeper at runtime
+    @matrixCommands =
+      new MatrixCommands(
+        @three, @)
+    
+    # this one also interacts with colourFunctions, lightSystem, matrixCommands
+    # threeJsSystem at runtime
+    @graphicsCommands =
+      new GraphicsCommands(
+        @three, @)
+        # color, lightSystem, matrixCommands, threeJsSystem, colorModeA, redF, greenF,
+        # blueF, alphaZeroToOne
+    
+    # this one also interacts with three,
+    # threeJsSystem, colourFunctions at runtime
+    @lightSystem =
+      new LightSystem(@graphicsCommands, @)
   
   #//////////////////////////////////////////////
   #
@@ -173,38 +173,36 @@ createLiveCodeLabCore = (paramsObject) ->
   # to another part.
   #
   #//////////////////////////////////////////////
-  liveCodeLabCoreInstance.paintARandomBackground = ->
-    liveCodeLabCoreInstance.BackgroundPainter.paintARandomBackground()
+  paintARandomBackground: ->
+    @backgroundPainter.paintARandomBackground()
 
-  liveCodeLabCoreInstance.startAnimationLoop = ->
-    
+  startAnimationLoop: ->
     # there is nothing special about starting the animation loop,
     # it's just a call to animate(), which then creates its own request
     # for the next frame. Abstracting a bit though, it's clearer this way.
-    liveCodeLabCoreInstance.AnimationLoop.animate()
+    @animationLoop.animate()
 
-  liveCodeLabCoreInstance.runLastWorkingDrawFunction = ->
-    liveCodeLabCoreInstance.DrawFunctionRunner.reinstateLastWorkingDrawFunction()
+  runLastWorkingDrawFunction: ->
+    @drawFunctionRunner.reinstateLastWorkingDrawFunction()
 
-  liveCodeLabCoreInstance.loadAndTestAllTheSounds = ->
-    liveCodeLabCoreInstance.SoundSystem.loadAndTestAllTheSounds()
+  loadAndTestAllTheSounds: ->
+    @soundSystem.loadAndTestAllTheSounds()
 
-  liveCodeLabCoreInstance.playStartupSound = ->
-    liveCodeLabCoreInstance.SoundSystem.playStartupSound()
+  playStartupSound: ->
+    @soundSystem.playStartupSound()
 
-  liveCodeLabCoreInstance.isAudioSupported = ->
-    liveCodeLabCoreInstance.SoundSystem.isAudioSupported()
+  isAudioSupported: ->
+    @soundSystem.isAudioSupported()
 
-  liveCodeLabCoreInstance.updateCode = (updatedCode) ->
-    
+  updateCode: (updatedCode) ->
     # alert('updatedCode: ' + updatedCode); 
-    liveCodeLabCoreInstance.CodeTransformer.updateCode updatedCode
-    if updatedCode isnt "" and liveCodeLabCoreInstance.dozingOff
-      liveCodeLabCoreInstance.dozingOff = false
-      liveCodeLabCoreInstance.AnimationLoop.animate()
+    @codeTransformer.updateCode updatedCode
+    if updatedCode isnt "" and @dozingOff
+      @dozingOff = false
+      @animationLoop.animate()
       
       # console.log('waking up'); 
-      paramsObject.eventRouter.trigger "livecodelab-waking-up"
+      @paramsObject.eventRouter.trigger "livecodelab-waking-up"
 
   
   # why do we leave the option to put a background?
@@ -222,10 +220,10 @@ createLiveCodeLabCore = (paramsObject) ->
   #     we keep the motionblur and the paintover styles. If we let Three.js paint
   #     the backgrounds, then the postprocessing effects for motionblur and for
   #     paintOver wouldn't work anymore.
-  liveCodeLabCoreInstance.getForeground3DSceneImage = (backgroundColor) ->
+  getForeground3DSceneImage: (backgroundColor) ->
     # some shorthands
     blendedThreeJsSceneCanvas =
-      liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas
+      @threeJsSystem.blendedThreeJsSceneCanvas
 
     img = new Image
     img.src = blendedThreeJsSceneCanvas.toDataURL()
@@ -243,9 +241,3 @@ createLiveCodeLabCore = (paramsObject) ->
       img = new Image
       img.src = ctx.toDataURL()
     img
-
-  
-  #$('theMenu').append(img);
-  #var container = document.getElementById ("theMenu");
-  #      container.appendChild (img);
-  liveCodeLabCoreInstance

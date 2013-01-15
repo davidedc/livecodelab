@@ -10,7 +10,7 @@ class ThreeJsSystem
 	  @blendedThreeJsSceneCanvas, \
 	  @forceCanvasRenderer, \
 	  testMode, \
-	  liveCodeLabCore_THREE ) ->
+	  liveCodeLabCore_three ) ->
 
     # if we've not been passed a canvas, then create a new one and make it
     # as big as the browser window content.
@@ -30,7 +30,7 @@ class ThreeJsSystem
         @blendedThreeJsSceneCanvas.getContext("experimental-webgl")
       
       # see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/WebGLRenderer
-      @renderer = new liveCodeLabCore_THREE.WebGLRenderer(
+      @renderer = new liveCodeLabCore_three.WebGLRenderer(
         canvas: @blendedThreeJsSceneCanvas
         preserveDrawingBuffer: testMode # to allow screenshot
         antialias: false
@@ -72,7 +72,7 @@ class ThreeJsSystem
         @blendedThreeJsSceneCanvas.getContext("2d")
       
       # see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/CanvasRenderer
-      @renderer = new liveCodeLabCore_THREE.CanvasRenderer(
+      @renderer = new liveCodeLabCore_three.CanvasRenderer(
         canvas: currentFrameThreeJsSceneCanvas
         antialias: true # to get smoother output
         preserveDrawingBuffer: testMode # to allow screenshot
@@ -80,11 +80,11 @@ class ThreeJsSystem
       
     @renderer.setSize @blendedThreeJsSceneCanvas.width, \
       @blendedThreeJsSceneCanvas.height
-    @scene = new liveCodeLabCore_THREE.Scene()
+    @scene = new liveCodeLabCore_three.Scene()
     @scene.matrixAutoUpdate = false
     
     # put a camera in the scene
-    @camera = new liveCodeLabCore_THREE.PerspectiveCamera(35, \
+    @camera = new liveCodeLabCore_three.PerspectiveCamera(35, \
       @blendedThreeJsSceneCanvas.width / \
       @blendedThreeJsSceneCanvas.height, 1, 10000)
     @camera.position.set 0, 0, 5
@@ -101,15 +101,15 @@ class ThreeJsSystem
       screenPass = undefined
       renderModel = undefined
       renderTargetParameters =
-        format: liveCodeLabCore_THREE.RGBAFormat
+        format: liveCodeLabCore_three.RGBAFormat
         stencilBuffer: true
     
-      renderTarget = new liveCodeLabCore_THREE.WebGLRenderTarget(
+      renderTarget = new liveCodeLabCore_three.WebGLRenderTarget(
         @blendedThreeJsSceneCanvas.width,
         @blendedThreeJsSceneCanvas.height,
         renderTargetParameters)
-      effectSaveTarget = new liveCodeLabCore_THREE.SavePass(
-        new liveCodeLabCore_THREE.WebGLRenderTarget(
+      effectSaveTarget = new liveCodeLabCore_three.SavePass(
+        new liveCodeLabCore_three.WebGLRenderTarget(
           @blendedThreeJsSceneCanvas.width,
           @blendedThreeJsSceneCanvas.height,
           renderTargetParameters
@@ -124,19 +124,19 @@ class ThreeJsSystem
       # motionBlur leaving a black trail - tracked in github with
       # https://github.com/davidedc/livecodelab/issues/22
       
-      #fxaaPass = new liveCodeLabCore_THREE.ShaderPass(liveCodeLabCore_THREE.ShaderExtras.fxaa);
+      #fxaaPass = new liveCodeLabCore_three.ShaderPass(liveCodeLabCore_three.ShaderExtras.fxaa);
       #fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);
-      @effectBlend = new liveCodeLabCore_THREE.ShaderPass(
-        liveCodeLabCore_THREE.ShaderExtras.blend, "tDiffuse1")
-      screenPass = new liveCodeLabCore_THREE.ShaderPass(
-        liveCodeLabCore_THREE.ShaderExtras.screen)
+      @effectBlend = new liveCodeLabCore_three.ShaderPass(
+        liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1")
+      screenPass = new liveCodeLabCore_three.ShaderPass(
+        liveCodeLabCore_three.ShaderExtras.screen)
       
       # motion blur
       @effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
       @effectBlend.uniforms.mixRatio.value = 0
-      renderModel = new liveCodeLabCore_THREE.RenderPass(
+      renderModel = new liveCodeLabCore_three.RenderPass(
         @scene, @camera)
-      @composer = new liveCodeLabCore_THREE.EffectComposer(
+      @composer = new liveCodeLabCore_three.EffectComposer(
         @renderer, renderTarget)
       @composer.addPass renderModel
       

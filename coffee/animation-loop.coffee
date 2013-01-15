@@ -75,30 +75,30 @@ class AnimationLoop
   
   # animation loop
   animate: ->
-    @liveCodeLabCoreInstance.MatrixCommands.resetMatrixStack()
+    @liveCodeLabCoreInstance.matrixCommands.resetMatrixStack()
     
     # the sound list needs to be cleaned
     # so that the user program can create its own from scratch
-    @liveCodeLabCoreInstance.SoundSystem.resetLoops()
+    @liveCodeLabCoreInstance.soundSystem.resetLoops()
     if frame is 0
-      @liveCodeLabCoreInstance.TimeKeeper.resetTime()
+      @liveCodeLabCoreInstance.timeKeeper.resetTime()
     else
-      @liveCodeLabCoreInstance.TimeKeeper.updateTime()
-    @liveCodeLabCoreInstance.DrawFunctionRunner.resetTrackingOfDoOnceOccurrences()
-    @liveCodeLabCoreInstance.SoundSystem.anyCodeReactingTobpm = false
-    @liveCodeLabCoreInstance.SoundSystem.SetUpdatesPerMinute 60 * 4
-    @liveCodeLabCoreInstance.LightSystem.noLights()
-    @liveCodeLabCoreInstance.GraphicsCommands.reset()
-    @liveCodeLabCoreInstance.BlendControls.animationStyle \
-      @liveCodeLabCoreInstance.BlendControls.animationStyles.normal
-    @liveCodeLabCoreInstance.BackgroundPainter.resetGradientStack()
+      @liveCodeLabCoreInstance.timeKeeper.updateTime()
+    @liveCodeLabCoreInstance.drawFunctionRunner.resetTrackingOfDoOnceOccurrences()
+    @liveCodeLabCoreInstance.soundSystem.anyCodeReactingTobpm = false
+    @liveCodeLabCoreInstance.soundSystem.SetUpdatesPerMinute 60 * 4
+    @liveCodeLabCoreInstance.lightSystem.noLights()
+    @liveCodeLabCoreInstance.graphicsCommands.reset()
+    @liveCodeLabCoreInstance.blendControls.animationStyle \
+      @liveCodeLabCoreInstance.blendControls.animationStyles.normal
+    @liveCodeLabCoreInstance.backgroundPainter.resetGradientStack()
     
     # if the draw function is empty, then don't schedule the
     # next animation frame and set a "I'm sleeping" flag.
     # We'll re-start the animation when the editor content
     # changes. Note that this frame goes to completion anyways, because
     # we actually do want to render one "empty screen" frame.
-    if @liveCodeLabCoreInstance.DrawFunctionRunner.drawFunction
+    if @liveCodeLabCoreInstance.drawFunctionRunner.drawFunction
       @scheduleNextFrame()
       
       # Now here there is another try/catch check when the draw function is ran.
@@ -111,15 +111,15 @@ class AnimationLoop
       # So in that case we need to a) highlight the error and b) run the previously
       # known good program.
       try
-        @liveCodeLabCoreInstance.DrawFunctionRunner.runDrawFunction()
+        @liveCodeLabCoreInstance.drawFunctionRunner.runDrawFunction()
       catch e
         
         #alert('runtime error');
         @eventRouter.trigger "runtime-error-thrown", e
         return
-      DrawFunctionRunner = @liveCodeLabCoreInstance.DrawFunctionRunner
-      DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun \
-        @liveCodeLabCoreInstance.CodeTransformer
+      drawFunctionRunner = @liveCodeLabCoreInstance.drawFunctionRunner
+      drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun \
+        @liveCodeLabCoreInstance.codeTransformer
     else
       @liveCodeLabCoreInstance.dozingOff = true
       # the program is empty and so it's the screen. Effectively, the user
@@ -132,17 +132,17 @@ class AnimationLoop
     # the user has set frame = 0,
     # then we have to catch that case here
     # after the program has executed
-    @liveCodeLabCoreInstance.TimeKeeper.resetTime()  if frame is 0
-    @liveCodeLabCoreInstance.BlendControls.animationStyleUpdateIfChanged()
-    @liveCodeLabCoreInstance.BackgroundPainter.simpleGradientUpdateIfChanged()
-    @liveCodeLabCoreInstance.SoundSystem.changeUpdatesPerMinuteIfNeeded()
+    @liveCodeLabCoreInstance.timeKeeper.resetTime()  if frame is 0
+    @liveCodeLabCoreInstance.blendControls.animationStyleUpdateIfChanged()
+    @liveCodeLabCoreInstance.backgroundPainter.simpleGradientUpdateIfChanged()
+    @liveCodeLabCoreInstance.soundSystem.changeUpdatesPerMinuteIfNeeded()
     
     # "frame" starts at zero, so we increment after the first time the draw
     # function has been run.
     frame++
     
     # do the render
-    @liveCodeLabCoreInstance.Renderer.render @liveCodeLabCoreInstance.GraphicsCommands
+    @liveCodeLabCoreInstance.renderer.render @liveCodeLabCoreInstance.graphicsCommands
     
     # update stats
     @stats.update()  if @stats isnt null

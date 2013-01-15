@@ -53,7 +53,7 @@ startEnvironment = (paramsObject) ->
   # (to be tested. just throwing it out there.)
   eventRouter = new EventRouter()
   
-  # Stats are updated in the AnimationLoop
+  # Stats are updated in the animationLoop
   # add Stats.js - https://github.com/mrdoob/stats.js
   stats = new Stats
   paramsObject.forceCanvasRenderer = false  if paramsObject.forceCanvasRenderer is `undefined`
@@ -70,21 +70,21 @@ startEnvironment = (paramsObject) ->
   # Phase 2 - Initialise the core of livecodelab.
   # LiveCodeLabCore consists of the following main parts:
   #//////////////////////////////////////////////////////
-  #  - TimeKeeper
-  #  - THREE
-  #  - ThreeJsSystem
-  #  - MatrixCommands
-  #  - BlendControls
-  #  - SoundSystem
-  #  - ColourFunctions
-  #  - BackgroundPainter
-  #  - GraphicsCommands
-  #  - LightSystem 
-  #  - DrawFunctionRunner
-  #  - CodeTransformer
-  #  - Renderer
-  #  - AnimationLoop
-  liveCodeLabCore = createLiveCodeLabCore(
+  #  - timeKeeper
+  #  - three
+  #  - threeJsSystem
+  #  - matrixCommands
+  #  - blendControls
+  #  - soundSystem
+  #  - colourFunctions
+  #  - backgroundPainter
+  #  - graphicsCommands
+  #  - lightSystem 
+  #  - drawFunctionRunner
+  #  - codeTransformer
+  #  - renderer
+  #  - animationLoop
+  liveCodeLabCore = new LiveCodeLabCore(
     blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
     canvasForBackground: paramsObject.canvasForBackground
     forceCanvasRenderer: paramsObject.forceCanvasRenderer
@@ -124,10 +124,10 @@ startEnvironment = (paramsObject) ->
   eventRouter.bind "editor-undim", (=> editorDimmer.undimEditor()), editorDimmer
   eventRouter.bind "editor-toggle-dim", (=> editorDimmer.toggleDimCode()), editorDimmer
   
-  # requires ThreeJsSystem, BlendControls, GraphicsCommands, Renderer
+  # requires threeJsSystem, blendControls, graphicsCommands, renderer
   # note that the programLoader variable below is never used. Leaving it
   # in for consistency.
-  programLoader = new ProgramLoader(eventRouter, editor, liveCodeLabCore) # $, Detector, BlendControls
+  programLoader = new ProgramLoader(eventRouter, editor, liveCodeLabCore) # $, Detector, blendControls
   eventRouter.bind "load-program", programLoader.loadDemoOrTutorial, programLoader
 
   

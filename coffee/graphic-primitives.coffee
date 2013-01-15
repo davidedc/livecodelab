@@ -1,6 +1,6 @@
 #jslint browser: true 
 
-#global color, LightSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne  
+#global color, lightSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne  
 
 # Please reference the colour-functions.js file for all colour-related
 # functions and lights-functions.js for lights, which use a similar
@@ -130,7 +130,7 @@ class GraphicsCommands
   defaultNormalFill: true
   defaultNormalStroke: true
   
-  constructor: (@liveCodeLabCore_THREE, @liveCodeLabCoreInstance) ->
+  constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance) ->
     window.line = (a,b,c) => @line(a,b,c)
     window.rect = (a,b,c) => @rect(a,b,c)
     window.box = (a,b,c) => @box(a,b,c)
@@ -182,21 +182,21 @@ class GraphicsCommands
     # then one could leave all these arrays undefined and define them at runtime
     # only when needed.
     
-    @geometriesBank[@primitiveTypes.line] = new @liveCodeLabCore_THREE.Geometry()
+    @geometriesBank[@primitiveTypes.line] = new @liveCodeLabCore_three.Geometry()
     @geometriesBank[@primitiveTypes.line].vertices.push \
-      new @liveCodeLabCore_THREE.Vector3(0, -0.5, 0)
+      new @liveCodeLabCore_three.Vector3(0, -0.5, 0)
     @geometriesBank[@primitiveTypes.line].vertices.push \
-      new @liveCodeLabCore_THREE.Vector3(0, 0.5, 0)
-    @geometriesBank[@primitiveTypes.rect] = new @liveCodeLabCore_THREE.PlaneGeometry(1, 1)
-    @geometriesBank[@primitiveTypes.box] = new @liveCodeLabCore_THREE.CubeGeometry(1, 1, 1)
+      new @liveCodeLabCore_three.Vector3(0, 0.5, 0)
+    @geometriesBank[@primitiveTypes.rect] = new @liveCodeLabCore_three.PlaneGeometry(1, 1)
+    @geometriesBank[@primitiveTypes.box] = new @liveCodeLabCore_three.CubeGeometry(1, 1, 1)
     @geometriesBank[@primitiveTypes.peg] =
-      new @liveCodeLabCore_THREE.CylinderGeometry(0.5, 0.5, 1, 32)
+      new @liveCodeLabCore_three.CylinderGeometry(0.5, 0.5, 1, 32)
     
     # creating ball geometries
     i = 0
     while i < (@maximumBallDetail - @minimumBallDetail + 1)
       @geometriesBank[@primitiveTypes.ball + i] =
-        new @liveCodeLabCore_THREE.SphereGeometry(
+        new @liveCodeLabCore_three.SphereGeometry(
           1, @minimumBallDetail + i, @minimumBallDetail + i)
       i += 1
     
@@ -254,7 +254,7 @@ class GraphicsCommands
         # for each different type of material.
         normalMaterial: `undefined`
         threejsObject3D: \
-          new primitiveProperties.THREEObjectConstructor(@geometriesBank[primitiveID])
+          new primitiveProperties.threeObjectConstructor(@geometriesBank[primitiveID])
         initialSpinCountdown: @SPIN_DURATION_IN_FRAMES
 
       objectIsNew = true
@@ -262,13 +262,13 @@ class GraphicsCommands
     if primitiveProperties.primitiveType is @primitiveTypes.line
       if pooledObjectWithMaterials.lineMaterial is `undefined`
         pooledObjectWithMaterials.lineMaterial =
-          new @liveCodeLabCore_THREE.LineBasicMaterial()
+          new @liveCodeLabCore_three.LineBasicMaterial()
       
       # associating normal material to threejs' Object3D
       if @currentStrokeColor is angleColor or @defaultNormalStroke
         theAngle =
           pooledObjectWithMaterials.threejsObject3D.matrix.multiplyVector3(
-            new @liveCodeLabCore_THREE.Vector3(0, 1, 0)).normalize()
+            new @liveCodeLabCore_three.Vector3(0, 1, 0)).normalize()
         pooledObjectWithMaterials.lineMaterial.color.setHex \
           color(
             ((theAngle.x + 1) / 2) * 255,
@@ -290,13 +290,13 @@ class GraphicsCommands
       # for each different type of material.
       if pooledObjectWithMaterials.normalMaterial is `undefined`
         pooledObjectWithMaterials.normalMaterial =
-          new @liveCodeLabCore_THREE.MeshNormalMaterial()
+          new @liveCodeLabCore_three.MeshNormalMaterial()
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.normalMaterial
-    else unless @liveCodeLabCoreInstance.LightSystem.lightsAreOn
+    else unless @liveCodeLabCoreInstance.lightSystem.lightsAreOn
       if pooledObjectWithMaterials.basicMaterial is `undefined`
         pooledObjectWithMaterials.basicMaterial =
-          new @liveCodeLabCore_THREE.MeshBasicMaterial()
+          new @liveCodeLabCore_three.MeshBasicMaterial()
       pooledObjectWithMaterials.basicMaterial.color.setHex colorToBeUsed
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.basicMaterial
@@ -305,7 +305,7 @@ class GraphicsCommands
       # lights are on
       if pooledObjectWithMaterials.lambertMaterial is `undefined`
         pooledObjectWithMaterials.lambertMaterial =
-          new @liveCodeLabCore_THREE.MeshLambertMaterial()
+          new @liveCodeLabCore_three.MeshLambertMaterial()
       pooledObjectWithMaterials.lambertMaterial.color.setHex colorToBeUsed
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.lambertMaterial
@@ -339,8 +339,8 @@ class GraphicsCommands
     @objectsUsedInFrameCounts[primitiveID] += 1
     if @doTheSpinThingy and
         pooledObjectWithMaterials.initialSpinCountdown > 0
-      @liveCodeLabCoreInstance.MatrixCommands.pushMatrix()
-      @liveCodeLabCoreInstance.MatrixCommands.rotate \
+      @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+      @liveCodeLabCoreInstance.matrixCommands.rotate \
         pooledObjectWithMaterials.initialSpinCountdown / 50
     
     # see https://github.com/mrdoob/three.js/wiki/Using-Matrices-&-Object3Ds-in-THREE
@@ -349,11 +349,11 @@ class GraphicsCommands
     # happens every time there is a scale or rotate or move.
     pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = false
     pooledObjectWithMaterials.threejsObject3D.matrix.copy \
-      @liveCodeLabCoreInstance.MatrixCommands.getWorldMatrix()
+      @liveCodeLabCoreInstance.matrixCommands.getWorldMatrix()
     pooledObjectWithMaterials.threejsObject3D.matrixWorldNeedsUpdate = true
     if @doTheSpinThingy and
         pooledObjectWithMaterials.initialSpinCountdown > 0
-      @liveCodeLabCoreInstance.MatrixCommands.popMatrix()
+      @liveCodeLabCoreInstance.matrixCommands.popMatrix()
     if objectIsNew
       
       # if the object is new it means that the normal material
@@ -364,7 +364,7 @@ class GraphicsCommands
       # the rendering step, so the memory for the material is initialised
       # correctly.
       pooledObjectWithMaterials.threejsObject3D.matrix.scale \
-        new @liveCodeLabCore_THREE.Vector3(0.0001, 0.0001, 0.0001)
+        new @liveCodeLabCore_three.Vector3(0.0001, 0.0001, 0.0001)
     else if a isnt 1 or b isnt 1 or c isnt 1
       if strokeTime        
         # wireframes are built via separate objects with geometries that are
@@ -372,11 +372,11 @@ class GraphicsCommands
         # is no z-fighting and the stroke is drawn neatly on top of the fill
         # constant 0.001 below is to avoid z-fighting
         pooledObjectWithMaterials.threejsObject3D.matrix.scale \
-          new @liveCodeLabCore_THREE.Vector3(a + 0.001, b + 0.001, c + 0.001)
+          new @liveCodeLabCore_three.Vector3(a + 0.001, b + 0.001, c + 0.001)
       else
         pooledObjectWithMaterials.threejsObject3D.matrix.scale \
-          new @liveCodeLabCore_THREE.Vector3(a, b, c)
-    @liveCodeLabCoreInstance.ThreeJsSystem.scene.add \
+          new @liveCodeLabCore_three.Vector3(a, b, c)
+    @liveCodeLabCoreInstance.threeJsSystem.scene.add \
       pooledObjectWithMaterials.threejsObject3D  if objectIsNew
 
   commonPrimitiveDrawingLogic: (a, b, c, primitiveProperties) ->
@@ -439,7 +439,7 @@ class GraphicsCommands
     @defaultNormalFill = true
     @defaultNormalStroke = true
     @ballDetLevel =
-      @liveCodeLabCoreInstance.ThreeJsSystem.ballDefaultDetLevel
+      @liveCodeLabCoreInstance.threeJsSystem.ballDefaultDetLevel
     @objectsUsedInFrameCounts\
       [@primitiveTypes.ambientLight] = 0
     @objectsUsedInFrameCounts[@primitiveTypes.line] = 0
@@ -475,7 +475,7 @@ class GraphicsCommands
     # Since the stroke and the fill are drawn with two different objects and the
     # fill is not needed, we temporarily switch off the fill and then put it back
     # to whichever value it was.
-    if @liveCodeLabCoreInstance.LightSystem.lightsAreOn
+    if @liveCodeLabCoreInstance.lightSystem.lightsAreOn
       rememberIfThereWasAFill = @doFill
       rememberPreviousStrokeSize = @currentStrokeSize
       @currentStrokeSize = 2  if @currentStrokeSize < 2
@@ -489,8 +489,8 @@ class GraphicsCommands
     primitiveProperties =
       canFill: false
       primitiveType: @primitiveTypes.line
-      sidedness: @liveCodeLabCore_THREE.FrontSide
-      THREEObjectConstructor: @liveCodeLabCore_THREE.Line
+      sidedness: @liveCodeLabCore_three.FrontSide
+      threeObjectConstructor: @liveCodeLabCore_three.Line
       detailLevel: 0
 
     
@@ -502,8 +502,8 @@ class GraphicsCommands
     primitiveProperties =
       canFill: true
       primitiveType: @primitiveTypes.rect
-      sidedness: @liveCodeLabCore_THREE.DoubleSide
-      THREEObjectConstructor: @liveCodeLabCore_THREE.Mesh
+      sidedness: @liveCodeLabCore_three.DoubleSide
+      threeObjectConstructor: @liveCodeLabCore_three.Mesh
       detailLevel: 0
 
     
@@ -515,8 +515,8 @@ class GraphicsCommands
     primitiveProperties =
       canFill: true
       primitiveType: @primitiveTypes.box
-      sidedness: @liveCodeLabCore_THREE.FrontSide
-      THREEObjectConstructor: @liveCodeLabCore_THREE.Mesh
+      sidedness: @liveCodeLabCore_three.FrontSide
+      threeObjectConstructor: @liveCodeLabCore_three.Mesh
       detailLevel: 0
 
     
@@ -528,8 +528,8 @@ class GraphicsCommands
     primitiveProperties =
       canFill: true
       primitiveType: @primitiveTypes.peg
-      sidedness: @liveCodeLabCore_THREE.FrontSide
-      THREEObjectConstructor: @liveCodeLabCore_THREE.Mesh
+      sidedness: @liveCodeLabCore_three.FrontSide
+      threeObjectConstructor: @liveCodeLabCore_three.Mesh
       detailLevel: 0
 
     
@@ -547,8 +547,8 @@ class GraphicsCommands
     primitiveProperties =
       canFill: true
       primitiveType: @primitiveTypes.ball
-      sidedness: @liveCodeLabCore_THREE.FrontSide
-      THREEObjectConstructor: @liveCodeLabCore_THREE.Mesh
+      sidedness: @liveCodeLabCore_three.FrontSide
+      threeObjectConstructor: @liveCodeLabCore_three.Mesh
       detailLevel: @ballDetLevel - @minimumBallDetail
 
     
@@ -588,7 +588,7 @@ class GraphicsCommands
       @defaultNormalFill = true
       @currentFillColor = angleColor
       if b is `undefined` and g isnt `undefined`
-        @currentFillAlpha = g / @liveCodeLabCoreInstance.ColourFunctions.colorModeA
+        @currentFillAlpha = g / @liveCodeLabCoreInstance.colourFunctions.colorModeA
       else
         @currentFillAlpha = 1
 
@@ -653,7 +653,7 @@ class GraphicsCommands
       @defaultNormalStroke = true
       @currentStrokeColor = angleColor
       if b is `undefined` and g isnt `undefined`
-        @currentStrokeAlpha = g / @liveCodeLabCoreInstance.ColourFunctions.colorModeA
+        @currentStrokeAlpha = g / @liveCodeLabCoreInstance.colourFunctions.colorModeA
       else
         @currentStrokeAlpha = 1
 

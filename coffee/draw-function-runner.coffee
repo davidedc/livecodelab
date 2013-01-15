@@ -37,11 +37,11 @@ class DrawFunctionRunner
     @doOnceOccurrencesLineNumbers = []
 
   putTicksNextToDoOnceBlocksThatHaveBeenRun: ->
-    CodeTransformer = @liveCodeLabCoreInstance.CodeTransformer
+    codeTransformer = @liveCodeLabCoreInstance.codeTransformer
     if @doOnceOccurrencesLineNumbers.length isnt 0
       @setDrawFunction \
-        CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(
-          CodeTransformer, @doOnceOccurrencesLineNumbers
+        codeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(
+          codeTransformer, @doOnceOccurrencesLineNumbers
         )
 
   runDrawFunction: ->

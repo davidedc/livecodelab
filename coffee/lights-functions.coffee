@@ -3,12 +3,12 @@
 "use strict"
 class LightSystem
   lightsAreOn: false
-  constructor: (@liveCodeLabCore_GraphicsCommands, @liveCodeLabCoreInstance) ->
+  constructor: (@liveCodeLabCore_graphicsCommands, @liveCodeLabCoreInstance) ->
 
     # defining a couple of shorthands
-    @objectPools = @liveCodeLabCore_GraphicsCommands.objectPools
-    @primitiveTypes = @liveCodeLabCore_GraphicsCommands.primitiveTypes
-    @objectsUsedInFrameCounts = @liveCodeLabCore_GraphicsCommands.objectsUsedInFrameCounts
+    @objectPools = @liveCodeLabCore_graphicsCommands.objectPools
+    @primitiveTypes = @liveCodeLabCore_graphicsCommands.primitiveTypes
+    @objectsUsedInFrameCounts = @liveCodeLabCore_graphicsCommands.objectsUsedInFrameCounts
 
     @objectPools[@primitiveTypes.ambientLight] = []
     @objectsUsedInFrameCounts[@primitiveTypes.ambientLight] = 0
@@ -36,16 +36,16 @@ class LightSystem
       # black is too stark and white
       # doesn't show the effect with the
       # default white fill
-      colorToBeUsed = @liveCodeLabCoreInstance.ColourFunctions.color(255)
+      colorToBeUsed = @liveCodeLabCoreInstance.colourFunctions.color(255)
     else
-      colorToBeUsed = @liveCodeLabCoreInstance.ColourFunctions.color(r, g, b, a)
+      colorToBeUsed = @liveCodeLabCoreInstance.colourFunctions.color(r, g, b, a)
     @lightsAreOn = true
     
     # used by graphic-primitives
-    @liveCodeLabCore_GraphicsCommands.defaultNormalFill = false
+    @liveCodeLabCore_graphicsCommands.defaultNormalFill = false
     
     # used by graphic-primitives
-    @liveCodeLabCore_GraphicsCommands.defaultNormalStroke = false
+    @liveCodeLabCore_graphicsCommands.defaultNormalStroke = false
     ambientLightsPool = @objectPools[@primitiveTypes.ambientLight]
     pooledAmbientLight = ambientLightsPool[@objectsUsedInFrameCounts[@primitiveTypes.ambientLight]]
 
@@ -56,7 +56,7 @@ class LightSystem
       # so the faces of the cube would all be of the same
       # exact color. Note that in Three.js versions before r50 the AmbientLight
       # would work like a PointLight does now.
-      pooledAmbientLight = new @liveCodeLabCoreInstance.THREE.PointLight(colorToBeUsed)
+      pooledAmbientLight = new @liveCodeLabCoreInstance.three.PointLight(colorToBeUsed)
       pooledAmbientLight.position.set 10, 50, 130
       newLightCreated = true
       ambientLightsPool.push pooledAmbientLight
@@ -69,4 +69,4 @@ class LightSystem
     
     # NOTE that an ambient light is not actually added as an object.
     # i.e. if you navigate the objects you don't find it.
-    @liveCodeLabCoreInstance.ThreeJsSystem.scene.add pooledAmbientLight  if newLightCreated
+    @liveCodeLabCoreInstance.threeJsSystem.scene.add pooledAmbientLight  if newLightCreated

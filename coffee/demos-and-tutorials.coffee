@@ -669,7 +669,7 @@ class ProgramLoader
       """.replace(/\u25B6/g, "\t")
 
   loadDemoOrTutorial: (demoName) ->
-    if (not Detector.webgl or @liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) \
+    if (not Detector.webgl or @liveCodeLabCoreInstance.threeJsSystem.forceCanvasRenderer) \
         and not userWarnedAboutWebglExamples and demoName.indexOf("webgl") is 0
       userWarnedAboutWebglExamples = true
       $("#exampleNeedsWebgl").modal()
@@ -680,9 +680,9 @@ class ProgramLoader
     @eventRouter.trigger "set-url-hash", "bookmark=" + demoName
     @eventRouter.trigger "big-cursor-hide"
     @eventRouter.trigger "editor-undim"
-    @liveCodeLabCoreInstance.GraphicsCommands.doTheSpinThingy = false
+    @liveCodeLabCoreInstance.graphicsCommands.doTheSpinThingy = false
     prependMessage = ""
-    if (not Detector.webgl or @liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) \
+    if (not Detector.webgl or @liveCodeLabCoreInstance.threeJsSystem.forceCanvasRenderer) \
         and demoName.indexOf("webgl") is 0
       prependMessage =
       """
@@ -719,10 +719,10 @@ class ProgramLoader
     #   a) make sure that animationStyle is "normal"    
     #   b) apply the potentially new animationStyle    
     #   render the empty frame
-    BlendControls = @liveCodeLabCoreInstance.BlendControls
-    BlendControls.animationStyle BlendControls.animationStyles.normal
-    BlendControls.animationStyleUpdateIfChanged()
-    @liveCodeLabCoreInstance.Renderer.render @liveCodeLabCoreInstance.GraphicsCommands
+    blendControls = @liveCodeLabCoreInstance.blendControls
+    blendControls.animationStyle blendControls.animationStyles.normal
+    blendControls.animationStyleUpdateIfChanged()
+    @liveCodeLabCoreInstance.renderer.render @liveCodeLabCoreInstance.graphicsCommands
 
   loadAppropriateDemoOrTutorialBasedOnHash: (hash) ->
     matched = hash.match(/bookmark=(.*)/)

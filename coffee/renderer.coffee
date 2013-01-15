@@ -7,19 +7,19 @@ class Renderer
   render: (graphics) ->
     
     # some shorthands
-    ThreeJsSystem = @liveCodeLabCoreInstance.ThreeJsSystem
-    renderer = ThreeJsSystem.renderer
-    blendedThreeJsSceneCanvasContext = ThreeJsSystem.blendedThreeJsSceneCanvasContext
+    threeJsSystem = @liveCodeLabCoreInstance.threeJsSystem
+    renderer = threeJsSystem.renderer
+    blendedThreeJsSceneCanvasContext = threeJsSystem.blendedThreeJsSceneCanvasContext
     previousFrameThreeJSSceneRenderForBlendingCanvasContext =
-      ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext
+      threeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext
     
     @combDisplayList graphics
-    if ThreeJsSystem.isWebGLUsed
-      ThreeJsSystem.composer.render()
+    if threeJsSystem.isWebGLUsed
+      threeJsSystem.composer.render()
     else
       
       # the renderer draws into an offscreen canvas called currentFrameThreeJsSceneCanvas
-      renderer.render ThreeJsSystem.scene, ThreeJsSystem.camera
+      renderer.render threeJsSystem.scene, threeJsSystem.camera
       
       # clear the final render context
       blendedThreeJsSceneCanvasContext.globalAlpha = 1.0
@@ -31,19 +31,19 @@ class Renderer
       # motionBlur and no paintOver, because we don't need to keep and blend with
       # the previous frame in that case.
       blendedThreeJsSceneCanvasContext.globalAlpha =
-        @liveCodeLabCoreInstance.BlendControls.blendAmount
+        @liveCodeLabCoreInstance.blendControls.blendAmount
       blendedThreeJsSceneCanvasContext.drawImage \
-        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, 0, 0
+        threeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, 0, 0
       blendedThreeJsSceneCanvasContext.globalAlpha = 1.0
       blendedThreeJsSceneCanvasContext.drawImage \
-        ThreeJsSystem.currentFrameThreeJsSceneCanvas, 0, 0
+        threeJsSystem.currentFrameThreeJsSceneCanvas, 0, 0
       previousFrameThreeJSSceneRenderForBlendingCanvasContext.globalCompositeOperation =
         "copy"
       previousFrameThreeJSSceneRenderForBlendingCanvasContext.drawImage \
-        ThreeJsSystem.blendedThreeJsSceneCanvas, 0, 0
+        threeJsSystem.blendedThreeJsSceneCanvas, 0, 0
       
       # clear the renderer's canvas to transparent black
-      ThreeJsSystem.currentFrameThreeJsSceneCanvasContext.clearRect \
+      threeJsSystem.currentFrameThreeJsSceneCanvasContext.clearRect \
         0, 0, window.innerWidth, window.innerHeight
 
   
@@ -81,13 +81,13 @@ class Renderer
     primitiveType = undefined
     
     # some shorthands
-    ThreeJsSystem = @liveCodeLabCoreInstance.ThreeJsSystem
+    threeJsSystem = @liveCodeLabCoreInstance.threeJsSystem
     objectsUsedInFrameCounts = graphics.objectsUsedInFrameCounts
     
     # scan all the objects in the display list
     i = 0
-    while i < ThreeJsSystem.scene.children.length
-      sceneObject = ThreeJsSystem.scene.children[i]
+    while i < threeJsSystem.scene.children.length
+      sceneObject = threeJsSystem.scene.children[i]
       
       # check the type of object. Each type has one pool. Go through each object in the
       # pool and set to visible the number of used objects in this frame, set the
