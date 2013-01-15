@@ -142,7 +142,7 @@ createLiveCodeLabCore = (paramsObject) ->
   
   # this one doesn't interact with any other part at runtime.
   liveCodeLabCoreInstance.ThreeJsSystem =
-    createThreeJsSystem(
+    new ThreeJsSystem(
       Detector, THREEx, paramsObject.blendedThreeJsSceneCanvas,
       paramsObject.forceCanvasRenderer, paramsObject.testMode,
       liveCodeLabCoreInstance.THREE)
