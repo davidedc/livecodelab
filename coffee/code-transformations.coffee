@@ -32,6 +32,7 @@ class CodeTransformer
       "animationStyle"
       "background"
       "simpleGradient"
+      "colorMode"
       "color"
       # Lighting
       # "ambient""reflect" "refract"
@@ -466,6 +467,7 @@ class CodeTransformer
   	code = code.replace(/([^a-zA-Z0-9])(animationStyle)(\s)+/g, "$1;$2$3")
   	code = code.replace(/([^a-zA-Z0-9])(simpleGradient)(\s)+/g, "$1;$2$3")
   	code = code.replace(/([^a-zA-Z0-9])(background)(\s)+/g, "$1;$2$3")
+  	code = code.replace(/([^a-zA-Z0-9])(colorMode)(\s)+/g, "$1;$2$3")
   	code = code.replace(/([^a-zA-Z0-9])(color)(\s)+/g, "$1;$2$3")
   	
   	#code =  code.replace(/([^a-zA-Z0-9])(ambient)(\s)+/g, "$1;$2$3" );
