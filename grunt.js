@@ -71,7 +71,7 @@ module.exports = function (grunt) {
                     'js/three.js/postprocessing/SavePass.js',
                     'js/translatedFromCoffescript/coffee/globals.js',
                     'js/translatedFromCoffescript/coffee/background-painting.js',
-                    'js/editor/editor.js',
+                    'js/translatedFromCoffescript/coffee/editor/editor.js',
                     'js/translatedFromCoffescript/coffee/colour-functions.js',
                     'js/translatedFromCoffescript/coffee/matrix-commands.js',
                     'js/translatedFromCoffescript/coffee/graphic-primitives.js',
