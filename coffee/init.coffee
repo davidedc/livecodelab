@@ -262,7 +262,8 @@ startEnvironment = (paramsObject) ->
   # check if the url points to a particular demo,
   # in which case we load the demo directly.
   # otherwise we do as usual.    
-  setTimeout liveCodeLabCore.playStartupSound, 650  unless urlRouter.urlPointsToDemoOrTutorial()
+  if !urlRouter.urlPointsToDemoOrTutorial()
+    setTimeout (()=>liveCodeLabCore.playStartupSound()), 650
   bigCursor.toggleBlink true
   ui.setup()
 
