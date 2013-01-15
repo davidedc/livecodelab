@@ -135,7 +135,7 @@ startEnvironment = (paramsObject) ->
   # Phase 4 - Setup Of Event Listeners, including handling of
   # compile time and runtime errors.
   #/////////////////////////////////////////////////////
-  eventRouter.bind "reset", liveCodeLabCore.paintARandomBackground
+  eventRouter.bind "reset", (()=>liveCodeLabCore.paintARandomBackground())
   eventRouter.trigger "editor-toggle-dim", true
   eventRouter.bind "livecodelab-running-stably", ui.showStatsWidget
   eventRouter.bind "code_changed", (updatedCodeAsString) ->
