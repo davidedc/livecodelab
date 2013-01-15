@@ -80,7 +80,9 @@ startEnvironment = function(paramsObject) {
   }), editorDimmer);
   programLoader = new ProgramLoader(eventRouter, editor, liveCodeLabCore);
   eventRouter.bind("load-program", programLoader.loadDemoOrTutorial, programLoader);
-  eventRouter.bind("reset", liveCodeLabCore.paintARandomBackground);
+  eventRouter.bind("reset", (function() {
+    return liveCodeLabCore.paintARandomBackground();
+  }));
   eventRouter.trigger("editor-toggle-dim", true);
   eventRouter.bind("livecodelab-running-stably", ui.showStatsWidget);
   eventRouter.bind("code_changed", function(updatedCodeAsString) {

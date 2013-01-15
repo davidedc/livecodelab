@@ -113,7 +113,7 @@ in for consistency.</p>             </td>             <td class="code">         
 </pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>/////////////////////////////////////////////////////
 Phase 4 - Setup Of Event Listeners, including handling of
 compile time and runtime errors.
-/////////////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>  eventRouter.bind <span class="string">"reset"</span>, liveCodeLabCore.paintARandomBackground
+/////////////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>  eventRouter.bind <span class="string">"reset"</span>, (()=&gt;liveCodeLabCore.paintARandomBackground())
   eventRouter.trigger <span class="string">"editor-toggle-dim"</span>, <span class="literal">true</span>
   eventRouter.bind <span class="string">"livecodelab-running-stably"</span>, ui.showStatsWidget
   eventRouter.bind <span class="string">"code_changed"</span>, (updatedCodeAsString) -&gt;
