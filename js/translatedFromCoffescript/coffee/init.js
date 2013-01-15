@@ -50,7 +50,7 @@ startEnvironment = function(paramsObject) {
     statsWidget: stats,
     testMode: paramsObject.testMode
   });
-  urlRouter = createUrlRouter(eventRouter);
+  urlRouter = new UrlRouter(eventRouter);
   bigCursor = new BigCursor(eventRouter);
   eventRouter.bind("big-cursor-show", function() {
     return bigCursor.unshrinkBigCursor();

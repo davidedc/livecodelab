@@ -1,25 +1,25 @@
 <!DOCTYPE html>  <html> <head>   <title>url-router.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               url-router.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true, regexp: true </p>             </td>             <td class="code">               <div class="highlight"><pre>
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>This is the URL hash location router.
 It is controlled by the events framework.</p>             </td>             <td class="code">               <div class="highlight"><pre>
-<span class="function"><span class="title">createUrlRouter</span></span> = (events) -&gt;
-  <span class="string">"use strict"</span>
-  UrlRouter = {}
-  UrlRouter.<span class="function"><span class="title">getHash</span></span> = -&gt;
+<span class="string">"use strict"</span>
+<span class="class"><span class="keyword">class</span> <span class="title">UrlRouter</span></span>
+  
+  constructor: (<span class="property">@eventRouter</span>) -&gt;
+    <span class="property">@eventRouter</span>.bind <span class="string">"set-url-hash"</span>, <span class="property">@setHash</span>, @
+  
+  getHash: -&gt;
     match = window.location.href.match(<span class="regexp">/#(.*)$/</span>)
     (<span class="keyword">if</span> match <span class="keyword">then</span> match[<span class="number">1</span>] <span class="keyword">else</span> <span class="string">""</span>)
 
-  UrlRouter.<span class="function"><span class="title">setHash</span></span> = (hash) -&gt;
+  setHash: (hash) -&gt;
     window.location.hash = hash
 
-  UrlRouter.<span class="function"><span class="title">urlPointsToDemoOrTutorial</span></span> = -&gt;
-    hash = <span class="literal">undefined</span>
+  urlPointsToDemoOrTutorial: -&gt;
     found = <span class="literal">false</span>
-    hash = UrlRouter.getHash()
+    hash = <span class="property">@getHash</span>()
     <span class="keyword">if</span> hash
-      events.trigger <span class="string">"url-hash-changed"</span>, hash
+      <span class="property">@eventRouter</span>.trigger <span class="string">"url-hash-changed"</span>, hash
       found = <span class="literal">true</span>
     found
 
-  events.bind <span class="string">"set-url-hash"</span>, UrlRouter.setHash, UrlRouter
-  UrlRouter
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

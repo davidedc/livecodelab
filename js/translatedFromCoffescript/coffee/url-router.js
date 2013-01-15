@@ -1,11 +1,15 @@
-var createUrlRouter;
+"use strict";
 
-createUrlRouter = function(events) {
-  "use strict";
+var UrlRouter;
 
-  var UrlRouter;
-  UrlRouter = {};
-  UrlRouter.getHash = function() {
+UrlRouter = (function() {
+
+  function UrlRouter(eventRouter) {
+    this.eventRouter = eventRouter;
+    this.eventRouter.bind("set-url-hash", this.setHash, this);
+  }
+
+  UrlRouter.prototype.getHash = function() {
     var match;
     match = window.location.href.match(/#(.*)$/);
     if (match) {
@@ -14,20 +18,22 @@ createUrlRouter = function(events) {
       return "";
     }
   };
-  UrlRouter.setHash = function(hash) {
+
+  UrlRouter.prototype.setHash = function(hash) {
     return window.location.hash = hash;
   };
-  UrlRouter.urlPointsToDemoOrTutorial = function() {
+
+  UrlRouter.prototype.urlPointsToDemoOrTutorial = function() {
     var found, hash;
-    hash = void 0;
     found = false;
-    hash = UrlRouter.getHash();
+    hash = this.getHash();
     if (hash) {
-      events.trigger("url-hash-changed", hash);
+      this.eventRouter.trigger("url-hash-changed", hash);
       found = true;
     }
     return found;
   };
-  events.bind("set-url-hash", UrlRouter.setHash, UrlRouter);
+
   return UrlRouter;
-};
+
+})();
