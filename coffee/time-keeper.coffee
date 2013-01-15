@@ -1,24 +1,25 @@
 # jslint browser: true 
 # global Date 
 
-createTimeKeeper = ->
-  "use strict"
-  TimeKeeper = {}
-  time = undefined
-  timeAtStart = undefined
-  window.time = 0
-  TimeKeeper.updateTime = ->
-    d = new Date()
-    time = d.getTime() - timeAtStart
-    window.time = d.getTime() - timeAtStart
-
-  TimeKeeper.resetTime = ->
-    d = new Date()
-    time = 0
+"use strict"
+class TimeKeeper
+  
+  time: undefined
+  timeAtStart: undefined
+  
+  constructor: ->
     window.time = 0
-    timeAtStart = d.getTime()
+  
+  updateTime: ->
+    d = new Date()
+    @time = d.getTime() - @timeAtStart
+    window.time = d.getTime() - @timeAtStart
 
-  TimeKeeper.getTime = ->
-    time
+  resetTime: ->
+    d = new Date()
+    @time = 0
+    window.time = 0
+    @timeAtStart = d.getTime()
 
-  TimeKeeper
+  getTime: ->
+    @time
