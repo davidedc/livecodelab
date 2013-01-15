@@ -214,9 +214,11 @@ module.exports = function (grunt) {
     // don't preserve the comments of the coffee files. So we
     // re-write the docs generated from the (translated) js files
     // with the docs generated from the coffee files.
-    grunt.registerTask('docs', ['doccoh:Js', 'doccoh:Coffee'], function() {
+    grunt.registerTask('docs', ' ', function() {
 			// also generate these other two styles of documents for a class-view
 			// of the coffeescript code.
+			grunt.task.run('doccoh:Js');
+			grunt.task.run('doccoh:Coffee');
 			grunt.task.run('coffeedoc');
 			grunt.task.run('codo');
 		});
