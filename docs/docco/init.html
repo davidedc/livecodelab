@@ -89,7 +89,7 @@ Phase 3 - Other satellite parts
 </pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>  eventRouter.bind(<span class="string">"big-cursor-show"</span>, =&gt; bigCursor.unshrinkBigCursor() )
   eventRouter.bind(<span class="string">"big-cursor-hide"</span>, =&gt; bigCursor.shrinkBigCursor()   )
 
-  editor = createEditor(eventRouter, CodeMirror)
+  editor = <span class="keyword">new</span> Editor(eventRouter, CodeMirror)
   attachMouseWheelHandler editor
   
 </pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>console.log('creating stats');</p>             </td>             <td class="code">               <div class="highlight"><pre>  ui = <span class="keyword">new</span> Ui(eventRouter, stats) <span class="comment"># $</span>

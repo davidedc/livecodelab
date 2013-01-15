@@ -58,7 +58,7 @@ startEnvironment = function(paramsObject) {
   eventRouter.bind("big-cursor-hide", function() {
     return bigCursor.shrinkBigCursor();
   });
-  editor = createEditor(eventRouter, CodeMirror);
+  editor = new Editor(eventRouter, CodeMirror);
   attachMouseWheelHandler(editor);
   ui = new Ui(eventRouter, stats);
   autocoder = new Autocoder(eventRouter, editor, colourNames);
