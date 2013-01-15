@@ -9,6 +9,9 @@ To get setup with Grunt should be pretty easy.
  * Install Grunt globally ```npm install -g grunt```
  * use npm to get all the dependencies ```npm install```
  * install grunt-coffee ```npm install grunt-coffee```
+ * install exec module ```npm install grunt-coffee```
+ * install coffedoc module ```npm install coffedoc```
+ * install codo module ```npm install codo```
 
 #### Use ####
 

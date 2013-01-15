@@ -4,8 +4,81 @@ module.exports = function (grunt) {
 
     'use strict';
 
+
+		var exec = require('exec');
+	 
+		/**
+		 * Task for coffedoc from https://gist.github.com/3596427
+		 */
+		grunt.registerMultiTask('coffeedoc', 'Generate source documents from CoffeeScript files.', function() {
+			var target  = this.data.target,
+					options = this.data.options || {},
+					cmds    = ['coffeedoc'],
+					done    = this.async();
+	 
+			Object.keys(options).forEach(function(opt) {
+				cmds.push('--' + opt + '=' + options[opt]);
+			});
+	 
+			cmds.push(target);
+	 
+			exec(cmds, function(err, out, code) {
+				if (code === 0) {
+					grunt.log.ok(cmds.join(' '));
+					grunt.log.ok('document created at '+target);
+				} else {
+					grunt.fail.warn('If you want to using coffeedoc task. Please global install (option with -g) coffeedoc pakage from npm.');
+				}
+				done();
+			});
+		});
+
+		/**
+		 * Task for codo
+		 */
+		grunt.registerMultiTask('codo', 'Generate source documents from CoffeeScript files.', function() {
+			var target  = this.data.target,
+					options = this.data.options || {},
+					cmds    = ['codo'],
+					done    = this.async();
+	 
+			Object.keys(options).forEach(function(opt) {
+				cmds.push('--' + opt.replace("_","-") + '=' + options[opt]);
+			});
+	 
+			cmds.push(target);
+	 
+			exec(cmds, function(err, out, code) {
+				if (code === 0) {
+					grunt.log.ok(cmds.join(' '));
+					grunt.log.ok('document created at '+target);
+				} else {
+					grunt.fail.warn('If you want to using coffeedoc task. Please global install (option with -g) coffeedoc pakage from npm.');
+				}
+				done();
+			});
+		});
+
     // Project configuration.
     grunt.initConfig({
+    		coffeedoc: {
+					 dist: {
+							target: 'coffee',
+							options: {
+								output: 'docs/coffeedoc',
+								parser: 'requirejs',
+								renderer: 'html'
+							}
+						}
+				},
+    		codo: {
+					 dist: {
+							target: 'coffee',
+							options: {
+								output_dir: 'docs/codo',
+							}
+						}
+				},
         lint: {
             all: ['js/**/*.js'],
             grunt: ['grunt.js']
@@ -105,7 +178,7 @@ module.exports = function (grunt) {
             },
         },
         clean: {
-            docs: ['docs/docco/'],
+            docs: ['docs/docco/', 'docs/codo/', 'docs/coffeedoc/'],
             build: ['dist/', 'indexMinified.html', 'js_compiled/Livecodelab-minified.js' , 'js/translatedFromCoffescript/']
         },
         targethtml: {
@@ -136,12 +209,17 @@ module.exports = function (grunt) {
     grunt.registerTask('default', 'lint');
 
     // Doc generation task. We create the docs in two steps:
-    // first from the js files and then fro, the coffee files.
+    // first from the js files and then from the coffee files.
     // This is because the js files compiled from the coffee files
     // don't preserve the comments of the coffee files. So we
     // re-write the docs generated from the (translated) js files
     // with the docs generated from the coffee files.
-    grunt.registerTask('docs', 'doccoh:Js doccoh:Coffee');
+    grunt.registerTask('docs', ['doccoh:Js', 'doccoh:Coffee'], function() {
+			// also generate these other two styles of documents for a class-view
+			// of the coffeescript code.
+			grunt.task.run('coffeedoc');
+			grunt.task.run('codo');
+		});
 
     // Compilation task
     grunt.registerTask('compile', 'clean:build coffee concat closure-compiler recess:compile targethtml:compile');
