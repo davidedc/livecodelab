@@ -104,7 +104,7 @@ startEnvironment = (paramsObject) ->
   eventRouter.bind("big-cursor-show", => bigCursor.unshrinkBigCursor() )
   eventRouter.bind("big-cursor-hide", => bigCursor.shrinkBigCursor()   )
 
-  editor = createEditor(eventRouter, CodeMirror)
+  editor = new Editor(eventRouter, CodeMirror)
   attachMouseWheelHandler editor
   
   #console.log('creating stats');
