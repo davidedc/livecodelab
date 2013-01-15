@@ -96,7 +96,9 @@ startEnvironment = (paramsObject) ->
   #/////////////////////////////////////////////////////
   # Phase 3 - Other satellite parts
   #/////////////////////////////////////////////////////
-  urlRouter = createUrlRouter(eventRouter)
+  urlRouter = new UrlRouter(eventRouter)
+  #eventRouter.bind("set-url-hash", (=> urlRouter.setHash()), @)
+  
   bigCursor = new BigCursor eventRouter # $
   # Setup Event Listeners
   eventRouter.bind("big-cursor-show", => bigCursor.unshrinkBigCursor() )
