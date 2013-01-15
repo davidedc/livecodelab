@@ -5,7 +5,7 @@
 class Ui
   constructor: (@eventRouter, @stats) ->
     # Setup Event Listeners
-    @eventRouter.bind "report-runtime-or-compile-time-error", (=>@checkErrorAndReport()), @
+    @eventRouter.bind "report-runtime-or-compile-time-error", ((e)=>@checkErrorAndReport(e)), @
     @eventRouter.bind "clear-error", (=>@clearError()), @
     @eventRouter.bind "autocoder-button-pressed", (state) =>
       if state is true
