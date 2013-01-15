@@ -92,7 +92,7 @@ runtime. Same for the arguments that come
 directly from the caller of this createLiveCodeLabCore
 function we are in.</p>
 
-<p>//////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>  liveCodeLabCoreInstance.TimeKeeper = createTimeKeeper()
+<p>//////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>  liveCodeLabCoreInstance.TimeKeeper = <span class="keyword">new</span> TimeKeeper()
   
 </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>this one also interacts with ThreeJsSystem at runtime</p>             </td>             <td class="code">               <div class="highlight"><pre>  liveCodeLabCoreInstance.BlendControls = <span class="keyword">new</span> BlendControls(liveCodeLabCoreInstance)
   liveCodeLabCoreInstance.ColourFunctions = createColourFunctions()

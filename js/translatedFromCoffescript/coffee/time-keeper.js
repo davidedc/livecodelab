@@ -1,28 +1,36 @@
-var createTimeKeeper;
+"use strict";
 
-createTimeKeeper = function() {
-  "use strict";
+var TimeKeeper;
 
-  var TimeKeeper, time, timeAtStart;
-  TimeKeeper = {};
-  time = void 0;
-  timeAtStart = void 0;
-  window.time = 0;
-  TimeKeeper.updateTime = function() {
-    var d;
-    d = new Date();
-    time = d.getTime() - timeAtStart;
-    return window.time = d.getTime() - timeAtStart;
-  };
-  TimeKeeper.resetTime = function() {
-    var d;
-    d = new Date();
-    time = 0;
+TimeKeeper = (function() {
+
+  TimeKeeper.prototype.time = void 0;
+
+  TimeKeeper.prototype.timeAtStart = void 0;
+
+  function TimeKeeper() {
     window.time = 0;
-    return timeAtStart = d.getTime();
+  }
+
+  TimeKeeper.prototype.updateTime = function() {
+    var d;
+    d = new Date();
+    this.time = d.getTime() - this.timeAtStart;
+    return window.time = d.getTime() - this.timeAtStart;
   };
-  TimeKeeper.getTime = function() {
-    return time;
+
+  TimeKeeper.prototype.resetTime = function() {
+    var d;
+    d = new Date();
+    this.time = 0;
+    window.time = 0;
+    return this.timeAtStart = d.getTime();
   };
+
+  TimeKeeper.prototype.getTime = function() {
+    return this.time;
+  };
+
   return TimeKeeper;
-};
+
+})();

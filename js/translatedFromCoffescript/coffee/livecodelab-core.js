@@ -6,7 +6,7 @@ createLiveCodeLabCore = function(paramsObject) {
   var liveCodeLabCoreInstance;
   liveCodeLabCoreInstance = {};
   liveCodeLabCoreInstance.THREE = THREE;
-  liveCodeLabCoreInstance.TimeKeeper = createTimeKeeper();
+  liveCodeLabCoreInstance.TimeKeeper = new TimeKeeper();
   liveCodeLabCoreInstance.BlendControls = new BlendControls(liveCodeLabCoreInstance);
   liveCodeLabCoreInstance.ColourFunctions = createColourFunctions();
   liveCodeLabCoreInstance.Renderer = new Renderer(liveCodeLabCoreInstance);
