@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='..&#47;assets/codo.css' type='text/css'>
+  <script src='..&#47;assets/codo.js'></script>
+  <script src='..&#47;assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='..&#47;'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='..&#47;README.md.html' title='Livecodelab'>Livecodelab</a>
+    &raquo;
+    <a href='..&#47;class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>Autocoder</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='..&#47;class_list.html'>Classes</a>
+      <a id='file_list_link' href='..&#47;file_list.html'>Files</a>
+      <a id='method_list_link' href='..&#47;method_list.html'>Methods</a>
+      <a id='extra_list_link' href='..&#47;extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        Autocoder
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>coffee&#47;autocoder&#47;autocode.coffee</td>
+        </tr>
+      </table>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>(eventRouter, editor, colourNames)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#emit-instance'>
+        - (void) <strong>emit</strong>(stream)
+      </a>
+    </span>
+    <span class='desc'>
+      Traverses the Tokens array and concatenates the strings, hence generating a possibly mutated program.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#canMutate-instance'>
+        - (void) <strong>canMutate</strong>(token)
+      </a>
+    </span>
+    <span class='desc'>
+      Checks whether a token can mutate by checking whether the mutate function exists.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#pickMutatableTokenAndMutateIt-instance'>
+        - (void) <strong>pickMutatableTokenAndMutateIt</strong>(stream)
+      </a>
+    </span>
+    <span class='desc'>
+      Scans the tokens and collects the mutatable ones.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#replaceTimeWithAConstant-instance'>
+        - (void) <strong>replaceTimeWithAConstant</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Currently unused.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#mutate-instance'>
+        - (void) <strong>mutate</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Every time a mutation is invoked, the following happens * the program is scanned by a lexer the lexer could maintain/change/act on an user-defined state based on what it encounters but for the time being that is not used.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#autocoderMutate-instance'>
+        - (void) <strong>autocoderMutate</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#toggle-instance'>
+        - (void) <strong>toggle</strong>(forcedState)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>(eventRouter, editor, colourNames)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='emit-instance'>
+      - (void) <strong>emit</strong>(stream)
+    </p>
+    <div class='docstring'>
+  <p>Traverses the Tokens array and concatenates the strings,
+hence generating a possibly mutated program.</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='canMutate-instance'>
+      - (void) <strong>canMutate</strong>(token)
+    </p>
+    <div class='docstring'>
+  <p>Checks whether a token can mutate by checking whether the mutate function exists.</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='pickMutatableTokenAndMutateIt-instance'>
+      - (void) <strong>pickMutatableTokenAndMutateIt</strong>(stream)
+    </p>
+    <div class='docstring'>
+  <p>Scans the tokens and collects the mutatable ones.
+Then picks one random and invokes its mutate().</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='replaceTimeWithAConstant-instance'>
+      - (void) <strong>replaceTimeWithAConstant</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Currently unused.</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='mutate-instance'>
+      - (void) <strong>mutate</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Every time a mutation is invoked, the following happens</p><ul>
+<li><p>the program is scanned by a lexer
+the lexer could maintain/change/act on an user-defined state based on what it
+encounters but for the time being that is not used.
+So for the time being in practice the lexer
+parses the tokens based on regular expressions without using states.
+The definitions of what constitutes a token is defined by regexes in the &quot;rules&quot;
+section</p></li>
+<li><p>for each token, a function is added to the Token array. For example &quot;rotate 20&quot;
+creates two
+tokens, which are two functions TRANSLATE and NUM</p></li>
+<li><p>each of the &quot;token&quot; functions contains a) a string representation from the text in
+the program e.g. in the example above &quot;rotate&quot; and &quot;20&quot; and b) an accessory function
+for printout of the token and c) optionally, a function mutate() that changes the
+string of the field of a) with a mutated string</p></li>
+<li><p>the token list is scanned. Each function is checked for whether it contains a
+&quot;mutate&quot; function. If yes, then it&#39;s added as a candidate to an &quot;mutatableTokens&quot;
+array.</p></li>
+<li><p>a random option is picked and mutate is ran for that token</p></li>
+<li><p>the token list is traversed and the strings are appended one to another, creating the new mutated program.</p></li>
+</ul>
+
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='autocoderMutate-instance'>
+      - (void) <strong>autocoderMutate</strong>()
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='toggle-instance'>
+      - (void) <strong>toggle</strong>(forcedState)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Tue Jan 15 2013 22:59:07 GMT+0000 (GMT)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.4
+  (Node.js v0.8.12).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

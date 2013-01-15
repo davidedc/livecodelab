@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='..&#47;assets/codo.css' type='text/css'>
+  <script src='..&#47;assets/codo.js'></script>
+  <script src='..&#47;assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='..&#47;'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='..&#47;README.md.html' title='Livecodelab'>Livecodelab</a>
+    &raquo;
+    <a href='..&#47;class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>GraphicsCommands</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='..&#47;class_list.html'>Classes</a>
+      <a id='file_list_link' href='..&#47;file_list.html'>Files</a>
+      <a id='method_list_link' href='..&#47;method_list.html'>Methods</a>
+      <a id='extra_list_link' href='..&#47;extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        GraphicsCommands
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>coffee&#47;graphic-primitives.coffee</td>
+        </tr>
+      </table>
+      <h2>Constant Summary</h2>
+      <dl class='constants'>
+        <dt id='SPIN_DURATION_IN_FRAMES-constant'>
+          SPIN_DURATION_IN_FRAMES
+          =
+          <div class='tags'>
+</div>
+        </dt>
+        <dd>
+          <pre><code class='coffee'>30</code></pre>
+        </dd>
+      </dl>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>(liveCodeLabCore_three, liveCodeLabCoreInstance)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#createObjectIfNeededAndDressWithCorrectMaterial-instance'>
+        - (void) <strong>createObjectIfNeededAndDressWithCorrectMaterial</strong>(a, b, c, primitiveProperties, strokeTime, colorToBeUsed, alphaToBeUsed, applyDefaultNormalColor)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#commonPrimitiveDrawingLogic-instance'>
+        - (void) <strong>commonPrimitiveDrawingLogic</strong>(a, b, c, primitiveProperties)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#reset-instance'>
+        - (void) <strong>reset</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#line-instance'>
+        - (void) <strong>line</strong>(a, b, c)
+      </a>
+    </span>
+    <span class='desc'>
+      TODO Note that lines have a &quot;solid fill&quot; mode and something similar to the normalMaterial mode but there is no equivalent to the lambert material mode.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#rect-instance'>
+        - (void) <strong>rect</strong>(a, b, c)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#box-instance'>
+        - (void) <strong>box</strong>(a, b, c)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#peg-instance'>
+        - (void) <strong>peg</strong>(a, b, c)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#ballDetail-instance'>
+        - (void) <strong>ballDetail</strong>(a)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#ball-instance'>
+        - (void) <strong>ball</strong>(a, b, c)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#fill-instance'>
+        - (void) <strong>fill</strong>(r, g, b, a)
+      </a>
+    </span>
+    <span class='desc'>
+      Modified from Processing.js
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#noFill-instance'>
+        - (void) <strong>noFill</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      The noFill() function disables filling geometry.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#stroke-instance'>
+        - (void) <strong>stroke</strong>(r, g, b, a)
+      </a>
+    </span>
+    <span class='desc'>
+      The stroke() function sets the color used to draw lines and borders around shapes.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#noStroke-instance'>
+        - (void) <strong>noStroke</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      The noStroke() function disables drawing the stroke (outline).
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#strokeSize-instance'>
+        - (void) <strong>strokeSize</strong>(a)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>(liveCodeLabCore_three, liveCodeLabCoreInstance)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='createObjectIfNeededAndDressWithCorrectMaterial-instance'>
+      - (void) <strong>createObjectIfNeededAndDressWithCorrectMaterial</strong>(a, b, c, primitiveProperties, strokeTime, colorToBeUsed, alphaToBeUsed, applyDefaultNormalColor)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='commonPrimitiveDrawingLogic-instance'>
+      - (void) <strong>commonPrimitiveDrawingLogic</strong>(a, b, c, primitiveProperties)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='reset-instance'>
+      - (void) <strong>reset</strong>()
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='line-instance'>
+      - (void) <strong>line</strong>(a, b, c)
+    </p>
+    <div class='docstring'>
+  <p>TODO Note that lines have a &quot;solid fill&quot; mode
+and something similar to the normalMaterial mode
+but there is no equivalent to the lambert material
+mode.
+That could be done by somehow mixing the color of
+an ambient light to the color of the stroke
+(although which ambient light do you pick if there
+is more than one?)</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='rect-instance'>
+      - (void) <strong>rect</strong>(a, b, c)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='box-instance'>
+      - (void) <strong>box</strong>(a, b, c)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='peg-instance'>
+      - (void) <strong>peg</strong>(a, b, c)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='ballDetail-instance'>
+      - (void) <strong>ballDetail</strong>(a)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='ball-instance'>
+      - (void) <strong>ball</strong>(a, b, c)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='fill-instance'>
+      - (void) <strong>fill</strong>(r, g, b, a)
+    </p>
+    <div class='docstring'>
+  <p>Modified from Processing.js</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='noFill-instance'>
+      - (void) <strong>noFill</strong>()
+    </p>
+    <div class='docstring'>
+  <p>The noFill() function disables filling geometry.
+If both <b>noStroke()</b> and <b>noFill()</b>
+are called, no shapes will be drawn to the screen.</p>
+</div>
+<div class='tags'>
+  <h3>See also:</h3>
+  <ul class='see'>
+    <li>
+      #fill()
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='stroke-instance'>
+      - (void) <strong>stroke</strong>(r, g, b, a)
+    </p>
+    <div class='docstring'>
+  <p>The stroke() function sets the color used to draw lines and borders around shapes.
+This color is either specified in terms of the RGB or HSB color depending on the
+current <b>colorMode()</b> (the default color space is RGB, with each
+value in the range from 0 to 255).
+<br><br>When using hexadecimal notation to specify a color, use &quot;#&quot; or
+&quot;0x&quot; before the values (e.g. #CCFFAA, 0xFFCCFFAA). The # syntax uses six
+digits to specify a color (the way colors are specified in HTML and CSS).
+When using the hexadecimal notation starting with &quot;0x&quot;, the hexadecimal
+value must be specified with eight characters; the first two characters
+define the alpha component and the remainder the red, green, and blue
+components.
+<br><br>The value for the parameter &quot;gray&quot; must be less than or equal
+to the current maximum value as specified by <b>colorMode()</b>.
+The default maximum value is 255.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>gray</span>
+      <span class='type'>
+        (<tt>int|float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>number specifying value between white and black</span>
+    </li>
+    <li>
+      <span class='name'>value1</span>
+      <span class='type'>
+        (<tt>int|float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>red or hue value</span>
+    </li>
+    <li>
+      <span class='name'>value2</span>
+      <span class='type'>
+        (<tt>int|float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>green or saturation value</span>
+    </li>
+    <li>
+      <span class='name'>value3</span>
+      <span class='type'>
+        (<tt>int|float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>blue or brightness value</span>
+    </li>
+    <li>
+      <span class='name'>alpha</span>
+      <span class='type'>
+        (<tt>int|float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>opacity of the stroke</span>
+    </li>
+    <li>
+      <span class='name'>color</span>
+      <span class='type'>
+        (<tt>Color</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>any value of the color datatype</span>
+    </li>
+    <li>
+      <span class='name'>hex</span>
+      <span class='type'>
+        (<tt>int</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>color value in hex notation (i.e. #FFCC00 or 0xFFFFCC00)</span>
+    </li>
+  </ul>
+  <h3>See also:</h3>
+  <ul class='see'>
+    <li>
+      #fill()
+    </li>
+    <li>
+      #noStroke()
+    </li>
+    <li>
+      #tint()
+    </li>
+    <li>
+      #background()
+    </li>
+    <li>
+      #colorMode()
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='noStroke-instance'>
+      - (void) <strong>noStroke</strong>()
+    </p>
+    <div class='docstring'>
+  <p>The noStroke() function disables drawing the stroke (outline).
+If both <b>noStroke()</b> and <b>noFill()</b> are called, no shapes
+will be drawn to the screen.</p>
+</div>
+<div class='tags'>
+  <h3>See also:</h3>
+  <ul class='see'>
+    <li>
+      #stroke()
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='strokeSize-instance'>
+      - (void) <strong>strokeSize</strong>(a)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Tue Jan 15 2013 22:59:07 GMT+0000 (GMT)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.4
+  (Node.js v0.8.12).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

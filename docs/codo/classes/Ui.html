@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='..&#47;assets/codo.css' type='text/css'>
+  <script src='..&#47;assets/codo.js'></script>
+  <script src='..&#47;assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='..&#47;'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='..&#47;README.md.html' title='Livecodelab'>Livecodelab</a>
+    &raquo;
+    <a href='..&#47;class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>Ui</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='..&#47;class_list.html'>Classes</a>
+      <a id='file_list_link' href='..&#47;file_list.html'>Files</a>
+      <a id='method_list_link' href='..&#47;method_list.html'>Methods</a>
+      <a id='extra_list_link' href='..&#47;extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        Ui
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>coffee&#47;ui.coffee</td>
+        </tr>
+      </table>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>(eventRouter, stats)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#resizeCanvas-instance'>
+        - (void) <strong>resizeCanvas</strong>(canvasId)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#adjustCodeMirrorHeight-instance'>
+        - (void) <strong>adjustCodeMirrorHeight</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      TODO In theory we want to re-draw the background because the aspect ration might have changed.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#fullscreenify-instance'>
+        - (void) <strong>fullscreenify</strong>(canvasId)
+      </a>
+    </span>
+    <span class='desc'>
+      resizing the text area is necessary otherwise as the user types to the end of it, instead of just scrolling the content leaving all the other parts of the page where they are, it expands and it pushes down the view of the page, meaning that the canvas goes up and the menu disappears so we have to resize it at launch and also every time the window is resized.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#checkErrorAndReport-instance'>
+        - (void) <strong>checkErrorAndReport</strong>(e)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#clearError-instance'>
+        - (void) <strong>clearError</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#soundSystemOk-instance'>
+        - (void) <strong>soundSystemOk</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#hideStatsWidget-instance'>
+        - (void) <strong>hideStatsWidget</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#showStatsWidget-instance'>
+        - (void) <strong>showStatsWidget</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      console.log(&#39;hiding stats widget&#39;);
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setup-instance'>
+        - (void) <strong>setup</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      console.log(&#39;showing stats widget&#39;);
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>(eventRouter, stats)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='resizeCanvas-instance'>
+      - (void) <strong>resizeCanvas</strong>(canvasId)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='adjustCodeMirrorHeight-instance'>
+      - (void) <strong>adjustCodeMirrorHeight</strong>()
+    </p>
+    <div class='docstring'>
+  <p>TODO In theory we want to re-draw the background because the
+aspect ration might have changed.
+But for the time being we only have vertical
+gradients so that&#39;s not going to be a problem.</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='fullscreenify-instance'>
+      - (void) <strong>fullscreenify</strong>(canvasId)
+    </p>
+    <div class='docstring'>
+  <p>resizing the text area is necessary otherwise
+as the user types to the end of it, instead of just scrolling
+the content leaving all the other parts of the page where
+they are, it expands and it pushes down
+the view of the page, meaning that the canvas goes up and
+the menu disappears
+so we have to resize it at launch and also every time the window
+is resized.</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='checkErrorAndReport-instance'>
+      - (void) <strong>checkErrorAndReport</strong>(e)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='clearError-instance'>
+      - (void) <strong>clearError</strong>()
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='soundSystemOk-instance'>
+      - (void) <strong>soundSystemOk</strong>()
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='hideStatsWidget-instance'>
+      - (void) <strong>hideStatsWidget</strong>()
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='showStatsWidget-instance'>
+      - (void) <strong>showStatsWidget</strong>()
+    </p>
+    <div class='docstring'>
+  <p>console.log(&#39;hiding stats widget&#39;);</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setup-instance'>
+      - (void) <strong>setup</strong>()
+    </p>
+    <div class='docstring'>
+  <p>console.log(&#39;showing stats widget&#39;);</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Tue Jan 15 2013 22:59:07 GMT+0000 (GMT)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.4
+  (Node.js v0.8.12).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>
