@@ -1,53 +1,63 @@
-var createLiveCodeLabCore;
+"use strict";
 
-createLiveCodeLabCore = function(paramsObject) {
-  "use strict";
+var LiveCodeLabCore;
 
-  var liveCodeLabCoreInstance;
-  liveCodeLabCoreInstance = {};
-  liveCodeLabCoreInstance.THREE = THREE;
-  liveCodeLabCoreInstance.TimeKeeper = new TimeKeeper();
-  liveCodeLabCoreInstance.BlendControls = new BlendControls(liveCodeLabCoreInstance);
-  liveCodeLabCoreInstance.ColourFunctions = createColourFunctions();
-  liveCodeLabCoreInstance.Renderer = new Renderer(liveCodeLabCoreInstance);
-  liveCodeLabCoreInstance.SoundSystem = createSoundSystem(paramsObject.eventRouter, buzz, createBowser(), createSampleBank(buzz));
-  liveCodeLabCoreInstance.BackgroundPainter = new BackgroundPainter(paramsObject.canvasForBackground, liveCodeLabCoreInstance);
-  liveCodeLabCoreInstance.DrawFunctionRunner = new DrawFunctionRunner(paramsObject.eventRouter, liveCodeLabCoreInstance);
-  liveCodeLabCoreInstance.CodeTransformer = new CodeTransformer(paramsObject.eventRouter, CoffeeScript, liveCodeLabCoreInstance);
-  liveCodeLabCoreInstance.AnimationLoop = new AnimationLoop(paramsObject.eventRouter, paramsObject.statsWidget, liveCodeLabCoreInstance);
-  liveCodeLabCoreInstance.ThreeJsSystem = new ThreeJsSystem(Detector, THREEx, paramsObject.blendedThreeJsSceneCanvas, paramsObject.forceCanvasRenderer, paramsObject.testMode, liveCodeLabCoreInstance.THREE);
-  liveCodeLabCoreInstance.MatrixCommands = new MatrixCommands(liveCodeLabCoreInstance.THREE, liveCodeLabCoreInstance);
-  liveCodeLabCoreInstance.GraphicsCommands = new GraphicsCommands(liveCodeLabCoreInstance.THREE, liveCodeLabCoreInstance);
-  liveCodeLabCoreInstance.LightSystem = new LightSystem(liveCodeLabCoreInstance.GraphicsCommands, liveCodeLabCoreInstance);
-  liveCodeLabCoreInstance.paintARandomBackground = function() {
-    return liveCodeLabCoreInstance.BackgroundPainter.paintARandomBackground();
+LiveCodeLabCore = (function() {
+
+  function LiveCodeLabCore(paramsObject) {
+    this.paramsObject = paramsObject;
+    this.three = THREE;
+    this.timeKeeper = new TimeKeeper();
+    this.blendControls = new BlendControls(this);
+    this.colourFunctions = createColourFunctions();
+    this.renderer = new Renderer(this);
+    this.soundSystem = createSoundSystem(this.paramsObject.eventRouter, buzz, createBowser(), createSampleBank(buzz));
+    this.backgroundPainter = new BackgroundPainter(this.paramsObject.canvasForBackground, this);
+    this.drawFunctionRunner = new DrawFunctionRunner(this.paramsObject.eventRouter, this);
+    this.codeTransformer = new CodeTransformer(this.paramsObject.eventRouter, CoffeeScript, this);
+    this.animationLoop = new AnimationLoop(this.paramsObject.eventRouter, this.paramsObject.statsWidget, this);
+    this.threeJsSystem = new ThreeJsSystem(Detector, THREEx, this.paramsObject.blendedThreeJsSceneCanvas, this.paramsObject.forceCanvasRenderer, this.paramsObject.testMode, this.three);
+    this.matrixCommands = new MatrixCommands(this.three, this);
+    this.graphicsCommands = new GraphicsCommands(this.three, this);
+    this.lightSystem = new LightSystem(this.graphicsCommands, this);
+  }
+
+  LiveCodeLabCore.prototype.paintARandomBackground = function() {
+    return this.backgroundPainter.paintARandomBackground();
   };
-  liveCodeLabCoreInstance.startAnimationLoop = function() {
-    return liveCodeLabCoreInstance.AnimationLoop.animate();
+
+  LiveCodeLabCore.prototype.startAnimationLoop = function() {
+    return this.animationLoop.animate();
   };
-  liveCodeLabCoreInstance.runLastWorkingDrawFunction = function() {
-    return liveCodeLabCoreInstance.DrawFunctionRunner.reinstateLastWorkingDrawFunction();
+
+  LiveCodeLabCore.prototype.runLastWorkingDrawFunction = function() {
+    return this.drawFunctionRunner.reinstateLastWorkingDrawFunction();
   };
-  liveCodeLabCoreInstance.loadAndTestAllTheSounds = function() {
-    return liveCodeLabCoreInstance.SoundSystem.loadAndTestAllTheSounds();
+
+  LiveCodeLabCore.prototype.loadAndTestAllTheSounds = function() {
+    return this.soundSystem.loadAndTestAllTheSounds();
   };
-  liveCodeLabCoreInstance.playStartupSound = function() {
-    return liveCodeLabCoreInstance.SoundSystem.playStartupSound();
+
+  LiveCodeLabCore.prototype.playStartupSound = function() {
+    return this.soundSystem.playStartupSound();
   };
-  liveCodeLabCoreInstance.isAudioSupported = function() {
-    return liveCodeLabCoreInstance.SoundSystem.isAudioSupported();
+
+  LiveCodeLabCore.prototype.isAudioSupported = function() {
+    return this.soundSystem.isAudioSupported();
   };
-  liveCodeLabCoreInstance.updateCode = function(updatedCode) {
-    liveCodeLabCoreInstance.CodeTransformer.updateCode(updatedCode);
-    if (updatedCode !== "" && liveCodeLabCoreInstance.dozingOff) {
-      liveCodeLabCoreInstance.dozingOff = false;
-      liveCodeLabCoreInstance.AnimationLoop.animate();
-      return paramsObject.eventRouter.trigger("livecodelab-waking-up");
+
+  LiveCodeLabCore.prototype.updateCode = function(updatedCode) {
+    this.codeTransformer.updateCode(updatedCode);
+    if (updatedCode !== "" && this.dozingOff) {
+      this.dozingOff = false;
+      this.animationLoop.animate();
+      return this.paramsObject.eventRouter.trigger("livecodelab-waking-up");
     }
   };
-  liveCodeLabCoreInstance.getForeground3DSceneImage = function(backgroundColor) {
+
+  LiveCodeLabCore.prototype.getForeground3DSceneImage = function(backgroundColor) {
     var blendedThreeJsSceneCanvas, ctx, ctxContext, img;
-    blendedThreeJsSceneCanvas = liveCodeLabCoreInstance.ThreeJsSystem.blendedThreeJsSceneCanvas;
+    blendedThreeJsSceneCanvas = this.threeJsSystem.blendedThreeJsSceneCanvas;
     img = new Image;
     img.src = blendedThreeJsSceneCanvas.toDataURL();
     if (backgroundColor) {
@@ -64,5 +74,7 @@ createLiveCodeLabCore = function(paramsObject) {
     }
     return img;
   };
-  return liveCodeLabCoreInstance;
-};
+
+  return LiveCodeLabCore;
+
+})();

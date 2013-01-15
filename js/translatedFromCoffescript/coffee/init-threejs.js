@@ -8,7 +8,7 @@ ThreeJsSystem = (function() {
 
   ThreeJsSystem.composer = {};
 
-  function ThreeJsSystem(Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer, testMode, liveCodeLabCore_THREE) {
+  function ThreeJsSystem(Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer, testMode, liveCodeLabCore_three) {
     var currentFrameThreeJsSceneCanvas, effectSaveTarget, fxaaPass, previousFrameThreeJSSceneRenderForBlendingCanvas, renderModel, renderTarget, renderTargetParameters, screenPass;
     this.blendedThreeJsSceneCanvas = blendedThreeJsSceneCanvas;
     this.forceCanvasRenderer = forceCanvasRenderer;
@@ -20,7 +20,7 @@ ThreeJsSystem = (function() {
     if (!this.forceCanvasRenderer && Detector.webgl) {
       this.ballDefaultDetLevel = 16;
       this.blendedThreeJsSceneCanvasContext = this.blendedThreeJsSceneCanvas.getContext("experimental-webgl");
-      this.renderer = new liveCodeLabCore_THREE.WebGLRenderer({
+      this.renderer = new liveCodeLabCore_three.WebGLRenderer({
         canvas: this.blendedThreeJsSceneCanvas,
         preserveDrawingBuffer: testMode,
         antialias: false,
@@ -40,16 +40,16 @@ ThreeJsSystem = (function() {
       previousFrameThreeJSSceneRenderForBlendingCanvas.height = this.blendedThreeJsSceneCanvas.height;
       this.previousFrameThreeJSSceneRenderForBlendingCanvasContext = this.previousFrameThreeJSSceneRenderForBlendingCanvas.getContext("2d");
       this.blendedThreeJsSceneCanvasContext = this.blendedThreeJsSceneCanvas.getContext("2d");
-      this.renderer = new liveCodeLabCore_THREE.CanvasRenderer({
+      this.renderer = new liveCodeLabCore_three.CanvasRenderer({
         canvas: currentFrameThreeJsSceneCanvas,
         antialias: true,
         preserveDrawingBuffer: testMode
       });
     }
     this.renderer.setSize(this.blendedThreeJsSceneCanvas.width, this.blendedThreeJsSceneCanvas.height);
-    this.scene = new liveCodeLabCore_THREE.Scene();
+    this.scene = new liveCodeLabCore_three.Scene();
     this.scene.matrixAutoUpdate = false;
-    this.camera = new liveCodeLabCore_THREE.PerspectiveCamera(35, this.blendedThreeJsSceneCanvas.width / this.blendedThreeJsSceneCanvas.height, 1, 10000);
+    this.camera = new liveCodeLabCore_three.PerspectiveCamera(35, this.blendedThreeJsSceneCanvas.width / this.blendedThreeJsSceneCanvas.height, 1, 10000);
     this.camera.position.set(0, 0, 5);
     this.scene.add(this.camera);
     THREEx.WindowResize.bind(this.renderer, this.camera);
@@ -61,18 +61,18 @@ ThreeJsSystem = (function() {
       screenPass = void 0;
       renderModel = void 0;
       renderTargetParameters = {
-        format: liveCodeLabCore_THREE.RGBAFormat,
+        format: liveCodeLabCore_three.RGBAFormat,
         stencilBuffer: true
       };
-      renderTarget = new liveCodeLabCore_THREE.WebGLRenderTarget(this.blendedThreeJsSceneCanvas.width, this.blendedThreeJsSceneCanvas.height, renderTargetParameters);
-      effectSaveTarget = new liveCodeLabCore_THREE.SavePass(new liveCodeLabCore_THREE.WebGLRenderTarget(this.blendedThreeJsSceneCanvas.width, this.blendedThreeJsSceneCanvas.height, renderTargetParameters));
+      renderTarget = new liveCodeLabCore_three.WebGLRenderTarget(this.blendedThreeJsSceneCanvas.width, this.blendedThreeJsSceneCanvas.height, renderTargetParameters);
+      effectSaveTarget = new liveCodeLabCore_three.SavePass(new liveCodeLabCore_three.WebGLRenderTarget(this.blendedThreeJsSceneCanvas.width, this.blendedThreeJsSceneCanvas.height, renderTargetParameters));
       effectSaveTarget.clear = false;
-      this.effectBlend = new liveCodeLabCore_THREE.ShaderPass(liveCodeLabCore_THREE.ShaderExtras.blend, "tDiffuse1");
-      screenPass = new liveCodeLabCore_THREE.ShaderPass(liveCodeLabCore_THREE.ShaderExtras.screen);
+      this.effectBlend = new liveCodeLabCore_three.ShaderPass(liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1");
+      screenPass = new liveCodeLabCore_three.ShaderPass(liveCodeLabCore_three.ShaderExtras.screen);
       this.effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget;
       this.effectBlend.uniforms.mixRatio.value = 0;
-      renderModel = new liveCodeLabCore_THREE.RenderPass(this.scene, this.camera);
-      this.composer = new liveCodeLabCore_THREE.EffectComposer(this.renderer, renderTarget);
+      renderModel = new liveCodeLabCore_three.RenderPass(this.scene, this.camera);
+      this.composer = new liveCodeLabCore_three.EffectComposer(this.renderer, renderTarget);
       this.composer.addPass(renderModel);
       this.composer.addPass(this.effectBlend);
       this.composer.addPass(effectSaveTarget);

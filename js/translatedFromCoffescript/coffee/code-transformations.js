@@ -196,13 +196,13 @@ CodeTransformer = (function() {
     reasonOfBasicError = void 0;
     this.currentCodeString = code;
     if (this.currentCodeString === "") {
-      this.liveCodeLabCoreInstance.GraphicsCommands.resetTheSpinThingy = true;
+      this.liveCodeLabCoreInstance.graphicsCommands.resetTheSpinThingy = true;
       programHasBasicError = false;
       this.eventRouter.trigger("clear-error");
-      this.liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
+      this.liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
       functionFromCompiledCode = new Function("");
-      this.liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction(null);
-      this.liveCodeLabCoreInstance.DrawFunctionRunner.lastStableDrawFunction = null;
+      this.liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction(null);
+      this.liveCodeLabCoreInstance.drawFunctionRunner.lastStableDrawFunction = null;
       return functionFromCompiledCode;
     }
     code = this.removeTickedDoOnce(code);
@@ -305,10 +305,10 @@ CodeTransformer = (function() {
     }
     programHasBasicError = false;
     this.eventRouter.trigger("clear-error");
-    this.liveCodeLabCoreInstance.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
+    this.liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0;
     compiledOutput = compiledOutput.replace(/var frame/, ";");
     functionFromCompiledCode = new Function(compiledOutput);
-    this.liveCodeLabCoreInstance.DrawFunctionRunner.setDrawFunction(functionFromCompiledCode);
+    this.liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction(functionFromCompiledCode);
     return functionFromCompiledCode;
   };
 

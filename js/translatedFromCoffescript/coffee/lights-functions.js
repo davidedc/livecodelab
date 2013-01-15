@@ -6,13 +6,13 @@ LightSystem = (function() {
 
   LightSystem.prototype.lightsAreOn = false;
 
-  function LightSystem(liveCodeLabCore_GraphicsCommands, liveCodeLabCoreInstance) {
+  function LightSystem(liveCodeLabCore_graphicsCommands, liveCodeLabCoreInstance) {
     var _this = this;
-    this.liveCodeLabCore_GraphicsCommands = liveCodeLabCore_GraphicsCommands;
+    this.liveCodeLabCore_graphicsCommands = liveCodeLabCore_graphicsCommands;
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
-    this.objectPools = this.liveCodeLabCore_GraphicsCommands.objectPools;
-    this.primitiveTypes = this.liveCodeLabCore_GraphicsCommands.primitiveTypes;
-    this.objectsUsedInFrameCounts = this.liveCodeLabCore_GraphicsCommands.objectsUsedInFrameCounts;
+    this.objectPools = this.liveCodeLabCore_graphicsCommands.objectPools;
+    this.primitiveTypes = this.liveCodeLabCore_graphicsCommands.primitiveTypes;
+    this.objectsUsedInFrameCounts = this.liveCodeLabCore_graphicsCommands.objectsUsedInFrameCounts;
     this.objectPools[this.primitiveTypes.ambientLight] = [];
     this.objectsUsedInFrameCounts[this.primitiveTypes.ambientLight] = 0;
     window.lights = function() {
@@ -41,17 +41,17 @@ LightSystem = (function() {
     ambientLightsPool = void 0;
     pooledAmbientLight = void 0;
     if (r === undefined) {
-      colorToBeUsed = this.liveCodeLabCoreInstance.ColourFunctions.color(255);
+      colorToBeUsed = this.liveCodeLabCoreInstance.colourFunctions.color(255);
     } else {
-      colorToBeUsed = this.liveCodeLabCoreInstance.ColourFunctions.color(r, g, b, a);
+      colorToBeUsed = this.liveCodeLabCoreInstance.colourFunctions.color(r, g, b, a);
     }
     this.lightsAreOn = true;
-    this.liveCodeLabCore_GraphicsCommands.defaultNormalFill = false;
-    this.liveCodeLabCore_GraphicsCommands.defaultNormalStroke = false;
+    this.liveCodeLabCore_graphicsCommands.defaultNormalFill = false;
+    this.liveCodeLabCore_graphicsCommands.defaultNormalStroke = false;
     ambientLightsPool = this.objectPools[this.primitiveTypes.ambientLight];
     pooledAmbientLight = ambientLightsPool[this.objectsUsedInFrameCounts[this.primitiveTypes.ambientLight]];
     if (pooledAmbientLight === undefined) {
-      pooledAmbientLight = new this.liveCodeLabCoreInstance.THREE.PointLight(colorToBeUsed);
+      pooledAmbientLight = new this.liveCodeLabCoreInstance.three.PointLight(colorToBeUsed);
       pooledAmbientLight.position.set(10, 50, 130);
       newLightCreated = true;
       ambientLightsPool.push(pooledAmbientLight);
@@ -62,7 +62,7 @@ LightSystem = (function() {
     }
     this.objectsUsedInFrameCounts[this.primitiveTypes.ambientLight] += 1;
     if (newLightCreated) {
-      return this.liveCodeLabCoreInstance.ThreeJsSystem.scene.add(pooledAmbientLight);
+      return this.liveCodeLabCoreInstance.threeJsSystem.scene.add(pooledAmbientLight);
     }
   };
 

@@ -69,28 +69,28 @@ loop "animate" function.</p>             </td>             <td class="code">    
 
   
 </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>animation loop</p>             </td>             <td class="code">               <div class="highlight"><pre>  animate: -&gt;
-    <span class="property">@liveCodeLabCoreInstance</span>.MatrixCommands.resetMatrixStack()
+    <span class="property">@liveCodeLabCoreInstance</span>.matrixCommands.resetMatrixStack()
     
 </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>the sound list needs to be cleaned
-so that the user program can create its own from scratch</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@liveCodeLabCoreInstance</span>.SoundSystem.resetLoops()
+so that the user program can create its own from scratch</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@liveCodeLabCoreInstance</span>.soundSystem.resetLoops()
     <span class="keyword">if</span> frame <span class="keyword">is</span> <span class="number">0</span>
-      <span class="property">@liveCodeLabCoreInstance</span>.TimeKeeper.resetTime()
+      <span class="property">@liveCodeLabCoreInstance</span>.timeKeeper.resetTime()
     <span class="keyword">else</span>
-      <span class="property">@liveCodeLabCoreInstance</span>.TimeKeeper.updateTime()
-    <span class="property">@liveCodeLabCoreInstance</span>.DrawFunctionRunner.resetTrackingOfDoOnceOccurrences()
-    <span class="property">@liveCodeLabCoreInstance</span>.SoundSystem.anyCodeReactingTobpm = <span class="literal">false</span>
-    <span class="property">@liveCodeLabCoreInstance</span>.SoundSystem.SetUpdatesPerMinute <span class="number">60</span> * <span class="number">4</span>
-    <span class="property">@liveCodeLabCoreInstance</span>.LightSystem.noLights()
-    <span class="property">@liveCodeLabCoreInstance</span>.GraphicsCommands.reset()
-    <span class="property">@liveCodeLabCoreInstance</span>.BlendControls.animationStyle \
-      <span class="property">@liveCodeLabCoreInstance</span>.BlendControls.animationStyles.normal
-    <span class="property">@liveCodeLabCoreInstance</span>.BackgroundPainter.resetGradientStack()
+      <span class="property">@liveCodeLabCoreInstance</span>.timeKeeper.updateTime()
+    <span class="property">@liveCodeLabCoreInstance</span>.drawFunctionRunner.resetTrackingOfDoOnceOccurrences()
+    <span class="property">@liveCodeLabCoreInstance</span>.soundSystem.anyCodeReactingTobpm = <span class="literal">false</span>
+    <span class="property">@liveCodeLabCoreInstance</span>.soundSystem.SetUpdatesPerMinute <span class="number">60</span> * <span class="number">4</span>
+    <span class="property">@liveCodeLabCoreInstance</span>.lightSystem.noLights()
+    <span class="property">@liveCodeLabCoreInstance</span>.graphicsCommands.reset()
+    <span class="property">@liveCodeLabCoreInstance</span>.blendControls.animationStyle \
+      <span class="property">@liveCodeLabCoreInstance</span>.blendControls.animationStyles.normal
+    <span class="property">@liveCodeLabCoreInstance</span>.backgroundPainter.resetGradientStack()
     
 </pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>if the draw function is empty, then don't schedule the
 next animation frame and set a "I'm sleeping" flag.
 We'll re-start the animation when the editor content
 changes. Note that this frame goes to completion anyways, because
-we actually do want to render one "empty screen" frame.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> <span class="property">@liveCodeLabCoreInstance</span>.DrawFunctionRunner.drawFunction
+we actually do want to render one "empty screen" frame.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> <span class="property">@liveCodeLabCoreInstance</span>.drawFunctionRunner.drawFunction
       <span class="property">@scheduleNextFrame</span>()
       
 </pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Now here there is another try/catch check when the draw function is ran.
@@ -102,14 +102,14 @@ variables. For example:
 draws only a box, because the execution silently fails at the yeLow reference.
 So in that case we need to a) highlight the error and b) run the previously
 known good program.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">try</span>
-        <span class="property">@liveCodeLabCoreInstance</span>.DrawFunctionRunner.runDrawFunction()
+        <span class="property">@liveCodeLabCoreInstance</span>.drawFunctionRunner.runDrawFunction()
       <span class="keyword">catch</span> e
         
 </pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>alert('runtime error');</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="property">@eventRouter</span>.trigger <span class="string">"runtime-error-thrown"</span>, e
         <span class="keyword">return</span>
-      DrawFunctionRunner = <span class="property">@liveCodeLabCoreInstance</span>.DrawFunctionRunner
-      DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun \
-        <span class="property">@liveCodeLabCoreInstance</span>.CodeTransformer
+      drawFunctionRunner = <span class="property">@liveCodeLabCoreInstance</span>.drawFunctionRunner
+      drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun \
+        <span class="property">@liveCodeLabCoreInstance</span>.codeTransformer
     <span class="keyword">else</span>
       <span class="property">@liveCodeLabCoreInstance</span>.dozingOff = <span class="literal">true</span>
 </pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>the program is empty and so it's the screen. Effectively, the user
@@ -119,15 +119,15 @@ is starting from scratch, so the frame variable should be reset to zero.</p>    
 </pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>we have to repeat this check because in the case
 the user has set frame = 0,
 then we have to catch that case here
-after the program has executed</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@liveCodeLabCoreInstance</span>.TimeKeeper.resetTime()  <span class="keyword">if</span> frame <span class="keyword">is</span> <span class="number">0</span>
-    <span class="property">@liveCodeLabCoreInstance</span>.BlendControls.animationStyleUpdateIfChanged()
-    <span class="property">@liveCodeLabCoreInstance</span>.BackgroundPainter.simpleGradientUpdateIfChanged()
-    <span class="property">@liveCodeLabCoreInstance</span>.SoundSystem.changeUpdatesPerMinuteIfNeeded()
+after the program has executed</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@liveCodeLabCoreInstance</span>.timeKeeper.resetTime()  <span class="keyword">if</span> frame <span class="keyword">is</span> <span class="number">0</span>
+    <span class="property">@liveCodeLabCoreInstance</span>.blendControls.animationStyleUpdateIfChanged()
+    <span class="property">@liveCodeLabCoreInstance</span>.backgroundPainter.simpleGradientUpdateIfChanged()
+    <span class="property">@liveCodeLabCoreInstance</span>.soundSystem.changeUpdatesPerMinuteIfNeeded()
     
 </pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>"frame" starts at zero, so we increment after the first time the draw
 function has been run.</p>             </td>             <td class="code">               <div class="highlight"><pre>    frame++
     
-</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>do the render</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@liveCodeLabCoreInstance</span>.Renderer.render <span class="property">@liveCodeLabCoreInstance</span>.GraphicsCommands
+</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>do the render</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@liveCodeLabCoreInstance</span>.renderer.render <span class="property">@liveCodeLabCoreInstance</span>.graphicsCommands
     
 </pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>update stats</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@stats</span>.update()  <span class="keyword">if</span> <span class="property">@stats</span> <span class="keyword">isnt</span> <span class="literal">null</span>
 

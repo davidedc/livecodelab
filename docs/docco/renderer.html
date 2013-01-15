@@ -5,18 +5,18 @@
   
   render: (graphics) -&gt;
     
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>    ThreeJsSystem = <span class="property">@liveCodeLabCoreInstance</span>.ThreeJsSystem
-    renderer = ThreeJsSystem.renderer
-    blendedThreeJsSceneCanvasContext = ThreeJsSystem.blendedThreeJsSceneCanvasContext
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>    threeJsSystem = <span class="property">@liveCodeLabCoreInstance</span>.threeJsSystem
+    renderer = threeJsSystem.renderer
+    blendedThreeJsSceneCanvasContext = threeJsSystem.blendedThreeJsSceneCanvasContext
     previousFrameThreeJSSceneRenderForBlendingCanvasContext =
-      ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext
+      threeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext
     
     <span class="property">@combDisplayList</span> graphics
-    <span class="keyword">if</span> ThreeJsSystem.isWebGLUsed
-      ThreeJsSystem.composer.render()
+    <span class="keyword">if</span> threeJsSystem.isWebGLUsed
+      threeJsSystem.composer.render()
     <span class="keyword">else</span>
       
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>the renderer draws into an offscreen canvas called currentFrameThreeJsSceneCanvas</p>             </td>             <td class="code">               <div class="highlight"><pre>      renderer.render ThreeJsSystem.scene, ThreeJsSystem.camera
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>the renderer draws into an offscreen canvas called currentFrameThreeJsSceneCanvas</p>             </td>             <td class="code">               <div class="highlight"><pre>      renderer.render threeJsSystem.scene, threeJsSystem.camera
       
 </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>clear the final render context</p>             </td>             <td class="code">               <div class="highlight"><pre>      blendedThreeJsSceneCanvasContext.globalAlpha = <span class="number">1.0</span>
       blendedThreeJsSceneCanvasContext.clearRect <span class="number">0</span>, <span class="number">0</span>, window.innerWidth, window.innerHeight
@@ -26,18 +26,18 @@ this needs a few steps so we can get the motionBlur or the paintOver effects rig
 TODO: I'm sure that this can be optimised for the case where there is no
 motionBlur and no paintOver, because we don't need to keep and blend with
 the previous frame in that case.</p>             </td>             <td class="code">               <div class="highlight"><pre>      blendedThreeJsSceneCanvasContext.globalAlpha =
-        <span class="property">@liveCodeLabCoreInstance</span>.BlendControls.blendAmount
+        <span class="property">@liveCodeLabCoreInstance</span>.blendControls.blendAmount
       blendedThreeJsSceneCanvasContext.drawImage \
-        ThreeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, <span class="number">0</span>, <span class="number">0</span>
+        threeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, <span class="number">0</span>, <span class="number">0</span>
       blendedThreeJsSceneCanvasContext.globalAlpha = <span class="number">1.0</span>
       blendedThreeJsSceneCanvasContext.drawImage \
-        ThreeJsSystem.currentFrameThreeJsSceneCanvas, <span class="number">0</span>, <span class="number">0</span>
+        threeJsSystem.currentFrameThreeJsSceneCanvas, <span class="number">0</span>, <span class="number">0</span>
       previousFrameThreeJSSceneRenderForBlendingCanvasContext.globalCompositeOperation =
         <span class="string">"copy"</span>
       previousFrameThreeJSSceneRenderForBlendingCanvasContext.drawImage \
-        ThreeJsSystem.blendedThreeJsSceneCanvas, <span class="number">0</span>, <span class="number">0</span>
+        threeJsSystem.blendedThreeJsSceneCanvas, <span class="number">0</span>, <span class="number">0</span>
       
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>clear the renderer's canvas to transparent black</p>             </td>             <td class="code">               <div class="highlight"><pre>      ThreeJsSystem.currentFrameThreeJsSceneCanvasContext.clearRect \
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>clear the renderer's canvas to transparent black</p>             </td>             <td class="code">               <div class="highlight"><pre>      threeJsSystem.currentFrameThreeJsSceneCanvasContext.clearRect \
         <span class="number">0</span>, <span class="number">0</span>, window.innerWidth, window.innerHeight
 
   
@@ -73,12 +73,12 @@ Note: Mr Doob said that the new scene destruction/creation primitives of Three.j
     sceneObject = <span class="literal">undefined</span>
     primitiveType = <span class="literal">undefined</span>
     
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>    ThreeJsSystem = <span class="property">@liveCodeLabCoreInstance</span>.ThreeJsSystem
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>    threeJsSystem = <span class="property">@liveCodeLabCoreInstance</span>.threeJsSystem
     objectsUsedInFrameCounts = graphics.objectsUsedInFrameCounts
     
 </pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>scan all the objects in the display list</p>             </td>             <td class="code">               <div class="highlight"><pre>    i = <span class="number">0</span>
-    <span class="keyword">while</span> i &lt; ThreeJsSystem.scene.children.length
-      sceneObject = ThreeJsSystem.scene.children[i]
+    <span class="keyword">while</span> i &lt; threeJsSystem.scene.children.length
+      sceneObject = threeJsSystem.scene.children[i]
       
 </pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>check the type of object. Each type has one pool. Go through each object in the
 pool and set to visible the number of used objects in this frame, set the

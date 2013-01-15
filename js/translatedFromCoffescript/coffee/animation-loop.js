@@ -54,43 +54,43 @@ AnimationLoop = (function() {
   };
 
   AnimationLoop.prototype.animate = function() {
-    var DrawFunctionRunner;
-    this.liveCodeLabCoreInstance.MatrixCommands.resetMatrixStack();
-    this.liveCodeLabCoreInstance.SoundSystem.resetLoops();
+    var drawFunctionRunner;
+    this.liveCodeLabCoreInstance.matrixCommands.resetMatrixStack();
+    this.liveCodeLabCoreInstance.soundSystem.resetLoops();
     if (frame === 0) {
-      this.liveCodeLabCoreInstance.TimeKeeper.resetTime();
+      this.liveCodeLabCoreInstance.timeKeeper.resetTime();
     } else {
-      this.liveCodeLabCoreInstance.TimeKeeper.updateTime();
+      this.liveCodeLabCoreInstance.timeKeeper.updateTime();
     }
-    this.liveCodeLabCoreInstance.DrawFunctionRunner.resetTrackingOfDoOnceOccurrences();
-    this.liveCodeLabCoreInstance.SoundSystem.anyCodeReactingTobpm = false;
-    this.liveCodeLabCoreInstance.SoundSystem.SetUpdatesPerMinute(60 * 4);
-    this.liveCodeLabCoreInstance.LightSystem.noLights();
-    this.liveCodeLabCoreInstance.GraphicsCommands.reset();
-    this.liveCodeLabCoreInstance.BlendControls.animationStyle(this.liveCodeLabCoreInstance.BlendControls.animationStyles.normal);
-    this.liveCodeLabCoreInstance.BackgroundPainter.resetGradientStack();
-    if (this.liveCodeLabCoreInstance.DrawFunctionRunner.drawFunction) {
+    this.liveCodeLabCoreInstance.drawFunctionRunner.resetTrackingOfDoOnceOccurrences();
+    this.liveCodeLabCoreInstance.soundSystem.anyCodeReactingTobpm = false;
+    this.liveCodeLabCoreInstance.soundSystem.SetUpdatesPerMinute(60 * 4);
+    this.liveCodeLabCoreInstance.lightSystem.noLights();
+    this.liveCodeLabCoreInstance.graphicsCommands.reset();
+    this.liveCodeLabCoreInstance.blendControls.animationStyle(this.liveCodeLabCoreInstance.blendControls.animationStyles.normal);
+    this.liveCodeLabCoreInstance.backgroundPainter.resetGradientStack();
+    if (this.liveCodeLabCoreInstance.drawFunctionRunner.drawFunction) {
       this.scheduleNextFrame();
       try {
-        this.liveCodeLabCoreInstance.DrawFunctionRunner.runDrawFunction();
+        this.liveCodeLabCoreInstance.drawFunctionRunner.runDrawFunction();
       } catch (e) {
         this.eventRouter.trigger("runtime-error-thrown", e);
         return;
       }
-      DrawFunctionRunner = this.liveCodeLabCoreInstance.DrawFunctionRunner;
-      DrawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(this.liveCodeLabCoreInstance.CodeTransformer);
+      drawFunctionRunner = this.liveCodeLabCoreInstance.drawFunctionRunner;
+      drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(this.liveCodeLabCoreInstance.codeTransformer);
     } else {
       this.liveCodeLabCoreInstance.dozingOff = true;
       frame = 0;
     }
     if (frame === 0) {
-      this.liveCodeLabCoreInstance.TimeKeeper.resetTime();
+      this.liveCodeLabCoreInstance.timeKeeper.resetTime();
     }
-    this.liveCodeLabCoreInstance.BlendControls.animationStyleUpdateIfChanged();
-    this.liveCodeLabCoreInstance.BackgroundPainter.simpleGradientUpdateIfChanged();
-    this.liveCodeLabCoreInstance.SoundSystem.changeUpdatesPerMinuteIfNeeded();
+    this.liveCodeLabCoreInstance.blendControls.animationStyleUpdateIfChanged();
+    this.liveCodeLabCoreInstance.backgroundPainter.simpleGradientUpdateIfChanged();
+    this.liveCodeLabCoreInstance.soundSystem.changeUpdatesPerMinuteIfNeeded();
     frame++;
-    this.liveCodeLabCoreInstance.Renderer.render(this.liveCodeLabCoreInstance.GraphicsCommands);
+    this.liveCodeLabCoreInstance.renderer.render(this.liveCodeLabCoreInstance.graphicsCommands);
     if (this.stats !== null) {
       return this.stats.update();
     }

@@ -9,7 +9,7 @@
 	  <span class="property">@blendedThreeJsSceneCanvas</span>, \
 	  <span class="property">@forceCanvasRenderer</span>, \
 	  testMode, \
-	  liveCodeLabCore_THREE ) -&gt;
+	  liveCodeLabCore_three ) -&gt;
 
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>if we've not been passed a canvas, then create a new one and make it
 as big as the browser window content.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">unless</span> <span class="property">@blendedThreeJsSceneCanvas</span>
@@ -26,7 +26,7 @@ postprocessing effects, which use shaders.</p>             </td>             <td
       <span class="property">@blendedThreeJsSceneCanvasContext</span> =
         <span class="property">@blendedThreeJsSceneCanvas</span>.getContext(<span class="string">"experimental-webgl"</span>)
       
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/WebGLRenderer</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@renderer</span> = <span class="keyword">new</span> liveCodeLabCore_THREE.WebGLRenderer(
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/WebGLRenderer</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@renderer</span> = <span class="keyword">new</span> liveCodeLabCore_three.WebGLRenderer(
         canvas: <span class="property">@blendedThreeJsSceneCanvas</span>
         preserveDrawingBuffer: testMode <span class="comment"># to allow screenshot</span>
         antialias: <span class="literal">false</span>
@@ -64,7 +64,7 @@ and postprocessing/shaders.</p>             </td>             <td class="code"> 
       <span class="property">@blendedThreeJsSceneCanvasContext</span> =
         <span class="property">@blendedThreeJsSceneCanvas</span>.getContext(<span class="string">"2d"</span>)
       
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/CanvasRenderer</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@renderer</span> = <span class="keyword">new</span> liveCodeLabCore_THREE.CanvasRenderer(
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/CanvasRenderer</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@renderer</span> = <span class="keyword">new</span> liveCodeLabCore_three.CanvasRenderer(
         canvas: currentFrameThreeJsSceneCanvas
         antialias: <span class="literal">true</span> <span class="comment"># to get smoother output</span>
         preserveDrawingBuffer: testMode <span class="comment"># to allow screenshot</span>
@@ -72,10 +72,10 @@ and postprocessing/shaders.</p>             </td>             <td class="code"> 
       
     <span class="property">@renderer</span>.setSize <span class="property">@blendedThreeJsSceneCanvas</span>.width, \
       <span class="property">@blendedThreeJsSceneCanvas</span>.height
-    <span class="property">@scene</span> = <span class="keyword">new</span> liveCodeLabCore_THREE.Scene()
+    <span class="property">@scene</span> = <span class="keyword">new</span> liveCodeLabCore_three.Scene()
     <span class="property">@scene</span>.matrixAutoUpdate = <span class="literal">false</span>
     
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>put a camera in the scene</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@camera</span> = <span class="keyword">new</span> liveCodeLabCore_THREE.PerspectiveCamera(<span class="number">35</span>, \
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>put a camera in the scene</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@camera</span> = <span class="keyword">new</span> liveCodeLabCore_three.PerspectiveCamera(<span class="number">35</span>, \
       <span class="property">@blendedThreeJsSceneCanvas</span>.width / \
       <span class="property">@blendedThreeJsSceneCanvas</span>.height, <span class="number">1</span>, <span class="number">10000</span>)
     <span class="property">@camera</span>.position.set <span class="number">0</span>, <span class="number">0</span>, <span class="number">5</span>
@@ -91,15 +91,15 @@ and postprocessing/shaders.</p>             </td>             <td class="code"> 
       screenPass = <span class="literal">undefined</span>
       renderModel = <span class="literal">undefined</span>
       renderTargetParameters =
-        format: liveCodeLabCore_THREE.RGBAFormat
+        format: liveCodeLabCore_three.RGBAFormat
         stencilBuffer: <span class="literal">true</span>
     
-      renderTarget = <span class="keyword">new</span> liveCodeLabCore_THREE.WebGLRenderTarget(
+      renderTarget = <span class="keyword">new</span> liveCodeLabCore_three.WebGLRenderTarget(
         <span class="property">@blendedThreeJsSceneCanvas</span>.width,
         <span class="property">@blendedThreeJsSceneCanvas</span>.height,
         renderTargetParameters)
-      effectSaveTarget = <span class="keyword">new</span> liveCodeLabCore_THREE.SavePass(
-        <span class="keyword">new</span> liveCodeLabCore_THREE.WebGLRenderTarget(
+      effectSaveTarget = <span class="keyword">new</span> liveCodeLabCore_three.SavePass(
+        <span class="keyword">new</span> liveCodeLabCore_three.WebGLRenderTarget(
           <span class="property">@blendedThreeJsSceneCanvas</span>.width,
           <span class="property">@blendedThreeJsSceneCanvas</span>.height,
           renderTargetParameters
@@ -113,17 +113,17 @@ b) it blends in some black pixels, so it only looks good in dark backgrounds
 The problem of blending with black pixels is the same problem of the
 motionBlur leaving a black trail - tracked in github with
 https://github.com/davidedc/livecodelab/issues/22</p>             </td>             <td class="code">               <div class="highlight"><pre>      
-</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>fxaaPass = new liveCodeLabCore<em>THREE.ShaderPass(liveCodeLabCore</em>THREE.ShaderExtras.fxaa);
-fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@effectBlend</span> = <span class="keyword">new</span> liveCodeLabCore_THREE.ShaderPass(
-        liveCodeLabCore_THREE.ShaderExtras.blend, <span class="string">"tDiffuse1"</span>)
-      screenPass = <span class="keyword">new</span> liveCodeLabCore_THREE.ShaderPass(
-        liveCodeLabCore_THREE.ShaderExtras.screen)
+</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>fxaaPass = new liveCodeLabCore<em>three.ShaderPass(liveCodeLabCore</em>three.ShaderExtras.fxaa);
+fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@effectBlend</span> = <span class="keyword">new</span> liveCodeLabCore_three.ShaderPass(
+        liveCodeLabCore_three.ShaderExtras.blend, <span class="string">"tDiffuse1"</span>)
+      screenPass = <span class="keyword">new</span> liveCodeLabCore_three.ShaderPass(
+        liveCodeLabCore_three.ShaderExtras.screen)
       
 </pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>motion blur</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@effectBlend</span>.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
       <span class="property">@effectBlend</span>.uniforms.mixRatio.value = <span class="number">0</span>
-      renderModel = <span class="keyword">new</span> liveCodeLabCore_THREE.RenderPass(
+      renderModel = <span class="keyword">new</span> liveCodeLabCore_three.RenderPass(
         <span class="property">@scene</span>, <span class="property">@camera</span>)
-      <span class="property">@composer</span> = <span class="keyword">new</span> liveCodeLabCore_THREE.EffectComposer(
+      <span class="property">@composer</span> = <span class="keyword">new</span> liveCodeLabCore_three.EffectComposer(
         <span class="property">@renderer</span>, renderTarget)
       <span class="property">@composer</span>.addPass renderModel
       

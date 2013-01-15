@@ -37,10 +37,10 @@ DrawFunctionRunner = (function() {
   };
 
   DrawFunctionRunner.prototype.putTicksNextToDoOnceBlocksThatHaveBeenRun = function() {
-    var CodeTransformer;
-    CodeTransformer = this.liveCodeLabCoreInstance.CodeTransformer;
+    var codeTransformer;
+    codeTransformer = this.liveCodeLabCoreInstance.codeTransformer;
     if (this.doOnceOccurrencesLineNumbers.length !== 0) {
-      return this.setDrawFunction(CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(CodeTransformer, this.doOnceOccurrencesLineNumbers));
+      return this.setDrawFunction(codeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(codeTransformer, this.doOnceOccurrencesLineNumbers));
     }
   };
 

@@ -36,20 +36,20 @@ BlendControls = (function() {
       return;
     }
     this.previousanimationStyleValue = this.animationStyleValue;
-    isWebGLUsed = this.liveCodeLabCoreInstance.ThreeJsSystem.isWebGLUsed;
+    isWebGLUsed = this.liveCodeLabCoreInstance.threeJsSystem.isWebGLUsed;
     this.animationStyles = this.animationStyles;
     if (isWebGLUsed && this.animationStyleValue === this.animationStyles.motionBlur) {
-      this.liveCodeLabCoreInstance.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = 0.7;
+      this.liveCodeLabCoreInstance.threeJsSystem.effectBlend.uniforms.mixRatio.value = 0.7;
     } else if (!isWebGLUsed && this.animationStyleValue === this.animationStyles.motionBlur) {
       this.blendAmount = 0.6;
     }
     if (isWebGLUsed && this.animationStyleValue === this.animationStyles.paintOver) {
-      this.liveCodeLabCoreInstance.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = 1;
+      this.liveCodeLabCoreInstance.threeJsSystem.effectBlend.uniforms.mixRatio.value = 1;
     } else if (!isWebGLUsed && this.animationStyleValue === this.animationStyles.paintOver) {
       this.blendAmount = 1;
     }
     if (isWebGLUsed && this.animationStyleValue === this.animationStyles.normal) {
-      return this.liveCodeLabCoreInstance.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = 0;
+      return this.liveCodeLabCoreInstance.threeJsSystem.effectBlend.uniforms.mixRatio.value = 0;
     } else if (!isWebGLUsed && this.animationStyleValue === this.animationStyles.normal) {
       return this.blendAmount = 0;
     }

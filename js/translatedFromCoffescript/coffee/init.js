@@ -42,7 +42,7 @@ startEnvironment = function(paramsObject) {
     paramsObject.forceCanvasRenderer = false;
   }
   colourNames = (new Colours()).colourNames;
-  liveCodeLabCore = createLiveCodeLabCore({
+  liveCodeLabCore = new LiveCodeLabCore({
     blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas,
     canvasForBackground: paramsObject.canvasForBackground,
     forceCanvasRenderer: paramsObject.forceCanvasRenderer,

@@ -299,13 +299,13 @@ that was passed</p>             </td>             <td class="code">             
   	reasonOfBasicError = <span class="literal">undefined</span>
   	<span class="property">@currentCodeString</span> = code
   	<span class="keyword">if</span> <span class="property">@currentCodeString</span> <span class="keyword">is</span> <span class="string">""</span>
-      <span class="property">@liveCodeLabCoreInstance</span>.GraphicsCommands.resetTheSpinThingy = <span class="literal">true</span>
+      <span class="property">@liveCodeLabCoreInstance</span>.graphicsCommands.resetTheSpinThingy = <span class="literal">true</span>
       programHasBasicError = <span class="literal">false</span>
       <span class="property">@eventRouter</span>.trigger <span class="string">"clear-error"</span>
-      <span class="property">@liveCodeLabCoreInstance</span>.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>
+      <span class="property">@liveCodeLabCoreInstance</span>.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>
       functionFromCompiledCode = <span class="keyword">new</span> Function(<span class="string">""</span>)
-      <span class="property">@liveCodeLabCoreInstance</span>.DrawFunctionRunner.setDrawFunction <span class="literal">null</span>
-      <span class="property">@liveCodeLabCoreInstance</span>.DrawFunctionRunner.lastStableDrawFunction = <span class="literal">null</span>
+      <span class="property">@liveCodeLabCoreInstance</span>.drawFunctionRunner.setDrawFunction <span class="literal">null</span>
+      <span class="property">@liveCodeLabCoreInstance</span>.drawFunctionRunner.lastStableDrawFunction = <span class="literal">null</span>
       <span class="keyword">return</span> functionFromCompiledCode
   	code = <span class="property">@removeTickedDoOnce</span>(code)
   	
@@ -490,7 +490,7 @@ the new code</p>             </td>             <td class="code">               <
   	
 </pre></div>             </td>           </tr>                               <tr id="section-58">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-58">&#182;</a>               </div>               <p>see here for the deepest examination ever of "eval"
 http://perfectionkills.com/global-eval-what-are-the-options/
-note that exceptions are caught by the window.onerror callback</p>             </td>             <td class="code">               <div class="highlight"><pre>  	<span class="property">@liveCodeLabCoreInstance</span>.DrawFunctionRunner.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>
+note that exceptions are caught by the window.onerror callback</p>             </td>             <td class="code">               <div class="highlight"><pre>  	<span class="property">@liveCodeLabCoreInstance</span>.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>
   	
 </pre></div>             </td>           </tr>                               <tr id="section-59">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-59">&#182;</a>               </div>               <p>You might want to change the frame count from the program
 just like you can in Processing, but it turns out that when
@@ -503,7 +503,7 @@ some variables as global, for the time being let's put
 the cheap hack in place i.e. remove any local declaration that the
 coffeescript to javascript translator inserts.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	compiledOutput = compiledOutput.replace(<span class="regexp">/var frame/</span>, <span class="string">";"</span>)
   	functionFromCompiledCode = <span class="keyword">new</span> Function(compiledOutput)
-  	<span class="property">@liveCodeLabCoreInstance</span>.DrawFunctionRunner.setDrawFunction functionFromCompiledCode
+  	<span class="property">@liveCodeLabCoreInstance</span>.drawFunctionRunner.setDrawFunction functionFromCompiledCode
   	functionFromCompiledCode
 
 </pre></div>             </td>           </tr>                               <tr id="section-60">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-60">&#182;</a>               </div>               <p>this function is used externally after the code has been

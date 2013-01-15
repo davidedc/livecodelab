@@ -31,11 +31,11 @@ LiveCodeLab might be running an older version.</p>             </td>            
     <span class="property">@doOnceOccurrencesLineNumbers</span> = []
 
   putTicksNextToDoOnceBlocksThatHaveBeenRun: -&gt;
-    CodeTransformer = <span class="property">@liveCodeLabCoreInstance</span>.CodeTransformer
+    codeTransformer = <span class="property">@liveCodeLabCoreInstance</span>.codeTransformer
     <span class="keyword">if</span> <span class="property">@doOnceOccurrencesLineNumbers</span>.length <span class="keyword">isnt</span> <span class="number">0</span>
       <span class="property">@setDrawFunction</span> \
-        CodeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(
-          CodeTransformer, <span class="property">@doOnceOccurrencesLineNumbers</span>
+        codeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(
+          codeTransformer, <span class="property">@doOnceOccurrencesLineNumbers</span>
         )
 
   runDrawFunction: -&gt;

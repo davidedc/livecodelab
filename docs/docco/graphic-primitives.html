@@ -1,5 +1,5 @@
 <!DOCTYPE html>  <html> <head>   <title>graphic-primitives.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               graphic-primitives.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true </p>             </td>             <td class="code">               <div class="highlight"><pre>
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>global color, LightSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne  </p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>global color, lightSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne  </p>             </td>             <td class="code">               <div class="highlight"><pre>
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Please reference the colour-functions.js file for all colour-related
 functions and lights-functions.js for lights, which use a similar
 structure for caching and counting of light instances.</p>             </td>             <td class="code">               <div class="highlight"><pre>
@@ -124,7 +124,7 @@ spin for a few moments when they are created.</p>             </td>             
   defaultNormalFill: <span class="literal">true</span>
   defaultNormalStroke: <span class="literal">true</span>
   
-  constructor: (<span class="property">@liveCodeLabCore_THREE</span>, <span class="property">@liveCodeLabCoreInstance</span>) -&gt;
+  constructor: (<span class="property">@liveCodeLabCore_three</span>, <span class="property">@liveCodeLabCoreInstance</span>) -&gt;
     window.<span class="function"><span class="title">line</span></span> = (a,b,c) =&gt; <span class="property">@line</span>(a,b,c)
     window.<span class="function"><span class="title">rect</span></span> = (a,b,c) =&gt; <span class="property">@rect</span>(a,b,c)
     window.<span class="function"><span class="title">box</span></span> = (a,b,c) =&gt; <span class="property">@box</span>(a,b,c)
@@ -171,20 +171,20 @@ If one doesn't like the idea of creating dozens of empty arrays that won't ever 
 used (since probably only a few ball detail levels will be used in a session)
 then one could leave all these arrays undefined and define them at runtime
 only when needed.</p>             </td>             <td class="code">               <div class="highlight"><pre>    
-    <span class="property">@geometriesBank</span>[<span class="property">@primitiveTypes</span>.line] = <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.Geometry()
+    <span class="property">@geometriesBank</span>[<span class="property">@primitiveTypes</span>.line] = <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.Geometry()
     <span class="property">@geometriesBank</span>[<span class="property">@primitiveTypes</span>.line].vertices.push \
-      <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.Vector3(<span class="number">0</span>, -<span class="number">0.5</span>, <span class="number">0</span>)
+      <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.Vector3(<span class="number">0</span>, -<span class="number">0.5</span>, <span class="number">0</span>)
     <span class="property">@geometriesBank</span>[<span class="property">@primitiveTypes</span>.line].vertices.push \
-      <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.Vector3(<span class="number">0</span>, <span class="number">0.5</span>, <span class="number">0</span>)
-    <span class="property">@geometriesBank</span>[<span class="property">@primitiveTypes</span>.rect] = <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.PlaneGeometry(<span class="number">1</span>, <span class="number">1</span>)
-    <span class="property">@geometriesBank</span>[<span class="property">@primitiveTypes</span>.box] = <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.CubeGeometry(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)
+      <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.Vector3(<span class="number">0</span>, <span class="number">0.5</span>, <span class="number">0</span>)
+    <span class="property">@geometriesBank</span>[<span class="property">@primitiveTypes</span>.rect] = <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.PlaneGeometry(<span class="number">1</span>, <span class="number">1</span>)
+    <span class="property">@geometriesBank</span>[<span class="property">@primitiveTypes</span>.box] = <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.CubeGeometry(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)
     <span class="property">@geometriesBank</span>[<span class="property">@primitiveTypes</span>.peg] =
-      <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.CylinderGeometry(<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">1</span>, <span class="number">32</span>)
+      <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.CylinderGeometry(<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">1</span>, <span class="number">32</span>)
     
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>creating ball geometries</p>             </td>             <td class="code">               <div class="highlight"><pre>    i = <span class="number">0</span>
     <span class="keyword">while</span> i &lt; (<span class="property">@maximumBallDetail</span> - <span class="property">@minimumBallDetail</span> + <span class="number">1</span>)
       <span class="property">@geometriesBank</span>[<span class="property">@primitiveTypes</span>.ball + i] =
-        <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.SphereGeometry(
+        <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.SphereGeometry(
           <span class="number">1</span>, <span class="property">@minimumBallDetail</span> + i, <span class="property">@minimumBallDetail</span> + i)
       i += <span class="number">1</span>
     
@@ -236,7 +236,7 @@ the user will ever want to use it.
 Another workaround would be to create an object
 for each different type of material.</p>             </td>             <td class="code">               <div class="highlight"><pre>        normalMaterial: `<span class="javascript"><span class="literal">undefined</span></span>`
         threejsObject3D: \
-          <span class="keyword">new</span> primitiveProperties.THREEObjectConstructor(<span class="property">@geometriesBank</span>[primitiveID])
+          <span class="keyword">new</span> primitiveProperties.threeObjectConstructor(<span class="property">@geometriesBank</span>[primitiveID])
         initialSpinCountdown: <span class="property">@SPIN_DURATION_IN_FRAMES</span>
 
       objectIsNew = <span class="literal">true</span>
@@ -244,12 +244,12 @@ for each different type of material.</p>             </td>             <td class
     <span class="keyword">if</span> primitiveProperties.primitiveType <span class="keyword">is</span> <span class="property">@primitiveTypes</span>.line
       <span class="keyword">if</span> pooledObjectWithMaterials.lineMaterial <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`
         pooledObjectWithMaterials.lineMaterial =
-          <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.LineBasicMaterial()
+          <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.LineBasicMaterial()
       
 </pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>associating normal material to threejs' Object3D</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">if</span> <span class="property">@currentStrokeColor</span> <span class="keyword">is</span> angleColor <span class="keyword">or</span> <span class="property">@defaultNormalStroke</span>
         theAngle =
           pooledObjectWithMaterials.threejsObject3D.matrix.multiplyVector3(
-            <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.Vector3(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)).normalize()
+            <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.Vector3(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)).normalize()
         pooledObjectWithMaterials.lineMaterial.color.setHex \
           color(
             ((theAngle.x + <span class="number">1</span>) / <span class="number">2</span>) * <span class="number">255</span>,
@@ -270,13 +270,13 @@ https://github.com/mrdoob/three.js/issues/1051
 Another workaround would be to create a pooled object
 for each different type of material.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">if</span> pooledObjectWithMaterials.normalMaterial <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`
         pooledObjectWithMaterials.normalMaterial =
-          <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.MeshNormalMaterial()
+          <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.MeshNormalMaterial()
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.normalMaterial
-    <span class="keyword">else</span> <span class="keyword">unless</span> <span class="property">@liveCodeLabCoreInstance</span>.LightSystem.lightsAreOn
+    <span class="keyword">else</span> <span class="keyword">unless</span> <span class="property">@liveCodeLabCoreInstance</span>.lightSystem.lightsAreOn
       <span class="keyword">if</span> pooledObjectWithMaterials.basicMaterial <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`
         pooledObjectWithMaterials.basicMaterial =
-          <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.MeshBasicMaterial()
+          <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.MeshBasicMaterial()
       pooledObjectWithMaterials.basicMaterial.color.setHex colorToBeUsed
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.basicMaterial
@@ -284,7 +284,7 @@ for each different type of material.</p>             </td>             <td class
       
 </pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>lights are on</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">if</span> pooledObjectWithMaterials.lambertMaterial <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`
         pooledObjectWithMaterials.lambertMaterial =
-          <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.MeshLambertMaterial()
+          <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.MeshLambertMaterial()
       pooledObjectWithMaterials.lambertMaterial.color.setHex colorToBeUsed
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.lambertMaterial
@@ -317,8 +317,8 @@ as possible to make the code cleaner.</p>             </td>             <td clas
     <span class="property">@objectsUsedInFrameCounts</span>[primitiveID] += <span class="number">1</span>
     <span class="keyword">if</span> <span class="property">@doTheSpinThingy</span> <span class="keyword">and</span>
         pooledObjectWithMaterials.initialSpinCountdown &gt; <span class="number">0</span>
-      <span class="property">@liveCodeLabCoreInstance</span>.MatrixCommands.pushMatrix()
-      <span class="property">@liveCodeLabCoreInstance</span>.MatrixCommands.rotate \
+      <span class="property">@liveCodeLabCoreInstance</span>.matrixCommands.pushMatrix()
+      <span class="property">@liveCodeLabCoreInstance</span>.matrixCommands.rotate \
         pooledObjectWithMaterials.initialSpinCountdown / <span class="number">50</span>
     
 </pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>see https://github.com/mrdoob/three.js/wiki/Using-Matrices-&amp;-Object3Ds-in-THREE
@@ -326,11 +326,11 @@ for info on how this works.
 Around 11% of the time is spent doing matrix multiplications, which
 happens every time there is a scale or rotate or move.</p>             </td>             <td class="code">               <div class="highlight"><pre>    pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = <span class="literal">false</span>
     pooledObjectWithMaterials.threejsObject3D.matrix.copy \
-      <span class="property">@liveCodeLabCoreInstance</span>.MatrixCommands.getWorldMatrix()
+      <span class="property">@liveCodeLabCoreInstance</span>.matrixCommands.getWorldMatrix()
     pooledObjectWithMaterials.threejsObject3D.matrixWorldNeedsUpdate = <span class="literal">true</span>
     <span class="keyword">if</span> <span class="property">@doTheSpinThingy</span> <span class="keyword">and</span>
         pooledObjectWithMaterials.initialSpinCountdown &gt; <span class="number">0</span>
-      <span class="property">@liveCodeLabCoreInstance</span>.MatrixCommands.popMatrix()
+      <span class="property">@liveCodeLabCoreInstance</span>.matrixCommands.popMatrix()
     <span class="keyword">if</span> objectIsNew
       
 </pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>if the object is new it means that the normal material
@@ -340,18 +340,18 @@ frame to avoid it flashing briefly in completely the wrong colour
 by setting the scale to almost zero. The object will still go through
 the rendering step, so the memory for the material is initialised
 correctly.</p>             </td>             <td class="code">               <div class="highlight"><pre>      pooledObjectWithMaterials.threejsObject3D.matrix.scale \
-        <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.Vector3(<span class="number">0.0001</span>, <span class="number">0.0001</span>, <span class="number">0.0001</span>)
+        <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.Vector3(<span class="number">0.0001</span>, <span class="number">0.0001</span>, <span class="number">0.0001</span>)
     <span class="keyword">else</span> <span class="keyword">if</span> a <span class="keyword">isnt</span> <span class="number">1</span> <span class="keyword">or</span> b <span class="keyword">isnt</span> <span class="number">1</span> <span class="keyword">or</span> c <span class="keyword">isnt</span> <span class="number">1</span>
       <span class="keyword">if</span> strokeTime        
 </pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>wireframes are built via separate objects with geometries that are
 ever so slight larger than the "fill" object, so there
 is no z-fighting and the stroke is drawn neatly on top of the fill
 constant 0.001 below is to avoid z-fighting</p>             </td>             <td class="code">               <div class="highlight"><pre>        pooledObjectWithMaterials.threejsObject3D.matrix.scale \
-          <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.Vector3(a + <span class="number">0.001</span>, b + <span class="number">0.001</span>, c + <span class="number">0.001</span>)
+          <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.Vector3(a + <span class="number">0.001</span>, b + <span class="number">0.001</span>, c + <span class="number">0.001</span>)
       <span class="keyword">else</span>
         pooledObjectWithMaterials.threejsObject3D.matrix.scale \
-          <span class="keyword">new</span> <span class="property">@liveCodeLabCore_THREE</span>.Vector3(a, b, c)
-    <span class="property">@liveCodeLabCoreInstance</span>.ThreeJsSystem.scene.add \
+          <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.Vector3(a, b, c)
+    <span class="property">@liveCodeLabCoreInstance</span>.threeJsSystem.scene.add \
       pooledObjectWithMaterials.threejsObject3D  <span class="keyword">if</span> objectIsNew
 
   commonPrimitiveDrawingLogic: (a, b, c, primitiveProperties) -&gt;
@@ -409,7 +409,7 @@ fill then don't draw the stroke, only draw the fill</p>             </td>       
     <span class="property">@defaultNormalFill</span> = <span class="literal">true</span>
     <span class="property">@defaultNormalStroke</span> = <span class="literal">true</span>
     <span class="property">@ballDetLevel</span> =
-      <span class="property">@liveCodeLabCoreInstance</span>.ThreeJsSystem.ballDefaultDetLevel
+      <span class="property">@liveCodeLabCoreInstance</span>.threeJsSystem.ballDefaultDetLevel
     <span class="property">@objectsUsedInFrameCounts</span>\
       [<span class="property">@primitiveTypes</span>.ambientLight] = <span class="number">0</span>
     <span class="property">@objectsUsedInFrameCounts</span>[<span class="property">@primitiveTypes</span>.line] = <span class="number">0</span>
@@ -442,7 +442,7 @@ So in order to get lights to react to light we have to actually draw the
 wireframe of a rectangle with one of the sides being zero length.
 Since the stroke and the fill are drawn with two different objects and the
 fill is not needed, we temporarily switch off the fill and then put it back
-to whichever value it was.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> <span class="property">@liveCodeLabCoreInstance</span>.LightSystem.lightsAreOn
+to whichever value it was.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> <span class="property">@liveCodeLabCoreInstance</span>.lightSystem.lightsAreOn
       rememberIfThereWasAFill = <span class="property">@doFill</span>
       rememberPreviousStrokeSize = <span class="property">@currentStrokeSize</span>
       <span class="property">@currentStrokeSize</span> = <span class="number">2</span>  <span class="keyword">if</span> <span class="property">@currentStrokeSize</span> &lt; <span class="number">2</span>
@@ -455,8 +455,8 @@ to whichever value it was.</p>             </td>             <td class="code">  
 </pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>    primitiveProperties =
       canFill: <span class="literal">false</span>
       primitiveType: <span class="property">@primitiveTypes</span>.line
-      sidedness: <span class="property">@liveCodeLabCore_THREE</span>.FrontSide
-      THREEObjectConstructor: <span class="property">@liveCodeLabCore_THREE</span>.Line
+      sidedness: <span class="property">@liveCodeLabCore_three</span>.FrontSide
+      threeObjectConstructor: <span class="property">@liveCodeLabCore_three</span>.Line
       detailLevel: <span class="number">0</span>
 
     
@@ -466,8 +466,8 @@ to whichever value it was.</p>             </td>             <td class="code">  
 </pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>    primitiveProperties =
       canFill: <span class="literal">true</span>
       primitiveType: <span class="property">@primitiveTypes</span>.rect
-      sidedness: <span class="property">@liveCodeLabCore_THREE</span>.DoubleSide
-      THREEObjectConstructor: <span class="property">@liveCodeLabCore_THREE</span>.Mesh
+      sidedness: <span class="property">@liveCodeLabCore_three</span>.DoubleSide
+      threeObjectConstructor: <span class="property">@liveCodeLabCore_three</span>.Mesh
       detailLevel: <span class="number">0</span>
 
     
@@ -477,8 +477,8 @@ to whichever value it was.</p>             </td>             <td class="code">  
 </pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>    primitiveProperties =
       canFill: <span class="literal">true</span>
       primitiveType: <span class="property">@primitiveTypes</span>.box
-      sidedness: <span class="property">@liveCodeLabCore_THREE</span>.FrontSide
-      THREEObjectConstructor: <span class="property">@liveCodeLabCore_THREE</span>.Mesh
+      sidedness: <span class="property">@liveCodeLabCore_three</span>.FrontSide
+      threeObjectConstructor: <span class="property">@liveCodeLabCore_three</span>.Mesh
       detailLevel: <span class="number">0</span>
 
     
@@ -488,8 +488,8 @@ to whichever value it was.</p>             </td>             <td class="code">  
 </pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>    primitiveProperties =
       canFill: <span class="literal">true</span>
       primitiveType: <span class="property">@primitiveTypes</span>.peg
-      sidedness: <span class="property">@liveCodeLabCore_THREE</span>.FrontSide
-      THREEObjectConstructor: <span class="property">@liveCodeLabCore_THREE</span>.Mesh
+      sidedness: <span class="property">@liveCodeLabCore_three</span>.FrontSide
+      threeObjectConstructor: <span class="property">@liveCodeLabCore_three</span>.Mesh
       detailLevel: <span class="number">0</span>
 
     
@@ -505,8 +505,8 @@ to whichever value it was.</p>             </td>             <td class="code">  
 </pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>primitive-specific initialisations:</p>             </td>             <td class="code">               <div class="highlight"><pre>    primitiveProperties =
       canFill: <span class="literal">true</span>
       primitiveType: <span class="property">@primitiveTypes</span>.ball
-      sidedness: <span class="property">@liveCodeLabCore_THREE</span>.FrontSide
-      THREEObjectConstructor: <span class="property">@liveCodeLabCore_THREE</span>.Mesh
+      sidedness: <span class="property">@liveCodeLabCore_three</span>.FrontSide
+      threeObjectConstructor: <span class="property">@liveCodeLabCore_three</span>.Mesh
       detailLevel: <span class="property">@ballDetLevel</span> - <span class="property">@minimumBallDetail</span>
 
     
@@ -542,7 +542,7 @@ and not draw the wireframe is it happens to be the same color as
 the fill</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@defaultNormalFill</span> = <span class="literal">true</span>
       <span class="property">@currentFillColor</span> = angleColor
       <span class="keyword">if</span> b <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">and</span> g <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>`
-        <span class="property">@currentFillAlpha</span> = g / <span class="property">@liveCodeLabCoreInstance</span>.ColourFunctions.colorModeA
+        <span class="property">@currentFillAlpha</span> = g / <span class="property">@liveCodeLabCoreInstance</span>.colourFunctions.colorModeA
       <span class="keyword">else</span>
         <span class="property">@currentFillAlpha</span> = <span class="number">1</span>
 
@@ -601,7 +601,7 @@ and not draw the wireframe is it happens to be the same color as
 the fill</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@defaultNormalStroke</span> = <span class="literal">true</span>
       <span class="property">@currentStrokeColor</span> = angleColor
       <span class="keyword">if</span> b <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">and</span> g <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>`
-        <span class="property">@currentStrokeAlpha</span> = g / <span class="property">@liveCodeLabCoreInstance</span>.ColourFunctions.colorModeA
+        <span class="property">@currentStrokeAlpha</span> = g / <span class="property">@liveCodeLabCoreInstance</span>.colourFunctions.colorModeA
       <span class="keyword">else</span>
         <span class="property">@currentStrokeAlpha</span> = <span class="number">1</span>
 

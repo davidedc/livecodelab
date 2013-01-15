@@ -46,10 +46,10 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.defaultNormalStroke = true;
 
-  function GraphicsCommands(liveCodeLabCore_THREE, liveCodeLabCoreInstance) {
+  function GraphicsCommands(liveCodeLabCore_three, liveCodeLabCoreInstance) {
     var i,
       _this = this;
-    this.liveCodeLabCore_THREE = liveCodeLabCore_THREE;
+    this.liveCodeLabCore_three = liveCodeLabCore_three;
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
     window.line = function(a, b, c) {
       return _this.line(a, b, c);
@@ -99,15 +99,15 @@ GraphicsCommands = (function() {
       this.objectPools[this.primitiveTypes.ball + i] = [];
       i += 1;
     }
-    this.geometriesBank[this.primitiveTypes.line] = new this.liveCodeLabCore_THREE.Geometry();
-    this.geometriesBank[this.primitiveTypes.line].vertices.push(new this.liveCodeLabCore_THREE.Vector3(0, -0.5, 0));
-    this.geometriesBank[this.primitiveTypes.line].vertices.push(new this.liveCodeLabCore_THREE.Vector3(0, 0.5, 0));
-    this.geometriesBank[this.primitiveTypes.rect] = new this.liveCodeLabCore_THREE.PlaneGeometry(1, 1);
-    this.geometriesBank[this.primitiveTypes.box] = new this.liveCodeLabCore_THREE.CubeGeometry(1, 1, 1);
-    this.geometriesBank[this.primitiveTypes.peg] = new this.liveCodeLabCore_THREE.CylinderGeometry(0.5, 0.5, 1, 32);
+    this.geometriesBank[this.primitiveTypes.line] = new this.liveCodeLabCore_three.Geometry();
+    this.geometriesBank[this.primitiveTypes.line].vertices.push(new this.liveCodeLabCore_three.Vector3(0, -0.5, 0));
+    this.geometriesBank[this.primitiveTypes.line].vertices.push(new this.liveCodeLabCore_three.Vector3(0, 0.5, 0));
+    this.geometriesBank[this.primitiveTypes.rect] = new this.liveCodeLabCore_three.PlaneGeometry(1, 1);
+    this.geometriesBank[this.primitiveTypes.box] = new this.liveCodeLabCore_three.CubeGeometry(1, 1, 1);
+    this.geometriesBank[this.primitiveTypes.peg] = new this.liveCodeLabCore_three.CylinderGeometry(0.5, 0.5, 1, 32);
     i = 0;
     while (i < (this.maximumBallDetail - this.minimumBallDetail + 1)) {
-      this.geometriesBank[this.primitiveTypes.ball + i] = new this.liveCodeLabCore_THREE.SphereGeometry(1, this.minimumBallDetail + i, this.minimumBallDetail + i);
+      this.geometriesBank[this.primitiveTypes.ball + i] = new this.liveCodeLabCore_three.SphereGeometry(1, this.minimumBallDetail + i, this.minimumBallDetail + i);
       i += 1;
     }
   }
@@ -126,7 +126,7 @@ GraphicsCommands = (function() {
         basicMaterial: undefined,
         lambertMaterial: undefined,
         normalMaterial: undefined,
-        threejsObject3D: new primitiveProperties.THREEObjectConstructor(this.geometriesBank[primitiveID]),
+        threejsObject3D: new primitiveProperties.threeObjectConstructor(this.geometriesBank[primitiveID]),
         initialSpinCountdown: this.SPIN_DURATION_IN_FRAMES
       };
       objectIsNew = true;
@@ -134,10 +134,10 @@ GraphicsCommands = (function() {
     }
     if (primitiveProperties.primitiveType === this.primitiveTypes.line) {
       if (pooledObjectWithMaterials.lineMaterial === undefined) {
-        pooledObjectWithMaterials.lineMaterial = new this.liveCodeLabCore_THREE.LineBasicMaterial();
+        pooledObjectWithMaterials.lineMaterial = new this.liveCodeLabCore_three.LineBasicMaterial();
       }
       if (this.currentStrokeColor === angleColor || this.defaultNormalStroke) {
-        theAngle = pooledObjectWithMaterials.threejsObject3D.matrix.multiplyVector3(new this.liveCodeLabCore_THREE.Vector3(0, 1, 0)).normalize();
+        theAngle = pooledObjectWithMaterials.threejsObject3D.matrix.multiplyVector3(new this.liveCodeLabCore_three.Vector3(0, 1, 0)).normalize();
         pooledObjectWithMaterials.lineMaterial.color.setHex(color(((theAngle.x + 1) / 2) * 255, ((theAngle.y + 1) / 2) * 255, ((theAngle.z + 1) / 2) * 255));
       } else {
         pooledObjectWithMaterials.lineMaterial.color.setHex(this.currentStrokeColor);
@@ -146,18 +146,18 @@ GraphicsCommands = (function() {
       pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.lineMaterial;
     } else if (objectIsNew || (colorToBeUsed === angleColor || applyDefaultNormalColor)) {
       if (pooledObjectWithMaterials.normalMaterial === undefined) {
-        pooledObjectWithMaterials.normalMaterial = new this.liveCodeLabCore_THREE.MeshNormalMaterial();
+        pooledObjectWithMaterials.normalMaterial = new this.liveCodeLabCore_three.MeshNormalMaterial();
       }
       pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.normalMaterial;
-    } else if (!this.liveCodeLabCoreInstance.LightSystem.lightsAreOn) {
+    } else if (!this.liveCodeLabCoreInstance.lightSystem.lightsAreOn) {
       if (pooledObjectWithMaterials.basicMaterial === undefined) {
-        pooledObjectWithMaterials.basicMaterial = new this.liveCodeLabCore_THREE.MeshBasicMaterial();
+        pooledObjectWithMaterials.basicMaterial = new this.liveCodeLabCore_three.MeshBasicMaterial();
       }
       pooledObjectWithMaterials.basicMaterial.color.setHex(colorToBeUsed);
       pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.basicMaterial;
     } else {
       if (pooledObjectWithMaterials.lambertMaterial === undefined) {
-        pooledObjectWithMaterials.lambertMaterial = new this.liveCodeLabCore_THREE.MeshLambertMaterial();
+        pooledObjectWithMaterials.lambertMaterial = new this.liveCodeLabCore_three.MeshLambertMaterial();
       }
       pooledObjectWithMaterials.lambertMaterial.color.setHex(colorToBeUsed);
       pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.lambertMaterial;
@@ -186,26 +186,26 @@ GraphicsCommands = (function() {
     pooledObjectWithMaterials.threejsObject3D.detailLevel = primitiveProperties.detailLevel;
     this.objectsUsedInFrameCounts[primitiveID] += 1;
     if (this.doTheSpinThingy && pooledObjectWithMaterials.initialSpinCountdown > 0) {
-      this.liveCodeLabCoreInstance.MatrixCommands.pushMatrix();
-      this.liveCodeLabCoreInstance.MatrixCommands.rotate(pooledObjectWithMaterials.initialSpinCountdown / 50);
+      this.liveCodeLabCoreInstance.matrixCommands.pushMatrix();
+      this.liveCodeLabCoreInstance.matrixCommands.rotate(pooledObjectWithMaterials.initialSpinCountdown / 50);
     }
     pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = false;
-    pooledObjectWithMaterials.threejsObject3D.matrix.copy(this.liveCodeLabCoreInstance.MatrixCommands.getWorldMatrix());
+    pooledObjectWithMaterials.threejsObject3D.matrix.copy(this.liveCodeLabCoreInstance.matrixCommands.getWorldMatrix());
     pooledObjectWithMaterials.threejsObject3D.matrixWorldNeedsUpdate = true;
     if (this.doTheSpinThingy && pooledObjectWithMaterials.initialSpinCountdown > 0) {
-      this.liveCodeLabCoreInstance.MatrixCommands.popMatrix();
+      this.liveCodeLabCoreInstance.matrixCommands.popMatrix();
     }
     if (objectIsNew) {
-      pooledObjectWithMaterials.threejsObject3D.matrix.scale(new this.liveCodeLabCore_THREE.Vector3(0.0001, 0.0001, 0.0001));
+      pooledObjectWithMaterials.threejsObject3D.matrix.scale(new this.liveCodeLabCore_three.Vector3(0.0001, 0.0001, 0.0001));
     } else if (a !== 1 || b !== 1 || c !== 1) {
       if (strokeTime) {
-        pooledObjectWithMaterials.threejsObject3D.matrix.scale(new this.liveCodeLabCore_THREE.Vector3(a + 0.001, b + 0.001, c + 0.001));
+        pooledObjectWithMaterials.threejsObject3D.matrix.scale(new this.liveCodeLabCore_three.Vector3(a + 0.001, b + 0.001, c + 0.001));
       } else {
-        pooledObjectWithMaterials.threejsObject3D.matrix.scale(new this.liveCodeLabCore_THREE.Vector3(a, b, c));
+        pooledObjectWithMaterials.threejsObject3D.matrix.scale(new this.liveCodeLabCore_three.Vector3(a, b, c));
       }
     }
     if (objectIsNew) {
-      return this.liveCodeLabCoreInstance.ThreeJsSystem.scene.add(pooledObjectWithMaterials.threejsObject3D);
+      return this.liveCodeLabCoreInstance.threeJsSystem.scene.add(pooledObjectWithMaterials.threejsObject3D);
     }
   };
 
@@ -242,7 +242,7 @@ GraphicsCommands = (function() {
     this.currentStrokeSize = 1;
     this.defaultNormalFill = true;
     this.defaultNormalStroke = true;
-    this.ballDetLevel = this.liveCodeLabCoreInstance.ThreeJsSystem.ballDefaultDetLevel;
+    this.ballDetLevel = this.liveCodeLabCoreInstance.threeJsSystem.ballDefaultDetLevel;
     this.objectsUsedInFrameCounts[this.primitiveTypes.ambientLight] = 0;
     this.objectsUsedInFrameCounts[this.primitiveTypes.line] = 0;
     this.objectsUsedInFrameCounts[this.primitiveTypes.rect] = 0;
@@ -260,7 +260,7 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.line = function(a, b, c) {
     var primitiveProperties, rememberIfThereWasAFill, rememberPreviousStrokeSize;
-    if (this.liveCodeLabCoreInstance.LightSystem.lightsAreOn) {
+    if (this.liveCodeLabCoreInstance.lightSystem.lightsAreOn) {
       rememberIfThereWasAFill = this.doFill;
       rememberPreviousStrokeSize = this.currentStrokeSize;
       if (this.currentStrokeSize < 2) {
@@ -277,8 +277,8 @@ GraphicsCommands = (function() {
     primitiveProperties = {
       canFill: false,
       primitiveType: this.primitiveTypes.line,
-      sidedness: this.liveCodeLabCore_THREE.FrontSide,
-      THREEObjectConstructor: this.liveCodeLabCore_THREE.Line,
+      sidedness: this.liveCodeLabCore_three.FrontSide,
+      threeObjectConstructor: this.liveCodeLabCore_three.Line,
       detailLevel: 0
     };
     return this.commonPrimitiveDrawingLogic(a, b, c, primitiveProperties);
@@ -289,8 +289,8 @@ GraphicsCommands = (function() {
     primitiveProperties = {
       canFill: true,
       primitiveType: this.primitiveTypes.rect,
-      sidedness: this.liveCodeLabCore_THREE.DoubleSide,
-      THREEObjectConstructor: this.liveCodeLabCore_THREE.Mesh,
+      sidedness: this.liveCodeLabCore_three.DoubleSide,
+      threeObjectConstructor: this.liveCodeLabCore_three.Mesh,
       detailLevel: 0
     };
     return this.commonPrimitiveDrawingLogic(a, b, c, primitiveProperties);
@@ -301,8 +301,8 @@ GraphicsCommands = (function() {
     primitiveProperties = {
       canFill: true,
       primitiveType: this.primitiveTypes.box,
-      sidedness: this.liveCodeLabCore_THREE.FrontSide,
-      THREEObjectConstructor: this.liveCodeLabCore_THREE.Mesh,
+      sidedness: this.liveCodeLabCore_three.FrontSide,
+      threeObjectConstructor: this.liveCodeLabCore_three.Mesh,
       detailLevel: 0
     };
     return this.commonPrimitiveDrawingLogic(a, b, c, primitiveProperties);
@@ -313,8 +313,8 @@ GraphicsCommands = (function() {
     primitiveProperties = {
       canFill: true,
       primitiveType: this.primitiveTypes.peg,
-      sidedness: this.liveCodeLabCore_THREE.FrontSide,
-      THREEObjectConstructor: this.liveCodeLabCore_THREE.Mesh,
+      sidedness: this.liveCodeLabCore_three.FrontSide,
+      threeObjectConstructor: this.liveCodeLabCore_three.Mesh,
       detailLevel: 0
     };
     return this.commonPrimitiveDrawingLogic(a, b, c, primitiveProperties);
@@ -338,8 +338,8 @@ GraphicsCommands = (function() {
     primitiveProperties = {
       canFill: true,
       primitiveType: this.primitiveTypes.ball,
-      sidedness: this.liveCodeLabCore_THREE.FrontSide,
-      THREEObjectConstructor: this.liveCodeLabCore_THREE.Mesh,
+      sidedness: this.liveCodeLabCore_three.FrontSide,
+      threeObjectConstructor: this.liveCodeLabCore_three.Mesh,
       detailLevel: this.ballDetLevel - this.minimumBallDetail
     };
     return this.commonPrimitiveDrawingLogic(a, b, c, primitiveProperties);
@@ -355,7 +355,7 @@ GraphicsCommands = (function() {
       this.defaultNormalFill = true;
       this.currentFillColor = angleColor;
       if (b === undefined && g !== undefined) {
-        return this.currentFillAlpha = g / this.liveCodeLabCoreInstance.ColourFunctions.colorModeA;
+        return this.currentFillAlpha = g / this.liveCodeLabCoreInstance.colourFunctions.colorModeA;
       } else {
         return this.currentFillAlpha = 1;
       }
@@ -418,7 +418,7 @@ GraphicsCommands = (function() {
       this.defaultNormalStroke = true;
       this.currentStrokeColor = angleColor;
       if (b === undefined && g !== undefined) {
-        return this.currentStrokeAlpha = g / this.liveCodeLabCoreInstance.ColourFunctions.colorModeA;
+        return this.currentStrokeAlpha = g / this.liveCodeLabCoreInstance.colourFunctions.colorModeA;
       } else {
         return this.currentStrokeAlpha = 1;
       }

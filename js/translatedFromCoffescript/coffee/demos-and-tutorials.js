@@ -64,9 +64,9 @@ ProgramLoader = (function() {
   }
 
   ProgramLoader.prototype.loadDemoOrTutorial = function(demoName) {
-    var BlendControls, prependMessage, userWarnedAboutWebglExamples,
+    var blendControls, prependMessage, userWarnedAboutWebglExamples,
       _this = this;
-    if ((!Detector.webgl || this.liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) && !userWarnedAboutWebglExamples && demoName.indexOf("webgl") === 0) {
+    if ((!Detector.webgl || this.liveCodeLabCoreInstance.threeJsSystem.forceCanvasRenderer) && !userWarnedAboutWebglExamples && demoName.indexOf("webgl") === 0) {
       userWarnedAboutWebglExamples = true;
       $("#exampleNeedsWebgl").modal();
       $("#simplemodal-container").height(200);
@@ -74,9 +74,9 @@ ProgramLoader = (function() {
     this.eventRouter.trigger("set-url-hash", "bookmark=" + demoName);
     this.eventRouter.trigger("big-cursor-hide");
     this.eventRouter.trigger("editor-undim");
-    this.liveCodeLabCoreInstance.GraphicsCommands.doTheSpinThingy = false;
+    this.liveCodeLabCoreInstance.graphicsCommands.doTheSpinThingy = false;
     prependMessage = "";
-    if ((!Detector.webgl || this.liveCodeLabCoreInstance.ThreeJsSystem.forceCanvasRenderer) && demoName.indexOf("webgl") === 0) {
+    if ((!Detector.webgl || this.liveCodeLabCoreInstance.threeJsSystem.forceCanvasRenderer) && demoName.indexOf("webgl") === 0) {
       prependMessage = "// This drawing makes much more sense\n// in a WebGL-enabled browser.\n\n".replace(/\u25B6/g, "\t");
     }
     if (this.program[demoName]) {
@@ -86,10 +86,10 @@ ProgramLoader = (function() {
       }), 30);
     }
     this.texteditor.setCursor(0, 0);
-    BlendControls = this.liveCodeLabCoreInstance.BlendControls;
-    BlendControls.animationStyle(BlendControls.animationStyles.normal);
-    BlendControls.animationStyleUpdateIfChanged();
-    return this.liveCodeLabCoreInstance.Renderer.render(this.liveCodeLabCoreInstance.GraphicsCommands);
+    blendControls = this.liveCodeLabCoreInstance.blendControls;
+    blendControls.animationStyle(blendControls.animationStyles.normal);
+    blendControls.animationStyleUpdateIfChanged();
+    return this.liveCodeLabCoreInstance.renderer.render(this.liveCodeLabCoreInstance.graphicsCommands);
   };
 
   ProgramLoader.prototype.loadAppropriateDemoOrTutorialBasedOnHash = function(hash) {

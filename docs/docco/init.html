@@ -44,7 +44,7 @@ For "heavy fire" callbacks one might want to use a classic callback system,
 because there might be some overhead in the triggering of events using this.
 (to be tested. just throwing it out there.)</p>             </td>             <td class="code">               <div class="highlight"><pre>  eventRouter = <span class="keyword">new</span> EventRouter()
   
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Stats are updated in the AnimationLoop
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Stats are updated in the animationLoop
 add Stats.js - https://github.com/mrdoob/stats.js</p>             </td>             <td class="code">               <div class="highlight"><pre>  stats = <span class="keyword">new</span> Stats
   paramsObject.forceCanvasRenderer = <span class="literal">false</span>  <span class="keyword">if</span> paramsObject.forceCanvasRenderer <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`
   paramsObject.forceCanvasRenderer = <span class="literal">false</span>  <span class="keyword">if</span> paramsObject.forceCanvasRenderer <span class="keyword">is</span> <span class="literal">null</span>
@@ -59,20 +59,20 @@ finds as CSS color strings in the user program.</p>             </td>           
 Phase 2 - Initialise the core of livecodelab.
 LiveCodeLabCore consists of the following main parts:
 //////////////////////////////////////////////////////
- - TimeKeeper
- - THREE
- - ThreeJsSystem
- - MatrixCommands
- - BlendControls
- - SoundSystem
- - ColourFunctions
- - BackgroundPainter
- - GraphicsCommands
- - LightSystem 
- - DrawFunctionRunner
- - CodeTransformer
- - Renderer
- - AnimationLoop</p>             </td>             <td class="code">               <div class="highlight"><pre>  liveCodeLabCore = createLiveCodeLabCore(
+ - timeKeeper
+ - three
+ - threeJsSystem
+ - matrixCommands
+ - blendControls
+ - soundSystem
+ - colourFunctions
+ - backgroundPainter
+ - graphicsCommands
+ - lightSystem 
+ - drawFunctionRunner
+ - codeTransformer
+ - renderer
+ - animationLoop</p>             </td>             <td class="code">               <div class="highlight"><pre>  liveCodeLabCore = <span class="keyword">new</span> LiveCodeLabCore(
     blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
     canvasForBackground: paramsObject.canvasForBackground
     forceCanvasRenderer: paramsObject.forceCanvasRenderer
@@ -104,9 +104,9 @@ in for consistency.</p>             </td>             <td class="code">         
   eventRouter.bind <span class="string">"editor-undim"</span>, (=&gt; editorDimmer.undimEditor()), editorDimmer
   eventRouter.bind <span class="string">"editor-toggle-dim"</span>, (=&gt; editorDimmer.toggleDimCode()), editorDimmer
   
-</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>requires ThreeJsSystem, BlendControls, GraphicsCommands, Renderer
+</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>requires threeJsSystem, blendControls, graphicsCommands, renderer
 note that the programLoader variable below is never used. Leaving it
-in for consistency.</p>             </td>             <td class="code">               <div class="highlight"><pre>  programLoader = <span class="keyword">new</span> ProgramLoader(eventRouter, editor, liveCodeLabCore) <span class="comment"># $, Detector, BlendControls</span>
+in for consistency.</p>             </td>             <td class="code">               <div class="highlight"><pre>  programLoader = <span class="keyword">new</span> ProgramLoader(eventRouter, editor, liveCodeLabCore) <span class="comment"># $, Detector, blendControls</span>
   eventRouter.bind <span class="string">"load-program"</span>, programLoader.loadDemoOrTutorial, programLoader
 
   

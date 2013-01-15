@@ -22,21 +22,21 @@ are sent as "false"</p>             </td>             <td class="code">         
 </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Animation Style hasn't changed so we don't need to do anything</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">return</span>  <span class="keyword">if</span> <span class="property">@animationStyleValue</span> <span class="keyword">is</span> <span class="property">@previousanimationStyleValue</span>
     <span class="property">@previousanimationStyleValue</span> = <span class="property">@animationStyleValue</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>defining a couple of shorthands to avoid super-long lines</p>             </td>             <td class="code">               <div class="highlight"><pre>    isWebGLUsed = <span class="property">@liveCodeLabCoreInstance</span>.ThreeJsSystem.isWebGLUsed
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>defining a couple of shorthands to avoid super-long lines</p>             </td>             <td class="code">               <div class="highlight"><pre>    isWebGLUsed = <span class="property">@liveCodeLabCoreInstance</span>.threeJsSystem.isWebGLUsed
     <span class="property">@animationStyles</span> = <span class="property">@animationStyles</span>
 
     <span class="keyword">if</span> isWebGLUsed <span class="keyword">and</span> <span class="property">@animationStyleValue</span> <span class="keyword">is</span> <span class="property">@animationStyles</span>.motionBlur
-      <span class="property">@liveCodeLabCoreInstance</span>.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = <span class="number">0.7</span>
+      <span class="property">@liveCodeLabCoreInstance</span>.threeJsSystem.effectBlend.uniforms.mixRatio.value = <span class="number">0.7</span>
     <span class="keyword">else</span> <span class="keyword">if</span> <span class="keyword">not</span> isWebGLUsed <span class="keyword">and</span> <span class="property">@animationStyleValue</span> <span class="keyword">is</span> <span class="property">@animationStyles</span>.motionBlur
       <span class="property">@blendAmount</span> = <span class="number">0.6</span>
 
     <span class="keyword">if</span> isWebGLUsed <span class="keyword">and</span> <span class="property">@animationStyleValue</span> <span class="keyword">is</span> <span class="property">@animationStyles</span>.paintOver
-      <span class="property">@liveCodeLabCoreInstance</span>.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = <span class="number">1</span>
+      <span class="property">@liveCodeLabCoreInstance</span>.threeJsSystem.effectBlend.uniforms.mixRatio.value = <span class="number">1</span>
     <span class="keyword">else</span> <span class="keyword">if</span> <span class="keyword">not</span> isWebGLUsed <span class="keyword">and</span> <span class="property">@animationStyleValue</span> <span class="keyword">is</span> <span class="property">@animationStyles</span>.paintOver
       <span class="property">@blendAmount</span> = <span class="number">1</span>
 
     <span class="keyword">if</span> isWebGLUsed <span class="keyword">and</span> <span class="property">@animationStyleValue</span> <span class="keyword">is</span> <span class="property">@animationStyles</span>.normal
-      <span class="property">@liveCodeLabCoreInstance</span>.ThreeJsSystem.effectBlend.uniforms.mixRatio.value = <span class="number">0</span>
+      <span class="property">@liveCodeLabCoreInstance</span>.threeJsSystem.effectBlend.uniforms.mixRatio.value = <span class="number">0</span>
     <span class="keyword">else</span> <span class="keyword">if</span> <span class="keyword">not</span> isWebGLUsed <span class="keyword">and</span> <span class="property">@animationStyleValue</span> <span class="keyword">is</span> <span class="property">@animationStyles</span>.normal
       <span class="property">@blendAmount</span> = <span class="number">0</span>
 

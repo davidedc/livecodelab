@@ -34,17 +34,17 @@ BackgroundPainter = (function() {
   BackgroundPainter.prototype.simpleGradient = function(a, b, c, d) {
     this.currentGradientStackValue = this.currentGradientStackValue + " " + a + "" + b + "" + c + "" + d + "null ";
     return this.gradStack.push({
-      gradStacka: this.liveCodeLabCoreInstance.ColourFunctions.color(a),
-      gradStackb: this.liveCodeLabCoreInstance.ColourFunctions.color(b),
-      gradStackc: this.liveCodeLabCoreInstance.ColourFunctions.color(c),
-      gradStackd: this.liveCodeLabCoreInstance.ColourFunctions.color(d),
+      gradStacka: this.liveCodeLabCoreInstance.colourFunctions.color(a),
+      gradStackb: this.liveCodeLabCoreInstance.colourFunctions.color(b),
+      gradStackc: this.liveCodeLabCoreInstance.colourFunctions.color(c),
+      gradStackd: this.liveCodeLabCoreInstance.colourFunctions.color(d),
       solid: null
     });
   };
 
   BackgroundPainter.prototype.background = function() {
     var a;
-    a = this.liveCodeLabCoreInstance.ColourFunctions.color(arguments[0], arguments[1], arguments[2], arguments[3]);
+    a = this.liveCodeLabCoreInstance.colourFunctions.color(arguments[0], arguments[1], arguments[2], arguments[3]);
     this.currentGradientStackValue = this.currentGradientStackValue + " null null null null " + a + " ";
     return this.gradStack.push({
       gradStacka: undefined,
@@ -87,9 +87,9 @@ BackgroundPainter = (function() {
         $("#fakeStartingBlinkingCursor").css("color", "white");
         break;
       case 4:
-        this.defaultGradientColor1 = this.liveCodeLabCoreInstance.ColourFunctions.color(155, 255, 155);
-        this.defaultGradientColor2 = this.liveCodeLabCoreInstance.ColourFunctions.color(155, 255, 155);
-        this.defaultGradientColor3 = this.liveCodeLabCoreInstance.ColourFunctions.color(155, 255, 155);
+        this.defaultGradientColor1 = this.liveCodeLabCoreInstance.colourFunctions.color(155, 255, 155);
+        this.defaultGradientColor2 = this.liveCodeLabCoreInstance.colourFunctions.color(155, 255, 155);
+        this.defaultGradientColor3 = this.liveCodeLabCoreInstance.colourFunctions.color(155, 255, 155);
         $("#fakeStartingBlinkingCursor").css("color", "DarkOliveGreen");
     }
     this.resetGradientStack();
@@ -107,7 +107,7 @@ BackgroundPainter = (function() {
     diagonal = void 0;
     radgrad = void 0;
     scanningGradStack = void 0;
-    color = this.liveCodeLabCoreInstance.ColourFunctions.color;
+    color = this.liveCodeLabCoreInstance.colourFunctions.color;
     if (this.currentGradientStackValue !== this.previousGradientStackValue) {
       this.previousGradientStackValue = this.currentGradientStackValue;
       diagonal = Math.sqrt(Math.pow(this.canvasForBackground.width / 2, 2) + Math.pow(this.canvasForBackground.height / 2, 2));

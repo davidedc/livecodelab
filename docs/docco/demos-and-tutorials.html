@@ -667,7 +667,7 @@ global $, Detector </p>             </td>             <td class="code">         
       """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
 
   loadDemoOrTutorial: (demoName) -&gt;
-    <span class="keyword">if</span> (<span class="keyword">not</span> Detector.webgl <span class="keyword">or</span> <span class="property">@liveCodeLabCoreInstance</span>.ThreeJsSystem.forceCanvasRenderer) \
+    <span class="keyword">if</span> (<span class="keyword">not</span> Detector.webgl <span class="keyword">or</span> <span class="property">@liveCodeLabCoreInstance</span>.threeJsSystem.forceCanvasRenderer) \
         <span class="keyword">and</span> <span class="keyword">not</span> userWarnedAboutWebglExamples <span class="keyword">and</span> demoName.indexOf(<span class="string">"webgl"</span>) <span class="keyword">is</span> <span class="number">0</span>
       userWarnedAboutWebglExamples = <span class="literal">true</span>
       $(<span class="string">"#exampleNeedsWebgl"</span>).modal()
@@ -677,9 +677,9 @@ so that ideally people can link directly to
 a specific demo they like.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@eventRouter</span>.trigger <span class="string">"set-url-hash"</span>, <span class="string">"bookmark="</span> + demoName
     <span class="property">@eventRouter</span>.trigger <span class="string">"big-cursor-hide"</span>
     <span class="property">@eventRouter</span>.trigger <span class="string">"editor-undim"</span>
-    <span class="property">@liveCodeLabCoreInstance</span>.GraphicsCommands.doTheSpinThingy = <span class="literal">false</span>
+    <span class="property">@liveCodeLabCoreInstance</span>.graphicsCommands.doTheSpinThingy = <span class="literal">false</span>
     prependMessage = <span class="string">""</span>
-    <span class="keyword">if</span> (<span class="keyword">not</span> Detector.webgl <span class="keyword">or</span> <span class="property">@liveCodeLabCoreInstance</span>.ThreeJsSystem.forceCanvasRenderer) \
+    <span class="keyword">if</span> (<span class="keyword">not</span> Detector.webgl <span class="keyword">or</span> <span class="property">@liveCodeLabCoreInstance</span>.threeJsSystem.forceCanvasRenderer) \
         <span class="keyword">and</span> demoName.indexOf(<span class="string">"webgl"</span>) <span class="keyword">is</span> <span class="number">0</span>
       prependMessage =
       <span class="string">"""
@@ -712,10 +712,10 @@ of the previous code.
 So basically we draw an empty frame.
   a) make sure that animationStyle is "normal" <br />
   b) apply the potentially new animationStyle <br />
-  render the empty frame</p>             </td>             <td class="code">               <div class="highlight"><pre>    BlendControls = <span class="property">@liveCodeLabCoreInstance</span>.BlendControls
-    BlendControls.animationStyle BlendControls.animationStyles.normal
-    BlendControls.animationStyleUpdateIfChanged()
-    <span class="property">@liveCodeLabCoreInstance</span>.Renderer.render <span class="property">@liveCodeLabCoreInstance</span>.GraphicsCommands
+  render the empty frame</p>             </td>             <td class="code">               <div class="highlight"><pre>    blendControls = <span class="property">@liveCodeLabCoreInstance</span>.blendControls
+    blendControls.animationStyle blendControls.animationStyles.normal
+    blendControls.animationStyleUpdateIfChanged()
+    <span class="property">@liveCodeLabCoreInstance</span>.renderer.render <span class="property">@liveCodeLabCoreInstance</span>.graphicsCommands
 
   loadAppropriateDemoOrTutorialBasedOnHash: (hash) -&gt;
     matched = hash.match(<span class="regexp">/bookmark=(.*)/</span>)
