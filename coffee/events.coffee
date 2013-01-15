@@ -6,7 +6,8 @@ class EventRouter
   constructor: ->
   
   bind: (name, callback, context) ->
-    # console.log("binding: " + name + " to callback: " + callback + " with context: " + context);
+    # console.log("binding: " + name + " to callback: " +
+    #   callback + " with context: " + context);
     listenerInfo =
       callback: callback
       context: context
