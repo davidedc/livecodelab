@@ -94,7 +94,7 @@ class LiveCodeLabCore
     
     # this one also interacts with threeJsSystem at runtime
     @blendControls = new BlendControls(@)
-    @colourFunctions = createColourFunctions()
+    @colourFunctions = new ColourFunctions()
     
     # this one also interacts with threeJsSystem and blendControls at runtime
     @renderer = new Renderer(@)

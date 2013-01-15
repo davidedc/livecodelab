@@ -8,68 +8,135 @@
 Closure compiler automatically replaces symbolic Constants.* names with their
 values (it does it for everything it thinks it's a constant really).
 ###
-createColourFunctions = ->
-  "use strict"
-  ColourFunctions = {}
-  Constants = undefined
-  colorModeX = 255
-  colorModeY = 255
-  colorModeZ = 255
-  curColorMode = undefined
-  color$4 = undefined
-  color$2 = undefined
-  color$1 = undefined
-  modes = undefined
-  ColourFunctions.colorModeA = 255
-  Constants =
-    
-    # Color modes
-    RGB: 1
-    ARGB: 2
-    HSB: 3
-    ALPHA: 4
-    CMYK: 5
-    
-    # Blend modes
-    REPLACE: 0
-    BLEND: 1 << 0
-    ADD: 1 << 1
-    SUBTRACT: 1 << 2
-    LIGHTEST: 1 << 3
-    DARKEST: 1 << 4
-    DIFFERENCE: 1 << 5
-    EXCLUSION: 1 << 6
-    MULTIPLY: 1 << 7
-    SCREEN: 1 << 8
-    OVERLAY: 1 << 9
-    HARD_LIGHT: 1 << 10
-    SOFT_LIGHT: 1 << 11
-    DODGE: 1 << 12
-    BURN: 1 << 13
-    
-    # Color component bit masks
-    ALPHA_MASK: 0xff000000
-    RED_MASK: 0x00ff0000
-    GREEN_MASK: 0x0000ff00
-    BLUE_MASK: 0x000000ff
+"use strict"
+class ColourFunctions
+  constructor: ->
+    window.color = (a,b,c,d) => @color(a,b,c,d)
+    window.colorToHSB = (a) => @colorToHSB(a)
+    window.brightness = (a) => @brightness(a)
+    window.saturation = (a) => @saturation(a)
+    window.hue = (a) => @hue(a)
+    window.redF = (a) => @redF(a)
+    window.greenF = (a) => @greenF(a)
+    window.blueF = (a) => @blueF(a)
+    window.alpha = (a) => @alpha(a)
+    window.alphaZeroToOne = (a) => @alphaZeroToOne(a)
+    window.lerp = (a,b,c) => @lerp(a,b,c)
+    window.lerpColor = (a,b,c) => @lerpColor(a,b,c)
+    window.colorMode = (a,b,c,d,e) => @colorMode(a,b,c,d,e)
+    window.blendColor = (a,b,c) => @blendColor(a,b,c)
 
-  curColorMode = Constants.RGB
-  color$4 = (aValue1, aValue2, aValue3, aValue4) ->
+    @colorModeX = 255
+    @colorModeY = 255
+    @colorModeZ = 255
+    @colorModeA = 255
+    @Constants =      
+      # Color modes
+      RGB: 1
+      ARGB: 2
+      HSB: 3
+      ALPHA: 4
+      CMYK: 5
+      
+      # Blend modes
+      REPLACE: 0
+      BLEND: 1 << 0
+      ADD: 1 << 1
+      SUBTRACT: 1 << 2
+      LIGHTEST: 1 << 3
+      DARKEST: 1 << 4
+      DIFFERENCE: 1 << 5
+      EXCLUSION: 1 << 6
+      MULTIPLY: 1 << 7
+      SCREEN: 1 << 8
+      OVERLAY: 1 << 9
+      HARD_LIGHT: 1 << 10
+      SOFT_LIGHT: 1 << 11
+      DODGE: 1 << 12
+      BURN: 1 << 13
+      
+      # Color component bit masks
+      ALPHA_MASK: 0xff000000
+      RED_MASK: 0x00ff0000
+      GREEN_MASK: 0x0000ff00
+      BLUE_MASK: 0x000000ff
+    
+    window.HSB = @Constants.HSB
+    window.RGB = @Constants.RGB
+
+    @curColorMode = @Constants.RGB
+
+    # Ease of use function to extract the colour bits into a string
+    @color.toString = (colorInt) =>
+      "rgba(" + ((colorInt & @Constants.RED_MASK) >>> 16) + "," + ((colorInt & @Constants.GREEN_MASK) >>> 8) + "," + (colorInt & @Constants.BLUE_MASK) + "," + ((colorInt & @Constants.ALPHA_MASK) >>> 24) / 255 + ")"
+
+    # Easy of use function to pack rgba values into a single bit-shifted color int.
+    @color.toInt = (r, g, b, a) =>
+      (a << 24) & @Constants.ALPHA_MASK | (r << 16) & @Constants.RED_MASK | (g << 8) & @Constants.GREEN_MASK | b & @Constants.BLUE_MASK
+  
+    # Creates a simple array in [R, G, B, A] format, [255, 255, 255, 255]
+    @color.toArray = (colorInt) =>
+      [(colorInt & @Constants.RED_MASK) >>> 16, (colorInt & @Constants.GREEN_MASK) >>> 8, colorInt & @Constants.BLUE_MASK, (colorInt & @Constants.ALPHA_MASK) >>> 24]
+  
+    # Creates a WebGL color array in [R, G, B, A] format. WebGL wants the color ranges between 0 and 1, [1, 1, 1, 1]
+    @color.toGLArray= (colorInt) =>
+      [((colorInt & @Constants.RED_MASK) >>> 16) / 255, ((colorInt & @Constants.GREEN_MASK) >>> 8) / 255, (colorInt & @Constants.BLUE_MASK) / 255, ((colorInt & @Constants.ALPHA_MASK) >>> 24) / 255]
+  
+    # HSB conversion function from Mootools, MIT Licensed
+    @color.toRGB = (h, s, b) =>
+      br = undefined
+      hue = undefined
+      f = undefined
+      p = undefined
+      q = undefined
+      t = undefined
+      
+      # Limit values greater than range
+      h = (if (h > @colorModeX) then @colorModeX else h)
+      s = (if (s > @colorModeY) then @colorModeY else s)
+      b = (if (b > @colorModeZ) then @colorModeZ else b)
+      h = (h / @colorModeX) * 360
+      s = (s / @colorModeY) * 100
+      b = (b / @colorModeZ) * 100
+      br = Math.round(b / 100 * 255)
+      # Grayscale
+      return [br, br, br]  if s is 0
+      hue = h % 360
+      f = hue % 60
+      p = Math.round((b * (100 - s)) / 10000 * 255)
+      q = Math.round((b * (6000 - s * f)) / 600000 * 255)
+      t = Math.round((b * (6000 - s * (60 - f))) / 600000 * 255)
+      switch Math.floor(hue / 60)
+        when 0
+          [br, t, p]
+        when 1
+          [q, br, p]
+        when 2
+          [p, br, t]
+        when 3
+          [p, q, br]
+        when 4
+          [t, p, br]
+        when 5
+          [br, p, q]
+    @modes = @modesFunction()
+
+  color$4: (aValue1, aValue2, aValue3, aValue4) ->
     r = undefined
     g = undefined
     b = undefined
     a = undefined
     rgb = undefined
-    if curColorMode is Constants.HSB
-      rgb = ColourFunctions.color.toRGB(aValue1, aValue2, aValue3)
+    if @curColorMode is @Constants.HSB
+      rgb = @color.toRGB(aValue1, aValue2, aValue3)
       r = rgb[0]
       g = rgb[1]
       b = rgb[2]
     else
-      r = Math.round(255 * (aValue1 / colorModeX))
-      g = Math.round(255 * (aValue2 / colorModeY))
-      b = Math.round(255 * (aValue3 / colorModeZ))
-    a = Math.round(255 * (aValue4 / ColourFunctions.colorModeA))
+      r = Math.round(255 * (aValue1 / @colorModeX))
+      g = Math.round(255 * (aValue2 / @colorModeY))
+      b = Math.round(255 * (aValue3 / @colorModeZ))
+    a = Math.round(255 * (aValue4 / @colorModeA))
     
     # Limit values less than 0 and greater than 255
     r = (if (r < 0) then 0 else r)
@@ -82,9 +149,9 @@ createColourFunctions = ->
     a = (if (a > 255) then 255 else a)
     
     # Create color int
-    (a << 24) & Constants.ALPHA_MASK | (r << 16) & Constants.RED_MASK | (g << 8) & Constants.GREEN_MASK | b & Constants.BLUE_MASK
+    (a << 24) & @Constants.ALPHA_MASK | (r << 16) & @Constants.RED_MASK | (g << 8) & @Constants.GREEN_MASK | b & @Constants.BLUE_MASK
 
-  color$2 = (aValue1, aValue2) ->
+  color$2: (aValue1, aValue2) ->
     a = undefined
     
     # lowest than any 32 bit color is a special
@@ -93,17 +160,17 @@ createColourFunctions = ->
     return angleColor  if aValue1 is angleColor
     
     # Color int and alpha
-    if aValue1 & Constants.ALPHA_MASK
-      a = Math.round(255 * (aValue2 / ColourFunctions.colorModeA))
+    if aValue1 & @Constants.ALPHA_MASK
+      a = Math.round(255 * (aValue2 / @colorModeA))
       
       # Limit values less than 0 and greater than 255
       a = (if (a > 255) then 255 else a)
       a = (if (a < 0) then 0 else a)
-      return aValue1 - (aValue1 & Constants.ALPHA_MASK) + ((a << 24) & Constants.ALPHA_MASK)
+      return aValue1 - (aValue1 & @Constants.ALPHA_MASK) + ((a << 24) & @Constants.ALPHA_MASK)
     
     # Grayscale and alpha
-    return color$4(aValue1, aValue1, aValue1, aValue2)  if curColorMode is Constants.RGB
-    color$4 0, 0, (aValue1 / colorModeX) * colorModeZ, aValue2  if curColorMode is Constants.HSB
+    return @color$4(aValue1, aValue1, aValue1, aValue2)  if @curColorMode is @Constants.RGB
+    @color$4 0, 0, (aValue1 / @colorModeX) * @colorModeZ, aValue2  if @curColorMode is @Constants.HSB
 
   # so, color in both processing and processing.js is slightly weird, because
   # color is just a Java integer, which is a little bit of a headache to
@@ -112,7 +179,7 @@ createColourFunctions = ->
   # in unsigned integer (or 64 bits float) would be 4278190080.
   # OK, instead color(0) in Java return -16777216, because Java integers are signed in
   # two's complement and they go from -2147483648 to 2147483647 included
-  color$1 = (aValue1) ->
+  color$1: (aValue1) ->
     
     # so that special colors still work with "color", e.g.
     # fill(color(angleColor))
@@ -120,9 +187,9 @@ createColourFunctions = ->
       return aValue1
 
     # Grayscale
-    if aValue1 <= colorModeX and aValue1 >= 0
-      return color$4(aValue1, aValue1, aValue1, ColourFunctions.colorModeA)  if curColorMode is Constants.RGB
-      return color$4(0, 0, (aValue1 / colorModeX) * colorModeZ, ColourFunctions.colorModeA)  if curColorMode is Constants.HSB
+    if aValue1 <= @colorModeX and aValue1 >= 0
+      return @color$4(aValue1, aValue1, aValue1, @colorModeA)  if @curColorMode is @Constants.RGB
+      return @color$4(0, 0, (aValue1 / @colorModeX) * @colorModeZ, @colorModeA)  if @curColorMode is @Constants.HSB
     
     # Color int
     if aValue1      
@@ -161,87 +228,27 @@ createColourFunctions = ->
   
   @see colorMode
   ###
-  ColourFunctions.color = (aValue1, aValue2, aValue3, aValue4) ->
+  color: (aValue1, aValue2, aValue3, aValue4) ->
     
     # 4 arguments: (R, G, B, A) or (H, S, B, A)
-    return color$4(aValue1, aValue2, aValue3, aValue4)  if aValue1 isnt `undefined` and aValue2 isnt `undefined` and aValue3 isnt `undefined` and aValue4 isnt `undefined`
+    return @color$4(aValue1, aValue2, aValue3, aValue4)  if aValue1 isnt `undefined` and aValue2 isnt `undefined` and aValue3 isnt `undefined` and aValue4 isnt `undefined`
     
     # 3 arguments: (R, G, B) or (H, S, B)
-    return color$4(aValue1, aValue2, aValue3, ColourFunctions.colorModeA)  if aValue1 isnt `undefined` and aValue2 isnt `undefined` and aValue3 isnt `undefined`
+    return @color$4(aValue1, aValue2, aValue3, @colorModeA)  if aValue1 isnt `undefined` and aValue2 isnt `undefined` and aValue3 isnt `undefined`
     
     # 2 arguments: (Color, A) or (Grayscale, A)
-    return color$2(aValue1, aValue2)  if aValue1 isnt `undefined` and aValue2 isnt `undefined`
+    return @color$2(aValue1, aValue2)  if aValue1 isnt `undefined` and aValue2 isnt `undefined`
     
     # 1 argument: (Grayscale) or (Color)
     # we also accept strings because special colors such as angleColor are encoded
     # through strings
     if typeof aValue1 is "number" or typeof aValue1 is "string" 
-      return color$1(aValue1)
+      return @color$1(aValue1)
     
     # Default
-    color$4 colorModeX, colorModeY, colorModeZ, ColourFunctions.colorModeA
+    @color$4 @colorModeX, @colorModeY, @colorModeZ, @colorModeA
 
-  
-  # Ease of use function to extract the colour bits into a string
-  ColourFunctions.color.toString = (colorInt) ->
-    "rgba(" + ((colorInt & Constants.RED_MASK) >>> 16) + "," + ((colorInt & Constants.GREEN_MASK) >>> 8) + "," + (colorInt & Constants.BLUE_MASK) + "," + ((colorInt & Constants.ALPHA_MASK) >>> 24) / 255 + ")"
-
-  
-  # Easy of use function to pack rgba values into a single bit-shifted color int.
-  ColourFunctions.color.toInt = (r, g, b, a) ->
-    (a << 24) & Constants.ALPHA_MASK | (r << 16) & Constants.RED_MASK | (g << 8) & Constants.GREEN_MASK | b & Constants.BLUE_MASK
-
-  
-  # Creates a simple array in [R, G, B, A] format, [255, 255, 255, 255]
-  ColourFunctions.color.toArray = (colorInt) ->
-    [(colorInt & Constants.RED_MASK) >>> 16, (colorInt & Constants.GREEN_MASK) >>> 8, colorInt & Constants.BLUE_MASK, (colorInt & Constants.ALPHA_MASK) >>> 24]
-
-  
-  # Creates a WebGL color array in [R, G, B, A] format. WebGL wants the color ranges between 0 and 1, [1, 1, 1, 1]
-  ColourFunctions.color.toGLArray = (colorInt) ->
-    [((colorInt & Constants.RED_MASK) >>> 16) / 255, ((colorInt & Constants.GREEN_MASK) >>> 8) / 255, (colorInt & Constants.BLUE_MASK) / 255, ((colorInt & Constants.ALPHA_MASK) >>> 24) / 255]
-
-  
-  # HSB conversion function from Mootools, MIT Licensed
-  ColourFunctions.color.toRGB = (h, s, b) ->
-    br = undefined
-    hue = undefined
-    f = undefined
-    p = undefined
-    q = undefined
-    t = undefined
-    
-    # Limit values greater than range
-    h = (if (h > colorModeX) then colorModeX else h)
-    s = (if (s > colorModeY) then colorModeY else s)
-    b = (if (b > colorModeZ) then colorModeZ else b)
-    h = (h / colorModeX) * 360
-    s = (s / colorModeY) * 100
-    b = (b / colorModeZ) * 100
-    br = Math.round(b / 100 * 255)
-    # Grayscale
-    return [br, br, br]  if s is 0
-    hue = h % 360
-    f = hue % 60
-    p = Math.round((b * (100 - s)) / 10000 * 255)
-    q = Math.round((b * (6000 - s * f)) / 600000 * 255)
-    t = Math.round((b * (6000 - s * (60 - f))) / 600000 * 255)
-    switch Math.floor(hue / 60)
-      when 0
-        [br, t, p]
-      when 1
-        [q, br, p]
-      when 2
-        [p, br, t]
-      when 3
-        [p, q, br]
-      when 4
-        [t, p, br]
-      when 5
-        [br, p, q]
-
-  window.color = ColourFunctions.color
-  window.colorToHSB = ColourFunctions.colorToHSB = (colorInt) ->
+  colorToHSB: (colorInt) ->
     red = undefined
     green = undefined
     blue = undefined
@@ -249,12 +256,12 @@ createColourFunctions = ->
     maxBright = undefined
     hue = undefined
     saturation = undefined
-    red = ((colorInt & Constants.RED_MASK) >>> 16) / 255
-    green = ((colorInt & Constants.GREEN_MASK) >>> 8) / 255
-    blue = (colorInt & Constants.BLUE_MASK) / 255
+    red = ((colorInt & @Constants.RED_MASK) >>> 16) / 255
+    green = ((colorInt & @Constants.GREEN_MASK) >>> 8) / 255
+    blue = (colorInt & @Constants.BLUE_MASK) / 255
     maxBright = max(max(red, green), blue)
     minBright = min(min(red, green), blue)
-    return [0, 0, maxBright * colorModeZ]  if minBright is maxBright
+    return [0, 0, maxBright * @colorModeZ]  if minBright is maxBright
     saturation = (maxBright - minBright) / maxBright
     if red is maxBright
       hue = (green - blue) / (maxBright - minBright)
@@ -266,7 +273,7 @@ createColourFunctions = ->
     if hue < 0
       hue += 1
     else hue -= 1  if hue > 1
-    [hue * colorModeX, saturation * colorModeY, maxBright * colorModeZ]
+    [hue * @colorModeX, saturation * @colorModeY, maxBright * @colorModeZ]
 
   
   ###
@@ -282,8 +289,8 @@ createColourFunctions = ->
   @see hue
   @see saturation
   ###
-  window.brightness = ColourFunctions.brightness = (colInt) ->
-    ColourFunctions.colorToHSB(colInt)[2]
+  brightness: (colInt) ->
+    @colorToHSB(colInt)[2]
 
   
   ###
@@ -299,8 +306,8 @@ createColourFunctions = ->
   @see hue
   @see brightness
   ###
-  window.saturation = ColourFunctions.saturation = (colInt) ->
-    ColourFunctions.colorToHSB(colInt)[1]
+  saturation: (colInt) ->
+    @colorToHSB(colInt)[1]
 
   
   ###
@@ -316,8 +323,8 @@ createColourFunctions = ->
   @see saturation
   @see brightness
   ###
-  window.hue = ColourFunctions.hue = (colInt) ->
-    ColourFunctions.colorToHSB(colInt)[0]
+  hue: (colInt) ->
+    @colorToHSB(colInt)[0]
 
   
   ###
@@ -336,8 +343,8 @@ createColourFunctions = ->
   @see saturation
   @see brightness
   ###
-  window.redF = ColourFunctions.redF = (aColor) ->
-    ((aColor & Constants.RED_MASK) >>> 16) / 255 * colorModeX
+  redF: (aColor) ->
+    ((aColor & @Constants.RED_MASK) >>> 16) / 255 * @colorModeX
 
   
   ###
@@ -356,8 +363,8 @@ createColourFunctions = ->
   @see saturation
   @see brightness
   ###
-  window.greenF = ColourFunctions.greenF = (aColor) ->
-    ((aColor & Constants.GREEN_MASK) >>> 8) / 255 * colorModeY
+  greenF: (aColor) ->
+    ((aColor & @Constants.GREEN_MASK) >>> 8) / 255 * @colorModeY
 
   
   ###
@@ -376,8 +383,8 @@ createColourFunctions = ->
   @see saturation
   @see brightness
   ###
-  window.blueF = ColourFunctions.blueF = (aColor) ->
-    (aColor & Constants.BLUE_MASK) / 255 * colorModeZ
+  blueF: (aColor) ->
+    (aColor & @Constants.BLUE_MASK) / 255 * @colorModeZ
 
   
   ###
@@ -396,11 +403,11 @@ createColourFunctions = ->
   @see saturation
   @see brightness
   ###
-  window.alpha = ColourFunctions.alpha = (aColor) ->
-    ((aColor & Constants.ALPHA_MASK) >>> 24) / 255 * ColourFunctions.colorModeA
+  alpha: (aColor) ->
+    ((aColor & @Constants.ALPHA_MASK) >>> 24) / 255 * @colorModeA
 
-  window.alphaZeroToOne = ColourFunctions.alphaZeroToOne = (aColor) ->
-    ((aColor & Constants.ALPHA_MASK) >>> 24) / 255
+  alphaZeroToOne: (aColor) ->
+    ((aColor & @Constants.ALPHA_MASK) >>> 24) / 255
 
   
   ###
@@ -418,7 +425,7 @@ createColourFunctions = ->
   @see curvePoint
   @see bezierPoint
   ###
-  window.lerp = ColourFunctions.lerp = (value1, value2, amt) ->
+  lerp: (value1, value2, amt) ->
     ((value2 - value1) * amt) + value1
 
   
@@ -436,7 +443,7 @@ createColourFunctions = ->
   @see blendColor
   @see color
   ###
-  window.lerpColor = ColourFunctions.lerpColor = (c1, c2, amt) ->
+  lerpColor: (c1, c2, amt) ->
     r = undefined
     g = undefined
     b = undefined
@@ -454,45 +461,45 @@ createColourFunctions = ->
     rgb = undefined
     h = undefined
     s = undefined
-    colorBits1 = ColourFunctions.color(c1)
-    colorBits2 = ColourFunctions.color(c2)
-    if curColorMode is Constants.HSB
+    colorBits1 = @color(c1)
+    colorBits2 = @color(c2)
+    if @curColorMode is @Constants.HSB
       
       # Special processing for HSB mode.
       # Get HSB and Alpha values for Color 1 and 2
-      hsb1 = ColourFunctions.colorToHSB(colorBits1)
-      a1 = ((colorBits1 & Constants.ALPHA_MASK) >>> 24) / ColourFunctions.colorModeA
-      hsb2 = ColourFunctions.colorToHSB(colorBits2)
-      a2 = ((colorBits2 & Constants.ALPHA_MASK) >>> 24) / ColourFunctions.colorModeA
+      hsb1 = @colorToHSB(colorBits1)
+      a1 = ((colorBits1 & @Constants.ALPHA_MASK) >>> 24) / @colorModeA
+      hsb2 = @colorToHSB(colorBits2)
+      a2 = ((colorBits2 & @Constants.ALPHA_MASK) >>> 24) / @colorModeA
       
       # RColourFunctions.eturn lerp value for each channel, for HSB components
-      h = ColourFunctions.lerp(hsb1[0], hsb2[0], amt)
-      s = ColourFunctions.lerp(hsb1[1], hsb2[1], amt)
-      b = ColourFunctions.lerp(hsb1[2], hsb2[2], amt)
-      rgb = ColourFunctions.color.toRGB(h, s, b)
+      h = @lerp(hsb1[0], hsb2[0], amt)
+      s = @lerp(hsb1[1], hsb2[1], amt)
+      b = @lerp(hsb1[2], hsb2[2], amt)
+      rgb = @color.toRGB(h, s, b)
       
       # ... and for Alpha-range
-      a = ColourFunctions.lerp(a1, a2, amt) * ColourFunctions.colorModeA
-      return (a << 24) & Constants.ALPHA_MASK | (rgb[0] << 16) & Constants.RED_MASK | (rgb[1] << 8) & Constants.GREEN_MASK | rgb[2] & Constants.BLUE_MASK
+      a = @lerp(a1, a2, amt) * @colorModeA
+      return (a << 24) & @Constants.ALPHA_MASK | (rgb[0] << 16) & @Constants.RED_MASK | (rgb[1] << 8) & @Constants.GREEN_MASK | rgb[2] & @Constants.BLUE_MASK
     
     # Get RGBA values for Color 1 to floats
-    r1 = (colorBits1 & Constants.RED_MASK) >>> 16
-    g1 = (colorBits1 & Constants.GREEN_MASK) >>> 8
-    b1 = (colorBits1 & Constants.BLUE_MASK)
-    a1 = ((colorBits1 & Constants.ALPHA_MASK) >>> 24) / ColourFunctions.colorModeA
+    r1 = (colorBits1 & @Constants.RED_MASK) >>> 16
+    g1 = (colorBits1 & @Constants.GREEN_MASK) >>> 8
+    b1 = (colorBits1 & @Constants.BLUE_MASK)
+    a1 = ((colorBits1 & @Constants.ALPHA_MASK) >>> 24) / @colorModeA
     
     # Get RGBA values for Color 2 to floats
-    r2 = (colorBits2 & Constants.RED_MASK) >>> 16
-    g2 = (colorBits2 & Constants.GREEN_MASK) >>> 8
-    b2 = (colorBits2 & Constants.BLUE_MASK)
-    a2 = ((colorBits2 & Constants.ALPHA_MASK) >>> 24) / ColourFunctions.colorModeA
+    r2 = (colorBits2 & @Constants.RED_MASK) >>> 16
+    g2 = (colorBits2 & @Constants.GREEN_MASK) >>> 8
+    b2 = (colorBits2 & @Constants.BLUE_MASK)
+    a2 = ((colorBits2 & @Constants.ALPHA_MASK) >>> 24) / @colorModeA
     
     # Return lerp value for each channel, INT for color, Float for Alpha-range
-    r = ColourFunctions.lerp(r1, r2, amt) | 0
-    g = ColourFunctions.lerp(g1, g2, amt) | 0
-    b = ColourFunctions.lerp(b1, b2, amt) | 0
-    a = ColourFunctions.lerp(a1, a2, amt) * ColourFunctions.colorModeA
-    (a << 24) & Constants.ALPHA_MASK | (r << 16) & Constants.RED_MASK | (g << 8) & Constants.GREEN_MASK | b & Constants.BLUE_MASK
+    r = @lerp(r1, r2, amt) | 0
+    g = @lerp(g1, g2, amt) | 0
+    b = @lerp(b1, b2, amt) | 0
+    a = @lerp(a1, a2, amt) * @colorModeA
+    (a << 24) & @Constants.ALPHA_MASK | (r << 16) & @Constants.RED_MASK | (g << 8) & @Constants.GREEN_MASK | b & @Constants.BLUE_MASK
 
   
   ###
@@ -515,13 +522,13 @@ createColourFunctions = ->
   @see fill
   @see stroke
   ###
-  window.colorMode = ColourFunctions.colorMode = (mode, range1, range2, range3, range4) ->
-    curColorMode = mode
-    if arguments_.length > 1
-      colorModeX = range1
-      colorModeY = range2 or range1
-      colorModeZ = range3 or range1
-      ColourFunctions.colorModeA = range4 or range1
+  colorMode: (mode, range1, range2, range3, range4) ->
+    @curColorMode = mode
+    if arguments.length > 1
+      @colorModeX = range1
+      @colorModeY = range2 or range1
+      @colorModeZ = range3 or range1
+      @colorModeA = range4 or range1
 
   
   # blending modes
@@ -536,11 +543,11 @@ createColourFunctions = ->
   @see BlendColor
   @see Blend
   ###
-  modesFunction = (->
-    ALPHA_MASK = Constants.ALPHA_MASK
-    RED_MASK = Constants.RED_MASK
-    GREEN_MASK = Constants.GREEN_MASK
-    BLUE_MASK = Constants.BLUE_MASK
+  modesFunction: () ->
+    ALPHA_MASK = @Constants.ALPHA_MASK
+    RED_MASK = @Constants.RED_MASK
+    GREEN_MASK = @Constants.GREEN_MASK
+    BLUE_MASK = @Constants.BLUE_MASK
     min = Math.min
     max = Math.max
     applyMode = undefined
@@ -558,10 +565,10 @@ createColourFunctions = ->
       b = (if (b < 0) then 0 else ((if (b > 255) then 255 else b)))
       a | r | g | b
 
-    replace: (c1, c2) ->
+    replace = (c1, c2) ->
       c2
 
-    blend: (c1, c2) ->
+    blend = (c1, c2) ->
       f = (c2 & ALPHA_MASK) >>> 24
       ar = (c1 & RED_MASK)
       ag = (c1 & GREEN_MASK)
@@ -571,19 +578,19 @@ createColourFunctions = ->
       bb = (c2 & BLUE_MASK)
       min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 | (ar + (((br - ar) * f) >> 8)) & RED_MASK | (ag + (((bg - ag) * f) >> 8)) & GREEN_MASK | (ab + (((bb - ab) * f) >> 8)) & BLUE_MASK
 
-    add: (c1, c2) ->
+    add = (c1, c2) ->
       f = (c2 & ALPHA_MASK) >>> 24
       min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 | min(((c1 & RED_MASK) + ((c2 & RED_MASK) >> 8) * f), RED_MASK) & RED_MASK | min(((c1 & GREEN_MASK) + ((c2 & GREEN_MASK) >> 8) * f), GREEN_MASK) & GREEN_MASK | min((c1 & BLUE_MASK) + (((c2 & BLUE_MASK) * f) >> 8), BLUE_MASK)
 
-    subtract: (c1, c2) ->
+    subtract = (c1, c2) ->
       f = (c2 & ALPHA_MASK) >>> 24
       min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 | max(((c1 & RED_MASK) - ((c2 & RED_MASK) >> 8) * f), GREEN_MASK) & RED_MASK | max(((c1 & GREEN_MASK) - ((c2 & GREEN_MASK) >> 8) * f), BLUE_MASK) & GREEN_MASK | max((c1 & BLUE_MASK) - (((c2 & BLUE_MASK) * f) >> 8), 0)
 
-    lightest: (c1, c2) ->
+    lightest = (c1, c2) ->
       f = (c2 & ALPHA_MASK) >>> 24
       min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 | max(c1 & RED_MASK, ((c2 & RED_MASK) >> 8) * f) & RED_MASK | max(c1 & GREEN_MASK, ((c2 & GREEN_MASK) >> 8) * f) & GREEN_MASK | max(c1 & BLUE_MASK, ((c2 & BLUE_MASK) * f) >> 8)
 
-    darkest: (c1, c2) ->
+    darkest = (c1, c2) ->
       f = (c2 & ALPHA_MASK) >>> 24
       ar = (c1 & RED_MASK)
       ag = (c1 & GREEN_MASK)
@@ -593,7 +600,7 @@ createColourFunctions = ->
       bb = min(c1 & BLUE_MASK, ((c2 & BLUE_MASK) * f) >> 8)
       min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 | (ar + (((br - ar) * f) >> 8)) & RED_MASK | (ag + (((bg - ag) * f) >> 8)) & GREEN_MASK | (ab + (((bb - ab) * f) >> 8)) & BLUE_MASK
 
-    difference: (c1, c2) ->
+    difference = (c1, c2) ->
       f = (c2 & ALPHA_MASK) >>> 24
       ar = (c1 & RED_MASK) >> 16
       ag = (c1 & GREEN_MASK) >> 8
@@ -606,7 +613,7 @@ createColourFunctions = ->
       cb = (if (ab > bb) then (ab - bb) else (bb - ab))
       applyMode c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb
 
-    exclusion: (c1, c2) ->
+    exclusion = (c1, c2) ->
       f = (c2 & ALPHA_MASK) >>> 24
       ar = (c1 & RED_MASK) >> 16
       ag = (c1 & GREEN_MASK) >> 8
@@ -619,7 +626,7 @@ createColourFunctions = ->
       cb = ab + bb - ((ab * bb) >> 7)
       applyMode c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb
 
-    multiply: (c1, c2) ->
+    multiply = (c1, c2) ->
       f = (c2 & ALPHA_MASK) >>> 24
       ar = (c1 & RED_MASK) >> 16
       ag = (c1 & GREEN_MASK) >> 8
@@ -632,7 +639,7 @@ createColourFunctions = ->
       cb = (ab * bb) >> 8
       applyMode c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb
 
-    screen: (c1, c2) ->
+    screen = (c1, c2) ->
       f = (c2 & ALPHA_MASK) >>> 24
       ar = (c1 & RED_MASK) >> 16
       ag = (c1 & GREEN_MASK) >> 8
@@ -645,7 +652,7 @@ createColourFunctions = ->
       cb = 255 - (((255 - ab) * (255 - bb)) >> 8)
       applyMode c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb
 
-    hard_light: (c1, c2) ->
+    hard_light = (c1, c2) ->
       f = (c2 & ALPHA_MASK) >>> 24
       ar = (c1 & RED_MASK) >> 16
       ag = (c1 & GREEN_MASK) >> 8
@@ -658,7 +665,7 @@ createColourFunctions = ->
       cb = (if (bb < 128) then ((ab * bb) >> 7) else (255 - (((255 - ab) * (255 - bb)) >> 7)))
       applyMode c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb
 
-    soft_light: (c1, c2) ->
+    soft_light = (c1, c2) ->
       f = (c2 & ALPHA_MASK) >>> 24
       ar = (c1 & RED_MASK) >> 16
       ag = (c1 & GREEN_MASK) >> 8
@@ -671,7 +678,7 @@ createColourFunctions = ->
       cb = ((ab * bb) >> 7) + ((ab * ab) >> 8) - ((ab * ab * bb) >> 15)
       applyMode c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb
 
-    overlay: (c1, c2) ->
+    overlay = (c1, c2) ->
       f = (c2 & ALPHA_MASK) >>> 24
       ar = (c1 & RED_MASK) >> 16
       ag = (c1 & GREEN_MASK) >> 8
@@ -684,7 +691,7 @@ createColourFunctions = ->
       cb = (if (ab < 128) then ((ab * bb) >> 7) else (255 - (((255 - ab) * (255 - bb)) >> 7)))
       applyMode c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb
 
-    dodge: (c1, c2) ->
+    dodge = (c1, c2) ->
       f = (c2 & ALPHA_MASK) >>> 24
       ar = (c1 & RED_MASK) >> 16
       ag = (c1 & GREEN_MASK) >> 8
@@ -709,7 +716,7 @@ createColourFunctions = ->
         cb = (if (cb < 0) then 0 else ((if (cb > 255) then 255 else cb)))
       applyMode c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb
 
-    burn: (c1, c2) ->
+    burn = (c1, c2) ->
       f = (c2 & ALPHA_MASK) >>> 24
       ar = (c1 & RED_MASK) >> 16
       ag = (c1 & GREEN_MASK) >> 8
@@ -733,7 +740,6 @@ createColourFunctions = ->
         cb = ((255 - ab) << 8) / bb
         cb = 255 - ((if (cb < 0) then 0 else ((if (cb > 255) then 255 else cb))))
       applyMode c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb
-  )
   
   ###
   Blends two color values together based on the blending mode given as the MODE parameter.
@@ -749,36 +755,34 @@ createColourFunctions = ->
   @see blend
   @see color
   ###
-  window.blendColor = ColourFunctions.blendColor = (c1, c2, mode) ->
-    if mode is Constants.REPLACE
-      modes.replace c1, c2
-    else if mode is Constants.BLEND
-      modes.blend c1, c2
-    else if mode is Constants.ADD
-      modes.add c1, c2
-    else if mode is Constants.SUBTRACT
-      modes.subtract c1, c2
-    else if mode is Constants.LIGHTEST
-      modes.lightest c1, c2
-    else if mode is Constants.DARKEST
-      modes.darkest c1, c2
-    else if mode is Constants.DIFFERENCE
-      modes.difference c1, c2
-    else if mode is Constants.EXCLUSION
-      modes.exclusion c1, c2
-    else if mode is Constants.MULTIPLY
-      modes.multiply c1, c2
-    else if mode is Constants.SCREEN
-      modes.screen c1, c2
-    else if mode is Constants.HARD_LIGHT
-      modes.hard_light c1, c2
-    else if mode is Constants.SOFT_LIGHT
-      modes.soft_light c1, c2
-    else if mode is Constants.OVERLAY
-      modes.overlay c1, c2
-    else if mode is Constants.DODGE
-      modes.dodge c1, c2
-    else modes.burn c1, c2  if mode is Constants.BURN
+  blendColor: (c1, c2, mode) ->
+    if mode is @Constants.REPLACE
+      @modes.replace c1, c2
+    else if mode is @Constants.BLEND
+      @modes.blend c1, c2
+    else if mode is @Constants.ADD
+      @modes.add c1, c2
+    else if mode is @Constants.SUBTRACT
+      @modes.subtract c1, c2
+    else if mode is @Constants.LIGHTEST
+      @modes.lightest c1, c2
+    else if mode is @Constants.DARKEST
+      @modes.darkest c1, c2
+    else if mode is @Constants.DIFFERENCE
+      @modes.difference c1, c2
+    else if mode is @Constants.EXCLUSION
+      @modes.exclusion c1, c2
+    else if mode is @Constants.MULTIPLY
+      @modes.multiply c1, c2
+    else if mode is @Constants.SCREEN
+      @modes.screen c1, c2
+    else if mode is @Constants.HARD_LIGHT
+      @modes.hard_light c1, c2
+    else if mode is @Constants.SOFT_LIGHT
+      @modes.soft_light c1, c2
+    else if mode is @Constants.OVERLAY
+      @modes.overlay c1, c2
+    else if mode is @Constants.DODGE
+      @modes.dodge c1, c2
+    else @modes.burn c1, c2  if mode is @Constants.BURN
 
-  modes = modesFunction()
-  ColourFunctions
