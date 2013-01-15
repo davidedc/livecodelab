@@ -137,7 +137,7 @@ is wrong.</p>
 
 <p>//////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>  
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>this one doesn't interact with any other part at runtime.</p>             </td>             <td class="code">               <div class="highlight"><pre>  liveCodeLabCoreInstance.ThreeJsSystem =
-    createThreeJsSystem(
+    <span class="keyword">new</span> ThreeJsSystem(
       Detector, THREEx, paramsObject.blendedThreeJsSceneCanvas,
       paramsObject.forceCanvasRenderer, paramsObject.testMode,
       liveCodeLabCoreInstance.THREE)
