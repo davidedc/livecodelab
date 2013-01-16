@@ -36,7 +36,6 @@ class SoundSystem
 
   
   resetLoops: ->
-    console.log 'resetLoops'
     @soundLoops.soundIDs = []
     @soundLoops.beatStrings = []
 
@@ -45,12 +44,10 @@ class SoundSystem
     startup.play()
 
   SetUpdatesPerMinute: (@updatesPerMinute) ->
-    console.log 'SetUpdatesPerMinute'
     
   # sets BPM
   # is called by code in patches
   bpm: (a) ->    
-    console.log 'bpm'
     # timid attempt at sanity check.
     # the sound system might well bork out
     # even below 500 bpm.
@@ -65,7 +62,6 @@ class SoundSystem
   
   # called from within patches
   play: (soundID, beatString) ->
-    console.log 'play'
     @anyCodeReactingTobpm = true
     beatString = beatString.replace(/\s*/g, "")
     @soundLoops.soundIDs.push soundID
@@ -104,14 +100,12 @@ class SoundSystem
   # The buzzObjectsPool parameter is not used but we put it here
   # for uniformity with the other playing alternatives
   play_using_BUZZ_JS_FIRE_AND_FORGET: (soundFilesPaths, loopedSoundID, @buzzObjectsPool) ->
-    console.log 'play_using_BUZZ_JS_FIRE_AND_FORGET'
     soundFilePath = undefined
     soundFilePath = soundFilesPaths[loopedSoundID]
     availableBuzzObject = new @buzz.sound(soundFilePath)
     availableBuzzObject.play()
 
   play_using_DYNAMICALLY_CREATED_AUDIO_TAG: (soundFilesPaths, loopedSoundID, @buzzObjectsPool) ->
-    console.log 'play_using_DYNAMICALLY_CREATED_AUDIO_TAG'
     audioElement = undefined
     source1 = undefined
     soundFilePath = undefined
@@ -130,10 +124,7 @@ class SoundSystem
     audioElement.play()
 
   play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND: (soundFilesPaths, loopedSoundID, @buzzObjectsPool) ->
-    console.log 'play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND'
     availableBuzzObject = undefined
-    console.log 'loopedSoundID: ' + loopedSoundID
-    console.log '@buzzObjectsPool: ' + @buzzObjectsPool
     allBuzzObjectsForWantedSound = @buzzObjectsPool[loopedSoundID]
     scanningBuzzObjectsForWantedSound = undefined
     buzzObject = undefined
@@ -160,7 +151,6 @@ class SoundSystem
         $("#simplemodal-container").height 250
         return
       availableBuzzObject = new @buzz.sound(soundFilesPaths[loopedSoundID])
-      console.log 'pushing ' + availableBuzzObject
       @buzzObjectsPool[loopedSoundID].push availableBuzzObject
       @totalCreatedSoundObjects += 1
     
@@ -170,7 +160,6 @@ class SoundSystem
   
   # Called from changeUpdatesPerMinuteIfNeeded
   soundLoop: ->
-    console.log 'soundLoop'
     loopingTheSoundIDs = undefined
     loopedSoundID = undefined
     playOrNoPlay = undefined
@@ -201,7 +190,6 @@ class SoundSystem
   
   # Called from animate function in animation-controls.js
   changeUpdatesPerMinuteIfNeeded: ->
-    console.log 'changeUpdatesPerMinuteIfNeeded'
     if @oldupdatesPerMinute isnt @updatesPerMinute
       clearTimeout @soundLoopTimer
       @soundLoopTimer = setInterval((()=>@soundLoop()), (1000 * 60) / @updatesPerMinute)  if @updatesPerMinute isnt 0
@@ -210,7 +198,6 @@ class SoundSystem
   
   # Called in init.js
   isAudioSupported: ->
-    console.log 'isAudioSupported'
     setTimeout (=>
       unless @buzz.isSupported()
         $("#noAudioMessage").modal()
@@ -220,7 +207,6 @@ class SoundSystem
   
   # Called from loadAndTestAllTheSounds
   checkSound: (soundDef, soundInfo) ->
-    console.log 'checkSound'
     newSound = new @buzz.sound(soundInfo.path)
     newSound.mute()
     newSound.load()
@@ -232,13 +218,11 @@ class SoundSystem
         @eventRouter.trigger "all-sounds-loaded-and tested"  
 
     newSound.play()
-    console.log 'pushing: ' + newSound
     @buzzObjectsPool[soundInfo.name].push newSound
 
   
   # Called form the document ready block in init.js
   loadAndTestAllTheSounds: ->
-    console.log 'loadAndTestAllTheSounds'
     soundDef = undefined
     soundInfo = undefined
     cycleSoundDefs = undefined
