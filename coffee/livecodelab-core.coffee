@@ -99,7 +99,7 @@ class LiveCodeLabCore
     # this one also interacts with threeJsSystem and blendControls at runtime
     @renderer = new Renderer(@)
     @soundSystem =
-      createSoundSystem(
+      new SoundSystem(
         @paramsObject.eventRouter, buzz, createBowser(), createSampleBank(buzz))
     
     # this one also interacts with colourFunctions, backgroundSceneContext,

@@ -15,7 +15,7 @@ $(document).ready ->
     blendedThreeJsSceneCanvas: document.getElementById("blendedThreeJsSceneCanvas")
     canvasForBackground: document.getElementById("backGroundCanvas")
     forceCanvasRenderer: false
-    bubbleUpErrorsForDebugging: false
+    bubbleUpErrorsForDebugging: true
     
     # testMode enables the webgl flag "preserverDrawingBuffer",
     # see https://github.com/mrdoob/three.js/pull/421

@@ -1,49 +1,56 @@
 #jslint browser: true 
 
 #global $ 
-createSoundSystem = (eventRouter, buzz, Bowser, samplebank) ->
-  "use strict"
-  SoundSystem = {}
-  oldupdatesPerMinute = 0
-  soundLoopTimer = undefined
-  beatNumber = 0
-  totalCreatedSoundObjects = 0
-  soundSystemIsMangled = false
-  CHANNELSPERSOUND = 6
-  endedFirstPlay = 0
-  buzzObjectsPool = []
-  soundFilesPaths = {}
-  soundLoops = []
-  soundLoop = undefined
-  checkSound = undefined
-  updatesPerMinute = undefined
-  play_using_BUZZ_JS_FIRE_AND_FORGET = undefined
-  play_using_DYNAMICALLY_CREATED_AUDIO_TAG = undefined
-  play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND = undefined
-  play = undefined
-  soundLoops.soundIDs = []
-  soundLoops.beatStrings = []
-  SoundSystem.resetLoops = 0
-  SoundSystem.resetLoops = ->
-    soundLoops.soundIDs = []
-    soundLoops.beatStrings = []
-
-  SoundSystem.playStartupSound = ->
-    startup = new buzz.sound(samplebank.getByName("bing").path)
-    startup.play()
-
-  SoundSystem.SetUpdatesPerMinute = (updates) ->
-    updatesPerMinute = updates
-
-  
+"use strict"
+class SoundSystem
+  oldupdatesPerMinute: 0
+  soundLoopTimer: undefined
+  beatNumber: 0
+  totalCreatedSoundObjects: 0
+  soundSystemIsMangled: false
+  CHANNELSPERSOUND: 6
+  endedFirstPlay: 0
+  buzzObjectsPool: []
+  soundFilesPaths: {}
+  soundLoops: []
+  updatesPerMinute: undefined
   # if there isn't any code using the bpm setting then we can save a timer, so
   # worth tracking with this variable
-  SoundSystem.anyCodeReactingTobpm = false
+  anyCodeReactingTobpm: false
   
+  constructor: (@eventRouter, @buzz, @Bowser, @samplebank) ->
+    @soundLoops.soundIDs = []
+    @soundLoops.beatStrings = []
+
+    # now that all the various sound playing functions for the different cases are
+    # defined, we set the "play" function to the best solution according to
+    # the browser/os. We wish we could do this better.
+    if @Bowser.firefox
+      @playSound = (a,b,c) => @play_using_DYNAMICALLY_CREATED_AUDIO_TAG(a,b,c)
+    else if @Bowser.safari or @Bowser.ie or @Bowser.chrome
+      @playSound = (a,b,c) => @play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND(a,b,c)
+
+    # These need to be global so it can be run by the draw function
+    window.bpm = (a) => @bpm(a)
+    window.play = (a,b) => @play(a,b)
+
+  
+  resetLoops: ->
+    console.log 'resetLoops'
+    @soundLoops.soundIDs = []
+    @soundLoops.beatStrings = []
+
+  playStartupSound: ->
+    startup = new @buzz.sound(@samplebank.getByName("bing").path)
+    startup.play()
+
+  SetUpdatesPerMinute: (@updatesPerMinute) ->
+    console.log 'SetUpdatesPerMinute'
+    
   # sets BPM
   # is called by code in patches
-  window.bpm = SoundSystem.bpm = (a) ->
-    
+  bpm: (a) ->    
+    console.log 'bpm'
     # timid attempt at sanity check.
     # the sound system might well bork out
     # even below 500 bpm.
@@ -53,15 +60,16 @@ createSoundSystem = (eventRouter, buzz, Bowser, samplebank) ->
     
     # each beat is made of 4 parts, and we can trigger sounds
     # on each of those, so updatesPerMinute is 4 times the bpm.
-    updatesPerMinute = a * 4
+    @updatesPerMinute = a * 4
 
   
   # called from within patches
-  window.play = SoundSystem.play = (soundID, beatString) ->
-    SoundSystem.anyCodeReactingTobpm = true
+  play: (soundID, beatString) ->
+    console.log 'play'
+    @anyCodeReactingTobpm = true
     beatString = beatString.replace(/\s*/g, "")
-    soundLoops.soundIDs.push soundID
-    soundLoops.beatStrings.push beatString
+    @soundLoops.soundIDs.push soundID
+    @soundLoops.beatStrings.push beatString
 
   
   # When each Audio object plays, it plays from start to end
@@ -93,14 +101,17 @@ createSoundSystem = (eventRouter, buzz, Bowser, samplebank) ->
   # DYNAMICALLY_CREATED_AUDIO_TAG:
   #    Directly create an audio object each time we need to play a sound.
   #    Once the sound has finished playing, the audio object is garbage collected.
-  play_using_BUZZ_JS_FIRE_AND_FORGET = (soundFilesPaths, loopedSoundID, buzzObjectsPool) ->
+  # The buzzObjectsPool parameter is not used but we put it here
+  # for uniformity with the other playing alternatives
+  play_using_BUZZ_JS_FIRE_AND_FORGET: (soundFilesPaths, loopedSoundID, @buzzObjectsPool) ->
+    console.log 'play_using_BUZZ_JS_FIRE_AND_FORGET'
     soundFilePath = undefined
-    availableBuzzObject = undefined
     soundFilePath = soundFilesPaths[loopedSoundID]
-    availableBuzzObject = new buzz.sound(soundFilePath)
+    availableBuzzObject = new @buzz.sound(soundFilePath)
     availableBuzzObject.play()
 
-  play_using_DYNAMICALLY_CREATED_AUDIO_TAG = (soundFilesPaths, loopedSoundID, buzzObjectsPool) ->
+  play_using_DYNAMICALLY_CREATED_AUDIO_TAG: (soundFilesPaths, loopedSoundID, @buzzObjectsPool) ->
+    console.log 'play_using_DYNAMICALLY_CREATED_AUDIO_TAG'
     audioElement = undefined
     source1 = undefined
     soundFilePath = undefined
@@ -112,15 +123,18 @@ createSoundSystem = (eventRouter, buzz, Bowser, samplebank) ->
     source1.type = "audio/ogg"
     source1.src = soundFilePath
     audioElement.appendChild source1
-    audioElement.addEventListener "load", (->
+    audioElement.addEventListener "load", (=>
       audioElement.play()
       $(".filename span").html audioElement.src
     ), true
     audioElement.play()
 
-  play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND = (soundFilesPaths, loopedSoundID, buzzObjectsPool) ->
+  play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND: (soundFilesPaths, loopedSoundID, @buzzObjectsPool) ->
+    console.log 'play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND'
     availableBuzzObject = undefined
-    allBuzzObjectsForWantedSound = buzzObjectsPool[loopedSoundID]
+    console.log 'loopedSoundID: ' + loopedSoundID
+    console.log '@buzzObjectsPool: ' + @buzzObjectsPool
+    allBuzzObjectsForWantedSound = @buzzObjectsPool[loopedSoundID]
     scanningBuzzObjectsForWantedSound = undefined
     buzzObject = undefined
     
@@ -140,120 +154,119 @@ createSoundSystem = (eventRouter, buzz, Bowser, samplebank) ->
       # create a new one
       # OR there are already too many, so simply put the sound system
       # is mangled.
-      if totalCreatedSoundObjects > 31
-        soundSystemIsMangled = true
+      if @totalCreatedSoundObjects > 31
+        @soundSystemIsMangled = true
         $("#soundSystemIsMangledMessage").modal()
         $("#simplemodal-container").height 250
         return
-      availableBuzzObject = new buzz.sound(soundFilesPaths[loopedSoundID])
-      buzzObjectsPool[loopedSoundID].push availableBuzzObject
-      totalCreatedSoundObjects += 1
+      availableBuzzObject = new @buzz.sound(soundFilesPaths[loopedSoundID])
+      console.log 'pushing ' + availableBuzzObject
+      @buzzObjectsPool[loopedSoundID].push availableBuzzObject
+      @totalCreatedSoundObjects += 1
     
     # if we are here it means that there is a buzz object to play with
     # (either an existing one that has stopped playing or a freshly-made one)
     availableBuzzObject.play()
-
-  
-  # now that all the various sound playing functions for the different cases are
-  # defined, we set the "play" function to the best solution according to
-  # the browser/os. We wish we could do this better.
-  if Bowser.firefox
-    play = play_using_DYNAMICALLY_CREATED_AUDIO_TAG
-  else play = play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND  if Bowser.safari or Bowser.ie or Bowser.chrome
   
   # Called from changeUpdatesPerMinuteIfNeeded
-  soundLoop = ->
+  soundLoop: ->
+    console.log 'soundLoop'
     loopingTheSoundIDs = undefined
     loopedSoundID = undefined
     playOrNoPlay = undefined
     beatString = undefined
-    return  if soundSystemIsMangled
-    beatNumber += 1
-    beatNumber = beatNumber % 16
+    return  if @soundSystemIsMangled
+    @beatNumber += 1
+    @beatNumber = @beatNumber % 16
     loopingTheSoundIDs = 0
-    while loopingTheSoundIDs < soundLoops.soundIDs.length
-      loopedSoundID = soundLoops.soundIDs[loopingTheSoundIDs]
+    while loopingTheSoundIDs < @soundLoops.soundIDs.length
+      loopedSoundID = @soundLoops.soundIDs[loopingTheSoundIDs]
       
       # When the user modifies the name of a sample,
       # while she is not done finishing typing, the sample name is "incomplete"
       # or anyways it doesn't map to anything until it's complete,
       # doesn't index any actual sound. So we check for that here.
-      if soundFilesPaths[loopedSoundID]
-        beatString = soundLoops.beatStrings[loopingTheSoundIDs]
+      if @soundFilesPaths[loopedSoundID]
+        beatString = @soundLoops.beatStrings[loopingTheSoundIDs]
         
         # the beat string can be any length, we just wrap around if needed.
-        playOrNoPlay = beatString.charAt(beatNumber % (beatString.length))
+        playOrNoPlay = beatString.charAt(@beatNumber % (beatString.length))
         
         # transparently plays using the best method for this
         # browser/os combination
-        play soundFilesPaths, loopedSoundID, buzzObjectsPool  if playOrNoPlay is "x"
+        if playOrNoPlay is "x"
+          @playSound @soundFilesPaths, loopedSoundID, @buzzObjectsPool
       loopingTheSoundIDs += 1
 
   
   # Called from animate function in animation-controls.js
-  SoundSystem.changeUpdatesPerMinuteIfNeeded = ->
-    if oldupdatesPerMinute isnt updatesPerMinute
-      clearTimeout soundLoopTimer
-      soundLoopTimer = setInterval(soundLoop, (1000 * 60) / updatesPerMinute)  if updatesPerMinute isnt 0
-      oldupdatesPerMinute = updatesPerMinute
+  changeUpdatesPerMinuteIfNeeded: ->
+    console.log 'changeUpdatesPerMinuteIfNeeded'
+    if @oldupdatesPerMinute isnt @updatesPerMinute
+      clearTimeout @soundLoopTimer
+      @soundLoopTimer = setInterval((()=>@soundLoop()), (1000 * 60) / @updatesPerMinute)  if @updatesPerMinute isnt 0
+      @oldupdatesPerMinute = @updatesPerMinute
 
   
   # Called in init.js
-  SoundSystem.isAudioSupported = ->
-    setTimeout (->
-      unless buzz.isSupported()
+  isAudioSupported: ->
+    console.log 'isAudioSupported'
+    setTimeout (=>
+      unless @buzz.isSupported()
         $("#noAudioMessage").modal()
         $("#simplemodal-container").height 200
     ), 500
 
   
   # Called from loadAndTestAllTheSounds
-  checkSound = (soundDef, soundInfo) ->
-    newSound = new buzz.sound(soundInfo.path)
+  checkSound: (soundDef, soundInfo) ->
+    console.log 'checkSound'
+    newSound = new @buzz.sound(soundInfo.path)
     newSound.mute()
     newSound.load()
-    newSound.bind "ended", (e) ->
+    newSound.bind "ended", (e) =>
       newSound.unbind "ended"
       newSound.unmute()
-      endedFirstPlay += 1
-      eventRouter.trigger "all-sounds-loaded-and tested"  if endedFirstPlay is soundDef.sounds.length * CHANNELSPERSOUND
+      @endedFirstPlay += 1
+      if @endedFirstPlay is soundDef.sounds.length * @CHANNELSPERSOUND
+        @eventRouter.trigger "all-sounds-loaded-and tested"  
 
     newSound.play()
-    buzzObjectsPool[soundInfo.name].push newSound
+    console.log 'pushing: ' + newSound
+    @buzzObjectsPool[soundInfo.name].push newSound
 
   
   # Called form the document ready block in init.js
-  SoundSystem.loadAndTestAllTheSounds = ->
+  loadAndTestAllTheSounds: ->
+    console.log 'loadAndTestAllTheSounds'
     soundDef = undefined
     soundInfo = undefined
     cycleSoundDefs = undefined
     preloadSounds = undefined
-    soundDef = samplebank
+    soundDef = @samplebank
     cycleSoundDefs = 0
     while cycleSoundDefs < soundDef.sounds.length
       soundInfo = soundDef.getByNumber(cycleSoundDefs)
-      buzzObjectsPool[soundInfo.name] = []
-      soundFilesPaths[soundInfo.name] = soundInfo.path
+      @buzzObjectsPool[soundInfo.name] = []
+      @soundFilesPaths[soundInfo.name] = soundInfo.path
       
       # Chrome can deal with dynamic loading
       # of many files but doesn't like loading too many audio objects
       # so fast - it crashes.
       # At the opposite end, Safari doesn't like loading sound dynamically
       # and instead works fine by loading sound all at the beginning.
-      if Bowser.safari
+      if @Bowser.safari
         preloadSounds = 0
-        while preloadSounds < CHANNELSPERSOUND
+        while preloadSounds < @CHANNELSPERSOUND
           
           # if you load and play all the channels of all the sounds all together
           # the browser freezes, and the OS doesn't feel too well either
           # so better stagger the checks in time.
-          setTimeout checkSound, 200 * cycleSoundDefs, soundDef, soundInfo
+          setTimeout (()=>checkSound), 200 * cycleSoundDefs, soundDef, soundInfo
           preloadSounds += 1
       cycleSoundDefs += 1
     # end of the for loop
     
     # if this is chrome, fire the callback immediately
     # otherwise wait untill all the sounds have been tested
-    eventRouter.trigger "all-sounds-loaded-and tested"  unless Bowser.safari
-
-  SoundSystem
+    @eventRouter.trigger "all-sounds-loaded-and tested"  unless @Bowser.safari
