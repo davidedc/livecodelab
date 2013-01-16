@@ -27,7 +27,7 @@ class SoundSystem
     # the browser/os. We wish we could do this better.
     if @Bowser.firefox
       @playSound = (a,b,c) => @play_using_DYNAMICALLY_CREATED_AUDIO_TAG(a,b,c)
-    else if @Bowser.safari or @Bowser.ie or @Bowser.chrome
+    else if @Bowser.safari or @Bowser.msie or @Bowser.chrome
       @playSound = (a,b,c) => @play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND(a,b,c)
 
     # These need to be global so it can be run by the draw function
