@@ -1,4 +1,4 @@
-<!DOCTYPE html>  <html> <head>   <title>sound-system.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocode.html">                 autocode.coffee               </a>                                           <a class="source" href="mclexer.html">                 mclexer.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               sound-system.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true </p>             </td>             <td class="code">               <div class="highlight"><pre>
+<!DOCTYPE html>  <html> <head>   <title>sound-system.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocode.html">                 autocode.coffee               </a>                                           <a class="source" href="mclexer.html">                 mclexer.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               sound-system.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true </p>             </td>             <td class="code">               <div class="highlight"><pre>
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>global $ </p>             </td>             <td class="code">               <div class="highlight"><pre><span class="string">"use strict"</span>
 <span class="class"><span class="keyword">class</span> <span class="title">SoundSystem</span></span>
   oldupdatesPerMinute: <span class="number">0</span>
@@ -31,7 +31,6 @@ the browser/os. We wish we could do this better.</p>             </td>          
 
   
   resetLoops: -&gt;
-    console.log <span class="string">'resetLoops'</span>
     <span class="property">@soundLoops</span>.soundIDs = []
     <span class="property">@soundLoops</span>.beatStrings = []
 
@@ -40,11 +39,9 @@ the browser/os. We wish we could do this better.</p>             </td>          
     startup.play()
 
   SetUpdatesPerMinute: (<span class="property">@updatesPerMinute</span>) -&gt;
-    console.log <span class="string">'SetUpdatesPerMinute'</span>
     
 </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>sets BPM
 is called by code in patches</p>             </td>             <td class="code">               <div class="highlight"><pre>  bpm: (a) -&gt;    
-    console.log <span class="string">'bpm'</span>
 </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>timid attempt at sanity check.
 the sound system might well bork out
 even below 500 bpm.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">return</span>  <span class="keyword">if</span> a <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`
@@ -56,7 +53,6 @@ on each of those, so updatesPerMinute is 4 times the bpm.</p>             </td> 
 
   
 </pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>called from within patches</p>             </td>             <td class="code">               <div class="highlight"><pre>  play: (soundID, beatString) -&gt;
-    console.log <span class="string">'play'</span>
     <span class="property">@anyCodeReactingTobpm</span> = <span class="literal">true</span>
     beatString = beatString.replace(<span class="regexp">/\s*/g</span>, <span class="string">""</span>)
     <span class="property">@soundLoops</span>.soundIDs.push soundID
@@ -94,14 +90,12 @@ So here are possible mechanisms to achieve that:</p>
    Once the sound has finished playing, the audio object is garbage collected.
 The buzzObjectsPool parameter is not used but we put it here
 for uniformity with the other playing alternatives</p>             </td>             <td class="code">               <div class="highlight"><pre>  play_using_BUZZ_JS_FIRE_AND_FORGET: (soundFilesPaths, loopedSoundID, <span class="property">@buzzObjectsPool</span>) -&gt;
-    console.log <span class="string">'play_using_BUZZ_JS_FIRE_AND_FORGET'</span>
     soundFilePath = <span class="literal">undefined</span>
     soundFilePath = soundFilesPaths[loopedSoundID]
     availableBuzzObject = <span class="keyword">new</span> <span class="property">@buzz</span>.sound(soundFilePath)
     availableBuzzObject.play()
 
   play_using_DYNAMICALLY_CREATED_AUDIO_TAG: (soundFilesPaths, loopedSoundID, <span class="property">@buzzObjectsPool</span>) -&gt;
-    console.log <span class="string">'play_using_DYNAMICALLY_CREATED_AUDIO_TAG'</span>
     audioElement = <span class="literal">undefined</span>
     source1 = <span class="literal">undefined</span>
     soundFilePath = <span class="literal">undefined</span>
@@ -120,10 +114,7 @@ for uniformity with the other playing alternatives</p>             </td>        
     audioElement.play()
 
   play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND: (soundFilesPaths, loopedSoundID, <span class="property">@buzzObjectsPool</span>) -&gt;
-    console.log <span class="string">'play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND'</span>
     availableBuzzObject = <span class="literal">undefined</span>
-    console.log <span class="string">'loopedSoundID: '</span> + loopedSoundID
-    console.log <span class="string">'@buzzObjectsPool: '</span> + <span class="property">@buzzObjectsPool</span>
     allBuzzObjectsForWantedSound = <span class="property">@buzzObjectsPool</span>[loopedSoundID]
     scanningBuzzObjectsForWantedSound = <span class="literal">undefined</span>
     buzzObject = <span class="literal">undefined</span>
@@ -148,7 +139,6 @@ is mangled.</p>             </td>             <td class="code">               <d
         $(<span class="string">"#simplemodal-container"</span>).height <span class="number">250</span>
         <span class="keyword">return</span>
       availableBuzzObject = <span class="keyword">new</span> <span class="property">@buzz</span>.sound(soundFilesPaths[loopedSoundID])
-      console.log <span class="string">'pushing '</span> + availableBuzzObject
       <span class="property">@buzzObjectsPool</span>[loopedSoundID].push availableBuzzObject
       <span class="property">@totalCreatedSoundObjects</span> += <span class="number">1</span>
     
@@ -156,7 +146,6 @@ is mangled.</p>             </td>             <td class="code">               <d
 (either an existing one that has stopped playing or a freshly-made one)</p>             </td>             <td class="code">               <div class="highlight"><pre>    availableBuzzObject.play()
   
 </pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Called from changeUpdatesPerMinuteIfNeeded</p>             </td>             <td class="code">               <div class="highlight"><pre>  soundLoop: -&gt;
-    console.log <span class="string">'soundLoop'</span>
     loopingTheSoundIDs = <span class="literal">undefined</span>
     loopedSoundID = <span class="literal">undefined</span>
     playOrNoPlay = <span class="literal">undefined</span>
@@ -183,7 +172,6 @@ browser/os combination</p>             </td>             <td class="code">      
 
   
 </pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Called from animate function in animation-controls.js</p>             </td>             <td class="code">               <div class="highlight"><pre>  changeUpdatesPerMinuteIfNeeded: -&gt;
-    console.log <span class="string">'changeUpdatesPerMinuteIfNeeded'</span>
     <span class="keyword">if</span> <span class="property">@oldupdatesPerMinute</span> <span class="keyword">isnt</span> <span class="property">@updatesPerMinute</span>
       clearTimeout <span class="property">@soundLoopTimer</span>
       <span class="property">@soundLoopTimer</span> = setInterval((()=&gt;<span class="property">@soundLoop</span>()), (<span class="number">1000</span> * <span class="number">60</span>) / <span class="property">@updatesPerMinute</span>)  <span class="keyword">if</span> <span class="property">@updatesPerMinute</span> <span class="keyword">isnt</span> <span class="number">0</span>
@@ -191,7 +179,6 @@ browser/os combination</p>             </td>             <td class="code">      
 
   
 </pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Called in init.js</p>             </td>             <td class="code">               <div class="highlight"><pre>  isAudioSupported: -&gt;
-    console.log <span class="string">'isAudioSupported'</span>
     setTimeout (=&gt;
       <span class="keyword">unless</span> <span class="property">@buzz</span>.isSupported()
         $(<span class="string">"#noAudioMessage"</span>).modal()
@@ -200,7 +187,6 @@ browser/os combination</p>             </td>             <td class="code">      
 
   
 </pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Called from loadAndTestAllTheSounds</p>             </td>             <td class="code">               <div class="highlight"><pre>  checkSound: (soundDef, soundInfo) -&gt;
-    console.log <span class="string">'checkSound'</span>
     newSound = <span class="keyword">new</span> <span class="property">@buzz</span>.sound(soundInfo.path)
     newSound.mute()
     newSound.load()
@@ -212,12 +198,10 @@ browser/os combination</p>             </td>             <td class="code">      
         <span class="property">@eventRouter</span>.trigger <span class="string">"all-sounds-loaded-and tested"</span>  
 
     newSound.play()
-    console.log <span class="string">'pushing: '</span> + newSound
     <span class="property">@buzzObjectsPool</span>[soundInfo.name].push newSound
 
   
 </pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Called form the document ready block in init.js</p>             </td>             <td class="code">               <div class="highlight"><pre>  loadAndTestAllTheSounds: -&gt;
-    console.log <span class="string">'loadAndTestAllTheSounds'</span>
     soundDef = <span class="literal">undefined</span>
     soundInfo = <span class="literal">undefined</span>
     cycleSoundDefs = <span class="literal">undefined</span>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>  <html> <head>   <title>samplebank.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocode.html">                 autocode.coffee               </a>                                           <a class="source" href="mclexer.html">                 mclexer.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               samplebank.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>The SampleBank <span class="keyword">is</span> responsible <span class="keyword">for</span> holding the filepaths to any audio that
+needs to be loaded <span class="keyword">by</span> the browser.
+
+It automatically handles returning the ogg <span class="keyword">or</span> mp3 file path.
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="string">"use strict"</span>
+<span class="class"><span class="keyword">class</span> <span class="title">SampleBank</span></span>
+  sounds: []
+  soundsByName: {}
+  fileType: <span class="literal">undefined</span>
+  constructor: (buzz) -&gt;
+    <span class="property">@fileType</span> = <span class="literal">undefined</span>
+    <span class="keyword">if</span> buzz.isMP3Supported()
+      <span class="property">@fileType</span> = <span class="string">"mp3"</span>
+    <span class="keyword">else</span> <span class="keyword">if</span> buzz.isOGGSupported()
+      <span class="property">@fileType</span> = <span class="string">"ogg"</span>
+    <span class="keyword">else</span>
+      <span class="keyword">return</span>
+    <span class="property">@load</span> <span class="string">"bing"</span>, <span class="string">"./sound/audioFiles/start_bing"</span>
+    <span class="property">@load</span> <span class="string">"highHatClosed"</span>, <span class="string">"./sound/audioFiles/AMB_HHCL"</span>
+    <span class="property">@load</span> <span class="string">"highHatOpen"</span>, <span class="string">"./sound/audioFiles/AMB_HHOP"</span>
+    <span class="property">@load</span> <span class="string">"toc3"</span>, <span class="string">"./sound/audioFiles/AMB_LTM2"</span>
+    <span class="property">@load</span> <span class="string">"toc4"</span>, <span class="string">"./sound/audioFiles/AMB_RIM1"</span>
+    <span class="property">@load</span> <span class="string">"snare"</span>, <span class="string">"./sound/audioFiles/AMB_SN13"</span>
+    <span class="property">@load</span> <span class="string">"snare2"</span>, <span class="string">"./sound/audioFiles/AMB_SN_5"</span>
+    <span class="property">@load</span> <span class="string">"crash"</span>, <span class="string">"./sound/audioFiles/CRASH_1"</span>
+    <span class="property">@load</span> <span class="string">"crash2"</span>, <span class="string">"./sound/audioFiles/CRASH_5"</span>
+    <span class="property">@load</span> <span class="string">"crash3"</span>, <span class="string">"./sound/audioFiles/CRASH_6"</span>
+    <span class="property">@load</span> <span class="string">"ride"</span>, <span class="string">"./sound/audioFiles/RIDE_1"</span>
+    <span class="property">@load</span> <span class="string">"glass"</span>, <span class="string">"./sound/audioFiles/glass2"</span>
+    <span class="property">@load</span> <span class="string">"thump"</span>, <span class="string">"./sound/audioFiles/8938__patchen__piano-hits-hand-03v2"</span>
+    <span class="property">@load</span> <span class="string">"lowFlash"</span>, <span class="string">"./sound/audioFiles/9569__thanvannispen__industrial-low-flash04"</span>
+    <span class="property">@load</span> <span class="string">"lowFlash2"</span>, <span class="string">"./sound/audioFiles/9570__thanvannispen__industrial-low-flash07"</span>
+    <span class="property">@load</span> <span class="string">"tranceKick2"</span>, <span class="string">"./sound/audioFiles/24004__laya__dance-kick3"</span>
+    <span class="property">@load</span> <span class="string">"tranceKick"</span>, <span class="string">"./sound/audioFiles/33325__laya__trance-kick01"</span>
+    <span class="property">@load</span> <span class="string">"voltage"</span>, <span class="string">"./sound/audioFiles/49255__keinzweiter__bonobob-funk"</span>
+    <span class="property">@load</span> <span class="string">"beepA"</span>, <span class="string">"./sound/audioFiles/100708__steveygos93__bleep_a"</span>
+    <span class="property">@load</span> <span class="string">"beepB"</span>, <span class="string">"./sound/audioFiles/100708__steveygos93__bleep_b"</span>
+    <span class="property">@load</span> <span class="string">"beepC"</span>, <span class="string">"./sound/audioFiles/100708__steveygos93__bleep_c"</span>
+    <span class="property">@load</span> <span class="string">"beepD"</span>, <span class="string">"./sound/audioFiles/100708__steveygos93__bleep_d"</span>
+    <span class="property">@load</span> <span class="string">"alienBeep"</span>, <span class="string">"./sound/audioFiles/132389__blackie666__alienbleep"</span>
+    <span class="property">@load</span> <span class="string">"penta1"</span>, <span class="string">"./sound/audioFiles/toneMatrix-1"</span>
+    <span class="property">@load</span> <span class="string">"penta2"</span>, <span class="string">"./sound/audioFiles/toneMatrix-2"</span>
+    <span class="property">@load</span> <span class="string">"penta3"</span>, <span class="string">"./sound/audioFiles/toneMatrix-3"</span>
+    <span class="property">@load</span> <span class="string">"penta4"</span>, <span class="string">"./sound/audioFiles/toneMatrix-4"</span>
+    <span class="property">@load</span> <span class="string">"penta5"</span>, <span class="string">"./sound/audioFiles/toneMatrix-5"</span>
+    <span class="property">@load</span> <span class="string">"penta6"</span>, <span class="string">"./sound/audioFiles/toneMatrix-6"</span>
+    <span class="property">@load</span> <span class="string">"penta7"</span>, <span class="string">"./sound/audioFiles/toneMatrix-7"</span>
+    <span class="property">@load</span> <span class="string">"penta8"</span>, <span class="string">"./sound/audioFiles/toneMatrix-8"</span>
+    <span class="property">@load</span> <span class="string">"penta9"</span>, <span class="string">"./sound/audioFiles/toneMatrix-9"</span>
+    <span class="property">@load</span> <span class="string">"penta10"</span>, <span class="string">"./sound/audioFiles/toneMatrix-10"</span>
+    <span class="property">@load</span> <span class="string">"penta11"</span>, <span class="string">"./sound/audioFiles/toneMatrix-11"</span>
+    <span class="property">@load</span> <span class="string">"penta12"</span>, <span class="string">"./sound/audioFiles/toneMatrix-12"</span>
+    <span class="property">@load</span> <span class="string">"penta13"</span>, <span class="string">"./sound/audioFiles/toneMatrix-13"</span>
+    <span class="property">@load</span> <span class="string">"penta14"</span>, <span class="string">"./sound/audioFiles/toneMatrix-14"</span>
+    <span class="property">@load</span> <span class="string">"penta15"</span>, <span class="string">"./sound/audioFiles/toneMatrix-15"</span>
+    <span class="property">@load</span> <span class="string">"penta16"</span>, <span class="string">"./sound/audioFiles/toneMatrix-16"</span>
+    <span class="property">@load</span> <span class="string">"ciack"</span>, <span class="string">"./sound/audioFiles/ciack"</span>
+    <span class="property">@load</span> <span class="string">"snap"</span>, <span class="string">"./sound/audioFiles/snap"</span>
+    <span class="property">@load</span> <span class="string">"thump2"</span>, <span class="string">"./sound/audioFiles/thump2"</span>
+    <span class="property">@load</span> <span class="string">"dish"</span>, <span class="string">"./sound/audioFiles/dish"</span>
+  
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Should be either mp3 or ogg</p>             </td>             <td class="code">               <div class="highlight"><pre>  load: (name, path) -&gt;
+    soundNumber = <span class="property">@sounds</span>.length
+    <span class="property">@sounds</span>.push
+      name: name
+      path: path + <span class="string">"."</span> + <span class="property">@fileType</span>
+
+    <span class="property">@soundsByName</span>[name] = soundNumber
+    soundNumber
+
+  getByName: (name) -&gt;
+    <span class="property">@sounds</span>[<span class="property">@soundsByName</span>[name]]
+
+  getByNumber: (number) -&gt;
+    <span class="property">@sounds</span>[number]
+
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

@@ -54,7 +54,6 @@ SoundSystem = (function() {
   }
 
   SoundSystem.prototype.resetLoops = function() {
-    console.log('resetLoops');
     this.soundLoops.soundIDs = [];
     return this.soundLoops.beatStrings = [];
   };
@@ -67,11 +66,9 @@ SoundSystem = (function() {
 
   SoundSystem.prototype.SetUpdatesPerMinute = function(updatesPerMinute) {
     this.updatesPerMinute = updatesPerMinute;
-    return console.log('SetUpdatesPerMinute');
   };
 
   SoundSystem.prototype.bpm = function(a) {
-    console.log('bpm');
     if (a === undefined) {
       return;
     }
@@ -85,7 +82,6 @@ SoundSystem = (function() {
   };
 
   SoundSystem.prototype.play = function(soundID, beatString) {
-    console.log('play');
     this.anyCodeReactingTobpm = true;
     beatString = beatString.replace(/\s*/g, "");
     this.soundLoops.soundIDs.push(soundID);
@@ -95,7 +91,6 @@ SoundSystem = (function() {
   SoundSystem.prototype.play_using_BUZZ_JS_FIRE_AND_FORGET = function(soundFilesPaths, loopedSoundID, buzzObjectsPool) {
     var availableBuzzObject, soundFilePath;
     this.buzzObjectsPool = buzzObjectsPool;
-    console.log('play_using_BUZZ_JS_FIRE_AND_FORGET');
     soundFilePath = void 0;
     soundFilePath = soundFilesPaths[loopedSoundID];
     availableBuzzObject = new this.buzz.sound(soundFilePath);
@@ -106,7 +101,6 @@ SoundSystem = (function() {
     var audioElement, soundFilePath, source1,
       _this = this;
     this.buzzObjectsPool = buzzObjectsPool;
-    console.log('play_using_DYNAMICALLY_CREATED_AUDIO_TAG');
     audioElement = void 0;
     source1 = void 0;
     soundFilePath = void 0;
@@ -128,10 +122,7 @@ SoundSystem = (function() {
   SoundSystem.prototype.play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND = function(soundFilesPaths, loopedSoundID, buzzObjectsPool) {
     var allBuzzObjectsForWantedSound, availableBuzzObject, buzzObject, scanningBuzzObjectsForWantedSound;
     this.buzzObjectsPool = buzzObjectsPool;
-    console.log('play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND');
     availableBuzzObject = void 0;
-    console.log('loopedSoundID: ' + loopedSoundID);
-    console.log('@buzzObjectsPool: ' + this.buzzObjectsPool);
     allBuzzObjectsForWantedSound = this.buzzObjectsPool[loopedSoundID];
     scanningBuzzObjectsForWantedSound = void 0;
     buzzObject = void 0;
@@ -152,7 +143,6 @@ SoundSystem = (function() {
         return;
       }
       availableBuzzObject = new this.buzz.sound(soundFilesPaths[loopedSoundID]);
-      console.log('pushing ' + availableBuzzObject);
       this.buzzObjectsPool[loopedSoundID].push(availableBuzzObject);
       this.totalCreatedSoundObjects += 1;
     }
@@ -161,7 +151,6 @@ SoundSystem = (function() {
 
   SoundSystem.prototype.soundLoop = function() {
     var beatString, loopedSoundID, loopingTheSoundIDs, playOrNoPlay, _results;
-    console.log('soundLoop');
     loopingTheSoundIDs = void 0;
     loopedSoundID = void 0;
     playOrNoPlay = void 0;
@@ -189,7 +178,6 @@ SoundSystem = (function() {
 
   SoundSystem.prototype.changeUpdatesPerMinuteIfNeeded = function() {
     var _this = this;
-    console.log('changeUpdatesPerMinuteIfNeeded');
     if (this.oldupdatesPerMinute !== this.updatesPerMinute) {
       clearTimeout(this.soundLoopTimer);
       if (this.updatesPerMinute !== 0) {
@@ -203,7 +191,6 @@ SoundSystem = (function() {
 
   SoundSystem.prototype.isAudioSupported = function() {
     var _this = this;
-    console.log('isAudioSupported');
     return setTimeout((function() {
       if (!_this.buzz.isSupported()) {
         $("#noAudioMessage").modal();
@@ -215,7 +202,6 @@ SoundSystem = (function() {
   SoundSystem.prototype.checkSound = function(soundDef, soundInfo) {
     var newSound,
       _this = this;
-    console.log('checkSound');
     newSound = new this.buzz.sound(soundInfo.path);
     newSound.mute();
     newSound.load();
@@ -228,14 +214,12 @@ SoundSystem = (function() {
       }
     });
     newSound.play();
-    console.log('pushing: ' + newSound);
     return this.buzzObjectsPool[soundInfo.name].push(newSound);
   };
 
   SoundSystem.prototype.loadAndTestAllTheSounds = function() {
     var cycleSoundDefs, preloadSounds, soundDef, soundInfo,
       _this = this;
-    console.log('loadAndTestAllTheSounds');
     soundDef = void 0;
     soundInfo = void 0;
     cycleSoundDefs = void 0;
