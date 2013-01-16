@@ -33,7 +33,7 @@ describe('ImageTest', function() {
 		testCanvas.height = 300;
 		    
     var eventRouter = new EventRouter();
-    var colourNames = new Colours();
+    var colourNames = new ColourLiterals();
 
     var liveCodeLabCoreInstance = new LiveCodeLabCore({
     		blendedThreeJsSceneCanvas: testCanvas,

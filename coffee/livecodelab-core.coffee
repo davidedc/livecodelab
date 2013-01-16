@@ -110,7 +110,7 @@ class LiveCodeLabCore
     
     # this one also interacts with codeTransformer at runtime.
     @drawFunctionRunner =
-      new DrawFunctionRunner(@paramsObject.eventRouter, @)
+      new ProgramRunner(@paramsObject.eventRouter, @)
     
     # temporary to migrate CodeTransformed code from js to coffeescript.
     @codeTransformer =
@@ -163,7 +163,7 @@ class LiveCodeLabCore
     # this one also interacts with three,
     # threeJsSystem, colourFunctions at runtime
     @lightSystem =
-      new LightSystem(@graphicsCommands, @)
+      new LightsCommands(@graphicsCommands, @)
   
   #//////////////////////////////////////////////
   #

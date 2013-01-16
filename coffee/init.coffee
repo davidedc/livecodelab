@@ -59,12 +59,12 @@ startEnvironment = (paramsObject) ->
   paramsObject.forceCanvasRenderer = false  if paramsObject.forceCanvasRenderer is `undefined`
   paramsObject.forceCanvasRenderer = false  if paramsObject.forceCanvasRenderer is null
   
-  # createColours creates a bunch of global variables for all css colors (and more).
+  # ColourLiterals creates a bunch of global variables for all css colors (and more).
   # Since background-painting.js initialises the background by means of
   # CSS colors, this needs to be run before creating LiveCodeLabCore. This is also
   # used by the autocoder because it needs to be able to swap color names that it
   # finds as CSS color strings in the user program.
-  colourNames = (new Colours()).colourNames
+  colourNames = (new ColourLiterals()).colourNames
   
   #//////////////////////////////////////////////////////
   # Phase 2 - Initialise the core of livecodelab.

@@ -13,13 +13,13 @@ LiveCodeLabCore = (function() {
     this.renderer = new Renderer(this);
     this.soundSystem = new SoundSystem(this.paramsObject.eventRouter, buzz, createBowser(), new SampleBank(buzz));
     this.backgroundPainter = new BackgroundPainter(this.paramsObject.canvasForBackground, this);
-    this.drawFunctionRunner = new DrawFunctionRunner(this.paramsObject.eventRouter, this);
+    this.drawFunctionRunner = new ProgramRunner(this.paramsObject.eventRouter, this);
     this.codeTransformer = new CodeTransformer(this.paramsObject.eventRouter, CoffeeScript, this);
     this.animationLoop = new AnimationLoop(this.paramsObject.eventRouter, this.paramsObject.statsWidget, this);
     this.threeJsSystem = new ThreeJsSystem(Detector, THREEx, this.paramsObject.blendedThreeJsSceneCanvas, this.paramsObject.forceCanvasRenderer, this.paramsObject.testMode, this.three);
     this.matrixCommands = new MatrixCommands(this.three, this);
     this.graphicsCommands = new GraphicsCommands(this.three, this);
-    this.lightSystem = new LightSystem(this.graphicsCommands, this);
+    this.lightSystem = new LightsCommands(this.graphicsCommands, this);
   }
 
   LiveCodeLabCore.prototype.paintARandomBackground = function() {
