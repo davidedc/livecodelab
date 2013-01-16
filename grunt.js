@@ -126,7 +126,7 @@ module.exports = function (grunt) {
                     'js/translatedFromCoffescript/coffee/url-router.js',
                     'js/translatedFromCoffescript/coffee/big-cursor-animation.js',
                     'js/translatedFromCoffescript/coffee/autocoder/mclexer.js',
-                    'js/sound/samplebank.js',
+                    'js/translatedFromCoffescript/coffee/sound/samplebank.js',
                     'js/translatedFromCoffescript/coffee/sound/sound-system.js',
                     'js/sound/buzz.js',
                     'js/translatedFromCoffescript/coffee/animation-loop.js',

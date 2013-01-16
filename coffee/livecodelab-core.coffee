@@ -100,7 +100,7 @@ class LiveCodeLabCore
     @renderer = new Renderer(@)
     @soundSystem =
       new SoundSystem(
-        @paramsObject.eventRouter, buzz, createBowser(), createSampleBank(buzz))
+        @paramsObject.eventRouter, buzz, createBowser(), new SampleBank(buzz))
     
     # this one also interacts with colourFunctions, backgroundSceneContext,
     # canvasForBackground at runtime
