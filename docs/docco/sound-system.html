@@ -1,0 +1,249 @@
+<!DOCTYPE html>  <html> <head>   <title>sound-system.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocode.html">                 autocode.coffee               </a>                                           <a class="source" href="mclexer.html">                 mclexer.coffee               </a>                                           <a class="source" href="background-painting.html">                 background-painting.coffee               </a>                                           <a class="source" href="big-cursor-animation.html">                 big-cursor-animation.coffee               </a>                                           <a class="source" href="blend-style.html">                 blend-style.coffee               </a>                                           <a class="source" href="code-transformations.html">                 code-transformations.coffee               </a>                                           <a class="source" href="colour-definitions.html">                 colour-definitions.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="demos-and-tutorials.html">                 demos-and-tutorials.coffee               </a>                                           <a class="source" href="draw-function-runner.html">                 draw-function-runner.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="events.html">                 events.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphic-primitives.html">                 graphic-primitives.coffee               </a>                                           <a class="source" href="init-threejs.html">                 init-threejs.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-functions.html">                 lights-functions.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="simple-error-checker.html">                 simple-error-checker.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               sound-system.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true </p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>global $ </p>             </td>             <td class="code">               <div class="highlight"><pre><span class="string">"use strict"</span>
+<span class="class"><span class="keyword">class</span> <span class="title">SoundSystem</span></span>
+  oldupdatesPerMinute: <span class="number">0</span>
+  soundLoopTimer: <span class="literal">undefined</span>
+  beatNumber: <span class="number">0</span>
+  totalCreatedSoundObjects: <span class="number">0</span>
+  soundSystemIsMangled: <span class="literal">false</span>
+  CHANNELSPERSOUND: <span class="number">6</span>
+  endedFirstPlay: <span class="number">0</span>
+  buzzObjectsPool: []
+  soundFilesPaths: {}
+  soundLoops: []
+  updatesPerMinute: <span class="literal">undefined</span>
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>if there isn't any code using the bpm setting then we can save a timer, so
+worth tracking with this variable</p>             </td>             <td class="code">               <div class="highlight"><pre>  anyCodeReactingTobpm: <span class="literal">false</span>
+  
+  constructor: (<span class="property">@eventRouter</span>, <span class="property">@buzz</span>, <span class="property">@Bowser</span>, <span class="property">@samplebank</span>) -&gt;
+    <span class="property">@soundLoops</span>.soundIDs = []
+    <span class="property">@soundLoops</span>.beatStrings = []
+
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>now that all the various sound playing functions for the different cases are
+defined, we set the "play" function to the best solution according to
+the browser/os. We wish we could do this better.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> <span class="property">@Bowser</span>.firefox
+      <span class="property">@playSound</span> = (a,b,c) =&gt; <span class="property">@play_using_DYNAMICALLY_CREATED_AUDIO_TAG</span>(a,b,c)
+    <span class="keyword">else</span> <span class="keyword">if</span> <span class="property">@Bowser</span>.safari <span class="keyword">or</span> <span class="property">@Bowser</span>.ie <span class="keyword">or</span> <span class="property">@Bowser</span>.chrome
+      <span class="property">@playSound</span> = (a,b,c) =&gt; <span class="property">@play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND</span>(a,b,c)
+
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>These need to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.<span class="function"><span class="title">bpm</span></span> = (a) =&gt; <span class="property">@bpm</span>(a)
+    window.<span class="function"><span class="title">play</span></span> = (a,b) =&gt; <span class="property">@play</span>(a,b)
+
+  
+  resetLoops: -&gt;
+    console.log <span class="string">'resetLoops'</span>
+    <span class="property">@soundLoops</span>.soundIDs = []
+    <span class="property">@soundLoops</span>.beatStrings = []
+
+  playStartupSound: -&gt;
+    startup = <span class="keyword">new</span> <span class="property">@buzz</span>.sound(<span class="property">@samplebank</span>.getByName(<span class="string">"bing"</span>).path)
+    startup.play()
+
+  SetUpdatesPerMinute: (<span class="property">@updatesPerMinute</span>) -&gt;
+    console.log <span class="string">'SetUpdatesPerMinute'</span>
+    
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>sets BPM
+is called by code in patches</p>             </td>             <td class="code">               <div class="highlight"><pre>  bpm: (a) -&gt;    
+    console.log <span class="string">'bpm'</span>
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>timid attempt at sanity check.
+the sound system might well bork out
+even below 500 bpm.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">return</span>  <span class="keyword">if</span> a <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`
+    a = <span class="number">125</span>  <span class="keyword">if</span> a &gt; <span class="number">125</span>
+    a = <span class="number">0</span>  <span class="keyword">if</span> a &lt; <span class="number">0</span>
+    
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>each beat is made of 4 parts, and we can trigger sounds
+on each of those, so updatesPerMinute is 4 times the bpm.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@updatesPerMinute</span> = a * <span class="number">4</span>
+
+  
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>called from within patches</p>             </td>             <td class="code">               <div class="highlight"><pre>  play: (soundID, beatString) -&gt;
+    console.log <span class="string">'play'</span>
+    <span class="property">@anyCodeReactingTobpm</span> = <span class="literal">true</span>
+    beatString = beatString.replace(<span class="regexp">/\s*/g</span>, <span class="string">""</span>)
+    <span class="property">@soundLoops</span>.soundIDs.push soundID
+    <span class="property">@soundLoops</span>.beatStrings.push beatString
+
+  
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>When each Audio object plays, it plays from start to end
+and you can't get it to re-start until it's completely done
+playing.
+This is problematic because some sounds last a second or so, and they
+need to play more often than one time per second.
+So here are possible mechanisms to achieve that:</p>
+
+<p>BUZZJS<em>WITH</em>ONE_POOL:
+   to have 20 or so sound objects, and all the times that
+   a file needs playing, scan them and find one that is free,
+   then associate that to the file one wants to play
+   this works well in IE and Chrome but really bad in Safari
+   The problem here is the potentially heavy switching of sound files.</p>
+
+<p>BUZZJS<em>WITH</em>ONE<em>POOL</em>PER_SOUND:
+   for each file, give there is a pool of buzz objects that can play it.
+   This is more complicated but seems to work
+   about right in all browsers. Only caveat is that Safari
+   needs the audio objects to be preloaded because otherwise
+   it jams. Conversely, IE and Chrome don't like them preloaded
+   because they have a limit of 35 or so sounds.</p>
+
+<p>BUZZ<em>JS</em>FIRE<em>AND</em>FORGET:
+   This method is the simplest and entails just using buzz.js fire and forget.
+   Each "playing" beat a new object is created.</p>
+
+<p>DYNAMICALLY<em>CREATED</em>AUDIO_TAG:
+   Directly create an audio object each time we need to play a sound.
+   Once the sound has finished playing, the audio object is garbage collected.
+The buzzObjectsPool parameter is not used but we put it here
+for uniformity with the other playing alternatives</p>             </td>             <td class="code">               <div class="highlight"><pre>  play_using_BUZZ_JS_FIRE_AND_FORGET: (soundFilesPaths, loopedSoundID, <span class="property">@buzzObjectsPool</span>) -&gt;
+    console.log <span class="string">'play_using_BUZZ_JS_FIRE_AND_FORGET'</span>
+    soundFilePath = <span class="literal">undefined</span>
+    soundFilePath = soundFilesPaths[loopedSoundID]
+    availableBuzzObject = <span class="keyword">new</span> <span class="property">@buzz</span>.sound(soundFilePath)
+    availableBuzzObject.play()
+
+  play_using_DYNAMICALLY_CREATED_AUDIO_TAG: (soundFilesPaths, loopedSoundID, <span class="property">@buzzObjectsPool</span>) -&gt;
+    console.log <span class="string">'play_using_DYNAMICALLY_CREATED_AUDIO_TAG'</span>
+    audioElement = <span class="literal">undefined</span>
+    source1 = <span class="literal">undefined</span>
+    soundFilePath = <span class="literal">undefined</span>
+    soundFilePath = soundFilesPaths[loopedSoundID]
+    audioElement = document.createElement(<span class="string">"audio"</span>)
+    audioElement.setAttribute <span class="string">"preload"</span>, <span class="string">"auto"</span>
+    audioElement.autobuffer = <span class="literal">true</span>
+    source1 = document.createElement(<span class="string">"source"</span>)
+    source1.type = <span class="string">"audio/ogg"</span>
+    source1.src = soundFilePath
+    audioElement.appendChild source1
+    audioElement.addEventListener <span class="string">"load"</span>, (=&gt;
+      audioElement.play()
+      $(<span class="string">".filename span"</span>).html audioElement.src
+    ), <span class="literal">true</span>
+    audioElement.play()
+
+  play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND: (soundFilesPaths, loopedSoundID, <span class="property">@buzzObjectsPool</span>) -&gt;
+    console.log <span class="string">'play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND'</span>
+    availableBuzzObject = <span class="literal">undefined</span>
+    console.log <span class="string">'loopedSoundID: '</span> + loopedSoundID
+    console.log <span class="string">'@buzzObjectsPool: '</span> + <span class="property">@buzzObjectsPool</span>
+    allBuzzObjectsForWantedSound = <span class="property">@buzzObjectsPool</span>[loopedSoundID]
+    scanningBuzzObjectsForWantedSound = <span class="literal">undefined</span>
+    buzzObject = <span class="literal">undefined</span>
+    
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>check if there is an available buzz object that has finished
+playing</p>             </td>             <td class="code">               <div class="highlight"><pre>    scanningBuzzObjectsForWantedSound = <span class="number">0</span>
+    <span class="keyword">while</span> scanningBuzzObjectsForWantedSound &lt; allBuzzObjectsForWantedSound.length
+      buzzObject = allBuzzObjectsForWantedSound[scanningBuzzObjectsForWantedSound]
+      <span class="keyword">if</span> buzzObject.isEnded()
+        availableBuzzObject = buzzObject
+        <span class="keyword">break</span>
+      scanningBuzzObjectsForWantedSound += <span class="number">1</span>
+    <span class="keyword">if</span> availableBuzzObject <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`
+      
+</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>there are no available buzz objects for this sound
+which might mean two things: there are too few and we can just
+create a new one
+OR there are already too many, so simply put the sound system
+is mangled.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">if</span> <span class="property">@totalCreatedSoundObjects</span> &gt; <span class="number">31</span>
+        <span class="property">@soundSystemIsMangled</span> = <span class="literal">true</span>
+        $(<span class="string">"#soundSystemIsMangledMessage"</span>).modal()
+        $(<span class="string">"#simplemodal-container"</span>).height <span class="number">250</span>
+        <span class="keyword">return</span>
+      availableBuzzObject = <span class="keyword">new</span> <span class="property">@buzz</span>.sound(soundFilesPaths[loopedSoundID])
+      console.log <span class="string">'pushing '</span> + availableBuzzObject
+      <span class="property">@buzzObjectsPool</span>[loopedSoundID].push availableBuzzObject
+      <span class="property">@totalCreatedSoundObjects</span> += <span class="number">1</span>
+    
+</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>if we are here it means that there is a buzz object to play with
+(either an existing one that has stopped playing or a freshly-made one)</p>             </td>             <td class="code">               <div class="highlight"><pre>    availableBuzzObject.play()
+  
+</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Called from changeUpdatesPerMinuteIfNeeded</p>             </td>             <td class="code">               <div class="highlight"><pre>  soundLoop: -&gt;
+    console.log <span class="string">'soundLoop'</span>
+    loopingTheSoundIDs = <span class="literal">undefined</span>
+    loopedSoundID = <span class="literal">undefined</span>
+    playOrNoPlay = <span class="literal">undefined</span>
+    beatString = <span class="literal">undefined</span>
+    <span class="keyword">return</span>  <span class="keyword">if</span> <span class="property">@soundSystemIsMangled</span>
+    <span class="property">@beatNumber</span> += <span class="number">1</span>
+    <span class="property">@beatNumber</span> = <span class="property">@beatNumber</span> % <span class="number">16</span>
+    loopingTheSoundIDs = <span class="number">0</span>
+    <span class="keyword">while</span> loopingTheSoundIDs &lt; <span class="property">@soundLoops</span>.soundIDs.length
+      loopedSoundID = <span class="property">@soundLoops</span>.soundIDs[loopingTheSoundIDs]
+      
+</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>When the user modifies the name of a sample,
+while she is not done finishing typing, the sample name is "incomplete"
+or anyways it doesn't map to anything until it's complete,
+doesn't index any actual sound. So we check for that here.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">if</span> <span class="property">@soundFilesPaths</span>[loopedSoundID]
+        beatString = <span class="property">@soundLoops</span>.beatStrings[loopingTheSoundIDs]
+        
+</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>the beat string can be any length, we just wrap around if needed.</p>             </td>             <td class="code">               <div class="highlight"><pre>        playOrNoPlay = beatString.charAt(<span class="property">@beatNumber</span> % (beatString.length))
+        
+</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>transparently plays using the best method for this
+browser/os combination</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> playOrNoPlay <span class="keyword">is</span> <span class="string">"x"</span>
+          <span class="property">@playSound</span> <span class="property">@soundFilesPaths</span>, loopedSoundID, <span class="property">@buzzObjectsPool</span>
+      loopingTheSoundIDs += <span class="number">1</span>
+
+  
+</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Called from animate function in animation-controls.js</p>             </td>             <td class="code">               <div class="highlight"><pre>  changeUpdatesPerMinuteIfNeeded: -&gt;
+    console.log <span class="string">'changeUpdatesPerMinuteIfNeeded'</span>
+    <span class="keyword">if</span> <span class="property">@oldupdatesPerMinute</span> <span class="keyword">isnt</span> <span class="property">@updatesPerMinute</span>
+      clearTimeout <span class="property">@soundLoopTimer</span>
+      <span class="property">@soundLoopTimer</span> = setInterval((()=&gt;<span class="property">@soundLoop</span>()), (<span class="number">1000</span> * <span class="number">60</span>) / <span class="property">@updatesPerMinute</span>)  <span class="keyword">if</span> <span class="property">@updatesPerMinute</span> <span class="keyword">isnt</span> <span class="number">0</span>
+      <span class="property">@oldupdatesPerMinute</span> = <span class="property">@updatesPerMinute</span>
+
+  
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Called in init.js</p>             </td>             <td class="code">               <div class="highlight"><pre>  isAudioSupported: -&gt;
+    console.log <span class="string">'isAudioSupported'</span>
+    setTimeout (=&gt;
+      <span class="keyword">unless</span> <span class="property">@buzz</span>.isSupported()
+        $(<span class="string">"#noAudioMessage"</span>).modal()
+        $(<span class="string">"#simplemodal-container"</span>).height <span class="number">200</span>
+    ), <span class="number">500</span>
+
+  
+</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Called from loadAndTestAllTheSounds</p>             </td>             <td class="code">               <div class="highlight"><pre>  checkSound: (soundDef, soundInfo) -&gt;
+    console.log <span class="string">'checkSound'</span>
+    newSound = <span class="keyword">new</span> <span class="property">@buzz</span>.sound(soundInfo.path)
+    newSound.mute()
+    newSound.load()
+    newSound.bind <span class="string">"ended"</span>, (e) =&gt;
+      newSound.unbind <span class="string">"ended"</span>
+      newSound.unmute()
+      <span class="property">@endedFirstPlay</span> += <span class="number">1</span>
+      <span class="keyword">if</span> <span class="property">@endedFirstPlay</span> <span class="keyword">is</span> soundDef.sounds.length * <span class="property">@CHANNELSPERSOUND</span>
+        <span class="property">@eventRouter</span>.trigger <span class="string">"all-sounds-loaded-and tested"</span>  
+
+    newSound.play()
+    console.log <span class="string">'pushing: '</span> + newSound
+    <span class="property">@buzzObjectsPool</span>[soundInfo.name].push newSound
+
+  
+</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Called form the document ready block in init.js</p>             </td>             <td class="code">               <div class="highlight"><pre>  loadAndTestAllTheSounds: -&gt;
+    console.log <span class="string">'loadAndTestAllTheSounds'</span>
+    soundDef = <span class="literal">undefined</span>
+    soundInfo = <span class="literal">undefined</span>
+    cycleSoundDefs = <span class="literal">undefined</span>
+    preloadSounds = <span class="literal">undefined</span>
+    soundDef = <span class="property">@samplebank</span>
+    cycleSoundDefs = <span class="number">0</span>
+    <span class="keyword">while</span> cycleSoundDefs &lt; soundDef.sounds.length
+      soundInfo = soundDef.getByNumber(cycleSoundDefs)
+      <span class="property">@buzzObjectsPool</span>[soundInfo.name] = []
+      <span class="property">@soundFilesPaths</span>[soundInfo.name] = soundInfo.path
+      
+</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>Chrome can deal with dynamic loading
+of many files but doesn't like loading too many audio objects
+so fast - it crashes.
+At the opposite end, Safari doesn't like loading sound dynamically
+and instead works fine by loading sound all at the beginning.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">if</span> <span class="property">@Bowser</span>.safari
+        preloadSounds = <span class="number">0</span>
+        <span class="keyword">while</span> preloadSounds &lt; <span class="property">@CHANNELSPERSOUND</span>
+          
+</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>if you load and play all the channels of all the sounds all together
+the browser freezes, and the OS doesn't feel too well either
+so better stagger the checks in time.</p>             </td>             <td class="code">               <div class="highlight"><pre>          setTimeout (()=&gt;checkSound), <span class="number">200</span> * cycleSoundDefs, soundDef, soundInfo
+          preloadSounds += <span class="number">1</span>
+      cycleSoundDefs += <span class="number">1</span>
+</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>end of the for loop</p>             </td>             <td class="code">               <div class="highlight"><pre>    
+</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>if this is chrome, fire the callback immediately
+otherwise wait untill all the sounds have been tested</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@eventRouter</span>.trigger <span class="string">"all-sounds-loaded-and tested"</span>  <span class="keyword">unless</span> <span class="property">@Bowser</span>.safari
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

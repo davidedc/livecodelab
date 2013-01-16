@@ -7,7 +7,7 @@ $(document).ready(function() {
     blendedThreeJsSceneCanvas: document.getElementById("blendedThreeJsSceneCanvas"),
     canvasForBackground: document.getElementById("backGroundCanvas"),
     forceCanvasRenderer: false,
-    bubbleUpErrorsForDebugging: false,
+    bubbleUpErrorsForDebugging: true,
     testMode: false
   });
 });
