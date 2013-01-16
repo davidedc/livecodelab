@@ -23,7 +23,7 @@ worth tracking with this variable</p>             </td>             <td class="c
 defined, we set the "play" function to the best solution according to
 the browser/os. We wish we could do this better.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> <span class="property">@Bowser</span>.firefox
       <span class="property">@playSound</span> = (a,b,c) =&gt; <span class="property">@play_using_DYNAMICALLY_CREATED_AUDIO_TAG</span>(a,b,c)
-    <span class="keyword">else</span> <span class="keyword">if</span> <span class="property">@Bowser</span>.safari <span class="keyword">or</span> <span class="property">@Bowser</span>.ie <span class="keyword">or</span> <span class="property">@Bowser</span>.chrome
+    <span class="keyword">else</span> <span class="keyword">if</span> <span class="property">@Bowser</span>.safari <span class="keyword">or</span> <span class="property">@Bowser</span>.msie <span class="keyword">or</span> <span class="property">@Bowser</span>.chrome
       <span class="property">@playSound</span> = (a,b,c) =&gt; <span class="property">@play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND</span>(a,b,c)
 
 </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>These need to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.<span class="function"><span class="title">bpm</span></span> = (a) =&gt; <span class="property">@bpm</span>(a)

@@ -40,7 +40,7 @@ SoundSystem = (function() {
       this.playSound = function(a, b, c) {
         return _this.play_using_DYNAMICALLY_CREATED_AUDIO_TAG(a, b, c);
       };
-    } else if (this.Bowser.safari || this.Bowser.ie || this.Bowser.chrome) {
+    } else if (this.Bowser.safari || this.Bowser.msie || this.Bowser.chrome) {
       this.playSound = function(a, b, c) {
         return _this.play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND(a, b, c);
       };
