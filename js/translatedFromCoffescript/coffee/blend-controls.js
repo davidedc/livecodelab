@@ -1,8 +1,7 @@
-"use strict";
-
 var BlendControls;
 
 BlendControls = (function() {
+  "use strict";
 
   BlendControls.prototype.previousanimationStyleValue = 0;
 

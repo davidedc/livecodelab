@@ -2,10 +2,8 @@ var AnimationLoop, frame, lastTime, vendors, x;
 
 frame = 0;
 
-"use strict";
-
-
 AnimationLoop = (function() {
+  "use strict";
 
   AnimationLoop.prototype.loopInterval = null;
 

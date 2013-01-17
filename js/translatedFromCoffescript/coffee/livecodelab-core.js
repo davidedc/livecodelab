@@ -1,8 +1,7 @@
-"use strict";
-
 var LiveCodeLabCore;
 
 LiveCodeLabCore = (function() {
+  "use strict";
 
   function LiveCodeLabCore(paramsObject) {
     this.paramsObject = paramsObject;

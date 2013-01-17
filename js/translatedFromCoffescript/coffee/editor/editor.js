@@ -1,8 +1,7 @@
-"use strict";
-
 var Editor;
 
 Editor = (function() {
+  "use strict";
 
   function Editor(eventRouter, codemirror) {
     var _this = this;

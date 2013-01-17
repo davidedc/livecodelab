@@ -1,8 +1,8 @@
-"use strict";
-
 var ProgramRunner;
 
 ProgramRunner = (function() {
+  "use strict";
+
   var consecutiveFramesWithoutRunTimeError, currentCodeString, doOnceOccurrencesLineNumbers, drawFunction, lastStableDrawFunction;
 
   doOnceOccurrencesLineNumbers = [];

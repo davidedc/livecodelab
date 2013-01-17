@@ -1,8 +1,7 @@
-"use strict";
-
 var BigCursor;
 
 BigCursor = (function() {
+  "use strict";
 
   function BigCursor(eventRouter) {
     this.fakeCursorInterval = void 0;

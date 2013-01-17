@@ -3,11 +3,10 @@ Closure compiler automatically replaces symbolic Constants.* names with their
 values (it does it for everything it thinks it's a constant really).
 */
 
-"use strict";
-
 var ColourFunctions;
 
 ColourFunctions = (function() {
+  "use strict";
 
   function ColourFunctions() {
     var _this = this;

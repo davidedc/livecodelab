@@ -1,8 +1,7 @@
-"use strict";
-
 var BackgroundPainter;
 
 BackgroundPainter = (function() {
+  "use strict";
 
   function BackgroundPainter(canvasForBackground, liveCodeLabCoreInstance) {
     var backGroundFraction,

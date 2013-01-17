@@ -1,8 +1,7 @@
-"use strict";
-
 var GraphicsCommands;
 
 GraphicsCommands = (function() {
+  "use strict";
 
   GraphicsCommands.prototype.primitiveTypes = {};
 

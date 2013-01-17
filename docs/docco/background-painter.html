@@ -33,9 +33,10 @@ and each background/gradient is painted anew.</p>
 <p>Note that we are not trying to be too clever here - for example
 a solid fill effectively invalidates the contents of the previous
 elements of the array, so we could discard those when such
-a command is issued.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="string">"use strict"</span>
-
+a command is issued.</p>             </td>             <td class="code">               <div class="highlight"><pre>
 <span class="class"><span class="keyword">class</span> <span class="title">BackgroundPainter</span></span>
+  <span class="string">"use strict"</span>
+
   constructor: (<span class="property">@canvasForBackground</span>, <span class="property">@liveCodeLabCoreInstance</span>) -&gt;
     <span class="property">@gradStack</span> = []
     <span class="property">@defaultGradientColor1</span> = orange

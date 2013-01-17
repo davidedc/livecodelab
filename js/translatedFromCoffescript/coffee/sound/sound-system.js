@@ -1,8 +1,7 @@
-"use strict";
-
 var SoundSystem;
 
 SoundSystem = (function() {
+  "use strict";
 
   SoundSystem.prototype.oldupdatesPerMinute = 0;
 

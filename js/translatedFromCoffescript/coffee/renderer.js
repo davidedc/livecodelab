@@ -1,8 +1,7 @@
-"use strict";
-
 var Renderer;
 
 Renderer = (function() {
+  "use strict";
 
   function Renderer(liveCodeLabCoreInstance) {
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;

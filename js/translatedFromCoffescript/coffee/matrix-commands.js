@@ -1,8 +1,7 @@
-"use strict";
-
 var MatrixCommands;
 
 MatrixCommands = (function() {
+  "use strict";
 
   MatrixCommands.prototype.matrixStack = [];
 

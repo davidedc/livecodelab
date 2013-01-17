@@ -3,8 +3,10 @@
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Code adapted from processing.js</p>             </td>             <td class="code">               <div class="highlight"><pre>
 </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Closure compiler automatically replaces symbolic Constants.* names with their
 values (it does it for everything it thinks it's a constant really).
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="string">"use strict"</span>
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>
 <span class="class"><span class="keyword">class</span> <span class="title">ColourFunctions</span></span>
+  <span class="string">"use strict"</span>
+
   constructor: -&gt;
     window.<span class="function"><span class="title">color</span></span> = (a,b,c,d) =&gt; <span class="property">@color</span>(a,b,c,d)
     window.<span class="function"><span class="title">colorToHSB</span></span> = (a) =&gt; <span class="property">@colorToHSB</span>(a)

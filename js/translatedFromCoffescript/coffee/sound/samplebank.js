@@ -5,11 +5,10 @@ needs to be loaded by the browser.
 It automatically handles returning the ogg or mp3 file path.
 */
 
-"use strict";
-
 var SampleBank;
 
 SampleBank = (function() {
+  "use strict";
 
   SampleBank.prototype.sounds = [];
 

@@ -1,8 +1,7 @@
-"use strict";
-
 var EventRouter;
 
 EventRouter = (function() {
+  "use strict";
 
   EventRouter.prototype.events = {};
 

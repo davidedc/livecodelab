@@ -1,8 +1,7 @@
-"use strict";
-
 var ColourLiterals;
 
 ColourLiterals = (function() {
+  "use strict";
 
   ColourLiterals.prototype.colourNames = [];
 

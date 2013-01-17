@@ -1,8 +1,7 @@
-"use strict";
-
 var ProgramLoader;
 
 ProgramLoader = (function() {
+  "use strict";
 
   function ProgramLoader(eventRouter, texteditor, liveCodeLabCoreInstance) {
     var userWarnedAboutWebglExamples,

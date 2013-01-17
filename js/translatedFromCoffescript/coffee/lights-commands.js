@@ -1,8 +1,7 @@
-"use strict";
-
 var LightsCommands;
 
 LightsCommands = (function() {
+  "use strict";
 
   LightsCommands.prototype.lightsAreOn = false;
 

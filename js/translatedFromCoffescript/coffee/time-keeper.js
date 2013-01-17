@@ -1,8 +1,7 @@
-"use strict";
-
 var TimeKeeper;
 
 TimeKeeper = (function() {
+  "use strict";
 
   TimeKeeper.prototype.time = void 0;
 

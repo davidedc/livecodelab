@@ -1,8 +1,7 @@
-"use strict";
-
 var EditorDimmer;
 
 EditorDimmer = (function() {
+  "use strict";
 
   EditorDimmer.prototype.cursorActivity = true;
 

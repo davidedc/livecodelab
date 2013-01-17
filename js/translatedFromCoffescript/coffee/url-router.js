@@ -1,8 +1,7 @@
-"use strict";
-
 var UrlRouter;
 
 UrlRouter = (function() {
+  "use strict";
 
   function UrlRouter(eventRouter) {
     this.eventRouter = eventRouter;

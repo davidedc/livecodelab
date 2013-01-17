@@ -1,8 +1,7 @@
-"use strict";
-
 var Ui;
 
 Ui = (function() {
+  "use strict";
 
   function Ui(eventRouter, stats) {
     var _this = this;

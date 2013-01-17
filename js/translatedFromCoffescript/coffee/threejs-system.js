@@ -1,8 +1,7 @@
-"use strict";
-
 var ThreeJsSystem;
 
 ThreeJsSystem = (function() {
+  "use strict";
 
   ThreeJsSystem.isWebGLUsed = false;
 
