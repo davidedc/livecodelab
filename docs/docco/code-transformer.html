@@ -216,10 +216,8 @@ the line where it was</p>             </td>             <td class="code">       
             
 </pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>eliminate multiline comments preserving the lines</p>             </td>             <td class="code">               <div class="highlight"><pre>            numberOfLinesInMultilineComment = comment.split(<span class="string">"\n"</span>).length - <span class="number">1</span>
             rebuiltNewLines = <span class="string">""</span>
-            cycleToRebuildNewLines = <span class="number">0</span>
-            <span class="keyword">while</span> cycleToRebuildNewLines &lt; numberOfLinesInMultilineComment
+            <span class="keyword">for</span> cycleToRebuildNewLines <span class="keyword">in</span> [<span class="number">0.</span>..numberOfLinesInMultilineComment]
               rebuiltNewLines = rebuiltNewLines + <span class="string">"\n"</span>
-              cycleToRebuildNewLines += <span class="number">1</span>
             rebuiltNewLines
       )
       codeWithoutComments = code
@@ -527,12 +525,10 @@ to run.</p>             </td>             <td class="code">               <div c
 </pre></div>             </td>           </tr>                               <tr id="section-62">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-62">&#182;</a>               </div>               <p>we know the line number of each doOnce block that has been run
 so we go there and add a tick next to each doOnce to indicate
 that it has been run.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	elaboratedSourceByLine = elaboratedSource.split(<span class="string">"\n"</span>)
-  	iteratingOverSource = <span class="number">0</span>
-  	<span class="keyword">while</span> iteratingOverSource &lt; doOnceOccurrencesLineNumbers.length
-      elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]] =
-        elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]].replace(
+  	<span class="keyword">for</span> iteratingOverSource <span class="keyword">in</span> doOnceOccurrencesLineNumbers
+      elaboratedSourceByLine[iteratingOverSource] =
+        elaboratedSourceByLine[iteratingOverSource].replace(
           <span class="regexp">/^(\s*)doOnce([ ]*\-&gt;[ ]*.*)$/gm</span>, <span class="string">"$1✓doOnce$2"</span>)
-      iteratingOverSource += <span class="number">1</span>
   	elaboratedSource = elaboratedSourceByLine.join(<span class="string">"\n"</span>)
   	
 </pre></div>             </td>           </tr>                               <tr id="section-63">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-63">&#182;</a>               </div>               <p>puts the new code (where the doOnce that have been executed have

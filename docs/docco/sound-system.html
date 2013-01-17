@@ -209,13 +209,10 @@ of many files but doesn't like loading too many audio objects
 so fast - it crashes.
 At the opposite end, Safari doesn't like loading sound dynamically
 and instead works fine by loading sound all at the beginning.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">if</span> <span class="property">@Bowser</span>.safari
-        preloadSounds = <span class="number">0</span>
-        <span class="keyword">while</span> preloadSounds &lt; <span class="property">@CHANNELSPERSOUND</span>
-          
+        <span class="keyword">for</span> preloadSounds <span class="keyword">in</span> [<span class="number">0.</span>..<span class="property">@CHANNELSPERSOUND</span>]
 </pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>if you load and play all the channels of all the sounds all together
 the browser freezes, and the OS doesn't feel too well either
 so better stagger the checks in time.</p>             </td>             <td class="code">               <div class="highlight"><pre>          setTimeout (()=&gt;checkSound), <span class="number">200</span> * cycleSoundDefs, soundDef, soundInfo
-          preloadSounds += <span class="number">1</span>
 </pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>end of the for loop</p>             </td>             <td class="code">               <div class="highlight"><pre>    
 </pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>if this is chrome, fire the callback immediately
 otherwise wait untill all the sounds have been tested</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@eventRouter</span>.trigger <span class="string">"all-sounds-loaded-and tested"</span>  <span class="keyword">unless</span> <span class="property">@Bowser</span>.safari

@@ -82,7 +82,7 @@ CodeTransformer = (function() {
     codeWithoutStringsOrComments = void 0;
     if (this.doesProgramContainStringsOrComments(code)) {
       code = code.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')|(\/\/[^\n]*\n)|(\/\*(?:(?!\*\/)(?:.|\n))*\*\/)/g, function(all, quoted, aposed, singleComment, comment) {
-        var cycleToRebuildNewLines, numberOfLinesInMultilineComment, rebuiltNewLines;
+        var cycleToRebuildNewLines, numberOfLinesInMultilineComment, rebuiltNewLines, _i;
         numberOfLinesInMultilineComment = void 0;
         rebuiltNewLines = void 0;
         cycleToRebuildNewLines = void 0;
@@ -97,10 +97,8 @@ CodeTransformer = (function() {
         }
         numberOfLinesInMultilineComment = comment.split("\n").length - 1;
         rebuiltNewLines = "";
-        cycleToRebuildNewLines = 0;
-        while (cycleToRebuildNewLines < numberOfLinesInMultilineComment) {
+        for (cycleToRebuildNewLines = _i = 0; 0 <= numberOfLinesInMultilineComment ? _i < numberOfLinesInMultilineComment : _i > numberOfLinesInMultilineComment; cycleToRebuildNewLines = 0 <= numberOfLinesInMultilineComment ? ++_i : --_i) {
           rebuiltNewLines = rebuiltNewLines + "\n";
-          cycleToRebuildNewLines += 1;
         }
         return rebuiltNewLines;
       });
@@ -312,17 +310,16 @@ CodeTransformer = (function() {
   };
 
   CodeTransformer.prototype.addCheckMarksAndUpdateCodeAndNotifyChange = function(CodeTransformer, doOnceOccurrencesLineNumbers) {
-    var drawFunction, elaboratedSource, elaboratedSourceByLine, iteratingOverSource;
+    var drawFunction, elaboratedSource, elaboratedSourceByLine, iteratingOverSource, _i, _len;
     elaboratedSource = void 0;
     elaboratedSourceByLine = void 0;
     iteratingOverSource = void 0;
     drawFunction = void 0;
     elaboratedSource = this.currentCodeString;
     elaboratedSourceByLine = elaboratedSource.split("\n");
-    iteratingOverSource = 0;
-    while (iteratingOverSource < doOnceOccurrencesLineNumbers.length) {
-      elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]] = elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]].replace(/^(\s*)doOnce([ ]*\->[ ]*.*)$/gm, "$1✓doOnce$2");
-      iteratingOverSource += 1;
+    for (_i = 0, _len = doOnceOccurrencesLineNumbers.length; _i < _len; _i++) {
+      iteratingOverSource = doOnceOccurrencesLineNumbers[_i];
+      elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce([ ]*\->[ ]*.*)$/gm, "$1✓doOnce$2");
     }
     elaboratedSource = elaboratedSourceByLine.join("\n");
     this.eventRouter.trigger("code-updated-by-livecodelab", elaboratedSource);

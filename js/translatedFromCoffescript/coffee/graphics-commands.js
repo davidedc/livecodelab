@@ -47,7 +47,7 @@ GraphicsCommands = (function() {
   GraphicsCommands.prototype.defaultNormalStroke = true;
 
   function GraphicsCommands(liveCodeLabCore_three, liveCodeLabCoreInstance) {
-    var i,
+    var i, _i, _j, _ref, _ref1,
       _this = this;
     this.liveCodeLabCore_three = liveCodeLabCore_three;
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
@@ -94,10 +94,8 @@ GraphicsCommands = (function() {
     this.objectPools[this.primitiveTypes.rect] = [];
     this.objectPools[this.primitiveTypes.box] = [];
     this.objectPools[this.primitiveTypes.peg] = [];
-    i = 0;
-    while (i < (this.maximumBallDetail - this.minimumBallDetail + 1)) {
+    for (i = _i = 0, _ref = this.maximumBallDetail - this.minimumBallDetail + 1; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
       this.objectPools[this.primitiveTypes.ball + i] = [];
-      i += 1;
     }
     this.geometriesBank[this.primitiveTypes.line] = new this.liveCodeLabCore_three.Geometry();
     this.geometriesBank[this.primitiveTypes.line].vertices.push(new this.liveCodeLabCore_three.Vector3(0, -0.5, 0));
@@ -105,10 +103,8 @@ GraphicsCommands = (function() {
     this.geometriesBank[this.primitiveTypes.rect] = new this.liveCodeLabCore_three.PlaneGeometry(1, 1);
     this.geometriesBank[this.primitiveTypes.box] = new this.liveCodeLabCore_three.CubeGeometry(1, 1, 1);
     this.geometriesBank[this.primitiveTypes.peg] = new this.liveCodeLabCore_three.CylinderGeometry(0.5, 0.5, 1, 32);
-    i = 0;
-    while (i < (this.maximumBallDetail - this.minimumBallDetail + 1)) {
+    for (i = _j = 0, _ref1 = this.maximumBallDetail - this.minimumBallDetail + 1; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
       this.geometriesBank[this.primitiveTypes.ball + i] = new this.liveCodeLabCore_three.SphereGeometry(1, this.minimumBallDetail + i, this.minimumBallDetail + i);
-      i += 1;
     }
   }
 
@@ -236,7 +232,7 @@ GraphicsCommands = (function() {
   };
 
   GraphicsCommands.prototype.reset = function() {
-    var i, _results;
+    var i, _i, _ref, _results;
     this.fill(0xFFFFFFFF);
     this.stroke(0xFFFFFFFF);
     this.currentStrokeSize = 1;
@@ -248,12 +244,9 @@ GraphicsCommands = (function() {
     this.objectsUsedInFrameCounts[this.primitiveTypes.rect] = 0;
     this.objectsUsedInFrameCounts[this.primitiveTypes.box] = 0;
     this.objectsUsedInFrameCounts[this.primitiveTypes.peg] = 0;
-    i = void 0;
-    i = 0;
     _results = [];
-    while (i < (this.maximumBallDetail - this.minimumBallDetail + 1)) {
-      this.objectsUsedInFrameCounts[this.primitiveTypes.ball + i] = 0;
-      _results.push(i += 1);
+    for (i = _i = 0, _ref = this.maximumBallDetail - this.minimumBallDetail + 1; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      _results.push(this.objectsUsedInFrameCounts[this.primitiveTypes.ball + i] = 0);
     }
     return _results;
   };

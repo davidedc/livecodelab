@@ -216,7 +216,7 @@ SoundSystem = (function() {
   };
 
   SoundSystem.prototype.loadAndTestAllTheSounds = function() {
-    var cycleSoundDefs, preloadSounds, soundDef, soundInfo, _i, _ref,
+    var cycleSoundDefs, preloadSounds, soundDef, soundInfo, _i, _j, _ref, _ref1,
       _this = this;
     soundDef = void 0;
     soundInfo = void 0;
@@ -227,12 +227,10 @@ SoundSystem = (function() {
       this.buzzObjectsPool[soundInfo.name] = [];
       this.soundFilesPaths[soundInfo.name] = soundInfo.path;
       if (this.Bowser.safari) {
-        preloadSounds = 0;
-        while (preloadSounds < this.CHANNELSPERSOUND) {
+        for (preloadSounds = _j = 0, _ref1 = this.CHANNELSPERSOUND; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; preloadSounds = 0 <= _ref1 ? ++_j : --_j) {
           setTimeout((function() {
             return checkSound;
           }), 200 * cycleSoundDefs, soundDef, soundInfo);
-          preloadSounds += 1;
         }
       }
     }
