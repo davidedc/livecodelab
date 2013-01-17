@@ -587,12 +587,10 @@ class CodeTransformer
   	# so we go there and add a tick next to each doOnce to indicate
   	# that it has been run.
   	elaboratedSourceByLine = elaboratedSource.split("\n")
-  	iteratingOverSource = 0
-  	while iteratingOverSource < doOnceOccurrencesLineNumbers.length
-      elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]] =
-        elaboratedSourceByLine[doOnceOccurrencesLineNumbers[iteratingOverSource]].replace(
+  	for iteratingOverSource in doOnceOccurrencesLineNumbers
+      elaboratedSourceByLine[iteratingOverSource] =
+        elaboratedSourceByLine[iteratingOverSource].replace(
           /^(\s*)doOnce([ ]*\->[ ]*.*)$/gm, "$1✓doOnce$2")
-      iteratingOverSource += 1
   	elaboratedSource = elaboratedSourceByLine.join("\n")
   	
   	# puts the new code (where the doOnce that have been executed have
