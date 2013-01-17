@@ -8,8 +8,10 @@
 Closure compiler automatically replaces symbolic Constants.* names with their
 values (it does it for everything it thinks it's a constant really).
 ###
-"use strict"
+
 class ColourFunctions
+  "use strict"
+
   constructor: ->
     window.color = (a,b,c,d) => @color(a,b,c,d)
     window.colorToHSB = (a) => @colorToHSB(a)

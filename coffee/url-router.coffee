@@ -3,8 +3,8 @@
 # This is the URL hash location router.
 # It is controlled by the events framework.
 
-"use strict"
 class UrlRouter
+  "use strict"
   
   constructor: (@eventRouter) ->
     @eventRouter.bind "set-url-hash", @setHash, @

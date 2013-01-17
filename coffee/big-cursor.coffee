@@ -1,9 +1,9 @@
 #jslint browser: true, devel: true 
 #global $ 
 
-"use strict"
-
 class BigCursor
+  "use strict"
+
   constructor: (eventRouter) ->
     @fakeCursorInterval = undefined
     

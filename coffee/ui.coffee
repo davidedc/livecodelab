@@ -1,8 +1,9 @@
 #jslint browser: true 
 #global $ 
 
-"use strict"
 class Ui
+  "use strict"
+
   constructor: (@eventRouter, @stats) ->
     # Setup Event Listeners
     @eventRouter.bind "report-runtime-or-compile-time-error", ((e)=>@checkErrorAndReport(e)), @

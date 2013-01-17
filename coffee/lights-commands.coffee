@@ -1,7 +1,8 @@
 #jslint browser: true 
 
-"use strict"
 class LightsCommands
+  "use strict"
+
   lightsAreOn: false
   constructor: (@liveCodeLabCore_graphicsCommands, @liveCodeLabCoreInstance) ->
 

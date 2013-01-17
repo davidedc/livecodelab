@@ -1,7 +1,7 @@
 #jslint browser: true 
 
-"use strict"
 class BlendControls
+  "use strict"
   
   previousanimationStyleValue: 0
   animationStyleValue: 0

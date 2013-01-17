@@ -1,6 +1,7 @@
 #jslint browser: true, devel: true 
-"use strict"
 class Editor
+  "use strict"
+
   constructor: (@eventRouter, codemirror) ->
     # Setup Event Listeners
     @eventRouter.bind "reset", =>

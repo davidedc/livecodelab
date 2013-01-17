@@ -1,8 +1,8 @@
 #jslint devel: true 
 #global McLexer 
 
-"use strict"
 class Autocoder
+  "use strict"
   
   active: false
   autocoderMutateTimeout: undefined

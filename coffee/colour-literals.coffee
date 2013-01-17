@@ -1,6 +1,7 @@
 #jslint browser: true 
-"use strict"
 class ColourLiterals
+  "use strict"
+
   colourNames: []
 
   constructor: ->

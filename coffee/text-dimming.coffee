@@ -1,8 +1,9 @@
 #jslint 
 #global $ 
 
-"use strict"
 class EditorDimmer
+  "use strict"
+
   cursorActivity: true
   dimIntervalID: undefined
   dimCodeOn: false

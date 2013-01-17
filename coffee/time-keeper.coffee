@@ -1,8 +1,8 @@
 # jslint browser: true 
 # global Date 
 
-"use strict"
 class TimeKeeper
+  "use strict"
   
   time: undefined
   timeAtStart: undefined

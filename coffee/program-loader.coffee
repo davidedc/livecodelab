@@ -1,8 +1,8 @@
 #jslint browser: true, nomen: true, regexp: true 
 #global $, Detector 
-"use strict"
 
 class ProgramLoader
+  "use strict"
 
   constructor: (@eventRouter, @texteditor, @liveCodeLabCoreInstance) ->
     @lastHash = ""

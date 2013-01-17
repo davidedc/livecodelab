@@ -99,8 +99,10 @@
 # is 3d, the lighting is special by default and all faces have primary colors, things
 # animate. Without spinning, all those cues need to be further explained and demonstra
 # ted.
-"use strict"
+
 class GraphicsCommands
+  "use strict"
+
   primitiveTypes: {}
   minimumBallDetail: 2
   maximumBallDetail: 30

@@ -1,7 +1,7 @@
 #jslint maxerr: 200, browser: true, devel: true, bitwise: true 
 
-"use strict"
 class ProgramRunner
+  "use strict"
   
   # this array is used to keep track of all the instances of "doOnce" in the code
   # we need to keep this so we can put the ticks next to doOnce once that doOnce

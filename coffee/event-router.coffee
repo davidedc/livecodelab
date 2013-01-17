@@ -1,5 +1,5 @@
-"use strict"
 class EventRouter
+  "use strict"
 
   events: {}
   

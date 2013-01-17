@@ -4,8 +4,10 @@ needs to be loaded by the browser.
 
 It automatically handles returning the ogg or mp3 file path.
 ###
-"use strict"
+
 class SampleBank
+  "use strict"
+
   sounds: []
   soundsByName: {}
   fileType: undefined

@@ -1,7 +1,8 @@
 # this file isn't currently used
 
-"use strict"
 class Parser
+  "use strict"
+
   source = undefined
   sourceLength = undefined
   position = undefined

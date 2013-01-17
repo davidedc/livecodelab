@@ -35,9 +35,10 @@
 # a solid fill effectively invalidates the contents of the previous
 # elements of the array, so we could discard those when such
 # a command is issued.
-"use strict"
 
 class BackgroundPainter
+  "use strict"
+
   constructor: (@canvasForBackground, @liveCodeLabCoreInstance) ->
     @gradStack = []
     @defaultGradientColor1 = orange

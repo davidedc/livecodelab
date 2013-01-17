@@ -1,8 +1,9 @@
 #jslint browser: true 
 
 #global $ 
-"use strict"
 class SoundSystem
+  "use strict"
+
   oldupdatesPerMinute: 0
   soundLoopTimer: undefined
   beatNumber: 0

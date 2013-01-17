@@ -1,7 +1,8 @@
 #jslint browser: true, devel: true 
 
-"use strict"
 class ThreeJsSystem
+  "use strict"
+
   @isWebGLUsed: false
   @composer: {}
   constructor: ( \

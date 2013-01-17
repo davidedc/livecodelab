@@ -53,8 +53,10 @@
 # "liveCodeLabCoreInstance" is passed to the constructor, then one case to look for
 # all "liveCodeLabCoreInstance" occurrences and see which of its children are
 # accessed.
-"use strict"
+
 class LiveCodeLabCore
+  "use strict"
+
   constructor: (@paramsObject) ->
     
     #//////////////////////////////////////////////

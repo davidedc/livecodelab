@@ -1,7 +1,8 @@
 #jslint maxerr: 200, browser: true, devel: true, bitwise: true 
 
-"use strict"
 class Renderer
+  "use strict"
+
   constructor: (@liveCodeLabCoreInstance) ->
   
   render: (graphics) ->

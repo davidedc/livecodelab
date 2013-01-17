@@ -1,8 +1,9 @@
 #jslint browser: true 
 #global 
 
-"use strict"
 class MatrixCommands
+  "use strict"
+
   matrixStack: []
 
   constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance) ->

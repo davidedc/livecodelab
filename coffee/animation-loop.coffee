@@ -29,8 +29,9 @@
 # loop "animate" function.
 frame = 0
 
-"use strict"
 class AnimationLoop
+  "use strict"
+
   loopInterval: null
   wantedFramesPerSecond: null
   liveCodeLabCoreInstance: undefined
