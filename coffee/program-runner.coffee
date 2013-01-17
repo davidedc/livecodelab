@@ -38,7 +38,7 @@ class ProgramRunner
 
   putTicksNextToDoOnceBlocksThatHaveBeenRun: ->
     codeTransformer = @liveCodeLabCoreInstance.codeTransformer
-    if @doOnceOccurrencesLineNumbers.length isnt 0
+    if @doOnceOccurrencesLineNumbers.length
       @setDrawFunction \
         codeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(
           codeTransformer, @doOnceOccurrencesLineNumbers

@@ -27,8 +27,5 @@ class EventRouter
     if @events[name]
       args = args.slice(1)
       callbacks = @events[name]
-      i = 0
-      while i < callbacks.length
-        listenerInfo = callbacks[i]
+      for listenerInfo in callbacks
         listenerInfo.callback.apply listenerInfo.context, args
-        i += 1

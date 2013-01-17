@@ -174,7 +174,7 @@ Determines the largest value in a sequence of numbers.
 max = ->
   return (if arguments[0] < arguments[1] then arguments[1] else arguments[0])  if arguments.length is 2
   numbers = (if arguments.length is 1 then arguments[0] else arguments) # if single argument, array is used
-  throw "Non-empty array is expected"  unless "length" of numbers and numbers.length > 0
+  throw "Non-empty array is expected"  unless "length" of numbers and numbers.length
   max = numbers[0]
   count = numbers.length
   i = 1
@@ -200,7 +200,7 @@ Determines the smallest value in a sequence of numbers.
 min = ->
   return (if arguments[0] < arguments[1] then arguments[0] else arguments[1])  if arguments.length is 2
   numbers = (if arguments.length is 1 then arguments[0] else arguments) # if single argument, array is used
-  throw "Non-empty array is expected"  unless "length" of numbers and numbers.length > 0
+  throw "Non-empty array is expected"  unless "length" of numbers and numbers.length
   min = numbers[0]
   count = numbers.length
   i = 1
@@ -431,7 +431,7 @@ To convert a floating-point random number to an integer, use the int() function.
 @see noise
 ###
 random = ->
-  return currentRandom()  if arguments.length is 0
+  return currentRandom()  if !arguments.length
   return currentRandom() * arguments[0]  if arguments.length is 1
   aMin = arguments[0]
   aMax = arguments[1]

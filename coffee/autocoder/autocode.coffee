@@ -124,14 +124,12 @@ class Autocoder
 
   
     # colour
-    scanningAllColors = 0
-    while scanningAllColors < @colourNames.length
-      @LexersOnlyState.addRule(new RegExp(@colourNames[scanningAllColors]),
+    for scanningAllColors in @colourNames
+      @LexersOnlyState.addRule(new RegExp(scanningAllColors),
         (matchedPartOfInput, remainingInput, currentState) =>
           @Tokens.push new TOKEN_COLOUR(matchedPartOfInput[0], @colourNames)
           return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
       )
-      scanningAllColors++
   
     # colour ops
     @LexersOnlyState.addRule(/background/,
@@ -377,10 +375,8 @@ class Autocoder
   # hence generating a possibly mutated program.
   emit: (stream) ->
     ret = ""
-    scanningTheStream = 0
-    while scanningTheStream < stream.length
-      ret = ret + stream[scanningTheStream].string
-      scanningTheStream++
+    for scanningTheStream in stream
+      ret = ret + scanningTheStream.string
     ret
 
   
@@ -397,18 +393,16 @@ class Autocoder
   pickMutatableTokenAndMutateIt: (stream) ->
     mutatableTokens = []
     idx = undefined
-    scanningTheStream = 0
     # collect the items that can be mutated
-    while scanningTheStream < stream.length
-      if @canMutate(stream[scanningTheStream])
+    for scanningTheStream in stream
+      if @canMutate(scanningTheStream)
         mutatableTokens.push scanningTheStream
-      scanningTheStream++
     if mutatableTokens.length == 0
       #nothing can be mutated
       return
     #found at least a mutatable token, pick one at random and mutate it
     idx = Math.floor(Math.random() * mutatableTokens.length)
-    stream[mutatableTokens[idx]].mutate()
+    mutatableTokens[idx].mutate()
 
   
   # Currently unused.

@@ -60,6 +60,9 @@ class Editor
 
   setValue: (a)->
    @codemirrorInstance.setValue(a)
+
+  lineCount: ()->
+   @codemirrorInstance.lineCount(a)
   
   
   

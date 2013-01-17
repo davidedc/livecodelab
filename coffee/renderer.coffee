@@ -85,10 +85,7 @@ class Renderer
     objectsUsedInFrameCounts = graphics.objectsUsedInFrameCounts
     
     # scan all the objects in the display list
-    i = 0
-    while i < threeJsSystem.scene.children.length
-      sceneObject = threeJsSystem.scene.children[i]
-      
+    for sceneObject in threeJsSystem.scene.children
       # check the type of object. Each type has one pool. Go through each object in the
       # pool and set to visible the number of used objects in this frame, set the
       # others to hidden.
@@ -102,4 +99,3 @@ class Renderer
         
         # ... and the others to invisible
         sceneObject.visible = false
-      i += 1

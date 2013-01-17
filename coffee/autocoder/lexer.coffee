@@ -72,9 +72,7 @@ class LexerState
     longestMatchedLength = -1
     
     #console.log("trying to match: " + input)
-    i = @rules.length - 1
-    
-    while i >= 0
+    for i in [@rules.length-1..0]
       r = @rules[i]
       
       m = r.matches(input)
@@ -83,7 +81,6 @@ class LexerState
         longestMatchedRule = r
         longestMatch = m
         longestMatchedLength = m[0].length
-      --i
     if longestMatchedRule
       #console.log("found a matching rule")
       # now return the result of the action, which is the next action

@@ -127,7 +127,7 @@ class CodeChecker extends Parser
       message: ""
 
   isErr: (s) ->
-    if s.bracketStack.length > 0
+    if s.bracketStack.length
       b = s.bracketStack.pop()
       @states.message = @generateErrMessage(b)
       s.err = true

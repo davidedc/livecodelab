@@ -27,7 +27,7 @@ class MatrixCommands
     @worldMatrix = (new @liveCodeLabCore_three.Matrix4()).copy(@worldMatrix)
 
   popMatrix: ->
-    if @matrixStack.length isnt 0
+    if @matrixStack.length
       @worldMatrix = @matrixStack.pop()
     else
       @worldMatrix.identity()

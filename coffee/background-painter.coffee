@@ -153,7 +153,6 @@ class BackgroundPainter
   simpleGradientUpdateIfChanged: ->
     diagonal = undefined
     radgrad = undefined
-    scanningGradStack = undefined
 
     # some shorthands
     color = @liveCodeLabCoreInstance.colourFunctions.color
@@ -164,17 +163,17 @@ class BackgroundPainter
       diagonal =
         Math.sqrt(Math.pow(@canvasForBackground.width / 2, 2) +
         Math.pow(@canvasForBackground.height / 2, 2))
-      scanningGradStack = 0
-      while scanningGradStack < @gradStack.length
-        if @gradStack[scanningGradStack].gradStacka isnt `undefined`
+      
+      for scanningGradStack in @gradStack
+        if scanningGradStack.gradStacka isnt `undefined`
           radgrad = @backgroundSceneContext.createLinearGradient(
             @canvasForBackground.width / 2,
             0,
             @canvasForBackground.width / 2,
             @canvasForBackground.height)
-          radgrad.addColorStop 0, color.toString(@gradStack[scanningGradStack].gradStacka)
-          radgrad.addColorStop 0.5,color.toString(@gradStack[scanningGradStack].gradStackb)
-          radgrad.addColorStop 1, color.toString(@gradStack[scanningGradStack].gradStackc)
+          radgrad.addColorStop 0, color.toString(scanningGradStack.gradStacka)
+          radgrad.addColorStop 0.5,color.toString(scanningGradStack.gradStackb)
+          radgrad.addColorStop 1, color.toString(scanningGradStack.gradStackc)
           @backgroundSceneContext.globalAlpha = 1.0
           @backgroundSceneContext.fillStyle = radgrad
           @backgroundSceneContext.fillRect \
@@ -182,8 +181,7 @@ class BackgroundPainter
         else
           @backgroundSceneContext.globalAlpha = 1.0
           @backgroundSceneContext.fillStyle =
-            color.toString(@gradStack[scanningGradStack].solid)
+            color.toString(scanningGradStack.solid)
           @backgroundSceneContext.fillRect \
             0, 0, @canvasForBackground.width, @canvasForBackground.height
-        scanningGradStack++
 

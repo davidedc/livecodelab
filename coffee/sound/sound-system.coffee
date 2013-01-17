@@ -126,20 +126,16 @@ class SoundSystem
   play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND: (soundFilesPaths, loopedSoundID, @buzzObjectsPool) ->
     availableBuzzObject = undefined
     allBuzzObjectsForWantedSound = @buzzObjectsPool[loopedSoundID]
-    scanningBuzzObjectsForWantedSound = undefined
     buzzObject = undefined
     
     # check if there is an available buzz object that has finished
     # playing
-    scanningBuzzObjectsForWantedSound = 0
-    while scanningBuzzObjectsForWantedSound < allBuzzObjectsForWantedSound.length
-      buzzObject = allBuzzObjectsForWantedSound[scanningBuzzObjectsForWantedSound]
+    for buzzObject in allBuzzObjectsForWantedSound
       if buzzObject.isEnded()
         availableBuzzObject = buzzObject
         break
-      scanningBuzzObjectsForWantedSound += 1
-    if availableBuzzObject is `undefined`
-      
+
+    if availableBuzzObject is `undefined`      
       # there are no available buzz objects for this sound
       # which might mean two things: there are too few and we can just
       # create a new one
@@ -160,15 +156,13 @@ class SoundSystem
   
   # Called from changeUpdatesPerMinuteIfNeeded
   soundLoop: ->
-    loopingTheSoundIDs = undefined
     loopedSoundID = undefined
     playOrNoPlay = undefined
     beatString = undefined
     return  if @soundSystemIsMangled
     @beatNumber += 1
     @beatNumber = @beatNumber % 16
-    loopingTheSoundIDs = 0
-    while loopingTheSoundIDs < @soundLoops.soundIDs.length
+    for loopingTheSoundIDs in [0...@soundLoops.soundIDs.length]
       loopedSoundID = @soundLoops.soundIDs[loopingTheSoundIDs]
       
       # When the user modifies the name of a sample,
@@ -185,7 +179,6 @@ class SoundSystem
         # browser/os combination
         if playOrNoPlay is "x"
           @playSound @soundFilesPaths, loopedSoundID, @buzzObjectsPool
-      loopingTheSoundIDs += 1
 
   
   # Called from animate function in animation-controls.js
@@ -225,11 +218,9 @@ class SoundSystem
   loadAndTestAllTheSounds: ->
     soundDef = undefined
     soundInfo = undefined
-    cycleSoundDefs = undefined
     preloadSounds = undefined
     soundDef = @samplebank
-    cycleSoundDefs = 0
-    while cycleSoundDefs < soundDef.sounds.length
+    for cycleSoundDefs in [0...soundDef.sounds.length]
       soundInfo = soundDef.getByNumber(cycleSoundDefs)
       @buzzObjectsPool[soundInfo.name] = []
       @soundFilesPaths[soundInfo.name] = soundInfo.path
@@ -248,7 +239,6 @@ class SoundSystem
           # so better stagger the checks in time.
           setTimeout (()=>checkSound), 200 * cycleSoundDefs, soundDef, soundInfo
           preloadSounds += 1
-      cycleSoundDefs += 1
     # end of the for loop
     
     # if this is chrome, fire the callback immediately

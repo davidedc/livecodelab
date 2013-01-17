@@ -139,8 +139,7 @@ class CodeTransformer
       elaboratedSourceByLine = code.split("\n")
       
       #alert('splitting: ' + elaboratedSourceByLine.length );
-      iteratingOverSource = 0
-      while iteratingOverSource < elaboratedSourceByLine.length
+      for iteratingOverSource in [0...elaboratedSourceByLine.length]
         
         #alert('iterating: ' + iteratingOverSource );
         
@@ -160,7 +159,6 @@ class CodeTransformer
           elaboratedSourceByLine[iteratingOverSource + 1] =
             elaboratedSourceByLine[iteratingOverSource + 1].replace(
               /^(\s*)(.+)$/g, "$1;addDoOnce(" + iteratingOverSource + "); $2")
-        iteratingOverSource += 1
       code = elaboratedSourceByLine.join("\n")
     
     #alert('soon after replacing doOnces'+code);
