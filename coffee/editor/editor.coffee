@@ -63,7 +63,7 @@ class Editor
    @codemirrorInstance.setValue(a)
 
   lineCount: ()->
-   @codemirrorInstance.lineCount(a)
+   @codemirrorInstance.lineCount()
   
   
   
