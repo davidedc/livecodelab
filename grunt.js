@@ -115,6 +115,13 @@ module.exports = function (grunt) {
 								options: {
 										preserve_dirs: true
 								}
+							},
+							tests: {
+								src: ['tests/coffee/**/*.coffee'],
+								dest: 'tests/js/',
+								options: {
+										preserve_dirs: false
+								}
 							}
 				},
         concat: {
@@ -179,7 +186,8 @@ module.exports = function (grunt) {
         },
         clean: {
             docs: ['docs/docco/', 'docs/codo/', 'docs/coffeedoc/'],
-            build: ['dist/', 'indexMinified.html', 'js_compiled/Livecodelab-minified.js' , 'js/translatedFromCoffescript/']
+            build: ['dist/', 'indexMinified.html', 'js_compiled/Livecodelab-minified.js' , 'js/translatedFromCoffescript/'],
+						tests: ['tests/js/testLiveCodeLab.js']
         },
         targethtml: {
             compile: {
@@ -224,7 +232,7 @@ module.exports = function (grunt) {
 		});
 
     // Compilation task
-    grunt.registerTask('compile', 'clean:build coffee concat closure-compiler recess:compile targethtml:compile');
+    grunt.registerTask('compile', 'clean:build coffee:app coffee:tests concat closure-compiler recess:compile targethtml:compile');
 
     // Load NPM Task modules
     grunt.loadNpmTasks('grunt-closure-compiler');
