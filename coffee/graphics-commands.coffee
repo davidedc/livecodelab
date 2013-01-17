@@ -158,10 +158,8 @@ class GraphicsCommands
     @objectPools[@primitiveTypes.peg] = []
     
     # creating ball pools
-    i = 0
-    while i < (@maximumBallDetail - @minimumBallDetail + 1)
+    for i in [0...(@maximumBallDetail - @minimumBallDetail + 1)]
       @objectPools[@primitiveTypes.ball + i] = []
-      i += 1
     
     # Since you can't change the geometry of an object once it's created, we keep around
     # a pool of objects for each mesh type. There is one pool for lines, one for rectangles,
@@ -193,12 +191,10 @@ class GraphicsCommands
       new @liveCodeLabCore_three.CylinderGeometry(0.5, 0.5, 1, 32)
     
     # creating ball geometries
-    i = 0
-    while i < (@maximumBallDetail - @minimumBallDetail + 1)
+    for i in [0...(@maximumBallDetail - @minimumBallDetail + 1)]
       @geometriesBank[@primitiveTypes.ball + i] =
         new @liveCodeLabCore_three.SphereGeometry(
           1, @minimumBallDetail + i, @minimumBallDetail + i)
-      i += 1
     
   
   createObjectIfNeededAndDressWithCorrectMaterial: (
@@ -448,13 +444,8 @@ class GraphicsCommands
     @objectsUsedInFrameCounts[@primitiveTypes.peg] = 0
     
     # initialising ball counts
-    i = undefined
-    i = 0
-    while i <
-        (@maximumBallDetail - @minimumBallDetail + 1)
-      @objectsUsedInFrameCounts\
-        [@primitiveTypes.ball + i] = 0
-      i += 1
+    for i in [0...(@maximumBallDetail - @minimumBallDetail + 1)]
+      @objectsUsedInFrameCounts[@primitiveTypes.ball + i] = 0
 
   
   # TODO Note that lines have a "solid fill" mode

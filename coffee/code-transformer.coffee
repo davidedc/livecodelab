@@ -242,10 +242,8 @@ class CodeTransformer
             # eliminate multiline comments preserving the lines
             numberOfLinesInMultilineComment = comment.split("\n").length - 1
             rebuiltNewLines = ""
-            cycleToRebuildNewLines = 0
-            while cycleToRebuildNewLines < numberOfLinesInMultilineComment
+            for cycleToRebuildNewLines in [0...numberOfLinesInMultilineComment]
               rebuiltNewLines = rebuiltNewLines + "\n"
-              cycleToRebuildNewLines += 1
             rebuiltNewLines
       )
       codeWithoutComments = code

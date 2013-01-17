@@ -231,14 +231,11 @@ class SoundSystem
       # At the opposite end, Safari doesn't like loading sound dynamically
       # and instead works fine by loading sound all at the beginning.
       if @Bowser.safari
-        preloadSounds = 0
-        while preloadSounds < @CHANNELSPERSOUND
-          
+        for preloadSounds in [0...@CHANNELSPERSOUND]
           # if you load and play all the channels of all the sounds all together
           # the browser freezes, and the OS doesn't feel too well either
           # so better stagger the checks in time.
           setTimeout (()=>checkSound), 200 * cycleSoundDefs, soundDef, soundInfo
-          preloadSounds += 1
     # end of the for loop
     
     # if this is chrome, fire the callback immediately
