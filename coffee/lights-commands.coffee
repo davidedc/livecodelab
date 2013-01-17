@@ -26,10 +26,7 @@ class LightsCommands
   
   # ambientLight needs to be global
   ambientLight: (r, g, b, a) ->
-    colorToBeUsed = undefined
     newLightCreated = false
-    ambientLightsPool = undefined
-    pooledAmbientLight = undefined
     if r is `undefined`
       
       # empty arguments gives some sort

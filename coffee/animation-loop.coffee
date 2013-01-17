@@ -146,7 +146,7 @@ class AnimationLoop
     @liveCodeLabCoreInstance.renderer.render @liveCodeLabCoreInstance.graphicsCommands
     
     # update stats
-    @stats.update()  if @stats isnt null
+    if @stats then @stats.update()
 
 # Shim for browser that don't have requestAnimationFrame, see
 # http://paulirish.com/2011/requestanimationframe-for-smart-animating/

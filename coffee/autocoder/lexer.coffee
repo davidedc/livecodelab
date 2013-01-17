@@ -48,7 +48,6 @@ class LexerState
 
   addRule: (regex, action) ->
       @rules.push new LexerRule(regex, action)
-      null
   
   lex: (input) ->
     # findAndRunActionPairedToLongestAppliableRegex returns an action triggered by the
@@ -97,7 +96,6 @@ class LexerRule
     # Each rule is re-written to match prefixes of the input string.
     @regex = new RegExp("^(" + @regex.source + ")")
     @regex.compile @regex  if @regex.compile
-    null
   matches: (s) ->
     m = s.match(@regex)
     m.shift()  if m

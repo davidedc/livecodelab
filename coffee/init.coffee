@@ -56,8 +56,6 @@ startEnvironment = (paramsObject) ->
   # Stats are updated in the animationLoop
   # add Stats.js - https://github.com/mrdoob/stats.js
   stats = new Stats
-  paramsObject.forceCanvasRenderer = false  if paramsObject.forceCanvasRenderer is `undefined`
-  paramsObject.forceCanvasRenderer = false  if paramsObject.forceCanvasRenderer is null
   
   # ColourLiterals creates a bunch of global variables for all css colors (and more).
   # Since background-painting.js initialises the background by means of

@@ -411,7 +411,7 @@ class Autocoder
     rePattern = /(time)/g
     allMatches = editorContent.match(rePattern)
     countWhichOneToSwap = 0
-    if allMatches is null
+    if !allMatches
       @numberOfResults = 0
     else
       @numberOfResults = allMatches.length
@@ -602,7 +602,6 @@ class TOKEN_COLOUR
     while @string is @colourNames[idx]
       idx = Math.floor(Math.random() * @colourNames.length)
     @string = @colourNames[idx]
-    null
 
 class TOKEN_COLOUROP
   constructor: (@string) ->
