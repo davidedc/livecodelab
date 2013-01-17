@@ -103,31 +103,30 @@ BackgroundPainter = (function() {
   };
 
   BackgroundPainter.prototype.simpleGradientUpdateIfChanged = function() {
-    var color, diagonal, radgrad, scanningGradStack, _results;
+    var color, diagonal, radgrad, scanningGradStack, _i, _len, _ref, _results;
     diagonal = void 0;
     radgrad = void 0;
-    scanningGradStack = void 0;
     color = this.liveCodeLabCoreInstance.colourFunctions.color;
     if (this.currentGradientStackValue !== this.previousGradientStackValue) {
       this.previousGradientStackValue = this.currentGradientStackValue;
       diagonal = Math.sqrt(Math.pow(this.canvasForBackground.width / 2, 2) + Math.pow(this.canvasForBackground.height / 2, 2));
-      scanningGradStack = 0;
+      _ref = this.gradStack;
       _results = [];
-      while (scanningGradStack < this.gradStack.length) {
-        if (this.gradStack[scanningGradStack].gradStacka !== undefined) {
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        scanningGradStack = _ref[_i];
+        if (scanningGradStack.gradStacka !== undefined) {
           radgrad = this.backgroundSceneContext.createLinearGradient(this.canvasForBackground.width / 2, 0, this.canvasForBackground.width / 2, this.canvasForBackground.height);
-          radgrad.addColorStop(0, color.toString(this.gradStack[scanningGradStack].gradStacka));
-          radgrad.addColorStop(0.5, color.toString(this.gradStack[scanningGradStack].gradStackb));
-          radgrad.addColorStop(1, color.toString(this.gradStack[scanningGradStack].gradStackc));
+          radgrad.addColorStop(0, color.toString(scanningGradStack.gradStacka));
+          radgrad.addColorStop(0.5, color.toString(scanningGradStack.gradStackb));
+          radgrad.addColorStop(1, color.toString(scanningGradStack.gradStackc));
           this.backgroundSceneContext.globalAlpha = 1.0;
           this.backgroundSceneContext.fillStyle = radgrad;
-          this.backgroundSceneContext.fillRect(0, 0, this.canvasForBackground.width, this.canvasForBackground.height);
+          _results.push(this.backgroundSceneContext.fillRect(0, 0, this.canvasForBackground.width, this.canvasForBackground.height));
         } else {
           this.backgroundSceneContext.globalAlpha = 1.0;
-          this.backgroundSceneContext.fillStyle = color.toString(this.gradStack[scanningGradStack].solid);
-          this.backgroundSceneContext.fillRect(0, 0, this.canvasForBackground.width, this.canvasForBackground.height);
+          this.backgroundSceneContext.fillStyle = color.toString(scanningGradStack.solid);
+          _results.push(this.backgroundSceneContext.fillRect(0, 0, this.canvasForBackground.width, this.canvasForBackground.height));
         }
-        _results.push(scanningGradStack++);
       }
       return _results;
     }

@@ -206,7 +206,7 @@ max = function() {
     return (arguments[0] < arguments[1] ? arguments[1] : arguments[0]);
   }
   numbers = (arguments.length === 1 ? arguments[0] : arguments);
-  if (!("length" in numbers && numbers.length > 0)) {
+  if (!("length" in numbers && numbers.length)) {
     throw "Non-empty array is expected";
   }
   max = numbers[0];
@@ -241,7 +241,7 @@ min = function() {
     return (arguments[0] < arguments[1] ? arguments[0] : arguments[1]);
   }
   numbers = (arguments.length === 1 ? arguments[0] : arguments);
-  if (!("length" in numbers && numbers.length > 0)) {
+  if (!("length" in numbers && numbers.length)) {
     throw "Non-empty array is expected";
   }
   min = numbers[0];
@@ -507,7 +507,7 @@ To convert a floating-point random number to an integer, use the int() function.
 
 random = function() {
   var aMax, aMin;
-  if (arguments.length === 0) {
+  if (!arguments.length) {
     return currentRandom();
   }
   if (arguments.length === 1) {

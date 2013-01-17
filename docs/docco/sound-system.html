@@ -116,19 +116,15 @@ for uniformity with the other playing alternatives</p>             </td>        
   play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND: (soundFilesPaths, loopedSoundID, <span class="property">@buzzObjectsPool</span>) -&gt;
     availableBuzzObject = <span class="literal">undefined</span>
     allBuzzObjectsForWantedSound = <span class="property">@buzzObjectsPool</span>[loopedSoundID]
-    scanningBuzzObjectsForWantedSound = <span class="literal">undefined</span>
     buzzObject = <span class="literal">undefined</span>
     
 </pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>check if there is an available buzz object that has finished
-playing</p>             </td>             <td class="code">               <div class="highlight"><pre>    scanningBuzzObjectsForWantedSound = <span class="number">0</span>
-    <span class="keyword">while</span> scanningBuzzObjectsForWantedSound &lt; allBuzzObjectsForWantedSound.length
-      buzzObject = allBuzzObjectsForWantedSound[scanningBuzzObjectsForWantedSound]
+playing</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">for</span> buzzObject <span class="keyword">in</span> allBuzzObjectsForWantedSound
       <span class="keyword">if</span> buzzObject.isEnded()
         availableBuzzObject = buzzObject
         <span class="keyword">break</span>
-      scanningBuzzObjectsForWantedSound += <span class="number">1</span>
-    <span class="keyword">if</span> availableBuzzObject <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`
-      
+
+    <span class="keyword">if</span> availableBuzzObject <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`      
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>there are no available buzz objects for this sound
 which might mean two things: there are too few and we can just
 create a new one
@@ -146,15 +142,13 @@ is mangled.</p>             </td>             <td class="code">               <d
 (either an existing one that has stopped playing or a freshly-made one)</p>             </td>             <td class="code">               <div class="highlight"><pre>    availableBuzzObject.play()
   
 </pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Called from changeUpdatesPerMinuteIfNeeded</p>             </td>             <td class="code">               <div class="highlight"><pre>  soundLoop: -&gt;
-    loopingTheSoundIDs = <span class="literal">undefined</span>
     loopedSoundID = <span class="literal">undefined</span>
     playOrNoPlay = <span class="literal">undefined</span>
     beatString = <span class="literal">undefined</span>
     <span class="keyword">return</span>  <span class="keyword">if</span> <span class="property">@soundSystemIsMangled</span>
     <span class="property">@beatNumber</span> += <span class="number">1</span>
     <span class="property">@beatNumber</span> = <span class="property">@beatNumber</span> % <span class="number">16</span>
-    loopingTheSoundIDs = <span class="number">0</span>
-    <span class="keyword">while</span> loopingTheSoundIDs &lt; <span class="property">@soundLoops</span>.soundIDs.length
+    <span class="keyword">for</span> loopingTheSoundIDs <span class="keyword">in</span> [<span class="number">0.</span>..<span class="property">@soundLoops</span>.soundIDs.length]
       loopedSoundID = <span class="property">@soundLoops</span>.soundIDs[loopingTheSoundIDs]
       
 </pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>When the user modifies the name of a sample,
@@ -168,7 +162,6 @@ doesn't index any actual sound. So we check for that here.</p>             </td>
 </pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>transparently plays using the best method for this
 browser/os combination</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">if</span> playOrNoPlay <span class="keyword">is</span> <span class="string">"x"</span>
           <span class="property">@playSound</span> <span class="property">@soundFilesPaths</span>, loopedSoundID, <span class="property">@buzzObjectsPool</span>
-      loopingTheSoundIDs += <span class="number">1</span>
 
   
 </pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Called from animate function in animation-controls.js</p>             </td>             <td class="code">               <div class="highlight"><pre>  changeUpdatesPerMinuteIfNeeded: -&gt;
@@ -204,11 +197,9 @@ browser/os combination</p>             </td>             <td class="code">      
 </pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Called form the document ready block in init.js</p>             </td>             <td class="code">               <div class="highlight"><pre>  loadAndTestAllTheSounds: -&gt;
     soundDef = <span class="literal">undefined</span>
     soundInfo = <span class="literal">undefined</span>
-    cycleSoundDefs = <span class="literal">undefined</span>
     preloadSounds = <span class="literal">undefined</span>
     soundDef = <span class="property">@samplebank</span>
-    cycleSoundDefs = <span class="number">0</span>
-    <span class="keyword">while</span> cycleSoundDefs &lt; soundDef.sounds.length
+    <span class="keyword">for</span> cycleSoundDefs <span class="keyword">in</span> [<span class="number">0.</span>..soundDef.sounds.length]
       soundInfo = soundDef.getByNumber(cycleSoundDefs)
       <span class="property">@buzzObjectsPool</span>[soundInfo.name] = []
       <span class="property">@soundFilesPaths</span>[soundInfo.name] = soundInfo.path
@@ -225,7 +216,6 @@ and instead works fine by loading sound all at the beginning.</p>             </
 the browser freezes, and the OS doesn't feel too well either
 so better stagger the checks in time.</p>             </td>             <td class="code">               <div class="highlight"><pre>          setTimeout (()=&gt;checkSound), <span class="number">200</span> * cycleSoundDefs, soundDef, soundInfo
           preloadSounds += <span class="number">1</span>
-      cycleSoundDefs += <span class="number">1</span>
 </pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>end of the for loop</p>             </td>             <td class="code">               <div class="highlight"><pre>    
 </pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>if this is chrome, fire the callback immediately
 otherwise wait untill all the sounds have been tested</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@eventRouter</span>.trigger <span class="string">"all-sounds-loaded-and tested"</span>  <span class="keyword">unless</span> <span class="property">@Bowser</span>.safari

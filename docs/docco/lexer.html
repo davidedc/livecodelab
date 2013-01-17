@@ -66,9 +66,7 @@ run the action spawned by each action until no action is returned.</p>          
     longestMatch = <span class="literal">null</span>
     longestMatchedLength = -<span class="number">1</span>
     
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>console.log("trying to match: " + input)</p>             </td>             <td class="code">               <div class="highlight"><pre>    i = <span class="property">@rules</span>.length - <span class="number">1</span>
-    
-    <span class="keyword">while</span> i &gt;= <span class="number">0</span>
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>console.log("trying to match: " + input)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="property">@rules</span>.length-<span class="number">1.</span><span class="number">.0</span>]
       r = <span class="property">@rules</span>[i]
       
       m = r.matches(input)
@@ -77,7 +75,6 @@ run the action spawned by each action until no action is returned.</p>          
         longestMatchedRule = r
         longestMatch = m
         longestMatchedLength = m[<span class="number">0</span>].length
-      --i
     <span class="keyword">if</span> longestMatchedRule
 </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>console.log("found a matching rule")
 now return the result of the action, which is the next action</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">return</span> (longestMatchedRule.action(longestMatch, input.substring(longestMatchedLength), <span class="keyword">this</span>))

@@ -76,10 +76,7 @@ Note: Mr Doob said that the new scene destruction/creation primitives of Three.j
 </pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>    threeJsSystem = <span class="property">@liveCodeLabCoreInstance</span>.threeJsSystem
     objectsUsedInFrameCounts = graphics.objectsUsedInFrameCounts
     
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>scan all the objects in the display list</p>             </td>             <td class="code">               <div class="highlight"><pre>    i = <span class="number">0</span>
-    <span class="keyword">while</span> i &lt; threeJsSystem.scene.children.length
-      sceneObject = threeJsSystem.scene.children[i]
-      
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>scan all the objects in the display list</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">for</span> sceneObject <span class="keyword">in</span> threeJsSystem.scene.children
 </pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>check the type of object. Each type has one pool. Go through each object in the
 pool and set to visible the number of used objects in this frame, set the
 others to hidden.
@@ -90,6 +87,5 @@ Only tiny exception is that the ball has one pool for each detail level.</p>    
       <span class="keyword">else</span>
         
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>... and the others to invisible</p>             </td>             <td class="code">               <div class="highlight"><pre>        sceneObject.visible = <span class="literal">false</span>
-      i += <span class="number">1</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

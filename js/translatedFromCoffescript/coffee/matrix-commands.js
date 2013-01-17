@@ -46,7 +46,7 @@ MatrixCommands = (function() {
   };
 
   MatrixCommands.prototype.popMatrix = function() {
-    if (this.matrixStack.length !== 0) {
+    if (this.matrixStack.length) {
       return this.worldMatrix = this.matrixStack.pop();
     } else {
       return this.worldMatrix.identity();

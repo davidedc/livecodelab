@@ -32,23 +32,22 @@ Renderer = (function() {
   };
 
   Renderer.prototype.combDisplayList = function(graphics) {
-    var i, objectsUsedInFrameCounts, primitiveType, sceneObject, threeJsSystem, _results;
+    var i, objectsUsedInFrameCounts, primitiveType, sceneObject, threeJsSystem, _i, _len, _ref, _results;
     i = void 0;
     sceneObject = void 0;
     primitiveType = void 0;
     threeJsSystem = this.liveCodeLabCoreInstance.threeJsSystem;
     objectsUsedInFrameCounts = graphics.objectsUsedInFrameCounts;
-    i = 0;
+    _ref = threeJsSystem.scene.children;
     _results = [];
-    while (i < threeJsSystem.scene.children.length) {
-      sceneObject = threeJsSystem.scene.children[i];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      sceneObject = _ref[_i];
       if (objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] > 0) {
         sceneObject.visible = true;
-        objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] -= 1;
+        _results.push(objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] -= 1);
       } else {
-        sceneObject.visible = false;
+        _results.push(sceneObject.visible = false);
       }
-      _results.push(i += 1);
     }
     return _results;
   };

@@ -118,7 +118,7 @@
 </pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>any error message</p>             </td>             <td class="code">               <div class="highlight"><pre>      message: <span class="string">""</span>
 
   isErr: (s) -&gt;
-    <span class="keyword">if</span> s.bracketStack.length &gt; <span class="number">0</span>
+    <span class="keyword">if</span> s.bracketStack.length
       b = s.bracketStack.pop()
       <span class="property">@states</span>.message = <span class="property">@generateErrMessage</span>(b)
       s.err = <span class="literal">true</span>

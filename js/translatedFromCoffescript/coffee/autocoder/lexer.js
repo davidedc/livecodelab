@@ -21,12 +21,11 @@ LexerState = (function() {
   };
 
   LexerState.prototype.findAndRunActionPairedToLongestAppliableRegex = function(input) {
-    var i, longestMatch, longestMatchedLength, longestMatchedRule, m, r;
+    var i, longestMatch, longestMatchedLength, longestMatchedRule, m, r, _i, _ref;
     longestMatchedRule = null;
     longestMatch = null;
     longestMatchedLength = -1;
-    i = this.rules.length - 1;
-    while (i >= 0) {
+    for (i = _i = _ref = this.rules.length - 1; _ref <= 0 ? _i <= 0 : _i >= 0; i = _ref <= 0 ? ++_i : --_i) {
       r = this.rules[i];
       m = r.matches(input);
       if (m && (m[0].length >= longestMatchedLength)) {
@@ -34,7 +33,6 @@ LexerState = (function() {
         longestMatch = m;
         longestMatchedLength = m[0].length;
       }
-      --i;
     }
     if (longestMatchedRule) {
       return longestMatchedRule.action(longestMatch, input.substring(longestMatchedLength), this);

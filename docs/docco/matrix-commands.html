@@ -25,7 +25,7 @@ global </p>             </td>             <td class="code">               <div c
     <span class="property">@worldMatrix</span> = (<span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.Matrix4()).copy(<span class="property">@worldMatrix</span>)
 
   popMatrix: -&gt;
-    <span class="keyword">if</span> <span class="property">@matrixStack</span>.length <span class="keyword">isnt</span> <span class="number">0</span>
+    <span class="keyword">if</span> <span class="property">@matrixStack</span>.length
       <span class="property">@worldMatrix</span> = <span class="property">@matrixStack</span>.pop()
     <span class="keyword">else</span>
       <span class="property">@worldMatrix</span>.identity()

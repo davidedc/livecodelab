@@ -39,7 +39,7 @@ ProgramRunner = (function() {
   ProgramRunner.prototype.putTicksNextToDoOnceBlocksThatHaveBeenRun = function() {
     var codeTransformer;
     codeTransformer = this.liveCodeLabCoreInstance.codeTransformer;
-    if (this.doOnceOccurrencesLineNumbers.length !== 0) {
+    if (this.doOnceOccurrencesLineNumbers.length) {
       return this.setDrawFunction(codeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(codeTransformer, this.doOnceOccurrencesLineNumbers));
     }
   };

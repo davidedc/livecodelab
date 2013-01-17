@@ -25,10 +25,7 @@ convert the arguments object into an array</p>             </td>             <td
     <span class="keyword">if</span> <span class="property">@events</span>[name]
       args = args.slice(<span class="number">1</span>)
       callbacks = <span class="property">@events</span>[name]
-      i = <span class="number">0</span>
-      <span class="keyword">while</span> i &lt; callbacks.length
-        listenerInfo = callbacks[i]
+      <span class="keyword">for</span> listenerInfo <span class="keyword">in</span> callbacks
         listenerInfo.callback.apply listenerInfo.context, args
-        i += <span class="number">1</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

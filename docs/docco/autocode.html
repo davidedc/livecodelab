@@ -120,14 +120,12 @@ by step in a manner that does not rely on the runtime stack. There is no recursi
     )
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>colour</p>             </td>             <td class="code">               <div class="highlight"><pre>    scanningAllColors = <span class="number">0</span>
-    <span class="keyword">while</span> scanningAllColors &lt; <span class="property">@colourNames</span>.length
-      <span class="property">@LexersOnlyState</span>.addRule(<span class="keyword">new</span> RegExp(<span class="property">@colourNames</span>[scanningAllColors]),
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>colour</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">for</span> scanningAllColors <span class="keyword">in</span> <span class="property">@colourNames</span>
+      <span class="property">@LexersOnlyState</span>.addRule(<span class="keyword">new</span> RegExp(scanningAllColors),
         (matchedPartOfInput, remainingInput, currentState) =&gt;
           <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_COLOUR(matchedPartOfInput[<span class="number">0</span>], <span class="property">@colourNames</span>)
           <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
       )
-      scanningAllColors++
   
 </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>colour ops</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/background/</span>,
       (matchedPartOfInput, remainingInput, currentState) =&gt;
@@ -360,10 +358,8 @@ e.g. next-tutorial:frame</p>             </td>             <td class="code">    
 </pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Traverses the Tokens array and concatenates the strings,
 hence generating a possibly mutated program.</p>             </td>             <td class="code">               <div class="highlight"><pre>  emit: (stream) -&gt;
     ret = <span class="string">""</span>
-    scanningTheStream = <span class="number">0</span>
-    <span class="keyword">while</span> scanningTheStream &lt; stream.length
-      ret = ret + stream[scanningTheStream].string
-      scanningTheStream++
+    <span class="keyword">for</span> scanningTheStream <span class="keyword">in</span> stream
+      ret = ret + scanningTheStream.string
     ret
 
   
@@ -378,15 +374,13 @@ hence generating a possibly mutated program.</p>             </td>             <
 Then picks one random and invokes its mutate().</p>             </td>             <td class="code">               <div class="highlight"><pre>  pickMutatableTokenAndMutateIt: (stream) -&gt;
     mutatableTokens = []
     idx = <span class="literal">undefined</span>
-    scanningTheStream = <span class="number">0</span>
-</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>collect the items that can be mutated</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">while</span> scanningTheStream &lt; stream.length
-      <span class="keyword">if</span> <span class="property">@canMutate</span>(stream[scanningTheStream])
+</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>collect the items that can be mutated</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">for</span> scanningTheStream <span class="keyword">in</span> stream
+      <span class="keyword">if</span> <span class="property">@canMutate</span>(scanningTheStream)
         mutatableTokens.push scanningTheStream
-      scanningTheStream++
     <span class="keyword">if</span> mutatableTokens.length == <span class="number">0</span>
 </pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>nothing can be mutated</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">return</span>
 </pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>found at least a mutatable token, pick one at random and mutate it</p>             </td>             <td class="code">               <div class="highlight"><pre>    idx = Math.floor(Math.random() * mutatableTokens.length)
-    stream[mutatableTokens[idx]].mutate()
+    mutatableTokens[idx].mutate()
 
   
 </pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>Currently unused.</p>             </td>             <td class="code">               <div class="highlight"><pre>  replaceTimeWithAConstant: -&gt;

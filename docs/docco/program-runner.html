@@ -32,7 +32,7 @@ LiveCodeLab might be running an older version.</p>             </td>            
 
   putTicksNextToDoOnceBlocksThatHaveBeenRun: -&gt;
     codeTransformer = <span class="property">@liveCodeLabCoreInstance</span>.codeTransformer
-    <span class="keyword">if</span> <span class="property">@doOnceOccurrencesLineNumbers</span>.length <span class="keyword">isnt</span> <span class="number">0</span>
+    <span class="keyword">if</span> <span class="property">@doOnceOccurrencesLineNumbers</span>.length
       <span class="property">@setDrawFunction</span> \
         codeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(
           codeTransformer, <span class="property">@doOnceOccurrencesLineNumbers</span>

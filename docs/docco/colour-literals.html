@@ -8,172 +8,167 @@ with added the missing ones from the CSS standard,
 which includes the spelling "grey" on top of "gray"
 and also "angleColor", used to dress objects
 with the normal material.</p>             </td>             <td class="code">               <div class="highlight"><pre>    
-    colourNamesValues = [
-      <span class="string">"aliceblue"</span>, <span class="string">"0xfff0f8ff"</span>
-      <span class="string">"antiquewhite"</span>, <span class="string">"0xfffaebd7"</span>
-      <span class="string">"aqua"</span>, <span class="string">"0xff00ffff"</span>
-      <span class="string">"aquamarine"</span>, <span class="string">"0xff7fffd4"</span>
-      <span class="string">"azure"</span>, <span class="string">"0xfff0ffff"</span>
-      <span class="string">"beige"</span>, <span class="string">"0xfff5f5dc"</span>
-      <span class="string">"bisque"</span>, <span class="string">"0xffffe4c4"</span>
-      <span class="string">"black"</span>, <span class="string">"0xff000000"</span>
-      <span class="string">"blanchedalmond"</span>, <span class="string">"0xffffebcd"</span>
-      <span class="string">"blue"</span>, <span class="string">"0xff0000ff"</span>
-      <span class="string">"blueviolet"</span>, <span class="string">"0xff8a2be2"</span>
-      <span class="string">"brown"</span>, <span class="string">"0xffa52a2a"</span>
-      <span class="string">"burlywood"</span>, <span class="string">"0xffdeb887"</span>
-      <span class="string">"cadetblue"</span>, <span class="string">"0xff5f9ea0"</span>
-      <span class="string">"chartreuse"</span>, <span class="string">"0xff7fff00"</span>
-      <span class="string">"chocolate"</span>, <span class="string">"0xffd2691e"</span>
-      <span class="string">"coral"</span>, <span class="string">"0xffff7f50"</span>
-      <span class="string">"cornflowerblue"</span>, <span class="string">"0xff6495ed"</span>
-      <span class="string">"cornsilk"</span>, <span class="string">"0xfffff8dc"</span>
-      <span class="string">"crimson"</span>, <span class="string">"0xffdc143c"</span>
-      <span class="string">"cyan"</span>, <span class="string">"0xff00ffff"</span>
-      <span class="string">"darkblue"</span>, <span class="string">"0xff00008b"</span>
-      <span class="string">"darkcyan"</span>, <span class="string">"0xff008b8b"</span>
-      <span class="string">"darkgoldenrod"</span>, <span class="string">"0xffb8860b"</span>
-      <span class="string">"darkgray"</span>, <span class="string">"0xffa9a9a9"</span>
-      <span class="string">"darkgrey"</span>, <span class="string">"0xffa9a9a9"</span>
-      <span class="string">"darkgreen"</span>, <span class="string">"0xff006400"</span>
-      <span class="string">"darkkhaki"</span>, <span class="string">"0xffbdb76b"</span>
-      <span class="string">"darkmagenta"</span>, <span class="string">"0xff8b008b"</span>
-      <span class="string">"darkolivegreen"</span>, <span class="string">"0xff556b2f"</span>
-      <span class="string">"darkorange"</span>, <span class="string">"0xffff8c00"</span>
-      <span class="string">"darkorchid"</span>, <span class="string">"0xff9932cc"</span>
-      <span class="string">"darkred"</span>, <span class="string">"0xff8b0000"</span>
-      <span class="string">"darksalmon"</span>, <span class="string">"0xffe9967a"</span>
-      <span class="string">"darkseagreen"</span>, <span class="string">"0xff8fbc8f"</span>
-      <span class="string">"darkslateblue"</span>, <span class="string">"0xff483d8b"</span>
-      <span class="string">"darkslategray"</span>, <span class="string">"0xff2f4f4f"</span>
-      <span class="string">"darkslategrey"</span>, <span class="string">"0xff2f4f4f"</span>
-      <span class="string">"darkturquoise"</span>, <span class="string">"0xff00ced1"</span>
-      <span class="string">"darkviolet"</span>, <span class="string">"0xff9400d3"</span>
-      <span class="string">"deeppink"</span>, <span class="string">"0xffff1493"</span>
-      <span class="string">"deepskyblue"</span>, <span class="string">"0xff00bfff"</span>
-      <span class="string">"dimgray"</span>, <span class="string">"0xff696969"</span>
-      <span class="string">"dimgrey"</span>, <span class="string">"0xff696969"</span>
-      <span class="string">"dodgerblue"</span>, <span class="string">"0xff1e90ff"</span>
-      <span class="string">"firebrick"</span>, <span class="string">"0xffb22222"</span>
-      <span class="string">"floralwhite"</span>, <span class="string">"0xfffffaf0"</span>
-      <span class="string">"forestgreen"</span>, <span class="string">"0xff228b22"</span>
-      <span class="string">"fuchsia"</span>, <span class="string">"0xffff00ff"</span>
-      <span class="string">"gainsboro"</span>, <span class="string">"0xffdcdcdc"</span>
-      <span class="string">"ghostwhite"</span>, <span class="string">"0xfff8f8ff"</span>
-      <span class="string">"gold"</span>, <span class="string">"0xffffd700"</span>
-      <span class="string">"goldenrod"</span>, <span class="string">"0xffdaa520"</span>
-      <span class="string">"gray"</span>, <span class="string">"0xff808080"</span>
-      <span class="string">"grey"</span>, <span class="string">"0xff808080"</span>
-      <span class="string">"green"</span>, <span class="string">"0xff008000"</span>
-      <span class="string">"greenyellow"</span>, <span class="string">"0xffadff2f"</span>
-      <span class="string">"honeydew"</span>, <span class="string">"0xfff0fff0"</span>
-      <span class="string">"hotpink"</span>, <span class="string">"0xffff69b4"</span>
-      <span class="string">"indianred"</span>, <span class="string">"0xffcd5c5c"</span>
-      <span class="string">"indigo"</span>, <span class="string">"0xff4b0082"</span>
-      <span class="string">"ivory"</span>, <span class="string">"0xfffffff0"</span>
-      <span class="string">"khaki"</span>, <span class="string">"0xfff0e68c"</span>
-      <span class="string">"lavender"</span>, <span class="string">"0xffe6e6fa"</span>
-      <span class="string">"lavenderblush"</span>, <span class="string">"0xfffff0f5"</span>
-      <span class="string">"lawngreen"</span>, <span class="string">"0xff7cfc00"</span>
-      <span class="string">"lemonchiffon"</span>, <span class="string">"0xfffffacd"</span>
-      <span class="string">"lightblue"</span>, <span class="string">"0xffadd8e6"</span>
-      <span class="string">"lightcoral"</span>, <span class="string">"0xfff08080"</span>
-      <span class="string">"lightcyan"</span>, <span class="string">"0xffe0ffff"</span>
-      <span class="string">"lightgoldenrodyellow"</span>, <span class="string">"0xfffafad2"</span>
-      <span class="string">"lightgrey"</span>, <span class="string">"0xffd3d3d3"</span>
-      <span class="string">"lightgray"</span>, <span class="string">"0xffd3d3d3"</span>
-      <span class="string">"lightgreen"</span>, <span class="string">"0xff90ee90"</span>
-      <span class="string">"lightpink"</span>, <span class="string">"0xffffb6c1"</span>
-      <span class="string">"lightsalmon"</span>, <span class="string">"0xffffa07a"</span>
-      <span class="string">"lightseagreen"</span>, <span class="string">"0xff20b2aa"</span>
-      <span class="string">"lightskyblue"</span>, <span class="string">"0xff87cefa"</span>
-      <span class="string">"lightslategray"</span>, <span class="string">"0xff778899"</span>
-      <span class="string">"lightslategrey"</span>, <span class="string">"0xff778899"</span>
-      <span class="string">"lightsteelblue"</span>, <span class="string">"0xffb0c4de"</span>
-      <span class="string">"lightyellow"</span>, <span class="string">"0xffffffe0"</span>
-      <span class="string">"lime"</span>, <span class="string">"0xff00ff00"</span>
-      <span class="string">"limegreen"</span>, <span class="string">"0xff32cd32"</span>
-      <span class="string">"linen"</span>, <span class="string">"0xfffaf0e6"</span>
-      <span class="string">"magenta"</span>, <span class="string">"0xffff00ff"</span>
-      <span class="string">"maroon"</span>, <span class="string">"0xff800000"</span>
-      <span class="string">"mediumaquamarine"</span>, <span class="string">"0xff66cdaa"</span>
-      <span class="string">"mediumblue"</span>, <span class="string">"0xff0000cd"</span>
-      <span class="string">"mediumorchid"</span>, <span class="string">"0xffba55d3"</span>
-      <span class="string">"mediumpurple"</span>, <span class="string">"0xff9370d8"</span>
-      <span class="string">"mediumseagreen"</span>, <span class="string">"0xff3cb371"</span>
-      <span class="string">"mediumslateblue"</span>, <span class="string">"0xff7b68ee"</span>
-      <span class="string">"mediumspringgreen"</span>, <span class="string">"0xff00fa9a"</span>
-      <span class="string">"mediumturquoise"</span>, <span class="string">"0xff48d1cc"</span>
-      <span class="string">"mediumvioletred"</span>, <span class="string">"0xffc71585"</span>
-      <span class="string">"midnightblue"</span>, <span class="string">"0xff191970"</span>
-      <span class="string">"mintcream"</span>, <span class="string">"0xfff5fffa"</span>
-      <span class="string">"mistyrose"</span>, <span class="string">"0xffffe4e1"</span>
-      <span class="string">"moccasin"</span>, <span class="string">"0xffffe4b5"</span>
-      <span class="string">"navajowhite"</span>, <span class="string">"0xffffdead"</span>
-      <span class="string">"navy"</span>, <span class="string">"0xff000080"</span>
-      <span class="string">"oldlace"</span>, <span class="string">"0xfffdf5e6"</span>
-      <span class="string">"olive"</span>, <span class="string">"0xff808000"</span>
-      <span class="string">"olivedrab"</span>, <span class="string">"0xff6b8e23"</span>
-      <span class="string">"orange"</span>, <span class="string">"0xffffa500"</span>
-      <span class="string">"orangered"</span>, <span class="string">"0xffff4500"</span>
-      <span class="string">"orchid"</span>, <span class="string">"0xffda70d6"</span>
-      <span class="string">"palegoldenrod"</span>, <span class="string">"0xffeee8aa"</span>
-      <span class="string">"palegreen"</span>, <span class="string">"0xff98fb98"</span>
-      <span class="string">"paleturquoise"</span>, <span class="string">"0xffafeeee"</span>
-      <span class="string">"palevioletred"</span>, <span class="string">"0xffd87093"</span>
-      <span class="string">"papayawhip"</span>, <span class="string">"0xffffefd5"</span>
-      <span class="string">"peachpuff"</span>, <span class="string">"0xffffdab9"</span>
-      <span class="string">"peru"</span>, <span class="string">"0xffcd853f"</span>
-      <span class="string">"pink"</span>, <span class="string">"0xffffc0cb"</span>
-      <span class="string">"plum"</span>, <span class="string">"0xffdda0dd"</span>
-      <span class="string">"powderblue"</span>, <span class="string">"0xffb0e0e6"</span>
-      <span class="string">"purple"</span>, <span class="string">"0xff800080"</span>
-      <span class="string">"red"</span>, <span class="string">"0xffff0000"</span>
-      <span class="string">"rosybrown"</span>, <span class="string">"0xffbc8f8f"</span>
-      <span class="string">"royalblue"</span>, <span class="string">"0xff4169e1"</span>
-      <span class="string">"saddlebrown"</span>, <span class="string">"0xff8b4513"</span>
-      <span class="string">"salmon"</span>, <span class="string">"0xfffa8072"</span>
-      <span class="string">"sandybrown"</span>, <span class="string">"0xfff4a460"</span>
-      <span class="string">"seagreen"</span>, <span class="string">"0xff2e8b57"</span>
-      <span class="string">"seashell"</span>, <span class="string">"0xfffff5ee"</span>
-      <span class="string">"sienna"</span>, <span class="string">"0xffa0522d"</span>
-      <span class="string">"silver"</span>, <span class="string">"0xffc0c0c0"</span>
-      <span class="string">"skyblue"</span>, <span class="string">"0xff87ceeb"</span>
-      <span class="string">"slateblue"</span>, <span class="string">"0xff6a5acd"</span>
-      <span class="string">"slategray"</span>, <span class="string">"0xff708090"</span>
-      <span class="string">"slategrey"</span>, <span class="string">"0xff708090"</span>
-      <span class="string">"snow"</span>, <span class="string">"0xfffffafa"</span>
-      <span class="string">"springgreen"</span>, <span class="string">"0xff00ff7f"</span>
-      <span class="string">"steelblue"</span>, <span class="string">"0xff4682b4"</span>
-      <span class="string">"tan"</span>, <span class="string">"0xffd2b48c"</span>
-      <span class="string">"teal"</span>, <span class="string">"0xff008080"</span>
-      <span class="string">"thistle"</span>, <span class="string">"0xffd8bfd8"</span>
-      <span class="string">"tomato"</span>, <span class="string">"0xffff6347"</span>
-      <span class="string">"turquoise"</span>, <span class="string">"0xff40e0d0"</span>
-      <span class="string">"violet"</span>, <span class="string">"0xffee82ee"</span>
-      <span class="string">"wheat"</span>, <span class="string">"0xfff5deb3"</span>
-      <span class="string">"white"</span>, <span class="string">"0xffffffff"</span>
-      <span class="string">"whitesmoke"</span>, <span class="string">"0xfff5f5f5"</span>
-      <span class="string">"yellow"</span>, <span class="string">"0xffffff00"</span>
-      <span class="string">"yellowgreen"</span>, <span class="string">"0xff9acd32"</span>,
+    colourNamesValues = 
+      aliceblue: <span class="string">"0xfff0f8ff"</span>
+      antiquewhite: <span class="string">"0xfffaebd7"</span>
+      aqua: <span class="string">"0xff00ffff"</span>
+      aquamarine: <span class="string">"0xff7fffd4"</span>
+      azure: <span class="string">"0xfff0ffff"</span>
+      beige: <span class="string">"0xfff5f5dc"</span>
+      bisque: <span class="string">"0xffffe4c4"</span>
+      black: <span class="string">"0xff000000"</span>
+      blanchedalmond: <span class="string">"0xffffebcd"</span>
+      blue: <span class="string">"0xff0000ff"</span>
+      blueviolet: <span class="string">"0xff8a2be2"</span>
+      brown: <span class="string">"0xffa52a2a"</span>
+      burlywood: <span class="string">"0xffdeb887"</span>
+      cadetblue: <span class="string">"0xff5f9ea0"</span>
+      chartreuse: <span class="string">"0xff7fff00"</span>
+      chocolate: <span class="string">"0xffd2691e"</span>
+      coral: <span class="string">"0xffff7f50"</span>
+      cornflowerblue: <span class="string">"0xff6495ed"</span>
+      cornsilk: <span class="string">"0xfffff8dc"</span>
+      crimson: <span class="string">"0xffdc143c"</span>
+      cyan: <span class="string">"0xff00ffff"</span>
+      darkblue: <span class="string">"0xff00008b"</span>
+      darkcyan: <span class="string">"0xff008b8b"</span>
+      darkgoldenrod: <span class="string">"0xffb8860b"</span>
+      darkgray: <span class="string">"0xffa9a9a9"</span>
+      darkgrey: <span class="string">"0xffa9a9a9"</span>
+      darkgreen: <span class="string">"0xff006400"</span>
+      darkkhaki: <span class="string">"0xffbdb76b"</span>
+      darkmagenta: <span class="string">"0xff8b008b"</span>
+      darkolivegreen: <span class="string">"0xff556b2f"</span>
+      darkorange: <span class="string">"0xffff8c00"</span>
+      darkorchid: <span class="string">"0xff9932cc"</span>
+      darkred: <span class="string">"0xff8b0000"</span>
+      darksalmon: <span class="string">"0xffe9967a"</span>
+      darkseagreen: <span class="string">"0xff8fbc8f"</span>
+      darkslateblue: <span class="string">"0xff483d8b"</span>
+      darkslategray: <span class="string">"0xff2f4f4f"</span>
+      darkslategrey: <span class="string">"0xff2f4f4f"</span>
+      darkturquoise: <span class="string">"0xff00ced1"</span>
+      darkviolet: <span class="string">"0xff9400d3"</span>
+      deeppink: <span class="string">"0xffff1493"</span>
+      deepskyblue: <span class="string">"0xff00bfff"</span>
+      dimgray: <span class="string">"0xff696969"</span>
+      dimgrey: <span class="string">"0xff696969"</span>
+      dodgerblue: <span class="string">"0xff1e90ff"</span>
+      firebrick: <span class="string">"0xffb22222"</span>
+      floralwhite: <span class="string">"0xfffffaf0"</span>
+      forestgreen: <span class="string">"0xff228b22"</span>
+      fuchsia: <span class="string">"0xffff00ff"</span>
+      gainsboro: <span class="string">"0xffdcdcdc"</span>
+      ghostwhite: <span class="string">"0xfff8f8ff"</span>
+      gold: <span class="string">"0xffffd700"</span>
+      goldenrod: <span class="string">"0xffdaa520"</span>
+      gray: <span class="string">"0xff808080"</span>
+      grey: <span class="string">"0xff808080"</span>
+      green: <span class="string">"0xff008000"</span>
+      greenyellow: <span class="string">"0xffadff2f"</span>
+      honeydew: <span class="string">"0xfff0fff0"</span>
+      hotpink: <span class="string">"0xffff69b4"</span>
+      indianred: <span class="string">"0xffcd5c5c"</span>
+      indigo: <span class="string">"0xff4b0082"</span>
+      ivory: <span class="string">"0xfffffff0"</span>
+      khaki: <span class="string">"0xfff0e68c"</span>
+      lavender: <span class="string">"0xffe6e6fa"</span>
+      lavenderblush: <span class="string">"0xfffff0f5"</span>
+      lawngreen: <span class="string">"0xff7cfc00"</span>
+      lemonchiffon: <span class="string">"0xfffffacd"</span>
+      lightblue: <span class="string">"0xffadd8e6"</span>
+      lightcoral: <span class="string">"0xfff08080"</span>
+      lightcyan: <span class="string">"0xffe0ffff"</span>
+      lightgoldenrodyellow: <span class="string">"0xfffafad2"</span>
+      lightgrey: <span class="string">"0xffd3d3d3"</span>
+      lightgray: <span class="string">"0xffd3d3d3"</span>
+      lightgreen: <span class="string">"0xff90ee90"</span>
+      lightpink: <span class="string">"0xffffb6c1"</span>
+      lightsalmon: <span class="string">"0xffffa07a"</span>
+      lightseagreen: <span class="string">"0xff20b2aa"</span>
+      lightskyblue: <span class="string">"0xff87cefa"</span>
+      lightslategray: <span class="string">"0xff778899"</span>
+      lightslategrey: <span class="string">"0xff778899"</span>
+      lightsteelblue: <span class="string">"0xffb0c4de"</span>
+      lightyellow: <span class="string">"0xffffffe0"</span>
+      lime: <span class="string">"0xff00ff00"</span>
+      limegreen: <span class="string">"0xff32cd32"</span>
+      linen: <span class="string">"0xfffaf0e6"</span>
+      magenta: <span class="string">"0xffff00ff"</span>
+      maroon: <span class="string">"0xff800000"</span>
+      mediumaquamarine: <span class="string">"0xff66cdaa"</span>
+      mediumblue: <span class="string">"0xff0000cd"</span>
+      mediumorchid: <span class="string">"0xffba55d3"</span>
+      mediumpurple: <span class="string">"0xff9370d8"</span>
+      mediumseagreen: <span class="string">"0xff3cb371"</span>
+      mediumslateblue: <span class="string">"0xff7b68ee"</span>
+      mediumspringgreen: <span class="string">"0xff00fa9a"</span>
+      mediumturquoise: <span class="string">"0xff48d1cc"</span>
+      mediumvioletred: <span class="string">"0xffc71585"</span>
+      midnightblue: <span class="string">"0xff191970"</span>
+      mintcream: <span class="string">"0xfff5fffa"</span>
+      mistyrose: <span class="string">"0xffffe4e1"</span>
+      moccasin: <span class="string">"0xffffe4b5"</span>
+      navajowhite: <span class="string">"0xffffdead"</span>
+      navy: <span class="string">"0xff000080"</span>
+      oldlace: <span class="string">"0xfffdf5e6"</span>
+      olive: <span class="string">"0xff808000"</span>
+      olivedrab: <span class="string">"0xff6b8e23"</span>
+      orange: <span class="string">"0xffffa500"</span>
+      orangered: <span class="string">"0xffff4500"</span>
+      orchid: <span class="string">"0xffda70d6"</span>
+      palegoldenrod: <span class="string">"0xffeee8aa"</span>
+      palegreen: <span class="string">"0xff98fb98"</span>
+      paleturquoise: <span class="string">"0xffafeeee"</span>
+      palevioletred: <span class="string">"0xffd87093"</span>
+      papayawhip: <span class="string">"0xffffefd5"</span>
+      peachpuff: <span class="string">"0xffffdab9"</span>
+      peru: <span class="string">"0xffcd853f"</span>
+      pink: <span class="string">"0xffffc0cb"</span>
+      plum: <span class="string">"0xffdda0dd"</span>
+      powderblue: <span class="string">"0xffb0e0e6"</span>
+      purple: <span class="string">"0xff800080"</span>
+      red: <span class="string">"0xffff0000"</span>
+      rosybrown: <span class="string">"0xffbc8f8f"</span>
+      royalblue: <span class="string">"0xff4169e1"</span>
+      saddlebrown: <span class="string">"0xff8b4513"</span>
+      salmon: <span class="string">"0xfffa8072"</span>
+      sandybrown: <span class="string">"0xfff4a460"</span>
+      seagreen: <span class="string">"0xff2e8b57"</span>
+      seashell: <span class="string">"0xfffff5ee"</span>
+      sienna: <span class="string">"0xffa0522d"</span>
+      silver: <span class="string">"0xffc0c0c0"</span>
+      skyblue: <span class="string">"0xff87ceeb"</span>
+      slateblue: <span class="string">"0xff6a5acd"</span>
+      slategray: <span class="string">"0xff708090"</span>
+      slategrey: <span class="string">"0xff708090"</span>
+      snow: <span class="string">"0xfffffafa"</span>
+      springgreen: <span class="string">"0xff00ff7f"</span>
+      steelblue: <span class="string">"0xff4682b4"</span>
+      tan: <span class="string">"0xffd2b48c"</span>
+      teal: <span class="string">"0xff008080"</span>
+      thistle: <span class="string">"0xffd8bfd8"</span>
+      tomato: <span class="string">"0xffff6347"</span>
+      turquoise: <span class="string">"0xff40e0d0"</span>
+      violet: <span class="string">"0xffee82ee"</span>
+      wheat: <span class="string">"0xfff5deb3"</span>
+      white: <span class="string">"0xffffffff"</span>
+      whitesmoke: <span class="string">"0xfff5f5f5"</span>
+      yellow: <span class="string">"0xffffff00"</span>
+      yellowgreen: <span class="string">"0xff9acd32"</span>
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>anglecolor is a special
 color that tells the engine to use the
 normal material.
 It would be tempting to set it to a numeric value such as
 1 unit higher than then any max 32 bit integer, but it's such a special
-case that it's OK to use a non-integer.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="string">"angleColor"</span>, <span class="string">"angleColor"</span>
-    ]
+case that it's OK to use a non-integer.</p>             </td>             <td class="code">               <div class="highlight"><pre>      angleColor: <span class="string">"angleColor"</span>
 
-    ColourIteration = <span class="number">0</span>
-    <span class="keyword">while</span> ColourIteration &lt; colourNamesValues.length
+    <span class="keyword">for</span> colorName, colorValue <span class="keyword">of</span> colourNamesValues
 </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Adding colours to the global namespace is avoidable once we have a "scope" object in
-which the code will be executed, then we can just dynamically add fields to that scope</p>             </td>             <td class="code">               <div class="highlight"><pre>      window[colourNamesValues[ColourIteration]] =
-        parseInt(colourNamesValues[ColourIteration + <span class="number">1</span>])
-      <span class="keyword">if</span> isNaN(window[colourNamesValues[ColourIteration]])
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>this is the case of special colors that have string values</p>             </td>             <td class="code">               <div class="highlight"><pre>        window[colourNamesValues[ColourIteration]] =
-          colourNamesValues[ColourIteration + <span class="number">1</span>]
+which the code will be executed, then we can just dynamically add fields to that scope</p>             </td>             <td class="code">               <div class="highlight"><pre>      window[<span class="string">"<span class="subst">#{colorName}</span>"</span>] = parseInt(colorValue)
+      <span class="keyword">if</span> isNaN(window[<span class="string">"<span class="subst">#{colorName}</span>"</span>])
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>this is the case of special colors that have string values</p>             </td>             <td class="code">               <div class="highlight"><pre>        window[<span class="string">"<span class="subst">#{colorName}</span>"</span>] = colorValue
 
-      <span class="property">@colourNames</span>.push colourNamesValues[ColourIteration]
-      ColourIteration += <span class="number">2</span>
+      <span class="property">@colourNames</span>.push <span class="string">"<span class="subst">#{colorName}</span>"</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

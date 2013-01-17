@@ -169,7 +169,7 @@ CodeChecker = (function(_super) {
 
   CodeChecker.prototype.isErr = function(s) {
     var b;
-    if (s.bracketStack.length > 0) {
+    if (s.bracketStack.length) {
       b = s.bracketStack.pop();
       this.states.message = this.generateErrMessage(b);
       s.err = true;

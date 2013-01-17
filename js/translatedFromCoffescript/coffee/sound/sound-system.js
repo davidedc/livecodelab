@@ -120,20 +120,17 @@ SoundSystem = (function() {
   };
 
   SoundSystem.prototype.play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND = function(soundFilesPaths, loopedSoundID, buzzObjectsPool) {
-    var allBuzzObjectsForWantedSound, availableBuzzObject, buzzObject, scanningBuzzObjectsForWantedSound;
+    var allBuzzObjectsForWantedSound, availableBuzzObject, buzzObject, _i, _len;
     this.buzzObjectsPool = buzzObjectsPool;
     availableBuzzObject = void 0;
     allBuzzObjectsForWantedSound = this.buzzObjectsPool[loopedSoundID];
-    scanningBuzzObjectsForWantedSound = void 0;
     buzzObject = void 0;
-    scanningBuzzObjectsForWantedSound = 0;
-    while (scanningBuzzObjectsForWantedSound < allBuzzObjectsForWantedSound.length) {
-      buzzObject = allBuzzObjectsForWantedSound[scanningBuzzObjectsForWantedSound];
+    for (_i = 0, _len = allBuzzObjectsForWantedSound.length; _i < _len; _i++) {
+      buzzObject = allBuzzObjectsForWantedSound[_i];
       if (buzzObject.isEnded()) {
         availableBuzzObject = buzzObject;
         break;
       }
-      scanningBuzzObjectsForWantedSound += 1;
     }
     if (availableBuzzObject === undefined) {
       if (this.totalCreatedSoundObjects > 31) {
@@ -150,8 +147,7 @@ SoundSystem = (function() {
   };
 
   SoundSystem.prototype.soundLoop = function() {
-    var beatString, loopedSoundID, loopingTheSoundIDs, playOrNoPlay, _results;
-    loopingTheSoundIDs = void 0;
+    var beatString, loopedSoundID, loopingTheSoundIDs, playOrNoPlay, _i, _ref, _results;
     loopedSoundID = void 0;
     playOrNoPlay = void 0;
     beatString = void 0;
@@ -160,18 +156,20 @@ SoundSystem = (function() {
     }
     this.beatNumber += 1;
     this.beatNumber = this.beatNumber % 16;
-    loopingTheSoundIDs = 0;
     _results = [];
-    while (loopingTheSoundIDs < this.soundLoops.soundIDs.length) {
+    for (loopingTheSoundIDs = _i = 0, _ref = this.soundLoops.soundIDs.length; 0 <= _ref ? _i < _ref : _i > _ref; loopingTheSoundIDs = 0 <= _ref ? ++_i : --_i) {
       loopedSoundID = this.soundLoops.soundIDs[loopingTheSoundIDs];
       if (this.soundFilesPaths[loopedSoundID]) {
         beatString = this.soundLoops.beatStrings[loopingTheSoundIDs];
         playOrNoPlay = beatString.charAt(this.beatNumber % beatString.length);
         if (playOrNoPlay === "x") {
-          this.playSound(this.soundFilesPaths, loopedSoundID, this.buzzObjectsPool);
+          _results.push(this.playSound(this.soundFilesPaths, loopedSoundID, this.buzzObjectsPool));
+        } else {
+          _results.push(void 0);
         }
+      } else {
+        _results.push(void 0);
       }
-      _results.push(loopingTheSoundIDs += 1);
     }
     return _results;
   };
@@ -218,15 +216,13 @@ SoundSystem = (function() {
   };
 
   SoundSystem.prototype.loadAndTestAllTheSounds = function() {
-    var cycleSoundDefs, preloadSounds, soundDef, soundInfo,
+    var cycleSoundDefs, preloadSounds, soundDef, soundInfo, _i, _ref,
       _this = this;
     soundDef = void 0;
     soundInfo = void 0;
-    cycleSoundDefs = void 0;
     preloadSounds = void 0;
     soundDef = this.samplebank;
-    cycleSoundDefs = 0;
-    while (cycleSoundDefs < soundDef.sounds.length) {
+    for (cycleSoundDefs = _i = 0, _ref = soundDef.sounds.length; 0 <= _ref ? _i < _ref : _i > _ref; cycleSoundDefs = 0 <= _ref ? ++_i : --_i) {
       soundInfo = soundDef.getByNumber(cycleSoundDefs);
       this.buzzObjectsPool[soundInfo.name] = [];
       this.soundFilesPaths[soundInfo.name] = soundInfo.path;
@@ -239,7 +235,6 @@ SoundSystem = (function() {
           preloadSounds += 1;
         }
       }
-      cycleSoundDefs += 1;
     }
     if (!this.Bowser.safari) {
       return this.eventRouter.trigger("all-sounds-loaded-and tested");

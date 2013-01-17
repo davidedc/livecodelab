@@ -21,7 +21,7 @@ EventRouter = (function() {
   };
 
   EventRouter.prototype.trigger = function(name) {
-    var args, callbacks, i, listenerInfo, _results;
+    var args, callbacks, i, listenerInfo, _i, _len, _results;
     args = void 0;
     callbacks = void 0;
     i = void 0;
@@ -30,12 +30,10 @@ EventRouter = (function() {
     if (this.events[name]) {
       args = args.slice(1);
       callbacks = this.events[name];
-      i = 0;
       _results = [];
-      while (i < callbacks.length) {
-        listenerInfo = callbacks[i];
-        listenerInfo.callback.apply(listenerInfo.context, args);
-        _results.push(i += 1);
+      for (_i = 0, _len = callbacks.length; _i < _len; _i++) {
+        listenerInfo = callbacks[_i];
+        _results.push(listenerInfo.callback.apply(listenerInfo.context, args));
       }
       return _results;
     }

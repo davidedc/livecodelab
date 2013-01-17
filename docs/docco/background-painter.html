@@ -143,7 +143,6 @@ but I don't think it matters here</p>             </td>             <td class="c
   simpleGradientUpdateIfChanged: -&gt;
     diagonal = <span class="literal">undefined</span>
     radgrad = <span class="literal">undefined</span>
-    scanningGradStack = <span class="literal">undefined</span>
 
 </pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>    color = <span class="property">@liveCodeLabCoreInstance</span>.colourFunctions.color
 
@@ -152,17 +151,17 @@ but I don't think it matters here</p>             </td>             <td class="c
       diagonal =
         Math.sqrt(Math.pow(<span class="property">@canvasForBackground</span>.width / <span class="number">2</span>, <span class="number">2</span>) +
         Math.pow(<span class="property">@canvasForBackground</span>.height / <span class="number">2</span>, <span class="number">2</span>))
-      scanningGradStack = <span class="number">0</span>
-      <span class="keyword">while</span> scanningGradStack &lt; <span class="property">@gradStack</span>.length
-        <span class="keyword">if</span> <span class="property">@gradStack</span>[scanningGradStack].gradStacka <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>`
+      
+      <span class="keyword">for</span> scanningGradStack <span class="keyword">in</span> <span class="property">@gradStack</span>
+        <span class="keyword">if</span> scanningGradStack.gradStacka <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>`
           radgrad = <span class="property">@backgroundSceneContext</span>.createLinearGradient(
             <span class="property">@canvasForBackground</span>.width / <span class="number">2</span>,
             <span class="number">0</span>,
             <span class="property">@canvasForBackground</span>.width / <span class="number">2</span>,
             <span class="property">@canvasForBackground</span>.height)
-          radgrad.addColorStop <span class="number">0</span>, color.toString(<span class="property">@gradStack</span>[scanningGradStack].gradStacka)
-          radgrad.addColorStop <span class="number">0.5</span>,color.toString(<span class="property">@gradStack</span>[scanningGradStack].gradStackb)
-          radgrad.addColorStop <span class="number">1</span>, color.toString(<span class="property">@gradStack</span>[scanningGradStack].gradStackc)
+          radgrad.addColorStop <span class="number">0</span>, color.toString(scanningGradStack.gradStacka)
+          radgrad.addColorStop <span class="number">0.5</span>,color.toString(scanningGradStack.gradStackb)
+          radgrad.addColorStop <span class="number">1</span>, color.toString(scanningGradStack.gradStackc)
           <span class="property">@backgroundSceneContext</span>.globalAlpha = <span class="number">1.0</span>
           <span class="property">@backgroundSceneContext</span>.fillStyle = radgrad
           <span class="property">@backgroundSceneContext</span>.fillRect \
@@ -170,10 +169,9 @@ but I don't think it matters here</p>             </td>             <td class="c
         <span class="keyword">else</span>
           <span class="property">@backgroundSceneContext</span>.globalAlpha = <span class="number">1.0</span>
           <span class="property">@backgroundSceneContext</span>.fillStyle =
-            color.toString(<span class="property">@gradStack</span>[scanningGradStack].solid)
+            color.toString(scanningGradStack.solid)
           <span class="property">@backgroundSceneContext</span>.fillRect \
             <span class="number">0</span>, <span class="number">0</span>, <span class="property">@canvasForBackground</span>.width, <span class="property">@canvasForBackground</span>.height
-        scanningGradStack++
 
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

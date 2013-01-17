@@ -151,7 +151,7 @@ Numbers outside the range are not clamped to 0 and 1, because out-of-range value
 </pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">max</span></span> = -&gt;
   <span class="keyword">return</span> (<span class="keyword">if</span> arguments[<span class="number">0</span>] &lt; arguments[<span class="number">1</span>] <span class="keyword">then</span> arguments[<span class="number">1</span>] <span class="keyword">else</span> arguments[<span class="number">0</span>])  <span class="keyword">if</span> arguments.length <span class="keyword">is</span> <span class="number">2</span>
   numbers = (<span class="keyword">if</span> arguments.length <span class="keyword">is</span> <span class="number">1</span> <span class="keyword">then</span> arguments[<span class="number">0</span>] <span class="keyword">else</span> arguments) <span class="comment"># if single argument, array is used</span>
-  <span class="keyword">throw</span> <span class="string">"Non-empty array is expected"</span>  <span class="keyword">unless</span> <span class="string">"length"</span> <span class="keyword">of</span> numbers <span class="keyword">and</span> numbers.length &gt; <span class="number">0</span>
+  <span class="keyword">throw</span> <span class="string">"Non-empty array is expected"</span>  <span class="keyword">unless</span> <span class="string">"length"</span> <span class="keyword">of</span> numbers <span class="keyword">and</span> numbers.length
   max = numbers[<span class="number">0</span>]
   count = numbers.length
   i = <span class="number">1</span>
@@ -175,7 +175,7 @@ Numbers outside the range are not clamped to 0 and 1, because out-of-range value
 </pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">min</span></span> = -&gt;
   <span class="keyword">return</span> (<span class="keyword">if</span> arguments[<span class="number">0</span>] &lt; arguments[<span class="number">1</span>] <span class="keyword">then</span> arguments[<span class="number">0</span>] <span class="keyword">else</span> arguments[<span class="number">1</span>])  <span class="keyword">if</span> arguments.length <span class="keyword">is</span> <span class="number">2</span>
   numbers = (<span class="keyword">if</span> arguments.length <span class="keyword">is</span> <span class="number">1</span> <span class="keyword">then</span> arguments[<span class="number">0</span>] <span class="keyword">else</span> arguments) <span class="comment"># if single argument, array is used</span>
-  <span class="keyword">throw</span> <span class="string">"Non-empty array is expected"</span>  <span class="keyword">unless</span> <span class="string">"length"</span> <span class="keyword">of</span> numbers <span class="keyword">and</span> numbers.length &gt; <span class="number">0</span>
+  <span class="keyword">throw</span> <span class="string">"Non-empty array is expected"</span>  <span class="keyword">unless</span> <span class="string">"length"</span> <span class="keyword">of</span> numbers <span class="keyword">and</span> numbers.length
   min = numbers[<span class="number">0</span>]
   count = numbers.length
   i = <span class="number">1</span>
@@ -377,7 +377,7 @@ To convert a floating-point random number to an integer, use the int() <span cla
 <span class="property">@see</span> randomSeed
 <span class="property">@see</span> noise
 </pre></div>             </td>           </tr>                               <tr id="section-56">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-56">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre><span class="function"><span class="title">random</span></span> = -&gt;
-  <span class="keyword">return</span> currentRandom()  <span class="keyword">if</span> arguments.length <span class="keyword">is</span> <span class="number">0</span>
+  <span class="keyword">return</span> currentRandom()  <span class="keyword">if</span> !arguments.length
   <span class="keyword">return</span> currentRandom() * arguments[<span class="number">0</span>]  <span class="keyword">if</span> arguments.length <span class="keyword">is</span> <span class="number">1</span>
   aMin = arguments[<span class="number">0</span>]
   aMax = arguments[<span class="number">1</span>]

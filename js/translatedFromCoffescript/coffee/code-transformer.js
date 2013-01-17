@@ -44,19 +44,17 @@ CodeTransformer = (function() {
   };
 
   CodeTransformer.prototype.addTracingInstructionsToDoOnceBlocks = function(code) {
-    var elaboratedSourceByLine, iteratingOverSource;
+    var elaboratedSourceByLine, iteratingOverSource, _i, _ref;
     elaboratedSourceByLine = void 0;
     iteratingOverSource = void 0;
     if (code.indexOf("doOnce") > -1) {
       elaboratedSourceByLine = code.split("\n");
-      iteratingOverSource = 0;
-      while (iteratingOverSource < elaboratedSourceByLine.length) {
+      for (iteratingOverSource = _i = 0, _ref = elaboratedSourceByLine.length; 0 <= _ref ? _i < _ref : _i > _ref; iteratingOverSource = 0 <= _ref ? ++_i : --_i) {
         elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*(.+)$/g, "$1;addDoOnce(" + iteratingOverSource + "); (1+0).times -> $2");
         if (elaboratedSourceByLine[iteratingOverSource].match(/^(\s*)doOnce[ ]*\->[ ]*$/g)) {
           elaboratedSourceByLine[iteratingOverSource] = elaboratedSourceByLine[iteratingOverSource].replace(/^(\s*)doOnce[ ]*\->[ ]*$/g, "$1(1+0).times ->");
           elaboratedSourceByLine[iteratingOverSource + 1] = elaboratedSourceByLine[iteratingOverSource + 1].replace(/^(\s*)(.+)$/g, "$1;addDoOnce(" + iteratingOverSource + "); $2");
         }
-        iteratingOverSource += 1;
       }
       code = elaboratedSourceByLine.join("\n");
     }

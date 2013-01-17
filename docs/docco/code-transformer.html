@@ -125,8 +125,7 @@ Example - let's say one pastes in this code:
       
 </pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>alert("a doOnce is potentially executable");</p>             </td>             <td class="code">               <div class="highlight"><pre>      elaboratedSourceByLine = code.split(<span class="string">"\n"</span>)
       
-</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>alert('splitting: ' + elaboratedSourceByLine.length );</p>             </td>             <td class="code">               <div class="highlight"><pre>      iteratingOverSource = <span class="number">0</span>
-      <span class="keyword">while</span> iteratingOverSource &lt; elaboratedSourceByLine.length
+</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>alert('splitting: ' + elaboratedSourceByLine.length );</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">for</span> iteratingOverSource <span class="keyword">in</span> [<span class="number">0.</span>..elaboratedSourceByLine.length]
         
 </pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>alert('iterating: ' + iteratingOverSource );</p>             </td>             <td class="code">               <div class="highlight"><pre>        
 </pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>add the line number tracing instruction to inline case</p>             </td>             <td class="code">               <div class="highlight"><pre>        elaboratedSourceByLine[iteratingOverSource] =
@@ -142,7 +141,6 @@ Example - let's say one pastes in this code:
           elaboratedSourceByLine[iteratingOverSource + <span class="number">1</span>] =
             elaboratedSourceByLine[iteratingOverSource + <span class="number">1</span>].replace(
               <span class="regexp">/^(\s*)(.+)$/g</span>, <span class="string">"$1;addDoOnce("</span> + iteratingOverSource + <span class="string">"); $2"</span>)
-        iteratingOverSource += <span class="number">1</span>
       code = elaboratedSourceByLine.join(<span class="string">"\n"</span>)
     
 </pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>alert('soon after replacing doOnces'+code);</p>             </td>             <td class="code">               <div class="highlight"><pre>    code

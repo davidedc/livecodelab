@@ -13,7 +13,7 @@ Autocoder = (function() {
   Autocoder.prototype.whichOneToChange = 0;
 
   function Autocoder(eventRouter, editor, colourNames) {
-    var scanningAllColors,
+    var scanningAllColors, _i, _len, _ref,
       _this = this;
     this.eventRouter = eventRouter;
     this.editor = editor;
@@ -60,13 +60,13 @@ Autocoder = (function() {
       _this.Tokens.push(new TOKEN_TRANSLATION(matchedPartOfInput[0]));
       return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
     });
-    scanningAllColors = 0;
-    while (scanningAllColors < this.colourNames.length) {
-      this.LexersOnlyState.addRule(new RegExp(this.colourNames[scanningAllColors]), function(matchedPartOfInput, remainingInput, currentState) {
+    _ref = this.colourNames;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      scanningAllColors = _ref[_i];
+      this.LexersOnlyState.addRule(new RegExp(scanningAllColors), function(matchedPartOfInput, remainingInput, currentState) {
         _this.Tokens.push(new TOKEN_COLOUR(matchedPartOfInput[0], _this.colourNames));
         return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
       });
-      scanningAllColors++;
     }
     this.LexersOnlyState.addRule(/background/, function(matchedPartOfInput, remainingInput, currentState) {
       _this.Tokens.push(new TOKEN_COLOUROP(matchedPartOfInput[0]));
@@ -215,12 +215,11 @@ Autocoder = (function() {
   }
 
   Autocoder.prototype.emit = function(stream) {
-    var ret, scanningTheStream;
+    var ret, scanningTheStream, _i, _len;
     ret = "";
-    scanningTheStream = 0;
-    while (scanningTheStream < stream.length) {
-      ret = ret + stream[scanningTheStream].string;
-      scanningTheStream++;
+    for (_i = 0, _len = stream.length; _i < _len; _i++) {
+      scanningTheStream = stream[_i];
+      ret = ret + scanningTheStream.string;
     }
     return ret;
   };
@@ -234,21 +233,20 @@ Autocoder = (function() {
   };
 
   Autocoder.prototype.pickMutatableTokenAndMutateIt = function(stream) {
-    var idx, mutatableTokens, scanningTheStream;
+    var idx, mutatableTokens, scanningTheStream, _i, _len;
     mutatableTokens = [];
     idx = void 0;
-    scanningTheStream = 0;
-    while (scanningTheStream < stream.length) {
-      if (this.canMutate(stream[scanningTheStream])) {
+    for (_i = 0, _len = stream.length; _i < _len; _i++) {
+      scanningTheStream = stream[_i];
+      if (this.canMutate(scanningTheStream)) {
         mutatableTokens.push(scanningTheStream);
       }
-      scanningTheStream++;
     }
     if (mutatableTokens.length === 0) {
       return;
     }
     idx = Math.floor(Math.random() * mutatableTokens.length);
-    return stream[mutatableTokens[idx]].mutate();
+    return mutatableTokens[idx].mutate();
   };
 
   Autocoder.prototype.replaceTimeWithAConstant = function() {
