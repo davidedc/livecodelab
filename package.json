@@ -9,8 +9,6 @@
     "grunt-recess": "~0.1.3",
     "grunt-targethtml": "~0.1.3",
     "grunt-coffee": "0.0.6",
-    "grunt-exec": "~0.3.0",
-    "coffeedoc": "~0.2.6",
-    "codo": "~1.5.4"
+    "exec": "0.0.4"
   }
 }
