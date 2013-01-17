@@ -52,7 +52,7 @@ module.exports = function (grunt) {
                 grunt.log.ok(cmds.join(' '));
                 grunt.log.ok('document created at ' + target);
             } else {
-                grunt.fail.warn('If you want to using coffeedoc task. Please global install (option with -g) coffeedoc pakage from npm.');
+                grunt.fail.warn('If you want to using codo task. Please global install (option with -g) codo pakage from npm.');
             }
             done();
         });
