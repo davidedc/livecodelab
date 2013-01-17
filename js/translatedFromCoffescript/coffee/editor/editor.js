@@ -65,7 +65,7 @@ Editor = (function() {
   };
 
   Editor.prototype.lineCount = function() {
-    return this.codemirrorInstance.lineCount(a);
+    return this.codemirrorInstance.lineCount();
   };
 
   Editor.prototype.suspendDimmingAndCheckIfLink = function(editor) {
