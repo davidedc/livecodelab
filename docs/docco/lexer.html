@@ -45,7 +45,6 @@ by step in a manner that does not rely on the runtime stack. There is no recursi
 
   addRule: (regex, action) -&gt;
       <span class="property">@rules</span>.push <span class="keyword">new</span> LexerRule(regex, action)
-      <span class="literal">null</span>
   
   lex: (input) -&gt;
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>findAndRunActionPairedToLongestAppliableRegex returns an action triggered by the
@@ -89,7 +88,6 @@ now return the result of the action, which is the next action</p>             </
   constructor: (<span class="property">@regex</span>, <span class="property">@action</span>) -&gt;  
 </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Each rule is re-written to match prefixes of the input string.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@regex</span> = <span class="keyword">new</span> RegExp(<span class="string">"^("</span> + <span class="property">@regex</span>.source + <span class="string">")"</span>)
     <span class="property">@regex</span>.compile <span class="property">@regex</span>  <span class="keyword">if</span> <span class="property">@regex</span>.compile
-    <span class="literal">null</span>
   matches: (s) -&gt;
     m = s.match(<span class="property">@regex</span>)
     m.shift()  <span class="keyword">if</span> m

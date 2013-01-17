@@ -254,7 +254,7 @@ Autocoder = (function() {
     rePattern = /(time)/g;
     allMatches = editorContent.match(rePattern);
     countWhichOneToSwap = 0;
-    if (allMatches === null) {
+    if (!allMatches) {
       this.numberOfResults = 0;
     } else {
       this.numberOfResults = allMatches.length;
@@ -573,8 +573,7 @@ TOKEN_COLOUR = (function() {
     while (this.string === this.colourNames[idx]) {
       idx = Math.floor(Math.random() * this.colourNames.length);
     }
-    this.string = this.colourNames[idx];
-    return null;
+    return this.string = this.colourNames[idx];
   };
 
   return TOKEN_COLOUR;

@@ -89,7 +89,7 @@ AnimationLoop = (function() {
     this.liveCodeLabCoreInstance.soundSystem.changeUpdatesPerMinuteIfNeeded();
     frame++;
     this.liveCodeLabCoreInstance.renderer.render(this.liveCodeLabCoreInstance.graphicsCommands);
-    if (this.stats !== null) {
+    if (this.stats) {
       return this.stats.update();
     }
   };

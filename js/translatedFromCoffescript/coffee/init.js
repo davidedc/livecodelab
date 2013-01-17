@@ -35,12 +35,6 @@ startEnvironment = function(paramsObject) {
   }
   eventRouter = new EventRouter();
   stats = new Stats;
-  if (paramsObject.forceCanvasRenderer === undefined) {
-    paramsObject.forceCanvasRenderer = false;
-  }
-  if (paramsObject.forceCanvasRenderer === null) {
-    paramsObject.forceCanvasRenderer = false;
-  }
   colourNames = (new ColourLiterals()).colourNames;
   liveCodeLabCore = new LiveCodeLabCore({
     blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas,

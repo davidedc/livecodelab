@@ -23,10 +23,7 @@
     <span class="property">@lightsAreOn</span> = <span class="literal">false</span>
   
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>ambientLight needs to be global</p>             </td>             <td class="code">               <div class="highlight"><pre>  ambientLight: (r, g, b, a) -&gt;
-    colorToBeUsed = <span class="literal">undefined</span>
     newLightCreated = <span class="literal">false</span>
-    ambientLightsPool = <span class="literal">undefined</span>
-    pooledAmbientLight = <span class="literal">undefined</span>
     <span class="keyword">if</span> r <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`
       
 </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>empty arguments gives some sort

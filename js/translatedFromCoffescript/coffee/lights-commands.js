@@ -35,10 +35,7 @@ LightsCommands = (function() {
 
   LightsCommands.prototype.ambientLight = function(r, g, b, a) {
     var ambientLightsPool, colorToBeUsed, newLightCreated, pooledAmbientLight;
-    colorToBeUsed = void 0;
     newLightCreated = false;
-    ambientLightsPool = void 0;
-    pooledAmbientLight = void 0;
     if (r === undefined) {
       colorToBeUsed = this.liveCodeLabCoreInstance.colourFunctions.color(255);
     } else {

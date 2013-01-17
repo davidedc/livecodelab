@@ -388,7 +388,7 @@ Then picks one random and invokes its mutate().</p>             </td>           
     rePattern = <span class="regexp">/(time)/g</span>
     allMatches = editorContent.match(rePattern)
     countWhichOneToSwap = <span class="number">0</span>
-    <span class="keyword">if</span> allMatches <span class="keyword">is</span> <span class="literal">null</span>
+    <span class="keyword">if</span> !allMatches
       <span class="property">@numberOfResults</span> = <span class="number">0</span>
     <span class="keyword">else</span>
       <span class="property">@numberOfResults</span> = allMatches.length
@@ -572,7 +572,6 @@ to another, creating the new mutated program.</p></li>
     <span class="keyword">while</span> <span class="property">@string</span> <span class="keyword">is</span> <span class="property">@colourNames</span>[idx]
       idx = Math.floor(Math.random() * <span class="property">@colourNames</span>.length)
     <span class="property">@string</span> = <span class="property">@colourNames</span>[idx]
-    <span class="literal">null</span>
 
 <span class="class"><span class="keyword">class</span> <span class="title">TOKEN_COLOUROP</span></span>
   constructor: (<span class="property">@string</span>) -&gt;

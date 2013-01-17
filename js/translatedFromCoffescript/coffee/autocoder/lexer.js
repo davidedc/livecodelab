@@ -7,8 +7,7 @@ LexerState = (function() {
   LexerState.prototype.rules = [];
 
   LexerState.prototype.addRule = function(regex, action) {
-    this.rules.push(new LexerRule(regex, action));
-    return null;
+    return this.rules.push(new LexerRule(regex, action));
   };
 
   LexerState.prototype.lex = function(input) {
@@ -61,7 +60,6 @@ LexerRule = (function() {
     if (this.regex.compile) {
       this.regex.compile(this.regex);
     }
-    null;
   }
 
   LexerRule.prototype.matches = function(s) {
