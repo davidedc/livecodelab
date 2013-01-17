@@ -1,3 +1,5 @@
 node_modules/
 dist/
 js_compiled/*.report.txt
+
+npm-debug.log
