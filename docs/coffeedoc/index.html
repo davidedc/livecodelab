@@ -179,7 +179,60 @@ and then re-builds a string pritout from the tokens so to obtain the mutated pro
           <a href="coffee/autocoder/lexer.coffee.html"><h1>lexer.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>Lexer is a variation/port of:
+
+</p>
+<p>McLexer: A lexical analysis system/library for JavaScript.
+Author:  Matthew Might
+Site:    http://matt.might.net/
+         http://www.ucombinator.com/
+
+</p>
+<p>McLexer associates rules with analysis states.
+
+</p>
+<p>Each rule contains a regular expression to match, 
+and action to execute upon finding a match.
+
+</p>
+<p>When a state matches its rules against an input text, 
+it chooses the rule with the longest match against the prefix 
+of the input text.
+
+</p>
+<p>A lexical state is a collection of rules.
+
+</p>
+<p>It has three primary methods:
+
+</p>
+<ul>
+<li><p>lex(input) runs a continuation-based lexer on the input;
+lex invokes next once, and expects a continuation back;
+it then invokes the continuation and expects each continuation
+it invokes to return another continuation.  Once a continuation
+returns null; parsing is complete.     </p>
+</li>
+<li><p>findAndRunActionPairedToLongestAppliableRegex(input) runs a match against an input,
+fires the action.
+An action is a procedure that accepts the match data (an array),
+the remainder of the input, and the current state and returns a function that
+applies the rules again and finds and runs the next action. An action does not run
+the next one (that would be recursion). Rather, it returns a function to find and
+run the next one</p>
+</li>
+</ul>
+<p>Why this &quot;step by step&quot; approach instead of a normal recursion? The advantage is
+that you can stop the parsing and resume it any time you want. Suppose that
+you have a huge program to parse. With recursion, once you start you can&#39;t
+stop until the end (at least if you are using normal recursion as provided by
+the language runtime. If you implement your own recursion using your own stack
+then you could indeed pause/resume things). In a single-threaded language like
+Javascript this results in everything else &quot;blocking&quot;. A &quot;continuations&quot; approach
+lets you stop and resume the parsing more easily, since you lex the program step
+by step in a manner that does not rely on the runtime stack. There is no recursion.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -350,7 +403,12 @@ values (it does it for everything it thinks it&#39;s a constant really).
           <a href="coffee/colour-literals.coffee.html"><h1>colour-literals.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>Defines several color constant literals, e.g. &quot;red&quot; being 0xffff0000,
+modified from processing.js with added the missing ones from the CSS standard,
+which includes the spelling &quot;grey&quot; on top of &quot;gray&quot;
+and also &quot;angleColor&quot;, used to dress objects with the normal material.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -368,7 +426,10 @@ values (it does it for everything it thinks it&#39;s a constant really).
           <a href="coffee/editor/editor.coffee.html"><h1>editor.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>The Editor is just a wrapper for the CodeMirror editor. Contains a couple of handful
+functions and hooks-up the contents with the other parts of LiveCodeLab.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -386,7 +447,14 @@ values (it does it for everything it thinks it&#39;s a constant really).
           <a href="coffee/event-router.coffee.html"><h1>event-router.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>EventRouter bridges most events in LiveCodeLab. Error message pops up? Event router
+steps in. Big cursor needs to shrink? It&#39;s the event router who stepped in. You get the
+picture. Any part of LiveCodeLab can just register callbacks and trigger events, using
+some descriptive strings as keys. Handy because it&#39;s a hub where one could attach
+debugging and listing of all registered callbacks. Probably not a good idea to attach
+rapid-fire events due to overheads.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -433,7 +501,105 @@ This needs to stay globally defined
           <a href="coffee/graphics-commands.coffee.html"><h1>graphics-commands.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>Please reference the colour-functions.js file for all colour-related
+functions and lights-functions.js for lights, which use a similar
+structure for caching and counting of light instances.
+
+</p>
+<h1>Fundamentals</h1>
+<p>There are a couple of fundamentals of LiveCodeLab and a couple of
+complications of Three.js that shape the way
+graphic primitives work in this file.
+
+</p>
+<h2>LiveCodeLab uses immediate mode graphics</h2>
+<p>First off, like Processing, LiveCodeLab shies away from &quot;retained&quot; graphics
+and instead uses &quot;immediate mode&quot; graphics.
+For context, &quot;immediate mode&quot; graphics means that when the user uses a graphic
+primitive, he is
+NOT given a handle that he can use to modify properties of that element at a
+later stage, contrarily to flash, DOM, CSS, openGL and Three.JS
+(to different degrees).
+Retained graphic modes keep structures in memory that make easy for example
+to do event handling (which object did I click?), hierarchy management
+(parent/child relationships, container/content, etc), property tweaking
+(change property X of object Y), and sometimes animation ( CoreAnimation from
+Apple for example), collision/overlap detection. Note that openGL is retained
+in that there are handles to geometry and textures, but little else is given
+(no events, no input, no physics/overlap/collision/animation).
+Also, retained graphics mode usually is smart about updating
+only minimal parts of the screen that need updating rather than redrawing the
+whole screen (again, openGL doesn&#39;t do that apart from basic frustum culling, but
+for example there is nothing to detect occlusions and avoid painting occluded
+objects).
+There are a few drawbacks in retained modes: a) programs that manage
+handles are more lengthy than programs that don&#39;t
+b) they are often not needed for example in
+2d sprites-based videogames c) most importantly,
+they require deeper understanding of the underlying
+model (e.g. which property can I change? What are those called? How do I change
+parent/child relationship? How do events bubble up and where should I catch them?).
+Processing and LiveCodeLab go for immediate mode. Once the primitive is invoked, it
+becomes pixels and there is no built-in way to do input/event/hierarchies...
+Rather, there are a few properties that are set as a global state and apply to all
+objects. Examples are &quot;fill&quot; and &quot;stroke&quot;.
+
+</p>
+<h2>Relationship between objects, meshes, geometry, materials...</h2>
+<p>A Three.js object (or to be more precise, Object3D) can be a line or a mesh. A line
+is a line, a mesh can be anything else depending on what the geometry of the mesh
+is. There are more possible types such as particles, etc. but they are not currently
+used in LiveCodeLab. An object needs one more thing: a material.
+
+</p>
+<h2>Caching of objects</h2>
+<p>Once created, objects are kept cached together with all possible materials that can be
+associated with it. Each object has to have its own set of materials because
+one can decide to draw one object in solid fill, one in normal color, one with
+an ambient light (i.e. lambert material), etc.
+
+</p>
+<h2>Objects are kept in the scene</h2>
+<p>Once an object is added to the scene, it&#39;s never removed. Rather, it&#39;s hidden if it&#39;s
+not used, but it&#39;s never removed. This is because adding/removing objects from the
+scene is rather expensive. Note that Mr Doob mentioned via email that subsequent
+versions of three.js have improved performance a lot, so it&#39;s worth trying another
+approach.
+
+</p>
+<h2>Strokes are managed via separate objects for stroke and fill</h2>
+<p>There is a particular flag in Three.js materials for drawing wireframes. But materials
+cannot be combined, i.e. only one is associated at any time with a geometry. So one
+can either draw a wireframe or a fill. In previous versions of Three.js more than
+one material could be associated, but that has been deprecated, see
+https://github.com/mrdoob/three.js/issues/751 and instead a
+createMultiMaterialObject utility was put in place, which basically creates multiple
+objects one for each material, see
+https://github.com/mrdoob/three.js/blob/dev/src/extras/SceneUtils.js#L29
+So the solution here is to create two disting objects.
+One for the fills and one, slightly &quot;larger&quot;, for the strokes. In that way, the
+strokes are visible &quot;in front&quot; of the fills, and the fills cover the strokes &quot;at
+the back&quot;
+
+</p>
+<h2>The order of materials matters</h2>
+<p>When an object is created, it must be first rendered with the most complex material,
+because internally in Three.js/WebGL memory is allocated only once. So a special
+mechanism is put in place by which new objects are drawn with the normalMaterial
+with scale 0, so they are rendered but they are invisible. In the next frame (i.e.
+after the first render) the correct material is used.
+
+</p>
+<h2>&quot;Spinning&quot;</h2>
+<p>&quot;Spinning&quot; applies to all objects added to an empty frame: it makes all objects spin
+for a few frames. This has been implemented for two reasons a) cosmetic b) the user
+is likely to first use &quot;box&quot;, and without spinning that would look like a boring
+square that appears without animation. Spinning gives many more cues: the environment
+is 3d, the lighting is special by default and all faces have primary colors, things
+animate. Without spinning, all those cues need to be further explained and demonstra
+ted.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -451,7 +617,10 @@ This needs to stay globally defined
           <a href="coffee/init.coffee.html"><h1>init.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>Init.js takes care of the setup of the whole environment up to
+cruise speed
+</p>
+
           
           
           <h3>Functions</h3>
@@ -471,7 +640,9 @@ This needs to stay globally defined
           <a href="coffee/lights-commands.coffee.html"><h1>lights-commands.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>Implementation of all lights-related commands.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -489,7 +660,63 @@ This needs to stay globally defined
           <a href="coffee/livecodelab-core.coffee.html"><h1>livecodelab-core.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>A LiveCodeLabCore instance packs together the following parts:
+
+</p>
+<ul>
+<li>timeKeeper</li>
+<li>three</li>
+<li>threeJsSystem</li>
+<li>matrixCommands</li>
+<li>blendControls</li>
+<li>soundSystem</li>
+<li>colourFunctions</li>
+<li>backgroundPainter</li>
+<li>graphicsCommands</li>
+<li>lightSystem </li>
+<li>drawFunctionRunner</li>
+<li>codeTransformer</li>
+<li>renderer</li>
+<li><p>animationLoop</p>
+<p>LiveCodeLab is built one part at a time, and the arguments in the constructor
+tell how they depend on each other at construction time and how they
+interact at runtime.</p>
+</li>
+<li><p><em>A constructor with no arguments</em> (or where the arguments are just passed
+by the caller of the very createLiveCodeLabCore function we are in),
+such as createColourFunctions, is a part
+that does not need any other part at construction time and it doesn&#39;t interact
+with any of the other parts at run time.</p>
+</li>
+<li><em>A constructor with arguments other than &quot;liveCodeLabCoreInstance&quot;</em>
+(such as threeJsSystem) only needs the parts passed at construction time for its
+own construction, and it can only interact with such parts at runtime.</li>
+<li><p><em>A constructor which contains the &quot;liveCodeLabCoreInstance&quot; argument</em>, such as
+codeTransformer, might or might not need other parts for its own construction
+(if they are passed as arguments in addition to the &quot;liveCodeLabCoreInstance&quot; argument)
+but it does interact at runtime with other parts not passed in the constructor
+argument.</p>
+<p>So, for determining the order of the constructors, one can just look at the
+dependencies dictated by the arguments other than the &quot;liveCodeLabCoreInstance&quot;
+argument. The &quot;liveCodeLabCoreInstance&quot; parameter
+doesn&#39;t create dependencies at creation time,
+it&#39;s just used by the parts to reference other parts that they need to interact to
+at runtime.</p>
+<p>It might well be that at runtime part A interacts with part B and viceversa.
+This is why runtime interactions are not restricted to parts passed
+as arguments at construction
+time, because one would need to pass constructed part A to the constructor of part B
+and viceversa, which is obviously impossible. This is why the runtime interactions
+happen through the mother of all parts, i.e. &quot;liveCodeLabCoreInstance&quot; itself.</p>
+<p>To determine which parts any single part interacts with at runtime, one
+has to check all the parameters passed to the constructor. The passed parts are likely
+to mean that there is an interaction at runtime. If the &quot;mother&quot;
+&quot;liveCodeLabCoreInstance&quot; is passed to the constructor, then one case to look for
+all &quot;liveCodeLabCoreInstance&quot; occurrences and see which of its children are
+accessed.</p>
+</li>
+</ul>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -571,7 +798,9 @@ This needs to stay globally defined
           <a href="coffee/matrix-commands.coffee.html"><h1>matrix-commands.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>Takes care of all matrix-related commands.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -589,7 +818,11 @@ This needs to stay globally defined
           <a href="coffee/parser.coffee.html"><h1>parser.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>This could be an alternative to the lexer and the many regular expressions used
+in the Autocoder and in the CodeTransformer. Not used at the moment. In development
+stage.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -609,7 +842,11 @@ This needs to stay globally defined
           <a href="coffee/program-loader.coffee.html"><h1>program-loader.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>ProgramLoader takes care of managing the URL and editor content when the user navigates
+through demos and examples - either by selecting menu entries, or by clicking back/forward
+arrow, or by landing on a URL with a hashtag.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -627,7 +864,12 @@ This needs to stay globally defined
           <a href="coffee/program-runner.coffee.html"><h1>program-runner.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>ProgramRunner manages the running function as it runs. E.g. this is not a
+translation step, this is managing things such as the actually running of the
+latest &quot;stable&quot; function and keeping track of when a function appears to be stable,
+and reinstating the last stable function if the current one throws a runtime error.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -645,7 +887,10 @@ This needs to stay globally defined
           <a href="coffee/renderer.coffee.html"><h1>renderer.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>The rendering requires some special steps that allow the display list
+to be reused as much as possible between frames.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -687,7 +932,11 @@ needs to be loaded by the browser.
           <a href="coffee/sound/sound-system.coffee.html"><h1>sound-system.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>SoundSystem tries to abstract away different ways of playing sound, according to
+weird performance characteristics of each browser (ad probably, OS). Cross-browser
+sound playing is really in a sorry state, we are trying to make do here.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -705,7 +954,10 @@ needs to be loaded by the browser.
           <a href="coffee/text-dimming.coffee.html"><h1>text-dimming.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>Simple helper to handle the code dimming. When to trigger dimming and un-dimming and
+keeping track of status of the dedicated &quot;automatic dimming&quot; toggle switch.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -723,7 +975,10 @@ needs to be loaded by the browser.
           <a href="coffee/threejs-system.coffee.html"><h1>threejs-system.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>Sets up canvas or webgl Threejs renderer based on browser capabilities and flags passed
+in the constructor. Sets up all the post-filtering steps.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -741,7 +996,11 @@ needs to be loaded by the browser.
           <a href="coffee/time-keeper.coffee.html"><h1>time-keeper.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>Keeps the time. A small thing to do, but it allows tricks such as setting a fake time
+for testing purposes, and avoiding repeated and unnecessary invokation of the Date and
+getTime browser functions.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -759,7 +1018,10 @@ needs to be loaded by the browser.
           <a href="coffee/ui.coffee.html"><h1>ui.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>Ui handles all things UI such as the menus, the notification popups, the editor panel,
+the big flashing cursor, the stats widget...
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -777,7 +1039,9 @@ needs to be loaded by the browser.
           <a href="coffee/url-router.coffee.html"><h1>url-router.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>Helper class to manage URL hash location.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
