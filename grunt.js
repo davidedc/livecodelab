@@ -6,16 +6,47 @@ module.exports = function (grunt) {
 
     var exec = require('exec');
 
+
+    /**
+     * Task for crojsdoc. This one in theory generates nice documentation but
+     * a) can't get it to output the docs where it should
+     * b) only seems to generate docs for two files.
+     */
+    grunt.registerMultiTask('crojsdoc', 'Generate source documents from CoffeeScript files.', function () {
+        var target = this.data.target,
+            options = this.data.options || {},
+            cmds = ['buildSystem/crojsdocHelper.sh'],
+            done = this.async();
+
+        cmds.push(target);
+
+        exec(cmds, function (err, out, code) {
+            if (code === 0) {
+                grunt.log.ok(cmds.join(' '));
+                grunt.log.ok('document created at ' + target);
+            } else {
+                grunt.fail.warn('If you want to using codo task. Please global install (option with -g) codo pakage from npm.');
+            }
+            done();
+        });
+    });
+
+
     /**
      * Task for coffeedoc from https://gist.github.com/3596427
      */
     grunt.registerMultiTask('coffeedoc', 'Generate source documents from CoffeeScript files.', function () {
         var target = this.data.target,
             options = this.data.options || {},
-            cmds = ['buildSystem/coffeedocHelper.sh'],
+            cmds = ['coffeedoc'],
             done = this.async();
 
+        Object.keys(options).forEach(function (opt) {
+            cmds.push('--' + opt + '=' + options[opt]);
+        });
         
+        cmds.push(target);
+
         exec(cmds, function (err, out, code) {
             if (code === 0) {
                 grunt.log.ok(cmds.join(' '));
@@ -56,6 +87,40 @@ module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
+				jsduck: {
+						dist: {
+								// source paths with your code
+								src: ['js/*.js', 'js/**/*.js'],
+				
+								// docs output dir
+								dest: 'docs/jsduck',
+				
+								// extra options
+								options: {
+										'builtin-classes': true,
+										'warnings': ['-no_doc', '-dup_member', '-link_ambiguous'],
+										'external': ['XMLHttpRequest']
+								}
+						}
+				},
+				jsdoc : {
+						dist : {
+								src: ['js/*.js', 'js/**/*.js'], 
+								dest: 'docs/jsdoc'
+						}
+				},
+        // currently not used, this is rather done
+        // via invokation of a helper sh script
+        // because I couldn't get crojsdoc to output
+        // in a specific directory.
+        crojsdoc: {
+            dist: {
+                target: 'coffee',
+                options: {
+                    o: './docs/crojsdoc/'
+                }
+            }
+        },
         coffeedoc: {
             dist: {
                 target: 'coffee',
@@ -236,6 +301,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-targethtml');
     grunt.loadNpmTasks('grunt-coffee');
+    // couldn't make these two to work
+    //grunt.loadNpmTasks('grunt-contrib-jsdoc');
+    //grunt.loadNpmTasks('grunt-jsduck');
 
     process.stdout.write("\n\n\n\n");
     process.stdout.write("****************************************************************\n");
