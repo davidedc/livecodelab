@@ -3,3 +3,9 @@ dist/
 js_compiled/*.report.txt
 
 npm-debug.log
+
+node_modules alias
+
+npm-debug.log
+
+npm-debug.log
