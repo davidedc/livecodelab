@@ -1,4 +1,8 @@
-#jslint browser: true 
+# jslint browser: true 
+
+###
+Implementation of all lights-related commands.
+###
 
 class LightsCommands
   "use strict"

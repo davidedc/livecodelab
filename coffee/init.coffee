@@ -1,9 +1,11 @@
-#jslint browser: true, maxerr: 100 
+# jslint browser: true, maxerr: 100 
+# global LiveCodeLabCore, $, autocoder, initThreeJs, buzz 
 
-#global LiveCodeLabCore, $, autocoder, initThreeJs, buzz 
+###
+Init.js takes care of the setup of the whole environment up to
+cruise speed
+###
 
-# Init.js takes care of the setup of the whole environment up to
-# cruise speed
 $(document).ready ->
   
   # The div containing this canvas is supposed to be 100% width and height,

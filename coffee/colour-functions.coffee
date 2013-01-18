@@ -1,6 +1,6 @@
-#jslint browser: true, bitwise: true 
+# jslint browser: true, bitwise: true 
 
-#global max, min 
+# global max, min 
 
 # Code adapted from processing.js
 

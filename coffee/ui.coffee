@@ -1,5 +1,10 @@
-#jslint browser: true 
-#global $ 
+# jslint browser: true 
+# global $ 
+
+###
+Ui handles all things UI such as the menus, the notification popups, the editor panel,
+the big flashing cursor, the stats widget...
+###
 
 class Ui
   "use strict"

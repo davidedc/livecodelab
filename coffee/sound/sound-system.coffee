@@ -1,6 +1,12 @@
-#jslint browser: true 
+# jslint browser: true 
+# global $ 
 
-#global $ 
+###
+SoundSystem tries to abstract away different ways of playing sound, according to
+weird performance characteristics of each browser (ad probably, OS). Cross-browser
+sound playing is really in a sorry state, we are trying to make do here.
+###
+
 class SoundSystem
   "use strict"
 

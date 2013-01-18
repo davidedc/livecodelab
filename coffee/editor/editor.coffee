@@ -1,4 +1,10 @@
-#jslint browser: true, devel: true 
+# jslint browser: true, devel: true 
+
+###
+The Editor is just a wrapper for the CodeMirror editor. Contains a couple of handful
+functions and hooks-up the contents with the other parts of LiveCodeLab.
+###
+
 class Editor
   "use strict"
 

@@ -1,7 +1,8 @@
 #jslint browser: true, regexp: true 
 
-# This is the URL hash location router.
-# It is controlled by the events framework.
+###
+Helper class to manage URL hash location.
+###
 
 class UrlRouter
   "use strict"

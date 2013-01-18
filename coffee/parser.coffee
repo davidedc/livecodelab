@@ -1,4 +1,8 @@
-# this file isn't currently used
+###
+This could be an alternative to the lexer and the many regular expressions used
+in the Autocoder and in the CodeTransformer. Not used at the moment. In development
+stage.
+###
 
 class Parser
   "use strict"
