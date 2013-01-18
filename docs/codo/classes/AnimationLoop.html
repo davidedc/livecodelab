@@ -114,83 +114,10 @@
           <td>coffee&#47;animation-loop.coffee</td>
         </tr>
       </table>
-      <h2>Instance Method Summary</h2>
-      <ul class='summary'>
-  <li>
-    <span class='signature'>
-      <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(eventRouter, stats, liveCodeLabCoreInstance, forceUseOfTimeoutForScheduling = false)
-      </a>
-    </span>
-    <span class='constructor note title'>Constructor</span>
-    <span class='desc'>
-      
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#scheduleNextFrame-instance'>
-        - (void) <strong>scheduleNextFrame</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      There are two different ways to schedule the next frame: 1) using a native window.requestAnimationFrame implementation (supported by some browsers) 2) using timeouts Notes and constraints: * window.requestAnimationFrame cannot be used if user wants a specific fps (i.e.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#animate-instance'>
-        - (void) <strong>animate</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      animation loop
-    </span>
-  </li>
-</ul>
-      <h2>Constructor Details</h2>
-      <div class='methods'>
-  <div class='method_details'>
-    <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(eventRouter, stats, liveCodeLabCoreInstance, forceUseOfTimeoutForScheduling = false)
-    </p>
-    <div class='tags'>
-</div>
-  </div>
-</div>
-      <h2>Instance Method Details</h2>
-      <div class='methods'>
-  <div class='method_details'>
-    <p class='signature' id='scheduleNextFrame-instance'>
-      - (void) <strong>scheduleNextFrame</strong>()
-    </p>
-    <div class='docstring'>
-  <p>There are two different ways to schedule the next frame:
-1) using a native window.requestAnimationFrame implementation (supported by some
-   browsers)
-2) using timeouts</p><p>Notes and constraints:
-<em> window.requestAnimationFrame cannot be used if user wants a specific fps (i.e. you can&#39;t pick a specific framerate)
-</em> for browser that don&#39;t have a window.requestAnimationFrame, a shim at the end of the page replaces that with an implementation based on timeouts
-* the user can decide to force the use of timeouts (for testing purposes)</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='animate-instance'>
-      - (void) <strong>animate</strong>()
-    </p>
-    <div class='docstring'>
-  <p>animation loop</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-</div>
     </div>
     <div id='footer'>
   Generated on
-  Thu Jan 17 2013 22:14:04 GMT+0000 (GMT)
+  Fri Jan 18 2013 00:44:41 GMT+0000 (GMT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.4
