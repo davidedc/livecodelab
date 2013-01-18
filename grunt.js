@@ -289,6 +289,7 @@ module.exports = function (grunt) {
         grunt.task.run('doccoh:Coffee');
         grunt.task.run('coffeedoc');
         grunt.task.run('codo');
+        grunt.task.run('crojsdoc');
     });
 
     // Compilation task
