@@ -32,15 +32,14 @@ automatic coding in the browser is still quite a virgin territory. It's been don
 
 ### Roadmap ###
 
-We need your input on the following goals:
+Roadmap? Where we are going there are no roadmaps.
+If you insist, here is what's currently in our mind:
 
-* Modularize the code (maybe using requireJS to load everything?)
+* Make the code nicer (always the case, isn't it?)
 
-* Proper handling of localizations
+* Any ideas how to support localised versions of the language?
 
-* More localizations: spanish, chinese, japanese, arab, german, etc.
-
-* A way to share the user's LiveCodeLab code with others – but respectfully of people who want to keep the use to a local self-contained instance (passing code in URI?)
+* Ways to share programs with others – but ideally being able to keep LiveCodeLab working without a server.
 
 For a more fine-grained look at ideas and bugs, take a look at <a href="https://github.com/davidedc/livecodelab/issues">the tracker</a>.
 
@@ -54,6 +53,13 @@ For a more fine-grained look at ideas and bugs, take a look at <a href="https://
  * Code Mirror by Marijn Haverbeke.
  * Scrollwheel handler by Brandon Aaron.
  * McLexer by Matthew Might.
+
+#### Main contributors ###
+
+ * Davide Della Casa. Made the first version.
+ * Guy John aka @rumblesan. Massive, massive contributions: refactored the code big times, set-up a proper build system, undoes the entropy done by others, contributed a new parser. 
+ * Matthew Lawrence: replaced the old "plasters and regexes" autocoder hack with a much more proper lexer-based solution.
+ * Julien Dorra: contributed to french version, refactoring and great UX/UI feedback.
  
 #### Glamour shots ####
 
