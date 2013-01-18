@@ -1,7 +1,7 @@
 #jslint browser: true, regexp: true 
 
 ###
-Helper class to manage URL hash location.
+## Helper class to manage URL hash location.
 ###
 
 class UrlRouter

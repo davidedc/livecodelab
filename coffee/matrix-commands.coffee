@@ -2,7 +2,7 @@
 # global 
 
 ###
-Takes care of all matrix-related commands.
+## Takes care of all matrix-related commands.
 ###
 
 class MatrixCommands

@@ -2,8 +2,8 @@
 # global LiveCodeLabCore, $, autocoder, initThreeJs, buzz 
 
 ###
-Init.js takes care of the setup of the whole environment up to
-cruise speed
+## Init.js takes care of the setup of the whole environment up to
+## cruise speed
 ###
 
 $(document).ready ->

@@ -5,8 +5,8 @@
 # Code adapted from processing.js
 
 ###
-Closure compiler automatically replaces symbolic Constants.* names with their
-values (it does it for everything it thinks it's a constant really).
+## Closure compiler automatically replaces symbolic Constants.* names with their
+## values (it does it for everything it thinks it's a constant really).
 ###
 
 class ColourFunctions

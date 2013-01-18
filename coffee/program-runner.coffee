@@ -1,10 +1,10 @@
 # jslint maxerr: 200, browser: true, devel: true, bitwise: true 
 
 ###
-ProgramRunner manages the running function as it runs. E.g. this is not a
-translation step, this is managing things such as the actually running of the
-latest "stable" function and keeping track of when a function appears to be stable,
-and reinstating the last stable function if the current one throws a runtime error.
+## ProgramRunner manages the running function as it runs. E.g. this is not a
+## translation step, this is managing things such as the actually running of the
+## latest "stable" function and keeping track of when a function appears to be stable,
+## and reinstating the last stable function if the current one throws a runtime error.
 ###
 
 class ProgramRunner

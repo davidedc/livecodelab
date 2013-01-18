@@ -1,8 +1,8 @@
 ###
-Extend the Number prototype
-This needs to stay globally defined
-@param func
-@param scope [optional]
+## Extend the Number prototype
+## This needs to stay globally defined
+## @param func
+## @param scope [optional]
 ###
 
 Number::times = (func, scope) ->

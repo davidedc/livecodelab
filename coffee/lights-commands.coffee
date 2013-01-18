@@ -1,7 +1,7 @@
 # jslint browser: true 
 
 ###
-Implementation of all lights-related commands.
+## Implementation of all lights-related commands.
 ###
 
 class LightsCommands

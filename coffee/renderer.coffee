@@ -1,8 +1,8 @@
 # jslint maxerr: 200, browser: true, devel: true, bitwise: true 
 
 ###
-The rendering requires some special steps that allow the display list
-to be reused as much as possible between frames.
+## The rendering requires some special steps that allow the display list
+## to be reused as much as possible between frames.
 ###
 
 class Renderer

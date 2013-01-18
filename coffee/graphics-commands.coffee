@@ -2,103 +2,103 @@
 # global color, lightSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne  
 
 ###
-Please reference the colour-functions.js file for all colour-related
-functions and lights-functions.js for lights, which use a similar
-structure for caching and counting of light instances.
-
-Fundamentals
-============
-There are a couple of fundamentals of LiveCodeLab and a couple of
-complications of Three.js that shape the way
-graphic primitives work in this file.
-
-LiveCodeLab uses immediate mode graphics
-----------------------
-First off, like Processing, LiveCodeLab shies away from "retained" graphics
-and instead uses "immediate mode" graphics.
-For context, "immediate mode" graphics means that when the user uses a graphic
-primitive, he is
-NOT given a handle that he can use to modify properties of that element at a
-later stage, contrarily to flash, DOM, CSS, openGL and Three.JS
-(to different degrees).
-Retained graphic modes keep structures in memory that make easy for example
-to do event handling (which object did I click?), hierarchy management
-(parent/child relationships, container/content, etc), property tweaking
-(change property X of object Y), and sometimes animation ( CoreAnimation from
-Apple for example), collision/overlap detection. Note that openGL is retained
-in that there are handles to geometry and textures, but little else is given
-(no events, no input, no physics/overlap/collision/animation).
-Also, retained graphics mode usually is smart about updating
-only minimal parts of the screen that need updating rather than redrawing the
-whole screen (again, openGL doesn't do that apart from basic frustum culling, but
-for example there is nothing to detect occlusions and avoid painting occluded
-objects).
-There are a few drawbacks in retained modes: a) programs that manage
-handles are more lengthy than programs that don't
-b) they are often not needed for example in
-2d sprites-based videogames c) most importantly,
-they require deeper understanding of the underlying
-model (e.g. which property can I change? What are those called? How do I change
-parent/child relationship? How do events bubble up and where should I catch them?).
-Processing and LiveCodeLab go for immediate mode. Once the primitive is invoked, it
-becomes pixels and there is no built-in way to do input/event/hierarchies...
-Rather, there are a few properties that are set as a global state and apply to all
-objects. Examples are "fill" and "stroke".
-
-Relationship between objects, meshes, geometry, materials...
-----------------------
-A Three.js object (or to be more precise, Object3D) can be a line or a mesh. A line
-is a line, a mesh can be anything else depending on what the geometry of the mesh
-is. There are more possible types such as particles, etc. but they are not currently
-used in LiveCodeLab. An object needs one more thing: a material.
-
-Caching of objects
-----------------------
-Once created, objects are kept cached together with all possible materials that can be
-associated with it. Each object has to have its own set of materials because
-one can decide to draw one object in solid fill, one in normal color, one with
-an ambient light (i.e. lambert material), etc.
-
-Objects are kept in the scene
-----------------------
-Once an object is added to the scene, it's never removed. Rather, it's hidden if it's
-not used, but it's never removed. This is because adding/removing objects from the
-scene is rather expensive. Note that Mr Doob mentioned via email that subsequent
-versions of three.js have improved performance a lot, so it's worth trying another
-approach.
-
-Strokes are managed via separate objects for stroke and fill
-----------------------
-There is a particular flag in Three.js materials for drawing wireframes. But materials
-cannot be combined, i.e. only one is associated at any time with a geometry. So one
-can either draw a wireframe or a fill. In previous versions of Three.js more than
-one material could be associated, but that has been deprecated, see
-https://github.com/mrdoob/three.js/issues/751 and instead a
-createMultiMaterialObject utility was put in place, which basically creates multiple
-objects one for each material, see
-https://github.com/mrdoob/three.js/blob/dev/src/extras/SceneUtils.js#L29
-So the solution here is to create two disting objects.
-One for the fills and one, slightly "larger", for the strokes. In that way, the
-strokes are visible "in front" of the fills, and the fills cover the strokes "at
-the back"
-
-The order of materials matters
-----------------------
-When an object is created, it must be first rendered with the most complex material,
-because internally in Three.js/WebGL memory is allocated only once. So a special
-mechanism is put in place by which new objects are drawn with the normalMaterial
-with scale 0, so they are rendered but they are invisible. In the next frame (i.e.
-after the first render) the correct material is used.
-
-"Spinning"
-----------------------
-"Spinning" applies to all objects added to an empty frame: it makes all objects spin
-for a few frames. This has been implemented for two reasons a) cosmetic b) the user
-is likely to first use "box", and without spinning that would look like a boring
-square that appears without animation. Spinning gives many more cues: the environment
-is 3d, the lighting is special by default and all faces have primary colors, things
-animate. Without spinning, all those cues need to be further explained and demonstra
-ted.
+## Please reference the colour-functions.js file for all colour-related
+## functions and lights-functions.js for lights, which use a similar
+## structure for caching and counting of light instances.
+## 
+## Fundamentals
+## ============
+## There are a couple of fundamentals of LiveCodeLab and a couple of
+## complications of Three.js that shape the way
+## graphic primitives work in this file.
+## 
+## LiveCodeLab uses immediate mode graphics
+## ----------------------
+## First off, like Processing, LiveCodeLab shies away from "retained" graphics
+## and instead uses "immediate mode" graphics.
+## For context, "immediate mode" graphics means that when the user uses a graphic
+## primitive, he is
+## NOT given a handle that he can use to modify properties of that element at a
+## later stage, contrarily to flash, DOM, CSS, openGL and Three.JS
+## (to different degrees).
+## Retained graphic modes keep structures in memory that make easy for example
+## to do event handling (which object did I click?), hierarchy management
+## (parent/child relationships, container/content, etc), property tweaking
+## (change property X of object Y), and sometimes animation ( CoreAnimation from
+## Apple for example), collision/overlap detection. Note that openGL is retained
+## in that there are handles to geometry and textures, but little else is given
+## (no events, no input, no physics/overlap/collision/animation).
+## Also, retained graphics mode usually is smart about updating
+## only minimal parts of the screen that need updating rather than redrawing the
+## whole screen (again, openGL doesn't do that apart from basic frustum culling, but
+## for example there is nothing to detect occlusions and avoid painting occluded
+## objects).
+## There are a few drawbacks in retained modes: a) programs that manage
+## handles are more lengthy than programs that don't
+## b) they are often not needed for example in
+## 2d sprites-based videogames c) most importantly,
+## they require deeper understanding of the underlying
+## model (e.g. which property can I change? What are those called? How do I change
+## parent/child relationship? How do events bubble up and where should I catch them?).
+## Processing and LiveCodeLab go for immediate mode. Once the primitive is invoked, it
+## becomes pixels and there is no built-in way to do input/event/hierarchies...
+## Rather, there are a few properties that are set as a global state and apply to all
+## objects. Examples are "fill" and "stroke".
+## 
+## Relationship between objects, meshes, geometry, materials...
+## ----------------------
+## A Three.js object (or to be more precise, Object3D) can be a line or a mesh. A line
+## is a line, a mesh can be anything else depending on what the geometry of the mesh
+## is. There are more possible types such as particles, etc. but they are not currently
+## used in LiveCodeLab. An object needs one more thing: a material.
+## 
+## Caching of objects
+## ----------------------
+## Once created, objects are kept cached together with all possible materials that can be
+## associated with it. Each object has to have its own set of materials because
+## one can decide to draw one object in solid fill, one in normal color, one with
+## an ambient light (i.e. lambert material), etc.
+## 
+## Objects are kept in the scene
+## ----------------------
+## Once an object is added to the scene, it's never removed. Rather, it's hidden if it's
+## not used, but it's never removed. This is because adding/removing objects from the
+## scene is rather expensive. Note that Mr Doob mentioned via email that subsequent
+## versions of three.js have improved performance a lot, so it's worth trying another
+## approach.
+## 
+## Strokes are managed via separate objects for stroke and fill
+## ----------------------
+## There is a particular flag in Three.js materials for drawing wireframes. But materials
+## cannot be combined, i.e. only one is associated at any time with a geometry. So one
+## can either draw a wireframe or a fill. In previous versions of Three.js more than
+## one material could be associated, but that has been deprecated, see
+## https://github.com/mrdoob/three.js/issues/751 and instead a
+## createMultiMaterialObject utility was put in place, which basically creates multiple
+## objects one for each material, see
+## https://github.com/mrdoob/three.js/blob/dev/src/extras/SceneUtils.js#L29
+## So the solution here is to create two disting objects.
+## One for the fills and one, slightly "larger", for the strokes. In that way, the
+## strokes are visible "in front" of the fills, and the fills cover the strokes "at
+## the back"
+## 
+## The order of materials matters
+## ----------------------
+## When an object is created, it must be first rendered with the most complex material,
+## because internally in Three.js/WebGL memory is allocated only once. So a special
+## mechanism is put in place by which new objects are drawn with the normalMaterial
+## with scale 0, so they are rendered but they are invisible. In the next frame (i.e.
+## after the first render) the correct material is used.
+## 
+## "Spinning"
+## ----------------------
+## "Spinning" applies to all objects added to an empty frame: it makes all objects spin
+## for a few frames. This has been implemented for two reasons a) cosmetic b) the user
+## is likely to first use "box", and without spinning that would look like a boring
+## square that appears without animation. Spinning gives many more cues: the environment
+## is 3d, the lighting is special by default and all faces have primary colors, things
+## animate. Without spinning, all those cues need to be further explained and demonstra
+## ted.
 ###
 
 class GraphicsCommands

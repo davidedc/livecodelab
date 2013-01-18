@@ -2,8 +2,8 @@
 # global $ 
 
 ###
-Simple helper to handle the code dimming. When to trigger dimming and un-dimming and
-keeping track of status of the dedicated "automatic dimming" toggle switch.
+## Simple helper to handle the code dimming. When to trigger dimming and un-dimming and
+## keeping track of status of the dedicated "automatic dimming" toggle switch.
 ###
 
 class EditorDimmer
