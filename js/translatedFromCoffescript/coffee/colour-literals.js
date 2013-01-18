@@ -1,3 +1,10 @@
+/*
+Defines several color constant literals, e.g. "red" being 0xffff0000,
+modified from processing.js with added the missing ones from the CSS standard,
+which includes the spelling "grey" on top of "gray"
+and also "angleColor", used to dress objects with the normal material.
+*/
+
 var ColourLiterals;
 
 ColourLiterals = (function() {

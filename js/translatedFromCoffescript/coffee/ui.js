@@ -1,3 +1,8 @@
+/*
+Ui handles all things UI such as the menus, the notification popups, the editor panel,
+the big flashing cursor, the stats widget...
+*/
+
 var Ui;
 
 Ui = (function() {

@@ -84,7 +84,30 @@
           <a href="coffee/animation-loop.coffee.html"><h1>animation-loop.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>The animation loop is the loop that make each &quot;frame&quot; happen, i.e. whatever happend
+every 30 to 60 times (or, indeed, &quot;frames&quot;) per second - which is the following:
+<em> the next frame is scheduled
+</em> the current program (i.e. a draw() Function is run).
+  Note that this might not be the very latest
+  content of the editor, because that might be syntactically incorrect. Also it might
+  not be the last syntactically correct program, because that might have thrown
+  runtime errors (for example used an undefined variable or function). The current
+  draw() function is rather both syntactically correct and &quot;stable&quot;. Stability of a
+  program cannot be guaranteed, but LiveCodeLab heuristically considers as &quot;stable&quot; a
+  program that was able to run without throwing errors for the past 5 frames.
+<em> the background is repainted if it has changed from the previous frame
+</em> the new 3d scene is painted
+<em> the stats widget on the top right is updated to show milliseconds taken by each loop
+  frame.
+#
+Note that the followings are NOT done as part of the animation loop
+</em> Syntax checking of the program typed by the user (that&#39;s checked only when it changed)
+<em> sound playing. That happens by its own series of timeouts (as defined by the
+  optional &quot;bpm&quot; command) separately from the
+  animation loop.
+</em> blinking of the cursor
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -102,7 +125,11 @@
           <a href="coffee/autocoder/autocode.coffee.html"><h1>autocode.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>Autocoder takes care of making random variations to the code. It lexes the input,
+collects the tokens that can be mutated, picks one at random, invokes a mutation on it,
+and then re-builds a string pritout from the tokens so to obtain the mutated program.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -172,7 +199,48 @@
           <a href="coffee/background-painter.coffee.html"><h1>background-painter.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>The user can issue multiple solid fill and gradient fill commands
+and they are all painted on top of each other according to the
+order they have been issued in.
+So for example you can have one gradient and then
+a second one painted over it that uses some transparency.
+
+</p>
+<p>This is why solid and gradient fills are all kept in an array
+and each time the user issues one of the two commands, an
+element is added to the array.
+
+</p>
+<p>Both solid and gradient fills are stored as elements in the
+array, all elements are the same and accommodate for a description
+that either case (solid/gradient).
+
+</p>
+<p>The background/gradients are drawn on a separate 2D canvas
+and we avoid repainting that canvas over and over if the
+painting commands stay the same (i.e. colors of their
+arguments and the order of the commands) across frames.
+
+</p>
+<p>For quickly determining whether the order/content of the commands
+has changed across frames,
+a string is kept that represents the whole stack of commands
+issued in the current frame, and similarly the &quot;previous frame&quot;
+string representation is also kept.
+So it&#39;s kind of like a simplified JSON representation if you will.
+
+</p>
+<p>If the strings are the same across frames, then the 2D layer of
+the background is not repainted, otherwise the array is iterated
+and each background/gradient is painted anew.
+
+</p>
+<p>Note that we are not trying to be too clever here - for example
+a solid fill effectively invalidates the contents of the previous
+elements of the array, so we could discard those when such
+a command is issued.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -190,7 +258,11 @@
           <a href="coffee/big-cursor.coffee.html"><h1>big-cursor.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>The big cursor that flashes when the environment is first opened. It&#39;s a special div
+which is actually not meant to contain text. It just shrinks/expands depending on
+whether the user types something (shrinks) or whether the program turns empty (expands).
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -208,7 +280,13 @@
           <a href="coffee/blend-controls.coffee.html"><h1>blend-controls.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>BlendControls manages the three different blending styles. One can decide for either
+&#39;normal&#39; (e.g. next frame completely replaces the previous one) or &#39;paintOver&#39;
+(new frame is painted over the previous one, meaning that the previous frame shows through
+the transparent bits of the new frame) or &#39;motionBlur&#39; (previous frame is shown faintly
+below the current one so to give a vague effect of motion blur).
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">
@@ -226,7 +304,14 @@
           <a href="coffee/code-transformer.coffee.html"><h1>code-transformer.coffee</h1></a>
         </div>
         <div class="module-content">
-          
+          <p>Although LiveCodeLab is ultimately running Javascript code behind the scenes,
+the user uses a simpler syntax which is basically coffeescript with a little bit of
+extra sugar. CodeTransformer takes care of translating this simplified syntax to
+Javascript. Also note that CodeTransformer might return a program that substituted
+the program passed as input. This is because doOnce statements get transformed by
+pre-prending a tick once they are run, which prevents them from being run again.
+</p>
+
           
           <h3>Classes</h3>
           <ul class="classlist">

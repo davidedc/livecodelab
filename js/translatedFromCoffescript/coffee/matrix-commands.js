@@ -1,3 +1,7 @@
+/*
+Takes care of all matrix-related commands.
+*/
+
 var MatrixCommands;
 
 MatrixCommands = (function() {

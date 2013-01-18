@@ -1,6 +1,29 @@
-var AnimationLoop, frame, lastTime, vendors, x;
+/*
+The animation loop is the loop that make each "frame" happen, i.e. whatever happend
+every 30 to 60 times (or, indeed, "frames") per second - which is the following:
+* the next frame is scheduled
+* the current program (i.e. a draw() Function is run).
+  Note that this might not be the very latest
+  content of the editor, because that might be syntactically incorrect. Also it might
+  not be the last syntactically correct program, because that might have thrown
+  runtime errors (for example used an undefined variable or function). The current
+  draw() function is rather both syntactically correct and "stable". Stability of a
+  program cannot be guaranteed, but LiveCodeLab heuristically considers as "stable" a
+  program that was able to run without throwing errors for the past 5 frames.
+* the background is repainted if it has changed from the previous frame
+* the new 3d scene is painted
+* the stats widget on the top right is updated to show milliseconds taken by each loop
+  frame.
+#
+Note that the followings are NOT done as part of the animation loop
+* Syntax checking of the program typed by the user (that's checked only when it changed)
+* sound playing. That happens by its own series of timeouts (as defined by the
+  optional "bpm" command) separately from the
+  animation loop.
+* blinking of the cursor
+*/
 
-frame = 0;
+var AnimationLoop, lastTime, vendors, x;
 
 AnimationLoop = (function() {
   "use strict";
@@ -19,6 +42,7 @@ AnimationLoop = (function() {
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
     this.forceUseOfTimeoutForScheduling = forceUseOfTimeoutForScheduling != null ? forceUseOfTimeoutForScheduling : false;
     this.wantedFramesPerSecond = this.AS_HIGH_FPS_AS_POSSIBLE;
+    window.frame = 0;
   }
 
   AnimationLoop.prototype.scheduleNextFrame = function() {
@@ -52,7 +76,7 @@ AnimationLoop = (function() {
   };
 
   AnimationLoop.prototype.animate = function() {
-    var drawFunctionRunner;
+    var drawFunctionRunner, frame;
     this.liveCodeLabCoreInstance.matrixCommands.resetMatrixStack();
     this.liveCodeLabCoreInstance.soundSystem.resetLoops();
     if (frame === 0) {

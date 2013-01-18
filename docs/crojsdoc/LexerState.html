@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>croquis-jsdoc - LexerState</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="index.html">Home</a></li><li class="active"><a href="AnimationLoop.html">Classes - LexerState</a></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="AnimationLoop.html">AnimationLoop</a></li><li><a href="Autocoder.html">Autocoder</a></li><li><a href="BackgroundPainter.html">BackgroundPainter</a></li><li><a href="BigCursor.html">BigCursor</a></li><li><a href="BlendControls.html">BlendControls</a></li><li><a href="CodeTransformer.html">CodeTransformer</a></li><li><a href="ColourFunctions.html">ColourFunctions</a></li><li><a href="ColourLiterals.html">ColourLiterals</a></li><li><a href="Editor.html">Editor</a></li><li><a href="EditorDimmer.html">EditorDimmer</a></li><li><a href="EventRouter.html">EventRouter</a></li><li><a href="GraphicsCommands.html">GraphicsCommands</a></li><li><a href="LexerRule.html">LexerRule</a></li><li class="active"><a href="#LexerState">LexerState</a></li><li><a href="LightsCommands.html">LightsCommands</a></li><li><a href="LiveCodeLabCore.html">LiveCodeLabCore</a></li><li><a href="MatrixCommands.html">MatrixCommands</a></li><li><a href="Parser.html">Parser</a></li><li><a href="ProgramLoader.html">ProgramLoader</a></li><li><a href="ProgramRunner.html">ProgramRunner</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="SampleBank.html">SampleBank</a></li><li><a href="SoundSystem.html">SoundSystem</a></li><li><a href="ThreeJsSystem.html">ThreeJsSystem</a></li><li><a href="TimeKeeper.html">TimeKeeper</a></li><li><a href="Ui.html">Ui</a></li><li><a href="UrlRouter.html">UrlRouter</a></li></ul></div></div><div class="span9"><div class="page-header"><section id="LexerState"><h1 class="class_title">LexerState</h1><div><p>Lexer is a variation/port of:</p>
+</div><div><p>McLexer: A lexical analysis system/library for JavaScript.
+Author:  Matthew Might
+Site:    <a href="http://matt.might.net/">http://matt.might.net/</a>
+         <a href="http://www.ucombinator.com/">http://www.ucombinator.com/</a>
+
+</p>
+<p>McLexer associates rules with analysis states.
+
+</p>
+<p>Each rule contains a regular expression to match, 
+and action to execute upon finding a match.
+
+</p>
+<p>When a state matches its rules against an input text, 
+it chooses the rule with the longest match against the prefix 
+of the input text.
+
+</p>
+<p>A lexical state is a collection of rules.
+
+</p>
+<h2>It has three primary methods</h2>
+<ul>
+<li><p>lex(input) runs a continuation-based lexer on the input;
+lex invokes next once, and expects a continuation back;
+it then invokes the continuation and expects each continuation
+it invokes to return another continuation.  Once a continuation
+returns null; parsing is complete.     </p>
+</li>
+<li><p>findAndRunActionPairedToLongestAppliableRegex(input) runs a match against an input,
+fires the action.
+An action is a procedure that accepts the match data (an array),
+the remainder of the input, and the current state and returns a function that
+applies the rules again and finds and runs the next action. An action does not run
+the next one (that would be recursion). Rather, it returns a function to find and
+run the next one</p>
+</li>
+</ul>
+<p>Why this &quot;step by step&quot; approach instead of a normal recursion? The advantage is
+that you can stop the parsing and resume it any time you want. Suppose that
+you have a huge program to parse. With recursion, once you start you can&#39;t
+stop until the end (at least if you are using normal recursion as provided by
+the language runtime. If you implement your own recursion using your own stack
+then you could indeed pause/resume things). In a single-threaded language like
+Javascript this results in everything else &quot;blocking&quot;. A &quot;continuations&quot; approach
+lets you stop and resume the parsing more easily, since you lex the program step
+by step in a manner that does not rely on the runtime stack. There is no recursion.</p>
+</div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/autocoder/lexer.coffee:48)</span><pre class="sourcecode prettyprint .linenums:48">class LexerState
+  rules: []
+
+  addRule: (regex, action) ->
+      @rules.push new LexerRule(regex, action)
+  
+  lex: (input) ->
+    # findAndRunActionPairedToLongestAppliableRegex returns an action triggered by the
+    # longest regex appliable. An action is a function that takes the current matched
+    # part of the input, the remaining part of the input and the current state. It can
+    # do anything, but it must return a function that applies rules to the remaining
+    # part of the input and finds the next action.
+    # So note here that nextAction is a function that does stuff and returns a function
+    # to find the next action. We are not running it yet.
+    nextAction = @findAndRunActionPairedToLongestAppliableRegex(input)    
+    while typeof nextAction is "function"
+      # OK an action has been returned. Now by running it the action does some custom
+      # stuff and then it returns a function that finds the next action. So continue to
+      # run the action spawned by each action until no action is returned.
+      nextAction = nextAction()
+    return nextAction
+
+  findAndRunActionPairedToLongestAppliableRegex: (input) ->
+    longestMatchedRule = null
+    longestMatch = null
+    longestMatchedLength = -1
+    
+    #console.log("trying to match: " + input)
+    for i in [@rules.length-1..0]
+      r = @rules[i]
+      
+      m = r.matches(input)
+      
+      if m and (m[0].length >= longestMatchedLength)
+        longestMatchedRule = r
+        longestMatch = m
+        longestMatchedLength = m[0].length
+    if longestMatchedRule
+      #console.log("found a matching rule")
+      # now return the result of the action, which is the next action
+      return (longestMatchedRule.action(longestMatch, input.substring(longestMatchedLength), this))
+    else
+      throw ("Lexing error; no match found for: '" + input + "'")
+
+  returnAFunctionThatAppliesRulesAndRunsActionFor: (input) ->
+    =>
+      @findAndRunActionPairedToLongestAppliableRegex input</pre></section></div></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="bootstrap/js/bootstrap.min.js"></script><script src="google-code-prettify/prettify.js"></script><script>$(function() {
+  // make result of marked for pretty print
+  $('pre code[class^="lang-"]').addClass('.prettyprint');
+  window.prettyPrint && prettyPrint()
+});
+$('body').on('click', '.showcode', function () {
+  $(this).parent().find('pre.sourcecode').toggle();
+  $('body').scrollspy('refresh');
+});
+$('#options-private').on('click', function () {
+  $('.private').toggle();
+  $('body').scrollspy('refresh');
+});</script></body></html>

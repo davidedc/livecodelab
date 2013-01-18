@@ -1,3 +1,8 @@
+/*
+The Editor is just a wrapper for the CodeMirror editor. Contains a couple of handful
+functions and hooks-up the contents with the other parts of LiveCodeLab.
+*/
+
 var Editor;
 
 Editor = (function() {

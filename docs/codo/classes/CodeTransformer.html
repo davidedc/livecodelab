@@ -114,6 +114,17 @@
           <td>coffee&#47;code-transformer.coffee</td>
         </tr>
       </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Although LiveCodeLab is ultimately running Javascript code behind the scenes,
+the user uses a simpler syntax which is basically coffeescript with a little bit of
+extra sugar. CodeTransformer takes care of translating this simplified syntax to
+Javascript. Also note that CodeTransformer might return a program that substituted
+the program passed as input. This is because doOnce statements get transformed by
+pre-prending a tick once they are run, which prevents them from being run again.</p>
+</div>
+<div class='tags'>
+</div>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
@@ -299,7 +310,7 @@ run, so we need to attach it to the CodeTransformer object.</p>
     </div>
     <div id='footer'>
   Generated on
-  Fri Jan 18 2013 00:44:41 GMT+0000 (GMT)
+  Fri Jan 18 2013 14:51:53 GMT+0000 (GMT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.4

@@ -1,3 +1,9 @@
+/*
+Autocoder takes care of making random variations to the code. It lexes the input,
+collects the tokens that can be mutated, picks one at random, invokes a mutation on it,
+and then re-builds a string pritout from the tokens so to obtain the mutated program.
+*/
+
 var Autocoder, TOKEN_ARGDLIM, TOKEN_COLOUR, TOKEN_COLOUROP, TOKEN_COMMENT, TOKEN_DOONCE, TOKEN_ITERATION, TOKEN_MESH, TOKEN_NEWLINE, TOKEN_NUM, TOKEN_OP, TOKEN_SPACE, TOKEN_STATEFUN, TOKEN_TAB, TOKEN_TRANSLATION, TOKEN_UNKNOWN, TOKEN_VARIABLE;
 
 Autocoder = (function() {

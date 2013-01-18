@@ -1,3 +1,7 @@
+/*
+Implementation of all lights-related commands.
+*/
+
 var LightsCommands;
 
 LightsCommands = (function() {
