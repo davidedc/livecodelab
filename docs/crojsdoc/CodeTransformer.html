@@ -4,7 +4,7 @@ extra sugar. CodeTransformer takes care of translating this simplified syntax to
 Javascript. Also note that CodeTransformer might return a program that substituted
 the program passed as input. This is because doOnce statements get transformed by
 pre-prending a tick once they are run, which prevents them from being run again.</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/code-transformer.coffee:10)</span><pre class="sourcecode prettyprint .linenums:10">class CodeTransformer
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/code-transformer.coffee:10)</span><pre class="sourcecode prettyprint .linenums:10">class CodeTransformer
   currentCodeString: null
   
   constructor: (@eventRouter, @CoffeeCompiler, @liveCodeLabCoreInstance) ->
@@ -95,7 +95,7 @@ pre-prending a tick once they are run, which prevents them from being run again.
 
 </p>
 <p>  We need to switch this round before coffee script compilation</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/code-transformer.coffee:314)</span><pre class="sourcecode prettyprint .linenums:314">adjustPostfixNotations: (code) ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/code-transformer.coffee:314)</span><pre class="sourcecode prettyprint .linenums:314">adjustPostfixNotations: (code) ->
   elaboratedSource = undefined
   elaboratedSource = code.replace(/(\d+)[ ]+bpm(\s)/g, "bpm $1$2")
   elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+fill(\s)/g, "fill $1$2")
@@ -125,7 +125,7 @@ pre-prending a tick once they are run, which prevents them from being run again.
 
 </p>
 <p>  @returns {string}</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/code-transformer.coffee:112)</span><pre class="sourcecode prettyprint .linenums:112">removeTickedDoOnce: (code) ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/code-transformer.coffee:112)</span><pre class="sourcecode prettyprint .linenums:112">removeTickedDoOnce: (code) ->
   newCode = undefined
   newCode = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false")
   newCode = newCode.replace(/\u2713/g, "//")

@@ -1,6 +1,6 @@
 /*
-Sets up canvas or webgl Threejs renderer based on browser capabilities and flags passed
-in the constructor. Sets up all the post-filtering steps.
+## Sets up canvas or webgl Threejs renderer based on browser capabilities and flags passed
+## in the constructor. Sets up all the post-filtering steps.
 */
 
 var ThreeJsSystem;

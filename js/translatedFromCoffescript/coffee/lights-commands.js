@@ -1,5 +1,5 @@
 /*
-Implementation of all lights-related commands.
+## Implementation of all lights-related commands.
 */
 
 var LightsCommands;

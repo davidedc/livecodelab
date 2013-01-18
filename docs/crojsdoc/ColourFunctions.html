@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>croquis-jsdoc - ColourFunctions</title><link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="index.html">Home</a></li><li class="active"><a href="AnimationLoop.html">Classes - ColourFunctions</a></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="AnimationLoop.html">AnimationLoop</a></li><li><a href="Autocoder.html">Autocoder</a></li><li><a href="BackgroundPainter.html">BackgroundPainter</a></li><li><a href="BigCursor.html">BigCursor</a></li><li><a href="BlendControls.html">BlendControls</a></li><li><a href="CodeTransformer.html">CodeTransformer</a></li><li class="active"><a href="#ColourFunctions">ColourFunctions</a></li><li class="cormo-class-property "><a href="#ColourFunctions__alpha">alpha</a></li><li class="cormo-class-property "><a href="#ColourFunctions__blendColor">blendColor</a></li><li class="cormo-class-property "><a href="#ColourFunctions__blueF">blueF</a></li><li class="cormo-class-property "><a href="#ColourFunctions__brightness">brightness</a></li><li class="cormo-class-property "><a href="#ColourFunctions__color">color</a></li><li class="cormo-class-property "><a href="#ColourFunctions__colorMode">colorMode</a></li><li class="cormo-class-property "><a href="#ColourFunctions__greenF">greenF</a></li><li class="cormo-class-property "><a href="#ColourFunctions__hue">hue</a></li><li class="cormo-class-property "><a href="#ColourFunctions__lerp">lerp</a></li><li class="cormo-class-property "><a href="#ColourFunctions__lerpColor">lerpColor</a></li><li class="cormo-class-property "><a href="#ColourFunctions__modesFunction">modesFunction</a></li><li class="cormo-class-property "><a href="#ColourFunctions__redF">redF</a></li><li class="cormo-class-property "><a href="#ColourFunctions__saturation">saturation</a></li><li><a href="ColourLiterals.html">ColourLiterals</a></li><li><a href="Editor.html">Editor</a></li><li><a href="EditorDimmer.html">EditorDimmer</a></li><li><a href="EventRouter.html">EventRouter</a></li><li><a href="GraphicsCommands.html">GraphicsCommands</a></li><li><a href="LexerRule.html">LexerRule</a></li><li><a href="LexerState.html">LexerState</a></li><li><a href="LightsCommands.html">LightsCommands</a></li><li><a href="LiveCodeLabCore.html">LiveCodeLabCore</a></li><li><a href="MatrixCommands.html">MatrixCommands</a></li><li><a href="Parser.html">Parser</a></li><li><a href="ProgramLoader.html">ProgramLoader</a></li><li><a href="ProgramRunner.html">ProgramRunner</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="SampleBank.html">SampleBank</a></li><li><a href="SoundSystem.html">SoundSystem</a></li><li><a href="ThreeJsSystem.html">ThreeJsSystem</a></li><li><a href="TimeKeeper.html">TimeKeeper</a></li><li><a href="Ui.html">Ui</a></li><li><a href="UrlRouter.html">UrlRouter</a></li></ul></div></div><div class="span9"><div class="page-header"><section id="ColourFunctions"><h1 class="class_title">ColourFunctions</h1><div><p>Closure compiler automatically replaces symbolic Constants.* names with their
 values (it does it for everything it thinks it&#39;s a constant really).</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/colour-functions.coffee:12)</span><pre class="sourcecode prettyprint .linenums:12">class ColourFunctions
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/colour-functions.coffee:12)</span><pre class="sourcecode prettyprint .linenums:12">class ColourFunctions
   "use strict"
 
   constructor: ->
@@ -218,7 +218,7 @@ values (it does it for everything it thinks it&#39;s a constant really).</p>
   @see hue
   @see saturation
   @see brightness</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/colour-functions.coffee:408)</span><pre class="sourcecode prettyprint .linenums:408">alpha: (aColor) ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/colour-functions.coffee:408)</span><pre class="sourcecode prettyprint .linenums:408">alpha: (aColor) ->
   ((aColor & @Constants.ALPHA_MASK) >>> 24) / 255 * @colorModeA</pre><hr class="item-seperator"></section><section id="ColourFunctions__blendColor" class=""><h2 class="class_method">ColourFunctions::blendColor()</h2><div><p>Blends two color values together based on the blending mode given as the MODE parameter.
   The possible modes are described in the reference for the blend() function.
 
@@ -234,7 +234,7 @@ values (it does it for everything it thinks it&#39;s a constant really).</p>
 </p>
 <p>  @see blend
   @see color</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/colour-functions.coffee:760)</span><pre class="sourcecode prettyprint .linenums:760">blendColor: (c1, c2, mode) ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/colour-functions.coffee:760)</span><pre class="sourcecode prettyprint .linenums:760">blendColor: (c1, c2, mode) ->
   if mode is @Constants.REPLACE
     @modes.replace c1, c2
   else if mode is @Constants.BLEND
@@ -280,7 +280,7 @@ values (it does it for everything it thinks it&#39;s a constant really).</p>
   @see hue
   @see saturation
   @see brightness</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/colour-functions.coffee:388)</span><pre class="sourcecode prettyprint .linenums:388">blueF: (aColor) ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/colour-functions.coffee:388)</span><pre class="sourcecode prettyprint .linenums:388">blueF: (aColor) ->
   (aColor & @Constants.BLUE_MASK) / 255 * @colorModeZ</pre><hr class="item-seperator"></section><section id="ColourFunctions__brightness" class=""><h2 class="class_method">ColourFunctions::brightness()</h2><div><p>Extracts the brightness value from a color.
 
 </p>
@@ -295,7 +295,7 @@ values (it does it for everything it thinks it&#39;s a constant really).</p>
   @see blue
   @see hue
   @see saturation</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/colour-functions.coffee:294)</span><pre class="sourcecode prettyprint .linenums:294">brightness: (colInt) ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/colour-functions.coffee:294)</span><pre class="sourcecode prettyprint .linenums:294">brightness: (colInt) ->
   @colorToHSB(colInt)[2]</pre><hr class="item-seperator"></section><section id="ColourFunctions__color" class=""><h2 class="class_method">ColourFunctions::color()</h2><div><p>Creates colors for storing in variables of the color datatype. The parameters are
   interpreted as RGB or HSB values depending on the current colorMode(). The default
   mode is RGB values from 0 to 255 and therefore, the function call color(255, 204, 0)
@@ -314,7 +314,7 @@ values (it does it for everything it thinks it&#39;s a constant really).</p>
 
 </p>
 <p>  @see colorMode</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/colour-functions.coffee:233)</span><pre class="sourcecode prettyprint .linenums:233">color: (aValue1, aValue2, aValue3, aValue4) ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/colour-functions.coffee:233)</span><pre class="sourcecode prettyprint .linenums:233">color: (aValue1, aValue2, aValue3, aValue4) ->
     
   # 4 arguments: (R, G, B, A) or (H, S, B, A)
   return @color$4(aValue1, aValue2, aValue3, aValue4)  if aValue1 isnt `undefined` and aValue2 isnt `undefined` and aValue3 isnt `undefined` and aValue4 isnt `undefined`
@@ -353,7 +353,7 @@ values (it does it for everything it thinks it&#39;s a constant really).</p>
 <p>  @see background
   @see fill
   @see stroke</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/colour-functions.coffee:527)</span><pre class="sourcecode prettyprint .linenums:527">colorMode: (mode, range1, range2, range3, range4) ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/colour-functions.coffee:527)</span><pre class="sourcecode prettyprint .linenums:527">colorMode: (mode, range1, range2, range3, range4) ->
   @curColorMode = mode
   if arguments.length > 1
     @colorModeX = range1
@@ -376,7 +376,7 @@ values (it does it for everything it thinks it&#39;s a constant really).</p>
   @see hue
   @see saturation
   @see brightness</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/colour-functions.coffee:368)</span><pre class="sourcecode prettyprint .linenums:368">greenF: (aColor) ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/colour-functions.coffee:368)</span><pre class="sourcecode prettyprint .linenums:368">greenF: (aColor) ->
   ((aColor & @Constants.GREEN_MASK) >>> 8) / 255 * @colorModeY</pre><hr class="item-seperator"></section><section id="ColourFunctions__hue" class=""><h2 class="class_method">ColourFunctions::hue()</h2><div><p>Extracts the hue value from a color.
 
 </p>
@@ -391,7 +391,7 @@ values (it does it for everything it thinks it&#39;s a constant really).</p>
   @see blue
   @see saturation
   @see brightness</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/colour-functions.coffee:328)</span><pre class="sourcecode prettyprint .linenums:328">hue: (colInt) ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/colour-functions.coffee:328)</span><pre class="sourcecode prettyprint .linenums:328">hue: (colInt) ->
   @colorToHSB(colInt)[0]</pre><hr class="item-seperator"></section><section id="ColourFunctions__lerp" class=""><h2 class="class_method">ColourFunctions::lerp()</h2><div><p>Calculates a number between two numbers at a specific increment. The amt  parameter is the
   amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very
   near the first point, 0.5 is half-way in between, etc. The lerp function is convenient for
@@ -408,7 +408,7 @@ values (it does it for everything it thinks it&#39;s a constant really).</p>
 </p>
 <p>  @see curvePoint
   @see bezierPoint</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/colour-functions.coffee:430)</span><pre class="sourcecode prettyprint .linenums:430">lerp: (value1, value2, amt) ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/colour-functions.coffee:430)</span><pre class="sourcecode prettyprint .linenums:430">lerp: (value1, value2, amt) ->
   ((value2 - value1) * amt) + value1</pre><hr class="item-seperator"></section><section id="ColourFunctions__lerpColor" class=""><h2 class="class_method">ColourFunctions::lerpColor()</h2><div><p>Calculates a color or colors between two colors at a specific increment.
   The amt parameter is the amount to interpolate between the two values where 0.0
   equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
@@ -424,7 +424,7 @@ values (it does it for everything it thinks it&#39;s a constant really).</p>
 </p>
 <p>  @see blendColor
   @see color</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/colour-functions.coffee:448)</span><pre class="sourcecode prettyprint .linenums:448">lerpColor: (c1, c2, amt) ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/colour-functions.coffee:448)</span><pre class="sourcecode prettyprint .linenums:448">lerpColor: (c1, c2, amt) ->
   r = undefined
   g = undefined
   b = undefined
@@ -492,7 +492,7 @@ values (it does it for everything it thinks it&#39;s a constant really).</p>
 </p>
 <p>  @see BlendColor
   @see Blend</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/colour-functions.coffee:548)</span><pre class="sourcecode prettyprint .linenums:548">modesFunction: () ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/colour-functions.coffee:548)</span><pre class="sourcecode prettyprint .linenums:548">modesFunction: () ->
   ALPHA_MASK = @Constants.ALPHA_MASK
   RED_MASK = @Constants.RED_MASK
   GREEN_MASK = @Constants.GREEN_MASK
@@ -705,7 +705,7 @@ values (it does it for everything it thinks it&#39;s a constant really).</p>
   @see hue
   @see saturation
   @see brightness</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/colour-functions.coffee:348)</span><pre class="sourcecode prettyprint .linenums:348">redF: (aColor) ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/colour-functions.coffee:348)</span><pre class="sourcecode prettyprint .linenums:348">redF: (aColor) ->
   ((aColor & @Constants.RED_MASK) >>> 16) / 255 * @colorModeX</pre><hr class="item-seperator"></section><section id="ColourFunctions__saturation" class=""><h2 class="class_method">ColourFunctions::saturation()</h2><div><p>Extracts the saturation value from a color.
 
 </p>
@@ -720,7 +720,7 @@ values (it does it for everything it thinks it&#39;s a constant really).</p>
   @see blue
   @see hue
   @see brightness</p>
-</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/colour-functions.coffee:311)</span><pre class="sourcecode prettyprint .linenums:311">saturation: (colInt) ->
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/colour-functions.coffee:311)</span><pre class="sourcecode prettyprint .linenums:311">saturation: (colInt) ->
   @colorToHSB(colInt)[1]</pre><hr class="item-seperator"></section></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="bootstrap/js/bootstrap.min.js"></script><script src="google-code-prettify/prettify.js"></script><script>$(function() {
   // make result of marked for pretty print
   $('pre code[class^="lang-"]').addClass('.prettyprint');

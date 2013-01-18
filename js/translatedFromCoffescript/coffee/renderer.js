@@ -1,6 +1,6 @@
 /*
-The rendering requires some special steps that allow the display list
-to be reused as much as possible between frames.
+## The rendering requires some special steps that allow the display list
+## to be reused as much as possible between frames.
 */
 
 var Renderer;

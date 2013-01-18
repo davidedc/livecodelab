@@ -1,7 +1,7 @@
 /*
-Keeps the time. A small thing to do, but it allows tricks such as setting a fake time
-for testing purposes, and avoiding repeated and unnecessary invokation of the Date and
-getTime browser functions.
+## Keeps the time. A small thing to do, but it allows tricks such as setting a fake time
+## for testing purposes, and avoiding repeated and unnecessary invokation of the Date and
+## getTime browser functions.
 */
 
 var TimeKeeper;

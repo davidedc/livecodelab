@@ -1,7 +1,7 @@
 /*
-SoundSystem tries to abstract away different ways of playing sound, according to
-weird performance characteristics of each browser (ad probably, OS). Cross-browser
-sound playing is really in a sorry state, we are trying to make do here.
+## SoundSystem tries to abstract away different ways of playing sound, according to
+## weird performance characteristics of each browser (ad probably, OS). Cross-browser
+## sound playing is really in a sorry state, we are trying to make do here.
 */
 
 var SoundSystem;

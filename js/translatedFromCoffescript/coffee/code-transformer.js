@@ -1,10 +1,10 @@
 /*
-Although LiveCodeLab is ultimately running Javascript code behind the scenes,
-the user uses a simpler syntax which is basically coffeescript with a little bit of
-extra sugar. CodeTransformer takes care of translating this simplified syntax to
-Javascript. Also note that CodeTransformer might return a program that substituted
-the program passed as input. This is because doOnce statements get transformed by
-pre-prending a tick once they are run, which prevents them from being run again.
+## Although LiveCodeLab is ultimately running Javascript code behind the scenes,
+## the user uses a simpler syntax which is basically coffeescript with a little bit of
+## extra sugar. CodeTransformer takes care of translating this simplified syntax to
+## Javascript. Also note that CodeTransformer might return a program that substituted
+## the program passed as input. This is because doOnce statements get transformed by
+## pre-prending a tick once they are run, which prevents them from being run again.
 */
 
 var CodeTransformer;

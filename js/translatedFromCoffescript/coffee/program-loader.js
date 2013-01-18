@@ -1,7 +1,7 @@
 /*
-ProgramLoader takes care of managing the URL and editor content when the user navigates
-through demos and examples - either by selecting menu entries, or by clicking back/forward
-arrow, or by landing on a URL with a hashtag.
+## ProgramLoader takes care of managing the URL and editor content when the user navigates
+## through demos and examples - either by selecting menu entries, or by clicking back/forward
+## arrow, or by landing on a URL with a hashtag.
 */
 
 var ProgramLoader;

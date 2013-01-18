@@ -1,59 +1,64 @@
-<!DOCTYPE html>  <html> <head>   <title>livecodelab-core.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocode.html">                 autocode.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               livecodelab-core.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>A LiveCodeLabCore instance packs together the following parts:
+<!DOCTYPE html>  <html> <head>   <title>livecodelab-core.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocode.html">                 autocode.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               livecodelab-core.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>A LiveCodeLabCore instance packs together the following parts:</p>
 
- - timeKeeper
- - three
- - threeJsSystem
- - matrixCommands
- - blendControls
- - soundSystem
- - colourFunctions
- - backgroundPainter
- - graphicsCommands
- - lightSystem 
- - drawFunctionRunner
- - codeTransformer
- - renderer
- - animationLoop
+<ul>
+<li>timeKeeper</li>
+<li>three</li>
+<li>threeJsSystem</li>
+<li>matrixCommands</li>
+<li>blendControls</li>
+<li>soundSystem</li>
+<li>colourFunctions</li>
+<li>backgroundPainter</li>
+<li>graphicsCommands</li>
+<li>lightSystem </li>
+<li>drawFunctionRunner</li>
+<li>codeTransformer</li>
+<li>renderer</li>
+<li>animationLoop</li>
+</ul>
 
- LiveCodeLab is built one part at a time, and the arguments in the constructor
- tell how they depend on each other at construction time and how they
- interact at runtime.
+<p>LiveCodeLab is built one part at a time, and the arguments in the constructor
+tell how they depend on each other at construction time and how they
+interact at runtime.</p>
 
- - _A constructor with no arguments_ (or where the arguments are just passed
-   by the caller of the very createLiveCodeLabCore function we are in),
-   such as createColourFunctions, is a part
-   that does not need any other part at construction time and it doesn't interact
-   with any of the other parts at run time.
- - _A constructor with arguments other than "liveCodeLabCoreInstance"_
-   (such as threeJsSystem) only needs the parts passed at construction time for its
-   own construction, and it can only interact with such parts at runtime.
- - _A constructor which contains the "liveCodeLabCoreInstance" argument_, such as
-   codeTransformer, might or might not need other parts for its own construction
-   (if they are passed as arguments in addition to the "liveCodeLabCoreInstance" argument)
-   but it does interact at runtime with other parts not passed in the constructor
-   argument.
+<ul>
+<li><em>A constructor with no arguments</em> (or where the arguments are just passed
+by the caller of the very createLiveCodeLabCore function we are in),
+such as createColourFunctions, is a part
+that does not need any other part at construction time and it doesn't interact
+with any of the other parts at run time.</li>
+<li><em>A constructor with arguments other than "liveCodeLabCoreInstance"</em>
+(such as threeJsSystem) only needs the parts passed at construction time for its
+own construction, and it can only interact with such parts at runtime.</li>
+<li><em>A constructor which contains the "liveCodeLabCoreInstance" argument</em>, such as
+codeTransformer, might or might not need other parts for its own construction
+(if they are passed as arguments in addition to the "liveCodeLabCoreInstance" argument)
+but it does interact at runtime with other parts not passed in the constructor
+argument.</li>
+</ul>
 
- So, for determining the order of the constructors, one can just look at the
- dependencies dictated by the arguments other than the "liveCodeLabCoreInstance"
- argument. The "liveCodeLabCoreInstance" parameter
- doesn't create dependencies at creation time,
- it's just used by the parts to reference other parts that they need to interact to
- at runtime.
+<p>So, for determining the order of the constructors, one can just look at the
+dependencies dictated by the arguments other than the "liveCodeLabCoreInstance"
+argument. The "liveCodeLabCoreInstance" parameter
+doesn't create dependencies at creation time,
+it's just used by the parts to reference other parts that they need to interact to
+at runtime.</p>
 
- It might well be that at runtime part A interacts with part B and viceversa.
- This is why runtime interactions are not restricted to parts passed
- as arguments at construction
- time, because one would need to pass constructed part A to the constructor of part B
- and viceversa, which is obviously impossible. This is why the runtime interactions
- happen through the mother of all parts, i.e. "liveCodeLabCoreInstance" itself.
+<p>It might well be that at runtime part A interacts with part B and viceversa.
+This is why runtime interactions are not restricted to parts passed
+as arguments at construction
+time, because one would need to pass constructed part A to the constructor of part B
+and viceversa, which is obviously impossible. This is why the runtime interactions
+happen through the mother of all parts, i.e. "liveCodeLabCoreInstance" itself.</p>
 
- To determine which parts any single part interacts with at runtime, one
- has to check all the parameters passed to the constructor. The passed parts are likely
- to mean that there is an interaction at runtime. If the "mother"
- "liveCodeLabCoreInstance" is passed to the constructor, then one case to look for
- all "liveCodeLabCoreInstance" occurrences and see which of its children are
- accessed.
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>
+<p>To determine which parts any single part interacts with at runtime, one
+has to check all the parameters passed to the constructor. The passed parts are likely
+to mean that there is an interaction at runtime. If the "mother"
+"liveCodeLabCoreInstance" is passed to the constructor, then one case to look for
+all "liveCodeLabCoreInstance" occurrences and see which of its children are
+accessed.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+
 <span class="class"><span class="keyword">class</span> <span class="title">LiveCodeLabCore</span></span>
   <span class="string">"use strict"</span>
 
@@ -61,9 +66,8 @@
     
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>//////////////////////////////////////////////</p>
 
-<h3>Phase 1</h3>
-
-<p>initialise all the fields first</p>
+<p>Phase 1
+initialise all the fields first</p>
 
 <p>//////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>    
 </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>three is a global defined in three.min.js and used in:
@@ -81,9 +85,8 @@ abstraction layer.</p>             </td>             <td class="code">          
     
 </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>//////////////////////////////////////////////</p>
 
-<h3>Phase 2</h3>
-
-<p>initialise all the parts that don't
+<p>Phase 2
+initialise all the parts that don't
 have any dependencies for construction
 note that the "liveCodeLabCoreInstance" doesn't
 count because it's only used for interactions at
@@ -123,9 +126,8 @@ canvasForBackground at runtime</p>             </td>             <td class="code
     
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>//////////////////////////////////////////////</p>
 
-<h3>Phase 3</h3>
-
-<p>initialise all the parts that do
+<p>Phase 3
+initialise all the parts that do
 have dependencies with other parts
 for their construction.
 Note again that the "liveCodeLabCoreInstance" doesn't
@@ -157,9 +159,8 @@ threeJsSystem, colourFunctions at runtime</p>             </td>             <td 
   
 </pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>//////////////////////////////////////////////</p>
 
-<h3>Phase 4</h3>
-
-<p>Grouped together here all the
+<p>Phase 4
+Grouped together here all the
 methods. Most of the time they just delegate
 to another part.</p>
 

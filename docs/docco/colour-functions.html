@@ -1,9 +1,10 @@
 <!DOCTYPE html>  <html> <head>   <title>colour-functions.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocode.html">                 autocode.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               colour-functions.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true, bitwise: true </p>             </td>             <td class="code">               <div class="highlight"><pre>
 </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>global max, min </p>             </td>             <td class="code">               <div class="highlight"><pre>
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Code adapted from processing.js</p>             </td>             <td class="code">               <div class="highlight"><pre>
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Closure compiler automatically replaces symbolic Constants.* names with their
-values (it does it for everything it thinks it's a constant really).
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>
+
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Closure compiler automatically replaces symbolic Constants.* names with their
+values (it does it for everything it thinks it's a constant really).</p>             </td>             <td class="code">               <div class="highlight"><pre>
+
 <span class="class"><span class="keyword">class</span> <span class="title">ColourFunctions</span></span>
   <span class="string">"use strict"</span>
 
@@ -28,13 +29,13 @@ values (it does it for everything it thinks it's a constant really).
     <span class="property">@colorModeZ</span> = <span class="number">255</span>
     <span class="property">@colorModeA</span> = <span class="number">255</span>
     <span class="property">@Constants</span> =      
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Color modes</p>             </td>             <td class="code">               <div class="highlight"><pre>      RGB: <span class="number">1</span>
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Color modes</p>             </td>             <td class="code">               <div class="highlight"><pre>      RGB: <span class="number">1</span>
       ARGB: <span class="number">2</span>
       HSB: <span class="number">3</span>
       ALPHA: <span class="number">4</span>
       CMYK: <span class="number">5</span>
       
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Blend modes</p>             </td>             <td class="code">               <div class="highlight"><pre>      REPLACE: <span class="number">0</span>
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Blend modes</p>             </td>             <td class="code">               <div class="highlight"><pre>      REPLACE: <span class="number">0</span>
       BLEND: <span class="number">1</span> &lt;&lt; <span class="number">0</span>
       ADD: <span class="number">1</span> &lt;&lt; <span class="number">1</span>
       SUBTRACT: <span class="number">1</span> &lt;&lt; <span class="number">2</span>
@@ -50,7 +51,7 @@ values (it does it for everything it thinks it's a constant really).
       DODGE: <span class="number">1</span> &lt;&lt; <span class="number">12</span>
       BURN: <span class="number">1</span> &lt;&lt; <span class="number">13</span>
       
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Color component bit masks</p>             </td>             <td class="code">               <div class="highlight"><pre>      ALPHA_MASK: <span class="number">0xff000000</span>
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Color component bit masks</p>             </td>             <td class="code">               <div class="highlight"><pre>      ALPHA_MASK: <span class="number">0xff000000</span>
       RED_MASK: <span class="number">0x00ff0000</span>
       GREEN_MASK: <span class="number">0x0000ff00</span>
       BLUE_MASK: <span class="number">0x000000ff</span>
@@ -60,19 +61,19 @@ values (it does it for everything it thinks it's a constant really).
 
     <span class="property">@curColorMode</span> = <span class="property">@Constants</span>.RGB
 
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Ease of use function to extract the colour bits into a string</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@color</span>.<span class="function"><span class="title">toString</span></span> = (colorInt) =&gt;
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Ease of use function to extract the colour bits into a string</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@color</span>.<span class="function"><span class="title">toString</span></span> = (colorInt) =&gt;
       <span class="string">"rgba("</span> + ((colorInt &amp; <span class="property">@Constants</span>.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>) + <span class="string">","</span> + ((colorInt &amp; <span class="property">@Constants</span>.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>) + <span class="string">","</span> + (colorInt &amp; <span class="property">@Constants</span>.BLUE_MASK) + <span class="string">","</span> + ((colorInt &amp; <span class="property">@Constants</span>.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="number">255</span> + <span class="string">")"</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Easy of use function to pack rgba values into a single bit-shifted color int.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@color</span>.<span class="function"><span class="title">toInt</span></span> = (r, g, b, a) =&gt;
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Easy of use function to pack rgba values into a single bit-shifted color int.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@color</span>.<span class="function"><span class="title">toInt</span></span> = (r, g, b, a) =&gt;
       (a &lt;&lt; <span class="number">24</span>) &amp; <span class="property">@Constants</span>.ALPHA_MASK | (r &lt;&lt; <span class="number">16</span>) &amp; <span class="property">@Constants</span>.RED_MASK | (g &lt;&lt; <span class="number">8</span>) &amp; <span class="property">@Constants</span>.GREEN_MASK | b &amp; <span class="property">@Constants</span>.BLUE_MASK
   
-</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>Creates a simple array in [R, G, B, A] format, [255, 255, 255, 255]</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@color</span>.<span class="function"><span class="title">toArray</span></span> = (colorInt) =&gt;
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Creates a simple array in [R, G, B, A] format, [255, 255, 255, 255]</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@color</span>.<span class="function"><span class="title">toArray</span></span> = (colorInt) =&gt;
       [(colorInt &amp; <span class="property">@Constants</span>.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>, (colorInt &amp; <span class="property">@Constants</span>.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>, colorInt &amp; <span class="property">@Constants</span>.BLUE_MASK, (colorInt &amp; <span class="property">@Constants</span>.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>]
   
-</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Creates a WebGL color array in [R, G, B, A] format. WebGL wants the color ranges between 0 and 1, [1, 1, 1, 1]</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@color</span>.<span class="function"><span class="title">toGLArray</span></span>= (colorInt) =&gt;
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>Creates a WebGL color array in [R, G, B, A] format. WebGL wants the color ranges between 0 and 1, [1, 1, 1, 1]</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@color</span>.<span class="function"><span class="title">toGLArray</span></span>= (colorInt) =&gt;
       [((colorInt &amp; <span class="property">@Constants</span>.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>) / <span class="number">255</span>, ((colorInt &amp; <span class="property">@Constants</span>.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>) / <span class="number">255</span>, (colorInt &amp; <span class="property">@Constants</span>.BLUE_MASK) / <span class="number">255</span>, ((colorInt &amp; <span class="property">@Constants</span>.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="number">255</span>]
   
-</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>HSB conversion function from Mootools, MIT Licensed</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@color</span>.<span class="function"><span class="title">toRGB</span></span> = (h, s, b) =&gt;
+</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>HSB conversion function from Mootools, MIT Licensed</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@color</span>.<span class="function"><span class="title">toRGB</span></span> = (h, s, b) =&gt;
       br = <span class="literal">undefined</span>
       hue = <span class="literal">undefined</span>
       f = <span class="literal">undefined</span>
@@ -80,14 +81,14 @@ values (it does it for everything it thinks it's a constant really).
       q = <span class="literal">undefined</span>
       t = <span class="literal">undefined</span>
       
-</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Limit values greater than range</p>             </td>             <td class="code">               <div class="highlight"><pre>      h = (<span class="keyword">if</span> (h &gt; <span class="property">@colorModeX</span>) <span class="keyword">then</span> <span class="property">@colorModeX</span> <span class="keyword">else</span> h)
+</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>Limit values greater than range</p>             </td>             <td class="code">               <div class="highlight"><pre>      h = (<span class="keyword">if</span> (h &gt; <span class="property">@colorModeX</span>) <span class="keyword">then</span> <span class="property">@colorModeX</span> <span class="keyword">else</span> h)
       s = (<span class="keyword">if</span> (s &gt; <span class="property">@colorModeY</span>) <span class="keyword">then</span> <span class="property">@colorModeY</span> <span class="keyword">else</span> s)
       b = (<span class="keyword">if</span> (b &gt; <span class="property">@colorModeZ</span>) <span class="keyword">then</span> <span class="property">@colorModeZ</span> <span class="keyword">else</span> b)
       h = (h / <span class="property">@colorModeX</span>) * <span class="number">360</span>
       s = (s / <span class="property">@colorModeY</span>) * <span class="number">100</span>
       b = (b / <span class="property">@colorModeZ</span>) * <span class="number">100</span>
       br = Math.round(b / <span class="number">100</span> * <span class="number">255</span>)
-</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>Grayscale</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">return</span> [br, br, br]  <span class="keyword">if</span> s <span class="keyword">is</span> <span class="number">0</span>
+</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Grayscale</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">return</span> [br, br, br]  <span class="keyword">if</span> s <span class="keyword">is</span> <span class="number">0</span>
       hue = h % <span class="number">360</span>
       f = hue % <span class="number">60</span>
       p = Math.round((b * (<span class="number">100</span> - s)) / <span class="number">10000</span> * <span class="number">255</span>)
@@ -125,7 +126,7 @@ values (it does it for everything it thinks it's a constant really).
       b = Math.round(<span class="number">255</span> * (aValue3 / <span class="property">@colorModeZ</span>))
     a = Math.round(<span class="number">255</span> * (aValue4 / <span class="property">@colorModeA</span>))
     
-</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>Limit values less than 0 and greater than 255</p>             </td>             <td class="code">               <div class="highlight"><pre>    r = (<span class="keyword">if</span> (r &lt; <span class="number">0</span>) <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> r)
+</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>Limit values less than 0 and greater than 255</p>             </td>             <td class="code">               <div class="highlight"><pre>    r = (<span class="keyword">if</span> (r &lt; <span class="number">0</span>) <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> r)
     g = (<span class="keyword">if</span> (g &lt; <span class="number">0</span>) <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> g)
     b = (<span class="keyword">if</span> (b &lt; <span class="number">0</span>) <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> b)
     a = (<span class="keyword">if</span> (a &lt; <span class="number">0</span>) <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> a)
@@ -134,26 +135,26 @@ values (it does it for everything it thinks it's a constant really).
     b = (<span class="keyword">if</span> (b &gt; <span class="number">255</span>) <span class="keyword">then</span> <span class="number">255</span> <span class="keyword">else</span> b)
     a = (<span class="keyword">if</span> (a &gt; <span class="number">255</span>) <span class="keyword">then</span> <span class="number">255</span> <span class="keyword">else</span> a)
     
-</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>Create color int</p>             </td>             <td class="code">               <div class="highlight"><pre>    (a &lt;&lt; <span class="number">24</span>) &amp; <span class="property">@Constants</span>.ALPHA_MASK | (r &lt;&lt; <span class="number">16</span>) &amp; <span class="property">@Constants</span>.RED_MASK | (g &lt;&lt; <span class="number">8</span>) &amp; <span class="property">@Constants</span>.GREEN_MASK | b &amp; <span class="property">@Constants</span>.BLUE_MASK
+</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>Create color int</p>             </td>             <td class="code">               <div class="highlight"><pre>    (a &lt;&lt; <span class="number">24</span>) &amp; <span class="property">@Constants</span>.ALPHA_MASK | (r &lt;&lt; <span class="number">16</span>) &amp; <span class="property">@Constants</span>.RED_MASK | (g &lt;&lt; <span class="number">8</span>) &amp; <span class="property">@Constants</span>.GREEN_MASK | b &amp; <span class="property">@Constants</span>.BLUE_MASK
 
   color$<span class="number">2</span>: (aValue1, aValue2) -&gt;
     a = <span class="literal">undefined</span>
     
-</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>lowest than any 32 bit color is a special
+</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>lowest than any 32 bit color is a special
 color that paints based on normals.</p>             </td>             <td class="code">               <div class="highlight"><pre>    angleColor = -<span class="number">16777217</span>
     <span class="keyword">return</span> angleColor  <span class="keyword">if</span> aValue1 <span class="keyword">is</span> angleColor
     
-</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Color int and alpha</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> aValue1 &amp; <span class="property">@Constants</span>.ALPHA_MASK
+</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Color int and alpha</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> aValue1 &amp; <span class="property">@Constants</span>.ALPHA_MASK
       a = Math.round(<span class="number">255</span> * (aValue2 / <span class="property">@colorModeA</span>))
       
-</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Limit values less than 0 and greater than 255</p>             </td>             <td class="code">               <div class="highlight"><pre>      a = (<span class="keyword">if</span> (a &gt; <span class="number">255</span>) <span class="keyword">then</span> <span class="number">255</span> <span class="keyword">else</span> a)
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Limit values less than 0 and greater than 255</p>             </td>             <td class="code">               <div class="highlight"><pre>      a = (<span class="keyword">if</span> (a &gt; <span class="number">255</span>) <span class="keyword">then</span> <span class="number">255</span> <span class="keyword">else</span> a)
       a = (<span class="keyword">if</span> (a &lt; <span class="number">0</span>) <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> a)
       <span class="keyword">return</span> aValue1 - (aValue1 &amp; <span class="property">@Constants</span>.ALPHA_MASK) + ((a &lt;&lt; <span class="number">24</span>) &amp; <span class="property">@Constants</span>.ALPHA_MASK)
     
-</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Grayscale and alpha</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">return</span> <span class="property">@color$4</span>(aValue1, aValue1, aValue1, aValue2)  <span class="keyword">if</span> <span class="property">@curColorMode</span> <span class="keyword">is</span> <span class="property">@Constants</span>.RGB
+</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Grayscale and alpha</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">return</span> <span class="property">@color$4</span>(aValue1, aValue1, aValue1, aValue2)  <span class="keyword">if</span> <span class="property">@curColorMode</span> <span class="keyword">is</span> <span class="property">@Constants</span>.RGB
     <span class="property">@color$4</span> <span class="number">0</span>, <span class="number">0</span>, (aValue1 / <span class="property">@colorModeX</span>) * <span class="property">@colorModeZ</span>, aValue2  <span class="keyword">if</span> <span class="property">@curColorMode</span> <span class="keyword">is</span> <span class="property">@Constants</span>.HSB
 
-</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>so, color in both processing and processing.js is slightly weird, because
+</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>so, color in both processing and processing.js is slightly weird, because
 color is just a Java integer, which is a little bit of a headache to
 fold into a Javascript number, which is a float and it's 64 bits.
 For example, the color black is 0xFF000000, which
@@ -161,16 +162,16 @@ in unsigned integer (or 64 bits float) would be 4278190080.
 OK, instead color(0) in Java return -16777216, because Java integers are signed in
 two's complement and they go from -2147483648 to 2147483647 included</p>             </td>             <td class="code">               <div class="highlight"><pre>  color$<span class="number">1</span>: (aValue1) -&gt;
     
-</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>so that special colors still work with "color", e.g.
+</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>so that special colors still work with "color", e.g.
 fill(color(angleColor))</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> (<span class="keyword">typeof</span> aValue1) == <span class="string">"string"</span>
       <span class="keyword">return</span> aValue1
 
-</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>Grayscale</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> aValue1 &lt;= <span class="property">@colorModeX</span> <span class="keyword">and</span> aValue1 &gt;= <span class="number">0</span>
+</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Grayscale</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> aValue1 &lt;= <span class="property">@colorModeX</span> <span class="keyword">and</span> aValue1 &gt;= <span class="number">0</span>
       <span class="keyword">return</span> <span class="property">@color$4</span>(aValue1, aValue1, aValue1, <span class="property">@colorModeA</span>)  <span class="keyword">if</span> <span class="property">@curColorMode</span> <span class="keyword">is</span> <span class="property">@Constants</span>.RGB
       <span class="keyword">return</span> <span class="property">@color$4</span>(<span class="number">0</span>, <span class="number">0</span>, (aValue1 / <span class="property">@colorModeX</span>) * <span class="property">@colorModeZ</span>, <span class="property">@colorModeA</span>)  <span class="keyword">if</span> <span class="property">@curColorMode</span> <span class="keyword">is</span> <span class="property">@Constants</span>.HSB
     
-</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>Color int</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> aValue1      
-</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>Java Overflow
+</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>Color int</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> aValue1      
+</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>Java Overflow
 in two's complement, 2147483647 is 0xFFFFFFFF i.e. the very max of
 java integer's 32 bits, so if you add one you go back to the java int minimum
 so in java the following program gives -2147483648
@@ -182,11 +183,12 @@ note that this stops being correct at 2147483647<em>3 + 3, i.e.
   println("a " + a);
 in Java gives -2147483648
 while this routine gives 2147483648</p>             </td>             <td class="code">               <div class="highlight"><pre>      aValue1 -= <span class="number">4294967296</span>  <span class="keyword">if</span> aValue1 &gt; <span class="number">2147483647</span>
-</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>note that folding below the lower bound is not handled, i.e. -2147483648 -1
+</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>note that folding below the lower bound is not handled, i.e. -2147483648 -1
 doesn't fold to 2147483647</p>             </td>             <td class="code">               <div class="highlight"><pre>      aValue1
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  Creates colors <span class="keyword">for</span> storing <span class="keyword">in</span> variables <span class="keyword">of</span> the color datatype. The parameters are
+  
+  Creates colors <span class="keyword">for</span> storing <span class="keyword">in</span> variables <span class="keyword">of</span> the color datatype. The parameters are
   interpreted as RGB <span class="keyword">or</span> HSB values depending <span class="literal">on</span> the current colorMode(). The <span class="reserved">default</span>
   mode <span class="keyword">is</span> RGB values from <span class="number">0</span> to <span class="number">255</span> <span class="keyword">and</span> therefore, the <span class="reserved">function</span> call color(<span class="number">255</span>, <span class="number">204</span>, <span class="number">0</span>)
   will <span class="keyword">return</span> a bright yellow color. More about how colors are stored can be found <span class="keyword">in</span>
@@ -201,20 +203,21 @@ doesn't fold to 2147483647</p>             </td>             <td class="code">  
   <span class="property">@returns</span> {color} the color
   
   <span class="property">@see</span> colorMode
-</pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  color: (aValue1, aValue2, aValue3, aValue4) -&gt;
+  
+  color: (aValue1, aValue2, aValue3, aValue4) -&gt;
     
-</pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>4 arguments: (R, G, B, A) or (H, S, B, A)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">return</span> <span class="property">@color$4</span>(aValue1, aValue2, aValue3, aValue4)  <span class="keyword">if</span> aValue1 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">and</span> aValue2 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">and</span> aValue3 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">and</span> aValue4 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>`
+</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>4 arguments: (R, G, B, A) or (H, S, B, A)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">return</span> <span class="property">@color$4</span>(aValue1, aValue2, aValue3, aValue4)  <span class="keyword">if</span> aValue1 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">and</span> aValue2 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">and</span> aValue3 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">and</span> aValue4 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>`
     
-</pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>3 arguments: (R, G, B) or (H, S, B)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">return</span> <span class="property">@color$4</span>(aValue1, aValue2, aValue3, <span class="property">@colorModeA</span>)  <span class="keyword">if</span> aValue1 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">and</span> aValue2 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">and</span> aValue3 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>`
+</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>3 arguments: (R, G, B) or (H, S, B)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">return</span> <span class="property">@color$4</span>(aValue1, aValue2, aValue3, <span class="property">@colorModeA</span>)  <span class="keyword">if</span> aValue1 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">and</span> aValue2 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">and</span> aValue3 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>`
     
-</pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>2 arguments: (Color, A) or (Grayscale, A)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">return</span> <span class="property">@color$2</span>(aValue1, aValue2)  <span class="keyword">if</span> aValue1 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">and</span> aValue2 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>`
+</pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>2 arguments: (Color, A) or (Grayscale, A)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">return</span> <span class="property">@color$2</span>(aValue1, aValue2)  <span class="keyword">if</span> aValue1 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>` <span class="keyword">and</span> aValue2 <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>`
     
-</pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>1 argument: (Grayscale) or (Color)
+</pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>1 argument: (Grayscale) or (Color)
 we also accept strings because special colors such as angleColor are encoded
 through strings</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> <span class="keyword">typeof</span> aValue1 <span class="keyword">is</span> <span class="string">"number"</span> <span class="keyword">or</span> <span class="keyword">typeof</span> aValue1 <span class="keyword">is</span> <span class="string">"string"</span> 
       <span class="keyword">return</span> <span class="property">@color$1</span>(aValue1)
     
-</pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>Default</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@color$4</span> <span class="property">@colorModeX</span>, <span class="property">@colorModeY</span>, <span class="property">@colorModeZ</span>, <span class="property">@colorModeA</span>
+</pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>Default</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@color$4</span> <span class="property">@colorModeX</span>, <span class="property">@colorModeY</span>, <span class="property">@colorModeZ</span>, <span class="property">@colorModeA</span>
 
   colorToHSB: (colorInt) -&gt;
     red = <span class="literal">undefined</span>
@@ -244,7 +247,8 @@ through strings</p>             </td>             <td class="code">             
     [hue * <span class="property">@colorModeX</span>, saturation * <span class="property">@colorModeY</span>, maxBright * <span class="property">@colorModeZ</span>]
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  Extracts the brightness value from a color.
+  
+  Extracts the brightness value from a color.
   
   <span class="property">@param</span> {color} colInt any value <span class="keyword">of</span> the color datatype
   
@@ -255,11 +259,13 @@ through strings</p>             </td>             <td class="code">             
   <span class="property">@see</span> blue
   <span class="property">@see</span> hue
   <span class="property">@see</span> saturation
-</pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  brightness: (colInt) -&gt;
+  
+  brightness: (colInt) -&gt;
     <span class="property">@colorToHSB</span>(colInt)[<span class="number">2</span>]
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  Extracts the saturation value from a color.
+  
+  Extracts the saturation value from a color.
   
   <span class="property">@param</span> {color} colInt any value <span class="keyword">of</span> the color datatype
   
@@ -270,11 +276,13 @@ through strings</p>             </td>             <td class="code">             
   <span class="property">@see</span> blue
   <span class="property">@see</span> hue
   <span class="property">@see</span> brightness
-</pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  saturation: (colInt) -&gt;
+  
+  saturation: (colInt) -&gt;
     <span class="property">@colorToHSB</span>(colInt)[<span class="number">1</span>]
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  Extracts the hue value from a color.
+  
+  Extracts the hue value from a color.
   
   <span class="property">@param</span> {color} colInt any value <span class="keyword">of</span> the color datatype
   
@@ -285,11 +293,13 @@ through strings</p>             </td>             <td class="code">             
   <span class="property">@see</span> blue
   <span class="property">@see</span> saturation
   <span class="property">@see</span> brightness
-</pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  hue: (colInt) -&gt;
+  
+  hue: (colInt) -&gt;
     <span class="property">@colorToHSB</span>(colInt)[<span class="number">0</span>]
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  Extracts the red value from a color, scaled to match current colorMode().
+  
+  Extracts the red value from a color, scaled to match current colorMode().
   This value <span class="keyword">is</span> always returned as a float so be careful <span class="keyword">not</span> to assign it to an int value.
   
   <span class="property">@param</span> {color} aColor any value <span class="keyword">of</span> the color datatype
@@ -303,11 +313,13 @@ through strings</p>             </td>             <td class="code">             
   <span class="property">@see</span> hue
   <span class="property">@see</span> saturation
   <span class="property">@see</span> brightness
-</pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  redF: (aColor) -&gt;
+  
+  redF: (aColor) -&gt;
     ((aColor &amp; <span class="property">@Constants</span>.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>) / <span class="number">255</span> * <span class="property">@colorModeX</span>
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  Extracts the green value from a color, scaled to match current colorMode().
+  
+  Extracts the green value from a color, scaled to match current colorMode().
   This value <span class="keyword">is</span> always returned as a float so be careful <span class="keyword">not</span> to assign it to an int value.
   
   <span class="property">@param</span> {color} aColor any value <span class="keyword">of</span> the color datatype
@@ -321,11 +333,13 @@ through strings</p>             </td>             <td class="code">             
   <span class="property">@see</span> hue
   <span class="property">@see</span> saturation
   <span class="property">@see</span> brightness
-</pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  greenF: (aColor) -&gt;
+  
+  greenF: (aColor) -&gt;
     ((aColor &amp; <span class="property">@Constants</span>.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>) / <span class="number">255</span> * <span class="property">@colorModeY</span>
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-45">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  Extracts the blue value from a color, scaled to match current colorMode().
+  
+  Extracts the blue value from a color, scaled to match current colorMode().
   This value <span class="keyword">is</span> always returned as a float so be careful <span class="keyword">not</span> to assign it to an int value.
   
   <span class="property">@param</span> {color} aColor any value <span class="keyword">of</span> the color datatype
@@ -339,11 +353,13 @@ through strings</p>             </td>             <td class="code">             
   <span class="property">@see</span> hue
   <span class="property">@see</span> saturation
   <span class="property">@see</span> brightness
-</pre></div>             </td>           </tr>                               <tr id="section-46">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-46">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  blueF: (aColor) -&gt;
+  
+  blueF: (aColor) -&gt;
     (aColor &amp; <span class="property">@Constants</span>.BLUE_MASK) / <span class="number">255</span> * <span class="property">@colorModeZ</span>
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-47">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-47">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  Extracts the alpha value from a color, scaled to match current colorMode().
+  
+  Extracts the alpha value from a color, scaled to match current colorMode().
   This value <span class="keyword">is</span> always returned as a float so be careful <span class="keyword">not</span> to assign it to an int value.
   
   <span class="property">@param</span> {color} aColor any value <span class="keyword">of</span> the color datatype
@@ -357,14 +373,16 @@ through strings</p>             </td>             <td class="code">             
   <span class="property">@see</span> hue
   <span class="property">@see</span> saturation
   <span class="property">@see</span> brightness
-</pre></div>             </td>           </tr>                               <tr id="section-48">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-48">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  alpha: (aColor) -&gt;
+  
+  alpha: (aColor) -&gt;
     ((aColor &amp; <span class="property">@Constants</span>.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="number">255</span> * <span class="property">@colorModeA</span>
 
   alphaZeroToOne: (aColor) -&gt;
     ((aColor &amp; <span class="property">@Constants</span>.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="number">255</span>
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-49">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-49">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  Calculates a number between two numbers at a specific increment. The amt  parameter <span class="keyword">is</span> the
+  
+  Calculates a number between two numbers at a specific increment. The amt  parameter <span class="keyword">is</span> the
   amount to interpolate between the two values where <span class="number">0.0</span> equal to the first point, <span class="number">0.1</span> <span class="keyword">is</span> very
   near the first point, <span class="number">0.5</span> <span class="keyword">is</span> half-way <span class="keyword">in</span> between, etc. The lerp <span class="reserved">function</span> <span class="keyword">is</span> convenient <span class="keyword">for</span>
   creating motion along a straight path <span class="keyword">and</span> <span class="keyword">for</span> drawing dotted lines.
@@ -377,11 +395,13 @@ through strings</p>             </td>             <td class="code">             
   
   <span class="property">@see</span> curvePoint
   <span class="property">@see</span> bezierPoint
-</pre></div>             </td>           </tr>                               <tr id="section-50">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-50">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  lerp: (value1, value2, amt) -&gt;
+  
+  lerp: (value1, value2, amt) -&gt;
     ((value2 - value1) * amt) + value1
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-51">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-51">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  Calculates a color <span class="keyword">or</span> colors between two colors at a specific increment.
+  
+  Calculates a color <span class="keyword">or</span> colors between two colors at a specific increment.
   The amt parameter <span class="keyword">is</span> the amount to interpolate between the two values where <span class="number">0.0</span>
   equal to the first point, <span class="number">0.1</span> <span class="keyword">is</span> very near the first point, <span class="number">0.5</span> <span class="keyword">is</span> half-way <span class="keyword">in</span> between, etc.
   
@@ -393,7 +413,8 @@ through strings</p>             </td>             <td class="code">             
   
   <span class="property">@see</span> blendColor
   <span class="property">@see</span> color
-</pre></div>             </td>           </tr>                               <tr id="section-52">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-52">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  lerpColor: (c1, c2, amt) -&gt;
+  
+  lerpColor: (c1, c2, amt) -&gt;
     r = <span class="literal">undefined</span>
     g = <span class="literal">undefined</span>
     b = <span class="literal">undefined</span>
@@ -415,38 +436,39 @@ through strings</p>             </td>             <td class="code">             
     colorBits2 = <span class="property">@color</span>(c2)
     <span class="keyword">if</span> <span class="property">@curColorMode</span> <span class="keyword">is</span> <span class="property">@Constants</span>.HSB
       
-</pre></div>             </td>           </tr>                               <tr id="section-53">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-53">&#182;</a>               </div>               <p>Special processing for HSB mode.
+</pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>Special processing for HSB mode.
 Get HSB and Alpha values for Color 1 and 2</p>             </td>             <td class="code">               <div class="highlight"><pre>      hsb1 = <span class="property">@colorToHSB</span>(colorBits1)
       a1 = ((colorBits1 &amp; <span class="property">@Constants</span>.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="property">@colorModeA</span>
       hsb2 = <span class="property">@colorToHSB</span>(colorBits2)
       a2 = ((colorBits2 &amp; <span class="property">@Constants</span>.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="property">@colorModeA</span>
       
-</pre></div>             </td>           </tr>                               <tr id="section-54">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-54">&#182;</a>               </div>               <p>RColourFunctions.eturn lerp value for each channel, for HSB components</p>             </td>             <td class="code">               <div class="highlight"><pre>      h = <span class="property">@lerp</span>(hsb1[<span class="number">0</span>], hsb2[<span class="number">0</span>], amt)
+</pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>RColourFunctions.eturn lerp value for each channel, for HSB components</p>             </td>             <td class="code">               <div class="highlight"><pre>      h = <span class="property">@lerp</span>(hsb1[<span class="number">0</span>], hsb2[<span class="number">0</span>], amt)
       s = <span class="property">@lerp</span>(hsb1[<span class="number">1</span>], hsb2[<span class="number">1</span>], amt)
       b = <span class="property">@lerp</span>(hsb1[<span class="number">2</span>], hsb2[<span class="number">2</span>], amt)
       rgb = <span class="property">@color</span>.toRGB(h, s, b)
       
-</pre></div>             </td>           </tr>                               <tr id="section-55">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-55">&#182;</a>               </div>               <p>... and for Alpha-range</p>             </td>             <td class="code">               <div class="highlight"><pre>      a = <span class="property">@lerp</span>(a1, a2, amt) * <span class="property">@colorModeA</span>
+</pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>... and for Alpha-range</p>             </td>             <td class="code">               <div class="highlight"><pre>      a = <span class="property">@lerp</span>(a1, a2, amt) * <span class="property">@colorModeA</span>
       <span class="keyword">return</span> (a &lt;&lt; <span class="number">24</span>) &amp; <span class="property">@Constants</span>.ALPHA_MASK | (rgb[<span class="number">0</span>] &lt;&lt; <span class="number">16</span>) &amp; <span class="property">@Constants</span>.RED_MASK | (rgb[<span class="number">1</span>] &lt;&lt; <span class="number">8</span>) &amp; <span class="property">@Constants</span>.GREEN_MASK | rgb[<span class="number">2</span>] &amp; <span class="property">@Constants</span>.BLUE_MASK
     
-</pre></div>             </td>           </tr>                               <tr id="section-56">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-56">&#182;</a>               </div>               <p>Get RGBA values for Color 1 to floats</p>             </td>             <td class="code">               <div class="highlight"><pre>    r1 = (colorBits1 &amp; <span class="property">@Constants</span>.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>
+</pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>Get RGBA values for Color 1 to floats</p>             </td>             <td class="code">               <div class="highlight"><pre>    r1 = (colorBits1 &amp; <span class="property">@Constants</span>.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>
     g1 = (colorBits1 &amp; <span class="property">@Constants</span>.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>
     b1 = (colorBits1 &amp; <span class="property">@Constants</span>.BLUE_MASK)
     a1 = ((colorBits1 &amp; <span class="property">@Constants</span>.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="property">@colorModeA</span>
     
-</pre></div>             </td>           </tr>                               <tr id="section-57">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-57">&#182;</a>               </div>               <p>Get RGBA values for Color 2 to floats</p>             </td>             <td class="code">               <div class="highlight"><pre>    r2 = (colorBits2 &amp; <span class="property">@Constants</span>.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>
+</pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <p>Get RGBA values for Color 2 to floats</p>             </td>             <td class="code">               <div class="highlight"><pre>    r2 = (colorBits2 &amp; <span class="property">@Constants</span>.RED_MASK) &gt;&gt;&gt; <span class="number">16</span>
     g2 = (colorBits2 &amp; <span class="property">@Constants</span>.GREEN_MASK) &gt;&gt;&gt; <span class="number">8</span>
     b2 = (colorBits2 &amp; <span class="property">@Constants</span>.BLUE_MASK)
     a2 = ((colorBits2 &amp; <span class="property">@Constants</span>.ALPHA_MASK) &gt;&gt;&gt; <span class="number">24</span>) / <span class="property">@colorModeA</span>
     
-</pre></div>             </td>           </tr>                               <tr id="section-58">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-58">&#182;</a>               </div>               <p>Return lerp value for each channel, INT for color, Float for Alpha-range</p>             </td>             <td class="code">               <div class="highlight"><pre>    r = <span class="property">@lerp</span>(r1, r2, amt) | <span class="number">0</span>
+</pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>Return lerp value for each channel, INT for color, Float for Alpha-range</p>             </td>             <td class="code">               <div class="highlight"><pre>    r = <span class="property">@lerp</span>(r1, r2, amt) | <span class="number">0</span>
     g = <span class="property">@lerp</span>(g1, g2, amt) | <span class="number">0</span>
     b = <span class="property">@lerp</span>(b1, b2, amt) | <span class="number">0</span>
     a = <span class="property">@lerp</span>(a1, a2, amt) * <span class="property">@colorModeA</span>
     (a &lt;&lt; <span class="number">24</span>) &amp; <span class="property">@Constants</span>.ALPHA_MASK | (r &lt;&lt; <span class="number">16</span>) &amp; <span class="property">@Constants</span>.RED_MASK | (g &lt;&lt; <span class="number">8</span>) &amp; <span class="property">@Constants</span>.GREEN_MASK | b &amp; <span class="property">@Constants</span>.BLUE_MASK
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-59">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-59">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  Changes the way Processing interprets color data. By <span class="reserved">default</span>, fill(), stroke(), <span class="keyword">and</span> background()
+  
+  Changes the way Processing interprets color data. By <span class="reserved">default</span>, fill(), stroke(), <span class="keyword">and</span> background()
   colors are set <span class="keyword">by</span> values between <span class="number">0</span> <span class="keyword">and</span> <span class="number">255</span> using the RGB color model. It <span class="keyword">is</span> possible to change the
   numerical range used <span class="keyword">for</span> specifying colors <span class="keyword">and</span> to <span class="keyword">switch</span> color systems. For example, calling colorMode(RGB, <span class="number">1.0</span>)
   will specify that values are specified between <span class="number">0</span> <span class="keyword">and</span> <span class="number">1.</span> The limits <span class="keyword">for</span> defining colors are altered <span class="keyword">by</span> setting the
@@ -464,7 +486,8 @@ Get HSB and Alpha values for Color 1 and 2</p>             </td>             <td
   <span class="property">@see</span> background
   <span class="property">@see</span> fill
   <span class="property">@see</span> stroke
-</pre></div>             </td>           </tr>                               <tr id="section-60">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-60">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  colorMode: (mode, range1, range2, range3, range4) -&gt;
+  
+  colorMode: (mode, range1, range2, range3, range4) -&gt;
     <span class="property">@curColorMode</span> = mode
     <span class="keyword">if</span> arguments.length &gt; <span class="number">1</span>
       <span class="property">@colorModeX</span> = range1
@@ -473,9 +496,8 @@ Get HSB and Alpha values for Color 1 and 2</p>             </td>             <td
       <span class="property">@colorModeA</span> = range4 <span class="keyword">or</span> range1
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-61">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-61">&#182;</a>               </div>               <p>blending modes</p>
-
-<h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  These are internal blending modes used <span class="keyword">for</span> BlendColor()
+</pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>blending modes</p>             </td>             <td class="code">               <div class="highlight"><pre>  
+  These are internal blending modes used <span class="keyword">for</span> BlendColor()
   
   <span class="property">@param</span> {Color} c1       First Color to blend
   <span class="property">@param</span> {Color} c2       Second Color to blend
@@ -484,7 +506,8 @@ Get HSB and Alpha values for Color 1 and 2</p>             </td>             <td
   
   <span class="property">@see</span> BlendColor
   <span class="property">@see</span> Blend
-</pre></div>             </td>           </tr>                               <tr id="section-62">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-62">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  modesFunction: () -&gt;
+  
+  modesFunction: () -&gt;
     ALPHA_MASK = <span class="property">@Constants</span>.ALPHA_MASK
     RED_MASK = <span class="property">@Constants</span>.RED_MASK
     GREEN_MASK = <span class="property">@Constants</span>.GREEN_MASK
@@ -682,7 +705,8 @@ Get HSB and Alpha values for Color 1 and 2</p>             </td>             <td
         cb = <span class="number">255</span> - ((<span class="keyword">if</span> (cb &lt; <span class="number">0</span>) <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> ((<span class="keyword">if</span> (cb &gt; <span class="number">255</span>) <span class="keyword">then</span> <span class="number">255</span> <span class="keyword">else</span> cb))))
       applyMode c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb
   
-</pre></div>             </td>           </tr>                               <tr id="section-63">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-63">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  Blends two color values together based <span class="literal">on</span> the blending mode given as the MODE parameter.
+  
+  Blends two color values together based <span class="literal">on</span> the blending mode given as the MODE parameter.
   The possible modes are described <span class="keyword">in</span> the reference <span class="keyword">for</span> the blend() <span class="reserved">function</span>.
   
   <span class="property">@param</span> {color} c1 color: the first color to blend
@@ -694,7 +718,8 @@ Get HSB and Alpha values for Color 1 and 2</p>             </td>             <td
   
   <span class="property">@see</span> blend
   <span class="property">@see</span> color
-</pre></div>             </td>           </tr>                               <tr id="section-64">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-64">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>  blendColor: (c1, c2, mode) -&gt;
+  
+  blendColor: (c1, c2, mode) -&gt;
     <span class="keyword">if</span> mode <span class="keyword">is</span> <span class="property">@Constants</span>.REPLACE
       <span class="property">@modes</span>.replace c1, c2
     <span class="keyword">else</span> <span class="keyword">if</span> mode <span class="keyword">is</span> <span class="property">@Constants</span>.BLEND

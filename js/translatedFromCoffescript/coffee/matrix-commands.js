@@ -1,5 +1,5 @@
 /*
-Takes care of all matrix-related commands.
+## Takes care of all matrix-related commands.
 */
 
 var MatrixCommands;

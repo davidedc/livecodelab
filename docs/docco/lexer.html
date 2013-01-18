@@ -1,39 +1,40 @@
-<!DOCTYPE html>  <html> <head>   <title>lexer.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocode.html">                 autocode.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               lexer.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>
-Lexer is a variation/port of:
+<!DOCTYPE html>  <html> <head>   <title>lexer.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocode.html">                 autocode.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               lexer.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Lexer is a variation/port of:</p>
 
-McLexer: A lexical analysis system/library for JavaScript.
+<p>McLexer: A lexical analysis system/library for JavaScript.
 Author:  Matthew Might
 Site:    http://matt.might.net/
-         http://www.ucombinator.com/
+        http://www.ucombinator.com/</p>
 
-McLexer associates rules with analysis states.
+<p>The lexer associates rules with analysis states.</p>
 
-Each rule contains a regular expression to match, 
-and action to execute upon finding a match.
+<p>Each rule contains a regular expression to match, 
+and action to execute upon finding a match.</p>
 
-When a state matches its rules against an input text, 
+<p>When a state matches its rules against an input text, 
 it chooses the rule with the longest match against the prefix 
-of the input text.
+of the input text.</p>
 
-A lexical state is a collection of rules.
+<p>A lexical state is a collection of rules.</p>
 
-It has three primary methods:
+<p>It has three primary methods:</p>
 
-+ lex(input) runs a continuation-based lexer on the input;
-  lex invokes next once, and expects a continuation back;
-  it then invokes the continuation and expects each continuation
-  it invokes to return another continuation.  Once a continuation
-  returns null; parsing is complete.     
+<ul>
+<li><p>lex(input) runs a continuation-based lexer on the input;
+lex invokes next once, and expects a continuation back;
+it then invokes the continuation and expects each continuation
+it invokes to return another continuation.  Once a continuation
+returns null; parsing is complete.     </p></li>
+<li><p>findAndRunActionPairedToLongestAppliableRegex(input) runs a match against an input,
+fires the action.
+An action is a procedure that accepts the match data (an array),
+the remainder of the input, and the current state and returns a function that
+applies the rules again and finds and runs the next action. An action does not run
+the next one (that would be recursion). Rather, it returns a function to find and
+run the next one</p></li>
+</ul>
 
-+ findAndRunActionPairedToLongestAppliableRegex(input) runs a match against an input,
-  fires the action.
-  An action is a procedure that accepts the match data (an array),
-  the remainder of the input, and the current state and returns a function that
-  applies the rules again and finds and runs the next action. An action does not run
-  the next one (that would be recursion). Rather, it returns a function to find and
-  run the next one
-
-Why this "step by step" approach instead of a normal recursion? The advantage is
+<p>Why this "step by step" approach instead of a normal recursion? The advantage is
 that you can stop the parsing and resume it any time you want. Suppose that
 you have a huge program to parse. With recursion, once you start you can't
 stop until the end (at least if you are using normal recursion as provided by
@@ -41,8 +42,8 @@ the language runtime. If you implement your own recursion using your own stack
 then you could indeed pause/resume things). In a single-threaded language like
 Javascript this results in everything else "blocking". A "continuations" approach
 lets you stop and resume the parsing more easily, since you lex the program step
-by step in a manner that does not rely on the runtime stack. There is no recursion.
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2> </h2>             </td>             <td class="code">               <div class="highlight"><pre>
+by step in a manner that does not rely on the runtime stack. There is no recursion.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+
 <span class="class"><span class="keyword">class</span> <span class="title">LexerState</span></span>
   rules: []
 
@@ -87,19 +88,20 @@ now return the result of the action, which is the next action</p>             </
     =&gt;
       <span class="property">@findAndRunActionPairedToLongestAppliableRegex</span> input
 
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>Each rule contains a regular expression to match, 
-<span class="keyword">and</span> action to execute upon finding a match.
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <h1>#</h1>             </td>             <td class="code">               <div class="highlight"><pre>
+
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Each rule contains a regular expression to match, 
+and action to execute upon finding a match.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+
 <span class="class"><span class="keyword">class</span> <span class="title">LexerRule</span></span>
   constructor: (<span class="property">@regex</span>, <span class="property">@action</span>) -&gt;  
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Each rule is re-written to match prefixes of the input string.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@regex</span> = <span class="keyword">new</span> RegExp(<span class="string">"^("</span> + <span class="property">@regex</span>.source + <span class="string">")"</span>)
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Each rule is re-written to match prefixes of the input string.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@regex</span> = <span class="keyword">new</span> RegExp(<span class="string">"^("</span> + <span class="property">@regex</span>.source + <span class="string">")"</span>)
     <span class="property">@regex</span>.compile <span class="property">@regex</span>  <span class="keyword">if</span> <span class="property">@regex</span>.compile
   matches: (s) -&gt;
     m = s.match(<span class="property">@regex</span>)
     m.shift()  <span class="keyword">if</span> m
     m
 
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Creates a continuation that switches analysis to another lexical state. <br />
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Creates a continuation that switches analysis to another lexical state. <br />
 McCONTINUE = (state) ->
  (match, rest) ->
    state.findAndRunActionPairedToLongestAppliableRegex rest</p>             </td>             <td class="code">               <div class="highlight"><pre>

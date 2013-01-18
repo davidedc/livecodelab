@@ -5,7 +5,7 @@ Site:    <a href="http://matt.might.net/">http://matt.might.net/</a>
          <a href="http://www.ucombinator.com/">http://www.ucombinator.com/</a>
 
 </p>
-<p>McLexer associates rules with analysis states.
+<p>The lexer associates rules with analysis states.
 
 </p>
 <p>Each rule contains a regular expression to match, 
@@ -46,7 +46,7 @@ then you could indeed pause/resume things). In a single-threaded language like
 Javascript this results in everything else &quot;blocking&quot;. A &quot;continuations&quot; approach
 lets you stop and resume the parsing more easily, since you lex the program step
 by step in a manner that does not rely on the runtime stack. There is no recursion.</p>
-</div><button class="showcode btn btn-info">Show code</button><span> (defined in /coffee/autocoder/lexer.coffee:48)</span><pre class="sourcecode prettyprint .linenums:48">class LexerState
+</div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/autocoder/lexer.coffee:47)</span><pre class="sourcecode prettyprint .linenums:47">class LexerState
   rules: []
 
   addRule: (regex, action) ->
