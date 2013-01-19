@@ -11,7 +11,7 @@ class CodeTransformer
   currentCodeString: null
   
   constructor: (@eventRouter, @CoffeeCompiler, @liveCodeLabCoreInstance) ->
-    # note that this is not used anywhere for the time being.
+    # This list is not used anywhere for the time being.
     listOfPossibleFunctions = [
       "function"
       "alert"
@@ -89,25 +89,26 @@ class CodeTransformer
 
 
   ###
-  Stops ticked doOnce blocks from running
-  
-  doOnce statements which have a tick mark next to them
-  are not run. This is achieved by replacing the line with
-  the "doOnce" with "if false" or "//" depending on whether
-  the doOnce is a multiline or an inline one, like so:
-  ✓doOnce ->
-  background 255
-  fill 255,0,0
-  ✓doOnce -> ball
-  becomes:
-  if false ->
-  background 255
-  fill 255,0,0
-  //doOnce -> ball
-  
-  @param {string} code    the code to re-write
-  
-  @returns {string}
+  ## Stops ticked doOnce blocks from running
+  ## 
+  ## doOnce statements which have a tick mark next to them
+  ## are not run. This is achieved by replacing the line with
+  ## the "doOnce" with "if false" or "//" depending on whether
+  ## the doOnce is a multiline or an inline one, like so:
+  ## 
+  ##      ✓doOnce ->
+  ##      background 255
+  ##      fill 255,0,0
+  ##      ✓doOnce -> ball
+  ##      becomes:
+  ##      if false ->
+  ##      background 255
+  ##      fill 255,0,0
+  ##      //doOnce -> ball
+  ## 
+  ## @param {string} code    the code to re-write
+  ## 
+  ## @returns {string}
   ###
   removeTickedDoOnce: (code) ->
     newCode = undefined
@@ -121,6 +122,7 @@ class CodeTransformer
     # the block has been run or not. This allows us to put back the tick where
     # necessary, so the doOnce block is not run again.
     # Example - let's say one pastes in this code:
+    #
     #      doOnce ->
     #        background 255
     #        fill 255,0,0
@@ -128,6 +130,7 @@ class CodeTransformer
     #      doOnce -> ball
     #
     # it becomes:
+    #
     #      (1+0).times ->
     #        addDoOnce(1); background 255
     #        fill 255,0,0
@@ -300,16 +303,16 @@ class CodeTransformer
     code
 
   ###
-  Some of the functions can be used with postfix notation
-  
-  e.g.
-  
-  60 bpm
-  red fill
-  yellow stroke
-  black background
-  
-  We need to switch this round before coffee script compilation
+  ## Some of the functions can be used with postfix notation
+  ## 
+  ## e.g.
+  ## 
+  ##      60 bpm
+  ##      red fill
+  ##      yellow stroke
+  ##      black background
+  ## 
+  ## We need to switch this round before coffee script compilation
   ###
   adjustPostfixNotations: (code) ->
     elaboratedSource = undefined
@@ -348,11 +351,11 @@ class CodeTransformer
   	
   	#////////////////// Newer code checks
   	###
-  	The CodeChecker will check for unbalanced brackets
-  	and unfinished strings
-  	
-  	If any errors are found then we quit compilation here
-  	and display an error message
+  	## The CodeChecker will check for unbalanced brackets
+  	## and unfinished strings
+  	## 
+  	## If any errors are found then we quit compilation here
+  	## and display an error message
   	###
   	
   	#
@@ -550,9 +553,6 @@ class CodeTransformer
   	programHasBasicError = false
   	@eventRouter.trigger "clear-error"
   	
-  	# see here for the deepest examination ever of "eval"
-  	# http://perfectionkills.com/global-eval-what-are-the-options/
-  	# note that exceptions are caught by the window.onerror callback
   	@liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
   	
   	# You might want to change the frame count from the program
@@ -566,6 +566,8 @@ class CodeTransformer
   	# the cheap hack in place i.e. remove any local declaration that the
   	# coffeescript to javascript translator inserts.
   	compiledOutput = compiledOutput.replace(/var frame/, ";")
+
+  	# elegant way to not use eval
   	functionFromCompiledCode = new Function(compiledOutput)
   	@liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction functionFromCompiledCode
   	functionFromCompiledCode
