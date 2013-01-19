@@ -229,16 +229,15 @@ pre-prending a tick once they are run, which prevents them from being run again.
   <p>Stops ticked doOnce blocks from running</p><p>doOnce statements which have a tick mark next to them
 are not run. This is achieved by replacing the line with
 the &quot;doOnce&quot; with &quot;if false&quot; or &quot;//&quot; depending on whether
-the doOnce is a multiline or an inline one, like so:
-✓doOnce -&gt;
-background 255
-fill 255,0,0
-✓doOnce -&gt; ball
-becomes:
-if false -&gt;
-background 255
-fill 255,0,0
-//doOnce -&gt; ball</p><p>@returns {string}</p>
+the doOnce is a multiline or an inline one, like so:</p><pre><code> ✓doOnce -&gt;
+ background 255
+ fill 255,0,0
+ ✓doOnce -&gt; ball
+ becomes:
+ if false -&gt;
+ background 255
+ fill 255,0,0
+ //doOnce -&gt; ball</code></pre><p>@returns {string}</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -280,10 +279,10 @@ fill 255,0,0
       - (void) <strong>adjustPostfixNotations</strong>(code)
     </p>
     <div class='docstring'>
-  <p>Some of the functions can be used with postfix notation</p><p>e.g.</p><p>60 bpm
-red fill
-yellow stroke
-black background</p><p>We need to switch this round before coffee script compilation</p>
+  <p>Some of the functions can be used with postfix notation</p><p>e.g.</p><pre><code> 60 bpm
+ red fill
+ yellow stroke
+ black background</code></pre><p>We need to switch this round before coffee script compilation</p>
 </div>
 <div class='tags'>
 </div>
@@ -310,7 +309,7 @@ run, so we need to attach it to the CodeTransformer object.</p>
     </div>
     <div id='footer'>
   Generated on
-  Fri Jan 18 2013 22:18:36 GMT+0000 (GMT)
+  Sat Jan 19 2013 01:14:24 GMT+0000 (GMT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.4

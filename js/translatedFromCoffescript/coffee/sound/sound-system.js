@@ -206,8 +206,8 @@ SoundSystem = (function() {
     var newSound,
       _this = this;
     newSound = new this.buzz.sound(soundInfo.path);
-    newSound.mute();
     newSound.load();
+    newSound.mute();
     newSound.bind("ended", function(e) {
       newSound.unbind("ended");
       newSound.unmute();
@@ -233,9 +233,9 @@ SoundSystem = (function() {
       this.soundFilesPaths[soundInfo.name] = soundInfo.path;
       if (this.Bowser.safari) {
         for (preloadSounds = _j = 0, _ref1 = this.CHANNELSPERSOUND; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; preloadSounds = 0 <= _ref1 ? ++_j : --_j) {
-          setTimeout((function() {
-            return checkSound;
-          }), 200 * cycleSoundDefs, soundDef, soundInfo);
+          setTimeout(function(soundDef, soundInfo) {
+            return _this.checkSound(soundDef, soundInfo);
+          }, 20 * cycleSoundDefs, soundDef, soundInfo);
         }
       }
     }

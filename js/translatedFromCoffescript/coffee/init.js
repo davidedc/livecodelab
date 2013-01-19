@@ -122,7 +122,7 @@ startEnvironment = function(paramsObject) {
   liveCodeLabCore.startAnimationLoop();
   if (!Detector.webgl || paramsObject.forceCanvasRenderer) {
     $("#noWebGLMessage").modal({
-      onClose: eval("$.modal.close()", "liveCodeLabCore.isAudioSupported")
+      onClose: $.modal.close
     });
     $("#simplemodal-container").height(200);
   }
