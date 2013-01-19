@@ -208,8 +208,8 @@ class SoundSystem
   # Called from loadAndTestAllTheSounds
   checkSound: (soundDef, soundInfo) ->
     newSound = new @buzz.sound(soundInfo.path)
-    newSound.mute()
     newSound.load()
+    newSound.mute()
     newSound.bind "ended", (e) =>
       newSound.unbind "ended"
       newSound.unmute()
@@ -242,7 +242,12 @@ class SoundSystem
           # if you load and play all the channels of all the sounds all together
           # the browser freezes, and the OS doesn't feel too well either
           # so better stagger the checks in time.
-          setTimeout (()=>checkSound), 200 * cycleSoundDefs, soundDef, soundInfo
+          setTimeout(
+            (soundDef,soundInfo)=>@checkSound(soundDef,soundInfo),
+            20 * cycleSoundDefs,
+            soundDef,
+            soundInfo
+          )
     # end of the for loop
     
     # if this is chrome, fire the callback immediately
