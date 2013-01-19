@@ -255,7 +255,7 @@ startEnvironment = (paramsObject) ->
   liveCodeLabCore.paintARandomBackground()
   liveCodeLabCore.startAnimationLoop()
   if not Detector.webgl or paramsObject.forceCanvasRenderer
-    $("#noWebGLMessage").modal onClose: eval("$.modal.close()", "liveCodeLabCore.isAudioSupported")
+    $("#noWebGLMessage").modal onClose: $.modal.close
     $("#simplemodal-container").height 200
   editor.focus()
   
