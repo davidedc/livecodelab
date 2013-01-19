@@ -394,6 +394,8 @@ class CodeTransformer
   	# TODO: you should be a little smarter about the substitution of the draw method
   	# You can tell a method declaration because the line below is indented
   	# so you should check that.
+  	code =
+  	  code.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->")
   	
   	# code =  code.replace(
   	#   /^([a-z]+[a-zA-Z0-9]+)\s*$/gm, "$1 = ->" );
@@ -414,8 +416,13 @@ class CodeTransformer
   	# coffeescript takes the rotate as the second argument of scale
   	# causing mayhem.
   	# Instead, all is good if rotate is prepended with a semicolon.
-  	code =
-  	  code.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->")
+
+
+  	# Each doBlock, when run, pushes its own line number to a particular
+  	# array. It leaves traces of which doOnce block has been run and
+  	# where exactly it is so that we can go back and mark it with a tick
+  	# (which prevents a second run to happen, as the tickmarks expand into
+  	# line comments).
   	code =
   	  @addTracingInstructionsToDoOnceBlocks(code)
   	
@@ -424,14 +431,13 @@ class CodeTransformer
   	  code.replace(/^(\s*)([a-z]+[a-zA-Z0-9]*)[ ]*$/gm, "$1;$2()")
   	
   	# this takes care of when a token that it's supposed to be
-  	# a function is inlined with something else e.g.
+  	# a function is inlined with something else with a semicolon:
   	# doOnce frame = 0; box
-  	# 2 times -> box
   	code =
   	  code.replace(/;\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2")
   	
   	# this takes care of when a token that it's supposed to be
-  	# a function is inlined like so:
+  	# a function is inlined like with times like so:
   	# 2 times -> box
   	code =
   	  code.replace(/\->\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2")
