@@ -130,7 +130,7 @@ module.exports = function (grunt) {
         Object.keys(options).forEach(function (opt) {
             cmds.push('--' + opt + '=' + options[opt]);
         });
-        
+
         cmds.push(target);
 
         exec(cmds, function (err, out, code) {
@@ -199,28 +199,28 @@ module.exports = function (grunt) {
                 target: 'coffee'
             }
         },
-				jsduck: {
-						dist: {
-								// source paths with your code
-								src: ['js/*.js', 'js/**/*.js'],
-				
-								// docs output dir
-								dest: 'docs/jsduck',
-				
-								// extra options
-								options: {
-										'builtin-classes': true,
-										'warnings': ['-no_doc', '-dup_member', '-link_ambiguous'],
-										'external': ['XMLHttpRequest']
-								}
-						}
-				},
-				jsdoc : {
-						dist : {
-								src: ['js/*.js', 'js/**/*.js'], 
-								dest: 'docs/jsdoc'
-						}
-				},
+        jsduck: {
+            dist: {
+                // source paths with your code
+                src: ['js/*.js', 'js/**/*.js'],
+
+                // docs output dir
+                dest: 'docs/jsduck',
+
+                // extra options
+                options: {
+                    'builtin-classes': true,
+                    'warnings': ['-no_doc', '-dup_member', '-link_ambiguous'],
+                    'external': ['XMLHttpRequest']
+                }
+            }
+        },
+        jsdoc: {
+            dist: {
+                src: ['js/*.js', 'js/**/*.js'],
+                dest: 'docs/jsdoc'
+            }
+        },
         // currently not used, this is rather done
         // via invokation of a helper sh script
         // because I couldn't get crojsdoc to output
@@ -407,14 +407,14 @@ module.exports = function (grunt) {
 
         grunt.task.run('coffeedoc');
         grunt.task.run('beautifyCoffeedoc');
-        
+
         grunt.task.run('codo');
 
         grunt.task.run('crojsdoc');
 
         grunt.task.run('doccoh:Coffee');
 
-        grunt.task.run('removeCopiedSourcesForDocs');        
+        grunt.task.run('removeCopiedSourcesForDocs');
     });
 
     // Compilation task
