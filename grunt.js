@@ -357,7 +357,7 @@ module.exports = function (grunt) {
             },
         },
         clean: {
-            docs: ['docs/docco/', 'docs/codo/', 'docs/coffeedoc/', 'docs/crojsdoc/'],
+            docs: ['docs/docco/', 'docs/codo/', 'docs/coffeedoc/', 'docs/crojsdoc/', 'docs/deleteme/'],
             build: ['dist/', 'indexMinified.html', 'js_compiled/Livecodelab-minified.js', 'js/translatedFromCoffescript/'],
             tests: ['tests/js/testLiveCodeLab.js']
         },
@@ -397,6 +397,8 @@ module.exports = function (grunt) {
     grunt.registerTask('docs', ' ', function () {
         // also generate these other two styles of documents for a class-view
         // of the coffeescript code.
+
+        grunt.task.run('clean:docs');
 
         grunt.task.run('copySourcesForCreatingDocs');
         grunt.task.run('replaceBlockComments');
