@@ -1,9 +1,10 @@
 .CodeMirror {
   line-height: 1.3em;
   /*font-family: "Lucida Sans Unicode", "Lucida Grande", "Mukti Narrow";*/
-  font-family: Helvetica, Arial, FreeSans;
+  font-family: MavenPro-Medium;
   border: none;
 }
+
 
 
 .CodeMirror-scroll {
