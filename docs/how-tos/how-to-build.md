@@ -8,6 +8,7 @@ To get setup with Grunt should be pretty easy.
  * Make sure you have NodeJS and NPM installed
  * Install Grunt globally ```npm install -g grunt```
  * use npm to get all the dependencies ```npm install```
+ * install coffee-contrib-copy module  ```npm install grunt-contrib-copy```
  * install coffee-script module ```npm install -g coffee-script```
  * install coffedoc module ```npm install -g coffeedoc```
  * install codo module ```npm install -g codo```

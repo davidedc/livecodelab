@@ -255,6 +255,13 @@ module.exports = function (grunt) {
             all: ['js/**/*.js'],
             grunt: ['grunt.js']
         },
+        copy: {
+            fonts: {
+                files: {
+                    "css_compiled/fonts/": "css/fonts/*" // includes files in dir
+                }
+            }
+        },
         recess: {
             lint: {
                 src: ['css/**/*.css'],
@@ -418,11 +425,12 @@ module.exports = function (grunt) {
     });
 
     // Compilation task
-    grunt.registerTask('compile', 'clean:build coffee:app coffee:tests concat closure-compiler recess:compile targethtml:compile');
+    grunt.registerTask('compile', 'clean:build coffee:app coffee:tests concat closure-compiler copy:fonts recess:compile targethtml:compile');
 
     // Load NPM Task modules
     grunt.loadNpmTasks('grunt-closure-compiler');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-doccoh');
     grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-targethtml');
