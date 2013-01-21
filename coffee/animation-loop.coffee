@@ -160,7 +160,6 @@ class AnimationLoop
     # "frame" starts at zero, so we increment after the first time the draw
     # function has been run.
     window.frame++
-    console.log window.frame
     
     # do the render
     @liveCodeLabCoreInstance.renderer.render @liveCodeLabCoreInstance.graphicsCommands
