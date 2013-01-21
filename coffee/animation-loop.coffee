@@ -100,7 +100,7 @@ class AnimationLoop
     # the sound list needs to be cleaned
     # so that the user program can create its own from scratch
     @liveCodeLabCoreInstance.soundSystem.resetLoops()
-    if frame is 0
+    if window.frame is 0
       @liveCodeLabCoreInstance.timeKeeper.resetTime()
     else
       @liveCodeLabCoreInstance.timeKeeper.updateTime()
@@ -144,7 +144,7 @@ class AnimationLoop
       @liveCodeLabCoreInstance.dozingOff = true
       # the program is empty and so it's the screen. Effectively, the user
       # is starting from scratch, so the frame variable should be reset to zero.
-      frame = 0
+      window.frame = 0
     
     #console.log('dozing off');
     
@@ -159,7 +159,8 @@ class AnimationLoop
     
     # "frame" starts at zero, so we increment after the first time the draw
     # function has been run.
-    frame++
+    window.frame++
+    console.log window.frame
     
     # do the render
     @liveCodeLabCoreInstance.renderer.render @liveCodeLabCoreInstance.graphicsCommands
