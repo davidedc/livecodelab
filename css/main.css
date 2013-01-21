@@ -1,5 +1,10 @@
 body {
-background:#fff; color:#333; font: 12px/22px verdana, arial, sans-serif; height:100%; margin:0 auto; width:100%;
+	background:#fff;
+	color:#333;
+	font: 12px/22px verdana, arial, sans-serif;
+	height:100%;
+	margin:0 auto;
+	width:100%;
 	overflow	: hidden;
 	padding		: 0;
 }

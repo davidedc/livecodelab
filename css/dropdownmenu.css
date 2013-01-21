@@ -9,6 +9,8 @@ a:hover {
     padding:0px; margin:0;
     list-style-type:none;
     height:30px;
+    font-family: MavenPro-Medium;
+    font-size:12px;
 }
 .dd_menu li {
     float:left;
@@ -20,9 +22,9 @@ a:hover {
     padding:9px 20px;
     display:block; color:#fff;
     text-decoration:none;
-    font:12px arial, verdana, sans-serif;
-    font-weight: bold;
 }
+
+
 .dd_menu li:hover a {
     color:black;
 }
@@ -97,6 +99,7 @@ a:hover {
     height: 1px;
     overflow: visible;
     visibility: visible;
+    z-index: 3;
     display: block
 }
 
@@ -115,18 +118,10 @@ a:hover {
 
 
 .dd_menu li span {
-    padding:8px 20px;
-    display:block; color:#fff;
+    padding:9px 20px;
+    display:list-tem;
+    color:green;
     text-decoration:none;
-    font:12px arial, verdana, sans-serif;
-    font-weight: bold;
     background-color: #000;
 }
-.dd_menu li span {
-    color: red;
-}
-.dd_menu li span {
-    color: green;
-}
-
 
