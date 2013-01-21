@@ -107,8 +107,14 @@ startEnvironment = (paramsObject) ->
   editor = new Editor(eventRouter, CodeMirror)
   attachMouseWheelHandler editor
   
+  # requires threeJsSystem, blendControls, graphicsCommands, renderer
+  # note that the programLoader variable below is never used. Leaving it
+  # in for consistency.
+  programLoader = new ProgramLoader(eventRouter, editor, liveCodeLabCore) # $, Detector, blendControls
+  eventRouter.bind "load-program", programLoader.loadDemoOrTutorial, programLoader
+
   #console.log('creating stats');
-  ui = new Ui(eventRouter, stats) # $
+  ui = new Ui(eventRouter, stats, programLoader) # $
   # requires: ColourNames
   autocoder = new Autocoder(eventRouter, editor, colourNames) # McLexer
   # Setup Event Listeners
@@ -124,12 +130,6 @@ startEnvironment = (paramsObject) ->
   eventRouter.bind "editor-undim", (=> editorDimmer.undimEditor()), editorDimmer
   eventRouter.bind "editor-toggle-dim", (=> editorDimmer.toggleDimCode()), editorDimmer
   
-  # requires threeJsSystem, blendControls, graphicsCommands, renderer
-  # note that the programLoader variable below is never used. Leaving it
-  # in for consistency.
-  programLoader = new ProgramLoader(eventRouter, editor, liveCodeLabCore) # $, Detector, blendControls
-  eventRouter.bind "load-program", programLoader.loadDemoOrTutorial, programLoader
-
   
   #/////////////////////////////////////////////////////
   # Phase 4 - Setup Of Event Listeners, including handling of

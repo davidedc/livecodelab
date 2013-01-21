@@ -115,9 +115,24 @@
 					<script src="js_compiled/Livecodelab-minified.js"></script>
         <!(endif)-->
 
+<!-- new menu! -->
+		<link rel="stylesheet" type="text/css" href="sooperfish.css" media="screen">
+		<link rel="stylesheet" type="text/css" href="themes/sooperfish-theme-glass.css" media="screen">
+		<script type="text/javascript" src="jquery.easing-sooper.js"></script>
+		<script type="text/javascript" src="jquery.sooperfish.js"></script>
+
+<!-- end of new menu! -->
+
 
     </head>
     <body>
+
+        <!--  menu -->
+        <div class="menubar" style="background-color:black; position: fixed;  z-index:4; top: 0px; left: 0px; width:100%">
+          <ul class="sf-menu" id="nav">
+          </ul>
+        </div>
+        <!-- end of menu -->
 
         <div class="verticalMiddleOfScreen" id="toMove" style="font-size:30em;">
             <div class="fakeAnimationContent">
@@ -185,98 +200,8 @@
             <p>(while you are at it, pick one that supports 3D such as Chrome or Firefox).</p>
         </div>
 
-        <div id="theMenu" style="position: absolute;  z-index:3; top: 0px; left: 0px; width:100%">
 
-            <ul class='dd_menu'>
-
-                <li>
-                    <a id="aboutMenu" style="text-decoration:none; color:red;">LIVECODELAB</a>
-                </li>
-
-                <li id="demos">
-                    <a href="javascript:void(0)" style="text-decoration:none;" id="demoMenu">Demos</a>
-                    <ul>
-                        <li><a id="roseDemo">Rose</a></li>
-                        <li><a id="cheeseAndOlivesDemo">Cheese and olives</a></li>
-                        <li><a id="simpleCubeDemo">Simple cube</a></li>
-                        <li><a id="cubesAndSpikes">Cubes and spikes</a></li>
-                        <li><a id="littleSpiralOfCubes">Little spiral</a></li>
-                        <li><a id="tentacleDemo">Tentacle</a></li>
-                        <li><a id="springysquaresDemo">Springy squares</a></li>
-                        <li><a id="diceDemo">Dice</a></li>
-                        <li><a id="lampDemo">Lamp</a></li>
-                        <li><a id="trillionfeathersDemo">A trillion feathers</a></li>
-                        <li><a id="monsterblobDemo">Monster blob</a></li>
-                        <li><a id="industrialMusicDemo">Sound: Industrial</a></li>
-                        <li><a id="trySoundsDemo">Sound: Try them all</a></li>
-                        <li><a id="webglalmostvoronoiDemo">WebGL: Almost Voronoi</a></li>
-                        <li><a id="webglshardsDemo">WebGL: Shards</a></li>
-                        <li><a id="webglredthreadsDemo">WebGL: Red threads</a></li>
-                        <li><a id="webgltwocubesDemo">WebGL: Two cubes</a></li>
-                        <li><a id="webglturbineDemo">WebGL: Turbine</a></li>
-                        <li><a id="webglzfightartDemo">WebGL: Z-fight art!</a></li>
-                        <li><a id="webglnuclearOctopusDemo">WebGL: Nuclear octopus</a></li>
-                    </ul>
-
-                </li>
-
-                <li id="tutorials">
-                    <a href="javascript:void(0)" style="text-decoration:none;" id="tutorialsMenu">Tutorials</a>
-                    <ul>        
-                        <li><a id="introTutorial">intro</a></li>
-                        <li><a id="helloworldTutorial">hello world</a></li>
-                        <li><a id="somenotesTutorial">some notes</a></li>
-                        <li><a id="rotateTutorial">rotate</a></li>
-                        <li><a id="frameTutorial">frame</a></li>
-                        <li><a id="timeTutorial">time</a></li>
-                        <li><a id="moveTutorial">move</a></li>
-                        <li><a id="scaleTutorial">scale</a></li>
-                        <li><a id="timesTutorial">times</a></li>
-                        <li><a id="fillTutorial">fill</a></li>
-                        <li><a id="strokeTutorial">stroke</a></li>
-                        <li><a id="colornamesTutorial">color by name</a></li>
-                        <li><a id="lightsTutorial">lights</a></li>
-                        <li><a id="backgroundTutorial">background</a></li>
-                        <li><a id="gradientTutorial">gradient</a></li>
-                        <li><a id="lineTutorial">line</a></li>
-                        <li><a id="ballTutorial">ball</a></li>
-                        <li><a id="pushpopMatrixTutorial">push and pop</a></li>
-                        <li><a id="animationstyleTutorial">animation style</a></li>
-                        <li><a id="doonceTutorial">do once</a></li>
-                        <li><a id="conditionalsTutorial">conditionals</a></li>
-                        <li><a id="autocodeTutorial">autocode</a></li>
-                    </ul>
-
-                </li>
-
-                <li id="autocodeIndicatorContainer">
-                    <a id="autocodeIndicator" href="javascript:void(0)"  style="text-decoration:none;">Autocode: off</a>
-                </li>
-
-
-                <!-- Adding a manual hide code toggle julien-->
-                <li id="dimCodeButtonContainer">
-                    <a id="dimCodeIndicator" href="javascript:void(0)"  style="text-decoration:none;">Hide Code: on</a>
-                </li>
-                <li id="resetButtonContainer">
-                    <a id="resetButton" href="javascript:void(0)"  style="text-decoration:none;">Reset</a>
-                </li>
-                <li>
-                    <span id="soundSystemStatus" class='off' style="text-decoration:none;">Sound System Off</span>
-                </li>
-                <li id="dangerSign" style="border-right:none;">
-                    <a href="" id="dangerSignText" style="font-size:2em;margin-top:-0.3em;">!</a>
-                </li>
-                <li id="errorMessage" style="border-right:none;">
-                    <a href="javascript:void(0)" id="errorMessageText"></a>
-                </li>
-
-            </ul>
-
-        </div>
-
-
-        <div name="miao" id="miao" style="position: absolute;  top: 30px; left: 0px; width: 100%; font-size: 3em;">
+        <div name="miao" id="miao" style="position: fixed;  top: 30px; left: 0px; width: 100%; font-size: 3em;">
 
             <canvas id="backGroundCanvas" style="position: absolute; z-index:-3; top: 0px; left: 0px; width:100% height:100%"></canvas> 
             <canvas id="blendedThreeJsSceneCanvas" style="width:100%; height:100%; position: absolute;  z-index:-2; top: 0px; left: 0px;"></canvas> 
