@@ -360,7 +360,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.introTutorial =
-      title: "introTutorial"
+      title: "intro"
       code: """
             // Lines beginning with two
             // slashes (like these) are just comments.
@@ -375,7 +375,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.helloworldTutorial =
-      title: "helloworldTutorial"
+      title: "hello world"
       code: """
             // type these three letters
             // in one of these empty lines below:
@@ -389,7 +389,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.somenotesTutorial =
-      title: "somenotesTutorial"
+      title: "some notes"
       code: """
             // If this makes sense to you:
             // the syntax is similar to Coffeescript
@@ -403,7 +403,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.rotateTutorial =
-      title: "rotateTutorial"
+      title: "rotate"
       code: """
             // now that we have a box
             // let's rotate it:
@@ -418,7 +418,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.frameTutorial =
-      title: "frameTutorial"
+      title: "frame"
       code: """
             // make the box spin
             // by replacing '1' with 'frame'
@@ -434,7 +434,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.timeTutorial =
-      title: "timeTutorial"
+      title: "time"
       code: """
             // 'frame/100' has one problem:
             // faster computers will make
@@ -453,7 +453,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.moveTutorial =
-      title: "moveTutorial"
+      title: "move"
       code: """
             // you can move any object
             // by using 'move'
@@ -469,7 +469,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.scaleTutorial =
-      title: "scaleTutorial"
+      title: "scale"
       code: """
             // you can make an object bigger
             // or smaller by using 'scale'
@@ -487,7 +487,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.timesTutorial =
-      title: "timesTutorial"
+      title: "times"
       code: """
             // 'times' (not to be confused with
             // 'time'!) can be used to
@@ -505,7 +505,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.fillTutorial =
-      title: "fillTutorial"
+      title: "fill"
       code: """
             // 'fill' changes the
             // color of all the faces:
@@ -523,7 +523,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.strokeTutorial =
-      title: "strokeTutorial"
+      title: "stroke"
       code: """
             // 'stroke' changes all the
             // edges:
@@ -542,7 +542,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.colornamesTutorial =
-      title: "colornamesTutorial"
+      title: "color by name"
       code: """
             // you can call colors by name
             // try to un-comment one line:
@@ -560,7 +560,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.lightsTutorial =
-      title: "lightsTutorial"
+      title: "lights"
       code: """
             // 'ambientLight' creates an
             // ambient light so things have
@@ -577,7 +577,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.backgroundTutorial =
-      title: "backgroundTutorial"
+      title: "background"
       code: """
             // 'background' creates a
             // solid background:
@@ -590,7 +590,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.gradientTutorial =
-      title: "gradientTutorial"
+      title: "gradient"
       code: """
             // even nicer, you can paint a
             // background gradient:
@@ -603,7 +603,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.lineTutorial =
-      title: "lineTutorial"
+      title: "line"
       code: """
             // draw lines like this:
             
@@ -615,7 +615,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.ballTutorial =
-      title: "ballTutorial"
+      title: "ball"
       code: """
             // draw balls like this:
             
@@ -629,7 +629,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.pushpopMatrixTutorial =
-      title: "pushpopMatrixTutorial"
+      title: "push and pop"
       code: """
             // pushMatrix creates a bookmark of
             // the position, which you can
@@ -650,7 +650,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.animationstyleTutorial =
-      title: "animationstyleTutorial"
+      title: "animation style"
       code: """
             // try uncommenting either line
             // with the animationStyle
@@ -665,7 +665,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.doonceTutorial =
-      title: "doonceTutorial"
+      title: "do once"
       code: """
             // delete either check mark below
             
@@ -685,7 +685,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.conditionalsTutorial =
-      title: "conditionalsTutorial"
+      title: "conditionals"
       code: """
             // you can draw different things
             // (or in general do different things)
@@ -704,7 +704,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.autocodeTutorial =
-      title: "autocodeTutorial"
+      title: "autocode"
       code: """
             // the Autocode button invents random
             // variations for you.
