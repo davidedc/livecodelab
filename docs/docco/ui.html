@@ -7,23 +7,23 @@ the big flashing cursor, the stats widget...</p>             </td>             <
 <span class="class"><span class="keyword">class</span> <span class="title">Ui</span></span>
   <span class="string">"use strict"</span>
 
-  constructor: (<span class="property">@eventRouter</span>, <span class="property">@stats</span>) -&gt;
+  constructor: (<span class="property">@eventRouter</span>, <span class="property">@stats</span>, <span class="property">@programLoader</span>) -&gt;
 </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@eventRouter</span>.bind <span class="string">"report-runtime-or-compile-time-error"</span>, ((e)=&gt;<span class="property">@checkErrorAndReport</span>(e)), @
     <span class="property">@eventRouter</span>.bind <span class="string">"clear-error"</span>, (=&gt;<span class="property">@clearError</span>()), @
     <span class="property">@eventRouter</span>.bind <span class="string">"autocoder-button-pressed"</span>, (state) =&gt;
       <span class="keyword">if</span> state <span class="keyword">is</span> <span class="literal">true</span>
-        $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: on"</span>).css <span class="string">"background-color"</span>, <span class="string">"#FF0000"</span>
+        $(<span class="string">"#autocodeIndicatorContainer"</span>).html(<span class="string">"Autocode: on"</span>).css <span class="string">"background-color"</span>, <span class="string">"#FF0000"</span>
       <span class="keyword">else</span>
-        $(<span class="string">"#autocodeIndicator"</span>).html(<span class="string">"Autocode: off"</span>).css <span class="string">"background-color"</span>, <span class="string">""</span>
+        $(<span class="string">"#autocodeIndicatorContainer"</span>).html(<span class="string">"Autocode"</span>).css <span class="string">"background-color"</span>, <span class="string">""</span>
 
     <span class="property">@eventRouter</span>.bind <span class="string">"autocoderbutton-flash"</span>, =&gt;
-      $(<span class="string">"#autocodeIndicator"</span>).fadeOut(<span class="number">100</span>).fadeIn <span class="number">100</span>
+      $(<span class="string">"#autocodeIndicatorContainer"</span>).fadeOut(<span class="number">100</span>).fadeIn <span class="number">100</span>
 
     <span class="property">@eventRouter</span>.bind <span class="string">"auto-hide-code-button-pressed"</span>, (state) =&gt;
       <span class="keyword">if</span> state <span class="keyword">is</span> <span class="literal">true</span>
-        $(<span class="string">"#dimCodeIndicator"</span>).html <span class="string">"Hide Code: on"</span>
+        $(<span class="string">"#dimCodeButtonContainer"</span>).html <span class="string">"Hide Code: on"</span>
       <span class="keyword">else</span>
-        $(<span class="string">"#dimCodeIndicator"</span>).html <span class="string">"Hide Code: off"</span>
+        $(<span class="string">"#dimCodeButtonContainer"</span>).html <span class="string">"Hide Code: off"</span>
 
   resizeCanvas: (canvasId) -&gt;
     canvas = $(canvasId)
@@ -97,7 +97,7 @@ otherwise e should just be a string</p>             </td>             <td class=
     $(<span class="string">"#errorMessageText"</span>).text <span class="string">""</span>
 
   soundSystemOk: -&gt;
-    $(<span class="string">"#soundSystemStatus"</span>).text(<span class="string">"Sound System On"</span>).removeClass(<span class="string">"off"</span>).addClass <span class="string">"on"</span>
+    $(<span class="string">"#soundSystemStatus"</span>).text(<span class="string">"Sound System On"</span>).removeClass(<span class="string">"off"</span>)
 
   hideStatsWidget: -&gt;
     $(<span class="string">"#statsWidget"</span>).hide()
@@ -115,12 +115,46 @@ Postponing a little bit makes this work. It doesn't make any sense.</p>         
 resorting to "@", because the "@"s below need to stick
 to the UI elements that generated the events</p>             </td>             <td class="code">               <div class="highlight"><pre>      eventRouter = <span class="property">@eventRouter</span>
       
-      $(<span class="string">"#aboutMenu"</span>).click -&gt;
+      $(<span class="string">'&lt;span &gt;LiveCodeLab&lt;/span&gt;'</span>).appendTo(
+        $(<span class="string">'&lt;li&gt;'</span>).appendTo(
+          $(<span class="string">'#nav'</span>)
+        )
+      ).click =&gt;
         $(<span class="string">"#aboutWindow"</span>).modal()
         $(<span class="string">"#simplemodal-container"</span>).height <span class="number">250</span>
         <span class="literal">false</span>
 
-      $(<span class="string">"#demos li a"</span>).click -&gt;
+</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>insert all the demos in the menu</p>             </td>             <td class="code">               <div class="highlight"><pre>      $(<span class="string">'&lt;span &gt;Demos&lt;/span&gt;'</span>).appendTo(
+        $(<span class="string">'&lt;li&gt;'</span>).attr(<span class="string">'id'</span>, <span class="string">'newDemos'</span>).addClass(<span class="string">'current'</span>).addClass(<span class="string">'sf-parent'</span>).appendTo(
+          $(<span class="string">'#nav'</span>)
+        )
+      )
+      $(<span class="string">"&lt;ul&gt;&lt;/ul&gt;"</span>).appendTo(
+        $(<span class="string">'#newDemos'</span>)
+      ).attr(<span class="string">'id'</span>, <span class="string">'hookforDemos'</span>)
+      <span class="keyword">for</span> property <span class="keyword">of</span> <span class="property">@programLoader</span>.programs.demos
+        a= <span class="string">"&lt;li&gt;&lt;a id='<span class="subst">#{property}</span>'&gt;<span class="subst">#{@programLoader.programs.demos[property].title}</span>&lt;/a&gt;&lt;/li&gt;"</span>
+        $(a).appendTo(
+          $(<span class="string">'#hookforDemos'</span>)
+        )
+
+</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>insert all the tutorials in the menu</p>             </td>             <td class="code">               <div class="highlight"><pre>      $(<span class="string">'&lt;span &gt;Tutorials&lt;/span&gt;'</span>).appendTo(
+        $(<span class="string">'&lt;li&gt;'</span>).attr(<span class="string">'id'</span>, <span class="string">'tutorials'</span>).addClass(<span class="string">'current'</span>).addClass(<span class="string">'sf-parent'</span>).appendTo(
+          $(<span class="string">'#nav'</span>)
+        )
+      )
+      $(<span class="string">"&lt;ul&gt;&lt;/ul&gt;"</span>).appendTo(
+        $(<span class="string">'#tutorials'</span>)
+      ).attr(<span class="string">'id'</span>, <span class="string">'hookforTutorials'</span>)
+      <span class="keyword">for</span> property <span class="keyword">of</span> <span class="property">@programLoader</span>.programs.tutorials
+        a= <span class="string">"&lt;li&gt;&lt;a id='<span class="subst">#{property}</span>'&gt;<span class="subst">#{@programLoader.programs.tutorials[property].title}</span>&lt;/a&gt;&lt;/li&gt;"</span>
+        $(a).appendTo(
+          $(<span class="string">'#hookforTutorials'</span>)
+        )
+
+      $(<span class="string">'ul.sf-menu'</span>).sooperfish();
+
+      $(<span class="string">"#newDemos ul li a"</span>).click -&gt;
         eventRouter.trigger <span class="string">"load-program"</span>, $(@).attr(<span class="string">"id"</span>)
         <span class="literal">false</span>
 
@@ -128,21 +162,35 @@ to the UI elements that generated the events</p>             </td>             <
         eventRouter.trigger <span class="string">"load-program"</span>, $(@).attr(<span class="string">"id"</span>)
         <span class="literal">false</span>
 
-      $(<span class="string">"#autocodeIndicatorContainer"</span>).click -&gt;
+      $(<span class="string">'&lt;span &gt;Autocode&lt;/span&gt;'</span>).appendTo(
+        $(<span class="string">'&lt;li&gt;'</span>).appendTo(
+          $(<span class="string">'#nav'</span>)
+        )
+      ).attr(<span class="string">'id'</span>, <span class="string">'autocodeIndicatorContainer'</span>)
+      $(<span class="string">"#autocodeIndicatorContainer"</span>).click =&gt;
         eventRouter.trigger <span class="string">"toggle-autocoder"</span>
         <span class="literal">false</span>
 
-      $(<span class="string">"#dimCodeButtonContainer"</span>).click -&gt;
+      $(<span class="string">'&lt;span &gt;Hide Code: on&lt;/span&gt;'</span>).appendTo(
+        $(<span class="string">'&lt;li&gt;'</span>).appendTo(
+          $(<span class="string">'#nav'</span>)
+        )
+      ).attr(<span class="string">'id'</span>, <span class="string">'dimCodeButtonContainer'</span>)
+      $(<span class="string">"#dimCodeButtonContainer"</span>).click =&gt;
         eventRouter.trigger <span class="string">"editor-toggle-dim"</span>
         <span class="literal">false</span>
 
-      $(<span class="string">"#resetButtonContainer"</span>).click -&gt;
+      $(<span class="string">'&lt;span &gt;Reset&lt;/span&gt;'</span>).appendTo(
+        $(<span class="string">'&lt;li&gt;'</span>).appendTo(
+          $(<span class="string">'#nav'</span>)
+        )
+      ).click =&gt;
         eventRouter.trigger <span class="string">"reset"</span>
         $(@).stop().fadeOut(<span class="number">100</span>).fadeIn <span class="number">100</span>
         <span class="literal">false</span>
 
       
-</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>Align bottom-left</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@stats</span>.getDomElement().style.position = <span class="string">"absolute"</span>
+</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>Align bottom-left</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@stats</span>.getDomElement().style.position = <span class="string">"absolute"</span>
       <span class="property">@stats</span>.getDomElement().style.right = <span class="string">"0px"</span>
       <span class="property">@stats</span>.getDomElement().style.top = <span class="string">"0px"</span>
       document.body.appendChild <span class="property">@stats</span>.getDomElement()

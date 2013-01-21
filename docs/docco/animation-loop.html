@@ -93,7 +93,7 @@ loop "animate" function.</p>             </td>             <td class="code">    
     
 </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>the sound list needs to be cleaned
 so that the user program can create its own from scratch</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@liveCodeLabCoreInstance</span>.soundSystem.resetLoops()
-    <span class="keyword">if</span> frame <span class="keyword">is</span> <span class="number">0</span>
+    <span class="keyword">if</span> window.frame <span class="keyword">is</span> <span class="number">0</span>
       <span class="property">@liveCodeLabCoreInstance</span>.timeKeeper.resetTime()
     <span class="keyword">else</span>
       <span class="property">@liveCodeLabCoreInstance</span>.timeKeeper.updateTime()
@@ -133,7 +133,7 @@ known good program.</p>             </td>             <td class="code">         
     <span class="keyword">else</span>
       <span class="property">@liveCodeLabCoreInstance</span>.dozingOff = <span class="literal">true</span>
 </pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>the program is empty and so it's the screen. Effectively, the user
-is starting from scratch, so the frame variable should be reset to zero.</p>             </td>             <td class="code">               <div class="highlight"><pre>      frame = <span class="number">0</span>
+is starting from scratch, so the frame variable should be reset to zero.</p>             </td>             <td class="code">               <div class="highlight"><pre>      window.frame = <span class="number">0</span>
     
 </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>console.log('dozing off');</p>             </td>             <td class="code">               <div class="highlight"><pre>    
 </pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>we have to repeat this check because in the case
@@ -145,7 +145,7 @@ after the program has executed</p>             </td>             <td class="code
     <span class="property">@liveCodeLabCoreInstance</span>.soundSystem.changeUpdatesPerMinuteIfNeeded()
     
 </pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>"frame" starts at zero, so we increment after the first time the draw
-function has been run.</p>             </td>             <td class="code">               <div class="highlight"><pre>    frame++
+function has been run.</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.frame++
     
 </pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>do the render</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@liveCodeLabCoreInstance</span>.renderer.render <span class="property">@liveCodeLabCoreInstance</span>.graphicsCommands
     

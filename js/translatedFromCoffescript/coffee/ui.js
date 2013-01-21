@@ -8,10 +8,11 @@ var Ui;
 Ui = (function() {
   "use strict";
 
-  function Ui(eventRouter, stats) {
+  function Ui(eventRouter, stats, programLoader) {
     var _this = this;
     this.eventRouter = eventRouter;
     this.stats = stats;
+    this.programLoader = programLoader;
     this.eventRouter.bind("report-runtime-or-compile-time-error", (function(e) {
       return _this.checkErrorAndReport(e);
     }), this);
@@ -20,19 +21,19 @@ Ui = (function() {
     }), this);
     this.eventRouter.bind("autocoder-button-pressed", function(state) {
       if (state === true) {
-        return $("#autocodeIndicator").html("Autocode: on").css("background-color", "#FF0000");
+        return $("#autocodeIndicatorContainer").html("Autocode: on").css("background-color", "#FF0000");
       } else {
-        return $("#autocodeIndicator").html("Autocode: off").css("background-color", "");
+        return $("#autocodeIndicatorContainer").html("Autocode").css("background-color", "");
       }
     });
     this.eventRouter.bind("autocoderbutton-flash", function() {
-      return $("#autocodeIndicator").fadeOut(100).fadeIn(100);
+      return $("#autocodeIndicatorContainer").fadeOut(100).fadeIn(100);
     });
     this.eventRouter.bind("auto-hide-code-button-pressed", function(state) {
       if (state === true) {
-        return $("#dimCodeIndicator").html("Hide Code: on");
+        return $("#dimCodeButtonContainer").html("Hide Code: on");
       } else {
-        return $("#dimCodeIndicator").html("Hide Code: off");
+        return $("#dimCodeButtonContainer").html("Hide Code: off");
       }
     });
   }
@@ -97,7 +98,7 @@ Ui = (function() {
   };
 
   Ui.prototype.soundSystemOk = function() {
-    return $("#soundSystemStatus").text("Sound System On").removeClass("off").addClass("on");
+    return $("#soundSystemStatus").text("Sound System On").removeClass("off");
   };
 
   Ui.prototype.hideStatsWidget = function() {
@@ -111,14 +112,27 @@ Ui = (function() {
   Ui.prototype.setup = function() {
     var _this = this;
     return $(document).ready(function() {
-      var eventRouter;
+      var a, eventRouter, property;
       eventRouter = _this.eventRouter;
-      $("#aboutMenu").click(function() {
+      $('<span >LiveCodeLab</span>').appendTo($('<li>').appendTo($('#nav'))).click(function() {
         $("#aboutWindow").modal();
         $("#simplemodal-container").height(250);
         return false;
       });
-      $("#demos li a").click(function() {
+      $('<span >Demos</span>').appendTo($('<li>').attr('id', 'newDemos').addClass('current').addClass('sf-parent').appendTo($('#nav')));
+      $("<ul></ul>").appendTo($('#newDemos')).attr('id', 'hookforDemos');
+      for (property in _this.programLoader.programs.demos) {
+        a = "<li><a id='" + property + "'>" + _this.programLoader.programs.demos[property].title + "</a></li>";
+        $(a).appendTo($('#hookforDemos'));
+      }
+      $('<span >Tutorials</span>').appendTo($('<li>').attr('id', 'tutorials').addClass('current').addClass('sf-parent').appendTo($('#nav')));
+      $("<ul></ul>").appendTo($('#tutorials')).attr('id', 'hookforTutorials');
+      for (property in _this.programLoader.programs.tutorials) {
+        a = "<li><a id='" + property + "'>" + _this.programLoader.programs.tutorials[property].title + "</a></li>";
+        $(a).appendTo($('#hookforTutorials'));
+      }
+      $('ul.sf-menu').sooperfish();
+      $("#newDemos ul li a").click(function() {
         eventRouter.trigger("load-program", $(this).attr("id"));
         return false;
       });
@@ -126,17 +140,19 @@ Ui = (function() {
         eventRouter.trigger("load-program", $(this).attr("id"));
         return false;
       });
+      $('<span >Autocode</span>').appendTo($('<li>').appendTo($('#nav'))).attr('id', 'autocodeIndicatorContainer');
       $("#autocodeIndicatorContainer").click(function() {
         eventRouter.trigger("toggle-autocoder");
         return false;
       });
+      $('<span >Hide Code: on</span>').appendTo($('<li>').appendTo($('#nav'))).attr('id', 'dimCodeButtonContainer');
       $("#dimCodeButtonContainer").click(function() {
         eventRouter.trigger("editor-toggle-dim");
         return false;
       });
-      $("#resetButtonContainer").click(function() {
+      $('<span >Reset</span>').appendTo($('<li>').appendTo($('#nav'))).click(function() {
         eventRouter.trigger("reset");
-        $(this).stop().fadeOut(100).fadeIn(100);
+        $(_this).stop().fadeOut(100).fadeIn(100);
         return false;
       });
       _this.stats.getDomElement().style.position = "absolute";

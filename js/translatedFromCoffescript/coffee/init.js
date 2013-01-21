@@ -59,7 +59,9 @@ startEnvironment = function(paramsObject) {
   });
   editor = new Editor(eventRouter, CodeMirror);
   attachMouseWheelHandler(editor);
-  ui = new Ui(eventRouter, stats);
+  programLoader = new ProgramLoader(eventRouter, editor, liveCodeLabCore);
+  eventRouter.bind("load-program", programLoader.loadDemoOrTutorial, programLoader);
+  ui = new Ui(eventRouter, stats, programLoader);
   autocoder = new Autocoder(eventRouter, editor, colourNames);
   eventRouter.bind("reset", function() {
     return autocoder.toggle(false);
@@ -77,8 +79,6 @@ startEnvironment = function(paramsObject) {
   eventRouter.bind("editor-toggle-dim", (function() {
     return editorDimmer.toggleDimCode();
   }), editorDimmer);
-  programLoader = new ProgramLoader(eventRouter, editor, liveCodeLabCore);
-  eventRouter.bind("load-program", programLoader.loadDemoOrTutorial, programLoader);
   eventRouter.bind("reset", (function() {
     return liveCodeLabCore.paintARandomBackground();
   }));

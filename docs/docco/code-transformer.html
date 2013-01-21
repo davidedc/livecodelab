@@ -358,7 +358,9 @@ But this isn't:
 So here is the little replace.
 TODO: you should be a little smarter about the substitution of the draw method
 You can tell a method declaration because the line below is indented
-so you should check that.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	
+so you should check that.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code =
+  	  code.replace(<span class="regexp">/(\d+)\s+times[ ]*\-&gt;/g</span>, <span class="string">";( $1 + 0).times -&gt;"</span>)
+  	
 </pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>code =  code.replace(
   /^([a-z]+[a-zA-Z0-9]+)\s*$/gm, "$1 = ->" );
 some replacements add a semicolon for the
@@ -377,26 +379,29 @@ What happens is that as you are in the middle of typing:
   box
 coffeescript takes the rotate as the second argument of scale
 causing mayhem.
-Instead, all is good if rotate is prepended with a semicolon.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code =
-  	  code.replace(<span class="regexp">/(\d+)\s+times[ ]*\-&gt;/g</span>, <span class="string">";( $1 + 0).times -&gt;"</span>)
-  	code =
+Instead, all is good if rotate is prepended with a semicolon.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+
+</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>Each doBlock, when run, pushes its own line number to a particular
+array. It leaves traces of which doOnce block has been run and
+where exactly it is so that we can go back and mark it with a tick
+(which prevents a second run to happen, as the tickmarks expand into
+line comments).</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code =
   	  <span class="property">@addTracingInstructionsToDoOnceBlocks</span>(code)
   	
-</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>adding () to single tokens left on their own</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code =
+</pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>adding () to single tokens left on their own</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code =
   	  code.replace(<span class="regexp">/^(\s*)([a-z]+[a-zA-Z0-9]*)[ ]*$/gm</span>, <span class="string">"$1;$2()"</span>)
   	
-</pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>this takes care of when a token that it's supposed to be
-a function is inlined with something else e.g.
-doOnce frame = 0; box
-2 times -> box</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code =
+</pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <p>this takes care of when a token that it's supposed to be
+a function is inlined with something else with a semicolon:
+doOnce frame = 0; box</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code =
   	  code.replace(<span class="regexp">/;\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g</span>, <span class="string">";$1()$2"</span>)
   	
-</pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <p>this takes care of when a token that it's supposed to be
-a function is inlined like so:
+</pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <p>this takes care of when a token that it's supposed to be
+a function is inlined like with times like so:
 2 times -> box</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code =
   	  code.replace(<span class="regexp">/\-&gt;\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g</span>, <span class="string">";$1()$2"</span>)
   	
-</pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <p>draw() could just be called by mistake and it's likely
+</pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-45">&#182;</a>               </div>               <p>draw() could just be called by mistake and it's likely
 to be disastrous. User doesn't even have visibility of such method,
 why should he/she call it?
 TODO: call draw() something else that the user is not
@@ -405,13 +410,13 @@ likely to use by mistake and take away this check.</p>             </td>        
       <span class="property">@eventRouter</span>.trigger <span class="string">"compile-time-error-thrown"</span>, <span class="string">"You can't call draw()"</span>
       <span class="keyword">return</span>
   	
-</pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-45">&#182;</a>               </div>               <p>we don't want if and for to undergo the same tratment as, say, box
+</pre></div>             </td>           </tr>                               <tr id="section-46">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-46">&#182;</a>               </div>               <p>we don't want if and for to undergo the same tratment as, say, box
 so put those back to normal.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/;(if)\(\)/g</span>, <span class="string">";$1"</span>)
   	code = code.replace(<span class="regexp">/;(else)\(\)/g</span>, <span class="string">";$1"</span>)
   	code = code.replace(<span class="regexp">/;(for)\(\)/g</span>, <span class="string">";$1"</span>)
   	code = code.replace(<span class="regexp">/\/\//g</span>, <span class="string">"#"</span>)
   	
-</pre></div>             </td>           </tr>                               <tr id="section-46">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-46">&#182;</a>               </div>               <p>Why do we have to match a non-digit non-letter?
+</pre></div>             </td>           </tr>                               <tr id="section-47">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-47">&#182;</a>               </div>               <p>Why do we have to match a non-digit non-letter?
 because we have to make sure that the keyword is "on its own"
 otherwise for example we interfere the replacements of "background" and "round"
 Checking whether the keyword is "on its own" avoid those interferences.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(scale)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
@@ -435,7 +440,7 @@ Checking whether the keyword is "on its own" avoid those interferences.</p>     
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(colorMode)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(color)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	
-</pre></div>             </td>           </tr>                               <tr id="section-47">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-47">&#182;</a>               </div>               <p>code =  code.replace(/([^a-zA-Z0-9])(ambient)(\s)+/g, "$1;$2$3" );
+</pre></div>             </td>           </tr>                               <tr id="section-48">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-48">&#182;</a>               </div>               <p>code =  code.replace(/([^a-zA-Z0-9])(ambient)(\s)+/g, "$1;$2$3" );
 code =  code.replace(/([^a-zA-Z0-9])(reflect)(\s)+/g, "$1;$2$3" );
 code =  code.replace(/([^a-zA-Z0-9])(refract)(\s)+/g, "$1;$2$3" );</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(lights)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(noLights)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
@@ -445,7 +450,7 @@ code =  code.replace(/([^a-zA-Z0-9])(refract)(\s)+/g, "$1;$2$3" );</p>          
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(ballDetail)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(peg)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	
-</pre></div>             </td>           </tr>                               <tr id="section-48">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-48">&#182;</a>               </div>               <p>Calculation</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(abs)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
+</pre></div>             </td>           </tr>                               <tr id="section-49">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-49">&#182;</a>               </div>               <p>Calculation</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(abs)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(ceil)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(constrain)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(dist)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
@@ -463,7 +468,7 @@ code =  code.replace(/([^a-zA-Z0-9])(refract)(\s)+/g, "$1;$2$3" );</p>          
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(sq)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(sqrt)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	
-</pre></div>             </td>           </tr>                               <tr id="section-49">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-49">&#182;</a>               </div>               <p>Trigonometry</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(acos)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
+</pre></div>             </td>           </tr>                               <tr id="section-50">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-50">&#182;</a>               </div>               <p>Trigonometry</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(acos)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(asin)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(atan)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(atan2)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
@@ -473,36 +478,36 @@ code =  code.replace(/([^a-zA-Z0-9])(refract)(\s)+/g, "$1;$2$3" );</p>          
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(sin)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(tan)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	
-</pre></div>             </td>           </tr>                               <tr id="section-50">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-50">&#182;</a>               </div>               <p>Random</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(random)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
+</pre></div>             </td>           </tr>                               <tr id="section-51">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-51">&#182;</a>               </div>               <p>Random</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(random)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(randomSeed)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(noise)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(noiseDetail)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	code = code.replace(<span class="regexp">/([^a-zA-Z0-9])(noiseSeed)(\s)+/g</span>, <span class="string">"$1;$2$3"</span>)
   	
-</pre></div>             </td>           </tr>                               <tr id="section-51">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-51">&#182;</a>               </div>               <p>you'd think that semicolons are OK anywhere before any command
+</pre></div>             </td>           </tr>                               <tr id="section-52">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-52">&#182;</a>               </div>               <p>you'd think that semicolons are OK anywhere before any command
 but coffee-script doesn't like some particular configurations - fixing those:
 the semicolon mangles the first line of the function definitions:</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/-&gt;(\s+);/g</span>, <span class="string">"-&gt;$1"</span>)
   	
-</pre></div>             </td>           </tr>                               <tr id="section-52">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-52">&#182;</a>               </div>               <p>the semicolon mangles the first line of if statements</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/(\sif\s*.*\s*);/g</span>, <span class="string">"$1"</span>)
+</pre></div>             </td>           </tr>                               <tr id="section-53">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-53">&#182;</a>               </div>               <p>the semicolon mangles the first line of if statements</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/(\sif\s*.*\s*);/g</span>, <span class="string">"$1"</span>)
   	
-</pre></div>             </td>           </tr>                               <tr id="section-53">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-53">&#182;</a>               </div>               <p>the semicolon mangles the first line of else if statements</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/(\s);(else\s*if\s*.*\s*);/g</span>, <span class="string">"$1$2"</span>)
+</pre></div>             </td>           </tr>                               <tr id="section-54">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-54">&#182;</a>               </div>               <p>the semicolon mangles the first line of else if statements</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/(\s);(else\s*if\s*.*\s*);/g</span>, <span class="string">"$1$2"</span>)
   	
-</pre></div>             </td>           </tr>                               <tr id="section-54">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-54">&#182;</a>               </div>               <p>the semicolon mangles the first line of else statements</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/(\s);(else.*\s*);/g</span>, <span class="string">"$1$2"</span>)
+</pre></div>             </td>           </tr>                               <tr id="section-55">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-55">&#182;</a>               </div>               <p>the semicolon mangles the first line of else statements</p>             </td>             <td class="code">               <div class="highlight"><pre>  	code = code.replace(<span class="regexp">/(\s);(else.*\s*);/g</span>, <span class="string">"$1$2"</span>)
   	<span class="keyword">try</span>
       compiledOutput = <span class="property">@CoffeeCompiler</span>.compile(code,
       	bare: <span class="string">"on"</span>
       )
   	<span class="keyword">catch</span> e
-</pre></div>             </td>           </tr>                               <tr id="section-55">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-55">&#182;</a>               </div>               <p>coffescript compiler has caught a syntax error.
+</pre></div>             </td>           </tr>                               <tr id="section-56">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-56">&#182;</a>               </div>               <p>coffescript compiler has caught a syntax error.
 we are going to display the error and we WON'T register
 the new code</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@eventRouter</span>.trigger <span class="string">"compile-time-error-thrown"</span>, e
       <span class="keyword">return</span>
-</pre></div>             </td>           </tr>                               <tr id="section-56">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-56">&#182;</a>               </div>               <p>alert compiledOutput</p>             </td>             <td class="code">               <div class="highlight"><pre>  	programHasBasicError = <span class="literal">false</span>
+</pre></div>             </td>           </tr>                               <tr id="section-57">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-57">&#182;</a>               </div>               <p>alert compiledOutput</p>             </td>             <td class="code">               <div class="highlight"><pre>  	programHasBasicError = <span class="literal">false</span>
   	<span class="property">@eventRouter</span>.trigger <span class="string">"clear-error"</span>
   	
   	<span class="property">@liveCodeLabCoreInstance</span>.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = <span class="number">0</span>
   	
-</pre></div>             </td>           </tr>                               <tr id="section-57">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-57">&#182;</a>               </div>               <p>You might want to change the frame count from the program
+</pre></div>             </td>           </tr>                               <tr id="section-58">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-58">&#182;</a>               </div>               <p>You might want to change the frame count from the program
 just like you can in Processing, but it turns out that when
 you ASSIGN a value to the frame variable inside
 the coffeescript code, the coffeescript to javascript translator
@@ -513,11 +518,11 @@ some variables as global, for the time being let's put
 the cheap hack in place i.e. remove any local declaration that the
 coffeescript to javascript translator inserts.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	compiledOutput = compiledOutput.replace(<span class="regexp">/var frame/</span>, <span class="string">";"</span>)
 
-</pre></div>             </td>           </tr>                               <tr id="section-58">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-58">&#182;</a>               </div>               <p>elegant way to not use eval</p>             </td>             <td class="code">               <div class="highlight"><pre>  	functionFromCompiledCode = <span class="keyword">new</span> Function(compiledOutput)
+</pre></div>             </td>           </tr>                               <tr id="section-59">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-59">&#182;</a>               </div>               <p>elegant way to not use eval</p>             </td>             <td class="code">               <div class="highlight"><pre>  	functionFromCompiledCode = <span class="keyword">new</span> Function(compiledOutput)
   	<span class="property">@liveCodeLabCoreInstance</span>.drawFunctionRunner.setDrawFunction functionFromCompiledCode
   	functionFromCompiledCode
 
-</pre></div>             </td>           </tr>                               <tr id="section-59">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-59">&#182;</a>               </div>               <p>this function is used externally after the code has been
+</pre></div>             </td>           </tr>                               <tr id="section-60">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-60">&#182;</a>               </div>               <p>this function is used externally after the code has been
 run, so we need to attach it to the CodeTransformer object.</p>             </td>             <td class="code">               <div class="highlight"><pre>  addCheckMarksAndUpdateCodeAndNotifyChange: \
       (CodeTransformer, doOnceOccurrencesLineNumbers) -&gt;
   	elaboratedSource = <span class="literal">undefined</span>
@@ -525,7 +530,7 @@ run, so we need to attach it to the CodeTransformer object.</p>             </td
   	iteratingOverSource = <span class="literal">undefined</span>
   	drawFunction = <span class="literal">undefined</span>
   	
-</pre></div>             </td>           </tr>                               <tr id="section-60">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-60">&#182;</a>               </div>               <p>if we are here, the following has happened: someone has added an element
+</pre></div>             </td>           </tr>                               <tr id="section-61">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-61">&#182;</a>               </div>               <p>if we are here, the following has happened: someone has added an element
 to the doOnceOccurrencesLineNumbers array. This can only have happened
 when a doOnce block is run, because we manipulate each doOnce block
 so that in its first line the line number of the block is pushed into
@@ -535,7 +540,7 @@ of each doOnce block that has been run. Which could be more than one, because
 when we start the program we could have more than one doOnce that has
 to run.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	elaboratedSource = <span class="property">@currentCodeString</span>
   	
-</pre></div>             </td>           </tr>                               <tr id="section-61">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-61">&#182;</a>               </div>               <p>we know the line number of each doOnce block that has been run
+</pre></div>             </td>           </tr>                               <tr id="section-62">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-62">&#182;</a>               </div>               <p>we know the line number of each doOnce block that has been run
 so we go there and add a tick next to each doOnce to indicate
 that it has been run.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	elaboratedSourceByLine = elaboratedSource.split(<span class="string">"\n"</span>)
   	<span class="keyword">for</span> iteratingOverSource <span class="keyword">in</span> doOnceOccurrencesLineNumbers
@@ -544,10 +549,10 @@ that it has been run.</p>             </td>             <td class="code">       
           <span class="regexp">/^(\s*)doOnce([ ]*\-&gt;[ ]*.*)$/gm</span>, <span class="string">"$1✓doOnce$2"</span>)
   	elaboratedSource = elaboratedSourceByLine.join(<span class="string">"\n"</span>)
   	
-</pre></div>             </td>           </tr>                               <tr id="section-62">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-62">&#182;</a>               </div>               <p>puts the new code (where the doOnce that have been executed have
+</pre></div>             </td>           </tr>                               <tr id="section-63">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-63">&#182;</a>               </div>               <p>puts the new code (where the doOnce that have been executed have
 tickboxes put back) in the editor. Which will trigger a re-registration
 of the new code.</p>             </td>             <td class="code">               <div class="highlight"><pre>  	<span class="property">@eventRouter</span>.trigger <span class="string">"code-updated-by-livecodelab"</span>, elaboratedSource
-</pre></div>             </td>           </tr>                               <tr id="section-63">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-63">&#182;</a>               </div>               <p>alert elaboratedSource
+</pre></div>             </td>           </tr>                               <tr id="section-64">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-64">&#182;</a>               </div>               <p>alert elaboratedSource
 we want to avoid that another frame is run with the old
 code, as this would mean that the
 runOnce code is run more than once,

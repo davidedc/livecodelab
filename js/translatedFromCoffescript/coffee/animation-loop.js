@@ -92,10 +92,10 @@ AnimationLoop = (function() {
   };
 
   AnimationLoop.prototype.animate = function() {
-    var drawFunctionRunner, frame;
+    var drawFunctionRunner;
     this.liveCodeLabCoreInstance.matrixCommands.resetMatrixStack();
     this.liveCodeLabCoreInstance.soundSystem.resetLoops();
-    if (frame === 0) {
+    if (window.frame === 0) {
       this.liveCodeLabCoreInstance.timeKeeper.resetTime();
     } else {
       this.liveCodeLabCoreInstance.timeKeeper.updateTime();
@@ -119,7 +119,7 @@ AnimationLoop = (function() {
       drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(this.liveCodeLabCoreInstance.codeTransformer);
     } else {
       this.liveCodeLabCoreInstance.dozingOff = true;
-      frame = 0;
+      window.frame = 0;
     }
     if (frame === 0) {
       this.liveCodeLabCoreInstance.timeKeeper.resetTime();
@@ -127,7 +127,7 @@ AnimationLoop = (function() {
     this.liveCodeLabCoreInstance.blendControls.animationStyleUpdateIfChanged();
     this.liveCodeLabCoreInstance.backgroundPainter.simpleGradientUpdateIfChanged();
     this.liveCodeLabCoreInstance.soundSystem.changeUpdatesPerMinuteIfNeeded();
-    frame++;
+    window.frame++;
     this.liveCodeLabCoreInstance.renderer.render(this.liveCodeLabCoreInstance.graphicsCommands);
     if (this.stats) {
       return this.stats.update();

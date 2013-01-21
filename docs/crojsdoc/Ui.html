@@ -3,24 +3,24 @@ the big flashing cursor, the stats widget...</p>
 </div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/ui.coffee:9)</span><pre class="sourcecode prettyprint .linenums:9">class Ui
   "use strict"
 
-  constructor: (@eventRouter, @stats) ->
+  constructor: (@eventRouter, @stats, @programLoader) ->
     # Setup Event Listeners
     @eventRouter.bind "report-runtime-or-compile-time-error", ((e)=>@checkErrorAndReport(e)), @
     @eventRouter.bind "clear-error", (=>@clearError()), @
     @eventRouter.bind "autocoder-button-pressed", (state) =>
       if state is true
-        $("#autocodeIndicator").html("Autocode: on").css "background-color", "#FF0000"
+        $("#autocodeIndicatorContainer").html("Autocode: on").css "background-color", "#FF0000"
       else
-        $("#autocodeIndicator").html("Autocode: off").css "background-color", ""
+        $("#autocodeIndicatorContainer").html("Autocode").css "background-color", ""
 
     @eventRouter.bind "autocoderbutton-flash", =>
-      $("#autocodeIndicator").fadeOut(100).fadeIn 100
+      $("#autocodeIndicatorContainer").fadeOut(100).fadeIn 100
 
     @eventRouter.bind "auto-hide-code-button-pressed", (state) =>
       if state is true
-        $("#dimCodeIndicator").html "Hide Code: on"
+        $("#dimCodeButtonContainer").html "Hide Code: on"
       else
-        $("#dimCodeIndicator").html "Hide Code: off"
+        $("#dimCodeButtonContainer").html "Hide Code: off"
 
   resizeCanvas: (canvasId) ->
     canvas = $(canvasId)
@@ -99,7 +99,7 @@ the big flashing cursor, the stats widget...</p>
     $("#errorMessageText").text ""
 
   soundSystemOk: ->
-    $("#soundSystemStatus").text("Sound System On").removeClass("off").addClass "on"
+    $("#soundSystemStatus").text("Sound System On").removeClass("off")
 
   hideStatsWidget: ->
     $("#statsWidget").hide()
@@ -121,12 +121,48 @@ the big flashing cursor, the stats widget...</p>
       # to the UI elements that generated the events
       eventRouter = @eventRouter
       
-      $("#aboutMenu").click ->
+      $('<span >LiveCodeLab</span>').appendTo(
+        $('<li>').appendTo(
+          $('#nav')
+        )
+      ).click =>
         $("#aboutWindow").modal()
         $("#simplemodal-container").height 250
         false
 
-      $("#demos li a").click ->
+      # insert all the demos in the menu
+      $('<span >Demos</span>').appendTo(
+        $('<li>').attr('id', 'newDemos').addClass('current').addClass('sf-parent').appendTo(
+          $('#nav')
+        )
+      )
+      $("<ul></ul>").appendTo(
+        $('#newDemos')
+      ).attr('id', 'hookforDemos')
+      for property of @programLoader.programs.demos
+        a= "<li><a id='#{property}'>#{@programLoader.programs.demos[property].title}</a></li>"
+        $(a).appendTo(
+          $('#hookforDemos')
+        )
+
+      # insert all the tutorials in the menu
+      $('<span >Tutorials</span>').appendTo(
+        $('<li>').attr('id', 'tutorials').addClass('current').addClass('sf-parent').appendTo(
+          $('#nav')
+        )
+      )
+      $("<ul></ul>").appendTo(
+        $('#tutorials')
+      ).attr('id', 'hookforTutorials')
+      for property of @programLoader.programs.tutorials
+        a= "<li><a id='#{property}'>#{@programLoader.programs.tutorials[property].title}</a></li>"
+        $(a).appendTo(
+          $('#hookforTutorials')
+        )
+
+      $('ul.sf-menu').sooperfish();
+
+      $("#newDemos ul li a").click ->
         eventRouter.trigger "load-program", $(@).attr("id")
         false
 
@@ -134,15 +170,29 @@ the big flashing cursor, the stats widget...</p>
         eventRouter.trigger "load-program", $(@).attr("id")
         false
 
-      $("#autocodeIndicatorContainer").click ->
+      $('<span >Autocode</span>').appendTo(
+        $('<li>').appendTo(
+          $('#nav')
+        )
+      ).attr('id', 'autocodeIndicatorContainer')
+      $("#autocodeIndicatorContainer").click =>
         eventRouter.trigger "toggle-autocoder"
         false
 
-      $("#dimCodeButtonContainer").click ->
+      $('<span >Hide Code: on</span>').appendTo(
+        $('<li>').appendTo(
+          $('#nav')
+        )
+      ).attr('id', 'dimCodeButtonContainer')
+      $("#dimCodeButtonContainer").click =>
         eventRouter.trigger "editor-toggle-dim"
         false
 
-      $("#resetButtonContainer").click ->
+      $('<span >Reset</span>').appendTo(
+        $('<li>').appendTo(
+          $('#nav')
+        )
+      ).click =>
         eventRouter.trigger "reset"
         $(@).stop().fadeOut(100).fadeIn 100
         false
