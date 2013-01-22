@@ -26,6 +26,7 @@ class ProgramLoader
     ), @
     
     @programs.demos.roseDemo =
+      submenu: "Basic"
       title: "Rose"
       code: """
 		        // 'B rose' by Guy John (@rumblesan)
@@ -44,6 +45,7 @@ class ProgramLoader
 		        """.replace(/\u25B6/g, "\t")
     
     @programs.demos.cheeseAndOlivesDemo =
+      submenu: "Basic"
       title: "Cheese and olives"
       code: """
             // 'Cheese and olives' by
@@ -83,6 +85,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.simpleCubeDemo =
+      submenu: "Basic"
       title: "Simple cube"
       code: """
             // there you go!
@@ -94,6 +97,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.webgltwocubesDemo =
+      submenu: "WebGL"
       title: "WebGL: Two cubes"
       code: """
             background 155,255,255
@@ -103,6 +107,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.cubesAndSpikes =
+      submenu: "Basic"
       title: "Cubes and spikes"
       code: """
             simpleGradient fuchsia,color(100,200,200),yellow
@@ -117,6 +122,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.webglturbineDemo =
+      submenu: "WebGL"
       title: "WebGL: Turbine"
       code: """
             background 155,55,255
@@ -126,6 +132,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.webglzfightartDemo =
+      submenu: "WebGL"
       title: "WebGL: Z-fight!"
       code: """
             // Explore the artifacts
@@ -141,6 +148,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.littleSpiralOfCubes =
+      submenu: "Basic"
       title: "Little spiral"
       code: """
             background orange
@@ -152,6 +160,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.tentacleDemo =
+      submenu: "Basic"
       title: "Tentacle"
       code: """
             background 155,255,155
@@ -166,6 +175,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.lampDemo =
+      submenu: "Basic"
       title: "Lamp"
       code: """
             animationStyle motionBlur
@@ -184,6 +194,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.trillionfeathersDemo =
+      submenu: "Basic"
       title: "A trillion feathers"
       code: """
             animationStyle paintOver
@@ -199,6 +210,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.monsterblobDemo =
+      submenu: "Basic"
       title: "Monster blob"
       code: """
             ballDetail 6
@@ -214,6 +226,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.industrialMusicDemo =
+      submenu: "Sound"
       title: "Sound: Industrial"
       code: """
             bpm 88
@@ -227,6 +240,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.trySoundsDemo =
+      submenu: "Sound"
       title: "Sound: Try them all"
       code: """
             bpm 88
@@ -268,6 +282,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.springysquaresDemo =
+      submenu: "Basic"
       title: "Springy squares"
       code: """
             animationStyle motionBlur
@@ -282,6 +297,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.diceDemo =
+      submenu: "Basic"
       title: "Dice"
       code: """
             animationStyle motionBlur
@@ -299,6 +315,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.webglalmostvoronoiDemo =
+      submenu: "WebGL"
       title: "Almost Voronoi"
       code: """
             scale 10
@@ -308,6 +325,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
 
     @programs.demos.webglshardsDemo =
+      submenu: "WebGL"
       title: "WebGL: Shards"
       code: """
             scale 10
@@ -321,6 +339,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.webglredthreadsDemo =
+      submenu: "WebGL"
       title: "WebGL: Red threads"
       code: """
             scale 10.5
@@ -336,6 +355,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.demos.webglnuclearOctopusDemo =
+      submenu: "WebGL"
       title: "WebGL: Nuclear octopus"
       code: """
             simpleGradient black,color(0,0,(time/5)%255),black
