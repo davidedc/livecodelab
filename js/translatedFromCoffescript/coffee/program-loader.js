@@ -28,82 +28,102 @@ ProgramLoader = (function() {
       return _this.loadAppropriateDemoOrTutorialBasedOnHash(hash);
     }), this);
     this.programs.demos.roseDemo = {
+      submenu: "Basic",
       title: "Rose",
       code: "// 'B rose' by Guy John (@rumblesan)\n// Mozilla Festival 2012\n// adapted from 'A rose' by Lib4tech\n\ndoOnce -> frame = 0\nbackground red\nscale 1.5\nanimationStyle paintOver\nrotate frame/100\nfill 255-((frame/2)%255),0,0\nstroke 255-((frame/2)%255),0,0\nscale 1-((frame/2)%255) / 255\nbox".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.cheeseAndOlivesDemo = {
+      submenu: "Basic",
       title: "Cheese and olives",
       code: "// 'Cheese and olives' by\n// Davina Tirvengadum\n// Mozilla festival 2012\n\nbackground white\nscale .3\nmove 0,-1\nfill yellow\nstroke black\nrotate\nstrokeSize 3\nline 4\nbox\n\nrotate 2,3\nmove 0,3\nscale .3\nfill black\nstroke black\nball\n\nrotate 3\nmove 5\nscale 1\nfill green\nstroke green\nball\n\nrotate 1\nmove -3\nscale 1\nfill yellow\nstroke yellow\nball".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.simpleCubeDemo = {
+      submenu: "Basic",
       title: "Simple cube",
       code: "// there you go!\n// a simple cube!\n\nbackground yellow\nrotate 0,time/2000,time/2000\nbox".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.webgltwocubesDemo = {
+      submenu: "WebGL",
       title: "WebGL: Two cubes",
       code: "background 155,255,255\n2 times ->\n▶rotate 0, 1, time/2000\n▶box".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.cubesAndSpikes = {
+      submenu: "Basic",
       title: "Cubes and spikes",
       code: "simpleGradient fuchsia,color(100,200,200),yellow\nscale 2.1\n5 times ->\n▶rotate 0,1,time/5000\n▶box 0.1,0.1,0.1\n▶move 0,0.1,0.1\n▶3 times ->\n▶▶rotate 0,1,1\n▶▶box 0.01,0.01,1".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.webglturbineDemo = {
+      submenu: "WebGL",
       title: "WebGL: Turbine",
       code: "background 155,55,255\n70 times ->\n▶rotate time/100000,1,time/100000\n▶box".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.webglzfightartDemo = {
+      submenu: "WebGL",
       title: "WebGL: Z-fight!",
       code: "// Explore the artifacts\n// of your GPU!\n// Go Z-fighting, go!\nscale 5\nrotate\nfill red\nbox\nrotate 0.000001\nfill yellow\nbox".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.littleSpiralOfCubes = {
+      submenu: "Basic",
       title: "Little spiral",
       code: "background orange\nscale 0.1\n10 times ->\n▶rotate 0,1,time/1000\n▶move 1,1,1\n▶box".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.tentacleDemo = {
+      submenu: "Basic",
       title: "Tentacle",
       code: "background 155,255,155\nscale 0.15\n3 times ->\n▶rotate 0,1,1\n▶10 times ->\n▶▶rotate 0,1,time/1000\n▶▶scale 0.9\n▶▶move 1,1,1\n▶▶box".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.lampDemo = {
+      submenu: "Basic",
       title: "Lamp",
       code: "animationStyle motionBlur\nsimpleGradient red,yellow,color(255,0,255)\n//animationStyle paintOver\nscale 2\nrotate time/4000, time/4000,  time/4000\n90 times ->\n▶rotate time/200000, time/200000,  time/200000\n▶line\n▶move 0.5,0,0\n▶line\n▶move -0.5,0,0\n▶line\n▶line".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.trillionfeathersDemo = {
+      submenu: "Basic",
       title: "A trillion feathers",
       code: "animationStyle paintOver\nmove 2,0,0\nscale 2\nrotate\n20 times ->\n▶rotate\n▶move 0.25,0,0\n▶line\n▶move -0.5,0,0\n▶line".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.monsterblobDemo = {
+      submenu: "Basic",
       title: "Monster blob",
       code: "ballDetail 6\nanimationStyle motionBlur\nrotate time/5000\nsimpleGradient fuchsia,aqua,yellow\n5 times ->\n▶rotate 0,1,time/5000\n▶move 0.2,0,0\n▶3 times ->\n▶▶rotate 1\n▶▶ball -1".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.industrialMusicDemo = {
+      submenu: "Sound",
       title: "Sound: Industrial",
       code: "bpm 88\nplay 'alienBeep'  ,'zzxz zzzz zzxz zzzz'\nplay 'beepC'  ,'zxzz zzzz xzzx xxxz'\nplay 'beepA'  ,'zzxz zzzz zzxz zzzz'\nplay 'lowFlash'  ,'zzxz zzzz zzzz zzzz'\nplay 'beepB'  ,'xzzx zzzz zxzz zxzz'\nplay 'voltage'  ,'xzxz zxzz xzxx xzxx'\nplay 'tranceKick'  ,'zxzx zzzx xzzz zzxx'".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.trySoundsDemo = {
+      submenu: "Sound",
       title: "Sound: Try them all",
       code: "bpm 88\n// leave this one as base\nplay 'tranceKick'  ,'zxzx zzzx xzzz zzxx'\n\n// uncomment the sounds you want to try\n//play 'toc'  ,'zzxz zzzz zzxz zzzz'\n//play 'highHatClosed'  ,'zzxz zzzz zzxz zzzz'\n//play 'highHatOpen'  ,'zzxz zzzz zzxz zzzz'\n//play 'toc2'  ,'zzxz zzzz zzxz zzzz'\n//play 'toc3'  ,'zzxz zzzz zzxz zzzz'\n//play 'toc4'  ,'zzxz zzzz zzxz zzzz'\n//play 'snare'  ,'zzxz zzzz zzxz zzzz'\n//play 'snare2'  ,'zzxz zzzz zzxz zzzz'\n//play 'china'  ,'zzxz zzzz zzxz zzzz'\n//play 'crash'  ,'zzxz zzzz zzxz zzzz'\n//play 'crash2'  ,'zzxz zzzz zzxz zzzz'\n//play 'crash3'  ,'zzxz zzzz zzxz zzzz'\n//play 'ride'  ,'zzxz zzzz zzxz zzzz'\n//play 'glass'  ,'zzxz zzzz zzxz zzzz'\n//play 'glass1'  ,'zzxz zzzz zzxz zzzz'\n//play 'glass2'  ,'zzxz zzzz zzxz zzzz'\n//play 'glass3'  ,'zzxz zzzz zzxz zzzz'\n//play 'thump'  ,'zzxz zzzz zzxz zzzz'\n//play 'lowFlash'  ,'zzxz zzzz zzxz zzzz'\n//play 'lowFlash2'  ,'zzxz zzzz zzxz zzzz'\n//play 'tranceKick2'  ,'zzxz zzzz zzxz zzzz'\n//play 'tranceKick'  ,'zzxz zzzz zzxz zzzz'\n//play 'wosh'  ,'zzxz zzzz zzxz zzzz'\n//play 'voltage'  ,'zzxz zzzz zzxz zzzz'\n//play 'beepA'  ,'zzxz zzzz zzxz zzzz'\n//play 'beepB'  ,'zzxz zzzz zzxz zzzz'\n//play 'beepC'  ,'zzxz zzzz zzxz zzzz'\n//play 'beepD'  ,'zzxz zzzz zzxz zzzz'\n//play 'beep'  ,'zzxz zzzz zzxz zzzz'\n//play 'hello'  ,'zzxz zzzz zzxz zzzz'\n//play 'alienBeep'  ,'zzxz zzzz zzxz zzzz'".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.springysquaresDemo = {
+      submenu: "Basic",
       title: "Springy squares",
       code: "animationStyle motionBlur\nsimpleGradient fuchsia,color(100,200,200),yellow\nscale 0.3\n3 times ->\n▶move 0,0,0.5\n▶5 times ->\n▶▶rotate time/2000\n▶▶move 0.7,0,0\n▶▶rect".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.diceDemo = {
+      submenu: "Basic",
       title: "Dice",
       code: "animationStyle motionBlur\nsimpleGradient color(255),moccasin,peachpuff\nstroke 255,100,100,255\nfill red,155\nmove -0.5,0,0\nscale 0.3\n3 times ->\n▶move 0,0,0.5\n▶1 times ->\n▶▶rotate time/1000\n▶▶move 2,0,0\n▶▶box".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.webglalmostvoronoiDemo = {
+      submenu: "WebGL",
       title: "Almost Voronoi",
       code: "scale 10\n2 times ->\n▶rotate 0,1,time/10000\n▶ball -1".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.webglshardsDemo = {
+      submenu: "WebGL",
       title: "WebGL: Shards",
       code: "scale 10\nfill 0\nstrokeSize 7\n5 times ->\n▶rotate 0,1,time/20000\n▶ball \n▶rotate 0,1,1\n▶ball -1.01".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.webglredthreadsDemo = {
+      submenu: "WebGL",
       title: "WebGL: Red threads",
       code: "scale 10.5\nbackground black\nstroke red\nnoFill\nstrokeSize 7\n5 times ->\n▶rotate time/20000\n▶ball\n▶rotate 0,1,1\n▶ball".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.webglnuclearOctopusDemo = {
+      submenu: "WebGL",
       title: "WebGL: Nuclear octopus",
       code: "simpleGradient black,color(0,0,(time/5)%255),black\nscale 0.2\nmove 5,0,0\nanimationStyle motionBlur\n//animationStyle paintOver\nstroke 255,0,0,120\nfill time%255,0,0\npushMatrix\ncount = 0\n3 times ->\n▶count++\n▶pushMatrix\n▶rotate count+3+time/1000,2+count + time/1000,4+count\n▶120 times ->\n▶▶scale 0.9\n▶▶move 1,1,0\n▶▶rotate time/100\n▶▶box\n▶popMatrix".replace(/\u25B6/g, "\t")
     };

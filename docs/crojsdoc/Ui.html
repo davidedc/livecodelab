@@ -136,14 +136,42 @@ the big flashing cursor, the stats widget...</p>
           $('#nav')
         )
       )
-      $("<ul></ul>").appendTo(
+
+      $("<ul id='ulForDemos'></ul>").appendTo(
         $('#newDemos')
-      ).attr('id', 'hookforDemos')
-      for property of @programLoader.programs.demos
-        a= "<li><a id='#{property}'>#{@programLoader.programs.demos[property].title}</a></li>"
+      )
+
+      unique = (anArray) ->
+        output = {}
+        output[anArray[key]] = anArray[key] for key in [0...anArray.length]
+        value for key, value of output
+
+      allDemos = @programLoader.programs.demos
+      # collect the submenu name for each demo
+      demoTypes = (allDemos[property].submenu for property of allDemos)
+      # find the unique list of submenus
+      demoTypes = unique(demoTypes)
+
+      # insert all the demo types as the first level menu
+      for demoType in demoTypes
+        $("<li></li>").appendTo(
+          $('#ulForDemos')
+        ).attr('id', 'hookforDemos' + demoType)
+
+        a= "<span>#{demoType}</span>"
         $(a).appendTo(
-          $('#hookforDemos')
+          $('#hookforDemos' + demoType)
         )
+        $("<ul id='#{demoType}'></ul>").appendTo(
+          $('#hookforDemos' + demoType)
+        )
+        for property of allDemos
+          if @programLoader.programs.demos[property].submenu == demoType
+            console.log property
+            a= "<li><a id='#{property}'>#{@programLoader.programs.demos[property].title}</a></li>"
+            $(a).appendTo(
+              $('#'+demoType)
+            )
 
       # insert all the tutorials in the menu
       $('<span >Tutorials</span>').appendTo(
@@ -160,6 +188,8 @@ the big flashing cursor, the stats widget...</p>
           $('#hookforTutorials')
         )
 
+      # Now that all the menu items are in place in the DOM, invoke sooperfish,
+      # which does some more transformations of its own.
       $('ul.sf-menu').sooperfish();
 
       $("#newDemos ul li a").click ->

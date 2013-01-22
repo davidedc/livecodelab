@@ -112,7 +112,7 @@ Ui = (function() {
   Ui.prototype.setup = function() {
     var _this = this;
     return $(document).ready(function() {
-      var a, eventRouter, property;
+      var a, allDemos, demoType, demoTypes, eventRouter, property, unique, _i, _len;
       eventRouter = _this.eventRouter;
       $('<span >LiveCodeLab</span>').appendTo($('<li>').appendTo($('#nav'))).click(function() {
         $("#aboutWindow").modal();
@@ -120,10 +120,43 @@ Ui = (function() {
         return false;
       });
       $('<span >Demos</span>').appendTo($('<li>').attr('id', 'newDemos').addClass('current').addClass('sf-parent').appendTo($('#nav')));
-      $("<ul></ul>").appendTo($('#newDemos')).attr('id', 'hookforDemos');
-      for (property in _this.programLoader.programs.demos) {
-        a = "<li><a id='" + property + "'>" + _this.programLoader.programs.demos[property].title + "</a></li>";
-        $(a).appendTo($('#hookforDemos'));
+      $("<ul id='ulForDemos'></ul>").appendTo($('#newDemos'));
+      unique = function(anArray) {
+        var key, output, value, _i, _ref, _results;
+        output = {};
+        for (key = _i = 0, _ref = anArray.length; 0 <= _ref ? _i < _ref : _i > _ref; key = 0 <= _ref ? ++_i : --_i) {
+          output[anArray[key]] = anArray[key];
+        }
+        _results = [];
+        for (key in output) {
+          value = output[key];
+          _results.push(value);
+        }
+        return _results;
+      };
+      allDemos = _this.programLoader.programs.demos;
+      demoTypes = (function() {
+        var _results;
+        _results = [];
+        for (property in allDemos) {
+          _results.push(allDemos[property].submenu);
+        }
+        return _results;
+      })();
+      demoTypes = unique(demoTypes);
+      for (_i = 0, _len = demoTypes.length; _i < _len; _i++) {
+        demoType = demoTypes[_i];
+        $("<li></li>").appendTo($('#ulForDemos')).attr('id', 'hookforDemos' + demoType);
+        a = "<span>" + demoType + "</span>";
+        $(a).appendTo($('#hookforDemos' + demoType));
+        $("<ul id='" + demoType + "'></ul>").appendTo($('#hookforDemos' + demoType));
+        for (property in allDemos) {
+          if (_this.programLoader.programs.demos[property].submenu === demoType) {
+            console.log(property);
+            a = "<li><a id='" + property + "'>" + _this.programLoader.programs.demos[property].title + "</a></li>";
+            $(a).appendTo($('#' + demoType));
+          }
+        }
       }
       $('<span >Tutorials</span>').appendTo($('<li>').attr('id', 'tutorials').addClass('current').addClass('sf-parent').appendTo($('#nav')));
       $("<ul></ul>").appendTo($('#tutorials')).attr('id', 'hookforTutorials');
