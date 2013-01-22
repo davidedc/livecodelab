@@ -138,46 +138,45 @@ class Ui
 
       # insert all the demos in the menu
       $('<span >Demos</span>').appendTo(
-        $('<li>').attr('id', 'newDemos').addClass('current').addClass('sf-parent').appendTo(
+        $('<li>').attr('id', 'demos').addClass('current').addClass('sf-parent').appendTo(
           $('#nav')
         )
       )
 
       $("<ul id='ulForDemos'></ul>").appendTo(
-        $('#newDemos')
+        $('#demos')
       )
 
-      unique = (anArray) ->
-        output = {}
-        output[anArray[key]] = anArray[key] for key in [0...anArray.length]
-        value for key, value of output
-
       allDemos = @programLoader.programs.demos
-      # collect the submenu name for each demo
-      demoTypes = (allDemos[property].submenu for property of allDemos)
-      # find the unique list of submenus
-      demoTypes = unique(demoTypes)
 
-      # insert all the demo types as the first level menu
-      for demoType in demoTypes
+      # Create an object with a property for each submenu.
+      # That property contains an array with all the demos that belong to
+      # that submenu.
+      demoSubmenus = {}
+      for demo of allDemos
+        submenuOfThisDemo = allDemos[demo].submenu
+        demoSubmenus[submenuOfThisDemo] ?= [] # create array if it didn't exist
+        demoSubmenus[submenuOfThisDemo].push(demo)
+
+      for demoSubmenu of demoSubmenus
+        
+        # insert the submenu in the first level
         $("<li></li>").appendTo(
           $('#ulForDemos')
-        ).attr('id', 'hookforDemos' + demoType)
+        ).attr('id', 'hookforDemos' + demoSubmenu)
 
-        a= "<span>#{demoType}</span>"
-        $(a).appendTo(
-          $('#hookforDemos' + demoType)
+        $("<span>#{demoSubmenu}</span>").appendTo(
+          $('#hookforDemos' + demoSubmenu)
         )
-        $("<ul id='#{demoType}'></ul>").appendTo(
-          $('#hookforDemos' + demoType)
+        $("<ul id='#{demoSubmenu}'></ul>").appendTo(
+          $('#hookforDemos' + demoSubmenu)
         )
-        for property of allDemos
-          if @programLoader.programs.demos[property].submenu == demoType
-            console.log property
-            a= "<li><a id='#{property}'>#{@programLoader.programs.demos[property].title}</a></li>"
-            $(a).appendTo(
-              $('#'+demoType)
-            )
+        # now take each demo that belongs to this submenu and put it there
+        for demo in demoSubmenus[demoSubmenu]
+          a= "<li><a id='#{demo}'>#{@programLoader.programs.demos[demo].title}</a></li>"
+          $(a).appendTo(
+            $('#'+demoSubmenu)
+          )
 
       # insert all the tutorials in the menu
       $('<span >Tutorials</span>').appendTo(
@@ -198,7 +197,7 @@ class Ui
       # which does some more transformations of its own.
       $('ul.sf-menu').sooperfish();
 
-      $("#newDemos ul li a").click ->
+      $("#demos ul li a").click ->
         eventRouter.trigger "load-program", $(@).attr("id")
         false
 
