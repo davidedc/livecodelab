@@ -62,305 +62,78 @@ then you could indeed pause/resume things). In a single-threaded language like
 Javascript this results in everything else "blocking". A "continuations" approach
 lets you stop and resume the parsing more easily, since you lex the program step
 by step in a manner that does not rely on the runtime stack. There is no recursion.</p>             </td>             <td class="code">               <div class="highlight"><pre>
-    
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/\/\/.*\n/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_COMMENT(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-  
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/\t/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_TAB(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-  
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/-?[0-9]+\.?[0-9]*/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_NUM(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-  
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/-?\.[0-9]*/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_NUM(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/[*|\/|+|\-|=]/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_OP(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/,/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_ARGDLIM(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/[\n|\r]{1,2}/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_NEWLINE(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>translations</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/rotate/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_TRANSLATION(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/move/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_TRANSLATION(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/scale/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_TRANSLATION(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>colour</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">for</span> scanningAllColors <span class="keyword">in</span> <span class="property">@colourNames</span>
-      <span class="property">@LexersOnlyState</span>.addRule(<span class="keyword">new</span> RegExp(scanningAllColors),
+    <span class="function"><span class="title">addRule</span></span>= (regex, TokenClass, otherArgs) =&gt;
+      <span class="property">@LexersOnlyState</span>.addRule(regex,
         (matchedPartOfInput, remainingInput, currentState) =&gt;
-          <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_COLOUR(matchedPartOfInput[<span class="number">0</span>], <span class="property">@colourNames</span>)
+          <span class="property">@Tokens</span>.push <span class="keyword">new</span> TokenClass(matchedPartOfInput[<span class="number">0</span>], otherArgs)
           <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
       )
-  
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>colour ops</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/background/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_COLOUROP(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/fill/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_COLOUROP(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/stroke/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_COLOUROP(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>hmm  TODO</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/simpleGradient/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_COLOUROP(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>mesh</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/box/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_MESH(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/ball/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_MESH(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/peg/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_MESH(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/rect/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_MESH(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/line/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_MESH(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
-</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>state changes?</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/ambientLight/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_STATEFUN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/noStroke/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_STATEFUN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/ballDetail/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_STATEFUN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/animationStyle\s\w+/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_STATEFUN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
-</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>iteration</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/\d+\s+times\s+-&gt;/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_ITERATION(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
-</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>vars</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/time/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_VARIABLE(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/delay/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_VARIABLE(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
-</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>special</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/\?doOnce\s+-&gt;\s*/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_DOONCE(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
-</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>ignore white space ?</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@LexersOnlyState</span>.addRule(RegExp(<span class="string">" +"</span>),
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_SPACE(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
-</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>The bad stuff</p>             </td>             <td class="code">               <div class="highlight"><pre>  
-</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>string delimiters</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/'/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-  
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/[✓]?doOnce\s+\-&gt;?/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(RegExp(<span class="string">"=="</span>),
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/else/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
-</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>this is for the links at the bottom of the tutorials
-e.g. next-tutorial:frame</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/next-tutorial:\w+/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
-</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>this is for all variable names</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/\w+/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/if/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/pushMatrix/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/popMatrix/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/play/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/bpm/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/color\s*\(.+\)/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/noFill/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/frame/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/strokeSize/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/\(/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/\)/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    <span class="property">@LexersOnlyState</span>.addRule(<span class="regexp">/%/</span>,
-      (matchedPartOfInput, remainingInput, currentState) =&gt;
-        <span class="property">@Tokens</span>.push <span class="keyword">new</span> TOKEN_UNKNOWN(matchedPartOfInput[<span class="number">0</span>])
-        <span class="keyword">return</span> currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
     
-</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Traverses the Tokens array and concatenates the strings,
+    addRule(<span class="regexp">/\/\/.*\n/</span>,TOKEN_COMMENT)
+    addRule(<span class="regexp">/\t/</span>,TOKEN_TAB)
+    addRule(<span class="regexp">/-?[0-9]+\.?[0-9]*/</span>,TOKEN_NUM)
+    addRule(<span class="regexp">/-?\.[0-9]*/</span>,TOKEN_NUM)
+    addRule(<span class="regexp">/[*|\/|+|\-|=]/</span>,TOKEN_OP)
+    addRule(<span class="regexp">/,/</span>,TOKEN_ARGDLIM)
+    addRule(<span class="regexp">/[\n|\r]{1,2}/</span>,TOKEN_NEWLINE)
+    addRule(<span class="regexp">/rotate/</span>,TOKEN_TRANSLATION)
+    addRule(<span class="regexp">/move/</span>,TOKEN_TRANSLATION)
+    addRule(<span class="regexp">/scale/</span>,TOKEN_TRANSLATION)
+  
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>colour</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">for</span> scanningAllColors <span class="keyword">in</span> <span class="property">@colourNames</span>
+      addRule(<span class="keyword">new</span> RegExp(scanningAllColors),TOKEN_COLOUR, <span class="property">@colourNames</span>)
+  
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>colour ops</p>             </td>             <td class="code">               <div class="highlight"><pre>    addRule(<span class="regexp">/background/</span>,TOKEN_COLOUROP)
+
+    addRule(<span class="regexp">/fill/</span>,TOKEN_COLOUROP)
+
+    addRule(<span class="regexp">/stroke/</span>,TOKEN_COLOUROP)
+  
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>hmm  TODO</p>             </td>             <td class="code">               <div class="highlight"><pre>    addRule(<span class="regexp">/simpleGradient/</span>,TOKEN_COLOUROP)
+
+    addRule(<span class="regexp">/box/</span>,TOKEN_MESH)
+    addRule(<span class="regexp">/ball/</span>,TOKEN_MESH)
+    addRule(<span class="regexp">/peg/</span>,TOKEN_MESH)
+    addRule(<span class="regexp">/rect/</span>,TOKEN_MESH)
+    addRule(<span class="regexp">/line/</span>,TOKEN_MESH)
+
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>state changes?</p>             </td>             <td class="code">               <div class="highlight"><pre>    addRule(<span class="regexp">/ambientLight/</span>,TOKEN_STATEFUN)
+    addRule(<span class="regexp">/noStroke/</span>, TOKEN_STATEFUN)
+    addRule(<span class="regexp">/ballDetail/</span>,TOKEN_STATEFUN)
+    addRule(<span class="regexp">/animationStyle\s\w+/</span>,TOKEN_STATEFUN)
+  
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>iteration</p>             </td>             <td class="code">               <div class="highlight"><pre>    addRule(<span class="regexp">/\d+\s+times\s+-&gt;/</span>,TOKEN_ITERATION)
+  
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>vars</p>             </td>             <td class="code">               <div class="highlight"><pre>    addRule(<span class="regexp">/time/</span>,TOKEN_VARIABLE)
+    addRule(<span class="regexp">/delay/</span>,TOKEN_VARIABLE)
+
+  
+</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>special</p>             </td>             <td class="code">               <div class="highlight"><pre>    addRule(<span class="regexp">/\?doOnce\s+-&gt;\s*/</span>, TOKEN_DOONCE)
+  
+</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>ignore white space ?</p>             </td>             <td class="code">               <div class="highlight"><pre>    addRule(RegExp(<span class="string">" +"</span>), TOKEN_SPACE)
+  
+</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>The bad stuff</p>             </td>             <td class="code">               <div class="highlight"><pre>  
+</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>string delimiters</p>             </td>             <td class="code">               <div class="highlight"><pre>    addRule(<span class="regexp">/'/</span>,TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/[✓]?doOnce\s+\-&gt;?/</span>,TOKEN_UNKNOWN)
+    addRule(RegExp(<span class="string">"=="</span>),TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/else/</span>,TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/next-tutorial:\w+/</span>, TOKEN_UNKNOWN)
+
+</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>this is for all variable names</p>             </td>             <td class="code">               <div class="highlight"><pre>    addRule(<span class="regexp">/\w+/</span>, TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/if/</span>, TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/pushMatrix/</span>, TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/popMatrix/</span>,TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/play/</span>, TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/bpm/</span>, TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/color\s*\(.+\)/</span>, TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/noFill/</span>, TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/frame/</span>, TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/strokeSize/</span>, TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/\(/</span>, TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/\)/</span>, TOKEN_UNKNOWN)
+    addRule(<span class="regexp">/%/</span>, TOKEN_UNKNOWN)
+    
+</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>Traverses the Tokens array and concatenates the strings,
 hence generating a possibly mutated program.</p>             </td>             <td class="code">               <div class="highlight"><pre>  emit: (stream) -&gt;
     ret = <span class="string">""</span>
     <span class="keyword">for</span> scanningTheStream <span class="keyword">in</span> stream
@@ -368,27 +141,27 @@ hence generating a possibly mutated program.</p>             </td>             <
     ret
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Checks whether a token can mutate by checking whether the mutate function exists.</p>             </td>             <td class="code">               <div class="highlight"><pre>  canMutate: (token) -&gt;
+</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Checks whether a token can mutate by checking whether the mutate function exists.</p>             </td>             <td class="code">               <div class="highlight"><pre>  canMutate: (token) -&gt;
     <span class="keyword">if</span> <span class="keyword">typeof</span> token.mutate <span class="keyword">is</span> <span class="string">"function"</span>
       <span class="literal">true</span>
     <span class="keyword">else</span>
       <span class="literal">false</span>
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>Scans the tokens and collects the mutatable ones.
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Scans the tokens and collects the mutatable ones.
 Then picks one random and invokes its mutate().</p>             </td>             <td class="code">               <div class="highlight"><pre>  pickMutatableTokenAndMutateIt: (stream) -&gt;
     mutatableTokens = []
     idx = <span class="literal">undefined</span>
-</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>collect the items that can be mutated</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">for</span> scanningTheStream <span class="keyword">in</span> stream
+</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>collect the items that can be mutated</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">for</span> scanningTheStream <span class="keyword">in</span> stream
       <span class="keyword">if</span> <span class="property">@canMutate</span>(scanningTheStream)
         mutatableTokens.push scanningTheStream
     <span class="keyword">if</span> mutatableTokens.length == <span class="number">0</span>
-</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>nothing can be mutated</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">return</span>
-</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>found at least a mutatable token, pick one at random and mutate it</p>             </td>             <td class="code">               <div class="highlight"><pre>    idx = Math.floor(Math.random() * mutatableTokens.length)
+</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>nothing can be mutated</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">return</span>
+</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>found at least a mutatable token, pick one at random and mutate it</p>             </td>             <td class="code">               <div class="highlight"><pre>    idx = Math.floor(Math.random() * mutatableTokens.length)
     mutatableTokens[idx].mutate()
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>Currently unused.</p>             </td>             <td class="code">               <div class="highlight"><pre>  replaceTimeWithAConstant: -&gt;
+</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Currently unused.</p>             </td>             <td class="code">               <div class="highlight"><pre>  replaceTimeWithAConstant: -&gt;
     editorContent = <span class="property">@editor</span>.getValue()
     rePattern = <span class="regexp">/(time)/g</span>
     allMatches = editorContent.match(rePattern)
@@ -407,7 +180,7 @@ Then picks one random and invokes its mutate().</p>             </td>           
     <span class="property">@editor</span>.setValue editorContent
 
   
-</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>Every time a mutation is invoked, the following happens</p>
+</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>Every time a mutation is invoked, the following happens</p>
 
 <ul>
 <li><p>the program is scanned by a lexer
@@ -437,7 +210,7 @@ to another, creating the new mutated program.</p></li>
     <span class="keyword">try</span>
       <span class="property">@LexersOnlyState</span>.lex editorContent
     <span class="keyword">catch</span> e
-</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>console.log e</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>console.log e</p>             </td>             <td class="code">               <div class="highlight"><pre>
     <span class="property">@pickMutatableTokenAndMutateIt</span> <span class="property">@Tokens</span>
     newContent = <span class="property">@emit</span>(<span class="property">@Tokens</span>)
     <span class="property">@editor</span>.setValue newContent
@@ -462,7 +235,7 @@ to another, creating the new mutated program.</p></li>
       clearInterval <span class="property">@autocoderMutateTimeout</span>
     <span class="property">@eventRouter</span>.trigger <span class="string">"autocoder-button-pressed"</span>, <span class="property">@active</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>Token types. If they contain a mutate() function, then they can be mutated.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>Token types. If they contain a mutate() function, then they can be mutated.</p>             </td>             <td class="code">               <div class="highlight"><pre>
 <span class="class"><span class="keyword">class</span> <span class="title">TOKEN_COMMENT</span></span>
   constructor: (<span class="property">@string</span>) -&gt;
   toString: -&gt;
@@ -573,7 +346,7 @@ to another, creating the new mutated program.</p></li>
     <span class="string">"TOKEN_COLOUR("</span> + <span class="property">@string</span> + <span class="string">")"</span>
       
   mutate: -&gt;
-</pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>picking another color at index idx</p>             </td>             <td class="code">               <div class="highlight"><pre>    idx = Math.floor(Math.random() * <span class="property">@colourNames</span>.length)
+</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>picking another color at index idx</p>             </td>             <td class="code">               <div class="highlight"><pre>    idx = Math.floor(Math.random() * <span class="property">@colourNames</span>.length)
     <span class="keyword">while</span> <span class="property">@string</span> <span class="keyword">is</span> <span class="property">@colourNames</span>[idx]
       idx = Math.floor(Math.random() * <span class="property">@colourNames</span>.length)
     <span class="property">@string</span> = <span class="property">@colourNames</span>[idx]

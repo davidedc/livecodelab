@@ -109,7 +109,7 @@ ProgramLoader = (function() {
     };
     this.programs.demos.webglalmostvoronoiDemo = {
       submenu: "WebGL",
-      title: "Almost Voronoi",
+      title: "WebGL: Almost Voronoi",
       code: "scale 10\n2 times ->\n▶rotate 0,1,time/10000\n▶ball -1".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.webglshardsDemo = {

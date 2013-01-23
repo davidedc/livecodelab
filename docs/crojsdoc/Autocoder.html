@@ -59,317 +59,87 @@ and then re-builds a string pritout from the tokens so to obtain the mutated pro
     # lets you stop and resume the parsing more easily, since you lex the program step
     # by step in a manner that does not rely on the runtime stack. There is no recursion.
 
+    addRule= (regex, TokenClass, otherArgs) =>
+      @LexersOnlyState.addRule(regex,
+        (matchedPartOfInput, remainingInput, currentState) =>
+          @Tokens.push new TokenClass(matchedPartOfInput[0], otherArgs)
+          return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
+      )
     
-    @LexersOnlyState.addRule(/\/\/.*\n/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_COMMENT(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-  
-    @LexersOnlyState.addRule(/\t/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_TAB(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-  
-    @LexersOnlyState.addRule(/-?[0-9]+\.?[0-9]*/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_NUM(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-  
-    @LexersOnlyState.addRule(/-?\.[0-9]*/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_NUM(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/[*|\/|+|\-|=]/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_OP(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/,/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_ARGDLIM(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/[\n|\r]{1,2}/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_NEWLINE(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
-    # translations
-    @LexersOnlyState.addRule(/rotate/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_TRANSLATION(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/move/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_TRANSLATION(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/scale/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_TRANSLATION(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
+    addRule(/\/\/.*\n/,TOKEN_COMMENT)
+    addRule(/\t/,TOKEN_TAB)
+    addRule(/-?[0-9]+\.?[0-9]*/,TOKEN_NUM)
+    addRule(/-?\.[0-9]*/,TOKEN_NUM)
+    addRule(/[*|\/|+|\-|=]/,TOKEN_OP)
+    addRule(/,/,TOKEN_ARGDLIM)
+    addRule(/[\n|\r]{1,2}/,TOKEN_NEWLINE)
+    addRule(/rotate/,TOKEN_TRANSLATION)
+    addRule(/move/,TOKEN_TRANSLATION)
+    addRule(/scale/,TOKEN_TRANSLATION)
   
     # colour
     for scanningAllColors in @colourNames
-      @LexersOnlyState.addRule(new RegExp(scanningAllColors),
-        (matchedPartOfInput, remainingInput, currentState) =>
-          @Tokens.push new TOKEN_COLOUR(matchedPartOfInput[0], @colourNames)
-          return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-      )
+      addRule(new RegExp(scanningAllColors),TOKEN_COLOUR, @colourNames)
   
     # colour ops
-    @LexersOnlyState.addRule(/background/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_COLOUROP(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
+    addRule(/background/,TOKEN_COLOUROP)
 
-    @LexersOnlyState.addRule(/fill/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_COLOUROP(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
+    addRule(/fill/,TOKEN_COLOUROP)
 
-    @LexersOnlyState.addRule(/stroke/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_COLOUROP(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
+    addRule(/stroke/,TOKEN_COLOUROP)
   
     # hmm  TODO
-    @LexersOnlyState.addRule(/simpleGradient/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_COLOUROP(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
+    addRule(/simpleGradient/,TOKEN_COLOUROP)
 
-  
-    # mesh
-    @LexersOnlyState.addRule(/box/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_MESH(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
+    addRule(/box/,TOKEN_MESH)
+    addRule(/ball/,TOKEN_MESH)
+    addRule(/peg/,TOKEN_MESH)
+    addRule(/rect/,TOKEN_MESH)
+    addRule(/line/,TOKEN_MESH)
 
-    @LexersOnlyState.addRule(/ball/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_MESH(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/peg/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_MESH(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/rect/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_MESH(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/line/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_MESH(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
     # state changes?
-    @LexersOnlyState.addRule(/ambientLight/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_STATEFUN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/noStroke/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_STATEFUN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/ballDetail/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_STATEFUN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/animationStyle\s\w+/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_STATEFUN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
+    addRule(/ambientLight/,TOKEN_STATEFUN)
+    addRule(/noStroke/, TOKEN_STATEFUN)
+    addRule(/ballDetail/,TOKEN_STATEFUN)
+    addRule(/animationStyle\s\w+/,TOKEN_STATEFUN)
   
     # iteration
-    @LexersOnlyState.addRule(/\d+\s+times\s+->/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_ITERATION(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
+    addRule(/\d+\s+times\s+->/,TOKEN_ITERATION)
   
     # vars
-    @LexersOnlyState.addRule(/time/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_VARIABLE(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/delay/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_VARIABLE(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
+    addRule(/time/,TOKEN_VARIABLE)
+    addRule(/delay/,TOKEN_VARIABLE)
 
   
     # special
-    @LexersOnlyState.addRule(/\?doOnce\s+->\s*/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_DOONCE(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
+    addRule(/\?doOnce\s+->\s*/, TOKEN_DOONCE)
   
     # ignore white space ?
-    @LexersOnlyState.addRule(RegExp(" +"),
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_SPACE(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
+    addRule(RegExp(" +"), TOKEN_SPACE)
   
     # The bad stuff
   
     # string delimiters
-    @LexersOnlyState.addRule(/'/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-  
-    @LexersOnlyState.addRule(/[✓]?doOnce\s+\->?/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
+    addRule(/'/,TOKEN_UNKNOWN)
+    addRule(/[✓]?doOnce\s+\->?/,TOKEN_UNKNOWN)
+    addRule(RegExp("=="),TOKEN_UNKNOWN)
+    addRule(/else/,TOKEN_UNKNOWN)
+    addRule(/next-tutorial:\w+/, TOKEN_UNKNOWN)
 
-    @LexersOnlyState.addRule(RegExp("=="),
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/else/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
-    # this is for the links at the bottom of the tutorials
-    # e.g. next-tutorial:frame
-    @LexersOnlyState.addRule(/next-tutorial:\w+/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-  
     # this is for all variable names
-    @LexersOnlyState.addRule(/\w+/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/if/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/pushMatrix/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/popMatrix/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/play/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/bpm/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/color\s*\(.+\)/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/noFill/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/frame/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/strokeSize/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/\(/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/\)/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
-
-    @LexersOnlyState.addRule(/%/,
-      (matchedPartOfInput, remainingInput, currentState) =>
-        @Tokens.push new TOKEN_UNKNOWN(matchedPartOfInput[0])
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor remainingInput
-    )
+    addRule(/\w+/, TOKEN_UNKNOWN)
+    addRule(/if/, TOKEN_UNKNOWN)
+    addRule(/pushMatrix/, TOKEN_UNKNOWN)
+    addRule(/popMatrix/,TOKEN_UNKNOWN)
+    addRule(/play/, TOKEN_UNKNOWN)
+    addRule(/bpm/, TOKEN_UNKNOWN)
+    addRule(/color\s*\(.+\)/, TOKEN_UNKNOWN)
+    addRule(/noFill/, TOKEN_UNKNOWN)
+    addRule(/frame/, TOKEN_UNKNOWN)
+    addRule(/strokeSize/, TOKEN_UNKNOWN)
+    addRule(/\(/, TOKEN_UNKNOWN)
+    addRule(/\)/, TOKEN_UNKNOWN)
+    addRule(/%/, TOKEN_UNKNOWN)
     
   # Traverses the Tokens array and concatenates the strings,
   # hence generating a possibly mutated program.

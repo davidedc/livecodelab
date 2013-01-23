@@ -18,205 +18,70 @@ Autocoder = (function() {
   Autocoder.prototype.whichOneToChange = 0;
 
   function Autocoder(eventRouter, editor, colourNames) {
-    var scanningAllColors, _i, _len, _ref,
+    var addRule, scanningAllColors, _i, _len, _ref,
       _this = this;
     this.eventRouter = eventRouter;
     this.editor = editor;
     this.colourNames = colourNames;
     this.Tokens = [];
     this.LexersOnlyState = new LexerState();
-    this.LexersOnlyState.addRule(/\/\/.*\n/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_COMMENT(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/\t/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_TAB(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/-?[0-9]+\.?[0-9]*/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_NUM(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/-?\.[0-9]*/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_NUM(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/[*|\/|+|\-|=]/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_OP(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/,/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_ARGDLIM(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/[\n|\r]{1,2}/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_NEWLINE(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/rotate/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_TRANSLATION(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/move/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_TRANSLATION(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/scale/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_TRANSLATION(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
+    addRule = function(regex, TokenClass, otherArgs) {
+      return _this.LexersOnlyState.addRule(regex, function(matchedPartOfInput, remainingInput, currentState) {
+        _this.Tokens.push(new TokenClass(matchedPartOfInput[0], otherArgs));
+        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
+      });
+    };
+    addRule(/\/\/.*\n/, TOKEN_COMMENT);
+    addRule(/\t/, TOKEN_TAB);
+    addRule(/-?[0-9]+\.?[0-9]*/, TOKEN_NUM);
+    addRule(/-?\.[0-9]*/, TOKEN_NUM);
+    addRule(/[*|\/|+|\-|=]/, TOKEN_OP);
+    addRule(/,/, TOKEN_ARGDLIM);
+    addRule(/[\n|\r]{1,2}/, TOKEN_NEWLINE);
+    addRule(/rotate/, TOKEN_TRANSLATION);
+    addRule(/move/, TOKEN_TRANSLATION);
+    addRule(/scale/, TOKEN_TRANSLATION);
     _ref = this.colourNames;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       scanningAllColors = _ref[_i];
-      this.LexersOnlyState.addRule(new RegExp(scanningAllColors), function(matchedPartOfInput, remainingInput, currentState) {
-        _this.Tokens.push(new TOKEN_COLOUR(matchedPartOfInput[0], _this.colourNames));
-        return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-      });
+      addRule(new RegExp(scanningAllColors), TOKEN_COLOUR, this.colourNames);
     }
-    this.LexersOnlyState.addRule(/background/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_COLOUROP(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/fill/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_COLOUROP(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/stroke/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_COLOUROP(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/simpleGradient/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_COLOUROP(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/box/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_MESH(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/ball/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_MESH(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/peg/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_MESH(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/rect/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_MESH(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/line/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_MESH(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/ambientLight/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_STATEFUN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/noStroke/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_STATEFUN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/ballDetail/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_STATEFUN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/animationStyle\s\w+/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_STATEFUN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/\d+\s+times\s+->/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_ITERATION(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/time/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_VARIABLE(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/delay/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_VARIABLE(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/\?doOnce\s+->\s*/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_DOONCE(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(RegExp(" +"), function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_SPACE(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/'/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/[✓]?doOnce\s+\->?/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(RegExp("=="), function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/else/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/next-tutorial:\w+/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/\w+/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/if/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/pushMatrix/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/popMatrix/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/play/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/bpm/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/color\s*\(.+\)/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/noFill/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/frame/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/strokeSize/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/\(/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/\)/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
-    this.LexersOnlyState.addRule(/%/, function(matchedPartOfInput, remainingInput, currentState) {
-      _this.Tokens.push(new TOKEN_UNKNOWN(matchedPartOfInput[0]));
-      return currentState.returnAFunctionThatAppliesRulesAndRunsActionFor(remainingInput);
-    });
+    addRule(/background/, TOKEN_COLOUROP);
+    addRule(/fill/, TOKEN_COLOUROP);
+    addRule(/stroke/, TOKEN_COLOUROP);
+    addRule(/simpleGradient/, TOKEN_COLOUROP);
+    addRule(/box/, TOKEN_MESH);
+    addRule(/ball/, TOKEN_MESH);
+    addRule(/peg/, TOKEN_MESH);
+    addRule(/rect/, TOKEN_MESH);
+    addRule(/line/, TOKEN_MESH);
+    addRule(/ambientLight/, TOKEN_STATEFUN);
+    addRule(/noStroke/, TOKEN_STATEFUN);
+    addRule(/ballDetail/, TOKEN_STATEFUN);
+    addRule(/animationStyle\s\w+/, TOKEN_STATEFUN);
+    addRule(/\d+\s+times\s+->/, TOKEN_ITERATION);
+    addRule(/time/, TOKEN_VARIABLE);
+    addRule(/delay/, TOKEN_VARIABLE);
+    addRule(/\?doOnce\s+->\s*/, TOKEN_DOONCE);
+    addRule(RegExp(" +"), TOKEN_SPACE);
+    addRule(/'/, TOKEN_UNKNOWN);
+    addRule(/[✓]?doOnce\s+\->?/, TOKEN_UNKNOWN);
+    addRule(RegExp("=="), TOKEN_UNKNOWN);
+    addRule(/else/, TOKEN_UNKNOWN);
+    addRule(/next-tutorial:\w+/, TOKEN_UNKNOWN);
+    addRule(/\w+/, TOKEN_UNKNOWN);
+    addRule(/if/, TOKEN_UNKNOWN);
+    addRule(/pushMatrix/, TOKEN_UNKNOWN);
+    addRule(/popMatrix/, TOKEN_UNKNOWN);
+    addRule(/play/, TOKEN_UNKNOWN);
+    addRule(/bpm/, TOKEN_UNKNOWN);
+    addRule(/color\s*\(.+\)/, TOKEN_UNKNOWN);
+    addRule(/noFill/, TOKEN_UNKNOWN);
+    addRule(/frame/, TOKEN_UNKNOWN);
+    addRule(/strokeSize/, TOKEN_UNKNOWN);
+    addRule(/\(/, TOKEN_UNKNOWN);
+    addRule(/\)/, TOKEN_UNKNOWN);
+    addRule(/%/, TOKEN_UNKNOWN);
   }
 
   Autocoder.prototype.emit = function(stream) {
