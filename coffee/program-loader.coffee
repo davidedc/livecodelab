@@ -380,6 +380,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.introTutorial =
+      submenu: "Intro"
       title: "intro"
       code: """
             // Lines beginning with two
@@ -395,6 +396,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.helloworldTutorial =
+      submenu: "Intro"
       title: "hello world"
       code: """
             // type these three letters
@@ -409,6 +411,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.somenotesTutorial =
+      submenu: "Intro"
       title: "some notes"
       code: """
             // If this makes sense to you:
@@ -423,7 +426,8 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.rotateTutorial =
-      title: "rotate"
+      submenu: "Intro"
+      title: "a taste of animation"
       code: """
             // now that we have a box
             // let's rotate it:
@@ -438,6 +442,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.frameTutorial =
+      submenu: "Animation"
       title: "frame"
       code: """
             // make the box spin
@@ -454,6 +459,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.timeTutorial =
+      submenu: "Animation"
       title: "time"
       code: """
             // 'frame/100' has one problem:
@@ -473,6 +479,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.moveTutorial =
+      submenu: "Placing things"
       title: "move"
       code: """
             // you can move any object
@@ -489,6 +496,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.scaleTutorial =
+      submenu: "Placing things"
       title: "scale"
       code: """
             // you can make an object bigger
@@ -507,6 +515,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.timesTutorial =
+      submenu: "Repeating stuff"
       title: "times"
       code: """
             // 'times' (not to be confused with
@@ -525,6 +534,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.fillTutorial =
+      submenu: "Graphics"
       title: "fill"
       code: """
             // 'fill' changes the
@@ -543,6 +553,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.strokeTutorial =
+      submenu: "Graphics"
       title: "stroke"
       code: """
             // 'stroke' changes all the
@@ -562,6 +573,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.colornamesTutorial =
+      submenu: "Graphics"
       title: "color by name"
       code: """
             // you can call colors by name
@@ -580,6 +592,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.lightsTutorial =
+      submenu: "Graphics"
       title: "lights"
       code: """
             // 'ambientLight' creates an
@@ -597,6 +610,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.backgroundTutorial =
+      submenu: "Graphics"
       title: "background"
       code: """
             // 'background' creates a
@@ -610,6 +624,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.gradientTutorial =
+      submenu: "Graphics"
       title: "gradient"
       code: """
             // even nicer, you can paint a
@@ -623,6 +638,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.lineTutorial =
+      submenu: "Graphics"
       title: "line"
       code: """
             // draw lines like this:
@@ -635,6 +651,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.ballTutorial =
+      submenu: "Graphics"
       title: "ball"
       code: """
             // draw balls like this:
@@ -649,6 +666,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.pushpopMatrixTutorial =
+      submenu: "Graphics"
       title: "push and pop"
       code: """
             // pushMatrix creates a bookmark of
@@ -670,6 +688,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.animationstyleTutorial =
+      submenu: "Graphics"
       title: "animation style"
       code: """
             // try uncommenting either line
@@ -685,6 +704,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.doonceTutorial =
+      submenu: "Controlling the flow"
       title: "do once"
       code: """
             // delete either check mark below
@@ -705,6 +725,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.conditionalsTutorial =
+      submenu: "Controlling the flow"
       title: "conditionals"
       code: """
             // you can draw different things
@@ -724,6 +745,7 @@ class ProgramLoader
             """.replace(/\u25B6/g, "\t")
   
     @programs.tutorials.autocodeTutorial =
+      submenu: "Others"
       title: "autocode"
       code: """
             // the Autocode button invents random

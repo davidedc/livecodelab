@@ -136,6 +136,9 @@ class Ui
         $("#simplemodal-container").height 250
         false
 
+      # DEMOS
+      # (note that the code for the tutorials is the same,
+      # just with "tutorial" instead of "demo")
       # insert all the demos in the menu
       $('<span >Demos</span>').appendTo(
         $('<li>').attr('id', 'demos').addClass('current').addClass('sf-parent').appendTo(
@@ -160,39 +163,72 @@ class Ui
 
       for demoSubmenu of demoSubmenus
         
+        demoSubmenuNoSpaces = demoSubmenu.replace(" ","_")
         # insert the submenu in the first level
         $("<li></li>").appendTo(
           $('#ulForDemos')
-        ).attr('id', 'hookforDemos' + demoSubmenu)
+        ).attr('id', 'hookforDemos' + demoSubmenuNoSpaces)
 
         $("<span>#{demoSubmenu}</span>").appendTo(
-          $('#hookforDemos' + demoSubmenu)
+          $('#hookforDemos' + demoSubmenuNoSpaces)
         )
-        $("<ul id='#{demoSubmenu}'></ul>").appendTo(
-          $('#hookforDemos' + demoSubmenu)
+        $("<ul id='#{demoSubmenuNoSpaces}'></ul>").appendTo(
+          $('#hookforDemos' + demoSubmenuNoSpaces)
         )
         # now take each demo that belongs to this submenu and put it there
         for demo in demoSubmenus[demoSubmenu]
           a= "<li><a id='#{demo}'>#{@programLoader.programs.demos[demo].title}</a></li>"
           $(a).appendTo(
-            $('#'+demoSubmenu)
+            $('#'+demoSubmenuNoSpaces)
           )
 
+      # TUTORIALS
+      # (note that the code for the demos is the same,
+      # just with "demo" instead of "tutorial")
       # insert all the tutorials in the menu
       $('<span >Tutorials</span>').appendTo(
         $('<li>').attr('id', 'tutorials').addClass('current').addClass('sf-parent').appendTo(
           $('#nav')
         )
       )
-      $("<ul></ul>").appendTo(
-        $('#tutorials')
-      ).attr('id', 'hookforTutorials')
-      for property of @programLoader.programs.tutorials
-        a= "<li><a id='#{property}'>#{@programLoader.programs.tutorials[property].title}</a></li>"
-        $(a).appendTo(
-          $('#hookforTutorials')
-        )
 
+      $("<ul id='ulForTutorials'></ul>").appendTo(
+        $('#tutorials')
+      )
+
+      allTutorials = @programLoader.programs.tutorials
+
+      # Create an object with a property for each submenu.
+      # That property contains an array with all the tutorials that belong to
+      # that submenu.
+      tutorialSubmenus = {}
+      for tutorial of allTutorials
+        submenuOfThisTutorial = allTutorials[tutorial].submenu
+        tutorialSubmenus[submenuOfThisTutorial] ?= [] # create array if it didn't exist
+        tutorialSubmenus[submenuOfThisTutorial].push(tutorial)
+
+      for tutorialSubmenu of tutorialSubmenus
+        
+        tutorialSubmenuNoSpaces = tutorialSubmenu.replace(" ","_")
+        # insert the submenu in the first level
+        $("<li></li>").appendTo(
+          $('#ulForTutorials')
+        ).attr('id', 'hookforTutorials' + tutorialSubmenuNoSpaces)
+
+        $("<span>#{tutorialSubmenu}</span>").appendTo(
+          $('#hookforTutorials' + tutorialSubmenuNoSpaces)
+        )
+        $("<ul id='#{tutorialSubmenuNoSpaces}'></ul>").appendTo(
+          $('#hookforTutorials' + tutorialSubmenuNoSpaces)
+        )
+        # now take each tutorial that belongs to this submenu and put it there
+        for tutorial in tutorialSubmenus[tutorialSubmenu]
+          a= "<li><a id='#{tutorial}'>#{@programLoader.programs.tutorials[tutorial].title}</a></li>"
+          $(a).appendTo(
+            $('#'+tutorialSubmenuNoSpaces)
+          )
+
+      
       # Now that all the menu items are in place in the DOM, invoke sooperfish,
       # which does some more transformations of its own.
       $('ul.sf-menu').sooperfish();
