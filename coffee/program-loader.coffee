@@ -316,7 +316,7 @@ class ProgramLoader
   
     @programs.demos.webglalmostvoronoiDemo =
       submenu: "WebGL"
-      title: "Almost Voronoi"
+      title: "WebGL: Almost Voronoi"
       code: """
             scale 10
             2 times ->
