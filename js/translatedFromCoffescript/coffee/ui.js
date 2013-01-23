@@ -112,60 +112,61 @@ Ui = (function() {
   Ui.prototype.setup = function() {
     var _this = this;
     return $(document).ready(function() {
-      var a, allDemos, demoType, demoTypes, eventRouter, property, unique, _i, _len;
+      var a, allDemos, allTutorials, demo, demoSubmenu, demoSubmenuNoSpaces, demoSubmenus, eventRouter, submenuOfThisDemo, submenuOfThisTutorial, tutorial, tutorialSubmenu, tutorialSubmenuNoSpaces, tutorialSubmenus, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3;
       eventRouter = _this.eventRouter;
       $('<span >LiveCodeLab</span>').appendTo($('<li>').appendTo($('#nav'))).click(function() {
         $("#aboutWindow").modal();
         $("#simplemodal-container").height(250);
         return false;
       });
-      $('<span >Demos</span>').appendTo($('<li>').attr('id', 'newDemos').addClass('current').addClass('sf-parent').appendTo($('#nav')));
-      $("<ul id='ulForDemos'></ul>").appendTo($('#newDemos'));
-      unique = function(anArray) {
-        var key, output, value, _i, _ref, _results;
-        output = {};
-        for (key = _i = 0, _ref = anArray.length; 0 <= _ref ? _i < _ref : _i > _ref; key = 0 <= _ref ? ++_i : --_i) {
-          output[anArray[key]] = anArray[key];
-        }
-        _results = [];
-        for (key in output) {
-          value = output[key];
-          _results.push(value);
-        }
-        return _results;
-      };
+      $('<span >Demos</span>').appendTo($('<li>').attr('id', 'demos').addClass('current').addClass('sf-parent').appendTo($('#nav')));
+      $("<ul id='ulForDemos'></ul>").appendTo($('#demos'));
       allDemos = _this.programLoader.programs.demos;
-      demoTypes = (function() {
-        var _results;
-        _results = [];
-        for (property in allDemos) {
-          _results.push(allDemos[property].submenu);
+      demoSubmenus = {};
+      for (demo in allDemos) {
+        submenuOfThisDemo = allDemos[demo].submenu;
+        if ((_ref = demoSubmenus[submenuOfThisDemo]) == null) {
+          demoSubmenus[submenuOfThisDemo] = [];
         }
-        return _results;
-      })();
-      demoTypes = unique(demoTypes);
-      for (_i = 0, _len = demoTypes.length; _i < _len; _i++) {
-        demoType = demoTypes[_i];
-        $("<li></li>").appendTo($('#ulForDemos')).attr('id', 'hookforDemos' + demoType);
-        a = "<span>" + demoType + "</span>";
-        $(a).appendTo($('#hookforDemos' + demoType));
-        $("<ul id='" + demoType + "'></ul>").appendTo($('#hookforDemos' + demoType));
-        for (property in allDemos) {
-          if (_this.programLoader.programs.demos[property].submenu === demoType) {
-            console.log(property);
-            a = "<li><a id='" + property + "'>" + _this.programLoader.programs.demos[property].title + "</a></li>";
-            $(a).appendTo($('#' + demoType));
-          }
+        demoSubmenus[submenuOfThisDemo].push(demo);
+      }
+      for (demoSubmenu in demoSubmenus) {
+        demoSubmenuNoSpaces = demoSubmenu.replace(" ", "_");
+        $("<li></li>").appendTo($('#ulForDemos')).attr('id', 'hookforDemos' + demoSubmenuNoSpaces);
+        $("<span>" + demoSubmenu + "</span>").appendTo($('#hookforDemos' + demoSubmenuNoSpaces));
+        $("<ul id='" + demoSubmenuNoSpaces + "'></ul>").appendTo($('#hookforDemos' + demoSubmenuNoSpaces));
+        _ref1 = demoSubmenus[demoSubmenu];
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          demo = _ref1[_i];
+          a = "<li><a id='" + demo + "'>" + _this.programLoader.programs.demos[demo].title + "</a></li>";
+          $(a).appendTo($('#' + demoSubmenuNoSpaces));
         }
       }
       $('<span >Tutorials</span>').appendTo($('<li>').attr('id', 'tutorials').addClass('current').addClass('sf-parent').appendTo($('#nav')));
-      $("<ul></ul>").appendTo($('#tutorials')).attr('id', 'hookforTutorials');
-      for (property in _this.programLoader.programs.tutorials) {
-        a = "<li><a id='" + property + "'>" + _this.programLoader.programs.tutorials[property].title + "</a></li>";
-        $(a).appendTo($('#hookforTutorials'));
+      $("<ul id='ulForTutorials'></ul>").appendTo($('#tutorials'));
+      allTutorials = _this.programLoader.programs.tutorials;
+      tutorialSubmenus = {};
+      for (tutorial in allTutorials) {
+        submenuOfThisTutorial = allTutorials[tutorial].submenu;
+        if ((_ref2 = tutorialSubmenus[submenuOfThisTutorial]) == null) {
+          tutorialSubmenus[submenuOfThisTutorial] = [];
+        }
+        tutorialSubmenus[submenuOfThisTutorial].push(tutorial);
+      }
+      for (tutorialSubmenu in tutorialSubmenus) {
+        tutorialSubmenuNoSpaces = tutorialSubmenu.replace(" ", "_");
+        $("<li></li>").appendTo($('#ulForTutorials')).attr('id', 'hookforTutorials' + tutorialSubmenuNoSpaces);
+        $("<span>" + tutorialSubmenu + "</span>").appendTo($('#hookforTutorials' + tutorialSubmenuNoSpaces));
+        $("<ul id='" + tutorialSubmenuNoSpaces + "'></ul>").appendTo($('#hookforTutorials' + tutorialSubmenuNoSpaces));
+        _ref3 = tutorialSubmenus[tutorialSubmenu];
+        for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
+          tutorial = _ref3[_j];
+          a = "<li><a id='" + tutorial + "'>" + _this.programLoader.programs.tutorials[tutorial].title + "</a></li>";
+          $(a).appendTo($('#' + tutorialSubmenuNoSpaces));
+        }
       }
       $('ul.sf-menu').sooperfish();
-      $("#newDemos ul li a").click(function() {
+      $("#demos ul li a").click(function() {
         eventRouter.trigger("load-program", $(this).attr("id"));
         return false;
       });

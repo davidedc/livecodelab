@@ -128,90 +128,112 @@ ProgramLoader = (function() {
       code: "simpleGradient black,color(0,0,(time/5)%255),black\nscale 0.2\nmove 5,0,0\nanimationStyle motionBlur\n//animationStyle paintOver\nstroke 255,0,0,120\nfill time%255,0,0\npushMatrix\ncount = 0\n3 times ->\n▶count++\n▶pushMatrix\n▶rotate count+3+time/1000,2+count + time/1000,4+count\n▶120 times ->\n▶▶scale 0.9\n▶▶move 1,1,0\n▶▶rotate time/100\n▶▶box\n▶popMatrix".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.introTutorial = {
+      submenu: "Intro",
       title: "intro",
       code: "// Lines beginning with two\n// slashes (like these) are just comments.\n\n// Everything else is run\n// about 30 to 60 times per second\n// in order to create an animation.\n\n// Click the link below to start the tutorial.\n\n// next-tutorial:hello_world".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.helloworldTutorial = {
+      submenu: "Intro",
       title: "hello world",
       code: "// type these three letters\n// in one of these empty lines below:\n// 'b' and 'o' and 'x'\n\n\n\n// (you should then see a box facing you)\n// click below for the next tutorial\n// next-tutorial:some_notes".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.somenotesTutorial = {
+      submenu: "Intro",
       title: "some notes",
       code: "// If this makes sense to you:\n// the syntax is similar to Coffeescript\n// and the commands are almost\n// like Processing.\n\n// If this doesn't make sense to you\n// don't worry.\n\n// next-tutorial:rotate".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.rotateTutorial = {
-      title: "rotate",
+      submenu: "Intro",
+      title: "a taste of animation",
       code: "// now that we have a box\n// let's rotate it:\n// type 'rotate 1' in the\n// line before the 'box'\n\n\nbox\n\n// click for the next tutorial:\n// next-tutorial:frame".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.frameTutorial = {
+      submenu: "Animation",
       title: "frame",
       code: "// make the box spin\n// by replacing '1' with 'frame'\n\nrotate 1\nbox\n\n// 'frame' contains a number\n// always incrementing as\n// the screen is re-drawn.\n// (use 'frame/100' to slow it down)\n// next-tutorial:time".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.timeTutorial = {
+      submenu: "Animation",
       title: "time",
       code: "// 'frame/100' has one problem:\n// faster computers will make\n// the cube spin too fast.\n// Replace it with 'time/2000'.\n\nrotate frame/100\nbox\n\n// 'time' counts the\n// number of milliseconds since\n// the program started, so it's\n// independent of how fast\n// the computer is at drawing.\n// next-tutorial:move".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.moveTutorial = {
+      submenu: "Placing things",
       title: "move",
       code: "// you can move any object\n// by using 'move'\n\nbox\nmove 1,1,0\nbox\n\n// try to use a rotate before\n// the first box to see how the\n// scene changes.\n// next-tutorial:scale".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.scaleTutorial = {
+      submenu: "Placing things",
       title: "scale",
       code: "// you can make an object bigger\n// or smaller by using 'scale'\n\nrotate 3\nbox\nmove 1\nscale 2\nbox\n\n// try to use scale or move before\n// the first box to see how the\n// scene changes.\n// next-tutorial:times".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.timesTutorial = {
+      submenu: "Repeating stuff",
       title: "times",
       code: "// 'times' (not to be confused with\n// 'time'!) can be used to\n// repeat operations like so:\n\nrotate 1\n3 times ->\n▶move 0.2,0.2,0.2\n▶box\n\n// note how the tabs indicate\n// exactly the block of code\n// to be repeated.\n// next-tutorial:fill".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.fillTutorial = {
+      submenu: "Graphics",
       title: "fill",
       code: "// 'fill' changes the\n// color of all the faces:\n\nrotate 1\nfill 255,255,0\nbox\n\n// the three numbers indicate \n// red green and blue values.\n// You can also use color names such as 'indigo'\n// Try replacing the numbers with\n// 'angleColor'\n// next-tutorial:stroke".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.strokeTutorial = {
+      submenu: "Graphics",
       title: "stroke",
       code: "// 'stroke' changes all the\n// edges:\n\nrotate 1\nstrokeSize 5\nstroke 255,255,255\nbox\n\n// the three numbers are RGB\n// but you can also use the color names\n// or the special color 'angleColor'\n// Also you can use 'strokeSize'\n// to specify the thickness.\n// next-tutorial:color_names".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.colornamesTutorial = {
+      submenu: "Graphics",
       title: "color by name",
       code: "// you can call colors by name\n// try to un-comment one line:\n//fill greenyellow\n//fill indigo\n//fill lemonchiffon // whaaaat?\n\nrotate 1\nbox\n\n// more color names here:\n// http://html-color-codes.info/color-names/\n// (just use them in lower case)\n// next-tutorial:lights".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.lightsTutorial = {
+      submenu: "Graphics",
       title: "lights",
       code: "// 'ambientLight' creates an\n// ambient light so things have\n// some sort of shading:\n\nambientLight 0,255,255\nrotate time/1000\nbox\n\n// you can turn that light on and \n// off while you build the scene\n// by using 'lights' and 'noLights'\n// next-tutorial:background".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.backgroundTutorial = {
+      submenu: "Graphics",
       title: "background",
       code: "// 'background' creates a\n// solid background:\n\nbackground 0,0,255\nrotate time/1000\nbox\n\n// next-tutorial:gradient".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.gradientTutorial = {
+      submenu: "Graphics",
       title: "gradient",
       code: "// even nicer, you can paint a\n// background gradient:\n\nsimpleGradient color(190,10,10),color(30,90,100),color(0)\nrotate time/1000\nbox\n\n// next-tutorial:line".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.lineTutorial = {
+      submenu: "Graphics",
       title: "line",
       code: "// draw lines like this:\n\n20 times ->\n▶rotate time/9000\n▶line\n\n// next-tutorial:ball".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.ballTutorial = {
+      submenu: "Graphics",
       title: "ball",
       code: "// draw balls like this:\n\nballDetail 10\n3 times ->\n▶move 0.2,0.2,0.2\n▶ball\n\n// ('ballDetail' is optional)\n// next-tutorial:pushpopMatrix".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.pushpopMatrixTutorial = {
+      submenu: "Graphics",
       title: "push and pop",
       code: "// pushMatrix creates a bookmark of\n// the position, which you can\n// return to later by using popMatrix.\n// You can reset using 'resetMatrix'.\n\nrotate time/1000\npushMatrix // bookmark the position after the rotation\nline\nmove 0.5,0,0\nline\npopMatrix // go back to the bookmarked position\nmove -0.5,0,0\nline\nresetMatrix // resets the position\nline // not affected by initial rotation\n// next-tutorial:animation_style".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.animationstyleTutorial = {
+      submenu: "Graphics",
       title: "animation style",
       code: "// try uncommenting either line\n// with the animationStyle\n\nbackground 255\n//animationStyle motionBlur\n//animationStyle paintOver\nrotate frame/10\nbox\n\n// next-tutorial:do_once".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.doonceTutorial = {
+      submenu: "Controlling the flow",
       title: "do once",
       code: "// delete either check mark below\n\nrotate time/1000\n✓doOnce ->\n▶background 255\n▶fill 255,0,0\n✓doOnce -> ball\nbox\n\n// ...the line or block of code\n// are ran one time only, after that the\n// check marks immediately re-appear\n// P.S. keep hitting the delete button\n// on that first check mark for seizures.\n// next-tutorial:conditionals".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.conditionalsTutorial = {
+      submenu: "Controlling the flow",
       title: "conditionals",
       code: "// you can draw different things\n// (or in general do different things)\n// based on any\n// test condition you want:\n\nrotate\nif frame%3 == 0\n▶box\nelse if frame%3 == 1\n▶ball\nelse\n▶peg\n\n// next-tutorial:autocode".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.autocodeTutorial = {
+      submenu: "Others",
       title: "autocode",
       code: "// the Autocode button invents random\n// variations for you.\n\n// You can interrupt the Autocoder at\n// any time by pressing the button again,\n// or you can press CTRL-Z\n// (or CMD-Z on Macs) to undo (or re-do) some of\n// the steps even WHILE the autocoder is running,\n// if you see that things got\n// boring down a particular path of changes.".replace(/\u25B6/g, "\t")
     };

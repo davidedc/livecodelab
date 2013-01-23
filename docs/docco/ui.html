@@ -124,63 +124,95 @@ to the UI elements that generated the events</p>             </td>             <
         $(<span class="string">"#simplemodal-container"</span>).height <span class="number">250</span>
         <span class="literal">false</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>insert all the demos in the menu</p>             </td>             <td class="code">               <div class="highlight"><pre>      $(<span class="string">'&lt;span &gt;Demos&lt;/span&gt;'</span>).appendTo(
-        $(<span class="string">'&lt;li&gt;'</span>).attr(<span class="string">'id'</span>, <span class="string">'newDemos'</span>).addClass(<span class="string">'current'</span>).addClass(<span class="string">'sf-parent'</span>).appendTo(
+</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>DEMOS
+(note that the code for the tutorials is the same,
+just with "tutorial" instead of "demo")
+insert all the demos in the menu</p>             </td>             <td class="code">               <div class="highlight"><pre>      $(<span class="string">'&lt;span &gt;Demos&lt;/span&gt;'</span>).appendTo(
+        $(<span class="string">'&lt;li&gt;'</span>).attr(<span class="string">'id'</span>, <span class="string">'demos'</span>).addClass(<span class="string">'current'</span>).addClass(<span class="string">'sf-parent'</span>).appendTo(
           $(<span class="string">'#nav'</span>)
         )
       )
 
       $(<span class="string">"&lt;ul id='ulForDemos'&gt;&lt;/ul&gt;"</span>).appendTo(
-        $(<span class="string">'#newDemos'</span>)
+        $(<span class="string">'#demos'</span>)
       )
 
-      <span class="function"><span class="title">unique</span></span> = (anArray) -&gt;
-        output = {}
-        output[anArray[key]] = anArray[key] <span class="keyword">for</span> key <span class="keyword">in</span> [<span class="number">0.</span>..anArray.length]
-        value <span class="keyword">for</span> key, value <span class="keyword">of</span> output
-
       allDemos = <span class="property">@programLoader</span>.programs.demos
-</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>collect the submenu name for each demo</p>             </td>             <td class="code">               <div class="highlight"><pre>      demoTypes = (allDemos[property].submenu <span class="keyword">for</span> property <span class="keyword">of</span> allDemos)
-</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>find the unique list of submenus</p>             </td>             <td class="code">               <div class="highlight"><pre>      demoTypes = unique(demoTypes)
 
-</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>insert all the demo types as the first level menu</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="keyword">for</span> demoType <span class="keyword">in</span> demoTypes
-        $(<span class="string">"&lt;li&gt;&lt;/li&gt;"</span>).appendTo(
+</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Create an object with a property for each submenu.
+That property contains an array with all the demos that belong to
+that submenu.</p>             </td>             <td class="code">               <div class="highlight"><pre>      demoSubmenus = {}
+      <span class="keyword">for</span> demo <span class="keyword">of</span> allDemos
+        submenuOfThisDemo = allDemos[demo].submenu
+        demoSubmenus[submenuOfThisDemo] ?= [] <span class="comment"># create array if it didn't exist</span>
+        demoSubmenus[submenuOfThisDemo].push(demo)
+
+      <span class="keyword">for</span> demoSubmenu <span class="keyword">of</span> demoSubmenus
+        
+        demoSubmenuNoSpaces = demoSubmenu.replace(<span class="string">" "</span>,<span class="string">"_"</span>)
+</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>insert the submenu in the first level</p>             </td>             <td class="code">               <div class="highlight"><pre>        $(<span class="string">"&lt;li&gt;&lt;/li&gt;"</span>).appendTo(
           $(<span class="string">'#ulForDemos'</span>)
-        ).attr(<span class="string">'id'</span>, <span class="string">'hookforDemos'</span> + demoType)
+        ).attr(<span class="string">'id'</span>, <span class="string">'hookforDemos'</span> + demoSubmenuNoSpaces)
 
-        a= <span class="string">"&lt;span&gt;<span class="subst">#{demoType}</span>&lt;/span&gt;"</span>
-        $(a).appendTo(
-          $(<span class="string">'#hookforDemos'</span> + demoType)
+        $(<span class="string">"&lt;span&gt;<span class="subst">#{demoSubmenu}</span>&lt;/span&gt;"</span>).appendTo(
+          $(<span class="string">'#hookforDemos'</span> + demoSubmenuNoSpaces)
         )
-        $(<span class="string">"&lt;ul id='<span class="subst">#{demoType}</span>'&gt;&lt;/ul&gt;"</span>).appendTo(
-          $(<span class="string">'#hookforDemos'</span> + demoType)
+        $(<span class="string">"&lt;ul id='<span class="subst">#{demoSubmenuNoSpaces}</span>'&gt;&lt;/ul&gt;"</span>).appendTo(
+          $(<span class="string">'#hookforDemos'</span> + demoSubmenuNoSpaces)
         )
-        <span class="keyword">for</span> property <span class="keyword">of</span> allDemos
-          <span class="keyword">if</span> <span class="property">@programLoader</span>.programs.demos[property].submenu == demoType
-            console.log property
-            a= <span class="string">"&lt;li&gt;&lt;a id='<span class="subst">#{property}</span>'&gt;<span class="subst">#{@programLoader.programs.demos[property].title}</span>&lt;/a&gt;&lt;/li&gt;"</span>
-            $(a).appendTo(
-              $(<span class="string">'#'</span>+demoType)
-            )
+</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>now take each demo that belongs to this submenu and put it there</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">for</span> demo <span class="keyword">in</span> demoSubmenus[demoSubmenu]
+          a= <span class="string">"&lt;li&gt;&lt;a id='<span class="subst">#{demo}</span>'&gt;<span class="subst">#{@programLoader.programs.demos[demo].title}</span>&lt;/a&gt;&lt;/li&gt;"</span>
+          $(a).appendTo(
+            $(<span class="string">'#'</span>+demoSubmenuNoSpaces)
+          )
 
-</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>insert all the tutorials in the menu</p>             </td>             <td class="code">               <div class="highlight"><pre>      $(<span class="string">'&lt;span &gt;Tutorials&lt;/span&gt;'</span>).appendTo(
+</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>TUTORIALS
+(note that the code for the demos is the same,
+just with "demo" instead of "tutorial")
+insert all the tutorials in the menu</p>             </td>             <td class="code">               <div class="highlight"><pre>      $(<span class="string">'&lt;span &gt;Tutorials&lt;/span&gt;'</span>).appendTo(
         $(<span class="string">'&lt;li&gt;'</span>).attr(<span class="string">'id'</span>, <span class="string">'tutorials'</span>).addClass(<span class="string">'current'</span>).addClass(<span class="string">'sf-parent'</span>).appendTo(
           $(<span class="string">'#nav'</span>)
         )
       )
-      $(<span class="string">"&lt;ul&gt;&lt;/ul&gt;"</span>).appendTo(
-        $(<span class="string">'#tutorials'</span>)
-      ).attr(<span class="string">'id'</span>, <span class="string">'hookforTutorials'</span>)
-      <span class="keyword">for</span> property <span class="keyword">of</span> <span class="property">@programLoader</span>.programs.tutorials
-        a= <span class="string">"&lt;li&gt;&lt;a id='<span class="subst">#{property}</span>'&gt;<span class="subst">#{@programLoader.programs.tutorials[property].title}</span>&lt;/a&gt;&lt;/li&gt;"</span>
-        $(a).appendTo(
-          $(<span class="string">'#hookforTutorials'</span>)
-        )
 
-</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Now that all the menu items are in place in the DOM, invoke sooperfish,
+      $(<span class="string">"&lt;ul id='ulForTutorials'&gt;&lt;/ul&gt;"</span>).appendTo(
+        $(<span class="string">'#tutorials'</span>)
+      )
+
+      allTutorials = <span class="property">@programLoader</span>.programs.tutorials
+
+</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Create an object with a property for each submenu.
+That property contains an array with all the tutorials that belong to
+that submenu.</p>             </td>             <td class="code">               <div class="highlight"><pre>      tutorialSubmenus = {}
+      <span class="keyword">for</span> tutorial <span class="keyword">of</span> allTutorials
+        submenuOfThisTutorial = allTutorials[tutorial].submenu
+        tutorialSubmenus[submenuOfThisTutorial] ?= [] <span class="comment"># create array if it didn't exist</span>
+        tutorialSubmenus[submenuOfThisTutorial].push(tutorial)
+
+      <span class="keyword">for</span> tutorialSubmenu <span class="keyword">of</span> tutorialSubmenus
+        
+        tutorialSubmenuNoSpaces = tutorialSubmenu.replace(<span class="string">" "</span>,<span class="string">"_"</span>)
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>insert the submenu in the first level</p>             </td>             <td class="code">               <div class="highlight"><pre>        $(<span class="string">"&lt;li&gt;&lt;/li&gt;"</span>).appendTo(
+          $(<span class="string">'#ulForTutorials'</span>)
+        ).attr(<span class="string">'id'</span>, <span class="string">'hookforTutorials'</span> + tutorialSubmenuNoSpaces)
+
+        $(<span class="string">"&lt;span&gt;<span class="subst">#{tutorialSubmenu}</span>&lt;/span&gt;"</span>).appendTo(
+          $(<span class="string">'#hookforTutorials'</span> + tutorialSubmenuNoSpaces)
+        )
+        $(<span class="string">"&lt;ul id='<span class="subst">#{tutorialSubmenuNoSpaces}</span>'&gt;&lt;/ul&gt;"</span>).appendTo(
+          $(<span class="string">'#hookforTutorials'</span> + tutorialSubmenuNoSpaces)
+        )
+</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>now take each tutorial that belongs to this submenu and put it there</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="keyword">for</span> tutorial <span class="keyword">in</span> tutorialSubmenus[tutorialSubmenu]
+          a= <span class="string">"&lt;li&gt;&lt;a id='<span class="subst">#{tutorial}</span>'&gt;<span class="subst">#{@programLoader.programs.tutorials[tutorial].title}</span>&lt;/a&gt;&lt;/li&gt;"</span>
+          $(a).appendTo(
+            $(<span class="string">'#'</span>+tutorialSubmenuNoSpaces)
+          )
+
+      
+</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Now that all the menu items are in place in the DOM, invoke sooperfish,
 which does some more transformations of its own.</p>             </td>             <td class="code">               <div class="highlight"><pre>      $(<span class="string">'ul.sf-menu'</span>).sooperfish();
 
-      $(<span class="string">"#newDemos ul li a"</span>).click -&gt;
+      $(<span class="string">"#demos ul li a"</span>).click -&gt;
         eventRouter.trigger <span class="string">"load-program"</span>, $(@).attr(<span class="string">"id"</span>)
         <span class="literal">false</span>
 
@@ -216,7 +248,7 @@ which does some more transformations of its own.</p>             </td>          
         <span class="literal">false</span>
 
       
-</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Align bottom-left</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@stats</span>.getDomElement().style.position = <span class="string">"absolute"</span>
+</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>Align bottom-left</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@stats</span>.getDomElement().style.position = <span class="string">"absolute"</span>
       <span class="property">@stats</span>.getDomElement().style.right = <span class="string">"0px"</span>
       <span class="property">@stats</span>.getDomElement().style.top = <span class="string">"0px"</span>
       document.body.appendChild <span class="property">@stats</span>.getDomElement()
