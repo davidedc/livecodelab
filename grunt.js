@@ -338,7 +338,7 @@ module.exports = function (grunt) {
                     'js/translatedFromCoffescript/coffee/program-runner.js',
                     'js/translatedFromCoffescript/coffee/code-transformer.js',
                     'js/translatedFromCoffescript/coffee/program-loader.js',
-                    'js/translatedFromCoffescript/coffee/autocoder/autocode.js',
+                    'js/translatedFromCoffescript/coffee/autocoder/autocoder.js',
                     'js/translatedFromCoffescript/coffee/text-dimming.js',
                     'js/translatedFromCoffescript/coffee/time-keeper.js',
                     'js/translatedFromCoffescript/coffee/blend-controls.js',
