@@ -1,0 +1,115 @@
+<script type="text/javascript" src="coffee-script.js"></script>
+
+<div style="position: absolute; top: 0px; left: 0px; width: 240px; background-color: azure;">        
+<canvas id="canvas" width="300" height="300"></canvas>
+</div>
+
+<div style="position: absolute; top: 0px; left: 0px; width: 240px;">
+        <textarea id="source" rows="25" spellcheck="false" style="background-color: transparent; text-shadow: -1px 0px white, 0px 1px white,
+      1px 0px white, 0px -1px white, -2px 0px 1px white, 0px 2px 1px white,
+      2px 0px 1px white, 0px -2px 1px white"></textarea>
+      </div>
+      
+
+<script>
+
+var drawLoopTimer = null;
+var frameCount = 0;
+
+//get a reference to the canvas
+var ctx = document.getElementsByTagName("canvas")[0].getContext("2d");
+
+    document.getElementsByTagName("canvas")[0].getContext("2d").clearRect(0,0,
+      document.getElementsByTagName("canvas")[0].width,
+      document.getElementsByTagName("canvas")[0].height);
+
+
+function runCode() {
+    
+
+      try {
+        out = CoffeeScript.compile(document.getElementById('source').value, {
+          bare: "on"
+        });
+        //$("#coffee2js .error").hide();
+        //return output.getSession().setValue(out);
+      } catch (e) {
+        alert("" + e);
+        return;
+      }
+
+    // this is so that the global variables are kept, see:
+    // http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context
+    window.eval.call(window,out);
+
+ callTheDrawLoopIfItExists();
+
+      
+}
+
+function callTheDrawLoopIfItExists() {
+	clearTimeout(drawLoopTimer);
+	drawLoopTimer = null;
+	
+	if (typeof(draw) != "undefined") { 
+	  draw();
+	  frameCount++;
+	}
+	if (drawLoopTimer === null) {
+		drawLoopTimer=setTimeout('callTheDrawLoopIfItExists();',30);
+	}
+}
+
+	var lastkey = 0
+	 document.onkeydown = function(e){
+		// CTRL-K compiles and runs
+		if(lastkey == 17 && e.which==75){
+			runCode();
+			return false;
+		}
+		else {
+			lastkey = e.which;
+		}
+		// also up or down arrow compile and run
+		if(e.which==38 || e.which==40){
+			runCode();
+			return true;
+		}
+		
+		
+	};
+	document.onkeyup = function(e){
+		
+		if(e.which==17){
+			lastkey = 0;
+		}
+	};
+
+// sample program to test with
+/*
+ctx.beginPath()
+ctx.arc 75, 75, 10, 0, Math.PI * 2, true
+ctx.closePath()
+ctx.fill()
+
+draw = ->
+
+ ctx.fillStyle = "#00A308"
+ ctx.beginPath()
+ ctx.arc 220, 220, 50, 0, Math.PI * 2, true
+ ctx.closePath()
+ ctx.fill()
+ ctx.fillStyle = "#FF1C0A"
+ ctx.beginPath()
+ ctx.arc 100, 100, 100, 0, Math.PI * 2, true
+ ctx.closePath()
+ ctx.fill()
+ ctx.fillStyle = "rgba(255, 255, 0, .5)"
+ ctx.beginPath()
+ ctx.rect 15, 150 * Math.sin(frameCount/10), 120, 120
+ ctx.closePath()
+ ctx.fill()
+ */
+
+</script>
+

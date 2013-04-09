@@ -1,0 +1,880 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Yet to be named</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+			
+		<script src="vendor/three.js/Three.js"></script>
+		<script src="vendor/three.js/Detector.js"></script>
+		<!-- https://github.com/mrdoob/stats.js -->
+		<script src="vendor/three.js/Stats.js"></script>
+
+		<script src="vendor/threex/THREEx.WindowResize.js"></script>
+		<script type="text/javascript" src="coffee-script.js"></script>
+
+
+		<link  href="css/main.css" rel="stylesheet"/>
+		<link rel="stylesheet" href="codemirror.css">
+		<script src="codemirror.js"></script>
+		<link rel="stylesheet" href="night.css">
+		<script src="coffeescriptModified.js"></script>
+		<script src="jquery.min.js"></script>
+		<script src="jquery.viewport.js"></script>
+	
+		<style type="text/css">
+		  .CodeMirror {border: none; }
+		</style>
+
+		<!-- start of navigation menu-->
+				<style type="text/css">
+				
+				body {
+					font-family: arial, helvetica, serif;
+					background-color:#00ff00;
+				}
+				
+
+				#nav {
+					position: absolute;
+					top: 5px;
+					left: 5px;
+					margin-top:10px;
+					height:25px;
+					width:100%;
+					z-index:1;
+					background-color:#00ff00;
+				}
+
+				#nav, #nav ul { /* all lists */
+					padding: 0;
+					margin: 0;
+					list-style: none;
+					line-height: 1;
+				}
+				
+				#nav a {
+					display: block;
+					width: 10em;
+					text-decoration:none;
+					vertical-align:middle;
+				}
+				
+				#nav li { /* all list items */
+					float: left;
+					width: 10em; /* width needed or else Opera goes nuts */
+				}
+				
+				#nav li ul { /* second-level lists */
+					position: absolute;
+					background: #00ff00;
+					width: 10em;
+					left: -999em; /* using left instead of display to hide menus because display: none isn't read by screen readers */
+				}
+				
+				#nav li ul ul { /* third-and-above-level lists */
+					margin: -1em 0 0 10em;
+				}
+				
+				#nav li:hover ul ul, #nav li.sfhover ul ul {
+					left: -999em;
+				}
+				
+				#nav li:hover ul, #nav li li:hover ul, #nav li.sfhover ul, #nav li li.sfhover ul { /* lists nested under hovered list items */
+					left: auto;
+				}
+				
+				#content {
+					clear: left;
+					color: #ccc;
+				}
+				
+				</style>
+				
+				<script type="text/javascript"><!--//--><![CDATA[//><!--
+				
+				sfHover = function() {
+					var sfEls = document.getElementById("nav").getElementsByTagName("LI");
+					for (var i=0; i<sfEls.length; i++) {
+						sfEls[i].onmouseover=function() {
+							this.className+=" sfhover";
+						}
+						sfEls[i].onmouseout=function() {
+							this.className=this.className.replace(new RegExp(" sfhover\\b"), "");
+						}
+					}
+				}
+				if (window.attachEvent) window.attachEvent("onload", sfHover);
+				
+				//--><!]]></script>
+		<!-- end of navigation menu-->
+
+		<!-- start boxy stuff-->
+			<script type="text/javascript" src="./boxy_files/project.js"></script>
+			<script type="text/javascript" src="./boxy_files/jquery-1.2.3.min.js"></script>
+			<link rel="stylesheet" href="./boxy_files/boxy.css" type="text/css">
+			<script type="text/javascript" src="./boxy_files/jquery.boxy.js"></script>
+		<!-- end boxy stuff-->
+
+	</head>
+<body>
+
+
+<ul id="nav">
+
+	<li><a href="#">Help</a>
+		<ul>
+			<li><a href="#" onclick='Boxy.alert("This is a livecoding environment:<br><br>you type a program and it is immediately executed for you.<br><br>Try copying this and pasting it in the main window:<br><br><pre>rotate 0,1,frameCount/100\nbox</pre>");' >What is this?</a></li>
+		</ul>
+	</li>
+
+	<li><a href="#">Examples</a>
+		<ul>
+		
+			<li><a href="#" onclick="loadExample('simpleCubeExample');">Simple cube</a></li>
+			<li><a href="#" onclick="loadExample('twoCubesExample');">Two cubes</a></li>
+			<li><a href="#" onclick="loadExample('cubesAndSpikes');">Cubes and spikes</a></li>
+			<li><a href="#" onclick="loadExample('turbineExample');">Turbine</a></li>
+			<li><a href="#" onclick="loadExample('yellowBackgroundExample');">Yellow background</a></li>
+			<li><a href="#" onclick="loadExample('littleSpiralOfCubes');">Little spiral</a></li>
+			<li><a href="#" onclick="loadExample('tentacleExample');">Tentacle</a></li>
+			<li><a href="#" onclick="loadExample('simpleSoundExample');">Simple sound</a></li>
+			<li><a href="#" onclick="loadExample('simpleRhythmExample');">Simple rhythm</a></li>
+			<li><a href="#" onclick="loadExample('industrialMusicExample');">Industrial music</a></li>
+		</ul>
+	</li>
+
+</ul>
+
+
+
+
+
+<div name="miao" id="miao" style="position: absolute; top: 30px; left: 0px; width: 100%;">
+
+<canvas id="backGroundCanvas" style="position: absolute; top: 0px; left: 0px; z-index:-1;" width="100" height="100"></canvas> 
+
+
+
+		<form autocapitalize="off" autocorrect="off" wrap="off"><textarea id="code" name="code" autocapitalize="off" autocorrect="off" wrap="off" ></textarea></form>
+
+      </div>
+
+	<!-- three.js container -->
+    	<div id="container"></div>
+	<!-- info on screen display 
+	<div id="info">
+		<div class="bottom" id="inlineDoc" >
+			- <i>p</i> for screenshot
+		</div> 
+	</div>
+	-->
+
+	<script type="text/javascript">
+		var stats, scene, renderer;
+		var camera;
+
+  // creating a geometry is expensive
+  // so we need to create ONE cube of dimensions 1,1,1
+  // if we need a cube of different size, then we need to
+  // scale it. Note that the scale for the cube shouldn't
+  // influence the stack, so we need to create a sccale node,
+  // and then go up a node.
+  var isWebGLUsed = false;
+  var normalMaterial = new THREE.MeshNormalMaterial()
+  var cubeGeometry = new THREE.CubeGeometry(1,1,1);
+  var cameraFilterMaterial = new THREE.MeshBasicMaterial( { color: 0xffaa00, transparent: true, opacity: 0.1, blending: THREE.NormalBlending } ) ;
+  var cameraFilterGeometry = new THREE.PlaneGeometry( 1, 1, 1,1 );				
+  var cameraFilter = new THREE.Mesh(cameraFilterGeometry, cameraFilterMaterial);
+
+  // loads identity matrix
+  var worldMatrix = new THREE.Matrix4();
+
+var midgroundScene;
+var midgroundSceneContext;
+var finalscene;
+var finalsceneContext;
+var backgroundScene;
+var backgroundSceneContext;
+var backgroundScene;
+var backgroundSceneContext;
+var potentiallyUseWebGL = true;
+var useRequestAnimationFrame = false;
+var wantedFramesPerSecond = 30;
+var backGroundFraction = 15;
+var scaledBackgroundWidth;
+var scaledBackgroundHeight;
+var repaintBackroundEveryFrame = true;
+var fullScreenifyBackground = true;
+
+var soundLoops = [];
+soundLoops.soundIDs = [];
+soundLoops.beatStrings = [];
+
+
+		// init the scene
+		function init(){
+
+			scaledBackgroundWidth = Math.floor(window.innerWidth / backGroundFraction);
+			scaledBackgroundHeight = Math.floor(window.innerHeight / backGroundFraction);
+
+			if( Detector.webgl && potentiallyUseWebGL ){
+
+				midgroundScene = document.createElement('canvas');
+				
+				renderer = new THREE.WebGLRenderer({
+					canvas: midgroundScene,
+					antialias		: true,	// to get smoother output					
+					preserveDrawingBuffer	: false	// to allow screenshot
+				});
+			   
+			   //renderer.autoClearColor = false;
+			   //renderer.autoClear = false;
+			   isWebGLUsed = true;
+			   
+			   // this is really a bad hack, but chrome goes twice
+			   // as fast with this, while safari doesn't work,
+			   // and firefox is the fastest no matter what
+			   if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+			   	renderer.autoClear = false;
+			   }
+			   
+				finalscene = document.createElement('canvas');
+				finalscene.width = window.innerWidth;
+				finalscene.height = window.innerHeight;
+				finalsceneContext = finalscene.getContext('2d');
+		
+				backgroundScene = document.getElementById('backGroundCanvas');  
+				backgroundScene.width = scaledBackgroundWidth;
+				backgroundScene.height = scaledBackgroundHeight;
+				backgroundSceneContext = backgroundScene.getContext('2d');
+				
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.getElementById('container').appendChild(midgroundScene);
+				//document.getElementById('backGroundCanvas').appendChild(backgroundScene);
+
+			}else{
+			
+			
+			 // we always draw the 3d scene off-screen
+				midgroundScene = document.createElement('canvas');
+				midgroundSceneContext = midgroundScene.getContext('2d');
+				renderer	= new THREE.CanvasRenderer({
+					canvas: midgroundScene,
+					antialias		: true,	// to get smoother output					
+					preserveDrawingBuffer	: false	// to allow screenshot
+				});
+			   	
+			   	//renderer.autoClear = true;
+			   	//renderer.setClearColorHex( 0x000000, 1 );
+
+
+				finalscene = document.createElement('canvas');
+				finalscene.width = window.innerWidth;
+				finalscene.height = window.innerHeight;
+				finalsceneContext = finalscene.getContext('2d');
+		
+				backgroundScene = document.getElementById('backGroundCanvas');  
+				backgroundScene.width = scaledBackgroundWidth;
+				backgroundScene.height = scaledBackgroundHeight;
+				backgroundSceneContext = backgroundScene.getContext('2d');
+				
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.getElementById('container').appendChild(midgroundScene);
+			}
+
+
+
+
+
+			// add Stats.js - https://github.com/mrdoob/stats.js
+			stats = new Stats();
+			stats.domElement.style.position	= 'absolute';
+			stats.domElement.style.bottom	= '0px';
+			document.body.appendChild( stats.domElement );
+
+			scene = new THREE.Scene();
+			scene.matrixAutoUpdate = false;
+
+
+			// put a camera in the scene
+			camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000 );
+			camera.position.set(0, 0, 5);
+			scene.add(camera);
+
+			// transparently support window resize
+			THREEx.WindowResize.bind(renderer, camera);
+			
+
+
+}
+
+		
+
+		// render the scene
+		var gradientDrawn = false;
+		function render() {
+
+		
+			if (repaintBackroundEveryFrame || (!gradientDrawn)) {
+			var diagonal = Math.sqrt(Math.pow(scaledBackgroundWidth/2,2)+ Math.pow( scaledBackgroundHeight/2,2));
+			var radgrad = backgroundSceneContext.createRadialGradient(scaledBackgroundWidth/2, scaledBackgroundHeight/2, 0,scaledBackgroundWidth/2, scaledBackgroundHeight/2, diagonal);  
+			radgrad.addColorStop(0, '#FF5F98');  
+			radgrad.addColorStop(0.75, '#FF0188');  
+			radgrad.addColorStop(1, 'rgba(255,1,136,0)');    
+			
+			backgroundSceneContext.globalAlpha = 1.0;
+			backgroundSceneContext.fillStyle = radgrad;
+			backgroundSceneContext.beginPath();
+			backgroundSceneContext.rect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
+			backgroundSceneContext.closePath();
+			backgroundSceneContext.fill();
+			
+			var gradObj = backgroundSceneContext.createLinearGradient(scaledBackgroundWidth/2,0,scaledBackgroundWidth/2,scaledBackgroundHeight/2);
+			gradObj.addColorStop(0.0, "#ff0000");
+			gradObj.addColorStop(1.0, "#aa0000");
+
+			backgroundSceneContext.globalAlpha = 0.3;
+			backgroundSceneContext.fillStyle = gradObj;
+			backgroundSceneContext.beginPath();
+			backgroundSceneContext.rect(0,0,scaledBackgroundWidth,scaledBackgroundHeight);
+			backgroundSceneContext.closePath();
+			backgroundSceneContext.fill();
+			
+			
+			gradientDrawn = true;
+			}
+			////////////////////////
+
+			if (!isWebGLUsed){
+			  midgroundSceneContext.clearRect(0, 0, window.innerWidth,window.innerHeight);
+			}
+
+			// the renderer draws into an offscreen canvas called midgroundScene
+			renderer.render( scene, camera );
+				
+		}
+		
+		
+var drawLoopTimer = null;
+var frameCount = 0;
+
+
+if( !init() )	animate();
+
+function clearDisplayList() {
+	for(var i in scene.objects){
+		scene.remove( scene.objects[i]);
+	}
+}
+
+function runCode() {
+    
+
+      try {
+        var editorContent = "\t"+editor.getValue().replace(
+// Replace out the new line character.
+new RegExp( "\\n", "g" ),
+ 
+// Put in ... so we can see a visual representation of where
+// the new line characters were replaced out.
+"\n\t"
+);
+        var verbatimSource = "draw = ->\n"+editorContent;
+        
+        // little trick. This is mangled up in the translation from coffeescript
+        // (1).times ->
+        // But this isn't:
+        // (1+0).times ->
+        // So here is the little replace.
+        
+        // TODO: you should be a little smarter about the substitution of the draw method
+        // You can tell a method declaration because the line below is indented
+        // so you should check that.
+        var elaboratedSource = verbatimSource;
+        //elaboratedSource =  elaboratedSource.replace(/^([a-z]+[a-zA-Z1-9]+)\s*$/gm, "$1 = ->" );
+        elaboratedSource =  elaboratedSource.replace(/(\d+)\s+times/g, "( $1 + 0).times ->" );
+        elaboratedSource =  elaboratedSource.replace(/^([\s*[a-z]+[a-zA-Z1-9]+)[ ]*$/gm, "$1()" );
+        elaboratedSource =  elaboratedSource.replace(/\/\//g, "#" );
+        
+        //alert(elaboratedSource);
+      
+        out = CoffeeScript.compile(elaboratedSource, {
+          bare: "on"
+        });
+        //$("#coffee2js .error").hide();
+        //return output.getSession().setValue(out);
+      } catch (e) {
+        //alert("" + e);
+        return;
+      }
+
+    // this is so that the global variables are kept, see:
+    // http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context
+    window.eval.call(window,out);
+
+// callTheDrawLoopIfItExists();
+
+      
+}
+
+
+function background(red, green, blue) {
+
+			clearDisplayList();
+
+			// canvas renderer
+			theColor = new THREE.Color();
+			theColor.setRGB(red, green,blue);
+			renderer.setClearColor(theColor,1);
+
+
+
+}
+
+// animation loop
+    	function animate() {
+
+			// loop on request animation loop
+			// - it has to be at the begining of the function
+			// - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+			// requestAnimationFrame seems to only do 60 fps, which in my case is too much,
+			// I rather prefer to have a slower framerate but steadier.
+			
+			if (useRequestAnimationFrame) {
+				requestAnimationFrame( animate );
+			}
+			else {
+				setTimeout( 'animate();', 1000 / wantedFramesPerSecond );
+			}
+
+			clearDisplayList();
+			worldMatrix.identity();
+
+			// the sound list needs to be cleaned
+			// and the beatsPerMinute set to zero
+			// so that the user program can create its own from scratch
+			beatsPerMinute = 0;
+			soundLoops.soundIDs = [];
+			soundLoops.beatStrings = [];
+
+
+			//rootObject = new THREE.Object3D();
+			//scene.add(rootObject);
+			//parentObject = rootObject;
+
+			if (typeof(draw) != "undefined") { 
+			  draw();
+			  frameCount++;
+			}
+
+			// do the render
+			render();
+			//clearDisplayList();
+
+			// update stats
+			stats.update();
+		}
+
+function callTheDrawLoopIfItExists() {
+	clearTimeout(drawLoopTimer);
+	drawLoopTimer = null;
+	
+	if (typeof(draw) != "undefined") { 
+	  draw();
+	  frameCount++;
+	}
+	if (drawLoopTimer === null) {
+		drawLoopTimer=setTimeout('callTheDrawLoopIfItExists();',30);
+	}
+}
+
+	var lastkey = 0
+	 document.onkeydown = function(e){
+		// CTRL-K compiles and runs
+		if(lastkey == 17 && e.which==75){
+			runCode();
+			return false;
+		}
+		else {
+			lastkey = e.which;
+		}
+		// also up or down arrow compile and run
+		if(e.which==38 || e.which==40){
+			runCode();
+			return true;
+		}
+		
+		
+	};
+	document.onkeyup = function(e){
+		
+		if(e.which==17){
+			lastkey = 0;
+		}
+	};
+
+
+var parentObject, rootObject, rotate, translate;
+parentObject = 0;
+rootObject = 0;
+var currentObject;
+var beatsPerMinute = 0;
+var oldBeatsPerMinute = 0;
+var soundLoopTimer;
+var beatNumber = 0;
+
+bpm = function(a) {
+
+	beatsPerMinute = a;
+	if (oldBeatsPerMinute !== a){
+		//alert('changing beats per minute old ' + oldBeatsPerMinute + ' new: ' + a);
+		clearTimeout(soundLoopTimer);
+		
+		if (beatsPerMinute !== 0) {
+				soundLoopTimer = setTimeout('soundLoop();',(1000*60)/beatsPerMinute);
+		}
+    	oldBeatsPerMinute = beatsPerMinute;
+    }
+	//alert('AFTER old ' + oldBeatsPerMinute + ' new: ' + a);
+
+}
+
+soundLoop = function() {
+			clearTimeout(soundLoopTimer);
+			//alert('soundLoop');
+			
+			if (beatsPerMinute !== 0) {
+					soundLoopTimer = setTimeout('soundLoop();',(1000*60)/beatsPerMinute);
+			}
+			
+			beatNumber++;
+			beatNumber = beatNumber % 16;
+
+			//alert(' '+soundLoops.soundIDs.length);
+			for(var i in soundLoops.soundIDs){
+				var playOrNoPlay;
+				playOrNoPlay = soundLoops.beatStrings[i].charAt(beatNumber);
+				//alert('soundID: ' + soundLoops.soundIDs[i]);
+				if (playOrNoPlay === 'x') {
+					soundManager.play(soundLoops.soundIDs[i])
+				}
+			}
+}
+
+
+addSound = function(soundID,beatString) {
+
+    		soundLoops.soundIDs[soundLoops.soundIDs.length] = soundID;
+    		soundLoops.beatStrings[soundLoops.beatStrings.length] = beatString;
+
+}
+
+translate = function(a, b, c) {
+  /*
+  currentObject = new THREE.Object3D();
+  currentObject.position.x = a;
+  currentObject.position.y = b;
+  currentObject.position.z = c;
+  parentObject.add(currentObject);
+  parentObject = currentObject;
+  */
+  worldMatrix.translate(new THREE.Vector3(a,b,c));
+};
+
+rotate = function(a, b, c) {
+  /*
+  currentObject = new THREE.Object3D();
+  currentObject.rotation.x = a;
+  currentObject.rotation.y = b;
+  currentObject.rotation.z = c;
+  parentObject.add(currentObject);
+  parentObject = currentObject;
+  */
+  //worldMatrix.setRotationFromEuler(new THREE.Vector3(a,b,c));
+  worldMatrix.rotateX(a).rotateY(b).rotateZ(c);
+
+};
+
+scale = function(a, b, c) {
+  if(arguments.length === 1){
+  	  b=a; c=a;
+  }
+
+  /*
+  currentObject = new THREE.Object3D();
+  currentObject.scale.x = a;
+  currentObject.scale.y = b;
+  currentObject.scale.z = c;
+  parentObject.add(currentObject);
+  parentObject = currentObject;
+  */
+  worldMatrix.scale(new THREE.Vector3(a,b,c));
+
+};
+    
+  box = function(a,b,c) {
+  	
+  	if(a === undefined){
+  	  //alert('cube!')
+  	  a=1; b=1; c=1;
+  	  }
+  	  
+  	else if(arguments.length === 1){
+  	  b=a; c=a;
+  	  }
+  	// create a distinct scale node
+  	//var shouldAttachHere = parentObject;
+    //scale(a,b,c);
+    //var mesh = new THREE.Mesh(cubeGeometry, normalMaterial)
+
+
+    var mesh = new THREE.Mesh(cubeGeometry, normalMaterial);
+
+    // the cube we are going to add is subject to the scale we just
+    // did, so the size should be OK
+    //parentObject.add(mesh)
+    // now we need to escape the scale node that we used to size the cube
+    // otherwise all further translations/rotations/scales are going
+    // to be affected.
+    //parentObject = shouldAttachHere
+    mesh.matrixAutoUpdate = false;
+    mesh.matrix.copy(worldMatrix);
+  	if( a !== 1 || b !== 1 || c !== 1){
+      mesh.matrix.scale(new THREE.Vector3(a,b,c));
+    }
+    
+    scene.add(mesh);
+    
+
+
+  }
+
+/**
+ * extend the Number prototype
+ * @param func
+ * @param scope [optional]
+ */
+Number.prototype.times = function(func, scope){
+    var v = this.valueOf();
+    for (var i=0; i < v; i++){
+        func.call(scope||window,i);
+    }
+};
+
+
+/*
+
+
+To set the flash security settings:
+http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html
+
+/////////////////////////////
+
+bpm 350
+//addSound 's12','zzzzzzzzzzzzzzzx'
+addSound 'additional13'  ,'zzx z zzzzxzzzzzzx'
+addSound 'additional9'  ,'zxzx z zxzzxxxxxxx'
+addSound 'additional7'  ,'zzxz z zzzxzzzzzzx'
+addSound 'additional1'  ,'zzxz z zzzzzzzzzzx'
+addSound 'additional8'  ,'xzzx z zzxzzzxzzxz'
+addSound 'additional6' ,'xxzz x zxzxzxxxxxx'
+addSound 'additional4' ,'zxzxzzzxzxxzzzxx'
+scale 2*Math.sin(frameCount/33)
+rotate frameCount/10,frameCount/250,frameCount/50
+box
+
+//////////////////////////////
+
+*/
+
+var simpleCubeExample = ""+
+	"rotate 0, 1, frameCount/100\n"+
+	"box\n";
+
+var twoCubesExample = ""+
+""+		"2 times\n"+
+"\t"+		"rotate 0, 1, frameCount/200\n"+
+"\t"+		"box\n";
+
+var cubesAndSpikes = ""+
+""+		"scale 2.1\n"+
+""+		"5 times\n"+
+"\t"+			"rotate 0,1,frameCount/500\n"+
+"\t"+			"box 0.1,0.1,0.1\n"+
+"\t"+			"translate 0,0.1,0.1\n"+
+"\t"+			"3 times\n"+
+"\t\t"+				"rotate 0,1,1\n"+
+"\t\t"+				"box 0.01,0.01,1\n";
+
+var turbineExample = ""+
+""+		"70 times\n"+
+"\t"+		"rotate frameCount/101,1,frameCount/1000\n"+
+"\t"+		"box\n";
+
+var yellowBackgroundExample = ""+
+""+		"background 255,255,0\n"+
+""+		"rotate 0,frameCount/20,frameCount/20\n"+
+""+		"box\n";
+
+var simpleSoundExample = ""+
+""+		"rotate 0,1,frameCount/100\n"+
+""+		"box\n"+
+""+		"if frameCount % 20 == 0\n"+
+"\t"+		"soundManager.play('s12')\n";
+
+var littleSpiralOfCubes = ""+
+""+		"scale 0.1\n"+
+""+		"10 times\n"+
+"\t"+		"rotate 0,1,frameCount/100\n"+
+"\t"+		"translate 1,1,1\n"+
+"\t"+		"box\n";
+
+var tentacleExample = ""+
+""+		"scale 0.1\n"+
+""+		"3 times\n"+
+"\t"+		"rotate 0,1,1\n"+
+"\t"+		"10 times\n"+
+"\t\t"+		"rotate 0,1,frameCount/100\n"+
+"\t\t"+		"scale 0.9\n"+
+"\t\t"+		"translate 1,1,1\n"+
+"\t\t"+		"box\n";
+
+var simpleRhythmExample = ""+
+""+		"bpm 240\n"+
+""+		"addSound 's12','xzzzzzzzzzzzzzzz'\n"+
+""+		"addSound 's1'  ,'zzxzzzzzxzzzzzzx'\n"+
+""+		"addSound 's2'  ,'xzzxzzxzzxxxxxxx'\n"+
+""+		"addSound 's3'  ,'zzzxzzzxzzzxzzxz'\n"+
+""+		"addSound 's5'  ,'xxzxxzxxzxxzxxxx'\n"+
+""+		"rotate 0,1,frameCount/50\n"+
+""+		"box\n";
+
+var industrialMusicExample = ""+
+""+		"bpm 350\n"+
+""+		"addSound 'additional13'  ,'zzx z zzzzxzzzzzzx'\n"+
+""+		"addSound 'additional9'  ,'zxzx z zxzzxxxxxxx'\n"+
+""+		"addSound 'additional7'  ,'zzxz z zzzxzzzzzzx'\n"+
+""+		"addSound 'additional1'  ,'zzxz z zzzzzzzzzzx'\n"+
+""+		"addSound 'additional8'  ,'xzzx z zzxzzzxzzxz'\n"+
+""+		"addSound 'additional6' ,'xzxz x zxzxxxzxxxx'\n"+
+""+		"addSound 'additional4' ,'zxzxzzzxxzzzzzxx'\n";
+
+
+function loadExample(whichExample) {
+
+	switch(whichExample) {
+		case 'simpleCubeExample':
+			editor.setValue(simpleCubeExample);
+			break;
+		case 'twoCubesExample':
+			editor.setValue(twoCubesExample);
+			break;
+		case 'cubesAndSpikes':
+			editor.setValue(cubesAndSpikes);
+			break;
+		case 'turbineExample':
+			editor.setValue(turbineExample);
+			break;
+		case 'yellowBackgroundExample':
+			editor.setValue(yellowBackgroundExample);
+			break;
+		case 'simpleSoundExample':
+			editor.setValue(simpleSoundExample);
+			break;
+		case 'littleSpiralOfCubes':
+			editor.setValue(littleSpiralOfCubes);
+			break;
+		case 'tentacleExample':
+			editor.setValue(tentacleExample);
+			break;
+		case 'simpleRhythmExample':
+			editor.setValue(simpleRhythmExample);
+			break;
+		case 'industrialMusicExample':
+			editor.setValue(industrialMusicExample);
+			break;
+	}
+	runCode();
+}
+
+	</script>
+	
+	<script>
+  var changesHappened = false;
+  var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+    lineNumbers: false,
+        tabSize: 2,
+        indentUnit: 2,
+        indentWithTabs: true,
+        lineWrapping: true,
+        onChange: (function(){editor.refresh();changesHappened = true})
+        //onScroll: (function(){alert('scroll')})
+  });
+
+  
+  editor.setOption("theme", 'night');
+  function selectTheme(node) {
+    var theme = node.options[node.selectedIndex].innerHTML;
+    editor.setOption("theme", theme);
+  }
+
+$(document).ready(function(){
+	boot();
+	editor.focus();
+});
+
+
+///////////////////////////////////////////////
+
+window.addEventListener(
+    'load',
+    function () {
+        //alert('resizing canvas');
+        var canvas = document.getElementById('backGroundCanvas');
+
+        if (fullScreenifyBackground) {
+        	fullscreenify(canvas);
+        }
+    },
+    false
+);
+
+function fullscreenify(canvas) {
+    var style = canvas.getAttribute('style') || '';
+    //alert('style: ' +  style);
+    
+    window.addEventListener('resize', function () {resize(canvas);}, false);
+
+    resize(canvas);
+
+    function resize(canvas) {
+        var scale = {x: 1, y: 1};
+        scale.x = (window.innerWidth + 40) / canvas.width;
+        scale.y = (window.innerHeight + 40) / canvas.height;
+        
+        if (scale.x < 1 || scale.y < 1) {
+            scale = '1, 1';
+        } else if (scale.x < scale.y) {
+            scale = scale.x + ', ' + scale.x;
+        } else {
+            scale = scale.y + ', ' + scale.y;
+        }
+        
+        canvas.setAttribute('style', style + ' ' + '-ms-transform-origin: left top; -webkit-transform-origin: left top; -moz-transform-origin: left top; -o-transform-origin: left top; transform-origin: left top; -ms-transform: scale(' + scale + '); -webkit-transform: scale3d(' + scale + ', 1); -moz-transform: scale(' + scale + '); -o-transform: scale(' + scale + '); transform: scale(' + scale + ');');
+    }
+}
+
+</script>
+
+
+
+
+<script type="text/javascript" src="./script/soundmanager2.js"></script>
+<script type="text/javascript" src="./script/mpc.js"></script>
+
+
+
+</body>
+</html>

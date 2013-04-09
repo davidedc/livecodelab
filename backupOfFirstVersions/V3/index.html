@@ -1,0 +1,51 @@
+<div style="position: absolute; top: 0px; left: 0px; width: 240px; background-color: azure;">        
+<canvas id="canvas" width="300" height="300"></canvas>
+</div>
+
+<div style="position: absolute; top: 0px; left: 0px; width: 240px;">
+        <textarea id="source" rows="25" spellcheck="false" style="background-color: transparent; text-shadow: -1px 0px white, 0px 1px white,
+      1px 0px white, 0px -1px white, -2px 0px 1px white, 0px 2px 1px white,
+      2px 0px 1px white, 0px -2px 1px white"></textarea>
+      </div>
+      
+
+<script>
+
+//get a reference to the canvas
+var ctx = document.getElementsByTagName("canvas")[0].getContext("2d");
+
+//draw a circle
+ctx.beginPath();
+ctx.arc(75, 75, 10, 0, Math.PI*2, true); 
+ctx.closePath();
+ctx.fill();
+
+
+function runCode() {
+    document.getElementsByTagName("canvas")[0].getContext("2d").clearRect(0,0,
+      document.getElementsByTagName("canvas")[0].width,
+      document.getElementsByTagName("canvas")[0].height);
+
+    eval(document.getElementById('source').value);
+
+}
+
+	var lastkey = 0
+	 document.onkeydown = function(e){
+		if(lastkey == 17 && e.which==75){
+			// console.log(e.which);
+			runCode();
+			return false;
+		}else{
+			lastkey = e.which;
+		}
+	};
+	document.onkeyup = function(e){
+		
+		if(e.which==17){
+			lastkey = 0;
+		}
+	};
+
+
+</script>

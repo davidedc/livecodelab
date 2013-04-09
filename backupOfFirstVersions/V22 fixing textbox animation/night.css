@@ -1,0 +1,54 @@
+/* Loosely based on the Midnight Textmate theme */
+
+  /*give the body height:100% so that its child
+    elements can have percentage heights*/
+  body{ height:100% }
+
+  /*this is what we want the div to look like*/
+  div.fullscreen{
+    display:block;
+
+    /*set the div in the top-left corner of the screen*/
+    position:absolute;
+    top:0;
+    left:0;
+    
+    /*set the width and height to 100% of the screen*/
+    width:100%;
+    height:100%;
+  }
+
+      .cm-tab:after {
+        content: "\2587";
+        display: -moz-inline-block;
+        display: -webkit-inline-block;
+        display: inline-block;
+        width: 0px;
+        position: relative;
+        overflow: visible;
+        left: -1.2em;
+        color: #333333;
+        margin-top: -0.1em;
+      }
+
+
+.cm-s-night { background: transparent; color: white; }
+.cm-s-night span.CodeMirror-selected { background: #a8f !important; }
+.cm-s-night .CodeMirror-gutter { background: #0a001f; border-right: 1px solid #aaa; }
+.cm-s-night .CodeMirror-gutter-text { color: #f8f8f8; }
+.cm-s-night .CodeMirror-cursor { margin-top:0.2em; height:0.7em;  border-left: 0.67em solid white !important; opacity: 0.5; }
+
+.cm-s-night span { background: yellow; color: #6900a1; }
+.cm-s-night span.cm-comment { color: #6900a1; }
+.cm-s-night span.cm-atom { color: #845dc4; }
+.cm-s-night span.cm-number, .cm-s-night span.cm-attribute { color: #ff0000; }
+.cm-s-night span.cm-keyword { color: #599eff; }
+.cm-s-night span.cm-string { color: #37f14a; }
+.cm-s-night span.cm-meta { color: #7678e2; }
+.cm-s-night span.cm-variable-2, .cm-s-night span.cm-tag { color: #99b2ff; }
+.cm-s-night span.cm-variable-3, .cm-s-night span.cm-def { color: white; }
+.cm-s-night span.cm-error { color: #9d1e15; }
+.cm-s-night span.cm-bracket { color: #8da6ce; }
+.cm-s-night span.cm-comment { color: #6900a1; }
+.cm-s-night span.cm-builtin, .cm-s-night span.cm-special { color: #ff9e59; }
+.cm-s-night span.cm-link { color: #845dc4; }

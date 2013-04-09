@@ -1,0 +1,358 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0059)http://onehackoranother.com/projects/jquery/boxy/tests.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+<title>boxy</title>
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+
+<link rel="stylesheet" href="./boxy_files/main.css" type="text/css">
+
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://onehackoranother.com/feed/">
+<link rel="alternate" type="text/xml" title="RSS .92" href="http://onehackoranother.com/feed/rss/">
+<link rel="alternate" type="application/atom+xml" title="Atom 1.0" href="http://onehackoranother.com/feed/atom/">
+
+<script type="text/javascript" src="./boxy_files/project.js"></script>
+
+
+<script type="text/javascript" src="./boxy_files/jquery-1.2.3.min.js"></script>
+
+
+<!-- per project includes -->
+
+
+<link rel="stylesheet" href="./boxy_files/boxy.css" type="text/css">
+
+
+
+<script type="text/javascript" src="./boxy_files/jquery.boxy.js"></script>
+
+
+<!-- end per project includes -->
+
+<script type="text/javascript" async="" src="./boxy_files/in.php"></script></head>
+  
+<body onload="boot();">
+  
+  <div id="container">
+    
+    <h1>
+      boxy
+      <span class="subtitle"> - Facebook-like dialog/overlay, with frills</span>
+    </h1>
+    
+    <div id="main">
+      
+<h2>Diagnostics</h2>
+<p>Also uses <code>Boxy.get(this)</code>...</p>
+<ul>
+  <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="diagnostics">Show diagnostics</a></li>
+</ul>
+
+<h2>AJAX</h2>
+<ul>
+  <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" onclick="Boxy.load(&quot;test-1.html&quot;);">Test 1</a></li>
+  <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" onclick="Boxy.load(&quot;test-2.html&quot;, {cache:true});">Test 2 - cache enabled</a></li>
+  <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" onclick="Boxy.load(&quot;test-3.html&quot;, {filter: &quot;#inner&quot;});">Test 3 - filtering</a></li>
+</ul>
+
+<h2>Actuator</h2>
+<ul>
+  <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="actuator">Create boxy bound to link below</a></li>
+  <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="actuator-toggle">Toggle bound boxy</a></li>
+</ul>
+
+<h2>Set Content</h2>
+<ul>
+  <li>
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="set-content-open">open boxy</a> |
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="set-content">set content</a><br>
+    (hover behaviour should continue to work after new content is set)
+  </li>
+</ul>
+
+<h2>Callbacks</h2>
+<ul>
+  <li>
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="after-hide">after hide</a>
+  </li>
+  <li>
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="before-unload">before unload</a> |
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="before-unload-no-auto-unload">before unload (no autounload - shouldn't fire)</a>
+  </li>
+  <li>
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="after-drop">after drop</a>
+  </li>
+  <li>
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="after-show">after show</a>
+  </li>
+</ul>
+
+<h2>Helpers</h2>
+<ul>
+  <li>
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" onclick="Boxy.ask(&quot;Question&quot;, [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;], function(r) { alert(r); });">Question, response array</a>
+  </li>
+  <li>
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" onclick="Boxy.ask(&quot;Question&quot;, {&quot;1&quot;:&quot;Yes&quot;, &quot;2&quot;:&quot;No&quot;}, function(r) { alert(r); });">Question, response object</a>
+  </li>
+  <li>
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" onclick="Boxy.alert(&quot;Alert! Alert!&quot;, function() { alert(&quot;Alert closed!&quot;); });">Alert</a>
+  </li>
+  <li>
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" onclick="Boxy.confirm(&quot;Please confirm?&quot;, function() { alert(&quot;Confirmed!&quot;); });">Confirm</a>
+  </li>
+</ul>
+
+<h2>Z-Index</h2>
+<p>Clicking anywhere on the dialogs opened by the link below should bring them to the front.</p>
+<ul>
+  <li>
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="z-index">click-to-front enabled</a> |
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="z-index-latest">bring newest to top</a>
+  </li>
+</ul>
+
+<h2>Modals</h2>
+<p>Resize the window, ensure blackout expands.</p>
+<ul>
+  <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="modal">Open a modal dialog</a></li>
+  <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" onclick="alert(Boxy.isModalVisible()); return false;">Test for a visible modal</a></li>
+</ul>
+
+<h2>Show</h2>
+<ul>
+  <li>
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="no-show">Create, don't show</a> |
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" id="no-show-now">Show now</a>
+  </li>
+</ul>
+
+<h2>Positioning</h2>
+<ul>
+  <li>
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" onclick="return lorem({x: 200});">200, DEFAULT</a>
+  </li>
+  <li>
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" onclick="return lorem({y: 200});">DEFAULT, 200</a>
+  </li>
+  <li>
+    <a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#" onclick="return lorem({center: false});">DEFAULT, DEFAULT</a>
+  </li>
+</ul>
+
+</div>
+
+<script type="text/javascript">
+
+var diagnose = function(boxy) {
+    alert("Position: " + boxy.getPosition() +
+          "\nSize: " + boxy.getSize() +
+          "\nContent size: " + boxy.getContentSize() +
+          "\nCenter: " + boxy.getCenter());
+};
+
+$(function() {
+  
+  Boxy.DEFAULTS.title = 'Title';
+  
+  //
+  // Diagnostics
+  
+  $('#diagnostics').click(function() {
+      new Boxy("<div><a href='#' onclick='diagnose(Boxy.get(this));'>Diagnose</a></div>");
+      return false;
+  });
+
+  //
+  // Set content
+  
+  var setContent = null;
+  $('#set-content-open').click(function() {
+      setContent = new Boxy(
+        "<div style='background-color:red'>This is content</div>", {
+          behaviours: function(c) {
+            c.hover(function() {
+              $(this).css('backgroundColor', 'green');
+            }, function() {
+              $(this).css('backgroundColor', 'pink');
+            });
+          }
+        }
+      );
+      return false;
+  });
+  $('#set-content').click(function() {
+      setContent.setContent("<div style='background-color:blue'>This is new content</div>");
+      return false;
+  });
+  
+  //
+  // Callbacks
+  
+  $('#after-hide').click(function() {
+      new Boxy("<div>Test content</div>", {
+        afterHide: function() {
+          alert('after hide called');
+        }
+      });
+      return false;
+  });
+  
+  $('#before-unload').click(function() {
+      new Boxy("<div>Test content</div>", {
+        beforeUnload: function() {
+          alert('before unload called');
+        },
+        unloadOnHide: true
+      });
+      return false;
+  });
+  
+  $('#before-unload-no-auto-unload').click(function() {
+      new Boxy("<div>Test content</div>", {
+        beforeUnload: function() {
+          alert('should not see this');
+        },
+        unloadOnHide: false
+      });
+      return false;
+  });
+  
+  $('#after-drop').click(function() {
+      new Boxy("<div>Test content</div>", {
+        afterDrop: function() {
+          alert('after drop: ' + this.getPosition());
+        },
+        draggable: true
+      });
+      return false;
+  });
+  
+  $('#after-show').click(function() {
+      new Boxy("<div>Test content</div>", {
+        afterShow: function() {
+          alert('after show: ' + this.getPosition());
+        }
+      });
+      return false;
+  });
+  
+  //
+  // Z-index
+  
+  var zIndex = null;
+  $('#z-index').click(function() {
+      zIndex = new Boxy(
+        "<div>Test content</div>", { clickToFront: true }
+      );
+      return false;
+  });
+  
+  $('#z-index-latest').click(function() {
+      zIndex.toTop();
+      return false;
+  });
+  
+  //
+  // Modals
+  
+  function newModal() {
+      new Boxy("<div><a href='#'>Open a stacked modal</a> | <a href='#' onclick='alert(Boxy.isModalVisible()); return false;'>test for modal dialog</a></div>", {
+        modal: true, behaviours: function(c) {
+          c.find('a:first').click(function() {
+            newModal();
+          });
+        }
+      });
+  };
+  
+  $('#modal').click(newModal);
+  
+  //
+  // No-show
+  
+  var noShow;
+  $('#no-show').click(function() {
+      noShow = new Boxy("<div>content</div>", {show: false});
+      return false;
+  });
+  
+  $('#no-show-now').click(function() {
+      noShow.show();
+      return false;
+  });
+  
+  // Actuator
+  
+  $('#actuator').click(function() {
+      var ele = $('#actuator-toggle')[0];
+      new Boxy("<div>test content</div>", {actuator: ele, show: false});
+      return false;
+  });
+  $('#actuator-toggle').click(function() {
+      Boxy.linkedTo(this).toggle();
+      return false;
+  });
+  
+});
+</script>
+
+    </div>
+    
+    <div id="sidebar">
+      <ul id="project-nav">
+        
+          <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#overview">Overview</a></li>
+        
+          <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#downloading">Downloading</a></li>
+        
+          <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#setup">Setup</a></li>
+        
+          <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#jquery-plugin">Using the jQuery Plugin</a></li>
+        
+          <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#manual-labour">Creating Instances Manually</a></li>
+        
+          <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#api">API</a></li>
+        
+          <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#constructor-options">Constructor Options</a></li>
+        
+          <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#css-selectors">CSS Selectors</a></li>
+        
+          <li><a href="http://onehackoranother.com/projects/jquery/boxy/tests.html#todo">TODO</a></li>
+        
+      </ul>
+
+      <ul id="ohoa-nav">
+        <li><a href="http://onehackoranother.com/feed/" id="subscribe">Subscribe for updates »</a></li>
+        <li><a href="http://twitter.com/jaz303" id="twitter">Follow me on Twitter »</a></li>
+        <li><a href="http://onehackoranother.com/projects/">Back to projects »</a></li>
+        <li><a href="http://onehackoranother.com/">Back to onehackoranother.com »</a></li>
+      </ul>
+
+      <a href="http://thepixeltrap.com/" id="pixel-trap" title="The Pixel Trap: New Directory for Web Professionals">
+        The Pixel Trap - A New Directory for Web Professionals
+      </a>
+    </div>
+
+  
+  
+  
+    <script src="./boxy_files/js" type="text/javascript"></script>
+    <script type="text/javascript">clicky.init(22334);</script>
+    <noscript>&lt;p&gt;&lt;img alt="Clicky" width="1" height="1" src="http://static.getclicky.com/22334ns.gif" /&gt;&lt;/p&gt;</noscript>
+    <script type="text/javascript">
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script><script src="./boxy_files/ga.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      try {
+        var pageTracker = _gat._getTracker("UA-11486315-1");
+        pageTracker._trackPageview();
+      } catch(err) {}
+    </script>
+  
+
+
+</body></html>
