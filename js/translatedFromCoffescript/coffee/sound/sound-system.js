@@ -160,7 +160,6 @@ SoundSystem = (function() {
       return;
     }
     this.beatNumber += 1;
-    this.beatNumber = this.beatNumber % 16;
     _results = [];
     for (loopingTheSoundIDs = _i = 0, _ref = this.soundLoops.soundIDs.length; 0 <= _ref ? _i < _ref : _i > _ref; loopingTheSoundIDs = 0 <= _ref ? ++_i : --_i) {
       loopedSoundID = this.soundLoops.soundIDs[loopingTheSoundIDs];
