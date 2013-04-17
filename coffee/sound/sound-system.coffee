@@ -70,6 +70,7 @@ class SoundSystem
   # called from within patches
   play: (soundID, beatString) ->
     @anyCodeReactingTobpm = true
+    # ignore the whitespaced
     beatString = beatString.replace(/\s*/g, "")
     @soundLoops.soundIDs.push soundID
     @soundLoops.beatStrings.push beatString
@@ -168,7 +169,6 @@ class SoundSystem
     beatString = undefined
     return  if @soundSystemIsMangled
     @beatNumber += 1
-    @beatNumber = @beatNumber % 16
     for loopingTheSoundIDs in [0...@soundLoops.soundIDs.length]
       loopedSoundID = @soundLoops.soundIDs[loopingTheSoundIDs]
       
