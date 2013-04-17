@@ -425,7 +425,8 @@ module.exports = function (grunt) {
     });
 
     // Compilation task
-    grunt.registerTask('compile', 'clean:build coffee:app coffee:tests concat closure-compiler copy:fonts recess:compile targethtml:compile');
+    //grunt.registerTask('compile', ['clean:build', 'coffee:app', 'coffee:tests', 'concat', 'closure-compiler', 'copy:fonts', 'recess:compile', 'targethtml:compile']);
+    grunt.registerTask('compile', ['clean:build']);
 
     // Load NPM Task modules
     grunt.loadNpmTasks('grunt-closure-compiler');
@@ -435,6 +436,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-targethtml');
     grunt.loadNpmTasks('grunt-coffee');
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-clean');
     // couldn't make these two to work
     //grunt.loadNpmTasks('grunt-contrib-jsdoc');
     //grunt.loadNpmTasks('grunt-jsduck');
