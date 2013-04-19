@@ -1,9 +1,9 @@
-# this script is udeful to test
+# This script is useful to test
 # the setup of the node/grunt/libraries
-# for the build process
-# in a virgin ubuntu installation
+# which is required by the build scripts.
+# This script assumes a virgin ubuntu installation.
 
-# the whole installation can be run by opening
+# The whole installation can be run by opening
 # a terminal and issuing the following command
 # (on one line, or separate)
 # wget http://raw.github.com/davidedc/livecodelab/master/ubuntuInstallScript/install.sh ; sh install.sh
