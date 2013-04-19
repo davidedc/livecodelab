@@ -289,17 +289,24 @@ module.exports = function (grunt) {
         },
         coffee: {
             app: {
+                expand: true,
                 src: ['coffee/**/*.coffee'],
                 dest: 'js/translatedFromCoffescript/',
+                ext: '.js',  
                 options: {
+                    bare: true,
                     preserve_dirs: true
                 }
             },
             tests: {
-                src: ['tests/coffee/**/*.coffee'],
+                expand: true,
+                cwd: 'tests/coffee/',
+                src: ['*.coffee'],
                 dest: 'tests/js/',
+                ext: '.js',
                 options: {
-                    preserve_dirs: false
+                    bare: true,
+                    preserve_dirs: true
                 }
             }
         },
@@ -433,7 +440,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-docco');
     grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-targethtml');
-    grunt.loadNpmTasks('grunt-coffee');
+    grunt.loadNpmTasks('grunt-contrib-coffee');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-clean');
     // couldn't make these two to work
