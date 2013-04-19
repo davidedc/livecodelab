@@ -1,0 +1,1736 @@
+<!DOCTYPE html>  <html> <head>   <title>ShaderExtras.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="bowser-2012-07-18.html">                 bowser-2012-07-18.js               </a>                                           <a class="source" href="coffeescript-livecodelab-mode.html">                 coffeescript-livecodelab-mode.js               </a>                                           <a class="source" href="mousewheel.html">                 mousewheel.js               </a>                                           <a class="source" href="buzz.html">                 buzz.js               </a>                                           <a class="source" href="Detector.html">                 Detector.js               </a>                                           <a class="source" href="ShaderExtras.html">                 ShaderExtras.js               </a>                                           <a class="source" href="Stats.html">                 Stats.js               </a>                                           <a class="source" href="THREEx.WindowResize.html">                 THREEx.WindowResize.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               ShaderExtras.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm"> * @author alteredq / http://alteredqualia.com/</span>
+<span class="cm"> * @author zz85 / http://www.lab4games.net/zz85/blog</span>
+<span class="cm"> *</span>
+<span class="cm"> * ShaderExtras currently contains:</span>
+<span class="cm"> *</span>
+<span class="cm"> *  screen</span>
+<span class="cm"> *  convolution</span>
+<span class="cm"> *  film</span>
+<span class="cm"> *  bokeh</span>
+<span class="cm"> *  sepia</span>
+<span class="cm"> *  dotscreen</span>
+<span class="cm"> *  vignette</span>
+<span class="cm"> *  bleachbypass</span>
+<span class="cm"> *  basic</span>
+<span class="cm"> *  dofmipmap</span>
+<span class="cm"> *  focus</span>
+<span class="cm"> *  triangleBlur</span>
+<span class="cm"> *  horizontalBlur + verticalBlur</span>
+<span class="cm"> *  horizontalTiltShift + verticalTiltShift</span>
+<span class="cm"> *  blend</span>
+<span class="cm"> *  fxaa</span>
+<span class="cm"> *  luminosity</span>
+<span class="cm"> *  colorCorrection</span>
+<span class="cm"> *  normalmap</span>
+<span class="cm"> *  ssao</span>
+<span class="cm"> *  colorify</span>
+<span class="cm"> *  unpackDepthRGBA</span>
+<span class="cm"> */</span>
+
+<span class="nx">THREE</span><span class="p">.</span><span class="nx">ShaderExtras</span> <span class="o">=</span> <span class="p">{</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;screen&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="nx">tDiffuse</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="nx">opacity</span><span class="o">:</span>  <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform float opacity;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec4 texel = texture2D( tDiffuse, vUv );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_FragColor = opacity * texel;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* ------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">  ------------------------------------------------------------------------ */</span>
+
+  <span class="s1">&#39;convolution&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="s2">&quot;tDiffuse&quot;</span> <span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="s2">&quot;uImageIncrement&quot;</span> <span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;v2&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector2</span><span class="p">(</span> <span class="mf">0.001953125</span><span class="p">,</span> <span class="mf">0.0</span> <span class="p">)</span> <span class="p">},</span>
+      <span class="s2">&quot;cKernel&quot;</span> <span class="o">:</span>     <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;fv1&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="p">[]</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Full-screen textured quad shader</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s2">&quot;uniform vec2 uImageIncrement;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = uv - ( ( KERNEL_SIZE - 1.0 ) / 2.0 ) * uImageIncrement;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Convolution shader
+  - ported from o3d sample to WebGL / GLSL
+        http://o3d.googlecode.com/svn/trunk/samples/convolution.html</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s2">&quot;uniform float cKernel[ KERNEL_SIZE ];&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform vec2 uImageIncrement;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec2 imageCoord = vUv;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec4 sum = vec4( 0.0, 0.0, 0.0, 0.0 );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;for( int i = 0; i &lt; KERNEL_SIZE; i ++ ) {&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;sum += texture2D( tDiffuse, imageCoord ) * cKernel[ i ];&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;imageCoord += uImageIncrement;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = sum;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+
+<span class="cm">//DIVIDER</span>
+
+
+<span class="cm">//DIVIDER</span>
+
+
+<span class="cm">//DIVIDER</span>
+
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;film&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="nx">tDiffuse</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="nx">time</span><span class="o">:</span>       <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">0.0</span> <span class="p">},</span>
+      <span class="nx">nIntensity</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">0.5</span> <span class="p">},</span>
+      <span class="nx">sIntensity</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">0.05</span> <span class="p">},</span>
+      <span class="nx">sCount</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">4096</span> <span class="p">},</span>
+      <span class="nx">grayscale</span><span class="o">:</span>  <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">1</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>"#define KERNEL_SIZE 25.0",</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s2">&quot;uniform float time;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform bool grayscale;&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>"#define KERNEL_SIZE 25",</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s2">&quot;uniform float nIntensity;&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Film grain &amp; scanlines shader</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s2">&quot;uniform float sIntensity;&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <ul>
+<li>ported from HLSL to WebGL / GLSL
+http://www.truevision3d.com/forums/showcase/staticnoise<em>colorblackwhite</em>scanline_shaders-t18698.0.html</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s2">&quot;uniform float sCount;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Screen Space Static Postprocessor</p>
+
+<p>Produces an analogue noise overlay similar to a film grain / TV static</p>
+
+<p>Original implementation and noise algorithm
+Pat 'Hawthorne' Shearon</p>
+
+<p>Optimized scanlines + noise version with intensity scaling
+Georg 'Leviathan' Steinrohder</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="s2">&quot;vec4 cTextureScreen = texture2D( tDiffuse, vUv );&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>This version is provided under a Creative Commons Attribution 3.0 License
+http://creativecommons.org/licenses/by/3.0/</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="s2">&quot;float x = vUv.x * vUv.y * time *  1000.0;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;x = mod( x, 13.0 ) * mod( x, 123.0 );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float dx = mod( x, 0.01 );&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>control parameter</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="s2">&quot;vec3 cResult = cTextureScreen.rgb + cTextureScreen.rgb * clamp( 0.1 + dx * 100.0, 0.0, 1.0 );&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>noise effect intensity value (0 = no effect, 1 = full effect)</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="s2">&quot;vec2 sc = vec2( sin( vUv.y * sCount ), cos( vUv.y * sCount ) );&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>scanlines effect intensity value (0 = no effect, 1 = full effect)</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="s2">&quot;cResult += cTextureScreen.rgb * vec3( sc.x, sc.y, sc.x ) * sIntensity;&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>scanlines effect count value (0 = no effect, 4096 = full effect)</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="s2">&quot;cResult = cTextureScreen.rgb + clamp( nIntensity, 0.0,1.0 ) * ( cResult - cTextureScreen.rgb );&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>sample the source</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="s2">&quot;if( grayscale ) {&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;cResult = vec3( cResult.r * 0.3 + cResult.g * 0.59 + cResult.b * 0.11 );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor =  vec4( cResult, cTextureScreen.a );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;bokeh&#39;</span> <span class="o">:</span> <span class="p">{</span>
+
+  <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span> <span class="nx">tColor</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+        <span class="nx">tDepth</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+        <span class="nx">focus</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="p">},</span>
+        <span class="nx">aspect</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="p">},</span>
+        <span class="nx">aperture</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">0.025</span> <span class="p">},</span>
+        <span class="nx">maxblur</span><span class="o">:</span>  <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="p">},</span>
+        <span class="p">},</span>
+
+  <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+  <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+  <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+  <span class="s2">&quot;}&quot;</span>
+
+  <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+  <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+  <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+  <span class="s2">&quot;uniform sampler2D tColor;&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;uniform sampler2D tDepth;&quot;</span><span class="p">,</span>
+
+  <span class="s2">&quot;uniform float maxblur;&quot;</span><span class="p">,</span>   <span class="c1">// max blur amount</span>
+  <span class="s2">&quot;uniform float aperture;&quot;</span><span class="p">,</span>  <span class="c1">// aperture - bigger values for shallower depth of field</span>
+
+  <span class="s2">&quot;uniform float focus;&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;uniform float aspect;&quot;</span><span class="p">,</span>
+
+  <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;vec2 aspectcorrect = vec2( 1.0, aspect );&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;vec4 depth1 = texture2D( tDepth, vUv );&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;float factor = depth1.x - focus;&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;vec2 dofblur = vec2 ( clamp( factor * aperture, -maxblur, maxblur ) );&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;vec2 dofblur9 = dofblur * 0.9;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;vec2 dofblur7 = dofblur * 0.7;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;vec2 dofblur4 = dofblur * 0.4;&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;vec4 col = vec4( 0.0 );&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.0,   0.4  ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.15,  0.37 ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.29,  0.29 ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.37,  0.15 ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.40,  0.0  ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.37, -0.15 ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.29, -0.29 ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.15, -0.37 ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.0,  -0.4  ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.15,  0.37 ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.29,  0.29 ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.37,  0.15 ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.4,   0.0  ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.37, -0.15 ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.29, -0.29 ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.15, -0.37 ) * aspectcorrect ) * dofblur );&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.15,  0.37 ) * aspectcorrect ) * dofblur9 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.37,  0.15 ) * aspectcorrect ) * dofblur9 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.37, -0.15 ) * aspectcorrect ) * dofblur9 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.15, -0.37 ) * aspectcorrect ) * dofblur9 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.15,  0.37 ) * aspectcorrect ) * dofblur9 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.37,  0.15 ) * aspectcorrect ) * dofblur9 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.37, -0.15 ) * aspectcorrect ) * dofblur9 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.15, -0.37 ) * aspectcorrect ) * dofblur9 );&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.29,  0.29 ) * aspectcorrect ) * dofblur7 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.40,  0.0  ) * aspectcorrect ) * dofblur7 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.29, -0.29 ) * aspectcorrect ) * dofblur7 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.0,  -0.4  ) * aspectcorrect ) * dofblur7 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.29,  0.29 ) * aspectcorrect ) * dofblur7 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.4,   0.0  ) * aspectcorrect ) * dofblur7 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.29, -0.29 ) * aspectcorrect ) * dofblur7 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.0,   0.4  ) * aspectcorrect ) * dofblur7 );&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.29,  0.29 ) * aspectcorrect ) * dofblur4 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.4,   0.0  ) * aspectcorrect ) * dofblur4 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.29, -0.29 ) * aspectcorrect ) * dofblur4 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.0,  -0.4  ) * aspectcorrect ) * dofblur4 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.29,  0.29 ) * aspectcorrect ) * dofblur4 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.4,   0.0  ) * aspectcorrect ) * dofblur4 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2( -0.29, -0.29 ) * aspectcorrect ) * dofblur4 );&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;col += texture2D( tColor, vUv.xy + ( vec2(  0.0,   0.4  ) * aspectcorrect ) * dofblur4 );&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;gl_FragColor = col / 41.0;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;gl_FragColor.a = 1.0;&quot;</span><span class="p">,</span>
+
+  <span class="s2">&quot;}&quot;</span>
+
+  <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;dofmipmap&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="nx">tColor</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="nx">tDepth</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="nx">focus</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="p">},</span>
+      <span class="nx">maxblur</span><span class="o">:</span>  <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform float focus;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float maxblur;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform sampler2D tColor;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform sampler2D tDepth;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec4 depth = texture2D( tDepth, vUv );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float factor = depth.x - focus;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec4 col = texture2D( tColor, vUv, 2.0 * maxblur * abs( focus - depth.x ) );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = col;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_FragColor.a = 1.0;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;sepia&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="nx">tDiffuse</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="nx">amount</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform float amount;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec4 color = texture2D( tDiffuse, vUv );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec3 c = color.rgb;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;color.r = dot( c, vec3( 1.0 - 0.607 * amount, 0.769 * amount, 0.189 * amount ) );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;color.g = dot( c, vec3( 0.349 * amount, 1.0 - 0.314 * amount, 0.168 * amount ) );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;color.b = dot( c, vec3( 0.272 * amount, 0.534 * amount, 1.0 - 0.869 * amount ) );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = vec4( min( vec3( 1.0 ), color.rgb ), color.a );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;dotscreen&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="nx">tDiffuse</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="nx">tSize</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;v2&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector2</span><span class="p">(</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">256</span> <span class="p">)</span> <span class="p">},</span>
+      <span class="nx">center</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;v2&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector2</span><span class="p">(</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span> <span class="p">)</span> <span class="p">},</span>
+      <span class="nx">angle</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.57</span> <span class="p">},</span>
+      <span class="nx">scale</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform vec2 center;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float angle;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float scale;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform vec2 tSize;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;float pattern() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float s = sin( angle ), c = cos( angle );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec2 tex = vUv * tSize - center;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec2 point = vec2( c * tex.x - s * tex.y, s * tex.x + c * tex.y ) * scale;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;return ( sin( point.x ) * sin( point.y ) ) * 4.0;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec4 color = texture2D( tDiffuse, vUv );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float average = ( color.r + color.g + color.b ) / 3.0;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = vec4( vec3( average * 10.0 - 5.0 + pattern() ), color.a );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* ------------------------------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------------------------------ */</span>
+
+  <span class="s1">&#39;vignette&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="nx">tDiffuse</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="nx">offset</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="p">},</span>
+      <span class="nx">darkness</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform float offset;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float darkness;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>make some noise</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="s2">&quot;vec4 texel = texture2D( tDiffuse, vUv );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec2 uv = ( vUv - vec2( 0.5 ) ) * vec2( offset );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_FragColor = vec4( mix( texel.rgb, vec3( 1.0 - darkness ), dot( uv, uv ) ), texel.a );&quot;</span><span class="p">,</span>
+
+        <span class="cm">/*</span>
+
+<span class="cm">//DIVIDER</span>
+
+<span class="cm">        &quot;vec4 color = texture2D( tDiffuse, vUv );&quot;,</span>
+<span class="cm">        &quot;float dist = distance( vUv, vec2( 0.5 ) );&quot;,</span>
+<span class="cm">        &quot;color.rgb *= smoothstep( 0.8, offset * 0.799, dist *( darkness + offset ) );&quot;,</span>
+<span class="cm">        &quot;gl_FragColor = color;&quot;,</span>
+<span class="cm">        */</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;bleachbypass&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="nx">tDiffuse</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="nx">opacity</span><span class="o">:</span>  <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform float opacity;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec4 base = texture2D( tDiffuse, vUv );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec3 lumCoeff = vec3( 0.25, 0.65, 0.1 );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float lum = dot( lumCoeff, base.rgb );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec3 blend = vec3( lum );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float L = min( 1.0, max( 0.0, 10.0 * ( lum - 0.45 ) ) );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec3 result1 = 2.0 * base.rgb * blend;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec3 result2 = 1.0 - 2.0 * ( 1.0 - blend ) * ( 1.0 - base.rgb );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec3 newColor = mix( result1, result2, L );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float A2 = opacity * base.a;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec3 mixRGB = A2 * newColor.rgb;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mixRGB += ( ( 1.0 - A2 ) * base.rgb );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = vec4( mixRGB, base.a );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* --------------------------------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   -------------------------------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;focus&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span> <span class="o">:</span> <span class="p">{</span>
+
+      <span class="s2">&quot;tDiffuse&quot;</span><span class="o">:</span>     <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="s2">&quot;screenWidth&quot;</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">1024</span> <span class="p">},</span>
+      <span class="s2">&quot;screenHeight&quot;</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">1024</span> <span class="p">},</span>
+      <span class="s2">&quot;sampleDistance&quot;</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">0.94</span> <span class="p">},</span>
+      <span class="s2">&quot;waveFactor&quot;</span><span class="o">:</span>     <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">0.00125</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform float screenWidth;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float screenHeight;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float sampleDistance;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float waveFactor;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec4 color, org, tmp, add;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float sample_dist, f;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec2 vin;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec2 uv = vUv;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;add += color = org = texture2D( tDiffuse, uv );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vin = ( uv - vec2( 0.5 ) ) * vec2( 1.4 );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sample_dist = dot( vin, vin ) * 2.0;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;f = ( waveFactor * 100.0 + sample_dist ) * sampleDistance * 4.0;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec2 sampleSize = vec2(  1.0 / screenWidth, 1.0 / screenHeight ) * vec2( f );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;add += tmp = texture2D( tDiffuse, uv + vec2( 0.111964, 0.993712 ) * sampleSize );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;if( tmp.b &lt; color.b ) color = tmp;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;add += tmp = texture2D( tDiffuse, uv + vec2( 0.846724, 0.532032 ) * sampleSize );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;if( tmp.b &lt; color.b ) color = tmp;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;add += tmp = texture2D( tDiffuse, uv + vec2( 0.943883, -0.330279 ) * sampleSize );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;if( tmp.b &lt; color.b ) color = tmp;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;add += tmp = texture2D( tDiffuse, uv + vec2( 0.330279, -0.943883 ) * sampleSize );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;if( tmp.b &lt; color.b ) color = tmp;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;add += tmp = texture2D( tDiffuse, uv + vec2( -0.532032, -0.846724 ) * sampleSize );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;if( tmp.b &lt; color.b ) color = tmp;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;add += tmp = texture2D( tDiffuse, uv + vec2( -0.993712, -0.111964 ) * sampleSize );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;if( tmp.b &lt; color.b ) color = tmp;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;add += tmp = texture2D( tDiffuse, uv + vec2( -0.707107, 0.707107 ) * sampleSize );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;if( tmp.b &lt; color.b ) color = tmp;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;color = color * vec4( 2.0 ) - ( add / vec4( 8.0 ) );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;color = color + ( add / vec4( 8.0 ) - color ) * ( vec4( 1.0 ) - vec4( sample_dist * 0.5 ) );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = vec4( color.rgb * color.rgb * vec3( 0.95 ) + color.rgb, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;triangleBlur&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+
+    <span class="nx">uniforms</span> <span class="o">:</span> <span class="p">{</span>
+
+      <span class="s2">&quot;texture&quot;</span><span class="o">:</span>  <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="s2">&quot;delta&quot;</span><span class="o">:</span>  <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;v2&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector2</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="p">)</span>  <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+    <span class="s2">&quot;#define ITERATIONS 10.0&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;uniform sampler2D texture;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;uniform vec2 delta;&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;float random( vec3 scale, float seed ) {&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>add noise</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s2">&quot;return fract( sin( dot( gl_FragCoord.xyz + seed, scale ) ) * 43758.5453 + seed );&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;vec4 color = vec4( 0.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;float total = 0.0;&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>get us a sine and cosine</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s2">&quot;float offset = random( vec3( 12.9898, 78.233, 151.7182 ), 0.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;for ( float t = -ITERATIONS; t &lt;= ITERATIONS; t ++ ) {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float percent = ( t + offset - 0.5 ) / ITERATIONS;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float weight = 1.0 - abs( percent );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;color += texture2D( texture, vUv + delta * percent ) * weight;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;total += weight;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;gl_FragColor = color / total;&quot;</span><span class="p">,</span>
+
+    <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;basic&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = vec4( 1.0, 0.0, 0.0, 0.5 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* --------------------------------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   -------------------------------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;horizontalBlur&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="s2">&quot;tDiffuse&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="s2">&quot;h&quot;</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">512.0</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float h;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec4 sum = vec4( 0.0 );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x - 4.0 * h, vUv.y ) ) * 0.051;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x - 3.0 * h, vUv.y ) ) * 0.0918;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x - 2.0 * h, vUv.y ) ) * 0.12245;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x - 1.0 * h, vUv.y ) ) * 0.1531;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x,         vUv.y ) ) * 0.1633;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x + 1.0 * h, vUv.y ) ) * 0.1531;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x + 2.0 * h, vUv.y ) ) * 0.12245;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x + 3.0 * h, vUv.y ) ) * 0.0918;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x + 4.0 * h, vUv.y ) ) * 0.051;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = sum;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="s1">&#39;verticalBlur&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="s2">&quot;tDiffuse&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="s2">&quot;v&quot;</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">512.0</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float v;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec4 sum = vec4( 0.0 );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 4.0 * v ) ) * 0.051;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 3.0 * v ) ) * 0.0918;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 2.0 * v ) ) * 0.12245;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 1.0 * v ) ) * 0.1531;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y       ) ) * 0.1633;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 1.0 * v ) ) * 0.1531;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 2.0 * v ) ) * 0.12245;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 3.0 * v ) ) * 0.0918;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 4.0 * v ) ) * 0.051;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = sum;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* --------------------------------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   -------------------------------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;horizontalTiltShift&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="s2">&quot;tDiffuse&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="s2">&quot;h&quot;</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">512.0</span> <span class="p">},</span>
+      <span class="s2">&quot;r&quot;</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">0.35</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float h;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float r;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec4 sum = vec4( 0.0 );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float hh = h * abs( r - vUv.y );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x - 4.0 * hh, vUv.y ) ) * 0.051;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x - 3.0 * hh, vUv.y ) ) * 0.0918;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x - 2.0 * hh, vUv.y ) ) * 0.12245;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x - 1.0 * hh, vUv.y ) ) * 0.1531;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x,          vUv.y ) ) * 0.1633;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x + 1.0 * hh, vUv.y ) ) * 0.1531;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x + 2.0 * hh, vUv.y ) ) * 0.12245;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x + 3.0 * hh, vUv.y ) ) * 0.0918;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x + 4.0 * hh, vUv.y ) ) * 0.051;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = sum;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="s1">&#39;verticalTiltShift&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="s2">&quot;tDiffuse&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="s2">&quot;v&quot;</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">512.0</span> <span class="p">},</span>
+      <span class="s2">&quot;r&quot;</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">0.35</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float v;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float r;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec4 sum = vec4( 0.0 );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float vv = v * abs( r - vUv.y );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 4.0 * vv ) ) * 0.051;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 3.0 * vv ) ) * 0.0918;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 2.0 * vv ) ) * 0.12245;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 1.0 * vv ) ) * 0.1531;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y        ) ) * 0.1633;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 1.0 * vv ) ) * 0.1531;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 2.0 * vv ) ) * 0.12245;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 3.0 * vv ) ) * 0.0918;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 4.0 * vv ) ) * 0.051;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = sum;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;blend&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="nx">tDiffuse1</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="nx">tDiffuse2</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="nx">mixRatio</span><span class="o">:</span>  <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">0.5</span> <span class="p">},</span>
+      <span class="nx">opacity</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform float opacity;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float mixRatio;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse1;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform sampler2D tDiffuse2;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec4 texel1 = texture2D( tDiffuse1, vUv );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec4 texel2 = texture2D( tDiffuse2, vUv );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec3 ca = vec3(texel1.x,texel1.y,texel1.z);&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec3 cb = vec3(texel2.x,texel2.y,texel2.z);&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>add scanlines</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="s2">&quot;float alphaa = texel1.w ;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float alphab = texel2.w*mixRatio;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float alphao = (alphaa + alphab * (1.0-alphaa));&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec3 co = (1.0/alphao) * (ca * alphaa + cb*alphab*(1.0-alphaa));&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec4 mixxx = vec4(co, alphao );&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>interpolate between source and result by intensity</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="s2">&quot;gl_FragColor =  mixxx;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;fxaa&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="s2">&quot;tDiffuse&quot;</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="s2">&quot;resolution&quot;</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;v2&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector2</span><span class="p">(</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">1024</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">512</span> <span class="p">)</span>  <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform vec2 resolution;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;#define FXAA_REDUCE_MIN   (1.0/128.0)&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;#define FXAA_REDUCE_MUL   (1.0/8.0)&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;#define FXAA_SPAN_MAX     8.0&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec3 rgbNW = texture2D( tDiffuse, ( gl_FragCoord.xy + vec2( -1.0, -1.0 ) ) * resolution ).xyz;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec3 rgbNE = texture2D( tDiffuse, ( gl_FragCoord.xy + vec2( 1.0, -1.0 ) ) * resolution ).xyz;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec3 rgbSW = texture2D( tDiffuse, ( gl_FragCoord.xy + vec2( -1.0, 1.0 ) ) * resolution ).xyz;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec3 rgbSE = texture2D( tDiffuse, ( gl_FragCoord.xy + vec2( 1.0, 1.0 ) ) * resolution ).xyz;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec4 rgbaM  = texture2D( tDiffuse,  gl_FragCoord.xy  * resolution );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec3 rgbM  = rgbaM.xyz;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float opacity  = rgbaM.w;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec3 luma = vec3( 0.299, 0.587, 0.114 );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float lumaNW = dot( rgbNW, luma );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float lumaNE = dot( rgbNE, luma );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float lumaSW = dot( rgbSW, luma );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float lumaSE = dot( rgbSE, luma );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float lumaM  = dot( rgbM,  luma );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float lumaMin = min( lumaM, min( min( lumaNW, lumaNE ), min( lumaSW, lumaSE ) ) );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float lumaMax = max( lumaM, max( max( lumaNW, lumaNE) , max( lumaSW, lumaSE ) ) );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec2 dir;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dir.x = -((lumaNW + lumaNE) - (lumaSW + lumaSE));&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dir.y =  ((lumaNW + lumaSW) - (lumaNE + lumaSE));&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float dirReduce = max( ( lumaNW + lumaNE + lumaSW + lumaSE ) * ( 0.25 * FXAA_REDUCE_MUL ), FXAA_REDUCE_MIN );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float rcpDirMin = 1.0 / ( min( abs( dir.x ), abs( dir.y ) ) + dirReduce );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dir = min( vec2( FXAA_SPAN_MAX,  FXAA_SPAN_MAX),&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;max( vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX),&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;dir * rcpDirMin)) * resolution;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec3 rgbA = 0.5 * (&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;texture2D( tDiffuse, gl_FragCoord.xy  * resolution + dir * ( 1.0 / 3.0 - 0.5 ) ).xyz +&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;texture2D( tDiffuse, gl_FragCoord.xy  * resolution + dir * ( 2.0 / 3.0 - 0.5 ) ).xyz );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec3 rgbB = rgbA * 0.5 + 0.25 * (&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;texture2D( tDiffuse, gl_FragCoord.xy  * resolution + dir * -0.5 ).xyz +&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;texture2D( tDiffuse, gl_FragCoord.xy  * resolution + dir * 0.5 ).xyz );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float lumaB = dot( rgbB, luma );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;if ( ( lumaB &lt; lumaMin ) || ( lumaB &gt; lumaMax ) ) {&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;gl_FragColor = vec4( rgbA, opacity );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;} else {&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;gl_FragColor = vec4( rgbB, opacity );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;luminosity&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="s2">&quot;tDiffuse&quot;</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec4 texel = texture2D( tDiffuse, vUv );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec3 luma = vec3( 0.299, 0.587, 0.114 );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float v = dot( texel.xyz, luma );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = vec4( v, v, v, texel.w );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;colorCorrection&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="s2">&quot;tDiffuse&quot;</span> <span class="o">:</span>  <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="s2">&quot;powRGB&quot;</span> <span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;v3&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span> <span class="p">)</span> <span class="p">},</span>
+      <span class="s2">&quot;mulRGB&quot;</span> <span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;v3&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform vec3 powRGB;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform vec3 mulRGB;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = texture2D( tDiffuse, vUv );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_FragColor.rgb = mulRGB * pow( gl_FragColor.rgb, powRGB );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;normalmap&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="s2">&quot;heightMap&quot;</span> <span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="s2">&quot;resolution&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;v2&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector2</span><span class="p">(</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">512</span> <span class="p">)</span> <span class="p">},</span>
+      <span class="s2">&quot;scale&quot;</span>   <span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;v2&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector2</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">},</span>
+      <span class="s2">&quot;height&quot;</span>  <span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">0.05</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform float height;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform vec2 resolution;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform sampler2D heightMap;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float val = texture2D( heightMap, vUv ).x;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float valU = texture2D( heightMap, vUv + vec2( 1.0 / resolution.x, 0.0 ) ).x;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float valV = texture2D( heightMap, vUv + vec2( 0.0, 1.0 / resolution.y ) ).x;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = vec4( ( 0.5 * normalize( vec3( val - valU, val - valV, height  ) ) + 0.5 ), 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;ssao&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="s2">&quot;tDiffuse&quot;</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="s2">&quot;tDepth&quot;</span><span class="o">:</span>     <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="s2">&quot;size&quot;</span><span class="o">:</span>     <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;v2&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Vector2</span><span class="p">(</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">512</span> <span class="p">)</span> <span class="p">},</span>
+      <span class="s2">&quot;cameraNear&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">1</span> <span class="p">},</span>
+      <span class="s2">&quot;cameraFar&quot;</span><span class="o">:</span>  <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">100</span> <span class="p">},</span>
+      <span class="s2">&quot;fogNear&quot;</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">5</span> <span class="p">},</span>
+      <span class="s2">&quot;fogFar&quot;</span><span class="o">:</span>   <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">100</span> <span class="p">},</span>
+      <span class="s2">&quot;fogEnabled&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span> <span class="p">},</span>
+      <span class="s2">&quot;aoClamp&quot;</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">0.3</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform float cameraNear;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float cameraFar;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform float fogNear;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform float fogFar;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform bool fogEnabled;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform vec2 size;&quot;</span><span class="p">,</span>   <span class="c1">// texture width, height</span>
+      <span class="s2">&quot;uniform float aoClamp;&quot;</span><span class="p">,</span>   <span class="c1">// depth clamp - reduces haloing at screen edges</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform sampler2D tDepth;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>convert to grayscale if desired</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s2">&quot;#define DL 2.399963229728653&quot;</span><span class="p">,</span> <span class="c1">// PI * ( 3.0 - sqrt( 5.0 ) )</span>
+      <span class="s2">&quot;#define EULER 2.718281828459045&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Depth-of-field shader with bokeh
+ported from GLSL shader by Martins Upitis
+http://artmartinsh.blogspot.com/2010/02/glsl-lens-blur-filter-with-bokeh.html</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s2">&quot;float width = size.x;&quot;</span><span class="p">,</span>  <span class="c1">// texture width</span>
+      <span class="s2">&quot;float height = size.y;&quot;</span><span class="p">,</span>   <span class="c1">// texture height</span>
+
+      <span class="s2">&quot;float cameraFarPlusNear = cameraFar + cameraNear;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;float cameraFarMinusNear = cameraFar - cameraNear;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;float cameraCoef = 2.0 * cameraNear;&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>Depth-of-field shader using mipmaps
+- from Matt Handley @applmak
+- requires power-of-2 sized render target with enabled mipmaps</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s2">&quot;const int samples = 8;&quot;</span><span class="p">,</span>     <span class="c1">// ao sample count</span>
+      <span class="s2">&quot;const float radius = 5.0;&quot;</span><span class="p">,</span>  <span class="c1">// ao radius</span>
+
+      <span class="s2">&quot;const bool useNoise = false;&quot;</span><span class="p">,</span>      <span class="c1">// use noise instead of pattern for sample dithering</span>
+      <span class="s2">&quot;const float noiseAmount = 0.0002;&quot;</span><span class="p">,</span> <span class="c1">// dithering amount</span>
+
+      <span class="s2">&quot;const float diffArea = 0.4;&quot;</span><span class="p">,</span>    <span class="c1">// self-shadowing reduction</span>
+      <span class="s2">&quot;const float gDisplace = 0.4;&quot;</span><span class="p">,</span>   <span class="c1">// gauss bell center</span>
+
+      <span class="s2">&quot;const bool onlyAO = false;&quot;</span><span class="p">,</span>     <span class="c1">// use only ambient occlusion pass?</span>
+      <span class="s2">&quot;const float lumInfluence = 0.3;&quot;</span><span class="p">,</span>  <span class="c1">// how much luminance affects occlusion</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Sepia tone shader
+ - based on glfx.js sepia shader
+    https://github.com/evanw/glfx.js</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s2">&quot;float unpackDepth( const in vec4 rgba_depth ) {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;const vec4 bit_shift = vec4( 1.0 / ( 256.0 * 256.0 * 256.0 ), 1.0 / ( 256.0 * 256.0 ), 1.0 / 256.0, 1.0 );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float depth = dot( rgba_depth, bit_shift );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;return depth;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>Dot screen shader
+ - based on glfx.js sepia shader
+    https://github.com/evanw/glfx.js</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s2">&quot;vec2 rand( const vec2 coord ) {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec2 noise;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;if ( useNoise ) {&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;float nx = dot ( coord, vec2( 12.9898, 78.233 ) );&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;float ny = dot ( coord, vec2( 12.9898, 78.233 ) * 2.0 );&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;noise = clamp( fract ( 43758.5453 * sin( vec2( nx, ny ) ) ), 0.0, 1.0 );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;} else {&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;float ff = fract( 1.0 - coord.s * ( width / 2.0 ) );&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;float gg = fract( coord.t * ( height / 2.0 ) );&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;noise = vec2( 0.25, 0.75 ) * vec2( ff ) + vec2( 0.75, 0.25 ) * gg;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;return ( noise * 2.0  - 1.0 ) * noiseAmount;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;float doFog() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float zdepth = unpackDepth( texture2D( tDepth, vUv ) );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float depth = -cameraFar * cameraNear / ( zdepth * cameraFarMinusNear - cameraFar );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;return smoothstep( fogNear, fogFar, depth );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;float readDepth( const in vec2 coord ) {&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>Vignette shader
+- based on PaintEffect postprocess from ro.me
+    http://code.google.com/p/3-dreams-of-black/source/browse/deploy/js/effects/PaintEffect.js</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="s2">&quot;return cameraCoef / ( cameraFarPlusNear - unpackDepth( texture2D( tDepth, coord ) ) * cameraFarMinusNear );&quot;</span><span class="p">,</span>
+
+
+      <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;float compareDepths( const in float depth1, const in float depth2, inout int far ) {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float garea = 2.0;&quot;</span><span class="p">,</span>              <span class="c1">// gauss bell width</span>
+        <span class="s2">&quot;float diff = ( depth1 - depth2 ) * 100.0;&quot;</span><span class="p">,</span> <span class="c1">// depth difference (0-100)</span></pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>Eskil's vignette</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="s2">&quot;if ( diff &lt; gDisplace ) {&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;garea = diffArea;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;} else {&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;far = 1;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float dd = diff - gDisplace;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float gauss = pow( EULER, -2.0 * dd * dd / ( garea * garea ) );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;return gauss;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;float calcAO( float depth, float dw, float dh ) {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float dd = radius - depth * radius;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec2 vv = vec2( dw, dh );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec2 coord1 = vUv + dd * vv;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec2 coord2 = vUv - dd * vv;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float temp1 = 0.0;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float temp2 = 0.0;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;int far = 0;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;temp1 = compareDepths( depth, readDepth( coord1 ), far );&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>alternative version from glfx.js
+this one makes more "dusty" look (as opposed to "burned")</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="s2">&quot;if ( far &gt; 0 ) {&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;temp2 = compareDepths( readDepth( coord2 ), depth, far );&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;temp1 += ( 1.0 - temp1 ) * temp2;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;return temp1;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec2 noise = rand( vUv );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float depth = readDepth( vUv );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float tt = clamp( depth, aoClamp, 1.0 );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float w = ( 1.0 / width )  / tt + ( noise.x * ( 1.0 - noise.x ) );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float h = ( 1.0 / height ) / tt + ( noise.y * ( 1.0 - noise.y ) );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float pw;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float ph;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float ao;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float dz = 1.0 / float( samples );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float z = 1.0 - dz / 2.0;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float l = 0.0;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;for ( int i = 0; i &lt;= samples; i ++ ) {&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;float r = sqrt( 1.0 - z );&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;pw = cos( l ) * r;&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;ph = sin( l ) * r;&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;ao += calcAO( depth, pw * w, ph * h );&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;z = z - dz;&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;l = l + DL;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;ao /= float( samples );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ao = 1.0 - ao;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;if ( fogEnabled ) {&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;ao = mix( ao, 1.0, doFog() );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec3 color = texture2D( tDiffuse, vUv ).rgb;&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec3 lumcoeff = vec3( 0.299, 0.587, 0.114 );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float lum = dot( color.rgb, lumcoeff );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vec3 luminance = vec3( lum );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec3 final = vec3( color * mix( vec3( ao ), vec3( 1.0 ), luminance * lumInfluence ) );&quot;</span><span class="p">,</span> <span class="c1">// mix( color * ao, white, luminance )</span>
+
+        <span class="s2">&quot;if ( onlyAO ) {&quot;</span><span class="p">,</span>
+
+          <span class="s2">&quot;final = vec3( mix( vec3( ao ), vec3( 1.0 ), luminance * lumInfluence ) );&quot;</span><span class="p">,</span> <span class="c1">// ambient occlusion only</span>
+
+        <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = vec4( final, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;colorify&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="nx">tDiffuse</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="nx">color</span><span class="o">:</span>    <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Color</span><span class="p">(</span> <span class="mh">0xffffff</span> <span class="p">)</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform vec3 color;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec4 texel = texture2D( tDiffuse, vUv );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vec3 luma = vec3( 0.299, 0.587, 0.114 );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float v = dot( texel.xyz, luma );&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;gl_FragColor = vec4( v * color, texel.w );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span>
+
+  <span class="cm">/* -------------------------------------------------------------------------</span>
+
+<span class="cm">//DIVIDER</span>
+<span class="cm">   ------------------------------------------------------------------------- */</span>
+
+  <span class="s1">&#39;unpackDepthRGBA&#39;</span><span class="o">:</span> <span class="p">{</span>
+
+    <span class="nx">uniforms</span><span class="o">:</span> <span class="p">{</span>
+
+      <span class="nx">tDiffuse</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">texture</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+      <span class="nx">opacity</span><span class="o">:</span>  <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mf">1.0</span> <span class="p">}</span>
+
+    <span class="p">},</span>
+
+    <span class="nx">vertexShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;vUv = vec2( uv.x, 1.0 - uv.y );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">),</span>
+
+    <span class="nx">fragmentShader</span><span class="o">:</span> <span class="p">[</span>
+
+      <span class="s2">&quot;uniform float opacity;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;uniform sampler2D tDiffuse;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;varying vec2 vUv;&quot;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>Bleach bypass shader [http://en.wikipedia.org/wiki/Bleach<em>bypass]
+- based on Nvidia example
+    http://developer.download.nvidia.com/shaderlibrary/webpages/shader</em>library.html#post<em>bleach</em>bypass</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s2">&quot;float unpackDepth( const in vec4 rgba_depth ) {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;const vec4 bit_shift = vec4( 1.0 / ( 256.0 * 256.0 * 256.0 ), 1.0 / ( 256.0 * 256.0 ), 1.0 / 256.0, 1.0 );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float depth = dot( rgba_depth, bit_shift );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;return depth;&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;void main() {&quot;</span><span class="p">,</span>
+
+        <span class="s2">&quot;float depth = 1.0 - unpackDepth( texture2D( tDiffuse, vUv ) );&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gl_FragColor = opacity * vec4( vec3( depth ), 1.0 );&quot;</span><span class="p">,</span>
+
+      <span class="s2">&quot;}&quot;</span>
+
+    <span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span>
+
+  <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>Focus shader
+- based on PaintEffect postprocess from ro.me
+    http://code.google.com/p/3-dreams-of-black/source/browse/deploy/js/effects/PaintEffect.js</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">buildKernel</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">sigma</span> <span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>Triangle blur shader
+ - based on glfx.js triangle blur shader
+    https://github.com/evanw/glfx.js</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">function</span> <span class="nx">gauss</span><span class="p">(</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">sigma</span> <span class="p">)</span> <span class="p">{</span>
+
+      <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">exp</span><span class="p">(</span> <span class="o">-</span> <span class="p">(</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span> <span class="p">)</span> <span class="o">/</span> <span class="p">(</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="nx">sigma</span> <span class="o">*</span> <span class="nx">sigma</span> <span class="p">)</span> <span class="p">);</span>
+
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">values</span><span class="p">,</span> <span class="nx">sum</span><span class="p">,</span> <span class="nx">halfWidth</span><span class="p">,</span> <span class="nx">kMaxKernelSize</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span> <span class="nx">kernelSize</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span><span class="p">(</span> <span class="nx">sigma</span> <span class="o">*</span> <span class="mf">3.0</span> <span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">kernelSize</span> <span class="o">&gt;</span> <span class="nx">kMaxKernelSize</span> <span class="p">)</span> <span class="nx">kernelSize</span> <span class="o">=</span> <span class="nx">kMaxKernelSize</span><span class="p">;</span>
+    <span class="nx">halfWidth</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">kernelSize</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+
+    <span class="nx">values</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span> <span class="nx">kernelSize</span> <span class="p">);</span>
+    <span class="nx">sum</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">kernelSize</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+
+      <span class="nx">values</span><span class="p">[</span> <span class="nx">i</span> <span class="p">]</span> <span class="o">=</span> <span class="nx">gauss</span><span class="p">(</span> <span class="nx">i</span> <span class="o">-</span> <span class="nx">halfWidth</span><span class="p">,</span> <span class="nx">sigma</span> <span class="p">);</span>
+      <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">values</span><span class="p">[</span> <span class="nx">i</span> <span class="p">];</span>
+
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <pre><code>A basic blur filter, which convolves the image with a
+pyramid filter. The pyramid filter is separable and is applied as two
+</code></pre>
+
+<p>perpendicular triangle filters.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">for</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">kernelSize</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span> <span class="p">)</span> <span class="nx">values</span><span class="p">[</span> <span class="nx">i</span> <span class="p">]</span> <span class="o">/=</span> <span class="nx">sum</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="nx">values</span><span class="p">;</span>
+
+  <span class="p">}</span>
+
+<span class="p">};</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>use the fragment position for a different seed per-pixel</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>randomize the lookup values to hide the fixed number of samples</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>Simple test shader</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>Two pass Gaussian blur filter (horizontal and vertical blur shaders)
+- described in http://www.gamerendering.com/2008/10/11/gaussian-blur-filter-shader/
+  and used in http://www.cake23.de/traveling-wavefronts-lit-up.html</p>
+
+<ul>
+<li>9 samples per pass</li>
+<li>standard deviation 2.7</li>
+<li>"h" and "v" parameters should be set to "1 / width" and "1 / height"</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <p>Simple fake tilt-shift effect, modulating two pass Gaussian blur (see above) by vertical position</p>
+
+<ul>
+<li>9 samples per pass</li>
+<li>standard deviation 2.7</li>
+<li>"h" and "v" parameters should be set to "1 / width" and "1 / height"</li>
+<li>"r" parameter control where "focused" horizontal line lies</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>Blend two textures</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>correct the colors so that the "shadows"
+left by the opaque remains of the previous
+frames are a bit
+brighter
+"cb.x = cb.x + cb.x / 2.5;",
+"cb.y = cb.y + cb.y / 2.5;",
+"cb.z = cb.z + cb.z / 2.5;",</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>"gl<em>FragColor =  mix( texel1, texel1, opop );",
+"gl</em>FragColor =  mixxx;",
+"if (frameC == 0.0) {gl<em>FragColor =  vec4(0.0); return;}",
+"float damp = ((1.0-mixRatio)/10.0 + 1.0);",
+"if (texel1.w == 0.0) { texel2.w = texel2.w * mixRatio; gl</em>FragColor =  vec4(texel2.x,texel2.y,texel2.z, texel2.w); return;}",
+"if (texel2.w == 0.0) {gl_FragColor =  texel1; return;}",</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>NVIDIA FXAA by Timothy Lottes
+    http://timothylottes.blogspot.com/2011/06/fxaa3-source-released.html
+- WebGL port by @supereggbert
+    http://www.glge.org/demos/fxaa/</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>Luminosity
+http://en.wikipedia.org/wiki/Luminosity</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>Color correction</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <p>Normal map shader
+- compute normals from heightmap</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <p>Screen-space ambient occlusion shader
+- ported from
+    SSAO GLSL shader v1.2
+    assembled by Martins Upitis (martinsh) (http://devlog-martinsh.blogspot.com)
+    original technique is made by ArKano22 (http://www.gamedev.net/topic/550699-ssao-no-halo-artifacts/)
+- modifications
+    - modified to use RGBA packed depth texture (use clear color 1,1,1,1 for depth pass)
+    - made fog more compatible with three.js linear fog
+    - refactoring and optimizations</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-45">&#182;</a>               </div>               <p>"#define PI 3.14159265",</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-46">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-46">&#182;</a>               </div>               <p>helpers</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-47">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-47">&#182;</a>               </div>               <p>user variables</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-48">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-48">&#182;</a>               </div>               <p>RGBA depth</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-49">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-49">&#182;</a>               </div>               <p>generating noise / pattern texture for dithering</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-50">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-50">&#182;</a>               </div>               <p>"return ( 2.0 * cameraNear ) / ( cameraFar + cameraNear - unpackDepth( texture2D( tDepth, coord ) ) * ( cameraFar - cameraNear ) );",</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-51">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-51">&#182;</a>               </div>               <p>reduce left bell width to avoid self-shadowing</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-52">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-52">&#182;</a>               </div>               <p>DEPTH EXTRAPOLATION</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-53">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-53">&#182;</a>               </div>               <p>Colorify shader</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-54">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-54">&#182;</a>               </div>               <p>Unpack RGBA depth shader
+- show RGBA encoded depth as monochrome color</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-55">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-55">&#182;</a>               </div>               <p>RGBA depth</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-56">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-56">&#182;</a>               </div>               <p>METHODS</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-57">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-57">&#182;</a>               </div>               <p>We lop off the sqrt(2 * pi) * sigma term, since we're going to normalize anyway.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-58">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-58">&#182;</a>               </div>               <p>normalize the kernel</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
