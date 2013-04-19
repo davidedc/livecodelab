@@ -375,7 +375,7 @@ module.exports = function (grunt) {
         },
         clean: {
             docs: ['docs/docco/', 'docs/codo/', 'docs/coffeedoc/', 'docs/crojsdoc/', 'docs/deleteme/'],
-            build: ['dist/', 'indexMinified.html', 'js_compiled/Livecodelab-minified.js', 'js/translatedFromCoffescript/'],
+            build: ['dist/', 'indexMinified.html', 'js_compiled/Livecodelab-minified.js', 'js/translatedFromCoffescript/', 'css_compiled/'],
             tests: ['tests/js/testLiveCodeLab.js']
         },
         targethtml: {
