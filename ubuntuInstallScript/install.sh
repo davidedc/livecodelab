@@ -39,4 +39,14 @@ sudo npm install
 # when only installed locally. Also, there is no
 # clean way to install a backage globally from
 # the package.json file.
-sudo npm install -g crojsdoc
+# // we couldn't get crojsdoc to produce nice docs,
+# // commenting out
+# sudo npm install -g crojsdoc
+
+# this is needed for docco, it renders
+# markdown into html
+sudo apt-get install python-pygments
+
+# needed for coffedoc
+sudo apt-get install coffeescript
+sudo npm install -g coffeedoc
