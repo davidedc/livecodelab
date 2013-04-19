@@ -411,27 +411,7 @@ module.exports = function (grunt) {
     // don't preserve the comments of the coffee files. So we
     // re-write the docs generated from the (translated) js files
     // with the docs generated from the coffee files.
-    grunt.registerTask('docs', ' ', function () {
-        // also generate these other two styles of documents for a class-view
-        // of the coffeescript code.
-
-        grunt.task.run('clean:docs');
-
-        grunt.task.run('copySourcesForCreatingDocs');
-        grunt.task.run('replaceBlockComments');
-
-        grunt.task.run('docco:Js');
-        grunt.task.run('docco:Coffee');
-        grunt.task.run('coffeedoc');
-        grunt.task.run('beautifyCoffeedoc');
-
-        grunt.task.run('codo');
-
-        grunt.task.run('crojsdoc');
-
-
-        grunt.task.run('removeCopiedSourcesForDocs');
-    });
+    grunt.registerTask('docs', ['clean:docs','copySourcesForCreatingDocs','replaceBlockComments'/*,'docco:Js','docco:Coffee','coffeedoc'*/,'beautifyCoffeedoc'/*,'codo'*/,'crojsdoc','removeCopiedSourcesForDocs']);
 
     // Compilation task
     grunt.registerTask('compile', ['clean:build', 'coffee:app', 'coffee:tests', 'concat', 'closure-compiler', 'copy:fonts', 'recess:compile', 'targethtml:compile']);
@@ -441,6 +421,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-docco');
+    grunt.loadNpmTasks('coffeedoc');
     grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-targethtml');
     grunt.loadNpmTasks('grunt-contrib-coffee');
