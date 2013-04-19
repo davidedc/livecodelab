@@ -1,0 +1,132 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>croquis-jsdoc - CodeTransformer</title><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="../index.html">Home</a></li><li class="active"><a href="../classes/AnimationLoop.html">Classes - CodeTransformer</a></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../classes/AnimationLoop.html">AnimationLoop</a></li><li><a href="../classes/Autocoder.html">Autocoder</a></li><li><a href="../classes/BackgroundPainter.html">BackgroundPainter</a></li><li><a href="../classes/BigCursor.html">BigCursor</a></li><li><a href="../classes/BlendControls.html">BlendControls</a></li><li class="active"><a href="#CodeTransformer">CodeTransformer</a></li><li class="cormo-class-property "><a href="#CodeTransformer__adjustPostfixNotations">adjustPostfixNotations</a></li><li class="cormo-class-property "><a href="#CodeTransformer__removeTickedDoOnce">removeTickedDoOnce</a></li><li><a href="../classes/ColourFunctions.html">ColourFunctions</a></li><li><a href="../classes/ColourLiterals.html">ColourLiterals</a></li><li><a href="../classes/Editor.html">Editor</a></li><li><a href="../classes/EditorDimmer.html">EditorDimmer</a></li><li><a href="../classes/EventRouter.html">EventRouter</a></li><li><a href="../classes/GraphicsCommands.html">GraphicsCommands</a></li><li><a href="../classes/LexerRule.html">LexerRule</a></li><li><a href="../classes/LexerState.html">LexerState</a></li><li><a href="../classes/LightsCommands.html">LightsCommands</a></li><li><a href="../classes/LiveCodeLabCore.html">LiveCodeLabCore</a></li><li><a href="../classes/MatrixCommands.html">MatrixCommands</a></li><li><a href="../classes/Parser.html">Parser</a></li><li><a href="../classes/ProgramLoader.html">ProgramLoader</a></li><li><a href="../classes/ProgramRunner.html">ProgramRunner</a></li><li><a href="../classes/Renderer.html">Renderer</a></li><li><a href="../classes/SampleBank.html">SampleBank</a></li><li><a href="../classes/SoundSystem.html">SoundSystem</a></li><li><a href="../classes/ThreeJsSystem.html">ThreeJsSystem</a></li><li><a href="../classes/TimeKeeper.html">TimeKeeper</a></li><li><a href="../classes/Ui.html">Ui</a></li><li><a href="../classes/UrlRouter.html">UrlRouter</a></li></ul></div></div><div class="span9"><div class="page-header"><section id="CodeTransformer"><h1 class="class_title">CodeTransformer</h1><div><p>Although LiveCodeLab is ultimately running Javascript code behind the scenes,
+the user uses a simpler syntax which is basically coffeescript with a little bit of
+extra sugar. CodeTransformer takes care of translating this simplified syntax to
+Javascript. Also note that CodeTransformer might return a program that substituted
+the program passed as input. This is because doOnce statements get transformed by
+pre-prending a tick once they are run, which prevents them from being run again.</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/code-transformer.coffee:10)</span><pre class="sourcecode prettyprint .linenums:10">class CodeTransformer
+  currentCodeString: null
+  
+  constructor: (@eventRouter, @CoffeeCompiler, @liveCodeLabCoreInstance) ->
+    # This list is not used anywhere for the time being.
+    listOfPossibleFunctions = [
+      "function"
+      "alert"
+      # Geometry
+      "rect"
+      "line"
+      "box"
+      "ball"
+      "ballDetail"
+      "peg"
+      # Matrix manipulation
+      "rotate"
+      "move"
+      "scale"
+      "pushMatrix"
+      "popMatrix"
+      "resetMatrix"
+      # Sound
+      "bpm"
+      "play"
+      # Color and drawing styles
+      "fill"
+      "noFill"
+      "stroke"
+      "noStroke"
+      "strokeSize"
+      "animationStyle"
+      "background"
+      "simpleGradient"
+      "colorMode"
+      "color"
+      # Lighting
+      # "ambient""reflect" "refract"
+      "lights"
+      "noLights"
+      "ambientLight"
+      "pointLight"
+      # Calculations
+      "abs"
+      "ceil"
+      "constrain"
+      "dist"
+      "exp"
+      "floor"
+      "lerp"
+      "log"
+      "mag"
+      "map"
+      "max"
+      "min"
+      "norm"
+      "pow"
+      "round"
+      "sq"
+      "sqrt"
+      # Trigonometry
+      "acos"
+      "asin"
+      "atan"
+      "atan2"
+      "cos"
+      "degrees"
+      "radians"
+      "sin"
+      "tan"
+      # Random
+      "random"
+      "randomSeed"
+      "noise"
+      "noiseDetail"
+      "noiseSeed"
+      # do once
+      "addDoOnce"
+    ]</pre></section></div><section id="CodeTransformer__adjustPostfixNotations" class=""><h2 class="class_method">CodeTransformer::adjustPostfixNotations()</h2><div><p>Some of the functions can be used with postfix notation</p>
+<p>  e.g.</p>
+<pre><code>   60 bpm
+   red fill
+   yellow stroke
+   black background</code></pre>
+<p>  We need to switch this round before coffee script compilation</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/code-transformer.coffee:317)</span><pre class="sourcecode prettyprint .linenums:317">adjustPostfixNotations: (code) ->
+  elaboratedSource = undefined
+  elaboratedSource = code.replace(/(\d+)[ ]+bpm(\s)/g, "bpm $1$2")
+  elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+fill(\s)/g, "fill $1$2")
+  elaboratedSource = elaboratedSource.replace(
+    /([a-zA-Z]+)[ ]+stroke(\s)/g, "stroke $1$2")
+  elaboratedSource = elaboratedSource.replace(
+    /([a-zA-Z]+)[ ]+background(\s)/g, "background $1$2")
+  elaboratedSource</pre><hr class="item-seperator"></section><section id="CodeTransformer__removeTickedDoOnce" class=""><h2 class="class_method">CodeTransformer::removeTickedDoOnce()</h2><div><p>Stops ticked doOnce blocks from running</p>
+<p>  doOnce statements which have a tick mark next to them
+  are not run. This is achieved by replacing the line with
+  the &quot;doOnce&quot; with &quot;if false&quot; or &quot;//&quot; depending on whether
+  the doOnce is a multiline or an inline one, like so:</p>
+<pre><code>   ✓doOnce -&gt;
+   background 255
+   fill 255,0,0
+   ✓doOnce -&gt; ball
+   becomes:
+   if false -&gt;
+   background 255
+   fill 255,0,0
+   //doOnce -&gt; ball</code></pre>
+<p>  @param {string} code    the code to re-write</p>
+<p>  @returns {string}</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/code-transformer.coffee:113)</span><pre class="sourcecode prettyprint .linenums:113">removeTickedDoOnce: (code) ->
+  newCode = undefined
+  newCode = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false")
+  newCode = newCode.replace(/\u2713/g, "//")
+  newCode</pre><hr class="item-seperator"></section></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="../bootstrap/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script>$(function() {
+  // make result of marked for pretty print
+  $('pre code[class^="lang-"]').addClass('.prettyprint');
+  window.prettyPrint && prettyPrint()
+});
+$('body').on('click', '.showcode', function () {
+  $(this).parent().find('pre.sourcecode').toggle();
+  $('body').scrollspy('refresh');
+});
+$('#options-private').on('click', function () {
+  $('.private').toggle();
+  $('body').scrollspy('refresh');
+});</script></body></html>

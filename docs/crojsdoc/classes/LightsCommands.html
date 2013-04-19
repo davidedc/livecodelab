@@ -1,0 +1,81 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>croquis-jsdoc - LightsCommands</title><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="../index.html">Home</a></li><li class="active"><a href="../classes/AnimationLoop.html">Classes - LightsCommands</a></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../classes/AnimationLoop.html">AnimationLoop</a></li><li><a href="../classes/Autocoder.html">Autocoder</a></li><li><a href="../classes/BackgroundPainter.html">BackgroundPainter</a></li><li><a href="../classes/BigCursor.html">BigCursor</a></li><li><a href="../classes/BlendControls.html">BlendControls</a></li><li><a href="../classes/CodeTransformer.html">CodeTransformer</a></li><li><a href="../classes/ColourFunctions.html">ColourFunctions</a></li><li><a href="../classes/ColourLiterals.html">ColourLiterals</a></li><li><a href="../classes/Editor.html">Editor</a></li><li><a href="../classes/EditorDimmer.html">EditorDimmer</a></li><li><a href="../classes/EventRouter.html">EventRouter</a></li><li><a href="../classes/GraphicsCommands.html">GraphicsCommands</a></li><li><a href="../classes/LexerRule.html">LexerRule</a></li><li><a href="../classes/LexerState.html">LexerState</a></li><li class="active"><a href="#LightsCommands">LightsCommands</a></li><li><a href="../classes/LiveCodeLabCore.html">LiveCodeLabCore</a></li><li><a href="../classes/MatrixCommands.html">MatrixCommands</a></li><li><a href="../classes/Parser.html">Parser</a></li><li><a href="../classes/ProgramLoader.html">ProgramLoader</a></li><li><a href="../classes/ProgramRunner.html">ProgramRunner</a></li><li><a href="../classes/Renderer.html">Renderer</a></li><li><a href="../classes/SampleBank.html">SampleBank</a></li><li><a href="../classes/SoundSystem.html">SoundSystem</a></li><li><a href="../classes/ThreeJsSystem.html">ThreeJsSystem</a></li><li><a href="../classes/TimeKeeper.html">TimeKeeper</a></li><li><a href="../classes/Ui.html">Ui</a></li><li><a href="../classes/UrlRouter.html">UrlRouter</a></li></ul></div></div><div class="span9"><div class="page-header"><section id="LightsCommands"><h1 class="class_title">LightsCommands</h1><div><p>Implementation of all lights-related commands.</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/lights-commands.coffee:7)</span><pre class="sourcecode prettyprint .linenums:7">class LightsCommands
+  "use strict"
+
+  lightsAreOn: false
+  constructor: (@liveCodeLabCore_graphicsCommands, @liveCodeLabCoreInstance) ->
+
+    # defining a couple of shorthands
+    @objectPools = @liveCodeLabCore_graphicsCommands.objectPools
+    @primitiveTypes = @liveCodeLabCore_graphicsCommands.primitiveTypes
+    @objectsUsedInFrameCounts = @liveCodeLabCore_graphicsCommands.objectsUsedInFrameCounts
+
+    @objectPools[@primitiveTypes.ambientLight] = []
+    @objectsUsedInFrameCounts[@primitiveTypes.ambientLight] = 0
+    
+    window.lights = () => @lights()
+    window.noLights = () => @noLights()
+    window.ambientLight = (a,b,c,d) => @ambientLight(a,b,c,d)
+
+  lights: ->
+    @lightsAreOn = true
+
+  noLights: ->
+    @lightsAreOn = false
+  
+  # ambientLight needs to be global
+  ambientLight: (r, g, b, a) ->
+    newLightCreated = false
+    if r is `undefined`
+      
+      # empty arguments gives some sort
+      # of grey ambient light.
+      # black is too stark and white
+      # doesn't show the effect with the
+      # default white fill
+      colorToBeUsed = @liveCodeLabCoreInstance.colourFunctions.color(255)
+    else
+      colorToBeUsed = @liveCodeLabCoreInstance.colourFunctions.color(r, g, b, a)
+    @lightsAreOn = true
+    
+    # used by graphic-primitives
+    @liveCodeLabCore_graphicsCommands.defaultNormalFill = false
+    
+    # used by graphic-primitives
+    @liveCodeLabCore_graphicsCommands.defaultNormalStroke = false
+    ambientLightsPool = @objectPools[@primitiveTypes.ambientLight]
+    pooledAmbientLight = ambientLightsPool[@objectsUsedInFrameCounts[@primitiveTypes.ambientLight]]
+
+    if pooledAmbientLight is `undefined`      
+      # So here is the thing, the command is currently called AmbientLight but
+      # in reality we are creating a PointLight in a specific position.
+      # AmbientLight just fills the whole scene,
+      # so the faces of the cube would all be of the same
+      # exact color. Note that in Three.js versions before r50 the AmbientLight
+      # would work like a PointLight does now.
+      pooledAmbientLight = new @liveCodeLabCoreInstance.three.PointLight(colorToBeUsed)
+      pooledAmbientLight.position.set 10, 50, 130
+      newLightCreated = true
+      ambientLightsPool.push pooledAmbientLight
+      pooledAmbientLight.detailLevel = 0
+      pooledAmbientLight.primitiveType = @primitiveTypes.ambientLight
+    else
+      pooledAmbientLight.color.setHex colorToBeUsed
+
+    @objectsUsedInFrameCounts[@primitiveTypes.ambientLight] += 1
+    
+    # NOTE that an ambient light is not actually added as an object.
+    # i.e. if you navigate the objects you don't find it.
+    @liveCodeLabCoreInstance.threeJsSystem.scene.add pooledAmbientLight  if newLightCreated</pre></section></div></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="../bootstrap/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script>$(function() {
+  // make result of marked for pretty print
+  $('pre code[class^="lang-"]').addClass('.prettyprint');
+  window.prettyPrint && prettyPrint()
+});
+$('body').on('click', '.showcode', function () {
+  $(this).parent().find('pre.sourcecode').toggle();
+  $('body').scrollspy('refresh');
+});
+$('#options-private').on('click', function () {
+  $('.private').toggle();
+  $('body').scrollspy('refresh');
+});</script></body></html>

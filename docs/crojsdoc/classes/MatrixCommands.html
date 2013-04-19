@@ -1,0 +1,82 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>croquis-jsdoc - MatrixCommands</title><link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container-fluid"><ul class="nav"><li class=""><a href="../index.html">Home</a></li><li class="active"><a href="../classes/AnimationLoop.html">Classes - MatrixCommands</a></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div></div><div class="container-fluid content"><div class="row-fluid"><div class="span3 visible-desktop"><div data-spy="affix" class="span3 sidebar"><ul class="nav nav-list cormo-sidenav"><li><a href="../classes/AnimationLoop.html">AnimationLoop</a></li><li><a href="../classes/Autocoder.html">Autocoder</a></li><li><a href="../classes/BackgroundPainter.html">BackgroundPainter</a></li><li><a href="../classes/BigCursor.html">BigCursor</a></li><li><a href="../classes/BlendControls.html">BlendControls</a></li><li><a href="../classes/CodeTransformer.html">CodeTransformer</a></li><li><a href="../classes/ColourFunctions.html">ColourFunctions</a></li><li><a href="../classes/ColourLiterals.html">ColourLiterals</a></li><li><a href="../classes/Editor.html">Editor</a></li><li><a href="../classes/EditorDimmer.html">EditorDimmer</a></li><li><a href="../classes/EventRouter.html">EventRouter</a></li><li><a href="../classes/GraphicsCommands.html">GraphicsCommands</a></li><li><a href="../classes/LexerRule.html">LexerRule</a></li><li><a href="../classes/LexerState.html">LexerState</a></li><li><a href="../classes/LightsCommands.html">LightsCommands</a></li><li><a href="../classes/LiveCodeLabCore.html">LiveCodeLabCore</a></li><li class="active"><a href="#MatrixCommands">MatrixCommands</a></li><li><a href="../classes/Parser.html">Parser</a></li><li><a href="../classes/ProgramLoader.html">ProgramLoader</a></li><li><a href="../classes/ProgramRunner.html">ProgramRunner</a></li><li><a href="../classes/Renderer.html">Renderer</a></li><li><a href="../classes/SampleBank.html">SampleBank</a></li><li><a href="../classes/SoundSystem.html">SoundSystem</a></li><li><a href="../classes/ThreeJsSystem.html">ThreeJsSystem</a></li><li><a href="../classes/TimeKeeper.html">TimeKeeper</a></li><li><a href="../classes/Ui.html">Ui</a></li><li><a href="../classes/UrlRouter.html">UrlRouter</a></li></ul></div></div><div class="span9"><div class="page-header"><section id="MatrixCommands"><h1 class="class_title">MatrixCommands</h1><div><p>Takes care of all matrix-related commands.</p>
+</div><div></div><button class="showcode btn btn-info">Show code</button><span> (defined in /docs/deleteme/sourcesWithBlockComments/coffee/matrix-commands.coffee:8)</span><pre class="sourcecode prettyprint .linenums:8">class MatrixCommands
+  "use strict"
+
+  matrixStack: []
+
+  constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance) ->
+    @worldMatrix = new @liveCodeLabCore_three.Matrix4()
+    # These need to be global so it can be run by the draw function
+    window.pushMatrix  = () => @pushMatrix()
+    window.popMatrix   = () => @popMatrix()
+    window.resetMatrix = () => @resetMatrix()
+    window.move   = (a,b,c) => @move(a,b,c)
+    window.rotate = (a,b,c) => @rotate(a,b,c)
+    window.scale  = (a,b,c) => @scale(a,b,c)
+
+  getWorldMatrix: ->
+    @worldMatrix
+
+  resetMatrixStack: ->
+    @matrixStack = []
+    @worldMatrix.identity()
+
+  pushMatrix: ->
+    @matrixStack.push @worldMatrix
+    @worldMatrix = (new @liveCodeLabCore_three.Matrix4()).copy(@worldMatrix)
+
+  popMatrix: ->
+    if @matrixStack.length
+      @worldMatrix = @matrixStack.pop()
+    else
+      @worldMatrix.identity()
+
+  resetMatrix: ->
+    @worldMatrix.identity()
+
+  move: (a, b, c = 0) ->
+    if typeof a isnt "number"
+      a = Math.sin(@liveCodeLabCoreInstance.timeKeeper.getTime() / 500)
+      b = Math.cos(@liveCodeLabCoreInstance.timeKeeper.getTime() / 500)
+      c = a
+    else if typeof b isnt "number"
+      b = a
+      c = a
+    @worldMatrix.translate new @liveCodeLabCore_three.Vector3(a, b, c)
+
+  rotate: (a, b, c = 0) ->
+    if typeof a isnt "number"
+      a = @liveCodeLabCoreInstance.timeKeeper.getTime() / 1000
+      b = a
+      c = a
+    else if typeof b isnt "number"
+      b = a
+      c = a
+    @worldMatrix.rotateX(a).rotateY(b).rotateZ c
+
+  scale: (a, b, c = 1) ->
+    if typeof a isnt "number"
+      a = 1 + Math.sin(@liveCodeLabCoreInstance.timeKeeper.getTime() / 500) / 4
+      b = a
+      c = a
+    else if typeof b isnt "number"
+      b = a
+      c = a
+    
+    # odd things happen setting scale to zero
+    a = 0.000000001  if a > -0.000000001 and a < 0.000000001
+    b = 0.000000001  if b > -0.000000001 and b < 0.000000001
+    c = 0.000000001  if c > -0.000000001 and c < 0.000000001
+    @worldMatrix.scale new @liveCodeLabCore_three.Vector3(a, b, c)</pre></section></div></div></div></div><script src="http://code.jquery.com/jquery-1.8.2.min.js"></script><script src="../bootstrap/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script>$(function() {
+  // make result of marked for pretty print
+  $('pre code[class^="lang-"]').addClass('.prettyprint');
+  window.prettyPrint && prettyPrint()
+});
+$('body').on('click', '.showcode', function () {
+  $(this).parent().find('pre.sourcecode').toggle();
+  $('body').scrollspy('refresh');
+});
+$('#options-private').on('click', function () {
+  $('.private').toggle();
+  $('body').scrollspy('refresh');
+});</script></body></html>
