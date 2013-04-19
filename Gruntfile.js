@@ -98,7 +98,7 @@ module.exports = function (grunt) {
      * a) can't get it to output the docs where it should
      * b) only seems to generate docs for two files.
      */
-    grunt.registerMultiTask('crojsdoc', 'Generate source documents from CoffeeScript files.', function () {
+    grunt.registerTask('crojsdoc', 'Generate source documents from CoffeeScript files.', function () {
         var target = this.data.target,
             options = this.data.options || {},
             cmds = ['buildSystem/crojsdocHelper.sh'],
@@ -233,6 +233,7 @@ module.exports = function (grunt) {
                 }
             }
         },
+
         coffeedoc: {
             dist: {
                 target: 'docs/deleteme/sourcesWithBlockComments',
@@ -243,12 +244,11 @@ module.exports = function (grunt) {
                 }
             }
         },
-        codo: {
-            dist: {
-                target: 'docs/deleteme/sourcesWithBlockComments',
+
+        groc: {
+                javascript: ['js/translatedFromCoffescript/coffee/**/*.js'],
                 options: {
-                    output_dir: 'docs/codo',
-                }
+                    out: 'docs/groc/',
             }
         },
         lint: {
@@ -429,16 +429,18 @@ module.exports = function (grunt) {
         'clean:docs',
         'copySourcesForCreatingDocs',
         'replaceBlockComments',
-        /*
         'docco:Js',
         'docco:Coffee',
+        
         'coffeedoc',
-        */
+        
         'beautifyCoffeedoc',
-        /*
-        'codo',
-        */
-        'crojsdoc',
+        //'groc',
+        
+        //'codo',
+        
+        //'crojsdoc',
+        //'jsduck',
         'removeCopiedSourcesForDocs'
     ]);
 
@@ -458,16 +460,17 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-closure-compiler');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-docco');
-    grunt.loadNpmTasks('coffeedoc');
     grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-targethtml');
     grunt.loadNpmTasks('grunt-contrib-coffee');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-clean');
-    // couldn't make these two to work
+    // couldn't make these to work
     //grunt.loadNpmTasks('grunt-contrib-jsdoc');
     //grunt.loadNpmTasks('grunt-jsduck');
+    grunt.loadNpmTasks('grunt-docco');
+    grunt.loadNpmTasks('grunt-groc');
+    //grunt.loadNpmTasks('coffeedoc');
 
     process.stdout.write("\n\n\n\n");
     process.stdout.write("****************************************************************\n");
