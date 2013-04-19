@@ -257,11 +257,15 @@ module.exports = function (grunt) {
         },
         copy: {
             fonts: {
-                files: {
-                    "css_compiled/fonts/": "css/fonts/*" // includes files in dir
-                }
+                files: [{
+                    expand: true,
+                    cwd: 'css/fonts/',
+                    src: ['**'],
+                    dest: 'css_compiled/fonts/'
+                }]
             }
         },
+
         recess: {
             lint: {
                 src: ['css/**/*.css'],
