@@ -14,6 +14,6 @@
     "grunt-targethtml": "~0.2.2",
     "docco": "~0.6.2",
     "coffeedoc": "~0.2.7",
-    "codo": "~1.6.0"
+    "grunt-docco": "~0.2.0"
   }
 }
