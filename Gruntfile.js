@@ -374,9 +374,23 @@ module.exports = function (grunt) {
             }
         },
         clean: {
-            docs: ['docs/docco/', 'docs/codo/', 'docs/coffeedoc/', 'docs/crojsdoc/', 'docs/deleteme/'],
-            build: ['dist/', 'indexMinified.html', 'js_compiled/Livecodelab-minified.js', 'js/translatedFromCoffescript/', 'css_compiled/'],
-            tests: ['tests/js/testLiveCodeLab.js']
+            docs: [
+                'docs/docco/',
+                'docs/codo/',
+                'docs/coffeedoc/',
+                'docs/crojsdoc/',
+                'docs/deleteme/'
+                ],
+            build: [
+                'dist/',
+                'indexMinified.html',
+                'js_compiled/Livecodelab-minified.js',
+                'js/translatedFromCoffescript/',
+                'css_compiled/'
+                ],
+            tests: [
+                'tests/js/testLiveCodeLab.js'
+                ]
         },
         targethtml: {
             compile: {
@@ -411,10 +425,34 @@ module.exports = function (grunt) {
     // don't preserve the comments of the coffee files. So we
     // re-write the docs generated from the (translated) js files
     // with the docs generated from the coffee files.
-    grunt.registerTask('docs', ['clean:docs','copySourcesForCreatingDocs','replaceBlockComments'/*,'docco:Js','docco:Coffee','coffeedoc'*/,'beautifyCoffeedoc'/*,'codo'*/,'crojsdoc','removeCopiedSourcesForDocs']);
+    grunt.registerTask('docs', [
+        'clean:docs',
+        'copySourcesForCreatingDocs',
+        'replaceBlockComments',
+        /*
+        'docco:Js',
+        'docco:Coffee',
+        'coffeedoc',
+        */
+        'beautifyCoffeedoc',
+        /*
+        'codo',
+        */
+        'crojsdoc',
+        'removeCopiedSourcesForDocs'
+    ]);
 
     // Compilation task
-    grunt.registerTask('compile', ['clean:build', 'coffee:app', 'coffee:tests', 'concat', 'closure-compiler', 'copy:fonts', 'recess:compile', 'targethtml:compile']);
+    grunt.registerTask('compile', [
+        'clean:build',
+        'coffee:app',
+        'coffee:tests',
+        'concat',
+        'closure-compiler',
+        'copy:fonts',
+        'recess:compile',
+        'targethtml:compile'
+    ]);
 
     // Load NPM Task modules
     grunt.loadNpmTasks('grunt-closure-compiler');
@@ -437,6 +475,7 @@ module.exports = function (grunt) {
     process.stdout.write("* You can use jitter to automatically translate\n");
     process.stdout.write("* the .coffee files - which is fine for testing\n");
     process.stdout.write("* changes using the non-minified version of livecodelab,\n");
+    process.stdout.write("* (i.e. index.html, NOT indexMinified.html)\n");
     process.stdout.write("* just do:\n");
     process.stdout.write("*    npm install -g jitter \n");
     process.stdout.write("*    jitter --bare coffee/ js/translatedFromCoffescript/coffee/ \n");
