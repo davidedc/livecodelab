@@ -5,15 +5,14 @@
 var UrlRouter;
 
 UrlRouter = (function() {
-  "use strict";
-
-  function UrlRouter(eventRouter) {
+  "use strict";  function UrlRouter(eventRouter) {
     this.eventRouter = eventRouter;
     this.eventRouter.bind("set-url-hash", this.setHash, this);
   }
 
   UrlRouter.prototype.getHash = function() {
     var match;
+
     match = window.location.href.match(/#(.*)$/);
     if (match) {
       return match[1];
@@ -28,6 +27,7 @@ UrlRouter = (function() {
 
   UrlRouter.prototype.urlPointsToDemoOrTutorial = function() {
     var found, hash;
+
     found = false;
     hash = this.getHash();
     if (hash) {

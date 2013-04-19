@@ -6,14 +6,13 @@
 var Renderer;
 
 Renderer = (function() {
-  "use strict";
-
-  function Renderer(liveCodeLabCoreInstance) {
+  "use strict";  function Renderer(liveCodeLabCoreInstance) {
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
   }
 
   Renderer.prototype.render = function(graphics) {
     var blendedThreeJsSceneCanvasContext, previousFrameThreeJSSceneRenderForBlendingCanvasContext, renderer, threeJsSystem;
+
     threeJsSystem = this.liveCodeLabCoreInstance.threeJsSystem;
     renderer = threeJsSystem.renderer;
     blendedThreeJsSceneCanvasContext = threeJsSystem.blendedThreeJsSceneCanvasContext;
@@ -37,6 +36,7 @@ Renderer = (function() {
 
   Renderer.prototype.combDisplayList = function(graphics) {
     var i, objectsUsedInFrameCounts, primitiveType, sceneObject, threeJsSystem, _i, _len, _ref, _results;
+
     i = void 0;
     sceneObject = void 0;
     primitiveType = void 0;

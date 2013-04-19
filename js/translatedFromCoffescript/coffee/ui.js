@@ -6,10 +6,9 @@
 var Ui;
 
 Ui = (function() {
-  "use strict";
-
-  function Ui(eventRouter, stats, programLoader) {
+  "use strict";  function Ui(eventRouter, stats, programLoader) {
     var _this = this;
+
     this.eventRouter = eventRouter;
     this.stats = stats;
     this.programLoader = programLoader;
@@ -40,6 +39,7 @@ Ui = (function() {
 
   Ui.prototype.resizeCanvas = function(canvasId) {
     var canvas, scale;
+
     canvas = $(canvasId);
     scale = {
       x: 1,
@@ -57,6 +57,7 @@ Ui = (function() {
 
   Ui.prototype.fullscreenify = function(canvasId) {
     var _this = this;
+
     window.addEventListener("resize", (function() {
       _this.adjustCodeMirrorHeight();
       return _this.resizeCanvas(canvasId);
@@ -66,6 +67,7 @@ Ui = (function() {
 
   Ui.prototype.checkErrorAndReport = function(e) {
     var errorMessage;
+
     $("#dangerSignText").css("color", "red");
     errorMessage = e.message || e;
     if (errorMessage.indexOf("Unexpected 'INDENT'") > -1) {
@@ -111,8 +113,10 @@ Ui = (function() {
 
   Ui.prototype.setup = function() {
     var _this = this;
+
     return $(document).ready(function() {
       var a, allDemos, allTutorials, demo, demoSubmenu, demoSubmenuNoSpaces, demoSubmenus, eventRouter, submenuOfThisDemo, submenuOfThisTutorial, tutorial, tutorialSubmenu, tutorialSubmenuNoSpaces, tutorialSubmenus, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3;
+
       eventRouter = _this.eventRouter;
       $('<span >LiveCodeLab</span>').appendTo($('<li>').appendTo($('#nav'))).click(function() {
         $("#aboutWindow").modal();

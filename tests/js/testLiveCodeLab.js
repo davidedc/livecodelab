@@ -1,10 +1,10 @@
-
 describe("ImageTest", function() {
   beforeEach(function() {
     return this.addMatchers(imagediff.jasmine);
   });
   return it("A simple ball should look right", function() {
     var Bowser, a, b, colourNames, eventRouter, liveCodeLabCoreInstance, testCanvas;
+
     a = new Image();
     b = new Image();
     Bowser = createBowser();

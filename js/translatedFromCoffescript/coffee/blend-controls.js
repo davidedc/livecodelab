@@ -9,9 +9,7 @@
 var BlendControls;
 
 BlendControls = (function() {
-  "use strict";
-
-  BlendControls.prototype.previousanimationStyleValue = 0;
+  "use strict";  BlendControls.prototype.previousanimationStyleValue = 0;
 
   BlendControls.prototype.animationStyleValue = 0;
 
@@ -21,6 +19,7 @@ BlendControls = (function() {
 
   function BlendControls(liveCodeLabCoreInstance) {
     var _this = this;
+
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
     window.normal = this.animationStyles.normal = 0;
     window.paintOver = this.animationStyles.paintOver = 1;
@@ -39,6 +38,7 @@ BlendControls = (function() {
 
   BlendControls.prototype.animationStyleUpdateIfChanged = function() {
     var isWebGLUsed;
+
     if (this.animationStyleValue === this.previousanimationStyleValue) {
       return;
     }

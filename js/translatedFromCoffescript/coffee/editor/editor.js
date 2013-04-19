@@ -6,16 +6,16 @@
 var Editor;
 
 Editor = (function() {
-  "use strict";
-
-  function Editor(eventRouter, codemirror) {
+  "use strict";  function Editor(eventRouter, codemirror) {
     var _this = this;
+
     this.eventRouter = eventRouter;
     this.eventRouter.bind("reset", function() {
       return _this.codemirrorInstance.setValue("");
     });
     this.eventRouter.bind("code-updated-by-livecodelab", (function(elaboratedSource) {
       var cursorPositionBeforeAddingCheckMark;
+
       cursorPositionBeforeAddingCheckMark = _this.codemirrorInstance.getCursor();
       cursorPositionBeforeAddingCheckMark.ch = cursorPositionBeforeAddingCheckMark.ch + 1;
       _this.setValue(elaboratedSource);
@@ -76,6 +76,7 @@ Editor = (function() {
   Editor.prototype.suspendDimmingAndCheckIfLink = function(editor) {
     var currentLineContent, cursorP, program,
       _this = this;
+
     cursorP = void 0;
     currentLineContent = void 0;
     program = void 0;

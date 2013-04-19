@@ -8,9 +8,7 @@
 var BigCursor;
 
 BigCursor = (function() {
-  "use strict";
-
-  function BigCursor(eventRouter) {
+  "use strict";  function BigCursor(eventRouter) {
     this.fakeCursorInterval = void 0;
     this.isShowing = true;
   }
@@ -36,6 +34,7 @@ BigCursor = (function() {
 
   BigCursor.prototype.shrinkBigCursor = function() {
     var currentCaption, shorterCaption;
+
     currentCaption = void 0;
     shorterCaption = void 0;
     if (this.isShowing) {

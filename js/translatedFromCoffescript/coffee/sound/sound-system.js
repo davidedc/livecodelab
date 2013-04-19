@@ -7,9 +7,7 @@
 var SoundSystem;
 
 SoundSystem = (function() {
-  "use strict";
-
-  SoundSystem.prototype.oldupdatesPerMinute = 0;
+  "use strict";  SoundSystem.prototype.oldupdatesPerMinute = 0;
 
   SoundSystem.prototype.soundLoopTimer = void 0;
 
@@ -35,6 +33,7 @@ SoundSystem = (function() {
 
   function SoundSystem(eventRouter, buzz, Bowser, samplebank) {
     var _this = this;
+
     this.eventRouter = eventRouter;
     this.buzz = buzz;
     this.Bowser = Bowser;
@@ -65,6 +64,7 @@ SoundSystem = (function() {
 
   SoundSystem.prototype.playStartupSound = function() {
     var startup;
+
     startup = new this.buzz.sound(this.samplebank.getByName("bing").path);
     return startup.play();
   };
@@ -95,6 +95,7 @@ SoundSystem = (function() {
 
   SoundSystem.prototype.play_using_BUZZ_JS_FIRE_AND_FORGET = function(soundFilesPaths, loopedSoundID, buzzObjectsPool) {
     var availableBuzzObject, soundFilePath;
+
     this.buzzObjectsPool = buzzObjectsPool;
     soundFilePath = void 0;
     soundFilePath = soundFilesPaths[loopedSoundID];
@@ -105,6 +106,7 @@ SoundSystem = (function() {
   SoundSystem.prototype.play_using_DYNAMICALLY_CREATED_AUDIO_TAG = function(soundFilesPaths, loopedSoundID, buzzObjectsPool) {
     var audioElement, soundFilePath, source1,
       _this = this;
+
     this.buzzObjectsPool = buzzObjectsPool;
     audioElement = void 0;
     source1 = void 0;
@@ -126,6 +128,7 @@ SoundSystem = (function() {
 
   SoundSystem.prototype.play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND = function(soundFilesPaths, loopedSoundID, buzzObjectsPool) {
     var allBuzzObjectsForWantedSound, availableBuzzObject, buzzObject, _i, _len;
+
     this.buzzObjectsPool = buzzObjectsPool;
     availableBuzzObject = void 0;
     allBuzzObjectsForWantedSound = this.buzzObjectsPool[loopedSoundID];
@@ -153,6 +156,7 @@ SoundSystem = (function() {
 
   SoundSystem.prototype.soundLoop = function() {
     var beatString, loopedSoundID, loopingTheSoundIDs, playOrNoPlay, _i, _ref, _results;
+
     loopedSoundID = void 0;
     playOrNoPlay = void 0;
     beatString = void 0;
@@ -180,6 +184,7 @@ SoundSystem = (function() {
 
   SoundSystem.prototype.changeUpdatesPerMinuteIfNeeded = function() {
     var _this = this;
+
     if (this.oldupdatesPerMinute !== this.updatesPerMinute) {
       clearTimeout(this.soundLoopTimer);
       if (this.updatesPerMinute !== 0) {
@@ -193,6 +198,7 @@ SoundSystem = (function() {
 
   SoundSystem.prototype.isAudioSupported = function() {
     var _this = this;
+
     return setTimeout((function() {
       if (!_this.buzz.isSupported()) {
         $("#noAudioMessage").modal();
@@ -204,6 +210,7 @@ SoundSystem = (function() {
   SoundSystem.prototype.checkSound = function(soundDef, soundInfo) {
     var newSound,
       _this = this;
+
     newSound = new this.buzz.sound(soundInfo.path);
     newSound.load();
     newSound.mute();
@@ -222,6 +229,7 @@ SoundSystem = (function() {
   SoundSystem.prototype.loadAndTestAllTheSounds = function() {
     var cycleSoundDefs, preloadSounds, soundDef, soundInfo, _i, _j, _ref, _ref1,
       _this = this;
+
     soundDef = void 0;
     soundInfo = void 0;
     preloadSounds = void 0;

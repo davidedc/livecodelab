@@ -7,9 +7,7 @@
 var Autocoder, TOKEN_ARGDLIM, TOKEN_COLOUR, TOKEN_COLOUROP, TOKEN_COMMENT, TOKEN_DOONCE, TOKEN_ITERATION, TOKEN_MESH, TOKEN_NEWLINE, TOKEN_NUM, TOKEN_OP, TOKEN_SPACE, TOKEN_STATEFUN, TOKEN_TAB, TOKEN_TRANSLATION, TOKEN_UNKNOWN, TOKEN_VARIABLE;
 
 Autocoder = (function() {
-  "use strict";
-
-  Autocoder.prototype.active = false;
+  "use strict";  Autocoder.prototype.active = false;
 
   Autocoder.prototype.autocoderMutateTimeout = void 0;
 
@@ -20,6 +18,7 @@ Autocoder = (function() {
   function Autocoder(eventRouter, editor, colourNames) {
     var addRule, scanningAllColors, _i, _len, _ref,
       _this = this;
+
     this.eventRouter = eventRouter;
     this.editor = editor;
     this.colourNames = colourNames;
@@ -86,6 +85,7 @@ Autocoder = (function() {
 
   Autocoder.prototype.emit = function(stream) {
     var ret, scanningTheStream, _i, _len;
+
     ret = "";
     for (_i = 0, _len = stream.length; _i < _len; _i++) {
       scanningTheStream = stream[_i];
@@ -104,6 +104,7 @@ Autocoder = (function() {
 
   Autocoder.prototype.pickMutatableTokenAndMutateIt = function(stream) {
     var idx, mutatableTokens, scanningTheStream, _i, _len;
+
     mutatableTokens = [];
     idx = void 0;
     for (_i = 0, _len = stream.length; _i < _len; _i++) {
@@ -121,6 +122,7 @@ Autocoder = (function() {
 
   Autocoder.prototype.replaceTimeWithAConstant = function() {
     var allMatches, countWhichOneToSwap, editorContent, rePattern;
+
     editorContent = this.editor.getValue();
     rePattern = /(time)/g;
     allMatches = editorContent.match(rePattern);
@@ -142,14 +144,15 @@ Autocoder = (function() {
   };
 
   Autocoder.prototype.mutate = function() {
-    var editorContent, newContent;
+    var e, editorContent, newContent;
+
     editorContent = this.editor.getValue();
     newContent = void 0;
     this.Tokens = [];
     try {
       this.LexersOnlyState.lex(editorContent);
-    } catch (e) {
-
+    } catch (_error) {
+      e = _error;
     }
     this.pickMutatableTokenAndMutateIt(this.Tokens);
     newContent = this.emit(this.Tokens);
@@ -163,6 +166,7 @@ Autocoder = (function() {
 
   Autocoder.prototype.toggle = function(forcedState) {
     var _this = this;
+
     if (forcedState === undefined) {
       this.active = !this.active;
     } else {
@@ -186,7 +190,6 @@ Autocoder = (function() {
 })();
 
 TOKEN_COMMENT = (function() {
-
   function TOKEN_COMMENT(string) {
     this.string = string;
   }
@@ -200,7 +203,6 @@ TOKEN_COMMENT = (function() {
 })();
 
 TOKEN_SPACE = (function() {
-
   function TOKEN_SPACE(string) {
     this.string = string;
   }
@@ -214,7 +216,6 @@ TOKEN_SPACE = (function() {
 })();
 
 TOKEN_NEWLINE = (function() {
-
   function TOKEN_NEWLINE(string) {
     this.string = string;
   }
@@ -228,7 +229,6 @@ TOKEN_NEWLINE = (function() {
 })();
 
 TOKEN_TRANSLATION = (function() {
-
   function TOKEN_TRANSLATION(string) {
     this.string = string;
   }
@@ -242,7 +242,6 @@ TOKEN_TRANSLATION = (function() {
 })();
 
 TOKEN_VARIABLE = (function() {
-
   function TOKEN_VARIABLE(string) {
     this.string = string;
   }
@@ -256,7 +255,6 @@ TOKEN_VARIABLE = (function() {
 })();
 
 TOKEN_NUM = (function() {
-
   function TOKEN_NUM(string) {
     this.string = string;
   }
@@ -267,6 +265,7 @@ TOKEN_NUM = (function() {
 
   TOKEN_NUM.prototype.mutate = function() {
     var num, offset, scalar;
+
     num = new Number(this.string);
     scalar = void 0;
     if (0 === num) {
@@ -288,7 +287,6 @@ TOKEN_NUM = (function() {
 })();
 
 TOKEN_OP = (function() {
-
   function TOKEN_OP(string) {
     this.string = string;
   }
@@ -302,7 +300,6 @@ TOKEN_OP = (function() {
 })();
 
 TOKEN_ARGDLIM = (function() {
-
   function TOKEN_ARGDLIM(string) {
     this.string = string;
   }
@@ -316,7 +313,6 @@ TOKEN_ARGDLIM = (function() {
 })();
 
 TOKEN_TAB = (function() {
-
   function TOKEN_TAB(string) {
     this.string = string;
   }
@@ -330,7 +326,6 @@ TOKEN_TAB = (function() {
 })();
 
 TOKEN_DOONCE = (function() {
-
   function TOKEN_DOONCE(string) {
     this.string = string;
   }
@@ -344,7 +339,6 @@ TOKEN_DOONCE = (function() {
 })();
 
 TOKEN_MESH = (function() {
-
   function TOKEN_MESH(string) {
     this.string = string;
   }
@@ -374,7 +368,6 @@ TOKEN_MESH = (function() {
 })();
 
 TOKEN_STATEFUN = (function() {
-
   function TOKEN_STATEFUN(string) {
     this.string = string;
   }
@@ -388,7 +381,6 @@ TOKEN_STATEFUN = (function() {
 })();
 
 TOKEN_ITERATION = (function() {
-
   function TOKEN_ITERATION(string) {
     this.string = string;
   }
@@ -399,6 +391,7 @@ TOKEN_ITERATION = (function() {
 
   TOKEN_ITERATION.prototype.mutate = function() {
     var num, pat;
+
     pat = /\d/;
     num = pat.exec(this.string);
     if (Math.random() > 0.5) {
@@ -414,7 +407,6 @@ TOKEN_ITERATION = (function() {
 })();
 
 TOKEN_UNKNOWN = (function() {
-
   function TOKEN_UNKNOWN(string) {
     this.string = string;
   }
@@ -428,7 +420,6 @@ TOKEN_UNKNOWN = (function() {
 })();
 
 TOKEN_COLOUR = (function() {
-
   function TOKEN_COLOUR(string, colourNames) {
     this.string = string;
     this.colourNames = colourNames;
@@ -440,6 +431,7 @@ TOKEN_COLOUR = (function() {
 
   TOKEN_COLOUR.prototype.mutate = function() {
     var idx;
+
     idx = Math.floor(Math.random() * this.colourNames.length);
     while (this.string === this.colourNames[idx]) {
       idx = Math.floor(Math.random() * this.colourNames.length);
@@ -452,7 +444,6 @@ TOKEN_COLOUR = (function() {
 })();
 
 TOKEN_COLOUROP = (function() {
-
   function TOKEN_COLOUROP(string) {
     this.string = string;
   }

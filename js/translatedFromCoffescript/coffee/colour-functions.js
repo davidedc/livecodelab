@@ -6,10 +6,9 @@
 var ColourFunctions;
 
 ColourFunctions = (function() {
-  "use strict";
-
-  function ColourFunctions() {
+  "use strict";  function ColourFunctions() {
     var _this = this;
+
     window.color = function(a, b, c, d) {
       return _this.color(a, b, c, d);
     };
@@ -99,6 +98,7 @@ ColourFunctions = (function() {
     };
     this.color.toRGB = function(h, s, b) {
       var br, f, hue, p, q, t;
+
       br = void 0;
       hue = void 0;
       f = void 0;
@@ -140,6 +140,7 @@ ColourFunctions = (function() {
 
   ColourFunctions.prototype.color$4 = function(aValue1, aValue2, aValue3, aValue4) {
     var a, b, g, r, rgb;
+
     r = void 0;
     g = void 0;
     b = void 0;
@@ -169,6 +170,7 @@ ColourFunctions = (function() {
 
   ColourFunctions.prototype.color$2 = function(aValue1, aValue2) {
     var a, angleColor;
+
     a = void 0;
     angleColor = -16777217;
     if (aValue1 === angleColor) {
@@ -209,21 +211,21 @@ ColourFunctions = (function() {
   };
 
   /*
-    Creates colors for storing in variables of the color datatype. The parameters are
-    interpreted as RGB or HSB values depending on the current colorMode(). The default
-    mode is RGB values from 0 to 255 and therefore, the function call color(255, 204, 0)
-    will return a bright yellow color. More about how colors are stored can be found in
-    the reference for the color datatype.
-    
-    @param {int|float} aValue1        red or hue or grey values relative to the current color range.
-    Also can be color value in hexadecimal notation (i.e. #FFCC00 or 0xFFFFCC00)
-    @param {int|float} aValue2        green or saturation values relative to the current color range
-    @param {int|float} aValue3        blue or brightness values relative to the current color range
-    @param {int|float} aValue4        relative to current color range. Represents alpha
-    
-    @returns {color} the color
-    
-    @see colorMode
+  Creates colors for storing in variables of the color datatype. The parameters are
+  interpreted as RGB or HSB values depending on the current colorMode(). The default
+  mode is RGB values from 0 to 255 and therefore, the function call color(255, 204, 0)
+  will return a bright yellow color. More about how colors are stored can be found in
+  the reference for the color datatype.
+  
+  @param {int|float} aValue1        red or hue or grey values relative to the current color range.
+  Also can be color value in hexadecimal notation (i.e. #FFCC00 or 0xFFFFCC00)
+  @param {int|float} aValue2        green or saturation values relative to the current color range
+  @param {int|float} aValue3        blue or brightness values relative to the current color range
+  @param {int|float} aValue4        relative to current color range. Represents alpha
+  
+  @returns {color} the color
+  
+  @see colorMode
   */
 
 
@@ -245,6 +247,7 @@ ColourFunctions = (function() {
 
   ColourFunctions.prototype.colorToHSB = function(colorInt) {
     var blue, green, hue, maxBright, minBright, red, saturation;
+
     red = void 0;
     green = void 0;
     blue = void 0;
@@ -280,17 +283,17 @@ ColourFunctions = (function() {
   };
 
   /*
-    Extracts the brightness value from a color.
-    
-    @param {color} colInt any value of the color datatype
-    
-    @returns {float} The brightness color value.
-    
-    @see red
-    @see green
-    @see blue
-    @see hue
-    @see saturation
+  Extracts the brightness value from a color.
+  
+  @param {color} colInt any value of the color datatype
+  
+  @returns {float} The brightness color value.
+  
+  @see red
+  @see green
+  @see blue
+  @see hue
+  @see saturation
   */
 
 
@@ -299,17 +302,17 @@ ColourFunctions = (function() {
   };
 
   /*
-    Extracts the saturation value from a color.
-    
-    @param {color} colInt any value of the color datatype
-    
-    @returns {float} The saturation color value.
-    
-    @see red
-    @see green
-    @see blue
-    @see hue
-    @see brightness
+  Extracts the saturation value from a color.
+  
+  @param {color} colInt any value of the color datatype
+  
+  @returns {float} The saturation color value.
+  
+  @see red
+  @see green
+  @see blue
+  @see hue
+  @see brightness
   */
 
 
@@ -318,17 +321,17 @@ ColourFunctions = (function() {
   };
 
   /*
-    Extracts the hue value from a color.
-    
-    @param {color} colInt any value of the color datatype
-    
-    @returns {float} The hue color value.
-    
-    @see red
-    @see green
-    @see blue
-    @see saturation
-    @see brightness
+  Extracts the hue value from a color.
+  
+  @param {color} colInt any value of the color datatype
+  
+  @returns {float} The hue color value.
+  
+  @see red
+  @see green
+  @see blue
+  @see saturation
+  @see brightness
   */
 
 
@@ -337,20 +340,20 @@ ColourFunctions = (function() {
   };
 
   /*
-    Extracts the red value from a color, scaled to match current colorMode().
-    This value is always returned as a float so be careful not to assign it to an int value.
-    
-    @param {color} aColor any value of the color datatype
-    
-    @returns {float} The red color value.
-    
-    @see green
-    @see blue
-    @see alpha
-    @see >> right shift
-    @see hue
-    @see saturation
-    @see brightness
+  Extracts the red value from a color, scaled to match current colorMode().
+  This value is always returned as a float so be careful not to assign it to an int value.
+  
+  @param {color} aColor any value of the color datatype
+  
+  @returns {float} The red color value.
+  
+  @see green
+  @see blue
+  @see alpha
+  @see >> right shift
+  @see hue
+  @see saturation
+  @see brightness
   */
 
 
@@ -359,20 +362,20 @@ ColourFunctions = (function() {
   };
 
   /*
-    Extracts the green value from a color, scaled to match current colorMode().
-    This value is always returned as a float so be careful not to assign it to an int value.
-    
-    @param {color} aColor any value of the color datatype
-    
-    @returns {float} The green color value.
-    
-    @see red
-    @see blue
-    @see alpha
-    @see >> right shift
-    @see hue
-    @see saturation
-    @see brightness
+  Extracts the green value from a color, scaled to match current colorMode().
+  This value is always returned as a float so be careful not to assign it to an int value.
+  
+  @param {color} aColor any value of the color datatype
+  
+  @returns {float} The green color value.
+  
+  @see red
+  @see blue
+  @see alpha
+  @see >> right shift
+  @see hue
+  @see saturation
+  @see brightness
   */
 
 
@@ -381,20 +384,20 @@ ColourFunctions = (function() {
   };
 
   /*
-    Extracts the blue value from a color, scaled to match current colorMode().
-    This value is always returned as a float so be careful not to assign it to an int value.
-    
-    @param {color} aColor any value of the color datatype
-    
-    @returns {float} The blue color value.
-    
-    @see red
-    @see green
-    @see alpha
-    @see >> right shift
-    @see hue
-    @see saturation
-    @see brightness
+  Extracts the blue value from a color, scaled to match current colorMode().
+  This value is always returned as a float so be careful not to assign it to an int value.
+  
+  @param {color} aColor any value of the color datatype
+  
+  @returns {float} The blue color value.
+  
+  @see red
+  @see green
+  @see alpha
+  @see >> right shift
+  @see hue
+  @see saturation
+  @see brightness
   */
 
 
@@ -403,20 +406,20 @@ ColourFunctions = (function() {
   };
 
   /*
-    Extracts the alpha value from a color, scaled to match current colorMode().
-    This value is always returned as a float so be careful not to assign it to an int value.
-    
-    @param {color} aColor any value of the color datatype
-    
-    @returns {float} The alpha color value.
-    
-    @see red
-    @see green
-    @see blue
-    @see >> right shift
-    @see hue
-    @see saturation
-    @see brightness
+  Extracts the alpha value from a color, scaled to match current colorMode().
+  This value is always returned as a float so be careful not to assign it to an int value.
+  
+  @param {color} aColor any value of the color datatype
+  
+  @returns {float} The alpha color value.
+  
+  @see red
+  @see green
+  @see blue
+  @see >> right shift
+  @see hue
+  @see saturation
+  @see brightness
   */
 
 
@@ -429,19 +432,19 @@ ColourFunctions = (function() {
   };
 
   /*
-    Calculates a number between two numbers at a specific increment. The amt  parameter is the
-    amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very
-    near the first point, 0.5 is half-way in between, etc. The lerp function is convenient for
-    creating motion along a straight path and for drawing dotted lines.
-    
-    @param {int|float} value1       float or int: first value
-    @param {int|float} value2       float or int: second value
-    @param {int|float} amt          float: between 0.0 and 1.0
-    
-    @returns {float}
-    
-    @see curvePoint
-    @see bezierPoint
+  Calculates a number between two numbers at a specific increment. The amt  parameter is the
+  amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very
+  near the first point, 0.5 is half-way in between, etc. The lerp function is convenient for
+  creating motion along a straight path and for drawing dotted lines.
+  
+  @param {int|float} value1       float or int: first value
+  @param {int|float} value2       float or int: second value
+  @param {int|float} amt          float: between 0.0 and 1.0
+  
+  @returns {float}
+  
+  @see curvePoint
+  @see bezierPoint
   */
 
 
@@ -450,23 +453,24 @@ ColourFunctions = (function() {
   };
 
   /*
-    Calculates a color or colors between two colors at a specific increment.
-    The amt parameter is the amount to interpolate between the two values where 0.0
-    equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
-    
-    @param {color} c1     interpolate from this color
-    @param {color} c2     interpolate to this color
-    @param {float} amt    between 0.0 and 1.0
-    
-    @returns {float} The blended color.
-    
-    @see blendColor
-    @see color
+  Calculates a color or colors between two colors at a specific increment.
+  The amt parameter is the amount to interpolate between the two values where 0.0
+  equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
+  
+  @param {color} c1     interpolate from this color
+  @param {color} c2     interpolate to this color
+  @param {float} amt    between 0.0 and 1.0
+  
+  @returns {float} The blended color.
+  
+  @see blendColor
+  @see color
   */
 
 
   ColourFunctions.prototype.lerpColor = function(c1, c2, amt) {
     var a, a1, a2, b, b1, b2, colorBits1, colorBits2, g, g1, g2, h, hsb1, hsb2, r, r1, r2, rgb, s;
+
     r = void 0;
     g = void 0;
     b = void 0;
@@ -514,24 +518,24 @@ ColourFunctions = (function() {
   };
 
   /*
-    Changes the way Processing interprets color data. By default, fill(), stroke(), and background()
-    colors are set by values between 0 and 255 using the RGB color model. It is possible to change the
-    numerical range used for specifying colors and to switch color systems. For example, calling colorMode(RGB, 1.0)
-    will specify that values are specified between 0 and 1. The limits for defining colors are altered by setting the
-    parameters range1, range2, range3, and range 4.
-    
-    @param {MODE} mode Either RGB or HSB, corresponding to Red/Green/Blue and Hue/Saturation/Brightness
-    @param {int|float} range              range for all color elements
-    @param {int|float} range1             range for the red or hue depending on the current color mode
-    @param {int|float} range2             range for the green or saturation depending on the current color mode
-    @param {int|float} range3             range for the blue or brightness depending on the current color mode
-    @param {int|float} range4             range for the alpha
-    
-    @returns none
-    
-    @see background
-    @see fill
-    @see stroke
+  Changes the way Processing interprets color data. By default, fill(), stroke(), and background()
+  colors are set by values between 0 and 255 using the RGB color model. It is possible to change the
+  numerical range used for specifying colors and to switch color systems. For example, calling colorMode(RGB, 1.0)
+  will specify that values are specified between 0 and 1. The limits for defining colors are altered by setting the
+  parameters range1, range2, range3, and range 4.
+  
+  @param {MODE} mode Either RGB or HSB, corresponding to Red/Green/Blue and Hue/Saturation/Brightness
+  @param {int|float} range              range for all color elements
+  @param {int|float} range1             range for the red or hue depending on the current color mode
+  @param {int|float} range2             range for the green or saturation depending on the current color mode
+  @param {int|float} range3             range for the blue or brightness depending on the current color mode
+  @param {int|float} range4             range for the alpha
+  
+  @returns none
+  
+  @see background
+  @see fill
+  @see stroke
   */
 
 
@@ -546,20 +550,21 @@ ColourFunctions = (function() {
   };
 
   /*
-    These are internal blending modes used for BlendColor()
-    
-    @param {Color} c1       First Color to blend
-    @param {Color} c2       Second Color to blend
-    
-    @returns {Color}        The blended Color
-    
-    @see BlendColor
-    @see Blend
+  These are internal blending modes used for BlendColor()
+  
+  @param {Color} c1       First Color to blend
+  @param {Color} c2       Second Color to blend
+  
+  @returns {Color}        The blended Color
+  
+  @see BlendColor
+  @see Blend
   */
 
 
   ColourFunctions.prototype.modesFunction = function() {
     var ALPHA_MASK, BLUE_MASK, GREEN_MASK, RED_MASK, add, applyMode, blend, burn, darkest, difference, dodge, exclusion, hard_light, lightest, max, min, multiply, overlay, replace, screen, soft_light, subtract;
+
     ALPHA_MASK = this.Constants.ALPHA_MASK;
     RED_MASK = this.Constants.RED_MASK;
     GREEN_MASK = this.Constants.GREEN_MASK;
@@ -569,6 +574,7 @@ ColourFunctions = (function() {
     applyMode = void 0;
     applyMode = function(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb) {
       var a, b, g, r;
+
       a = void 0;
       r = void 0;
       g = void 0;
@@ -587,6 +593,7 @@ ColourFunctions = (function() {
     };
     blend = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, f;
+
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = c1 & RED_MASK;
       ag = c1 & GREEN_MASK;
@@ -598,21 +605,25 @@ ColourFunctions = (function() {
     };
     add = function(c1, c2) {
       var f;
+
       f = (c2 & ALPHA_MASK) >>> 24;
       return min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 | min((c1 & RED_MASK) + ((c2 & RED_MASK) >> 8) * f, RED_MASK) & RED_MASK | min((c1 & GREEN_MASK) + ((c2 & GREEN_MASK) >> 8) * f, GREEN_MASK) & GREEN_MASK | min((c1 & BLUE_MASK) + (((c2 & BLUE_MASK) * f) >> 8), BLUE_MASK);
     };
     subtract = function(c1, c2) {
       var f;
+
       f = (c2 & ALPHA_MASK) >>> 24;
       return min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 | max((c1 & RED_MASK) - ((c2 & RED_MASK) >> 8) * f, GREEN_MASK) & RED_MASK | max((c1 & GREEN_MASK) - ((c2 & GREEN_MASK) >> 8) * f, BLUE_MASK) & GREEN_MASK | max((c1 & BLUE_MASK) - (((c2 & BLUE_MASK) * f) >> 8), 0);
     };
     lightest = function(c1, c2) {
       var f;
+
       f = (c2 & ALPHA_MASK) >>> 24;
       return min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 | max(c1 & RED_MASK, ((c2 & RED_MASK) >> 8) * f) & RED_MASK | max(c1 & GREEN_MASK, ((c2 & GREEN_MASK) >> 8) * f) & GREEN_MASK | max(c1 & BLUE_MASK, ((c2 & BLUE_MASK) * f) >> 8);
     };
     darkest = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, f;
+
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = c1 & RED_MASK;
       ag = c1 & GREEN_MASK;
@@ -624,6 +635,7 @@ ColourFunctions = (function() {
     };
     difference = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
+
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -638,6 +650,7 @@ ColourFunctions = (function() {
     };
     exclusion = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
+
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -652,6 +665,7 @@ ColourFunctions = (function() {
     };
     multiply = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
+
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -666,6 +680,7 @@ ColourFunctions = (function() {
     };
     screen = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
+
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -680,6 +695,7 @@ ColourFunctions = (function() {
     };
     hard_light = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
+
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -694,6 +710,7 @@ ColourFunctions = (function() {
     };
     soft_light = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
+
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -708,6 +725,7 @@ ColourFunctions = (function() {
     };
     overlay = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
+
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -722,6 +740,7 @@ ColourFunctions = (function() {
     };
     dodge = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
+
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -751,6 +770,7 @@ ColourFunctions = (function() {
     };
     return burn = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
+
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -781,18 +801,18 @@ ColourFunctions = (function() {
   };
 
   /*
-    Blends two color values together based on the blending mode given as the MODE parameter.
-    The possible modes are described in the reference for the blend() function.
-    
-    @param {color} c1 color: the first color to blend
-    @param {color} c2 color: the second color to blend
-    @param {MODE} MODE Either BLEND, ADD, SUBTRACT, DARKEST, LIGHTEST, DIFFERENCE, EXCLUSION, MULTIPLY,
-    SCREEN, OVERLAY, HARD_LIGHT, SOFT_LIGHT, DODGE, or BURN
-    
-    @returns {float} The blended color.
-    
-    @see blend
-    @see color
+  Blends two color values together based on the blending mode given as the MODE parameter.
+  The possible modes are described in the reference for the blend() function.
+  
+  @param {color} c1 color: the first color to blend
+  @param {color} c2 color: the second color to blend
+  @param {MODE} MODE Either BLEND, ADD, SUBTRACT, DARKEST, LIGHTEST, DIFFERENCE, EXCLUSION, MULTIPLY,
+  SCREEN, OVERLAY, HARD_LIGHT, SOFT_LIGHT, DODGE, or BURN
+  
+  @returns {float} The blended color.
+  
+  @see blend
+  @see color
   */
 
 

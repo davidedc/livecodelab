@@ -47,7 +47,6 @@
 var LexerRule, LexerState;
 
 LexerState = (function() {
-
   function LexerState() {}
 
   LexerState.prototype.rules = [];
@@ -58,6 +57,7 @@ LexerState = (function() {
 
   LexerState.prototype.lex = function(input) {
     var nextAction;
+
     nextAction = this.findAndRunActionPairedToLongestAppliableRegex(input);
     while (typeof nextAction === "function") {
       nextAction = nextAction();
@@ -67,6 +67,7 @@ LexerState = (function() {
 
   LexerState.prototype.findAndRunActionPairedToLongestAppliableRegex = function(input) {
     var i, longestMatch, longestMatchedLength, longestMatchedRule, m, r, _i, _ref;
+
     longestMatchedRule = null;
     longestMatch = null;
     longestMatchedLength = -1;
@@ -88,6 +89,7 @@ LexerState = (function() {
 
   LexerState.prototype.returnAFunctionThatAppliesRulesAndRunsActionFor = function(input) {
     var _this = this;
+
     return function() {
       return _this.findAndRunActionPairedToLongestAppliableRegex(input);
     };
@@ -104,7 +106,6 @@ LexerState = (function() {
 
 
 LexerRule = (function() {
-
   function LexerRule(regex, action) {
     this.regex = regex;
     this.action = action;
@@ -116,6 +117,7 @@ LexerRule = (function() {
 
   LexerRule.prototype.matches = function(s) {
     var m;
+
     m = s.match(this.regex);
     if (m) {
       m.shift();

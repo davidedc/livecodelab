@@ -59,9 +59,7 @@
 var LiveCodeLabCore;
 
 LiveCodeLabCore = (function() {
-  "use strict";
-
-  function LiveCodeLabCore(paramsObject) {
+  "use strict";  function LiveCodeLabCore(paramsObject) {
     this.paramsObject = paramsObject;
     this.three = THREE;
     this.timeKeeper = new TimeKeeper();
@@ -114,6 +112,7 @@ LiveCodeLabCore = (function() {
 
   LiveCodeLabCore.prototype.getForeground3DSceneImage = function(backgroundColor) {
     var blendedThreeJsSceneCanvas, ctx, ctxContext, img;
+
     blendedThreeJsSceneCanvas = this.threeJsSystem.blendedThreeJsSceneCanvas;
     img = new Image;
     img.src = blendedThreeJsSceneCanvas.toDataURL();

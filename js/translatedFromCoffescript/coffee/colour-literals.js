@@ -8,12 +8,11 @@
 var ColourLiterals;
 
 ColourLiterals = (function() {
-  "use strict";
-
-  ColourLiterals.prototype.colourNames = [];
+  "use strict";  ColourLiterals.prototype.colourNames = [];
 
   function ColourLiterals() {
     var colorName, colorValue, colourNamesValues;
+
     colourNamesValues = {
       aliceblue: "0xfff0f8ff",
       antiquewhite: "0xfffaebd7",

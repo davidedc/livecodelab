@@ -5,12 +5,11 @@
 var MatrixCommands;
 
 MatrixCommands = (function() {
-  "use strict";
-
-  MatrixCommands.prototype.matrixStack = [];
+  "use strict";  MatrixCommands.prototype.matrixStack = [];
 
   function MatrixCommands(liveCodeLabCore_three, liveCodeLabCoreInstance) {
     var _this = this;
+
     this.liveCodeLabCore_three = liveCodeLabCore_three;
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
     this.worldMatrix = new this.liveCodeLabCore_three.Matrix4();

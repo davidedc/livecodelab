@@ -7,11 +7,10 @@
 var ProgramLoader;
 
 ProgramLoader = (function() {
-  "use strict";
-
-  function ProgramLoader(eventRouter, texteditor, liveCodeLabCoreInstance) {
+  "use strict";  function ProgramLoader(eventRouter, texteditor, liveCodeLabCoreInstance) {
     var userWarnedAboutWebglExamples,
       _this = this;
+
     this.eventRouter = eventRouter;
     this.texteditor = texteditor;
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
@@ -242,6 +241,7 @@ ProgramLoader = (function() {
   ProgramLoader.prototype.loadDemoOrTutorial = function(demoName) {
     var blendControls, prependMessage, userWarnedAboutWebglExamples,
       _this = this;
+
     if ((!Detector.webgl || this.liveCodeLabCoreInstance.threeJsSystem.forceCanvasRenderer) && !userWarnedAboutWebglExamples && demoName.indexOf("webgl") === 0) {
       userWarnedAboutWebglExamples = true;
       $("#exampleNeedsWebgl").modal();
@@ -275,6 +275,7 @@ ProgramLoader = (function() {
   ProgramLoader.prototype.loadAppropriateDemoOrTutorialBasedOnHash = function(hash) {
     var matched,
       _this = this;
+
     matched = hash.match(/bookmark=(.*)/);
     if (matched) {
       return this.loadDemoOrTutorial(matched[1]);

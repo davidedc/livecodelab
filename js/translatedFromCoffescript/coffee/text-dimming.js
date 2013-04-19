@@ -6,9 +6,7 @@
 var EditorDimmer;
 
 EditorDimmer = (function() {
-  "use strict";
-
-  EditorDimmer.prototype.cursorActivity = true;
+  "use strict";  EditorDimmer.prototype.cursorActivity = true;
 
   EditorDimmer.prototype.dimIntervalID = void 0;
 
@@ -47,6 +45,7 @@ EditorDimmer = (function() {
 
   EditorDimmer.prototype.toggleDimCode = function(dimmingActive) {
     var _this = this;
+
     if (dimmingActive === undefined) {
       this.dimCodeOn = !this.dimCodeOn;
     } else {

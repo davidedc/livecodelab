@@ -42,9 +42,7 @@
 var AnimationLoop, lastTime, vendors, x;
 
 AnimationLoop = (function() {
-  "use strict";
-
-  AnimationLoop.prototype.loopInterval = null;
+  "use strict";  AnimationLoop.prototype.loopInterval = null;
 
   AnimationLoop.prototype.wantedFramesPerSecond = null;
 
@@ -64,6 +62,7 @@ AnimationLoop = (function() {
   AnimationLoop.prototype.scheduleNextFrame = function() {
     var loopInterval,
       _this = this;
+
     if (this.forceUseOfTimeoutForScheduling) {
       if (this.wantedFramesPerSecond === this.AS_HIGH_FPS_AS_POSSIBLE) {
         return setTimeout((function() {
@@ -92,7 +91,8 @@ AnimationLoop = (function() {
   };
 
   AnimationLoop.prototype.animate = function() {
-    var drawFunctionRunner;
+    var drawFunctionRunner, e;
+
     this.liveCodeLabCoreInstance.matrixCommands.resetMatrixStack();
     this.liveCodeLabCoreInstance.soundSystem.resetLoops();
     if (window.frame === 0) {
@@ -111,7 +111,8 @@ AnimationLoop = (function() {
       this.scheduleNextFrame();
       try {
         this.liveCodeLabCoreInstance.drawFunctionRunner.runDrawFunction();
-      } catch (e) {
+      } catch (_error) {
+        e = _error;
         this.eventRouter.trigger("runtime-error-thrown", e);
         return;
       }
@@ -153,6 +154,7 @@ while (x < vendors.length && !window.requestAnimationFrame) {
 if (!window.requestAnimationFrame) {
   window.requestAnimationFrame = function(callback, element) {
     var currTime, id, timeToCall;
+
     currTime = new Date().getTime();
     timeToCall = Math.max(0, 16 - (currTime - lastTime));
     id = window.setTimeout(function() {

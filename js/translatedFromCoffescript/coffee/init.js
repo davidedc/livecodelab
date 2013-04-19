@@ -19,15 +19,16 @@ $(document).ready(function() {
 
 isCanvasSupported = function() {
   var elem;
+
   elem = document.createElement("canvas");
   return !!(elem.getContext && elem.getContext("2d"));
 };
 
 startEnvironment = function(paramsObject) {
   "use strict";
-
   var autocoder, bigCursor, colourNames, editor, editorDimmer, eventRouter, liveCodeLabCore, programLoader, stats, ui, urlRouter,
     _this = this;
+
   if (!isCanvasSupported) {
     $("#noCanvasMessage").modal({
       onClose: function() {
@@ -86,6 +87,7 @@ startEnvironment = function(paramsObject) {
   eventRouter.bind("livecodelab-running-stably", ui.showStatsWidget);
   eventRouter.bind("code_changed", function(updatedCodeAsString) {
     var _this = this;
+
     if (updatedCodeAsString !== "") {
       eventRouter.trigger("big-cursor-hide");
     } else {

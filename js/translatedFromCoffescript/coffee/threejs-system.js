@@ -6,14 +6,13 @@
 var ThreeJsSystem;
 
 ThreeJsSystem = (function() {
-  "use strict";
-
-  ThreeJsSystem.isWebGLUsed = false;
+  "use strict";  ThreeJsSystem.isWebGLUsed = false;
 
   ThreeJsSystem.composer = {};
 
   function ThreeJsSystem(Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer, testMode, liveCodeLabCore_three) {
     var currentFrameThreeJsSceneCanvas, effectSaveTarget, fxaaPass, previousFrameThreeJSSceneRenderForBlendingCanvas, renderModel, renderTarget, renderTargetParameters, screenPass;
+
     this.blendedThreeJsSceneCanvas = blendedThreeJsSceneCanvas;
     this.forceCanvasRenderer = forceCanvasRenderer;
     if (!this.blendedThreeJsSceneCanvas) {

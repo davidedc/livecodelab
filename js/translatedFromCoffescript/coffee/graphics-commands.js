@@ -101,9 +101,7 @@
 var GraphicsCommands;
 
 GraphicsCommands = (function() {
-  "use strict";
-
-  GraphicsCommands.prototype.primitiveTypes = {};
+  "use strict";  GraphicsCommands.prototype.primitiveTypes = {};
 
   GraphicsCommands.prototype.minimumBallDetail = 2;
 
@@ -148,6 +146,7 @@ GraphicsCommands = (function() {
   function GraphicsCommands(liveCodeLabCore_three, liveCodeLabCoreInstance) {
     var i, _i, _j, _ref, _ref1,
       _this = this;
+
     this.liveCodeLabCore_three = liveCodeLabCore_three;
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
     window.line = function(a, b, c) {
@@ -209,6 +208,7 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.createObjectIfNeededAndDressWithCorrectMaterial = function(a, b, c, primitiveProperties, strokeTime, colorToBeUsed, alphaToBeUsed, applyDefaultNormalColor) {
     var objectIsNew, objectPool, pooledObjectWithMaterials, primitiveID, theAngle;
+
     objectIsNew = false;
     pooledObjectWithMaterials = void 0;
     theAngle = void 0;
@@ -332,6 +332,7 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.reset = function() {
     var i, _i, _ref, _results;
+
     this.fill(0xFFFFFFFF);
     this.stroke(0xFFFFFFFF);
     this.currentStrokeSize = 1;
@@ -352,6 +353,7 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.line = function(a, b, c) {
     var primitiveProperties, rememberIfThereWasAFill, rememberPreviousStrokeSize;
+
     if (this.liveCodeLabCoreInstance.lightSystem.lightsAreOn) {
       rememberIfThereWasAFill = this.doFill;
       rememberPreviousStrokeSize = this.currentStrokeSize;
@@ -378,6 +380,7 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.rect = function(a, b, c) {
     var primitiveProperties;
+
     primitiveProperties = {
       canFill: true,
       primitiveType: this.primitiveTypes.rect,
@@ -390,6 +393,7 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.box = function(a, b, c) {
     var primitiveProperties;
+
     primitiveProperties = {
       canFill: true,
       primitiveType: this.primitiveTypes.box,
@@ -402,6 +406,7 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.peg = function(a, b, c) {
     var primitiveProperties;
+
     primitiveProperties = {
       canFill: true,
       primitiveType: this.primitiveTypes.peg,
@@ -427,6 +432,7 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.ball = function(a, b, c) {
     var primitiveProperties;
+
     primitiveProperties = {
       canFill: true,
       primitiveType: this.primitiveTypes.ball,
@@ -455,11 +461,11 @@ GraphicsCommands = (function() {
   };
 
   /*
-    The noFill() function disables filling geometry.
-    If both <b>noStroke()</b> and <b>noFill()</b>
-    are called, no shapes will be drawn to the screen.
-    
-    @see #fill()
+  The noFill() function disables filling geometry.
+  If both <b>noStroke()</b> and <b>noFill()</b>
+  are called, no shapes will be drawn to the screen.
+  
+  @see #fill()
   */
 
 
@@ -469,34 +475,34 @@ GraphicsCommands = (function() {
   };
 
   /*
-    The stroke() function sets the color used to draw lines and borders around shapes.
-    This color is either specified in terms of the RGB or HSB color depending on the
-    current <b>colorMode()</b> (the default color space is RGB, with each
-    value in the range from 0 to 255).
-    <br><br>When using hexadecimal notation to specify a color, use "#" or
-    "0x" before the values (e.g. #CCFFAA, 0xFFCCFFAA). The # syntax uses six
-    digits to specify a color (the way colors are specified in HTML and CSS).
-    When using the hexadecimal notation starting with "0x", the hexadecimal
-    value must be specified with eight characters; the first two characters
-    define the alpha component and the remainder the red, green, and blue
-    components.
-    <br><br>The value for the parameter "gray" must be less than or equal
-    to the current maximum value as specified by <b>colorMode()</b>.
-    The default maximum value is 255.
-    
-    @param {int|float} gray    number specifying value between white and black
-    @param {int|float} value1  red or hue value
-    @param {int|float} value2  green or saturation value
-    @param {int|float} value3  blue or brightness value
-    @param {int|float} alpha   opacity of the stroke
-    @param {Color} color       any value of the color datatype
-    @param {int} hex           color value in hex notation (i.e. #FFCC00 or 0xFFFFCC00)
-    
-    @see #fill()
-    @see #noStroke()
-    @see #tint()
-    @see #background()
-    @see #colorMode()
+  The stroke() function sets the color used to draw lines and borders around shapes.
+  This color is either specified in terms of the RGB or HSB color depending on the
+  current <b>colorMode()</b> (the default color space is RGB, with each
+  value in the range from 0 to 255).
+  <br><br>When using hexadecimal notation to specify a color, use "#" or
+  "0x" before the values (e.g. #CCFFAA, 0xFFCCFFAA). The # syntax uses six
+  digits to specify a color (the way colors are specified in HTML and CSS).
+  When using the hexadecimal notation starting with "0x", the hexadecimal
+  value must be specified with eight characters; the first two characters
+  define the alpha component and the remainder the red, green, and blue
+  components.
+  <br><br>The value for the parameter "gray" must be less than or equal
+  to the current maximum value as specified by <b>colorMode()</b>.
+  The default maximum value is 255.
+  
+  @param {int|float} gray    number specifying value between white and black
+  @param {int|float} value1  red or hue value
+  @param {int|float} value2  green or saturation value
+  @param {int|float} value3  blue or brightness value
+  @param {int|float} alpha   opacity of the stroke
+  @param {Color} color       any value of the color datatype
+  @param {int} hex           color value in hex notation (i.e. #FFCC00 or 0xFFFFCC00)
+  
+  @see #fill()
+  @see #noStroke()
+  @see #tint()
+  @see #background()
+  @see #colorMode()
   */
 
 
@@ -518,11 +524,11 @@ GraphicsCommands = (function() {
   };
 
   /*
-    The noStroke() function disables drawing the stroke (outline).
-    If both <b>noStroke()</b> and <b>noFill()</b> are called, no shapes
-    will be drawn to the screen.
-    
-    @see #stroke()
+  The noStroke() function disables drawing the stroke (outline).
+  If both <b>noStroke()</b> and <b>noFill()</b> are called, no shapes
+  will be drawn to the screen.
+  
+  @see #stroke()
   */
 
 

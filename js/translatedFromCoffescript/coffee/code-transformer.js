@@ -10,11 +10,11 @@
 var CodeTransformer;
 
 CodeTransformer = (function() {
-
   CodeTransformer.prototype.currentCodeString = null;
 
   function CodeTransformer(eventRouter, CoffeeCompiler, liveCodeLabCoreInstance) {
     var listOfPossibleFunctions;
+
     this.eventRouter = eventRouter;
     this.CoffeeCompiler = CoffeeCompiler;
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
@@ -22,31 +22,32 @@ CodeTransformer = (function() {
   }
 
   /*
-    ## Stops ticked doOnce blocks from running
-    ## 
-    ## doOnce statements which have a tick mark next to them
-    ## are not run. This is achieved by replacing the line with
-    ## the "doOnce" with "if false" or "//" depending on whether
-    ## the doOnce is a multiline or an inline one, like so:
-    ## 
-    ##      ✓doOnce ->
-    ##      background 255
-    ##      fill 255,0,0
-    ##      ✓doOnce -> ball
-    ##      becomes:
-    ##      if false ->
-    ##      background 255
-    ##      fill 255,0,0
-    ##      //doOnce -> ball
-    ## 
-    ## @param {string} code    the code to re-write
-    ## 
-    ## @returns {string}
+  ## Stops ticked doOnce blocks from running
+  ## 
+  ## doOnce statements which have a tick mark next to them
+  ## are not run. This is achieved by replacing the line with
+  ## the "doOnce" with "if false" or "//" depending on whether
+  ## the doOnce is a multiline or an inline one, like so:
+  ## 
+  ##      ✓doOnce ->
+  ##      background 255
+  ##      fill 255,0,0
+  ##      ✓doOnce -> ball
+  ##      becomes:
+  ##      if false ->
+  ##      background 255
+  ##      fill 255,0,0
+  ##      //doOnce -> ball
+  ## 
+  ## @param {string} code    the code to re-write
+  ## 
+  ## @returns {string}
   */
 
 
   CodeTransformer.prototype.removeTickedDoOnce = function(code) {
     var newCode;
+
     newCode = void 0;
     newCode = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false");
     newCode = newCode.replace(/\u2713/g, "//");
@@ -55,6 +56,7 @@ CodeTransformer = (function() {
 
   CodeTransformer.prototype.addTracingInstructionsToDoOnceBlocks = function(code) {
     var elaboratedSourceByLine, iteratingOverSource, _i, _ref;
+
     elaboratedSourceByLine = void 0;
     iteratingOverSource = void 0;
     if (code.indexOf("doOnce") > -1) {
@@ -73,6 +75,7 @@ CodeTransformer = (function() {
 
   CodeTransformer.prototype.doesProgramContainStringsOrComments = function(code) {
     var characterBeingExamined, copyOfcode, nextCharacterBeingExamined;
+
     copyOfcode = code;
     characterBeingExamined = void 0;
     nextCharacterBeingExamined = void 0;
@@ -88,11 +91,13 @@ CodeTransformer = (function() {
 
   CodeTransformer.prototype.stripCommentsAndCheckBasicSyntax = function(code) {
     var aposCount, characterBeingExamined, codeWithoutComments, codeWithoutStringsOrComments, curlyBrackCount, programHasBasicError, quoteCount, reasonOfBasicError, roundBrackCount, squareBrackCount;
+
     codeWithoutComments = void 0;
     codeWithoutStringsOrComments = void 0;
     if (this.doesProgramContainStringsOrComments(code)) {
       code = code.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')|(\/\/[^\n]*\n)|(\/\*(?:(?!\*\/)(?:.|\n))*\*\/)/g, function(all, quoted, aposed, singleComment, comment) {
         var cycleToRebuildNewLines, numberOfLinesInMultilineComment, rebuiltNewLines, _i;
+
         numberOfLinesInMultilineComment = void 0;
         rebuiltNewLines = void 0;
         cycleToRebuildNewLines = void 0;
@@ -163,21 +168,22 @@ CodeTransformer = (function() {
   };
 
   /*
-    ## Some of the functions can be used with postfix notation
-    ## 
-    ## e.g.
-    ## 
-    ##      60 bpm
-    ##      red fill
-    ##      yellow stroke
-    ##      black background
-    ## 
-    ## We need to switch this round before coffee script compilation
+  ## Some of the functions can be used with postfix notation
+  ## 
+  ## e.g.
+  ## 
+  ##      60 bpm
+  ##      red fill
+  ##      yellow stroke
+  ##      black background
+  ## 
+  ## We need to switch this round before coffee script compilation
   */
 
 
   CodeTransformer.prototype.adjustPostfixNotations = function(code) {
     var elaboratedSource;
+
     elaboratedSource = void 0;
     elaboratedSource = code.replace(/(\d+)[ ]+bpm(\s)/g, "bpm $1$2");
     elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+fill(\s)/g, "fill $1$2");
@@ -187,7 +193,8 @@ CodeTransformer = (function() {
   };
 
   CodeTransformer.prototype.updateCode = function(code) {
-    var aposCount, characterBeingExamined, compiledOutput, curlyBrackCount, elaboratedSource, elaboratedSourceByLine, errResults, functionFromCompiledCode, iteratingOverSource, nextCharacterBeingExamined, programHasBasicError, quoteCount, reasonOfBasicError, roundBrackCount, squareBrackCount;
+    var aposCount, characterBeingExamined, compiledOutput, curlyBrackCount, e, elaboratedSource, elaboratedSourceByLine, errResults, functionFromCompiledCode, iteratingOverSource, nextCharacterBeingExamined, programHasBasicError, quoteCount, reasonOfBasicError, roundBrackCount, squareBrackCount;
+
     elaboratedSource = void 0;
     errResults = void 0;
     characterBeingExamined = void 0;
@@ -306,7 +313,8 @@ CodeTransformer = (function() {
       compiledOutput = this.CoffeeCompiler.compile(code, {
         bare: "on"
       });
-    } catch (e) {
+    } catch (_error) {
+      e = _error;
       this.eventRouter.trigger("compile-time-error-thrown", e);
       return;
     }
@@ -321,6 +329,7 @@ CodeTransformer = (function() {
 
   CodeTransformer.prototype.addCheckMarksAndUpdateCodeAndNotifyChange = function(CodeTransformer, doOnceOccurrencesLineNumbers) {
     var drawFunction, elaboratedSource, elaboratedSourceByLine, iteratingOverSource, _i, _len;
+
     elaboratedSource = void 0;
     elaboratedSourceByLine = void 0;
     iteratingOverSource = void 0;

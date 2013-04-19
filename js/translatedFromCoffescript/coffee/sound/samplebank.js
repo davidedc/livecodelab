@@ -8,9 +8,7 @@
 var SampleBank;
 
 SampleBank = (function() {
-  "use strict";
-
-  SampleBank.prototype.sounds = [];
+  "use strict";  SampleBank.prototype.sounds = [];
 
   SampleBank.prototype.soundsByName = {};
 
@@ -72,6 +70,7 @@ SampleBank = (function() {
 
   SampleBank.prototype.load = function(name, path) {
     var soundNumber;
+
     soundNumber = this.sounds.length;
     this.sounds.push({
       name: name,
