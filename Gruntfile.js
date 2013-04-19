@@ -434,8 +434,7 @@ module.exports = function (grunt) {
     });
 
     // Compilation task
-    //grunt.registerTask('compile', ['clean:build', 'coffee:app', 'coffee:tests', 'concat', 'closure-compiler', 'copy:fonts', 'recess:compile', 'targethtml:compile']);
-    grunt.registerTask('compile', ['clean:build']);
+    grunt.registerTask('compile', ['clean:build', 'coffee:app', 'coffee:tests', 'concat', 'closure-compiler', 'copy:fonts', 'recess:compile', 'targethtml:compile']);
 
     // Load NPM Task modules
     grunt.loadNpmTasks('grunt-closure-compiler');
