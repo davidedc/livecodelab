@@ -348,10 +348,9 @@ module.exports = function (grunt) {
                 dest: 'dist/built.js'
             }
         },
-        doccoh: {
+        docco: {
             Js: {
-                src: ['js/*.js',
-                    'js/editor/*.js'],
+                src: ['js/*/*.js'],
                 options: {
                     output: 'docs/docco/'
                 }
@@ -361,7 +360,7 @@ module.exports = function (grunt) {
                 options: {
                     output: 'docs/docco/'
                 }
-            },
+            }
         },
         clean: {
             docs: ['docs/docco/', 'docs/codo/', 'docs/coffeedoc/', 'docs/crojsdoc/', 'docs/deleteme/'],
@@ -410,8 +409,8 @@ module.exports = function (grunt) {
         grunt.task.run('copySourcesForCreatingDocs');
         grunt.task.run('replaceBlockComments');
 
-        grunt.task.run('doccoh:Js');
-
+        grunt.task.run('docco:Js');
+        grunt.task.run('docco:Coffee');
         grunt.task.run('coffeedoc');
         grunt.task.run('beautifyCoffeedoc');
 
@@ -419,7 +418,6 @@ module.exports = function (grunt) {
 
         grunt.task.run('crojsdoc');
 
-        grunt.task.run('doccoh:Coffee');
 
         grunt.task.run('removeCopiedSourcesForDocs');
     });
@@ -432,7 +430,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-closure-compiler');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-doccoh');
+    grunt.loadNpmTasks('grunt-docco');
     grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-targethtml');
     grunt.loadNpmTasks('grunt-coffee');
