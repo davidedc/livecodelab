@@ -1,834 +1,815 @@
 <!DOCTYPE html>  <html> <head>   <title>program-loader.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocoder.html">                 autocoder.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               program-loader.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true, nomen: true, regexp: true 
-global $, Detector </p>             </td>             <td class="code">               <div class="highlight"><pre>
-
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>ProgramLoader takes care of managing the URL and editor content when the user navigates
+global $, Detector </p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>ProgramLoader takes care of managing the URL and editor content when the user navigates
 through demos and examples - either by selecting menu entries, or by clicking back/forward
-arrow, or by landing on a URL with a hashtag.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+arrow, or by landing on a URL with a hashtag.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">class</span> <span class="nx">ProgramLoader</span>
+  <span class="s">&quot;use strict&quot;</span>
 
-<span class="class"><span class="keyword">class</span> <span class="title">ProgramLoader</span></span>
-  <span class="string">"use strict"</span>
-
-  constructor: (<span class="property">@eventRouter</span>, <span class="property">@texteditor</span>, <span class="property">@liveCodeLabCoreInstance</span>) -&gt;
-    <span class="property">@lastHash</span> = <span class="string">""</span>
-    userWarnedAboutWebglExamples = <span class="literal">false</span>
-    <span class="property">@programs</span> =
-      demos: {}
-      tutorials: {}
-    setInterval(
-      ()=&gt;
-        <span class="property">@pollHash</span>()
-      , <span class="number">100</span>)
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>    eventRouter.bind <span class="string">"url-hash-changed"</span>, ((hash) =&gt;
-      <span class="property">@loadAppropriateDemoOrTutorialBasedOnHash</span> hash
-    ), @
+  <span class="nv">constructor: </span><span class="nf">(@eventRouter, @texteditor, @liveCodeLabCoreInstance) -&gt;</span>
+    <span class="vi">@lastHash = </span><span class="s">&quot;&quot;</span>
+    <span class="nv">userWarnedAboutWebglExamples = </span><span class="kc">false</span>
+    <span class="vi">@programs =</span>
+      <span class="nv">demos: </span><span class="p">{}</span>
+      <span class="nv">tutorials: </span><span class="p">{}</span>
+    <span class="nx">setInterval</span><span class="p">(</span>
+      <span class="p">()</span><span class="o">=&gt;</span>
+        <span class="nx">@pollHash</span><span class="p">()</span>
+      <span class="p">,</span> <span class="mi">100</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Setup Event Listeners</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">eventRouter</span><span class="p">.</span><span class="nx">bind</span> <span class="s">&quot;url-hash-changed&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nf">(hash) =&gt;</span>
+      <span class="nx">@loadAppropriateDemoOrTutorialBasedOnHash</span> <span class="nx">hash</span>
+    <span class="p">),</span> <span class="nx">@</span>
     
-    <span class="property">@programs</span>.demos.roseDemo =
-      submenu: <span class="string">"Basic"</span>
-      title: <span class="string">"Rose"</span>
-      code: <span class="string">"""
-		        // 'B rose' by Guy John (@rumblesan)
-		        // Mozilla Festival 2012
-		        // adapted from 'A rose' by Lib4tech
-		        
-		        doOnce -&gt; frame = 0
-		        background red
-		        scale 1.5
-		        animationStyle paintOver
-		        rotate frame/100
-		        fill 255-((frame/2)%255),0,0
-		        stroke 255-((frame/2)%255),0,0
-		        scale 1-((frame/2)%255) / 255
-		        box
-		        """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.roseDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Basic&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;Rose&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // &#39;B rose&#39; by Guy John (@rumblesan)</span>
+<span class="s">            // Mozilla Festival 2012</span>
+<span class="s">            // adapted from &#39;A rose&#39; by Lib4tech</span>
+<span class="s">            </span>
+<span class="s">            doOnce -&gt; frame = 0</span>
+<span class="s">            background red</span>
+<span class="s">            scale 1.5</span>
+<span class="s">            animationStyle paintOver</span>
+<span class="s">            rotate frame/100</span>
+<span class="s">            fill 255-((frame/2)%255),0,0</span>
+<span class="s">            stroke 255-((frame/2)%255),0,0</span>
+<span class="s">            scale 1-((frame/2)%255) / 255</span>
+<span class="s">            box</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
     
-    <span class="property">@programs</span>.demos.cheeseAndOlivesDemo =
-      submenu: <span class="string">"Basic"</span>
-      title: <span class="string">"Cheese and olives"</span>
-      code: <span class="string">"""
-            // 'Cheese and olives' by
-            // Davina Tirvengadum
-            // Mozilla festival 2012
-            
-            background white
-            scale .3
-            move 0,-1
-            fill yellow
-            stroke black
-            rotate
-            strokeSize 3
-            line 4
-            box
-            
-            rotate 2,3
-            move 0,3
-            scale .3
-            fill black
-            stroke black
-            ball
-            
-            rotate 3
-            move 5
-            scale 1
-            fill green
-            stroke green
-            ball
-            
-            rotate 1
-            move -3
-            scale 1
-            fill yellow
-            stroke yellow
-            ball
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.cheeseAndOlivesDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Basic&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;Cheese and olives&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // &#39;Cheese and olives&#39; by</span>
+<span class="s">            // Davina Tirvengadum</span>
+<span class="s">            // Mozilla festival 2012</span>
+<span class="s">            </span>
+<span class="s">            background white</span>
+<span class="s">            scale .3</span>
+<span class="s">            move 0,-1</span>
+<span class="s">            fill yellow</span>
+<span class="s">            stroke black</span>
+<span class="s">            rotate</span>
+<span class="s">            strokeSize 3</span>
+<span class="s">            line 4</span>
+<span class="s">            box</span>
+<span class="s">            </span>
+<span class="s">            rotate 2,3</span>
+<span class="s">            move 0,3</span>
+<span class="s">            scale .3</span>
+<span class="s">            fill black</span>
+<span class="s">            stroke black</span>
+<span class="s">            ball</span>
+<span class="s">            </span>
+<span class="s">            rotate 3</span>
+<span class="s">            move 5</span>
+<span class="s">            scale 1</span>
+<span class="s">            fill green</span>
+<span class="s">            stroke green</span>
+<span class="s">            ball</span>
+<span class="s">            </span>
+<span class="s">            rotate 1</span>
+<span class="s">            move -3</span>
+<span class="s">            scale 1</span>
+<span class="s">            fill yellow</span>
+<span class="s">            stroke yellow</span>
+<span class="s">            ball</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.simpleCubeDemo =
-      submenu: <span class="string">"Basic"</span>
-      title: <span class="string">"Simple cube"</span>
-      code: <span class="string">"""
-            // there you go!
-            // a simple cube!
-            
-            background yellow
-            rotate 0,time/2000,time/2000
-            box
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.simpleCubeDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Basic&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;Simple cube&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // there you go!</span>
+<span class="s">            // a simple cube!</span>
+<span class="s">            </span>
+<span class="s">            background yellow</span>
+<span class="s">            rotate 0,time/2000,time/2000</span>
+<span class="s">            box</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.webgltwocubesDemo =
-      submenu: <span class="string">"WebGL"</span>
-      title: <span class="string">"WebGL: Two cubes"</span>
-      code: <span class="string">"""
-            background 155,255,255
-            2 times -&gt;
-            ▶rotate 0, 1, time/2000
-            ▶box
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.webgltwocubesDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;WebGL&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;WebGL: Two cubes&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            background 155,255,255</span>
+<span class="s">            2 times -&gt;</span>
+<span class="s">            ▶rotate 0, 1, time/2000</span>
+<span class="s">            ▶box</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.cubesAndSpikes =
-      submenu: <span class="string">"Basic"</span>
-      title: <span class="string">"Cubes and spikes"</span>
-      code: <span class="string">"""
-            simpleGradient fuchsia,color(100,200,200),yellow
-            scale 2.1
-            5 times -&gt;
-            ▶rotate 0,1,time/5000
-            ▶box 0.1,0.1,0.1
-            ▶move 0,0.1,0.1
-            ▶3 times -&gt;
-            ▶▶rotate 0,1,1
-            ▶▶box 0.01,0.01,1
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.cubesAndSpikes =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Basic&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;Cubes and spikes&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            simpleGradient fuchsia,color(100,200,200),yellow</span>
+<span class="s">            scale 2.1</span>
+<span class="s">            5 times -&gt;</span>
+<span class="s">            ▶rotate 0,1,time/5000</span>
+<span class="s">            ▶box 0.1,0.1,0.1</span>
+<span class="s">            ▶move 0,0.1,0.1</span>
+<span class="s">            ▶3 times -&gt;</span>
+<span class="s">            ▶▶rotate 0,1,1</span>
+<span class="s">            ▶▶box 0.01,0.01,1</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.webglturbineDemo =
-      submenu: <span class="string">"WebGL"</span>
-      title: <span class="string">"WebGL: Turbine"</span>
-      code: <span class="string">"""
-            background 155,55,255
-            70 times -&gt;
-            ▶rotate time/100000,1,time/100000
-            ▶box
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.webglturbineDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;WebGL&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;WebGL: Turbine&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            background 155,55,255</span>
+<span class="s">            70 times -&gt;</span>
+<span class="s">            ▶rotate time/100000,1,time/100000</span>
+<span class="s">            ▶box</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.webglzfightartDemo =
-      submenu: <span class="string">"WebGL"</span>
-      title: <span class="string">"WebGL: Z-fight!"</span>
-      code: <span class="string">"""
-            // Explore the artifacts
-            // of your GPU!
-            // Go Z-fighting, go!
-            scale 5
-            rotate
-            fill red
-            box
-            rotate 0.000001
-            fill yellow
-            box
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.webglzfightartDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;WebGL&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;WebGL: Z-fight!&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // Explore the artifacts</span>
+<span class="s">            // of your GPU!</span>
+<span class="s">            // Go Z-fighting, go!</span>
+<span class="s">            scale 5</span>
+<span class="s">            rotate</span>
+<span class="s">            fill red</span>
+<span class="s">            box</span>
+<span class="s">            rotate 0.000001</span>
+<span class="s">            fill yellow</span>
+<span class="s">            box</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.littleSpiralOfCubes =
-      submenu: <span class="string">"Basic"</span>
-      title: <span class="string">"Little spiral"</span>
-      code: <span class="string">"""
-            background orange
-            scale 0.1
-            10 times -&gt;
-            ▶rotate 0,1,time/1000
-            ▶move 1,1,1
-            ▶box
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.littleSpiralOfCubes =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Basic&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;Little spiral&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            background orange</span>
+<span class="s">            scale 0.1</span>
+<span class="s">            10 times -&gt;</span>
+<span class="s">            ▶rotate 0,1,time/1000</span>
+<span class="s">            ▶move 1,1,1</span>
+<span class="s">            ▶box</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.tentacleDemo =
-      submenu: <span class="string">"Basic"</span>
-      title: <span class="string">"Tentacle"</span>
-      code: <span class="string">"""
-            background 155,255,155
-            scale 0.15
-            3 times -&gt;
-            ▶rotate 0,1,1
-            ▶10 times -&gt;
-            ▶▶rotate 0,1,time/1000
-            ▶▶scale 0.9
-            ▶▶move 1,1,1
-            ▶▶box
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.tentacleDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Basic&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;Tentacle&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            background 155,255,155</span>
+<span class="s">            scale 0.15</span>
+<span class="s">            3 times -&gt;</span>
+<span class="s">            ▶rotate 0,1,1</span>
+<span class="s">            ▶10 times -&gt;</span>
+<span class="s">            ▶▶rotate 0,1,time/1000</span>
+<span class="s">            ▶▶scale 0.9</span>
+<span class="s">            ▶▶move 1,1,1</span>
+<span class="s">            ▶▶box</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.lampDemo =
-      submenu: <span class="string">"Basic"</span>
-      title: <span class="string">"Lamp"</span>
-      code: <span class="string">"""
-            animationStyle motionBlur
-            simpleGradient red,yellow,color(255,0,255)
-            //animationStyle paintOver
-            scale 2
-            rotate time/4000, time/4000,  time/4000
-            90 times -&gt;
-            ▶rotate time/200000, time/200000,  time/200000
-            ▶line
-            ▶move 0.5,0,0
-            ▶line
-            ▶move -0.5,0,0
-            ▶line
-            ▶line
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.lampDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Basic&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;Lamp&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            animationStyle motionBlur</span>
+<span class="s">            simpleGradient red,yellow,color(255,0,255)</span>
+<span class="s">            //animationStyle paintOver</span>
+<span class="s">            scale 2</span>
+<span class="s">            rotate time/4000, time/4000,  time/4000</span>
+<span class="s">            90 times -&gt;</span>
+<span class="s">            ▶rotate time/200000, time/200000,  time/200000</span>
+<span class="s">            ▶line</span>
+<span class="s">            ▶move 0.5,0,0</span>
+<span class="s">            ▶line</span>
+<span class="s">            ▶move -0.5,0,0</span>
+<span class="s">            ▶line</span>
+<span class="s">            ▶line</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.trillionfeathersDemo =
-      submenu: <span class="string">"Basic"</span>
-      title: <span class="string">"A trillion feathers"</span>
-      code: <span class="string">"""
-            animationStyle paintOver
-            move 2,0,0
-            scale 2
-            rotate
-            20 times -&gt;
-            ▶rotate
-            ▶move 0.25,0,0
-            ▶line
-            ▶move -0.5,0,0
-            ▶line
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.trillionfeathersDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Basic&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;A trillion feathers&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            animationStyle paintOver</span>
+<span class="s">            move 2,0,0</span>
+<span class="s">            scale 2</span>
+<span class="s">            rotate</span>
+<span class="s">            20 times -&gt;</span>
+<span class="s">            ▶rotate</span>
+<span class="s">            ▶move 0.25,0,0</span>
+<span class="s">            ▶line</span>
+<span class="s">            ▶move -0.5,0,0</span>
+<span class="s">            ▶line</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.monsterblobDemo =
-      submenu: <span class="string">"Basic"</span>
-      title: <span class="string">"Monster blob"</span>
-      code: <span class="string">"""
-            ballDetail 6
-            animationStyle motionBlur
-            rotate time/5000
-            simpleGradient fuchsia,aqua,yellow
-            5 times -&gt;
-            ▶rotate 0,1,time/5000
-            ▶move 0.2,0,0
-            ▶3 times -&gt;
-            ▶▶rotate 1
-            ▶▶ball -1
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.monsterblobDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Basic&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;Monster blob&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            ballDetail 6</span>
+<span class="s">            animationStyle motionBlur</span>
+<span class="s">            rotate time/5000</span>
+<span class="s">            simpleGradient fuchsia,aqua,yellow</span>
+<span class="s">            5 times -&gt;</span>
+<span class="s">            ▶rotate 0,1,time/5000</span>
+<span class="s">            ▶move 0.2,0,0</span>
+<span class="s">            ▶3 times -&gt;</span>
+<span class="s">            ▶▶rotate 1</span>
+<span class="s">            ▶▶ball -1</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.industrialMusicDemo =
-      submenu: <span class="string">"Sound"</span>
-      title: <span class="string">"Sound: Industrial"</span>
-      code: <span class="string">"""
-            bpm 88
-            play 'alienBeep'  ,'zzxz zzzz zzxz zzzz'
-            play 'beepC'  ,'zxzz zzzz xzzx xxxz'
-            play 'beepA'  ,'zzxz zzzz zzxz zzzz'
-            play 'lowFlash'  ,'zzxz zzzz zzzz zzzz'
-            play 'beepB'  ,'xzzx zzzz zxzz zxzz'
-            play 'voltage'  ,'xzxz zxzz xzxx xzxx'
-            play 'tranceKick'  ,'zxzx zzzx xzzz zzxx'
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.industrialMusicDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Sound&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;Sound: Industrial&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            bpm 88</span>
+<span class="s">            play &#39;alienBeep&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            play &#39;beepC&#39;  ,&#39;zxzz zzzz xzzx xxxz&#39;</span>
+<span class="s">            play &#39;beepA&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            play &#39;lowFlash&#39;  ,&#39;zzxz zzzz zzzz zzzz&#39;</span>
+<span class="s">            play &#39;beepB&#39;  ,&#39;xzzx zzzz zxzz zxzz&#39;</span>
+<span class="s">            play &#39;voltage&#39;  ,&#39;xzxz zxzz xzxx xzxx&#39;</span>
+<span class="s">            play &#39;tranceKick&#39;  ,&#39;zxzx zzzx xzzz zzxx&#39;</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.trySoundsDemo =
-      submenu: <span class="string">"Sound"</span>
-      title: <span class="string">"Sound: Try them all"</span>
-      code: <span class="string">"""
-            bpm 88
-            // leave this one as base
-            play 'tranceKick'  ,'zxzx zzzx xzzz zzxx'
-            
-            // uncomment the sounds you want to try
-            //play 'toc'  ,'zzxz zzzz zzxz zzzz'
-            //play 'highHatClosed'  ,'zzxz zzzz zzxz zzzz'
-            //play 'highHatOpen'  ,'zzxz zzzz zzxz zzzz'
-            //play 'toc2'  ,'zzxz zzzz zzxz zzzz'
-            //play 'toc3'  ,'zzxz zzzz zzxz zzzz'
-            //play 'toc4'  ,'zzxz zzzz zzxz zzzz'
-            //play 'snare'  ,'zzxz zzzz zzxz zzzz'
-            //play 'snare2'  ,'zzxz zzzz zzxz zzzz'
-            //play 'china'  ,'zzxz zzzz zzxz zzzz'
-            //play 'crash'  ,'zzxz zzzz zzxz zzzz'
-            //play 'crash2'  ,'zzxz zzzz zzxz zzzz'
-            //play 'crash3'  ,'zzxz zzzz zzxz zzzz'
-            //play 'ride'  ,'zzxz zzzz zzxz zzzz'
-            //play 'glass'  ,'zzxz zzzz zzxz zzzz'
-            //play 'glass1'  ,'zzxz zzzz zzxz zzzz'
-            //play 'glass2'  ,'zzxz zzzz zzxz zzzz'
-            //play 'glass3'  ,'zzxz zzzz zzxz zzzz'
-            //play 'thump'  ,'zzxz zzzz zzxz zzzz'
-            //play 'lowFlash'  ,'zzxz zzzz zzxz zzzz'
-            //play 'lowFlash2'  ,'zzxz zzzz zzxz zzzz'
-            //play 'tranceKick2'  ,'zzxz zzzz zzxz zzzz'
-            //play 'tranceKick'  ,'zzxz zzzz zzxz zzzz'
-            //play 'wosh'  ,'zzxz zzzz zzxz zzzz'
-            //play 'voltage'  ,'zzxz zzzz zzxz zzzz'
-            //play 'beepA'  ,'zzxz zzzz zzxz zzzz'
-            //play 'beepB'  ,'zzxz zzzz zzxz zzzz'
-            //play 'beepC'  ,'zzxz zzzz zzxz zzzz'
-            //play 'beepD'  ,'zzxz zzzz zzxz zzzz'
-            //play 'beep'  ,'zzxz zzzz zzxz zzzz'
-            //play 'hello'  ,'zzxz zzzz zzxz zzzz'
-            //play 'alienBeep'  ,'zzxz zzzz zzxz zzzz'
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.trySoundsDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Sound&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;Sound: Try them all&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            bpm 88</span>
+<span class="s">            // leave this one as base</span>
+<span class="s">            play &#39;tranceKick&#39;  ,&#39;zxzx zzzx xzzz zzxx&#39;</span>
+<span class="s">            </span>
+<span class="s">            // uncomment the sounds you want to try</span>
+<span class="s">            //play &#39;toc&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;highHatClosed&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;highHatOpen&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;toc2&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;toc3&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;toc4&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;snare&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;snare2&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;china&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;crash&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;crash2&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;crash3&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;ride&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;glass&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;glass1&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;glass2&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;glass3&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;thump&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;lowFlash&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;lowFlash2&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;tranceKick2&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;tranceKick&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;wosh&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;voltage&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;beepA&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;beepB&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;beepC&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;beepD&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;beep&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;hello&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            //play &#39;alienBeep&#39;  ,&#39;zzxz zzzz zzxz zzzz&#39;</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.springysquaresDemo =
-      submenu: <span class="string">"Basic"</span>
-      title: <span class="string">"Springy squares"</span>
-      code: <span class="string">"""
-            animationStyle motionBlur
-            simpleGradient fuchsia,color(100,200,200),yellow
-            scale 0.3
-            3 times -&gt;
-            ▶move 0,0,0.5
-            ▶5 times -&gt;
-            ▶▶rotate time/2000
-            ▶▶move 0.7,0,0
-            ▶▶rect
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.springysquaresDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Basic&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;Springy squares&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            animationStyle motionBlur</span>
+<span class="s">            simpleGradient fuchsia,color(100,200,200),yellow</span>
+<span class="s">            scale 0.3</span>
+<span class="s">            3 times -&gt;</span>
+<span class="s">            ▶move 0,0,0.5</span>
+<span class="s">            ▶5 times -&gt;</span>
+<span class="s">            ▶▶rotate time/2000</span>
+<span class="s">            ▶▶move 0.7,0,0</span>
+<span class="s">            ▶▶rect</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.diceDemo =
-      submenu: <span class="string">"Basic"</span>
-      title: <span class="string">"Dice"</span>
-      code: <span class="string">"""
-            animationStyle motionBlur
-            simpleGradient color(255),moccasin,peachpuff
-            stroke 255,100,100,255
-            fill red,155
-            move -0.5,0,0
-            scale 0.3
-            3 times -&gt;
-            ▶move 0,0,0.5
-            ▶1 times -&gt;
-            ▶▶rotate time/1000
-            ▶▶move 2,0,0
-            ▶▶box
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.diceDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Basic&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;Dice&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            animationStyle motionBlur</span>
+<span class="s">            simpleGradient color(255),moccasin,peachpuff</span>
+<span class="s">            stroke 255,100,100,255</span>
+<span class="s">            fill red,155</span>
+<span class="s">            move -0.5,0,0</span>
+<span class="s">            scale 0.3</span>
+<span class="s">            3 times -&gt;</span>
+<span class="s">            ▶move 0,0,0.5</span>
+<span class="s">            ▶1 times -&gt;</span>
+<span class="s">            ▶▶rotate time/1000</span>
+<span class="s">            ▶▶move 2,0,0</span>
+<span class="s">            ▶▶box</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.webglalmostvoronoiDemo =
-      submenu: <span class="string">"WebGL"</span>
-      title: <span class="string">"WebGL: Almost Voronoi"</span>
-      code: <span class="string">"""
-            scale 10
-            2 times -&gt;
-            ▶rotate 0,1,time/10000
-            ▶ball -1
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.webglalmostvoronoiDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;WebGL&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;WebGL: Almost Voronoi&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            scale 10</span>
+<span class="s">            2 times -&gt;</span>
+<span class="s">            ▶rotate 0,1,time/10000</span>
+<span class="s">            ▶ball -1</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
 
-    <span class="property">@programs</span>.demos.webglshardsDemo =
-      submenu: <span class="string">"WebGL"</span>
-      title: <span class="string">"WebGL: Shards"</span>
-      code: <span class="string">"""
-            scale 10
-            fill 0
-            strokeSize 7
-            5 times -&gt;
-            ▶rotate 0,1,time/20000
-            ▶ball 
-            ▶rotate 0,1,1
-            ▶ball -1.01
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.webglshardsDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;WebGL&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;WebGL: Shards&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            scale 10</span>
+<span class="s">            fill 0</span>
+<span class="s">            strokeSize 7</span>
+<span class="s">            5 times -&gt;</span>
+<span class="s">            ▶rotate 0,1,time/20000</span>
+<span class="s">            ▶ball </span>
+<span class="s">            ▶rotate 0,1,1</span>
+<span class="s">            ▶ball -1.01</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.webglredthreadsDemo =
-      submenu: <span class="string">"WebGL"</span>
-      title: <span class="string">"WebGL: Red threads"</span>
-      code: <span class="string">"""
-            scale 10.5
-            background black
-            stroke red
-            noFill
-            strokeSize 7
-            5 times -&gt;
-            ▶rotate time/20000
-            ▶ball
-            ▶rotate 0,1,1
-            ▶ball
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.webglredthreadsDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;WebGL&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;WebGL: Red threads&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            scale 10.5</span>
+<span class="s">            background black</span>
+<span class="s">            stroke red</span>
+<span class="s">            noFill</span>
+<span class="s">            strokeSize 7</span>
+<span class="s">            5 times -&gt;</span>
+<span class="s">            ▶rotate time/20000</span>
+<span class="s">            ▶ball</span>
+<span class="s">            ▶rotate 0,1,1</span>
+<span class="s">            ▶ball</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.demos.webglnuclearOctopusDemo =
-      submenu: <span class="string">"WebGL"</span>
-      title: <span class="string">"WebGL: Nuclear octopus"</span>
-      code: <span class="string">"""
-            simpleGradient black,color(0,0,(time/5)%255),black
-            scale 0.2
-            move 5,0,0
-            animationStyle motionBlur
-            //animationStyle paintOver
-            stroke 255,0,0,120
-            fill time%255,0,0
-            pushMatrix
-            count = 0
-            3 times -&gt;
-            ▶count++
-            ▶pushMatrix
-            ▶rotate count+3+time/1000,2+count + time/1000,4+count
-            ▶120 times -&gt;
-            ▶▶scale 0.9
-            ▶▶move 1,1,0
-            ▶▶rotate time/100
-            ▶▶box
-            ▶popMatrix
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.demos.webglnuclearOctopusDemo =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;WebGL&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;WebGL: Nuclear octopus&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            simpleGradient black,color(0,0,(time/5)%255),black</span>
+<span class="s">            scale 0.2</span>
+<span class="s">            move 5,0,0</span>
+<span class="s">            animationStyle motionBlur</span>
+<span class="s">            //animationStyle paintOver</span>
+<span class="s">            stroke 255,0,0,120</span>
+<span class="s">            fill time%255,0,0</span>
+<span class="s">            pushMatrix</span>
+<span class="s">            count = 0</span>
+<span class="s">            3 times -&gt;</span>
+<span class="s">            ▶count++</span>
+<span class="s">            ▶pushMatrix</span>
+<span class="s">            ▶rotate count+3+time/1000,2+count + time/1000,4+count</span>
+<span class="s">            ▶120 times -&gt;</span>
+<span class="s">            ▶▶scale 0.9</span>
+<span class="s">            ▶▶move 1,1,0</span>
+<span class="s">            ▶▶rotate time/100</span>
+<span class="s">            ▶▶box</span>
+<span class="s">            ▶popMatrix</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.introTutorial =
-      submenu: <span class="string">"Intro"</span>
-      title: <span class="string">"intro"</span>
-      code: <span class="string">"""
-            // Lines beginning with two
-            // slashes (like these) are just comments.
-            
-            // Everything else is run
-            // about 30 to 60 times per second
-            // in order to create an animation.
-            
-            // Click the link below to start the tutorial.
-            
-            // next-tutorial:hello_world
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.introTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Intro&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;intro&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // Lines beginning with two</span>
+<span class="s">            // slashes (like these) are just comments.</span>
+<span class="s">            </span>
+<span class="s">            // Everything else is run</span>
+<span class="s">            // about 30 to 60 times per second</span>
+<span class="s">            // in order to create an animation.</span>
+<span class="s">            </span>
+<span class="s">            // Click the link below to start the tutorial.</span>
+<span class="s">            </span>
+<span class="s">            // next-tutorial:hello_world</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.helloworldTutorial =
-      submenu: <span class="string">"Intro"</span>
-      title: <span class="string">"hello world"</span>
-      code: <span class="string">"""
-            // type these three letters
-            // in one of these empty lines below:
-            // 'b' and 'o' and 'x'
-            
-            
-            
-            // (you should then see a box facing you)
-            // click below for the next tutorial
-            // next-tutorial:some_notes
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.helloworldTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Intro&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;hello world&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // type these three letters</span>
+<span class="s">            // in one of these empty lines below:</span>
+<span class="s">            // &#39;b&#39; and &#39;o&#39; and &#39;x&#39;</span>
+<span class="s">            </span>
+<span class="s">            </span>
+<span class="s">            </span>
+<span class="s">            // (you should then see a box facing you)</span>
+<span class="s">            // click below for the next tutorial</span>
+<span class="s">            // next-tutorial:some_notes</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.somenotesTutorial =
-      submenu: <span class="string">"Intro"</span>
-      title: <span class="string">"some notes"</span>
-      code: <span class="string">"""
-            // If this makes sense to you:
-            // the syntax is similar to Coffeescript
-            // and the commands are almost
-            // like Processing.
-            
-            // If this doesn't make sense to you
-            // don't worry.
-            
-            // next-tutorial:rotate
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.somenotesTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Intro&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;some notes&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // If this makes sense to you:</span>
+<span class="s">            // the syntax is similar to Coffeescript</span>
+<span class="s">            // and the commands are almost</span>
+<span class="s">            // like Processing.</span>
+<span class="s">            </span>
+<span class="s">            // If this doesn&#39;t make sense to you</span>
+<span class="s">            // don&#39;t worry.</span>
+<span class="s">            </span>
+<span class="s">            // next-tutorial:rotate</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.rotateTutorial =
-      submenu: <span class="string">"Intro"</span>
-      title: <span class="string">"a taste of animation"</span>
-      code: <span class="string">"""
-            // now that we have a box
-            // let's rotate it:
-            // type 'rotate 1' in the
-            // line before the 'box'
-            
-            
-            box
-            
-            // click for the next tutorial:
-            // next-tutorial:frame
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.rotateTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Intro&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;a taste of animation&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // now that we have a box</span>
+<span class="s">            // let&#39;s rotate it:</span>
+<span class="s">            // type &#39;rotate 1&#39; in the</span>
+<span class="s">            // line before the &#39;box&#39;</span>
+<span class="s">            </span>
+<span class="s">            </span>
+<span class="s">            box</span>
+<span class="s">            </span>
+<span class="s">            // click for the next tutorial:</span>
+<span class="s">            // next-tutorial:frame</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.frameTutorial =
-      submenu: <span class="string">"Animation"</span>
-      title: <span class="string">"frame"</span>
-      code: <span class="string">"""
-            // make the box spin
-            // by replacing '1' with 'frame'
-            
-            rotate 1
-            box
-            
-            // 'frame' contains a number
-            // always incrementing as
-            // the screen is re-drawn.
-            // (use 'frame/100' to slow it down)
-            // next-tutorial:time
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.frameTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Animation&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;frame&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // make the box spin</span>
+<span class="s">            // by replacing &#39;1&#39; with &#39;frame&#39;</span>
+<span class="s">            </span>
+<span class="s">            rotate 1</span>
+<span class="s">            box</span>
+<span class="s">            </span>
+<span class="s">            // &#39;frame&#39; contains a number</span>
+<span class="s">            // always incrementing as</span>
+<span class="s">            // the screen is re-drawn.</span>
+<span class="s">            // (use &#39;frame/100&#39; to slow it down)</span>
+<span class="s">            // next-tutorial:time</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.timeTutorial =
-      submenu: <span class="string">"Animation"</span>
-      title: <span class="string">"time"</span>
-      code: <span class="string">"""
-            // 'frame/100' has one problem:
-            // faster computers will make
-            // the cube spin too fast.
-            // Replace it with 'time/2000'.
-            
-            rotate frame/100
-            box
-            
-            // 'time' counts the
-            // number of milliseconds since
-            // the program started, so it's
-            // independent of how fast
-            // the computer is at drawing.
-            // next-tutorial:move
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.timeTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Animation&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;time&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // &#39;frame/100&#39; has one problem:</span>
+<span class="s">            // faster computers will make</span>
+<span class="s">            // the cube spin too fast.</span>
+<span class="s">            // Replace it with &#39;time/2000&#39;.</span>
+<span class="s">            </span>
+<span class="s">            rotate frame/100</span>
+<span class="s">            box</span>
+<span class="s">            </span>
+<span class="s">            // &#39;time&#39; counts the</span>
+<span class="s">            // number of milliseconds since</span>
+<span class="s">            // the program started, so it&#39;s</span>
+<span class="s">            // independent of how fast</span>
+<span class="s">            // the computer is at drawing.</span>
+<span class="s">            // next-tutorial:move</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.moveTutorial =
-      submenu: <span class="string">"Placing things"</span>
-      title: <span class="string">"move"</span>
-      code: <span class="string">"""
-            // you can move any object
-            // by using 'move'
-            
-            box
-            move 1,1,0
-            box
-            
-            // try to use a rotate before
-            // the first box to see how the
-            // scene changes.
-            // next-tutorial:scale
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.moveTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Placing things&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;move&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // you can move any object</span>
+<span class="s">            // by using &#39;move&#39;</span>
+<span class="s">            </span>
+<span class="s">            box</span>
+<span class="s">            move 1,1,0</span>
+<span class="s">            box</span>
+<span class="s">            </span>
+<span class="s">            // try to use a rotate before</span>
+<span class="s">            // the first box to see how the</span>
+<span class="s">            // scene changes.</span>
+<span class="s">            // next-tutorial:scale</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.scaleTutorial =
-      submenu: <span class="string">"Placing things"</span>
-      title: <span class="string">"scale"</span>
-      code: <span class="string">"""
-            // you can make an object bigger
-            // or smaller by using 'scale'
-            
-            rotate 3
-            box
-            move 1
-            scale 2
-            box
-            
-            // try to use scale or move before
-            // the first box to see how the
-            // scene changes.
-            // next-tutorial:times
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.scaleTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Placing things&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;scale&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // you can make an object bigger</span>
+<span class="s">            // or smaller by using &#39;scale&#39;</span>
+<span class="s">            </span>
+<span class="s">            rotate 3</span>
+<span class="s">            box</span>
+<span class="s">            move 1</span>
+<span class="s">            scale 2</span>
+<span class="s">            box</span>
+<span class="s">            </span>
+<span class="s">            // try to use scale or move before</span>
+<span class="s">            // the first box to see how the</span>
+<span class="s">            // scene changes.</span>
+<span class="s">            // next-tutorial:times</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.timesTutorial =
-      submenu: <span class="string">"Repeating stuff"</span>
-      title: <span class="string">"times"</span>
-      code: <span class="string">"""
-            // 'times' (not to be confused with
-            // 'time'!) can be used to
-            // repeat operations like so:
-            
-            rotate 1
-            3 times -&gt;
-            ▶move 0.2,0.2,0.2
-            ▶box
-            
-            // note how the tabs indicate
-            // exactly the block of code
-            // to be repeated.
-            // next-tutorial:fill
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.timesTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Repeating stuff&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;times&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // &#39;times&#39; (not to be confused with</span>
+<span class="s">            // &#39;time&#39;!) can be used to</span>
+<span class="s">            // repeat operations like so:</span>
+<span class="s">            </span>
+<span class="s">            rotate 1</span>
+<span class="s">            3 times -&gt;</span>
+<span class="s">            ▶move 0.2,0.2,0.2</span>
+<span class="s">            ▶box</span>
+<span class="s">            </span>
+<span class="s">            // note how the tabs indicate</span>
+<span class="s">            // exactly the block of code</span>
+<span class="s">            // to be repeated.</span>
+<span class="s">            // next-tutorial:fill</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.fillTutorial =
-      submenu: <span class="string">"Graphics"</span>
-      title: <span class="string">"fill"</span>
-      code: <span class="string">"""
-            // 'fill' changes the
-            // color of all the faces:
-            
-            rotate 1
-            fill 255,255,0
-            box
-            
-            // the three numbers indicate 
-            // red green and blue values.
-            // You can also use color names such as 'indigo'
-            // Try replacing the numbers with
-            // 'angleColor'
-            // next-tutorial:stroke
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.fillTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Graphics&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;fill&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // &#39;fill&#39; changes the</span>
+<span class="s">            // color of all the faces:</span>
+<span class="s">            </span>
+<span class="s">            rotate 1</span>
+<span class="s">            fill 255,255,0</span>
+<span class="s">            box</span>
+<span class="s">            </span>
+<span class="s">            // the three numbers indicate </span>
+<span class="s">            // red green and blue values.</span>
+<span class="s">            // You can also use color names such as &#39;indigo&#39;</span>
+<span class="s">            // Try replacing the numbers with</span>
+<span class="s">            // &#39;angleColor&#39;</span>
+<span class="s">            // next-tutorial:stroke</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.strokeTutorial =
-      submenu: <span class="string">"Graphics"</span>
-      title: <span class="string">"stroke"</span>
-      code: <span class="string">"""
-            // 'stroke' changes all the
-            // edges:
-            
-            rotate 1
-            strokeSize 5
-            stroke 255,255,255
-            box
-            
-            // the three numbers are RGB
-            // but you can also use the color names
-            // or the special color 'angleColor'
-            // Also you can use 'strokeSize'
-            // to specify the thickness.
-            // next-tutorial:color_names
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.strokeTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Graphics&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;stroke&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // &#39;stroke&#39; changes all the</span>
+<span class="s">            // edges:</span>
+<span class="s">            </span>
+<span class="s">            rotate 1</span>
+<span class="s">            strokeSize 5</span>
+<span class="s">            stroke 255,255,255</span>
+<span class="s">            box</span>
+<span class="s">            </span>
+<span class="s">            // the three numbers are RGB</span>
+<span class="s">            // but you can also use the color names</span>
+<span class="s">            // or the special color &#39;angleColor&#39;</span>
+<span class="s">            // Also you can use &#39;strokeSize&#39;</span>
+<span class="s">            // to specify the thickness.</span>
+<span class="s">            // next-tutorial:color_names</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.colornamesTutorial =
-      submenu: <span class="string">"Graphics"</span>
-      title: <span class="string">"color by name"</span>
-      code: <span class="string">"""
-            // you can call colors by name
-            // try to un-comment one line:
-            //fill greenyellow
-            //fill indigo
-            //fill lemonchiffon // whaaaat?
-            
-            rotate 1
-            box
-            
-            // more color names here:
-            // http://html-color-codes.info/color-names/
-            // (just use them in lower case)
-            // next-tutorial:lights
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.colornamesTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Graphics&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;color by name&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // you can call colors by name</span>
+<span class="s">            // try to un-comment one line:</span>
+<span class="s">            //fill greenyellow</span>
+<span class="s">            //fill indigo</span>
+<span class="s">            //fill lemonchiffon // whaaaat?</span>
+<span class="s">            </span>
+<span class="s">            rotate 1</span>
+<span class="s">            box</span>
+<span class="s">            </span>
+<span class="s">            // more color names here:</span>
+<span class="s">            // http://html-color-codes.info/color-names/</span>
+<span class="s">            // (just use them in lower case)</span>
+<span class="s">            // next-tutorial:lights</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.lightsTutorial =
-      submenu: <span class="string">"Graphics"</span>
-      title: <span class="string">"lights"</span>
-      code: <span class="string">"""
-            // 'ambientLight' creates an
-            // ambient light so things have
-            // some sort of shading:
-            
-            ambientLight 0,255,255
-            rotate time/1000
-            box
-            
-            // you can turn that light on and 
-            // off while you build the scene
-            // by using 'lights' and 'noLights'
-            // next-tutorial:background
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.lightsTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Graphics&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;lights&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // &#39;ambientLight&#39; creates an</span>
+<span class="s">            // ambient light so things have</span>
+<span class="s">            // some sort of shading:</span>
+<span class="s">            </span>
+<span class="s">            ambientLight 0,255,255</span>
+<span class="s">            rotate time/1000</span>
+<span class="s">            box</span>
+<span class="s">            </span>
+<span class="s">            // you can turn that light on and </span>
+<span class="s">            // off while you build the scene</span>
+<span class="s">            // by using &#39;lights&#39; and &#39;noLights&#39;</span>
+<span class="s">            // next-tutorial:background</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.backgroundTutorial =
-      submenu: <span class="string">"Graphics"</span>
-      title: <span class="string">"background"</span>
-      code: <span class="string">"""
-            // 'background' creates a
-            // solid background:
-            
-            background 0,0,255
-            rotate time/1000
-            box
-            
-            // next-tutorial:gradient
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.backgroundTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Graphics&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;background&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // &#39;background&#39; creates a</span>
+<span class="s">            // solid background:</span>
+<span class="s">            </span>
+<span class="s">            background 0,0,255</span>
+<span class="s">            rotate time/1000</span>
+<span class="s">            box</span>
+<span class="s">            </span>
+<span class="s">            // next-tutorial:gradient</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.gradientTutorial =
-      submenu: <span class="string">"Graphics"</span>
-      title: <span class="string">"gradient"</span>
-      code: <span class="string">"""
-            // even nicer, you can paint a
-            // background gradient:
-            
-            simpleGradient color(190,10,10),color(30,90,100),color(0)
-            rotate time/1000
-            box
-            
-            // next-tutorial:line
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.gradientTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Graphics&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;gradient&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // even nicer, you can paint a</span>
+<span class="s">            // background gradient:</span>
+<span class="s">            </span>
+<span class="s">            simpleGradient color(190,10,10),color(30,90,100),color(0)</span>
+<span class="s">            rotate time/1000</span>
+<span class="s">            box</span>
+<span class="s">            </span>
+<span class="s">            // next-tutorial:line</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.lineTutorial =
-      submenu: <span class="string">"Graphics"</span>
-      title: <span class="string">"line"</span>
-      code: <span class="string">"""
-            // draw lines like this:
-            
-            20 times -&gt;
-            ▶rotate time/9000
-            ▶line
-            
-            // next-tutorial:ball
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.lineTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Graphics&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;line&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // draw lines like this:</span>
+<span class="s">            </span>
+<span class="s">            20 times -&gt;</span>
+<span class="s">            ▶rotate time/9000</span>
+<span class="s">            ▶line</span>
+<span class="s">            </span>
+<span class="s">            // next-tutorial:ball</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.ballTutorial =
-      submenu: <span class="string">"Graphics"</span>
-      title: <span class="string">"ball"</span>
-      code: <span class="string">"""
-            // draw balls like this:
-            
-            ballDetail 10
-            3 times -&gt;
-            ▶move 0.2,0.2,0.2
-            ▶ball
-            
-            // ('ballDetail' is optional)
-            // next-tutorial:pushpopMatrix
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.ballTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Graphics&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;ball&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // draw balls like this:</span>
+<span class="s">            </span>
+<span class="s">            ballDetail 10</span>
+<span class="s">            3 times -&gt;</span>
+<span class="s">            ▶move 0.2,0.2,0.2</span>
+<span class="s">            ▶ball</span>
+<span class="s">            </span>
+<span class="s">            // (&#39;ballDetail&#39; is optional)</span>
+<span class="s">            // next-tutorial:pushpopMatrix</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.pushpopMatrixTutorial =
-      submenu: <span class="string">"Graphics"</span>
-      title: <span class="string">"push and pop"</span>
-      code: <span class="string">"""
-            // pushMatrix creates a bookmark of
-            // the position, which you can
-            // return to later by using popMatrix.
-            // You can reset using 'resetMatrix'.
-            
-            rotate time/1000
-            pushMatrix // bookmark the position after the rotation
-            line
-            move 0.5,0,0
-            line
-            popMatrix // go back to the bookmarked position
-            move -0.5,0,0
-            line
-            resetMatrix // resets the position
-            line // not affected by initial rotation
-            // next-tutorial:animation_style
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.pushpopMatrixTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Graphics&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;push and pop&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // pushMatrix creates a bookmark of</span>
+<span class="s">            // the position, which you can</span>
+<span class="s">            // return to later by using popMatrix.</span>
+<span class="s">            // You can reset using &#39;resetMatrix&#39;.</span>
+<span class="s">            </span>
+<span class="s">            rotate time/1000</span>
+<span class="s">            pushMatrix // bookmark the position after the rotation</span>
+<span class="s">            line</span>
+<span class="s">            move 0.5,0,0</span>
+<span class="s">            line</span>
+<span class="s">            popMatrix // go back to the bookmarked position</span>
+<span class="s">            move -0.5,0,0</span>
+<span class="s">            line</span>
+<span class="s">            resetMatrix // resets the position</span>
+<span class="s">            line // not affected by initial rotation</span>
+<span class="s">            // next-tutorial:animation_style</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.animationstyleTutorial =
-      submenu: <span class="string">"Graphics"</span>
-      title: <span class="string">"animation style"</span>
-      code: <span class="string">"""
-            // try uncommenting either line
-            // with the animationStyle
-            
-            background 255
-            //animationStyle motionBlur
-            //animationStyle paintOver
-            rotate frame/10
-            box
-            
-            // next-tutorial:do_once
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.animationstyleTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Graphics&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;animation style&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // try uncommenting either line</span>
+<span class="s">            // with the animationStyle</span>
+<span class="s">            </span>
+<span class="s">            background 255</span>
+<span class="s">            //animationStyle motionBlur</span>
+<span class="s">            //animationStyle paintOver</span>
+<span class="s">            rotate frame/10</span>
+<span class="s">            box</span>
+<span class="s">            </span>
+<span class="s">            // next-tutorial:do_once</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.doonceTutorial =
-      submenu: <span class="string">"Controlling the flow"</span>
-      title: <span class="string">"do once"</span>
-      code: <span class="string">"""
-            // delete either check mark below
-            
-            rotate time/1000
-            ✓doOnce -&gt;
-            ▶background 255
-            ▶fill 255,0,0
-            ✓doOnce -&gt; ball
-            box
-            
-            // ...the line or block of code
-            // are ran one time only, after that the
-            // check marks immediately re-appear
-            // P.S. keep hitting the delete button
-            // on that first check mark for seizures.
-            // next-tutorial:conditionals
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.doonceTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Controlling the flow&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;do once&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // delete either check mark below</span>
+<span class="s">            </span>
+<span class="s">            rotate time/1000</span>
+<span class="s">            ✓doOnce -&gt;</span>
+<span class="s">            ▶background 255</span>
+<span class="s">            ▶fill 255,0,0</span>
+<span class="s">            ✓doOnce -&gt; ball</span>
+<span class="s">            box</span>
+<span class="s">            </span>
+<span class="s">            // ...the line or block of code</span>
+<span class="s">            // are ran one time only, after that the</span>
+<span class="s">            // check marks immediately re-appear</span>
+<span class="s">            // P.S. keep hitting the delete button</span>
+<span class="s">            // on that first check mark for seizures.</span>
+<span class="s">            // next-tutorial:conditionals</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.conditionalsTutorial =
-      submenu: <span class="string">"Controlling the flow"</span>
-      title: <span class="string">"conditionals"</span>
-      code: <span class="string">"""
-            // you can draw different things
-            // (or in general do different things)
-            // based on any
-            // test condition you want:
-            
-            rotate
-            if frame%3 == 0
-            ▶box
-            else if frame%3 == 1
-            ▶ball
-            else
-            ▶peg
-            
-            // next-tutorial:autocode
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.conditionalsTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Controlling the flow&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;conditionals&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // you can draw different things</span>
+<span class="s">            // (or in general do different things)</span>
+<span class="s">            // based on any</span>
+<span class="s">            // test condition you want:</span>
+<span class="s">            </span>
+<span class="s">            rotate</span>
+<span class="s">            if frame%3 == 0</span>
+<span class="s">            ▶box</span>
+<span class="s">            else if frame%3 == 1</span>
+<span class="s">            ▶ball</span>
+<span class="s">            else</span>
+<span class="s">            ▶peg</span>
+<span class="s">            </span>
+<span class="s">            // next-tutorial:autocode</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-    <span class="property">@programs</span>.tutorials.autocodeTutorial =
-      submenu: <span class="string">"Others"</span>
-      title: <span class="string">"autocode"</span>
-      code: <span class="string">"""
-            // the Autocode button invents random
-            // variations for you.
-            
-            // You can interrupt the Autocoder at
-            // any time by pressing the button again,
-            // or you can press CTRL-Z
-            // (or CMD-Z on Macs) to undo (or re-do) some of
-            // the steps even WHILE the autocoder is running,
-            // if you see that things got
-            // boring down a particular path of changes.
-            """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
+    <span class="vi">@programs.tutorials.autocodeTutorial =</span>
+      <span class="nv">submenu: </span><span class="s">&quot;Others&quot;</span>
+      <span class="nv">title: </span><span class="s">&quot;autocode&quot;</span>
+      <span class="nv">code: </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            // the Autocode button invents random</span>
+<span class="s">            // variations for you.</span>
+<span class="s">            </span>
+<span class="s">            // You can interrupt the Autocoder at</span>
+<span class="s">            // any time by pressing the button again,</span>
+<span class="s">            // or you can press CTRL-Z</span>
+<span class="s">            // (or CMD-Z on Macs) to undo (or re-do) some of</span>
+<span class="s">            // the steps even WHILE the autocoder is running,</span>
+<span class="s">            // if you see that things got</span>
+<span class="s">            // boring down a particular path of changes.</span>
+<span class="s">            &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span>
   
-  loadDemoOrTutorial: (demoName) -&gt;
-    <span class="keyword">if</span> (<span class="keyword">not</span> Detector.webgl <span class="keyword">or</span> <span class="property">@liveCodeLabCoreInstance</span>.threeJsSystem.forceCanvasRenderer) \
-        <span class="keyword">and</span> <span class="keyword">not</span> userWarnedAboutWebglExamples <span class="keyword">and</span> demoName.indexOf(<span class="string">"webgl"</span>) <span class="keyword">is</span> <span class="number">0</span>
-      userWarnedAboutWebglExamples = <span class="literal">true</span>
-      $(<span class="string">"#exampleNeedsWebgl"</span>).modal()
-      $(<span class="string">"#simplemodal-container"</span>).height <span class="number">200</span>
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>set the demo as a hash state
+  <span class="nv">loadDemoOrTutorial: </span><span class="nf">(demoName) -&gt;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">not</span> <span class="nx">Detector</span><span class="p">.</span><span class="nx">webgl</span> <span class="o">or</span> <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">threeJsSystem</span><span class="p">.</span><span class="nx">forceCanvasRenderer</span><span class="p">)</span> <span class="o">\</span>
+        <span class="o">and</span> <span class="o">not</span> <span class="nx">userWarnedAboutWebglExamples</span> <span class="o">and</span> <span class="nx">demoName</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s">&quot;webgl&quot;</span><span class="p">)</span> <span class="o">is</span> <span class="mi">0</span>
+      <span class="nv">userWarnedAboutWebglExamples = </span><span class="kc">true</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s">&quot;</span><span class="err">#</span><span class="s">exampleNeedsWebgl&quot;</span><span class="p">).</span><span class="nx">modal</span><span class="p">()</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s">&quot;</span><span class="err">#</span><span class="s">simplemodal-container&quot;</span><span class="p">).</span><span class="nx">height</span> <span class="mi">200</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>set the demo as a hash state
 so that ideally people can link directly to
-a specific demo they like.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@eventRouter</span>.trigger <span class="string">"set-url-hash"</span>, <span class="string">"bookmark="</span> + demoName
-    <span class="property">@eventRouter</span>.trigger <span class="string">"big-cursor-hide"</span>
-    <span class="property">@eventRouter</span>.trigger <span class="string">"editor-undim"</span>
-    <span class="property">@liveCodeLabCoreInstance</span>.graphicsCommands.doTheSpinThingy = <span class="literal">false</span>
-    prependMessage = <span class="string">""</span>
-    <span class="keyword">if</span> (<span class="keyword">not</span> Detector.webgl <span class="keyword">or</span> <span class="property">@liveCodeLabCoreInstance</span>.threeJsSystem.forceCanvasRenderer) \
-        <span class="keyword">and</span> demoName.indexOf(<span class="string">"webgl"</span>) <span class="keyword">is</span> <span class="number">0</span>
-      prependMessage =
-      <span class="string">"""
-      // This drawing makes much more sense
-      // in a WebGL-enabled browser.
-      
-      
-      """</span>.replace(<span class="regexp">/\u25B6/g</span>, <span class="string">"\t"</span>)
-
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Note that setting the value of the texteditor (texteditor.setValue below) triggers the
+a specific demo they like.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">@eventRouter</span><span class="p">.</span><span class="nx">trigger</span> <span class="s">&quot;set-url-hash&quot;</span><span class="p">,</span> <span class="s">&quot;bookmark=&quot;</span> <span class="o">+</span> <span class="nx">demoName</span>
+    <span class="nx">@eventRouter</span><span class="p">.</span><span class="nx">trigger</span> <span class="s">&quot;big-cursor-hide&quot;</span>
+    <span class="nx">@eventRouter</span><span class="p">.</span><span class="nx">trigger</span> <span class="s">&quot;editor-undim&quot;</span>
+    <span class="vi">@liveCodeLabCoreInstance.graphicsCommands.doTheSpinThingy = </span><span class="kc">false</span>
+    <span class="nv">prependMessage = </span><span class="s">&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">not</span> <span class="nx">Detector</span><span class="p">.</span><span class="nx">webgl</span> <span class="o">or</span> <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">threeJsSystem</span><span class="p">.</span><span class="nx">forceCanvasRenderer</span><span class="p">)</span> <span class="o">\</span>
+        <span class="o">and</span> <span class="nx">demoName</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s">&quot;webgl&quot;</span><span class="p">)</span> <span class="o">is</span> <span class="mi">0</span>
+      <span class="nv">prependMessage =</span>
+      <span class="s">&quot;&quot;&quot;</span>
+<span class="s">      // This drawing makes much more sense</span>
+<span class="s">      // in a WebGL-enabled browser.</span>
+<span class="s">      </span>
+<span class="s">      </span>
+<span class="s">      &quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\u25B6/g</span><span class="p">,</span> <span class="s">&quot;\t&quot;</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Note that setting the value of the texteditor (texteditor.setValue below) triggers the
 codeMirror onChange callback, which registers the new code - so the next draw()
 will run the new demo code. But before doing that will happen (when the timer
 for the next frame triggers), we'll have cleared the screen with the code
-below.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="keyword">if</span> <span class="property">@programs</span>.demos[demoName] || <span class="property">@programs</span>.tutorials[demoName]
-      <span class="keyword">if</span> <span class="property">@programs</span>.demos[demoName]
-        <span class="property">@texteditor</span>.setValue prependMessage + <span class="property">@programs</span>.demos[demoName].code
-      <span class="keyword">else</span> <span class="keyword">if</span> <span class="property">@programs</span>.tutorials[demoName]
-        <span class="property">@texteditor</span>.setValue prependMessage + <span class="property">@programs</span>.tutorials[demoName].code
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>clear history. Why? Because we want to avoid the follwing:
+below.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="nx">@programs</span><span class="p">.</span><span class="nx">demos</span><span class="p">[</span><span class="nx">demoName</span><span class="p">]</span> <span class="o">||</span> <span class="nx">@programs</span><span class="p">.</span><span class="nx">tutorials</span><span class="p">[</span><span class="nx">demoName</span><span class="p">]</span>
+      <span class="k">if</span> <span class="nx">@programs</span><span class="p">.</span><span class="nx">demos</span><span class="p">[</span><span class="nx">demoName</span><span class="p">]</span>
+        <span class="nx">@texteditor</span><span class="p">.</span><span class="nx">setValue</span> <span class="nx">prependMessage</span> <span class="o">+</span> <span class="nx">@programs</span><span class="p">.</span><span class="nx">demos</span><span class="p">[</span><span class="nx">demoName</span><span class="p">].</span><span class="nx">code</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="nx">@programs</span><span class="p">.</span><span class="nx">tutorials</span><span class="p">[</span><span class="nx">demoName</span><span class="p">]</span>
+        <span class="nx">@texteditor</span><span class="p">.</span><span class="nx">setValue</span> <span class="nx">prependMessage</span> <span class="o">+</span> <span class="nx">@programs</span><span class="p">.</span><span class="nx">tutorials</span><span class="p">[</span><span class="nx">demoName</span><span class="p">].</span><span class="nx">code</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>clear history. Why? Because we want to avoid the follwing:
 user opens an example. User opens another example.
 User performs undo. Result: previous example is open, but the hashtag
 doesn't match the example. It's just confusing - we assume here that is
 the user selects another tutorial and example then she is not expecting
 the undo history to bring her back to previous demos/examples.
 Note that, again, this is quite common in CodeMirror, the clearHistory
-invokation below only works if slightly postponed. Not sure why.</p>             </td>             <td class="code">               <div class="highlight"><pre>      setTimeout((()=&gt;<span class="property">@texteditor</span>.clearHistory()),<span class="number">30</span>)
-
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>bring the cursor to the top</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@texteditor</span>.setCursor <span class="number">0</span>, <span class="number">0</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>we want to avoid that the selected example
+invokation below only works if slightly postponed. Not sure why.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">setTimeout</span><span class="p">((()</span><span class="o">=&gt;</span><span class="nx">@texteditor</span><span class="p">.</span><span class="nx">clearHistory</span><span class="p">()),</span><span class="mi">30</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>bring the cursor to the top</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">@texteditor</span><span class="p">.</span><span class="nx">setCursor</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>we want to avoid that the selected example
 or tutorial when started paints over a screen with a previous drawing
 of the previous code.
 So basically we draw an empty frame.
   a) make sure that animationStyle is "normal" <br />
   b) apply the potentially new animationStyle <br />
-  render the empty frame</p>             </td>             <td class="code">               <div class="highlight"><pre>    blendControls = <span class="property">@liveCodeLabCoreInstance</span>.blendControls
-    blendControls.animationStyle blendControls.animationStyles.normal
-    blendControls.animationStyleUpdateIfChanged()
-    <span class="property">@liveCodeLabCoreInstance</span>.renderer.render <span class="property">@liveCodeLabCoreInstance</span>.graphicsCommands
+  render the empty frame</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">blendControls = </span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">blendControls</span>
+    <span class="nx">blendControls</span><span class="p">.</span><span class="nx">animationStyle</span> <span class="nx">blendControls</span><span class="p">.</span><span class="nx">animationStyles</span><span class="p">.</span><span class="nx">normal</span>
+    <span class="nx">blendControls</span><span class="p">.</span><span class="nx">animationStyleUpdateIfChanged</span><span class="p">()</span>
+    <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">renderer</span><span class="p">.</span><span class="nx">render</span> <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">graphicsCommands</span>
 
-  loadAppropriateDemoOrTutorialBasedOnHash: (hash) -&gt;
-    matched = hash.match(<span class="regexp">/bookmark=(.*)/</span>)
+  <span class="nv">loadAppropriateDemoOrTutorialBasedOnHash: </span><span class="nf">(hash) -&gt;</span>
+    <span class="nv">matched = </span><span class="nx">hash</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/bookmark=(.*)/</span><span class="p">)</span>
     
-    <span class="keyword">if</span> matched
-      <span class="property">@loadDemoOrTutorial</span> matched[<span class="number">1</span>]
-    <span class="keyword">else</span>
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>user in on the root page without any hashes</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@texteditor</span>.setValue <span class="string">""</span>
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>reset undo history</p>             </td>             <td class="code">               <div class="highlight"><pre>      setTimeout((()=&gt;<span class="property">@texteditor</span>.clearHistory()),<span class="number">30</span>)
-  
-</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>this paragraph from http://stackoverflow.com/a/629817
+    <span class="k">if</span> <span class="nx">matched</span>
+      <span class="nx">@loadDemoOrTutorial</span> <span class="nx">matched</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>user in on the root page without any hashes</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">@texteditor</span><span class="p">.</span><span class="nx">setValue</span> <span class="s">&quot;&quot;</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>reset undo history</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">setTimeout</span><span class="p">((()</span><span class="o">=&gt;</span><span class="nx">@texteditor</span><span class="p">.</span><span class="nx">clearHistory</span><span class="p">()),</span><span class="mi">30</span><span class="p">)</span>
+  </pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>this paragraph from http://stackoverflow.com/a/629817
 there are more elegant ways to track back/forward history
 but they are more complex than this. I don't mind having a bit of
-polling for this, not too big of a problem.</p>             </td>             <td class="code">               <div class="highlight"><pre>  pollHash: -&gt;
-    <span class="keyword">if</span> <span class="property">@lastHash</span> <span class="keyword">isnt</span> location.hash
-      <span class="property">@lastHash</span> = location.hash
-      
-</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>hash has changed, so do stuff:</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@loadAppropriateDemoOrTutorialBasedOnHash</span> <span class="property">@lastHash</span>
-
-
+polling for this, not too big of a problem.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">pollHash: </span><span class="nf">-&gt;</span>
+    <span class="k">if</span> <span class="nx">@lastHash</span> <span class="o">isnt</span> <span class="nx">location</span><span class="p">.</span><span class="nx">hash</span>
+      <span class="vi">@lastHash = </span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span>
+      </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>hash has changed, so do stuff:</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">@loadAppropriateDemoOrTutorialBasedOnHash</span> <span class="nx">@lastHash</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

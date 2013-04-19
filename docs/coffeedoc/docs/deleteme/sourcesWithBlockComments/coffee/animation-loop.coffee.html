@@ -35,25 +35,19 @@ every 30 to 60 times (or, indeed, &quot;frames&quot;) per second - which is the 
 <em> the background is repainted if it has changed from the previous frame
 </em> the new 3d scene is painted
 * the stats widget on the top right is updated to show milliseconds taken by each loop
-  frame.
-
-</p>
+  frame.</p>
 <p>Note that the followings are NOT done as part of the animation loop:
 <em> Syntax checking of the program typed by the user (that&#39;s checked only when it changed)
 </em> sound playing. That happens by its own series of timeouts (as defined by the
   optional &quot;bpm&quot; command) separately from the
   animation loop.
-* blinking of the cursor
-
-</p>
+* blinking of the cursor</p>
 <p>About the current Function being run:
 note that this might not be the Function corresponding to the very latest
 content of the editor, because of two reasons: the newest content of the editor
 a) might just be syntactically incorrect or, b) even if it&#39;s syntactically correct
 it might not be &quot;stable&quot; i.e. it might have thrown
-a runtime error (for example used an undefined variable or function).
-
-</p>
+a runtime error (for example used an undefined variable or function).</p>
 <p>Rather, the current
 draw() function is the latest program that is both syntactically correct and
 &quot;stable&quot; (or in the process of being proven stable). Stability of a
@@ -68,8 +62,7 @@ each failing function of the stack would cause the previous one to become the cu
 stable alternative. This would practically guarantee that there is a Function that
 is simple enough in the past that it would contain no runtime errors - unless a
 previous function has so dramatically borked the state of the entire system, but
-that would probably take some malice.
-</p>
+that would probably take some malice.</p>
 
       </div>
       

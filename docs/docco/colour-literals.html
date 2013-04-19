@@ -1,178 +1,171 @@
-<!DOCTYPE html>  <html> <head>   <title>colour-literals.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocoder.html">                 autocoder.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               colour-literals.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true </p>             </td>             <td class="code">               <div class="highlight"><pre>
-
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Defines several color constant literals, e.g. "red" being 0xffff0000,
+<!DOCTYPE html>  <html> <head>   <title>colour-literals.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocoder.html">                 autocoder.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               colour-literals.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true </p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Defines several color constant literals, e.g. "red" being 0xffff0000,
 modified from processing.js with added the missing ones from the CSS standard,
 which includes the spelling "grey" on top of "gray"
-and also "angleColor", used to dress objects with the normal material.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+and also "angleColor", used to dress objects with the normal material.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">class</span> <span class="nx">ColourLiterals</span>
+  <span class="s">&quot;use strict&quot;</span>
 
-<span class="class"><span class="keyword">class</span> <span class="title">ColourLiterals</span></span>
-  <span class="string">"use strict"</span>
+  <span class="nv">colourNames: </span><span class="p">[]</span>
 
-  colourNames: []
-
-  constructor: -&gt;
+  <span class="nv">constructor: </span><span class="nf">-&gt;</span>
     
-    colourNamesValues = 
-      aliceblue: <span class="string">"0xfff0f8ff"</span>
-      antiquewhite: <span class="string">"0xfffaebd7"</span>
-      aqua: <span class="string">"0xff00ffff"</span>
-      aquamarine: <span class="string">"0xff7fffd4"</span>
-      azure: <span class="string">"0xfff0ffff"</span>
-      beige: <span class="string">"0xfff5f5dc"</span>
-      bisque: <span class="string">"0xffffe4c4"</span>
-      black: <span class="string">"0xff000000"</span>
-      blanchedalmond: <span class="string">"0xffffebcd"</span>
-      blue: <span class="string">"0xff0000ff"</span>
-      blueviolet: <span class="string">"0xff8a2be2"</span>
-      brown: <span class="string">"0xffa52a2a"</span>
-      burlywood: <span class="string">"0xffdeb887"</span>
-      cadetblue: <span class="string">"0xff5f9ea0"</span>
-      chartreuse: <span class="string">"0xff7fff00"</span>
-      chocolate: <span class="string">"0xffd2691e"</span>
-      coral: <span class="string">"0xffff7f50"</span>
-      cornflowerblue: <span class="string">"0xff6495ed"</span>
-      cornsilk: <span class="string">"0xfffff8dc"</span>
-      crimson: <span class="string">"0xffdc143c"</span>
-      cyan: <span class="string">"0xff00ffff"</span>
-      darkblue: <span class="string">"0xff00008b"</span>
-      darkcyan: <span class="string">"0xff008b8b"</span>
-      darkgoldenrod: <span class="string">"0xffb8860b"</span>
-      darkgray: <span class="string">"0xffa9a9a9"</span>
-      darkgrey: <span class="string">"0xffa9a9a9"</span>
-      darkgreen: <span class="string">"0xff006400"</span>
-      darkkhaki: <span class="string">"0xffbdb76b"</span>
-      darkmagenta: <span class="string">"0xff8b008b"</span>
-      darkolivegreen: <span class="string">"0xff556b2f"</span>
-      darkorange: <span class="string">"0xffff8c00"</span>
-      darkorchid: <span class="string">"0xff9932cc"</span>
-      darkred: <span class="string">"0xff8b0000"</span>
-      darksalmon: <span class="string">"0xffe9967a"</span>
-      darkseagreen: <span class="string">"0xff8fbc8f"</span>
-      darkslateblue: <span class="string">"0xff483d8b"</span>
-      darkslategray: <span class="string">"0xff2f4f4f"</span>
-      darkslategrey: <span class="string">"0xff2f4f4f"</span>
-      darkturquoise: <span class="string">"0xff00ced1"</span>
-      darkviolet: <span class="string">"0xff9400d3"</span>
-      deeppink: <span class="string">"0xffff1493"</span>
-      deepskyblue: <span class="string">"0xff00bfff"</span>
-      dimgray: <span class="string">"0xff696969"</span>
-      dimgrey: <span class="string">"0xff696969"</span>
-      dodgerblue: <span class="string">"0xff1e90ff"</span>
-      firebrick: <span class="string">"0xffb22222"</span>
-      floralwhite: <span class="string">"0xfffffaf0"</span>
-      forestgreen: <span class="string">"0xff228b22"</span>
-      fuchsia: <span class="string">"0xffff00ff"</span>
-      gainsboro: <span class="string">"0xffdcdcdc"</span>
-      ghostwhite: <span class="string">"0xfff8f8ff"</span>
-      gold: <span class="string">"0xffffd700"</span>
-      goldenrod: <span class="string">"0xffdaa520"</span>
-      gray: <span class="string">"0xff808080"</span>
-      grey: <span class="string">"0xff808080"</span>
-      green: <span class="string">"0xff008000"</span>
-      greenyellow: <span class="string">"0xffadff2f"</span>
-      honeydew: <span class="string">"0xfff0fff0"</span>
-      hotpink: <span class="string">"0xffff69b4"</span>
-      indianred: <span class="string">"0xffcd5c5c"</span>
-      indigo: <span class="string">"0xff4b0082"</span>
-      ivory: <span class="string">"0xfffffff0"</span>
-      khaki: <span class="string">"0xfff0e68c"</span>
-      lavender: <span class="string">"0xffe6e6fa"</span>
-      lavenderblush: <span class="string">"0xfffff0f5"</span>
-      lawngreen: <span class="string">"0xff7cfc00"</span>
-      lemonchiffon: <span class="string">"0xfffffacd"</span>
-      lightblue: <span class="string">"0xffadd8e6"</span>
-      lightcoral: <span class="string">"0xfff08080"</span>
-      lightcyan: <span class="string">"0xffe0ffff"</span>
-      lightgoldenrodyellow: <span class="string">"0xfffafad2"</span>
-      lightgrey: <span class="string">"0xffd3d3d3"</span>
-      lightgray: <span class="string">"0xffd3d3d3"</span>
-      lightgreen: <span class="string">"0xff90ee90"</span>
-      lightpink: <span class="string">"0xffffb6c1"</span>
-      lightsalmon: <span class="string">"0xffffa07a"</span>
-      lightseagreen: <span class="string">"0xff20b2aa"</span>
-      lightskyblue: <span class="string">"0xff87cefa"</span>
-      lightslategray: <span class="string">"0xff778899"</span>
-      lightslategrey: <span class="string">"0xff778899"</span>
-      lightsteelblue: <span class="string">"0xffb0c4de"</span>
-      lightyellow: <span class="string">"0xffffffe0"</span>
-      lime: <span class="string">"0xff00ff00"</span>
-      limegreen: <span class="string">"0xff32cd32"</span>
-      linen: <span class="string">"0xfffaf0e6"</span>
-      magenta: <span class="string">"0xffff00ff"</span>
-      maroon: <span class="string">"0xff800000"</span>
-      mediumaquamarine: <span class="string">"0xff66cdaa"</span>
-      mediumblue: <span class="string">"0xff0000cd"</span>
-      mediumorchid: <span class="string">"0xffba55d3"</span>
-      mediumpurple: <span class="string">"0xff9370d8"</span>
-      mediumseagreen: <span class="string">"0xff3cb371"</span>
-      mediumslateblue: <span class="string">"0xff7b68ee"</span>
-      mediumspringgreen: <span class="string">"0xff00fa9a"</span>
-      mediumturquoise: <span class="string">"0xff48d1cc"</span>
-      mediumvioletred: <span class="string">"0xffc71585"</span>
-      midnightblue: <span class="string">"0xff191970"</span>
-      mintcream: <span class="string">"0xfff5fffa"</span>
-      mistyrose: <span class="string">"0xffffe4e1"</span>
-      moccasin: <span class="string">"0xffffe4b5"</span>
-      navajowhite: <span class="string">"0xffffdead"</span>
-      navy: <span class="string">"0xff000080"</span>
-      oldlace: <span class="string">"0xfffdf5e6"</span>
-      olive: <span class="string">"0xff808000"</span>
-      olivedrab: <span class="string">"0xff6b8e23"</span>
-      orange: <span class="string">"0xffffa500"</span>
-      orangered: <span class="string">"0xffff4500"</span>
-      orchid: <span class="string">"0xffda70d6"</span>
-      palegoldenrod: <span class="string">"0xffeee8aa"</span>
-      palegreen: <span class="string">"0xff98fb98"</span>
-      paleturquoise: <span class="string">"0xffafeeee"</span>
-      palevioletred: <span class="string">"0xffd87093"</span>
-      papayawhip: <span class="string">"0xffffefd5"</span>
-      peachpuff: <span class="string">"0xffffdab9"</span>
-      peru: <span class="string">"0xffcd853f"</span>
-      pink: <span class="string">"0xffffc0cb"</span>
-      plum: <span class="string">"0xffdda0dd"</span>
-      powderblue: <span class="string">"0xffb0e0e6"</span>
-      purple: <span class="string">"0xff800080"</span>
-      red: <span class="string">"0xffff0000"</span>
-      rosybrown: <span class="string">"0xffbc8f8f"</span>
-      royalblue: <span class="string">"0xff4169e1"</span>
-      saddlebrown: <span class="string">"0xff8b4513"</span>
-      salmon: <span class="string">"0xfffa8072"</span>
-      sandybrown: <span class="string">"0xfff4a460"</span>
-      seagreen: <span class="string">"0xff2e8b57"</span>
-      seashell: <span class="string">"0xfffff5ee"</span>
-      sienna: <span class="string">"0xffa0522d"</span>
-      silver: <span class="string">"0xffc0c0c0"</span>
-      skyblue: <span class="string">"0xff87ceeb"</span>
-      slateblue: <span class="string">"0xff6a5acd"</span>
-      slategray: <span class="string">"0xff708090"</span>
-      slategrey: <span class="string">"0xff708090"</span>
-      snow: <span class="string">"0xfffffafa"</span>
-      springgreen: <span class="string">"0xff00ff7f"</span>
-      steelblue: <span class="string">"0xff4682b4"</span>
-      tan: <span class="string">"0xffd2b48c"</span>
-      teal: <span class="string">"0xff008080"</span>
-      thistle: <span class="string">"0xffd8bfd8"</span>
-      tomato: <span class="string">"0xffff6347"</span>
-      turquoise: <span class="string">"0xff40e0d0"</span>
-      violet: <span class="string">"0xffee82ee"</span>
-      wheat: <span class="string">"0xfff5deb3"</span>
-      white: <span class="string">"0xffffffff"</span>
-      whitesmoke: <span class="string">"0xfff5f5f5"</span>
-      yellow: <span class="string">"0xffffff00"</span>
-      yellowgreen: <span class="string">"0xff9acd32"</span>
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>anglecolor is a special
+    <span class="nv">colourNamesValues = </span>
+      <span class="nv">aliceblue: </span><span class="s">&quot;0xfff0f8ff&quot;</span>
+      <span class="nv">antiquewhite: </span><span class="s">&quot;0xfffaebd7&quot;</span>
+      <span class="nv">aqua: </span><span class="s">&quot;0xff00ffff&quot;</span>
+      <span class="nv">aquamarine: </span><span class="s">&quot;0xff7fffd4&quot;</span>
+      <span class="nv">azure: </span><span class="s">&quot;0xfff0ffff&quot;</span>
+      <span class="nv">beige: </span><span class="s">&quot;0xfff5f5dc&quot;</span>
+      <span class="nv">bisque: </span><span class="s">&quot;0xffffe4c4&quot;</span>
+      <span class="nv">black: </span><span class="s">&quot;0xff000000&quot;</span>
+      <span class="nv">blanchedalmond: </span><span class="s">&quot;0xffffebcd&quot;</span>
+      <span class="nv">blue: </span><span class="s">&quot;0xff0000ff&quot;</span>
+      <span class="nv">blueviolet: </span><span class="s">&quot;0xff8a2be2&quot;</span>
+      <span class="nv">brown: </span><span class="s">&quot;0xffa52a2a&quot;</span>
+      <span class="nv">burlywood: </span><span class="s">&quot;0xffdeb887&quot;</span>
+      <span class="nv">cadetblue: </span><span class="s">&quot;0xff5f9ea0&quot;</span>
+      <span class="nv">chartreuse: </span><span class="s">&quot;0xff7fff00&quot;</span>
+      <span class="nv">chocolate: </span><span class="s">&quot;0xffd2691e&quot;</span>
+      <span class="nv">coral: </span><span class="s">&quot;0xffff7f50&quot;</span>
+      <span class="nv">cornflowerblue: </span><span class="s">&quot;0xff6495ed&quot;</span>
+      <span class="nv">cornsilk: </span><span class="s">&quot;0xfffff8dc&quot;</span>
+      <span class="nv">crimson: </span><span class="s">&quot;0xffdc143c&quot;</span>
+      <span class="nv">cyan: </span><span class="s">&quot;0xff00ffff&quot;</span>
+      <span class="nv">darkblue: </span><span class="s">&quot;0xff00008b&quot;</span>
+      <span class="nv">darkcyan: </span><span class="s">&quot;0xff008b8b&quot;</span>
+      <span class="nv">darkgoldenrod: </span><span class="s">&quot;0xffb8860b&quot;</span>
+      <span class="nv">darkgray: </span><span class="s">&quot;0xffa9a9a9&quot;</span>
+      <span class="nv">darkgrey: </span><span class="s">&quot;0xffa9a9a9&quot;</span>
+      <span class="nv">darkgreen: </span><span class="s">&quot;0xff006400&quot;</span>
+      <span class="nv">darkkhaki: </span><span class="s">&quot;0xffbdb76b&quot;</span>
+      <span class="nv">darkmagenta: </span><span class="s">&quot;0xff8b008b&quot;</span>
+      <span class="nv">darkolivegreen: </span><span class="s">&quot;0xff556b2f&quot;</span>
+      <span class="nv">darkorange: </span><span class="s">&quot;0xffff8c00&quot;</span>
+      <span class="nv">darkorchid: </span><span class="s">&quot;0xff9932cc&quot;</span>
+      <span class="nv">darkred: </span><span class="s">&quot;0xff8b0000&quot;</span>
+      <span class="nv">darksalmon: </span><span class="s">&quot;0xffe9967a&quot;</span>
+      <span class="nv">darkseagreen: </span><span class="s">&quot;0xff8fbc8f&quot;</span>
+      <span class="nv">darkslateblue: </span><span class="s">&quot;0xff483d8b&quot;</span>
+      <span class="nv">darkslategray: </span><span class="s">&quot;0xff2f4f4f&quot;</span>
+      <span class="nv">darkslategrey: </span><span class="s">&quot;0xff2f4f4f&quot;</span>
+      <span class="nv">darkturquoise: </span><span class="s">&quot;0xff00ced1&quot;</span>
+      <span class="nv">darkviolet: </span><span class="s">&quot;0xff9400d3&quot;</span>
+      <span class="nv">deeppink: </span><span class="s">&quot;0xffff1493&quot;</span>
+      <span class="nv">deepskyblue: </span><span class="s">&quot;0xff00bfff&quot;</span>
+      <span class="nv">dimgray: </span><span class="s">&quot;0xff696969&quot;</span>
+      <span class="nv">dimgrey: </span><span class="s">&quot;0xff696969&quot;</span>
+      <span class="nv">dodgerblue: </span><span class="s">&quot;0xff1e90ff&quot;</span>
+      <span class="nv">firebrick: </span><span class="s">&quot;0xffb22222&quot;</span>
+      <span class="nv">floralwhite: </span><span class="s">&quot;0xfffffaf0&quot;</span>
+      <span class="nv">forestgreen: </span><span class="s">&quot;0xff228b22&quot;</span>
+      <span class="nv">fuchsia: </span><span class="s">&quot;0xffff00ff&quot;</span>
+      <span class="nv">gainsboro: </span><span class="s">&quot;0xffdcdcdc&quot;</span>
+      <span class="nv">ghostwhite: </span><span class="s">&quot;0xfff8f8ff&quot;</span>
+      <span class="nv">gold: </span><span class="s">&quot;0xffffd700&quot;</span>
+      <span class="nv">goldenrod: </span><span class="s">&quot;0xffdaa520&quot;</span>
+      <span class="nv">gray: </span><span class="s">&quot;0xff808080&quot;</span>
+      <span class="nv">grey: </span><span class="s">&quot;0xff808080&quot;</span>
+      <span class="nv">green: </span><span class="s">&quot;0xff008000&quot;</span>
+      <span class="nv">greenyellow: </span><span class="s">&quot;0xffadff2f&quot;</span>
+      <span class="nv">honeydew: </span><span class="s">&quot;0xfff0fff0&quot;</span>
+      <span class="nv">hotpink: </span><span class="s">&quot;0xffff69b4&quot;</span>
+      <span class="nv">indianred: </span><span class="s">&quot;0xffcd5c5c&quot;</span>
+      <span class="nv">indigo: </span><span class="s">&quot;0xff4b0082&quot;</span>
+      <span class="nv">ivory: </span><span class="s">&quot;0xfffffff0&quot;</span>
+      <span class="nv">khaki: </span><span class="s">&quot;0xfff0e68c&quot;</span>
+      <span class="nv">lavender: </span><span class="s">&quot;0xffe6e6fa&quot;</span>
+      <span class="nv">lavenderblush: </span><span class="s">&quot;0xfffff0f5&quot;</span>
+      <span class="nv">lawngreen: </span><span class="s">&quot;0xff7cfc00&quot;</span>
+      <span class="nv">lemonchiffon: </span><span class="s">&quot;0xfffffacd&quot;</span>
+      <span class="nv">lightblue: </span><span class="s">&quot;0xffadd8e6&quot;</span>
+      <span class="nv">lightcoral: </span><span class="s">&quot;0xfff08080&quot;</span>
+      <span class="nv">lightcyan: </span><span class="s">&quot;0xffe0ffff&quot;</span>
+      <span class="nv">lightgoldenrodyellow: </span><span class="s">&quot;0xfffafad2&quot;</span>
+      <span class="nv">lightgrey: </span><span class="s">&quot;0xffd3d3d3&quot;</span>
+      <span class="nv">lightgray: </span><span class="s">&quot;0xffd3d3d3&quot;</span>
+      <span class="nv">lightgreen: </span><span class="s">&quot;0xff90ee90&quot;</span>
+      <span class="nv">lightpink: </span><span class="s">&quot;0xffffb6c1&quot;</span>
+      <span class="nv">lightsalmon: </span><span class="s">&quot;0xffffa07a&quot;</span>
+      <span class="nv">lightseagreen: </span><span class="s">&quot;0xff20b2aa&quot;</span>
+      <span class="nv">lightskyblue: </span><span class="s">&quot;0xff87cefa&quot;</span>
+      <span class="nv">lightslategray: </span><span class="s">&quot;0xff778899&quot;</span>
+      <span class="nv">lightslategrey: </span><span class="s">&quot;0xff778899&quot;</span>
+      <span class="nv">lightsteelblue: </span><span class="s">&quot;0xffb0c4de&quot;</span>
+      <span class="nv">lightyellow: </span><span class="s">&quot;0xffffffe0&quot;</span>
+      <span class="nv">lime: </span><span class="s">&quot;0xff00ff00&quot;</span>
+      <span class="nv">limegreen: </span><span class="s">&quot;0xff32cd32&quot;</span>
+      <span class="nv">linen: </span><span class="s">&quot;0xfffaf0e6&quot;</span>
+      <span class="nv">magenta: </span><span class="s">&quot;0xffff00ff&quot;</span>
+      <span class="nv">maroon: </span><span class="s">&quot;0xff800000&quot;</span>
+      <span class="nv">mediumaquamarine: </span><span class="s">&quot;0xff66cdaa&quot;</span>
+      <span class="nv">mediumblue: </span><span class="s">&quot;0xff0000cd&quot;</span>
+      <span class="nv">mediumorchid: </span><span class="s">&quot;0xffba55d3&quot;</span>
+      <span class="nv">mediumpurple: </span><span class="s">&quot;0xff9370d8&quot;</span>
+      <span class="nv">mediumseagreen: </span><span class="s">&quot;0xff3cb371&quot;</span>
+      <span class="nv">mediumslateblue: </span><span class="s">&quot;0xff7b68ee&quot;</span>
+      <span class="nv">mediumspringgreen: </span><span class="s">&quot;0xff00fa9a&quot;</span>
+      <span class="nv">mediumturquoise: </span><span class="s">&quot;0xff48d1cc&quot;</span>
+      <span class="nv">mediumvioletred: </span><span class="s">&quot;0xffc71585&quot;</span>
+      <span class="nv">midnightblue: </span><span class="s">&quot;0xff191970&quot;</span>
+      <span class="nv">mintcream: </span><span class="s">&quot;0xfff5fffa&quot;</span>
+      <span class="nv">mistyrose: </span><span class="s">&quot;0xffffe4e1&quot;</span>
+      <span class="nv">moccasin: </span><span class="s">&quot;0xffffe4b5&quot;</span>
+      <span class="nv">navajowhite: </span><span class="s">&quot;0xffffdead&quot;</span>
+      <span class="nv">navy: </span><span class="s">&quot;0xff000080&quot;</span>
+      <span class="nv">oldlace: </span><span class="s">&quot;0xfffdf5e6&quot;</span>
+      <span class="nv">olive: </span><span class="s">&quot;0xff808000&quot;</span>
+      <span class="nv">olivedrab: </span><span class="s">&quot;0xff6b8e23&quot;</span>
+      <span class="nv">orange: </span><span class="s">&quot;0xffffa500&quot;</span>
+      <span class="nv">orangered: </span><span class="s">&quot;0xffff4500&quot;</span>
+      <span class="nv">orchid: </span><span class="s">&quot;0xffda70d6&quot;</span>
+      <span class="nv">palegoldenrod: </span><span class="s">&quot;0xffeee8aa&quot;</span>
+      <span class="nv">palegreen: </span><span class="s">&quot;0xff98fb98&quot;</span>
+      <span class="nv">paleturquoise: </span><span class="s">&quot;0xffafeeee&quot;</span>
+      <span class="nv">palevioletred: </span><span class="s">&quot;0xffd87093&quot;</span>
+      <span class="nv">papayawhip: </span><span class="s">&quot;0xffffefd5&quot;</span>
+      <span class="nv">peachpuff: </span><span class="s">&quot;0xffffdab9&quot;</span>
+      <span class="nv">peru: </span><span class="s">&quot;0xffcd853f&quot;</span>
+      <span class="nv">pink: </span><span class="s">&quot;0xffffc0cb&quot;</span>
+      <span class="nv">plum: </span><span class="s">&quot;0xffdda0dd&quot;</span>
+      <span class="nv">powderblue: </span><span class="s">&quot;0xffb0e0e6&quot;</span>
+      <span class="nv">purple: </span><span class="s">&quot;0xff800080&quot;</span>
+      <span class="nv">red: </span><span class="s">&quot;0xffff0000&quot;</span>
+      <span class="nv">rosybrown: </span><span class="s">&quot;0xffbc8f8f&quot;</span>
+      <span class="nv">royalblue: </span><span class="s">&quot;0xff4169e1&quot;</span>
+      <span class="nv">saddlebrown: </span><span class="s">&quot;0xff8b4513&quot;</span>
+      <span class="nv">salmon: </span><span class="s">&quot;0xfffa8072&quot;</span>
+      <span class="nv">sandybrown: </span><span class="s">&quot;0xfff4a460&quot;</span>
+      <span class="nv">seagreen: </span><span class="s">&quot;0xff2e8b57&quot;</span>
+      <span class="nv">seashell: </span><span class="s">&quot;0xfffff5ee&quot;</span>
+      <span class="nv">sienna: </span><span class="s">&quot;0xffa0522d&quot;</span>
+      <span class="nv">silver: </span><span class="s">&quot;0xffc0c0c0&quot;</span>
+      <span class="nv">skyblue: </span><span class="s">&quot;0xff87ceeb&quot;</span>
+      <span class="nv">slateblue: </span><span class="s">&quot;0xff6a5acd&quot;</span>
+      <span class="nv">slategray: </span><span class="s">&quot;0xff708090&quot;</span>
+      <span class="nv">slategrey: </span><span class="s">&quot;0xff708090&quot;</span>
+      <span class="nv">snow: </span><span class="s">&quot;0xfffffafa&quot;</span>
+      <span class="nv">springgreen: </span><span class="s">&quot;0xff00ff7f&quot;</span>
+      <span class="nv">steelblue: </span><span class="s">&quot;0xff4682b4&quot;</span>
+      <span class="nv">tan: </span><span class="s">&quot;0xffd2b48c&quot;</span>
+      <span class="nv">teal: </span><span class="s">&quot;0xff008080&quot;</span>
+      <span class="nv">thistle: </span><span class="s">&quot;0xffd8bfd8&quot;</span>
+      <span class="nv">tomato: </span><span class="s">&quot;0xffff6347&quot;</span>
+      <span class="nv">turquoise: </span><span class="s">&quot;0xff40e0d0&quot;</span>
+      <span class="nv">violet: </span><span class="s">&quot;0xffee82ee&quot;</span>
+      <span class="nv">wheat: </span><span class="s">&quot;0xfff5deb3&quot;</span>
+      <span class="nv">white: </span><span class="s">&quot;0xffffffff&quot;</span>
+      <span class="nv">whitesmoke: </span><span class="s">&quot;0xfff5f5f5&quot;</span>
+      <span class="nv">yellow: </span><span class="s">&quot;0xffffff00&quot;</span>
+      <span class="nv">yellowgreen: </span><span class="s">&quot;0xff9acd32&quot;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>anglecolor is a special
 color that tells the engine to use the
 normal material.
 It would be tempting to set it to a numeric value such as
 1 unit higher than then any max 32 bit integer, but it's such a special
-case that it's OK to use a non-integer.</p>             </td>             <td class="code">               <div class="highlight"><pre>      angleColor: <span class="string">"angleColor"</span>
+case that it's OK to use a non-integer.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nv">angleColor: </span><span class="s">&quot;angleColor&quot;</span>
 
-    <span class="keyword">for</span> colorName, colorValue <span class="keyword">of</span> colourNamesValues
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Adding colours to the global namespace is avoidable once we have a "scope" object in
-which the code will be executed, then we can just dynamically add fields to that scope</p>             </td>             <td class="code">               <div class="highlight"><pre>      window[<span class="string">"<span class="subst">#{colorName}</span>"</span>] = parseInt(colorValue)
-      <span class="keyword">if</span> isNaN(window[<span class="string">"<span class="subst">#{colorName}</span>"</span>])
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>this is the case of special colors that have string values</p>             </td>             <td class="code">               <div class="highlight"><pre>        window[<span class="string">"<span class="subst">#{colorName}</span>"</span>] = colorValue
+    <span class="k">for</span> <span class="nx">colorName</span><span class="p">,</span> <span class="nx">colorValue</span> <span class="k">of</span> <span class="nx">colourNamesValues</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Adding colours to the global namespace is avoidable once we have a "scope" object in
+which the code will be executed, then we can just dynamically add fields to that scope</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nb">window</span><span class="p">[</span><span class="s">&quot;</span><span class="si">#{</span><span class="nx">colorName</span><span class="si">}</span><span class="s">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">colorValue</span><span class="p">)</span>
+      <span class="k">if</span> <span class="nb">isNaN</span><span class="p">(</span><span class="nb">window</span><span class="p">[</span><span class="s">&quot;</span><span class="si">#{</span><span class="nx">colorName</span><span class="si">}</span><span class="s">&quot;</span><span class="p">])</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>this is the case of special colors that have string values</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nb">window</span><span class="p">[</span><span class="s">&quot;</span><span class="si">#{</span><span class="nx">colorName</span><span class="si">}</span><span class="s">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">colorValue</span>
 
-      <span class="property">@colourNames</span>.push <span class="string">"<span class="subst">#{colorName}</span>"</span>
+      <span class="nx">@colourNames</span><span class="p">.</span><span class="nx">push</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">colorName</span><span class="si">}</span><span class="s">&quot;</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

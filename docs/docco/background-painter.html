@@ -1,7 +1,5 @@
 <!DOCTYPE html>  <html> <head>   <title>background-painter.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocoder.html">                 autocoder.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               background-painter.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true, devel: true 
-global $ </p>             </td>             <td class="code">               <div class="highlight"><pre>
-
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>The user can issue multiple solid fill and gradient fill commands
+global $ </p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>The user can issue multiple solid fill and gradient fill commands
 and they are all painted on top of each other according to the
 order they have been issued in.
 So for example you can have one gradient and then
@@ -34,147 +32,132 @@ and each background/gradient is painted anew.</p>
 <p>Note that we are not trying to be too clever here - for example
 a solid fill effectively invalidates the contents of the previous
 elements of the array, so we could discard those when such
-a command is issued.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+a command is issued.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">class</span> <span class="nx">BackgroundPainter</span>
+  <span class="s">&quot;use strict&quot;</span>
 
-<span class="class"><span class="keyword">class</span> <span class="title">BackgroundPainter</span></span>
-  <span class="string">"use strict"</span>
-
-  constructor: (<span class="property">@canvasForBackground</span>, <span class="property">@liveCodeLabCoreInstance</span>) -&gt;
-    <span class="property">@gradStack</span> = []
-    <span class="property">@defaultGradientColor1</span> = orange
-    <span class="property">@defaultGradientColor2</span> = red
-    <span class="property">@defaultGradientColor3</span> = black
-    <span class="property">@whichDefaultBackground</span> = <span class="literal">undefined</span>
-    <span class="property">@currentGradientStackValue</span> = <span class="string">""</span>
-    <span class="property">@previousGradientStackValue</span> = <span class="number">0</span>
-    <span class="property">@canvasForBackground</span> = document.createElement(<span class="string">"canvas"</span>)  <span class="keyword">unless</span> <span class="property">@canvasForBackground</span>
-    
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>the canvas background for the time being is only going to contain
+  <span class="nv">constructor: </span><span class="nf">(@canvasForBackground, @liveCodeLabCoreInstance) -&gt;</span>
+    <span class="vi">@gradStack = </span><span class="p">[]</span>
+    <span class="vi">@defaultGradientColor1 = </span><span class="nx">orange</span>
+    <span class="vi">@defaultGradientColor2 = </span><span class="nx">red</span>
+    <span class="vi">@defaultGradientColor3 = </span><span class="nx">black</span>
+    <span class="vi">@whichDefaultBackground = </span><span class="kc">undefined</span>
+    <span class="vi">@currentGradientStackValue = </span><span class="s">&quot;&quot;</span>
+    <span class="vi">@previousGradientStackValue = </span><span class="mi">0</span>
+    <span class="vi">@canvasForBackground = </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s">&quot;canvas&quot;</span><span class="p">)</span>  <span class="k">unless</span> <span class="nx">@canvasForBackground</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>the canvas background for the time being is only going to contain
 gradients, so we can get away with creating a really tiny canvas and
 stretch it. The advantage is that the fill operations are a lot faster.
 We should try to use CSS instead of canvas, as in some browsers canvas
 is not accelerated just as well as CSS.
 backGroundFraction specifies what fraction of the window the background canvas
-is going to be.</p>             </td>             <td class="code">               <div class="highlight"><pre>    backGroundFraction = <span class="number">1</span> / <span class="number">15</span>
+is going to be.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">backGroundFraction = </span><span class="mi">1</span> <span class="o">/</span> <span class="mi">15</span>
     
-    <span class="property">@canvasForBackground</span>.width = Math.floor(window.innerWidth * backGroundFraction)
-    <span class="property">@canvasForBackground</span>.height = Math.floor(window.innerHeight * backGroundFraction)
-    <span class="property">@backgroundSceneContext</span> = <span class="property">@canvasForBackground</span>.getContext(<span class="string">"2d"</span>)
-
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.<span class="function"><span class="title">simpleGradient</span></span> = (a,b,c) =&gt; <span class="property">@simpleGradient</span>(a,b,c)
-    
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.<span class="function"><span class="title">background</span></span> = (a,b,c) =&gt; <span class="property">@background</span>(a,b,c)
-    
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>  simpleGradient: (a, b, c, d) -&gt;
-    <span class="property">@currentGradientStackValue</span> =
-      <span class="property">@currentGradientStackValue</span> + <span class="string">" "</span> + a + <span class="string">""</span> + b + <span class="string">""</span> + c + <span class="string">""</span> + d + <span class="string">"null "</span>
-    <span class="property">@gradStack</span>.push
-      gradStacka: <span class="property">@liveCodeLabCoreInstance</span>.colourFunctions.color(a)
-      gradStackb: <span class="property">@liveCodeLabCoreInstance</span>.colourFunctions.color(b)
-      gradStackc: <span class="property">@liveCodeLabCoreInstance</span>.colourFunctions.color(c)
-      gradStackd: <span class="property">@liveCodeLabCoreInstance</span>.colourFunctions.color(d)
-      solid: <span class="literal">null</span>
+    <span class="vi">@canvasForBackground.width = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">innerWidth</span> <span class="o">*</span> <span class="nx">backGroundFraction</span><span class="p">)</span>
+    <span class="vi">@canvasForBackground.height = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">innerHeight</span> <span class="o">*</span> <span class="nx">backGroundFraction</span><span class="p">)</span>
+    <span class="vi">@backgroundSceneContext = </span><span class="nx">@canvasForBackground</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s">&quot;2d&quot;</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nb">window</span><span class="p">.</span><span class="nv">simpleGradient = </span><span class="nf">(a,b,c) =&gt;</span> <span class="nx">@simpleGradient</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">)</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nb">window</span><span class="p">.</span><span class="nv">background = </span><span class="nf">(a,b,c) =&gt;</span> <span class="nx">@background</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">)</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">simpleGradient: </span><span class="nf">(a, b, c, d) -&gt;</span>
+    <span class="vi">@currentGradientStackValue =</span>
+      <span class="nx">@currentGradientStackValue</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="nx">a</span> <span class="o">+</span> <span class="s">&quot;&quot;</span> <span class="o">+</span> <span class="nx">b</span> <span class="o">+</span> <span class="s">&quot;&quot;</span> <span class="o">+</span> <span class="nx">c</span> <span class="o">+</span> <span class="s">&quot;&quot;</span> <span class="o">+</span> <span class="nx">d</span> <span class="o">+</span> <span class="s">&quot;null &quot;</span>
+    <span class="nx">@gradStack</span><span class="p">.</span><span class="nx">push</span>
+      <span class="nv">gradStacka: </span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">colourFunctions</span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span>
+      <span class="nv">gradStackb: </span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">colourFunctions</span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span>
+      <span class="nv">gradStackc: </span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">colourFunctions</span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span>
+      <span class="nv">gradStackd: </span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">colourFunctions</span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span>
+      <span class="nv">solid: </span><span class="kc">null</span>
 
 
-  
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>  background: -&gt;
-    
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>[todo] should the screen be cleared when you invoke
-the background command? (In processing it's not)</p>             </td>             <td class="code">               <div class="highlight"><pre>    a = <span class="property">@liveCodeLabCoreInstance</span>.colourFunctions.color(
-      arguments[<span class="number">0</span>], arguments[<span class="number">1</span>], arguments[<span class="number">2</span>], arguments[<span class="number">3</span>])
-    <span class="property">@currentGradientStackValue</span> =
-      <span class="property">@currentGradientStackValue</span> + <span class="string">" null null null null "</span> + a + <span class="string">" "</span>
-    <span class="property">@gradStack</span>.push
-      gradStacka: `<span class="javascript"><span class="literal">undefined</span></span>`
-      gradStackb: `<span class="javascript"><span class="literal">undefined</span></span>`
-      gradStackc: `<span class="javascript"><span class="literal">undefined</span></span>`
-      gradStackd: `<span class="javascript"><span class="literal">undefined</span></span>`
-      solid: a
+  </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>This needs to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">background: </span><span class="nf">-&gt;</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>[todo] should the screen be cleared when you invoke
+the background command? (In processing it's not)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">a = </span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">colourFunctions</span><span class="p">.</span><span class="nx">color</span><span class="p">(</span>
+      <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+    <span class="vi">@currentGradientStackValue =</span>
+      <span class="nx">@currentGradientStackValue</span> <span class="o">+</span> <span class="s">&quot; null null null null &quot;</span> <span class="o">+</span> <span class="nx">a</span> <span class="o">+</span> <span class="s">&quot; &quot;</span>
+    <span class="nx">@gradStack</span><span class="p">.</span><span class="nx">push</span>
+      <span class="nv">gradStacka: </span><span class="o">`</span><span class="kc">undefined</span><span class="o">`</span>
+      <span class="nv">gradStackb: </span><span class="o">`</span><span class="kc">undefined</span><span class="o">`</span>
+      <span class="nv">gradStackc: </span><span class="o">`</span><span class="kc">undefined</span><span class="o">`</span>
+      <span class="nv">gradStackd: </span><span class="o">`</span><span class="kc">undefined</span><span class="o">`</span>
+      <span class="nv">solid: </span><span class="nx">a</span>
 
 
-  paintARandomBackground: -&gt;
-    <span class="keyword">if</span> <span class="property">@whichDefaultBackground</span> <span class="keyword">is</span> `<span class="javascript"><span class="literal">undefined</span></span>`
-      <span class="property">@whichDefaultBackground</span> = Math.floor(Math.random() * <span class="number">5</span>)
-    <span class="keyword">else</span>
-      <span class="property">@whichDefaultBackground</span> = (<span class="property">@whichDefaultBackground</span> + <span class="number">1</span>) % <span class="number">5</span>
-    <span class="keyword">switch</span> <span class="property">@whichDefaultBackground</span>
-      <span class="keyword">when</span> <span class="number">0</span>
-        <span class="property">@defaultGradientColor1</span> = orange
-        <span class="property">@defaultGradientColor2</span> = red
-        <span class="property">@defaultGradientColor3</span> = black
-        $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css <span class="string">"color"</span>, <span class="string">"white"</span>
-      <span class="keyword">when</span> <span class="number">1</span>
-        <span class="property">@defaultGradientColor1</span> = white
-        <span class="property">@defaultGradientColor2</span> = khaki
-        <span class="property">@defaultGradientColor3</span> = peachpuff
-        $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css <span class="string">"color"</span>, <span class="string">"LightPink"</span>
-      <span class="keyword">when</span> <span class="number">2</span>
-        <span class="property">@defaultGradientColor1</span> = lightsteelblue
-        <span class="property">@defaultGradientColor2</span> = lightcyan
-        <span class="property">@defaultGradientColor3</span> = paleturquoise
-        $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css <span class="string">"color"</span>, <span class="string">"CadetBlue"</span>
-      <span class="keyword">when</span> <span class="number">3</span>
-        <span class="property">@defaultGradientColor1</span> = silver
-        <span class="property">@defaultGradientColor2</span> = lightgrey
-        <span class="property">@defaultGradientColor3</span> = gainsboro
-        $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css <span class="string">"color"</span>, <span class="string">"white"</span>
-      <span class="keyword">when</span> <span class="number">4</span>
-        <span class="property">@defaultGradientColor1</span> = <span class="property">@liveCodeLabCoreInstance</span>.colourFunctions.color(<span class="number">155</span>,<span class="number">255</span>,<span class="number">155</span>)
-        <span class="property">@defaultGradientColor2</span> = <span class="property">@liveCodeLabCoreInstance</span>.colourFunctions.color(<span class="number">155</span>,<span class="number">255</span>,<span class="number">155</span>)
-        <span class="property">@defaultGradientColor3</span> = <span class="property">@liveCodeLabCoreInstance</span>.colourFunctions.color(<span class="number">155</span>,<span class="number">255</span>,<span class="number">155</span>)
-        $(<span class="string">"#fakeStartingBlinkingCursor"</span>).css <span class="string">"color"</span>, <span class="string">"DarkOliveGreen"</span>
-    
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>in theory we should wait for the next frame to repaing the background,
+  <span class="nv">paintARandomBackground: </span><span class="nf">-&gt;</span>
+    <span class="k">if</span> <span class="nx">@whichDefaultBackground</span> <span class="o">is</span> <span class="o">`</span><span class="kc">undefined</span><span class="o">`</span>
+      <span class="vi">@whichDefaultBackground = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="vi">@whichDefaultBackground = </span><span class="p">(</span><span class="nx">@whichDefaultBackground</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">5</span>
+    <span class="k">switch</span> <span class="nx">@whichDefaultBackground</span>
+      <span class="k">when</span> <span class="mi">0</span>
+        <span class="vi">@defaultGradientColor1 = </span><span class="nx">orange</span>
+        <span class="vi">@defaultGradientColor2 = </span><span class="nx">red</span>
+        <span class="vi">@defaultGradientColor3 = </span><span class="nx">black</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s">&quot;</span><span class="err">#</span><span class="s">fakeStartingBlinkingCursor&quot;</span><span class="p">).</span><span class="nx">css</span> <span class="s">&quot;color&quot;</span><span class="p">,</span> <span class="s">&quot;white&quot;</span>
+      <span class="k">when</span> <span class="mi">1</span>
+        <span class="vi">@defaultGradientColor1 = </span><span class="nx">white</span>
+        <span class="vi">@defaultGradientColor2 = </span><span class="nx">khaki</span>
+        <span class="vi">@defaultGradientColor3 = </span><span class="nx">peachpuff</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s">&quot;</span><span class="err">#</span><span class="s">fakeStartingBlinkingCursor&quot;</span><span class="p">).</span><span class="nx">css</span> <span class="s">&quot;color&quot;</span><span class="p">,</span> <span class="s">&quot;LightPink&quot;</span>
+      <span class="k">when</span> <span class="mi">2</span>
+        <span class="vi">@defaultGradientColor1 = </span><span class="nx">lightsteelblue</span>
+        <span class="vi">@defaultGradientColor2 = </span><span class="nx">lightcyan</span>
+        <span class="vi">@defaultGradientColor3 = </span><span class="nx">paleturquoise</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s">&quot;</span><span class="err">#</span><span class="s">fakeStartingBlinkingCursor&quot;</span><span class="p">).</span><span class="nx">css</span> <span class="s">&quot;color&quot;</span><span class="p">,</span> <span class="s">&quot;CadetBlue&quot;</span>
+      <span class="k">when</span> <span class="mi">3</span>
+        <span class="vi">@defaultGradientColor1 = </span><span class="nx">silver</span>
+        <span class="vi">@defaultGradientColor2 = </span><span class="nx">lightgrey</span>
+        <span class="vi">@defaultGradientColor3 = </span><span class="nx">gainsboro</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s">&quot;</span><span class="err">#</span><span class="s">fakeStartingBlinkingCursor&quot;</span><span class="p">).</span><span class="nx">css</span> <span class="s">&quot;color&quot;</span><span class="p">,</span> <span class="s">&quot;white&quot;</span>
+      <span class="k">when</span> <span class="mi">4</span>
+        <span class="vi">@defaultGradientColor1 = </span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">colourFunctions</span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="mi">155</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">155</span><span class="p">)</span>
+        <span class="vi">@defaultGradientColor2 = </span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">colourFunctions</span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="mi">155</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">155</span><span class="p">)</span>
+        <span class="vi">@defaultGradientColor3 = </span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">colourFunctions</span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="mi">155</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">155</span><span class="p">)</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s">&quot;</span><span class="err">#</span><span class="s">fakeStartingBlinkingCursor&quot;</span><span class="p">).</span><span class="nx">css</span> <span class="s">&quot;color&quot;</span><span class="p">,</span> <span class="s">&quot;DarkOliveGreen&quot;</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>in theory we should wait for the next frame to repaing the background,
 but there would be a problem with that: livecodelab goes to sleep when
 the program is empty and the big cursor blinks. And yet, when the
 user clicks the reset button, we want the background to change randomly
 so we make an exceptio to the rule here and we update the background
 right now without waiting for the next frame.
 Note this is not wasted time anyways because the repaint won't happen
-again later if the background hasn't changed.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@resetGradientStack</span>()
-    <span class="property">@simpleGradientUpdateIfChanged</span>()
+again later if the background hasn't changed.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">@resetGradientStack</span><span class="p">()</span>
+    <span class="nx">@simpleGradientUpdateIfChanged</span><span class="p">()</span>
 
-  resetGradientStack: -&gt;
-    <span class="property">@currentGradientStackValue</span> = <span class="string">""</span>
-    
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>we could be more efficient and
+  <span class="nv">resetGradientStack: </span><span class="nf">-&gt;</span>
+    <span class="vi">@currentGradientStackValue = </span><span class="s">&quot;&quot;</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>we could be more efficient and
 reuse the previous stack elements
-but I don't think it matters here</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="property">@gradStack</span> = []
-    <span class="property">@simpleGradient</span> \
-      <span class="property">@defaultGradientColor1</span>, <span class="property">@defaultGradientColor2</span>, <span class="property">@defaultGradientColor3</span>
+but I don't think it matters here</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="vi">@gradStack = </span><span class="p">[]</span>
+    <span class="nx">@simpleGradient</span> <span class="o">\</span>
+      <span class="nx">@defaultGradientColor1</span><span class="p">,</span> <span class="nx">@defaultGradientColor2</span><span class="p">,</span> <span class="nx">@defaultGradientColor3</span>
 
-  simpleGradientUpdateIfChanged: -&gt;
-    diagonal = <span class="literal">undefined</span>
-    radgrad = <span class="literal">undefined</span>
+  <span class="nv">simpleGradientUpdateIfChanged: </span><span class="nf">-&gt;</span>
+    <span class="nv">diagonal = </span><span class="kc">undefined</span>
+    <span class="nv">radgrad = </span><span class="kc">undefined</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">color = </span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">colourFunctions</span><span class="p">.</span><span class="nx">color</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>    color = <span class="property">@liveCodeLabCoreInstance</span>.colourFunctions.color
-
-    <span class="keyword">if</span> <span class="property">@currentGradientStackValue</span> <span class="keyword">isnt</span> <span class="property">@previousGradientStackValue</span>      
-</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>alert('repainting the background');</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="property">@previousGradientStackValue</span> = <span class="property">@currentGradientStackValue</span>
-      diagonal =
-        Math.sqrt(Math.pow(<span class="property">@canvasForBackground</span>.width / <span class="number">2</span>, <span class="number">2</span>) +
-        Math.pow(<span class="property">@canvasForBackground</span>.height / <span class="number">2</span>, <span class="number">2</span>))
+    <span class="k">if</span> <span class="nx">@currentGradientStackValue</span> <span class="o">isnt</span> <span class="nx">@previousGradientStackValue</span>      </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>alert('repainting the background');</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="vi">@previousGradientStackValue = </span><span class="nx">@currentGradientStackValue</span>
+      <span class="nv">diagonal =</span>
+        <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">pow</span><span class="p">(</span><span class="nx">@canvasForBackground</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span>
+        <span class="nb">Math</span><span class="p">.</span><span class="nx">pow</span><span class="p">(</span><span class="nx">@canvasForBackground</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
       
-      <span class="keyword">for</span> scanningGradStack <span class="keyword">in</span> <span class="property">@gradStack</span>
-        <span class="keyword">if</span> scanningGradStack.gradStacka <span class="keyword">isnt</span> `<span class="javascript"><span class="literal">undefined</span></span>`
-          radgrad = <span class="property">@backgroundSceneContext</span>.createLinearGradient(
-            <span class="property">@canvasForBackground</span>.width / <span class="number">2</span>,
-            <span class="number">0</span>,
-            <span class="property">@canvasForBackground</span>.width / <span class="number">2</span>,
-            <span class="property">@canvasForBackground</span>.height)
-          radgrad.addColorStop <span class="number">0</span>, color.toString(scanningGradStack.gradStacka)
-          radgrad.addColorStop <span class="number">0.5</span>,color.toString(scanningGradStack.gradStackb)
-          radgrad.addColorStop <span class="number">1</span>, color.toString(scanningGradStack.gradStackc)
-          <span class="property">@backgroundSceneContext</span>.globalAlpha = <span class="number">1.0</span>
-          <span class="property">@backgroundSceneContext</span>.fillStyle = radgrad
-          <span class="property">@backgroundSceneContext</span>.fillRect \
-            <span class="number">0</span>, <span class="number">0</span>, <span class="property">@canvasForBackground</span>.width, <span class="property">@canvasForBackground</span>.height
-        <span class="keyword">else</span>
-          <span class="property">@backgroundSceneContext</span>.globalAlpha = <span class="number">1.0</span>
-          <span class="property">@backgroundSceneContext</span>.fillStyle =
-            color.toString(scanningGradStack.solid)
-          <span class="property">@backgroundSceneContext</span>.fillRect \
-            <span class="number">0</span>, <span class="number">0</span>, <span class="property">@canvasForBackground</span>.width, <span class="property">@canvasForBackground</span>.height
-
+      <span class="k">for</span> <span class="nx">scanningGradStack</span> <span class="k">in</span> <span class="nx">@gradStack</span>
+        <span class="k">if</span> <span class="nx">scanningGradStack</span><span class="p">.</span><span class="nx">gradStacka</span> <span class="o">isnt</span> <span class="o">`</span><span class="kc">undefined</span><span class="o">`</span>
+          <span class="nv">radgrad = </span><span class="nx">@backgroundSceneContext</span><span class="p">.</span><span class="nx">createLinearGradient</span><span class="p">(</span>
+            <span class="nx">@canvasForBackground</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="nx">@canvasForBackground</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="nx">@canvasForBackground</span><span class="p">.</span><span class="nx">height</span><span class="p">)</span>
+          <span class="nx">radgrad</span><span class="p">.</span><span class="nx">addColorStop</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">color</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="nx">scanningGradStack</span><span class="p">.</span><span class="nx">gradStacka</span><span class="p">)</span>
+          <span class="nx">radgrad</span><span class="p">.</span><span class="nx">addColorStop</span> <span class="mf">0.5</span><span class="p">,</span><span class="nx">color</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="nx">scanningGradStack</span><span class="p">.</span><span class="nx">gradStackb</span><span class="p">)</span>
+          <span class="nx">radgrad</span><span class="p">.</span><span class="nx">addColorStop</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">color</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="nx">scanningGradStack</span><span class="p">.</span><span class="nx">gradStackc</span><span class="p">)</span>
+          <span class="vi">@backgroundSceneContext.globalAlpha = </span><span class="mf">1.0</span>
+          <span class="vi">@backgroundSceneContext.fillStyle = </span><span class="nx">radgrad</span>
+          <span class="nx">@backgroundSceneContext</span><span class="p">.</span><span class="nx">fillRect</span> <span class="o">\</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">@canvasForBackground</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span> <span class="nx">@canvasForBackground</span><span class="p">.</span><span class="nx">height</span>
+        <span class="k">else</span>
+          <span class="vi">@backgroundSceneContext.globalAlpha = </span><span class="mf">1.0</span>
+          <span class="vi">@backgroundSceneContext.fillStyle =</span>
+            <span class="nx">color</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="nx">scanningGradStack</span><span class="p">.</span><span class="nx">solid</span><span class="p">)</span>
+          <span class="nx">@backgroundSceneContext</span><span class="p">.</span><span class="nx">fillRect</span> <span class="o">\</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">@canvasForBackground</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span> <span class="nx">@canvasForBackground</span><span class="p">.</span><span class="nx">height</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

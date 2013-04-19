@@ -1,74 +1,68 @@
 <!DOCTYPE html>  <html> <head>   <title>matrix-commands.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocoder.html">                 autocoder.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               matrix-commands.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true 
-global </p>             </td>             <td class="code">               <div class="highlight"><pre>
+global </p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Takes care of all matrix-related commands.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">class</span> <span class="nx">MatrixCommands</span>
+  <span class="s">&quot;use strict&quot;</span>
 
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Takes care of all matrix-related commands.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+  <span class="nv">matrixStack: </span><span class="p">[]</span>
 
-<span class="class"><span class="keyword">class</span> <span class="title">MatrixCommands</span></span>
-  <span class="string">"use strict"</span>
+  <span class="nv">constructor: </span><span class="nf">(@liveCodeLabCore_three, @liveCodeLabCoreInstance) -&gt;</span>
+    <span class="vi">@worldMatrix = </span><span class="k">new</span> <span class="nx">@liveCodeLabCore_three</span><span class="p">.</span><span class="nx">Matrix4</span><span class="p">()</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>These need to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nb">window</span><span class="p">.</span><span class="nv">pushMatrix  = </span><span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">@pushMatrix</span><span class="p">()</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nv">popMatrix   = </span><span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">@popMatrix</span><span class="p">()</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nv">resetMatrix = </span><span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">@resetMatrix</span><span class="p">()</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nv">move   = </span><span class="nf">(a,b,c) =&gt;</span> <span class="nx">@move</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">)</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nv">rotate = </span><span class="nf">(a,b,c) =&gt;</span> <span class="nx">@rotate</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">)</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nv">scale  = </span><span class="nf">(a,b,c) =&gt;</span> <span class="nx">@scale</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">)</span>
 
-  matrixStack: []
+  <span class="nv">getWorldMatrix: </span><span class="nf">-&gt;</span>
+    <span class="nx">@worldMatrix</span>
 
-  constructor: (<span class="property">@liveCodeLabCore_three</span>, <span class="property">@liveCodeLabCoreInstance</span>) -&gt;
-    <span class="property">@worldMatrix</span> = <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.Matrix4()
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>These need to be global so it can be run by the draw function</p>             </td>             <td class="code">               <div class="highlight"><pre>    window.pushMatrix  = () =&gt; <span class="property">@pushMatrix</span>()
-    window.popMatrix   = () =&gt; <span class="property">@popMatrix</span>()
-    window.resetMatrix = () =&gt; <span class="property">@resetMatrix</span>()
-    window.<span class="function"><span class="title">move</span></span>   = (a,b,c) =&gt; <span class="property">@move</span>(a,b,c)
-    window.<span class="function"><span class="title">rotate</span></span> = (a,b,c) =&gt; <span class="property">@rotate</span>(a,b,c)
-    window.<span class="function"><span class="title">scale</span></span>  = (a,b,c) =&gt; <span class="property">@scale</span>(a,b,c)
+  <span class="nv">resetMatrixStack: </span><span class="nf">-&gt;</span>
+    <span class="vi">@matrixStack = </span><span class="p">[]</span>
+    <span class="nx">@worldMatrix</span><span class="p">.</span><span class="nx">identity</span><span class="p">()</span>
 
-  getWorldMatrix: -&gt;
-    <span class="property">@worldMatrix</span>
+  <span class="nv">pushMatrix: </span><span class="nf">-&gt;</span>
+    <span class="nx">@matrixStack</span><span class="p">.</span><span class="nx">push</span> <span class="nx">@worldMatrix</span>
+    <span class="vi">@worldMatrix = </span><span class="p">(</span><span class="k">new</span> <span class="nx">@liveCodeLabCore_three</span><span class="p">.</span><span class="nx">Matrix4</span><span class="p">()).</span><span class="nx">copy</span><span class="p">(</span><span class="nx">@worldMatrix</span><span class="p">)</span>
 
-  resetMatrixStack: -&gt;
-    <span class="property">@matrixStack</span> = []
-    <span class="property">@worldMatrix</span>.identity()
+  <span class="nv">popMatrix: </span><span class="nf">-&gt;</span>
+    <span class="k">if</span> <span class="nx">@matrixStack</span><span class="p">.</span><span class="nx">length</span>
+      <span class="vi">@worldMatrix = </span><span class="nx">@matrixStack</span><span class="p">.</span><span class="nx">pop</span><span class="p">()</span>
+    <span class="k">else</span>
+      <span class="nx">@worldMatrix</span><span class="p">.</span><span class="nx">identity</span><span class="p">()</span>
 
-  pushMatrix: -&gt;
-    <span class="property">@matrixStack</span>.push <span class="property">@worldMatrix</span>
-    <span class="property">@worldMatrix</span> = (<span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.Matrix4()).copy(<span class="property">@worldMatrix</span>)
+  <span class="nv">resetMatrix: </span><span class="nf">-&gt;</span>
+    <span class="nx">@worldMatrix</span><span class="p">.</span><span class="nx">identity</span><span class="p">()</span>
 
-  popMatrix: -&gt;
-    <span class="keyword">if</span> <span class="property">@matrixStack</span>.length
-      <span class="property">@worldMatrix</span> = <span class="property">@matrixStack</span>.pop()
-    <span class="keyword">else</span>
-      <span class="property">@worldMatrix</span>.identity()
+  <span class="nv">move: </span><span class="nf">(a, b, c = 0) -&gt;</span>
+    <span class="k">if</span> <span class="k">typeof</span> <span class="nx">a</span> <span class="o">isnt</span> <span class="s">&quot;number&quot;</span>
+      <span class="nv">a = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">sin</span><span class="p">(</span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">timeKeeper</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">/</span> <span class="mi">500</span><span class="p">)</span>
+      <span class="nv">b = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">cos</span><span class="p">(</span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">timeKeeper</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">/</span> <span class="mi">500</span><span class="p">)</span>
+      <span class="nv">c = </span><span class="nx">a</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="k">typeof</span> <span class="nx">b</span> <span class="o">isnt</span> <span class="s">&quot;number&quot;</span>
+      <span class="nv">b = </span><span class="nx">a</span>
+      <span class="nv">c = </span><span class="nx">a</span>
+    <span class="nx">@worldMatrix</span><span class="p">.</span><span class="nx">translate</span> <span class="k">new</span> <span class="nx">@liveCodeLabCore_three</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
 
-  resetMatrix: -&gt;
-    <span class="property">@worldMatrix</span>.identity()
+  <span class="nv">rotate: </span><span class="nf">(a, b, c = 0) -&gt;</span>
+    <span class="k">if</span> <span class="k">typeof</span> <span class="nx">a</span> <span class="o">isnt</span> <span class="s">&quot;number&quot;</span>
+      <span class="nv">a = </span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">timeKeeper</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1000</span>
+      <span class="nv">b = </span><span class="nx">a</span>
+      <span class="nv">c = </span><span class="nx">a</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="k">typeof</span> <span class="nx">b</span> <span class="o">isnt</span> <span class="s">&quot;number&quot;</span>
+      <span class="nv">b = </span><span class="nx">a</span>
+      <span class="nv">c = </span><span class="nx">a</span>
+    <span class="nx">@worldMatrix</span><span class="p">.</span><span class="nx">rotateX</span><span class="p">(</span><span class="nx">a</span><span class="p">).</span><span class="nx">rotateY</span><span class="p">(</span><span class="nx">b</span><span class="p">).</span><span class="nx">rotateZ</span> <span class="nx">c</span>
 
-  move: (a, b, c = <span class="number">0</span>) -&gt;
-    <span class="keyword">if</span> <span class="keyword">typeof</span> a <span class="keyword">isnt</span> <span class="string">"number"</span>
-      a = Math.sin(<span class="property">@liveCodeLabCoreInstance</span>.timeKeeper.getTime() / <span class="number">500</span>)
-      b = Math.cos(<span class="property">@liveCodeLabCoreInstance</span>.timeKeeper.getTime() / <span class="number">500</span>)
-      c = a
-    <span class="keyword">else</span> <span class="keyword">if</span> <span class="keyword">typeof</span> b <span class="keyword">isnt</span> <span class="string">"number"</span>
-      b = a
-      c = a
-    <span class="property">@worldMatrix</span>.translate <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.Vector3(a, b, c)
-
-  rotate: (a, b, c = <span class="number">0</span>) -&gt;
-    <span class="keyword">if</span> <span class="keyword">typeof</span> a <span class="keyword">isnt</span> <span class="string">"number"</span>
-      a = <span class="property">@liveCodeLabCoreInstance</span>.timeKeeper.getTime() / <span class="number">1000</span>
-      b = a
-      c = a
-    <span class="keyword">else</span> <span class="keyword">if</span> <span class="keyword">typeof</span> b <span class="keyword">isnt</span> <span class="string">"number"</span>
-      b = a
-      c = a
-    <span class="property">@worldMatrix</span>.rotateX(a).rotateY(b).rotateZ c
-
-  scale: (a, b, c = <span class="number">1</span>) -&gt;
-    <span class="keyword">if</span> <span class="keyword">typeof</span> a <span class="keyword">isnt</span> <span class="string">"number"</span>
-      a = <span class="number">1</span> + Math.sin(<span class="property">@liveCodeLabCoreInstance</span>.timeKeeper.getTime() / <span class="number">500</span>) / <span class="number">4</span>
-      b = a
-      c = a
-    <span class="keyword">else</span> <span class="keyword">if</span> <span class="keyword">typeof</span> b <span class="keyword">isnt</span> <span class="string">"number"</span>
-      b = a
-      c = a
-    
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>odd things happen setting scale to zero</p>             </td>             <td class="code">               <div class="highlight"><pre>    a = <span class="number">0.000000001</span>  <span class="keyword">if</span> a &gt; -<span class="number">0.000000001</span> <span class="keyword">and</span> a &lt; <span class="number">0.000000001</span>
-    b = <span class="number">0.000000001</span>  <span class="keyword">if</span> b &gt; -<span class="number">0.000000001</span> <span class="keyword">and</span> b &lt; <span class="number">0.000000001</span>
-    c = <span class="number">0.000000001</span>  <span class="keyword">if</span> c &gt; -<span class="number">0.000000001</span> <span class="keyword">and</span> c &lt; <span class="number">0.000000001</span>
-    <span class="property">@worldMatrix</span>.scale <span class="keyword">new</span> <span class="property">@liveCodeLabCore_three</span>.Vector3(a, b, c)
+  <span class="nv">scale: </span><span class="nf">(a, b, c = 1) -&gt;</span>
+    <span class="k">if</span> <span class="k">typeof</span> <span class="nx">a</span> <span class="o">isnt</span> <span class="s">&quot;number&quot;</span>
+      <span class="nv">a = </span><span class="mi">1</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sin</span><span class="p">(</span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">timeKeeper</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">/</span> <span class="mi">500</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span>
+      <span class="nv">b = </span><span class="nx">a</span>
+      <span class="nv">c = </span><span class="nx">a</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="k">typeof</span> <span class="nx">b</span> <span class="o">isnt</span> <span class="s">&quot;number&quot;</span>
+      <span class="nv">b = </span><span class="nx">a</span>
+      <span class="nv">c = </span><span class="nx">a</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>odd things happen setting scale to zero</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">a = </span><span class="mf">0.000000001</span>  <span class="k">if</span> <span class="nx">a</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">0.000000001</span> <span class="o">and</span> <span class="nx">a</span> <span class="o">&lt;</span> <span class="mf">0.000000001</span>
+    <span class="nv">b = </span><span class="mf">0.000000001</span>  <span class="k">if</span> <span class="nx">b</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">0.000000001</span> <span class="o">and</span> <span class="nx">b</span> <span class="o">&lt;</span> <span class="mf">0.000000001</span>
+    <span class="nv">c = </span><span class="mf">0.000000001</span>  <span class="k">if</span> <span class="nx">c</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">0.000000001</span> <span class="o">and</span> <span class="nx">c</span> <span class="o">&lt;</span> <span class="mf">0.000000001</span>
+    <span class="nx">@worldMatrix</span><span class="p">.</span><span class="nx">scale</span> <span class="k">new</span> <span class="nx">@liveCodeLabCore_three</span><span class="p">.</span><span class="nx">Vector3</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
