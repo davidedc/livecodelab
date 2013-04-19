@@ -1,5 +1,6 @@
 wget https://github.com/davidedc/livecodelab/archive/master.zip
 unzip master.zip
+rm master.zip
 cd livecodelab-master
 sudo add-apt-repository ppa:chris-lea/node.js  
 sudo apt-get update  
