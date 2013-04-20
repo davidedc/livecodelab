@@ -469,7 +469,7 @@ module.exports = function (grunt) {
     //grunt.loadNpmTasks('grunt-contrib-jsdoc');
     //grunt.loadNpmTasks('grunt-jsduck');
     grunt.loadNpmTasks('grunt-docco');
-    grunt.loadNpmTasks('grunt-groc');
+    //grunt.loadNpmTasks('grunt-groc');
     //grunt.loadNpmTasks('coffeedoc');
 
     process.stdout.write("\n\n\n\n");
