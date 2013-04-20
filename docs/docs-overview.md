@@ -4,18 +4,9 @@
 
 The [docco documentation](docco/init.html) shows the actual code, together with all its comments. You can also pick individual classes here by using the menu on the top right.
 
-##Crojsdoc API and source reference
-
-The [Crojsdoc-geneated docs](crojsdoc/index.html) are a possible way to navigate through the classes. Also shows the source code.
-
 ##Coffeedoc API reference
 
 The [Coffeedoc-geneated docs](coffeedoc/index.html) are another popular style of looking at the classes.
-
-
-##Codo API reference
-
-The [Codo-geneated docs](codo/index.html) are yet another alternative for looking at the classes.
 
 
 ##How to build LiveCodeLab?

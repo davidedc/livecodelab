@@ -60,6 +60,10 @@ For a more fine-grained look at ideas and bugs, take a look at <a href="https://
  * Guy John aka @rumblesan. Massive, massive contributions: refactored the code big times, set-up a proper build system, undoes the entropy done by others, contributed a new parser. 
  * Matthew Lawrence: replaced the old "plasters and regexes" autocoder hack with a much more proper lexer-based solution.
  * Julien Dorra: contributed to french version, refactoring and great UX/UI feedback.
+
+#### Documentation ####
+Please check the docs-overview file in the docs directory for an
+overview of the available documentation.
  
 #### Glamour shots ####
 
