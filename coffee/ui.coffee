@@ -76,7 +76,7 @@ class Ui
     @resizeCanvas canvasId
 
   checkErrorAndReport: (e) ->
-    $("#dangerSignText").css "color", "red"
+    $("#errorMessageDiv").css "color", "red"
     
     # if the object is an exception then get the message
     # otherwise e should just be a string
@@ -98,11 +98,11 @@ class Ui
     else if errorMessage.indexOf("Unexpected 'NUMBER'") > -1
       errorMessage = "lost number?"
     else errorMessage = errorMessage.replace(/ReferenceError:\s/g, "")  if errorMessage.indexOf("ReferenceError") > -1
-    $("#errorMessageText").text errorMessage
+    $("#errorMessageDiv").text errorMessage
 
   clearError: ->
-    $("#dangerSignText").css "color", "#000000"
-    $("#errorMessageText").text ""
+    $("#errorMessageDiv").css "color", "#000000"
+    $("#errorMessageDiv").text ""
 
   soundSystemOk: ->
     $("#soundSystemStatus").text("Sound System On").removeClass("off")
@@ -267,6 +267,12 @@ class Ui
         eventRouter.trigger "reset"
         $(@).stop().fadeOut(100).fadeIn 100
         false
+
+      $('<span id="errorMessageDiv">msg will go here</span>').appendTo(
+        $('<li>').appendTo(
+          $('#nav')
+        )
+      )
 
       
       # Align bottom-left
