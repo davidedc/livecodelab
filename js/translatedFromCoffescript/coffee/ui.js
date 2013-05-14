@@ -68,7 +68,7 @@ Ui = (function() {
   Ui.prototype.checkErrorAndReport = function(e) {
     var errorMessage;
 
-    $("#dangerSignText").css("color", "red");
+    $("#errorMessageDiv").css("color", "red");
     errorMessage = e.message || e;
     if (errorMessage.indexOf("Unexpected 'INDENT'") > -1) {
       errorMessage = "weird indentation";
@@ -91,12 +91,12 @@ Ui = (function() {
         errorMessage = errorMessage.replace(/ReferenceError:\s/g, "");
       }
     }
-    return $("#errorMessageText").text(errorMessage);
+    return $("#errorMessageDiv").text(errorMessage);
   };
 
   Ui.prototype.clearError = function() {
-    $("#dangerSignText").css("color", "#000000");
-    return $("#errorMessageText").text("");
+    $("#errorMessageDiv").css("color", "#000000");
+    return $("#errorMessageDiv").text("");
   };
 
   Ui.prototype.soundSystemOk = function() {
@@ -193,6 +193,7 @@ Ui = (function() {
         $(_this).stop().fadeOut(100).fadeIn(100);
         return false;
       });
+      $('<span id="errorMessageDiv">msg will go here</span>').appendTo($('<li>').appendTo($('#nav')));
       _this.stats.getDomElement().style.position = "absolute";
       _this.stats.getDomElement().style.right = "0px";
       _this.stats.getDomElement().style.top = "0px";
