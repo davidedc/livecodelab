@@ -18,7 +18,6 @@ More in general, to setup the build system:
  * Install java if not installed. Please check the java website on
    how to do so.
  * use npm to get all the dependencies ```sudo npm install```
- * install coffee-contrib-copy module  ```npm install grunt-contrib-copy```
  * make sure that Pygments is installed. Pygments is a python
    library used by the documentation system in order to
    convert markdown-style comments to html.
