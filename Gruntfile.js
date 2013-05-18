@@ -221,6 +221,20 @@ module.exports = function (grunt) {
                 dest: 'docs/jsdoc'
             }
         },
+        docco: {
+            Js: {
+                src: ['js/*/*.js'],
+                options: {
+                    output: 'docs/docco/'
+                }
+            },
+            Coffee: {
+                src: ['docs/deleteme/sourcesForDocco/**/*.coffee'],
+                options: {
+                    output: 'docs/docco/'
+                }
+            }
+        },
         // currently not used, this is rather done
         // via invokation of a helper sh script
         // because I couldn't get crojsdoc to output
@@ -244,17 +258,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-
-        groc: {
-                javascript: ['js/translatedFromCoffescript/coffee/**/*.js'],
-                options: {
-                    out: 'docs/groc/',
-            }
-        },
-        lint: {
-            all: ['js/**/*.js'],
-            grunt: ['grunt.js']
-        },
         copy: {
             fonts: {
                 files: [{
@@ -265,7 +268,6 @@ module.exports = function (grunt) {
                 }]
             }
         },
-
         recess: {
             lint: {
                 src: ['css/**/*.css'],
@@ -286,17 +288,12 @@ module.exports = function (grunt) {
                 }
             }
         },
-        jshint: {
-            options: {
-                browser: true
-            }
-        },
         coffee: {
             app: {
                 expand: true,
                 src: ['coffee/**/*.coffee'],
                 dest: 'js/translatedFromCoffescript/',
-                ext: '.js',  
+                ext: '.js',
                 options: {
                     bare: true,
                     preserve_dirs: true
@@ -359,19 +356,8 @@ module.exports = function (grunt) {
                 dest: 'dist/built.js'
             }
         },
-        docco: {
-            Js: {
-                src: ['js/*/*.js'],
-                options: {
-                    output: 'docs/docco/'
-                }
-            },
-            Coffee: {
-                src: ['docs/deleteme/sourcesForDocco/**/*.coffee'],
-                options: {
-                    output: 'docs/docco/'
-                }
-            }
+        coffeelint: {
+            lcl: ['coffee/*.coffee']
         },
         clean: {
             docs: [
@@ -380,17 +366,17 @@ module.exports = function (grunt) {
                 'docs/coffeedoc/',
                 'docs/crojsdoc/',
                 'docs/deleteme/'
-                ],
+            ],
             build: [
                 'dist/',
                 'indexMinified.html',
                 'js_compiled/Livecodelab-minified.js',
                 'js/translatedFromCoffescript/',
                 'css_compiled/'
-                ],
+            ],
             tests: [
                 'tests/js/testLiveCodeLab.js'
-                ]
+            ]
         },
         targethtml: {
             compile: {
@@ -417,7 +403,8 @@ module.exports = function (grunt) {
     });
 
     // Default task.
-    grunt.registerTask('default', 'lint');
+    grunt.registerTask('default', 'coffeelint');
+    grunt.registerTask('lint', 'coffeelint');
 
     // Doc generation task. We create the docs in two steps:
     // first from the js files and then from the coffee files.
@@ -431,16 +418,10 @@ module.exports = function (grunt) {
         'replaceBlockComments',
         'docco:Js',
         'docco:Coffee',
-        
+
         'coffeedoc',
-        
+
         'beautifyCoffeedoc',
-        //'groc',
-        
-        //'codo',
-        
-        //'crojsdoc',
-        //'jsduck',
         'removeCopiedSourcesForDocs'
     ]);
 
@@ -465,13 +446,12 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-coffee');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-coffeelint');
     // couldn't make these to work
     //grunt.loadNpmTasks('grunt-contrib-jsdoc');
     //grunt.loadNpmTasks('grunt-jsduck');
     grunt.loadNpmTasks('grunt-docco');
-    //grunt.loadNpmTasks('grunt-groc');
     //grunt.loadNpmTasks('coffeedoc');
-
     process.stdout.write("\n\n\n\n");
     process.stdout.write("****************************************************************\n");
     process.stdout.write("* Note:\n");
