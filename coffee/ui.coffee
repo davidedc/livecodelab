@@ -197,8 +197,11 @@ class Ui
         )
         # now take each demo that belongs to this submenu and put it there
         for demo in demoSubmenus[demoSubmenu]
-          title = @programLoader.programs.demos[demo].title
-          a = "<li><a id='#{demo}'>#{title}</a></li>"
+          a = """<li>
+                 <a id='#{demo}'>
+                 #{@programLoader.programs.demos[demo].title}
+                 </a>
+                 </li>"""
           $(a).appendTo(
             $('#'+demoSubmenuNoSpaces)
           )
@@ -247,8 +250,11 @@ class Ui
         )
         # now take each tutorial that belongs to this submenu and put it there
         for tutorial in tutorialSubmenus[tutorialSubmenu]
-          title = @programLoader.programs.demos[demo].title
-          a= "<li><a id='#{tutorial}'>#{title}</a></li>"
+          a = """<li>
+                 <a id='#{tutorial}'>
+                 #{@programLoader.programs.tutorials[tutorial].title}
+                 </a>
+                 </li>"""
           $(a).appendTo(
             $('#'+tutorialSubmenuNoSpaces)
           )
