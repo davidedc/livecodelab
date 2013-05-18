@@ -5,123 +5,117 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-				<!--(if target standardNonMinifiedVersion)><!-->
-				<link rel="stylesheet" href="css/main.css"/>
-				<link rel="stylesheet" href="css/codemirror.css">
-				<link rel="stylesheet" href="css/night.css">
-				<link rel="stylesheet" href="css/dropdownmenu.css">
-				<link type='text/css' href='css/simpleModal.css' rel='stylesheet' media='screen' />
-				<!--<!(endif)-->
-					
-					
-				<!--(if target compile)>
-					<link type='text/css' href='css_compiled/main.css' rel='stylesheet' media='screen' />
-				<!(endif)-->
-
-				<script src="js_compiled/three.min.js"></script>
-
-				<!--(if target standardNonMinifiedVersion)><!-->
-					<script src="js/three.js/Detector.js"></script>
-					<script src="js/three.js/Stats.js"></script>
-                    <script src="js/threex/THREEx.WindowResize.js"></script>
-				<!--<!(endif)-->
-
-                <script src="js_compiled/coffee-script.js"></script>
-
-				<!--(if target standardNonMinifiedVersion)><!-->
-                    <script src="js/three.js/ShaderExtras.js"></script>
-                    <script src="js/three.js/postprocessing/EffectComposer.js"></script>
-                    <script src="js/three.js/postprocessing/RenderPass.js"></script>
-                    <script src="js/three.js/postprocessing/ShaderPass.js"></script>
-				<!--<!(endif)-->
-
-					<!--
-							 surprisingly MaskPass.js is needed even though masks are not
-							 explicitely used
-					-->
-
-				<!--(if target standardNonMinifiedVersion)><!-->
-					<script src="js/three.js/postprocessing/MaskPass.js"></script>
-					<script src="js/three.js/postprocessing/SavePass.js"></script>
-	
-	
-					<script src="js/translatedFromCoffescript/coffee/autocoder/lexer.js"></script>
-	
-					<script  src="js_compiled/codemirror.js"></script>
-					<script  src="js_compiled/jquery.min.js"></script>
-				<!--<!(endif)-->
-	
-	
-					<!-- start simple modal Scripts-->
-					<!-- Scripts -->
+        <!--(if target standardNonMinifiedVersion)><!-->
+            <link rel="stylesheet" type='text/css' href="css/main.css"/>
+            <link rel="stylesheet" type='text/css' href="css/codemirror.css"/>
+            <link rel="stylesheet" type='text/css' href="css/night.css"/>
+            <link rel="stylesheet" type='text/css' href="css/dropdownmenu.css"/>
+            <link rel='stylesheet' type='text/css' href='css/simpleModal.css'/>
+        <!--<!(endif)-->
 
         <!--(if target compile)>
-					<script src="js_compiled/codemirror.js"></script>
-					<script src="js_compiled/jquery.min.js"></script>
+            <link rel='stylesheet' type='text/css' href='css_compiled/main.css'/>
         <!(endif)-->
-        
+
+        <script src="js_compiled/three.min.js"></script>
+
+        <!--(if target standardNonMinifiedVersion)><!-->
+            <script src="js/three.js/Detector.js"></script>
+            <script src="js/three.js/Stats.js"></script>
+            <script src="js/threex/THREEx.WindowResize.js"></script>
+        <!--<!(endif)-->
+
+        <script src="js_compiled/coffee-script.js"></script>
+
+        <!--(if target standardNonMinifiedVersion)><!-->
+            <script src="js/three.js/ShaderExtras.js"></script>
+            <script src="js/three.js/postprocessing/EffectComposer.js"></script>
+            <script src="js/three.js/postprocessing/RenderPass.js"></script>
+            <script src="js/three.js/postprocessing/ShaderPass.js"></script>
+        <!--<!(endif)-->
+
+        <!--
+            surprisingly MaskPass.js is needed even though masks are not explicitely used
+        -->
+
+        <!--(if target standardNonMinifiedVersion)><!-->
+            <script src="js/three.js/postprocessing/MaskPass.js"></script>
+            <script src="js/three.js/postprocessing/SavePass.js"></script>
+
+
+            <script src="js/translatedFromCoffescript/coffee/autocoder/lexer.js"></script>
+
+            <script  src="js_compiled/codemirror.js"></script>
+            <script  src="js_compiled/jquery.min.js"></script>
+        <!--<!(endif)-->
+
+        <!--(if target compile)>
+            <script src="js_compiled/codemirror.js"></script>
+            <script src="js_compiled/jquery.min.js"></script>
+        <!(endif)-->
+
         <script src='js_compiled/jquery.simplemodal.1.4.3.min.js'></script>
-					<!-- end simple modal Scripts-->
-	
-	
-					<!-- Slicing the code in js files -->
-	
-				<!--(if target standardNonMinifiedVersion)><!-->
-					<script src="js/translatedFromCoffescript/coffee/livecodelab-core.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/event-router.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/parser.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/url-router.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/big-cursor.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/threejs-system.js"></script>
 
-					<script src="js/translatedFromCoffescript/coffee/sound/samplebank.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/sound/sound-system.js"></script>
-					<script src="js/sound/buzz.js"></script>
-	
-					<script src="js/translatedFromCoffescript/coffee/program-runner.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/animation-loop.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/colour-literals.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/globals.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/background-painter.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/editor/editor.js"></script>
-	
-					<script src="js/translatedFromCoffescript/coffee/colour-functions.js"></script>
-	
-	
-	
-					<script src="js/translatedFromCoffescript/coffee/matrix-commands.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/graphics-commands.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/renderer.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/math.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/code-transformer.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/program-loader.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/autocoder/autocoder.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/text-dimming.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/blend-controls.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/lights-commands.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/time-keeper.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/ui.js"></script>
-					<script src="js/browser-detection/bowser-2012-07-18.js"></script>
-				<!--<!(endif)-->
+        <!-- Slicing the code in js files -->
 
-				<!--this are other parts that are not part of livecodelab and don't
-				need any optimisation. Ideally
-				we'd want to put them in another minified library, but it's not a big deal-->
-					<script src="js/editor/mousewheel.js"></script>	
-					<script  src="js/editor/coffeescript-livecodelab-mode.js"></script>
-					<script src="js/translatedFromCoffescript/coffee/init.js"></script>
+        <!--(if target standardNonMinifiedVersion)><!-->
+            <script src="js/translatedFromCoffescript/coffee/livecodelab-core.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/event-router.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/parser.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/url-router.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/big-cursor.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/threejs-system.js"></script>
+
+            <script src="js/translatedFromCoffescript/coffee/sound/samplebank.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/sound/sound-system.js"></script>
+            <script src="js/sound/buzz.js"></script>
+
+            <script src="js/translatedFromCoffescript/coffee/program-runner.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/animation-loop.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/colour-literals.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/globals.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/background-painter.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/editor/editor.js"></script>
+
+            <script src="js/translatedFromCoffescript/coffee/colour-functions.js"></script>
+
+
+
+            <script src="js/translatedFromCoffescript/coffee/matrix-commands.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/graphics-commands.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/renderer.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/math.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/code-transformer.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/program-loader.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/autocoder/autocoder.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/text-dimming.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/blend-controls.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/lights-commands.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/time-keeper.js"></script>
+            <script src="js/translatedFromCoffescript/coffee/ui.js"></script>
+            <script src="js/browser-detection/bowser-2012-07-18.js"></script>
+        <!--<!(endif)-->
+
+        <!--
+            this are other parts that are not part of livecodelab and don't
+            need any optimisation. Ideally
+            we'd want to put them in another minified library, but it's not a big deal
+        -->
+        <script src="js/editor/mousewheel.js"></script>
+        <script src="js/editor/coffeescript-livecodelab-mode.js"></script>
+        <script src="js/translatedFromCoffescript/coffee/init.js"></script>
 
         <!--(if target compile)>
-					<script src="js_compiled/Livecodelab-minified.js"></script>
+            <script src="js_compiled/Livecodelab-minified.js"></script>
         <!(endif)-->
 
-<!-- new menu! -->
-		<link rel="stylesheet" type="text/css" href="sooperfish.css" media="screen">
-		<link rel="stylesheet" type="text/css" href="themes/sooperfish-theme-glass.css" media="screen">
-		<script type="text/javascript" src="js/sooperfish-menu/jquery.easing-sooper.js"></script>
-		<script type="text/javascript" src="js/sooperfish-menu/jquery.sooperfish.js"></script>
+        <!-- new menu! -->
+            <link rel="stylesheet" type="text/css" href="sooperfish.css"/>
+            <link rel="stylesheet" type="text/css" href="themes/sooperfish-theme-glass.css"/>
+            <script type="text/javascript" src="js/sooperfish-menu/jquery.easing-sooper.js"></script>
+            <script type="text/javascript" src="js/sooperfish-menu/jquery.sooperfish.js"></script>
 
-<!-- end of new menu! -->
+        <!-- end of new menu! -->
 
 
     </head>
@@ -159,8 +153,13 @@
 
         <!-- modal content -->
         <div id="aboutWindow">
-            <h3>What&apos;s this?</h3>
-            <p>This is a toy live coding environment: programs run immediately as they are typed.<br><br>Pick something from the "Demos" menu or try the tutorials.</p>
+            <h3>What's this?</h3>
+            <p>
+                This is a toy live coding environment: programs run immediately as they are typed.
+                <br>
+                <br>
+                Pick something from the "Demos" menu or try the tutorials.
+            </p>
             <p>Want more info? <a href="http://www.sketchpatch.net/labs/livecodelabIntro.html"> See this.</a></p>
             <p>Want to hack this? <a href="https://github.com/davidedc/livecodelab"> Grab the source code!</a></p>
         </div>
@@ -201,13 +200,13 @@
         </div>
 
 
-        <div name="miao" id="miao" style="position: fixed;  top: 30px; left: 0px; width: 100%; font-size: 3em;">
+        <div id="miao" style="position: fixed;  top: 30px; left: 0px; width: 100%; font-size: 3em;">
 
             <canvas id="backGroundCanvas" style="position: absolute; z-index:-3; top: 0px; left: 0px; width:100% height:100%"></canvas> 
             <canvas id="blendedThreeJsSceneCanvas" style="width:100%; height:100%; position: absolute;  z-index:-2; top: 0px; left: 0px;"></canvas> 
 
-            <form id="formCode" autocapitalize="off" autocorrect="off" wrap="off">
-                <textarea id="code" name="code" style="z-index:1;" autocapitalize="off" autocorrect="off" wrap="off"></textarea>
+            <form action='' id="formCode">
+                <textarea id="code" name="code" style="z-index:1;"></textarea>
             </form>
 
         </div>
