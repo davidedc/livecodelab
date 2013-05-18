@@ -266,6 +266,14 @@ module.exports = function (grunt) {
                     src: ['**'],
                     dest: 'css_compiled/fonts/'
                 }]
+            },
+            images: {
+                files: [{
+                    expand: true,
+                    cwd: 'css/images/',
+                    src: ['**'],
+                    dest: 'css_compiled/images/'
+                }]
             }
         },
         recess: {
@@ -442,7 +450,7 @@ module.exports = function (grunt) {
         'coffee:tests',
         'concat',
         'closure-compiler',
-        'copy:fonts',
+        'copy',
         'recess:compile',
         'targethtml:compile'
     ]);
