@@ -1,25 +1,23 @@
-# jslint maxerr: 200, browser: true, devel: true, bitwise: true 
-
 ###
 ## ProgramRunner manages the running function as it runs. E.g. this is not a
 ## translation step, this is managing things such as the actually running of the
-## latest "stable" function and keeping track of when a function appears to be stable,
-## and reinstating the last stable function if the current one throws a runtime error.
+## latest "stable" function and keeping track of when a function appears
+## to be stable, and reinstating the last stable function if the current one
+## throws a runtime error.
 ###
 
 class ProgramRunner
-  "use strict"
   
-  # this array is used to keep track of all the instances of "doOnce" in the code
-  # we need to keep this so we can put the ticks next to doOnce once that doOnce
-  # block has run.
+  # this array is used to keep track of all the instances of "doOnce" in the
+  # code we need to keep this so we can put the ticks next to doOnce once
+  # that doOnce block has run.
   doOnceOccurrencesLineNumbers = []
   
   # contains the draw function as a Function object. Never mind the
   # initialisation as an empty string.
   drawFunction = ""
   
-  consecutiveFramesWithoutRunTimeError = 0  
+  consecutiveFramesWithoutRunTimeError = 0
 
   # contains the last stable draw function as a Function object. Never mind the
   # initialisation as an empty string.
@@ -46,10 +44,11 @@ class ProgramRunner
   putTicksNextToDoOnceBlocksThatHaveBeenRun: ->
     codeTransformer = @liveCodeLabCoreInstance.codeTransformer
     if @doOnceOccurrencesLineNumbers.length
-      @setDrawFunction \
+      @setDrawFunction(
         codeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(
           codeTransformer, @doOnceOccurrencesLineNumbers
         )
+      )
 
   runDrawFunction: ->
     # this invokation below could be throwing an error,

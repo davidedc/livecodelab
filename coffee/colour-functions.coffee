@@ -1,7 +1,3 @@
-# jslint browser: true, bitwise: true 
-
-# global max, min 
-
 # Code adapted from processing.js
 
 ###
@@ -10,7 +6,6 @@
 ###
 
 class ColourFunctions
-  "use strict"
 
   constructor: ->
     window.color = (a,b,c,d) => @color(a,b,c,d)
@@ -32,7 +27,7 @@ class ColourFunctions
     @colorModeY = 255
     @colorModeZ = 255
     @colorModeA = 255
-    @Constants =      
+    @Constants =
       # Color modes
       RGB: 1
       ARGB: 2

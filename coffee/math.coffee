@@ -6,7 +6,8 @@
 
 # Calculation
 ###
-Calculates the absolute value (magnitude) of a number. The absolute value of a number is always positive.
+Calculates the absolute value (magnitude) of a number. The absolute value of a
+number is always positive.
 
 @param {int|float} value   int or float
 
@@ -15,8 +16,8 @@ Calculates the absolute value (magnitude) of a number. The absolute value of a n
 abs = Math.abs
 
 ###
-Calculates the closest int value that is greater than or equal to the value of the parameter.
-For example, ceil(9.03) returns the value 10.
+Calculates the closest int value that is greater than or equal to the value
+of the parameter. For example, ceil(9.03) returns the value 10.
 
 @param {float} value   float
 
@@ -71,7 +72,8 @@ dist = ->
 
 
 ###
-Returns Euler's number e (2.71828...) raised to the power of the value parameter.
+Returns Euler's number e (2.71828...) raised to the power of the
+value parameter.
 
 @param {int|float} value   int or float: the exponent to raise e to
 
@@ -80,7 +82,8 @@ Returns Euler's number e (2.71828...) raised to the power of the value parameter
 exp = Math.exp
 
 ###
-Calculates the closest int value that is less than or equal to the value of the parameter.
+Calculates the closest int value that is less than or equal to the
+value of the parameter.
 
 @param {int|float} value        the value to floor
 
@@ -92,10 +95,11 @@ Calculates the closest int value that is less than or equal to the value of the 
 floor = Math.floor
 
 ###
-Calculates a number between two numbers at a specific increment. The amt  parameter is the
-amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very
-near the first point, 0.5 is half-way in between, etc. The lerp function is convenient for
-creating motion along a straight path and for drawing dotted lines.
+Calculates a number between two numbers at a specific increment. The amt
+parameter is the amount to interpolate between the two values where 0.0 equal
+to the first point, 0.1 is very near the first point, 0.5 is half-way in
+between, etc. The lerp function is convenient for creating motion along a
+straight path and for drawing dotted lines.
 
 @param {int|float} value1       float or int: first value
 @param {int|float} value2       float or int: second value
@@ -111,8 +115,8 @@ lerp = (value1, value2, amt) ->
 
 
 ###
-Calculates the natural logarithm (the base-e logarithm) of a number. This function
-expects the values greater than 0.0.
+Calculates the natural logarithm (the base-e logarithm) of a number.
+This function expects the values greater than 0.0.
 
 @param {int|float} value        int or float: number must be greater then 0.0
 
@@ -121,10 +125,11 @@ expects the values greater than 0.0.
 log = Math.log
 
 ###
-Calculates the magnitude (or length) of a vector. A vector is a direction in space commonly
-used in computer graphics and linear algebra. Because it has no "start" position, the magnitude
-of a vector can be thought of as the distance from coordinate (0,0) to its (x,y) value.
-Therefore, mag() is a shortcut for writing "dist(0, 0, x, y)".
+Calculates the magnitude (or length) of a vector. A vector is a direction
+in space commonly used in computer graphics and linear algebra. Because it
+has no "start" position, the magnitude of a vector can be thought of as the
+distance from coordinate (0,0) to its (x,y) value. Therefore, mag() is a
+shortcut for writing "dist(0, 0, x, y)".
 
 @param {int|float} a       float or int: first value
 @param {int|float} b       float or int: second value
@@ -140,9 +145,11 @@ mag = (a, b, c) ->
 
 
 ###
-Re-maps a number from one range to another. In the example above, the number '25' is converted from
-a value in the range 0..100 into a value that ranges from the left edge (0) to the right edge (width) of the screen.
-Numbers outside the range are not clamped to 0 and 1, because out-of-range values are often intentional and useful.
+Re-maps a number from one range to another. In the example above, the number
+'25' is converted from a value in the range 0..100 into a value that ranges
+from the left edge (0) to the right edge (width) of the screen. Numbers
+outside the range are not clamped to 0 and 1, because out-of-range values
+are often intentional and useful.
 
 @param {float} value        The incoming value to be converted
 @param {float} istart       Lower bound of the value's current range
@@ -172,9 +179,14 @@ Determines the largest value in a sequence of numbers.
 @see min
 ###
 max = ->
-  return (if arguments[0] < arguments[1] then arguments[1] else arguments[0])  if arguments.length is 2
-  numbers = (if arguments.length is 1 then arguments[0] else arguments) # if single argument, array is used
-  throw "Non-empty array is expected"  unless "length" of numbers and numbers.length
+  return (
+    if arguments[0] < arguments[1] then arguments[1] else arguments[0]
+  ) if arguments.length is 2
+  # if single argument, array is used
+  numbers = (if arguments.length is 1 then arguments[0] else arguments)
+  throw new Error("Non-empty array is expected") unless(
+    "length" of numbers and numbers.length
+  )
   max = numbers[0]
   count = numbers.length
   i = 1
@@ -198,9 +210,14 @@ Determines the smallest value in a sequence of numbers.
 @see max
 ###
 min = ->
-  return (if arguments[0] < arguments[1] then arguments[0] else arguments[1])  if arguments.length is 2
-  numbers = (if arguments.length is 1 then arguments[0] else arguments) # if single argument, array is used
-  throw "Non-empty array is expected"  unless "length" of numbers and numbers.length
+  return (
+    if arguments[0] < arguments[1] then arguments[0] else arguments[1]
+  )  if arguments.length is 2
+  # if single argument, array is used
+  numbers = (if arguments.length is 1 then arguments[0] else arguments)
+  throw new Error("Non-empty array is expected") unless(
+    "length" of numbers and numbers.length
+  )
   min = numbers[0]
   count = numbers.length
   i = 1
@@ -246,7 +263,8 @@ is equivalent to 1 / 3*3*3*3*3.
 pow = Math.pow
 
 ###
-Calculates the integer closest to the value parameter. For example, round(9.2) returns the value 9.
+Calculates the integer closest to the value parameter.
+For example, round(9.2) returns the value 9.
 
 @param {float} value        number to round
 
@@ -258,8 +276,10 @@ Calculates the integer closest to the value parameter. For example, round(9.2) r
 round = Math.round
 
 ###
-Squares a number (multiplies a number by itself). The result is always a positive number,
-as multiplying two negative numbers always yields a positive result. For example, -1 * -1 = 1.
+Squares a number (multiplies a number by itself).
+The result is always a positive number,
+as multiplying two negative numbers always yields a
+positive result. For example, -1 * -1 = 1.
 
 @param {float} value        int or float
 
@@ -272,8 +292,10 @@ sq = (aNumber) ->
 
 
 ###
-Calculates the square root of a number. The square root of a number is always positive,
-even though there may be a valid negative root. The square root s of number a is such
+Calculates the square root of a number.
+The square root of a number is always positive,
+even though there may be a valid negative root.
+The square root s of number a is such
 that s*s = a. It is the opposite of squaring.
 
 @param {float} value        int or float, non negative
@@ -287,8 +309,9 @@ sqrt = Math.sqrt
 
 # Trigonometry
 ###
-The inverse of cos(), returns the arc cosine of a value. This function expects the
-values in the range of -1 to 1 and values are returned in the range 0 to PI (3.1415927).
+The inverse of cos(), returns the arc cosine of a value.
+This function expects the values in the range of -1 to 1
+and values are returned in the range 0 to PI (3.1415927).
 
 @param {float} value        the value whose arc cosine is to be returned
 
@@ -301,8 +324,9 @@ values in the range of -1 to 1 and values are returned in the range 0 to PI (3.1
 acos = Math.acos
 
 ###
-The inverse of sin(), returns the arc sine of a value. This function expects the values
-in the range of -1 to 1 and values are returned in the range -PI/2 to PI/2.
+The inverse of sin(), returns the arc sine of a value.
+This function expects the values in the range of -1 to 1
+and values are returned in the range -PI/2 to PI/2.
 
 @param {float} value        the value whose arc sine is to be returned
 
@@ -315,8 +339,9 @@ in the range of -1 to 1 and values are returned in the range -PI/2 to PI/2.
 asin = Math.asin
 
 ###
-The inverse of tan(), returns the arc tangent of a value. This function expects the values
-in the range of -Infinity to Infinity (exclusive) and values are returned in the range -PI/2 to PI/2 .
+The inverse of tan(), returns the arc tangent of a value.
+This function expects the values in the range of -Infinity
+to Infinity (exclusive) and values are returned in the range -PI/2 to PI/2 .
 
 @param {float} value        -Infinity to Infinity (exclusive)
 
@@ -329,10 +354,13 @@ in the range of -Infinity to Infinity (exclusive) and values are returned in the
 atan = Math.atan
 
 ###
-Calculates the angle (in radians) from a specified point to the coordinate origin as measured from
-the positive x-axis. Values are returned as a float in the range from PI to -PI. The atan2() function
-is most often used for orienting geometry to the position of the cursor. Note: The y-coordinate of the
-point is the first parameter and the x-coordinate is the second due the the structure of calculating the tangent.
+Calculates the angle (in radians) from a specified point to
+the coordinate origin as measured from the positive x-axis.
+Values are returned as a float in the range from PI to -PI.
+The atan2() function is most often used for orienting geometry
+to the position of the cursor. Note: The y-coordinate of the
+point is the first parameter and the x-coordinate is the second
+due the the structure of calculating the tangent.
 
 @param {float} y        y-coordinate of the point
 @param {float} x        x-coordinate of the point
@@ -344,8 +372,9 @@ point is the first parameter and the x-coordinate is the second due the the stru
 atan2 = Math.atan2
 
 ###
-Calculates the cosine of an angle. This function expects the values of the angle parameter to be provided
-in radians (values from 0 to PI*2). Values are returned in the range -1 to 1.
+Calculates the cosine of an angle. This function expects the values
+of the angle parameter to be provided in radians (values from 0 to PI*2).
+Values are returned in the range -1 to 1.
 
 @param {float} value        an angle in radians
 
@@ -357,9 +386,11 @@ in radians (values from 0 to PI*2). Values are returned in the range -1 to 1.
 cos = Math.cos
 
 ###
-Converts a radian measurement to its corresponding value in degrees. Radians and degrees are two ways of
-measuring the same thing. There are 360 degrees in a circle and 2*PI radians in a circle. For example,
-90 degrees = PI/2 = 1.5707964. All trigonometric methods in Processing require their parameters to be specified in radians.
+Converts a radian measurement to its corresponding value in degrees.
+Radians and degrees are two ways of measuring the same thing.
+There are 360 degrees in a circle and 2*PI radians in a circle.
+For example, 90 degrees = PI/2 = 1.5707964. All trigonometric methods
+in Processing require their parameters to be specified in radians.
 
 @param {int|float} value        an angle in radians
 

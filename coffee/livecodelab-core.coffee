@@ -1,63 +1,64 @@
 ###
-## A LiveCodeLabCore instance packs together the following parts:
-## 
-##  - timeKeeper
-##  - three
-##  - threeJsSystem
-##  - matrixCommands
-##  - blendControls
-##  - soundSystem
-##  - colourFunctions
-##  - backgroundPainter
-##  - graphicsCommands
-##  - lightSystem 
-##  - drawFunctionRunner
-##  - codeTransformer
-##  - renderer
-##  - animationLoop
-## 
-##  LiveCodeLab is built one part at a time, and the arguments in the constructor
-##  tell how they depend on each other at construction time and how they
-##  interact at runtime.
-## 
-##  - _A constructor with no arguments_ (or where the arguments are just passed
-##    by the caller of the very createLiveCodeLabCore function we are in),
-##    such as createColourFunctions, is a part
-##    that does not need any other part at construction time and it doesn't interact
-##    with any of the other parts at run time.
-##  - _A constructor with arguments other than "liveCodeLabCoreInstance"_
-##    (such as threeJsSystem) only needs the parts passed at construction time for its
-##    own construction, and it can only interact with such parts at runtime.
-##  - _A constructor which contains the "liveCodeLabCoreInstance" argument_, such as
-##    codeTransformer, might or might not need other parts for its own construction
-##    (if they are passed as arguments in addition to the "liveCodeLabCoreInstance" argument)
-##    but it does interact at runtime with other parts not passed in the constructor
-##    argument.
-## 
-##  So, for determining the order of the constructors, one can just look at the
-##  dependencies dictated by the arguments other than the "liveCodeLabCoreInstance"
-##  argument. The "liveCodeLabCoreInstance" parameter
-##  doesn't create dependencies at creation time,
-##  it's just used by the parts to reference other parts that they need to interact to
-##  at runtime.
-## 
-##  It might well be that at runtime part A interacts with part B and viceversa.
-##  This is why runtime interactions are not restricted to parts passed
-##  as arguments at construction
-##  time, because one would need to pass constructed part A to the constructor of part B
-##  and viceversa, which is obviously impossible. This is why the runtime interactions
-##  happen through the mother of all parts, i.e. "liveCodeLabCoreInstance" itself.
-## 
-##  To determine which parts any single part interacts with at runtime, one
-##  has to check all the parameters passed to the constructor. The passed parts are likely
-##  to mean that there is an interaction at runtime. If the "mother"
-##  "liveCodeLabCoreInstance" is passed to the constructor, then one case to look for
-##  all "liveCodeLabCoreInstance" occurrences and see which of its children are
-##  accessed.
+A LiveCodeLabCore instance packs together the following parts:
+
+- timeKeeper
+- three
+- threeJsSystem
+- matrixCommands
+- blendControls
+- soundSystem
+- colourFunctions
+- backgroundPainter
+- graphicsCommands
+- lightSystem
+- drawFunctionRunner
+- codeTransformer
+- renderer
+- animationLoop
+
+LiveCodeLab is built one part at a time, and the arguments in
+the constructor tell how they depend on each other at
+construction time and how they interact at runtime.
+
+- _A constructor with no arguments_ (or where the arguments are just passed
+  by the caller of the very createLiveCodeLabCore function we are in),
+  such as createColourFunctions, is a part
+  that does not need any other part at construction time and it doesn't
+  interact with any of the other parts at run time.
+- _A constructor with arguments other than
+  "liveCodeLabCoreInstance"_ (such as threeJsSystem)
+  only needs the parts passed at construction time for its own construction,
+  and it can only interact with such parts at runtime.
+- _A constructor which contains the "liveCodeLabCoreInstance" argument_, such as
+  codeTransformer, might or might not need other parts for its own construction
+  (if they are passed in addition to the "liveCodeLabCoreInstance" argument)
+  but it does interact at runtime with other parts not passed in the constructor
+  argument.
+
+So, for determining the order of the constructors, one can just look at the
+dependencies dictated by the arguments other than the "liveCodeLabCoreInstance"
+argument. The "liveCodeLabCoreInstance" parameter
+doesn't create dependencies at creation time,
+it's just used by the parts to reference other parts that they need to
+interact to at runtime.
+
+It might well be that at runtime part A interacts with part B and viceversa.
+This is why runtime interactions are not restricted to parts passed
+as arguments at construction
+time, because one would need to pass constructed part A to the constructor of
+part B and viceversa, which is obviously impossible. This is why the runtime
+interactions happen through the mother of all parts,
+i.e. "liveCodeLabCoreInstance" itself.
+
+To determine which parts any single part interacts with at runtime, one
+has to check all the parameters passed to the constructor. The passed parts
+are likely to mean that there is an interaction at runtime. If the "mother"
+"liveCodeLabCoreInstance" is passed to the constructor, then one case to
+look for all "liveCodeLabCoreInstance" occurrences and see which of its
+children are accessed.
 ###
 
 class LiveCodeLabCore
-  "use strict"
 
   constructor: (@paramsObject) ->
     
@@ -70,16 +71,16 @@ class LiveCodeLabCore
     
     # three is a global defined in three.min.js and used in:
     # ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
-    # The difference between three and the threeJsSystem initialised later is that
+    # The difference between three and the threeJsSystem is that
     # a) three is the raw Three.js system without for example the blend options.
-    # b) threeJsSystem contains some convenience fields and abstractions, for example
-    #    it keeps the renderer (whether it's canvas-based or WebGL based) in a
-    #    "renderer" field.
+    # b) threeJsSystem contains some convenience fields and abstractions,
+    #    for example it keeps the renderer (whether it's canvas-based or WebGL
+    #    based) in a "renderer" field.
     # Several fields/methids in threeJsSystem are just conveniency mappings into
     # the raw three object.
-    # But often in LiveCodeLab there are direct reference to three fields/methods.
-    # So, threeJsSystem provides some abstraction without attempting to be a complete
-    # abstraction layer.
+    # But often in LiveCodeLab there are direct reference to three
+    # fields/methods. So, threeJsSystem provides some abstraction without
+    # attempting to be a complete abstraction layer.
     @three = THREE
     
     #//////////////////////////////////////////////
@@ -109,8 +110,9 @@ class LiveCodeLabCore
     # this one also interacts with colourFunctions, backgroundSceneContext,
     # canvasForBackground at runtime
     @backgroundPainter = new BackgroundPainter(
-        @paramsObject.canvasForBackground,
-        @)
+      @paramsObject.canvasForBackground,
+      @
+    )
     
     # this one also interacts with codeTransformer at runtime.
     @drawFunctionRunner =
@@ -118,8 +120,7 @@ class LiveCodeLabCore
     
     # temporary to migrate CodeTransformed code from js to coffeescript.
     @codeTransformer =
-      new CodeTransformer(@paramsObject.eventRouter, CoffeeScript,
-      @)
+      new CodeTransformer(@paramsObject.eventRouter, CoffeeScript, @)
     
     # this one also interacts with timeKeeper, matrixCommands, blendControls,
     #    soundSystem,
@@ -161,8 +162,8 @@ class LiveCodeLabCore
     @graphicsCommands =
       new GraphicsCommands(
         @three, @)
-        # color, lightSystem, matrixCommands, threeJsSystem, colorModeA, redF, greenF,
-        # blueF, alphaZeroToOne
+        # color, lightSystem, matrixCommands, threeJsSystem, colorModeA,
+        # redF, greenF, blueF, alphaZeroToOne
     
     # this one also interacts with three,
     # threeJsSystem, colourFunctions at runtime
@@ -199,13 +200,13 @@ class LiveCodeLabCore
     @soundSystem.isAudioSupported()
 
   updateCode: (updatedCode) ->
-    # alert('updatedCode: ' + updatedCode); 
+    # alert('updatedCode: ' + updatedCode);
     @codeTransformer.updateCode updatedCode
     if updatedCode isnt "" and @dozingOff
       @dozingOff = false
       @animationLoop.animate()
       
-      # console.log('waking up'); 
+      # console.log('waking up');
       @paramsObject.eventRouter.trigger "livecodelab-waking-up"
 
   
@@ -214,16 +215,16 @@ class LiveCodeLabCore
   #  a) leaving the transparent background makes it very
   #     difficult to save a reference "expected" image. The way to do that would
   #     be to save the image that appears in the failing test case. And when one
-  #     does it, the correct image with the transparent background gets saved. But
-  #     still, the expected image is slightly different from the generated image.
-  #     This is really weird as the two should be absolutely identical, and yet
-  #     (maybe because of compression artifacts reasons?) they are different enough
-  #     that it makes the testing unusable.
-  #  b) In theory one could get Three.js to directly render on an opaque background
-  #     but if we do it this way (as in after all the rendering has happened)
-  #     we keep the motionblur and the paintover styles. If we let Three.js paint
-  #     the backgrounds, then the postprocessing effects for motionblur and for
-  #     paintOver wouldn't work anymore.
+  #     does it, the correct image with the transparent background gets saved.
+  #     But still, the expected image is slightly different from the generated
+  #     image. This is really weird as the two should be absolutely identical,
+  #     and yet (maybe because of compression artifacts reasons?) they are
+  #     different enough that it makes the testing unusable.
+  #  b) In theory one could get Three.js to directly render on an opaque
+  #     background but if we do it this way (as in after all the rendering has
+  #     happened) we keep the motionblur and the paintover styles. If we let
+  #     Three.js paint the backgrounds, then the postprocessing effects for
+  #     motionblur and for paintOver wouldn't work anymore.
   getForeground3DSceneImage: (backgroundColor) ->
     # some shorthands
     blendedThreeJsSceneCanvas =

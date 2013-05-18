@@ -1,12 +1,9 @@
-#jslint browser: true, regexp: true 
-
 ###
 ## Helper class to manage URL hash location.
 ###
 
 class UrlRouter
-  "use strict"
-  
+
   constructor: (@eventRouter) ->
     @eventRouter.bind "set-url-hash", @setHash, @
   

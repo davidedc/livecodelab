@@ -1,13 +1,10 @@
-# jslint 
-# global $ 
-
 ###
-## Simple helper to handle the code dimming. When to trigger dimming and un-dimming and
-## keeping track of status of the dedicated "automatic dimming" toggle switch.
+## Simple helper to handle the code dimming. When to trigger dimming and
+## un-dimming and keeping track of status of the dedicated
+## "automatic dimming" toggle switch.
 ###
 
 class EditorDimmer
-  "use strict"
 
   cursorActivity: true
   dimIntervalID: undefined
@@ -15,8 +12,7 @@ class EditorDimmer
   
   constructor: (@eventRouter, @bigCursor) ->
   
-  undimEditor: ->  
-    #console.log('undimming, @bigCursor.startBigCursorBlinkingAnimation:' + @bigCursor.startBigCursorBlinkingAnimation);
+  undimEditor: ->
     unless @bigCursor.isShowing
       if $("#formCode").css("opacity") < 0.99
         $("#formCode").animate
@@ -26,8 +22,8 @@ class EditorDimmer
   
   # Now that there is a manual switch to toggle it off and on
   # the dimming goes to full INvisibility
-  # see toggleDimCode() 
-  # not sure about that, want to try it on people -- julien 
+  # see toggleDimCode()
+  # not sure about that, want to try it on people -- julien
   dimEditor: ->
     if $("#formCode").css("opacity") > 0
       $("#formCode").animate
@@ -41,9 +37,9 @@ class EditorDimmer
       @dimEditor()
 
   
-  # a function to toggle code diming on and off -- julien 
+  # a function to toggle code diming on and off -- julien
   toggleDimCode: (dimmingActive) ->
-    if dimmingActive is `undefined`
+    if not dimmingActive?
       @dimCodeOn = not @dimCodeOn
     else
       @dimCodeOn = dimmingActive

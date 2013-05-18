@@ -1,14 +1,16 @@
 ###
-## EventRouter bridges most events in LiveCodeLab. Error message pops up? Event router
-## steps in. Big cursor needs to shrink? It's the event router who stepped in. You get the
-## picture. Any part of LiveCodeLab can just register callbacks and trigger events, using
-## some descriptive strings as keys. Handy because it's a hub where one could attach
-## debugging and listing of all registered callbacks. Probably not a good idea to attach
+## EventRouter bridges most events in LiveCodeLab.
+## Error message pops up? Event router steps in.
+## Big cursor needs to shrink? It's the event router who stepped in.
+## You get the picture.
+## Any part of LiveCodeLab can just register callbacks and trigger events,
+## using some descriptive strings as keys.
+## Handy because it's a hub where one could attach debugging and listing
+## of all registered callbacks. Probably not a good idea to attach
 ## rapid-fire events due to overheads.
 ###
 
 class EventRouter
-  "use strict"
 
   events: {}
   

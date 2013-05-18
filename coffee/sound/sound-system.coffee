@@ -1,14 +1,11 @@
-# jslint browser: true 
-# global $ 
-
 ###
-## SoundSystem tries to abstract away different ways of playing sound, according to
-## weird performance characteristics of each browser (ad probably, OS). Cross-browser
-## sound playing is really in a sorry state, we are trying to make do here.
+## SoundSystem tries to abstract away different ways of playing sound,
+## according to weird performance characteristics of each browser
+## (and probably, OS). Cross-browser sound playing is really in a sorry
+## state, we are trying to make do here.
 ###
 
 class SoundSystem
-  "use strict"
 
   oldupdatesPerMinute: 0
   soundLoopTimer: undefined
@@ -29,9 +26,9 @@ class SoundSystem
     @soundLoops.soundIDs = []
     @soundLoops.beatStrings = []
 
-    # now that all the various sound playing functions for the different cases are
-    # defined, we set the "play" function to the best solution according to
-    # the browser/os. We wish we could do this better.
+    # now that all the various sound playing functions for the different cases
+    # are defined, we set the "play" function to the best solution according
+    # to the browser/os. We wish we could do this better.
     if @Bowser.firefox
       @playSound = (a,b,c) => @play_using_DYNAMICALLY_CREATED_AUDIO_TAG(a,b,c)
     else if @Bowser.safari or @Bowser.msie or @Bowser.chrome
@@ -54,11 +51,11 @@ class SoundSystem
     
   # sets BPM
   # is called by code in patches
-  bpm: (a) ->    
+  bpm: (a) ->
     # timid attempt at sanity check.
     # the sound system might well bork out
     # even below 500 bpm.
-    return  if a is `undefined`
+    return not a?
     a = 125  if a > 125
     a = 0  if a < 0
     
@@ -99,21 +96,31 @@ class SoundSystem
   #    because they have a limit of 35 or so sounds.
   #
   # BUZZ_JS_FIRE_AND_FORGET:
-  #    This method is the simplest and entails just using buzz.js fire and forget.
+  #    This method is the simplest and entails just using buzz.js
+  #    fire and forget.
   #    Each "playing" beat a new object is created.
   #
   # DYNAMICALLY_CREATED_AUDIO_TAG:
   #    Directly create an audio object each time we need to play a sound.
-  #    Once the sound has finished playing, the audio object is garbage collected.
+  #    Once the sound has finished playing, the audio
+  #    object is garbage collected.
   # The buzzObjectsPool parameter is not used but we put it here
   # for uniformity with the other playing alternatives
-  play_using_BUZZ_JS_FIRE_AND_FORGET: (soundFilesPaths, loopedSoundID, @buzzObjectsPool) ->
+  play_using_BUZZ_JS_FIRE_AND_FORGET: (
+    soundFilesPaths,
+    loopedSoundID,
+    @buzzObjectsPool
+  ) ->
     soundFilePath = undefined
     soundFilePath = soundFilesPaths[loopedSoundID]
     availableBuzzObject = new @buzz.sound(soundFilePath)
     availableBuzzObject.play()
 
-  play_using_DYNAMICALLY_CREATED_AUDIO_TAG: (soundFilesPaths, loopedSoundID, @buzzObjectsPool) ->
+  play_using_DYNAMICALLY_CREATED_AUDIO_TAG: (
+    soundFilesPaths,
+    loopedSoundID,
+    @buzzObjectsPool
+  ) ->
     audioElement = undefined
     source1 = undefined
     soundFilePath = undefined
@@ -131,7 +138,11 @@ class SoundSystem
     ), true
     audioElement.play()
 
-  play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND: (soundFilesPaths, loopedSoundID, @buzzObjectsPool) ->
+  play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND: (
+    soundFilesPaths,
+    loopedSoundID,
+    @buzzObjectsPool
+  ) ->
     availableBuzzObject = undefined
     allBuzzObjectsForWantedSound = @buzzObjectsPool[loopedSoundID]
     buzzObject = undefined
@@ -143,7 +154,7 @@ class SoundSystem
         availableBuzzObject = buzzObject
         break
 
-    if availableBuzzObject is `undefined`      
+    if not availableBuzzObject?
       # there are no available buzz objects for this sound
       # which might mean two things: there are too few and we can just
       # create a new one
@@ -192,7 +203,10 @@ class SoundSystem
   changeUpdatesPerMinuteIfNeeded: ->
     if @oldupdatesPerMinute isnt @updatesPerMinute
       clearTimeout @soundLoopTimer
-      @soundLoopTimer = setInterval((()=>@soundLoop()), (1000 * 60) / @updatesPerMinute)  if @updatesPerMinute isnt 0
+      @soundLoopTimer = setInterval(
+        () => @soundLoop(),
+        (1000 * 60) / @updatesPerMinute
+      ) if @updatesPerMinute isnt 0
       @oldupdatesPerMinute = @updatesPerMinute
 
   
@@ -215,7 +229,7 @@ class SoundSystem
       newSound.unmute()
       @endedFirstPlay += 1
       if @endedFirstPlay is soundDef.sounds.length * @CHANNELSPERSOUND
-        @eventRouter.trigger "all-sounds-loaded-and tested"  
+        @eventRouter.trigger "all-sounds-loaded-and tested"
 
     newSound.play()
     @buzzObjectsPool[soundInfo.name].push newSound
@@ -239,9 +253,9 @@ class SoundSystem
       # and instead works fine by loading sound all at the beginning.
       if @Bowser.safari
         for preloadSounds in [0...@CHANNELSPERSOUND]
-          # if you load and play all the channels of all the sounds all together
-          # the browser freezes, and the OS doesn't feel too well either
-          # so better stagger the checks in time.
+          # if you load and play all the channels of all the sounds
+          # all together the browser freezes, and the OS doesn't feel
+          # too well either so better stagger the checks in time.
           setTimeout(
             (soundDef,soundInfo)=>@checkSound(soundDef,soundInfo),
             20 * cycleSoundDefs,

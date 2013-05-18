@@ -1,14 +1,11 @@
-# jslint browser: true, nomen: true, regexp: true 
-# global $, Detector 
-
 ###
-## ProgramLoader takes care of managing the URL and editor content when the user navigates
-## through demos and examples - either by selecting menu entries, or by clicking back/forward
-## arrow, or by landing on a URL with a hashtag.
+## ProgramLoader takes care of managing the URL and editor content
+## when the user navigates through demos and examples - either by
+## selecting menu entries, or by clicking back/forward arrow, or by
+## landing on a URL with a hashtag.
 ###
 
 class ProgramLoader
-  "use strict"
 
   constructor: (@eventRouter, @texteditor, @liveCodeLabCoreInstance) ->
     @lastHash = ""
@@ -29,20 +26,20 @@ class ProgramLoader
       submenu: "Basic"
       title: "Rose"
       code: """
-		        // 'B rose' by Guy John (@rumblesan)
-		        // Mozilla Festival 2012
-		        // adapted from 'A rose' by Lib4tech
-		        
-		        doOnce -> frame = 0
-		        background red
-		        scale 1.5
-		        animationStyle paintOver
-		        rotate frame/100
-		        fill 255-((frame/2)%255),0,0
-		        stroke 255-((frame/2)%255),0,0
-		        scale 1-((frame/2)%255) / 255
-		        box
-		        """.replace(/\u25B6/g, "\t")
+                // 'B rose' by Guy John (@rumblesan)
+                // Mozilla Festival 2012
+                // adapted from 'A rose' by Lib4tech
+                
+                doOnce -> frame = 0
+                background red
+                scale 1.5
+                animationStyle paintOver
+                rotate frame/100
+                fill 255-((frame/2)%255),0,0
+                stroke 255-((frame/2)%255),0,0
+                scale 1-((frame/2)%255) / 255
+                box
+                """.replace(/\u25B6/g, "\t")
     
     @programs.demos.cheeseAndOlivesDemo =
       submenu: "Basic"
@@ -333,7 +330,7 @@ class ProgramLoader
             strokeSize 7
             5 times ->
             ▶rotate 0,1,time/20000
-            ▶ball 
+            ▶ball
             ▶rotate 0,1,1
             ▶ball -1.01
             """.replace(/\u25B6/g, "\t")
@@ -544,7 +541,7 @@ class ProgramLoader
             fill 255,255,0
             box
             
-            // the three numbers indicate 
+            // the three numbers indicate
             // red green and blue values.
             // You can also use color names such as 'indigo'
             // Try replacing the numbers with
@@ -603,7 +600,7 @@ class ProgramLoader
             rotate time/1000
             box
             
-            // you can turn that light on and 
+            // you can turn that light on and
             // off while you build the scene
             // by using 'lights' and 'noLights'
             // next-tutorial:background
@@ -784,11 +781,11 @@ class ProgramLoader
       
       """.replace(/\u25B6/g, "\t")
 
-    # Note that setting the value of the texteditor (texteditor.setValue below) triggers the
-    # codeMirror onChange callback, which registers the new code - so the next draw()
-    # will run the new demo code. But before doing that will happen (when the timer
-    # for the next frame triggers), we'll have cleared the screen with the code
-    # below.
+    # Note that setting the value of the texteditor (texteditor.setValue below)
+    # triggers the codeMirror onChange callback, which registers the new
+    # code - so the next draw() will run the new demo code. But before doing
+    # that will happen (when the timer for the next frame triggers), we'll
+    # have cleared the screen with the code below.
     if @programs.demos[demoName] || @programs.tutorials[demoName]
       if @programs.demos[demoName]
         @texteditor.setValue prependMessage + @programs.demos[demoName].code
@@ -811,8 +808,8 @@ class ProgramLoader
     # or tutorial when started paints over a screen with a previous drawing
     # of the previous code.
     # So basically we draw an empty frame.
-    #   a) make sure that animationStyle is "normal"    
-    #   b) apply the potentially new animationStyle    
+    #   a) make sure that animationStyle is "normal"
+    #   b) apply the potentially new animationStyle
     #   render the empty frame
     blendControls = @liveCodeLabCoreInstance.blendControls
     blendControls.animationStyle blendControls.animationStyles.normal

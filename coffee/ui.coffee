@@ -1,23 +1,27 @@
-# jslint browser: true 
-# global $ 
-
 ###
-## Ui handles all things UI such as the menus, the notification popups, the editor panel,
-## the big flashing cursor, the stats widget...
+## Ui handles all things UI such as the menus, the notification popups,
+## the editor panel, the big flashing cursor, the stats widget...
 ###
 
 class Ui
-  "use strict"
 
   constructor: (@eventRouter, @stats, @programLoader) ->
     # Setup Event Listeners
-    @eventRouter.bind "report-runtime-or-compile-time-error", ((e)=>@checkErrorAndReport(e)), @
+    @eventRouter.bind(
+      "report-runtime-or-compile-time-error",
+      (e) => @checkErrorAndReport(e),
+      @
+    )
     @eventRouter.bind "clear-error", (=>@clearError()), @
     @eventRouter.bind "autocoder-button-pressed", (state) =>
       if state is true
-        $("#autocodeIndicatorContainer").html("Autocode: on").css "background-color", "#FF0000"
+        $("#autocodeIndicatorContainer").html("Autocode: on").css(
+          "background-color", "#FF0000"
+        )
       else
-        $("#autocodeIndicatorContainer").html("Autocode").css "background-color", ""
+        $("#autocodeIndicatorContainer").html("Autocode").css(
+          "background-color", ""
+        )
 
     @eventRouter.bind "autocoderbutton-flash", =>
       $("#autocodeIndicatorContainer").fadeOut(100).fadeIn 100
@@ -49,7 +53,16 @@ class Ui
     # } else {
     #     scale = scale.y + ', ' + scale.y;
     # }
-    canvas.css("-ms-transform-origin", "left top").css("-webkit-transform-origin", "left top").css("-moz-transform-origin", "left top").css("-o-transform-origin", "left top").css("transform-origin", "left top").css("-ms-transform", "scale(" + scale + ")").css("-webkit-transform", "scale3d(" + scale + ", 1)").css("-moz-transform", "scale(" + scale + ")").css("-o-transform", "scale(" + scale + ")").css "transform", "scale(" + scale + ")"
+    canvas.css("-ms-transform-origin", "left top")
+          .css("-webkit-transform-origin", "left top")
+          .css("-moz-transform-origin", "left top")
+          .css("-o-transform-origin", "left top")
+          .css("transform-origin", "left top")
+          .css("-ms-transform", "scale(" + scale + ")")
+          .css("-webkit-transform", "scale3d(" + scale + ", 1)")
+          .css("-moz-transform", "scale(" + scale + ")")
+          .css("-o-transform", "scale(" + scale + ")")
+          .css "transform", "scale(" + scale + ")"
 
   
   # TODO In theory we want to re-draw the background because the
@@ -57,7 +70,9 @@ class Ui
   # But for the time being we only have vertical
   # gradients so that's not going to be a problem.
   adjustCodeMirrorHeight: ->
-    $(".CodeMirror-scroll").css "height", window.innerHeight - $("#theMenu").height()
+    $(".CodeMirror-scroll").css(
+      "height", window.innerHeight - $("#theMenu").height()
+    )
 
   
   # resizing the text area is necessary otherwise
@@ -97,7 +112,10 @@ class Ui
       errorMessage = "lost number?"
     else if errorMessage.indexOf("Unexpected 'NUMBER'") > -1
       errorMessage = "lost number?"
-    else errorMessage = errorMessage.replace(/ReferenceError:\s/g, "")  if errorMessage.indexOf("ReferenceError") > -1
+    else
+      errorMessage = errorMessage.replace(/ReferenceError:\s/g, "") if(
+        errorMessage.indexOf("ReferenceError") > -1
+      )
     $("#errorMessageDiv").text errorMessage
 
   clearError: ->
@@ -141,9 +159,11 @@ class Ui
       # just with "tutorial" instead of "demo")
       # insert all the demos in the menu
       $('<span >Demos</span>').appendTo(
-        $('<li>').attr('id', 'demos').addClass('current').addClass('sf-parent').appendTo(
-          $('#nav')
-        )
+        $('<li>')
+          .attr('id', 'demos')
+          .addClass('current')
+          .addClass('sf-parent')
+          .appendTo($('#nav'))
       )
 
       $("<ul id='ulForDemos'></ul>").appendTo(
@@ -177,7 +197,8 @@ class Ui
         )
         # now take each demo that belongs to this submenu and put it there
         for demo in demoSubmenus[demoSubmenu]
-          a= "<li><a id='#{demo}'>#{@programLoader.programs.demos[demo].title}</a></li>"
+          title = @programLoader.programs.demos[demo].title
+          a = "<li><a id='#{demo}'>#{title}</a></li>"
           $(a).appendTo(
             $('#'+demoSubmenuNoSpaces)
           )
@@ -187,9 +208,11 @@ class Ui
       # just with "demo" instead of "tutorial")
       # insert all the tutorials in the menu
       $('<span >Tutorials</span>').appendTo(
-        $('<li>').attr('id', 'tutorials').addClass('current').addClass('sf-parent').appendTo(
-          $('#nav')
-        )
+        $('<li>')
+          .attr('id', 'tutorials')
+          .addClass('current')
+          .addClass('sf-parent')
+          .appendTo($('#nav'))
       )
 
       $("<ul id='ulForTutorials'></ul>").appendTo(
@@ -204,7 +227,8 @@ class Ui
       tutorialSubmenus = {}
       for tutorial of allTutorials
         submenuOfThisTutorial = allTutorials[tutorial].submenu
-        tutorialSubmenus[submenuOfThisTutorial] ?= [] # create array if it didn't exist
+        # create array if it didn't exist
+        tutorialSubmenus[submenuOfThisTutorial] ?= []
         tutorialSubmenus[submenuOfThisTutorial].push(tutorial)
 
       for tutorialSubmenu of tutorialSubmenus
@@ -223,7 +247,8 @@ class Ui
         )
         # now take each tutorial that belongs to this submenu and put it there
         for tutorial in tutorialSubmenus[tutorialSubmenu]
-          a= "<li><a id='#{tutorial}'>#{@programLoader.programs.tutorials[tutorial].title}</a></li>"
+          title = @programLoader.programs.demos[demo].title
+          a= "<li><a id='#{tutorial}'>#{title}</a></li>"
           $(a).appendTo(
             $('#'+tutorialSubmenuNoSpaces)
           )
@@ -231,7 +256,7 @@ class Ui
       
       # Now that all the menu items are in place in the DOM, invoke sooperfish,
       # which does some more transformations of its own.
-      $('ul.sf-menu').sooperfish();
+      $('ul.sf-menu').sooperfish()
 
       $("#demos ul li a").click ->
         eventRouter.trigger "load-program", $(@).attr("id")
