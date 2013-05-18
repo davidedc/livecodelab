@@ -311,6 +311,12 @@ module.exports = function (grunt) {
                 }
             }
         },
+        watch: {
+            scripts: {
+                files: ['coffee/**/*.coffee'],
+                tasks: ['compile']
+            }
+        },
         concat: {
             dist: {
                 src: [
@@ -427,6 +433,10 @@ module.exports = function (grunt) {
 
     // Compilation task
     grunt.registerTask('compile', [
+        'coffee:app',
+    ]);
+
+    grunt.registerTask('build', [
         'clean:build',
         'coffee:app',
         'coffee:tests',
@@ -436,6 +446,7 @@ module.exports = function (grunt) {
         'recess:compile',
         'targethtml:compile'
     ]);
+
 
     // Load NPM Task modules
     grunt.loadNpmTasks('grunt-closure-compiler');
@@ -447,6 +458,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-coffeelint');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     // couldn't make these to work
     //grunt.loadNpmTasks('grunt-contrib-jsdoc');
     //grunt.loadNpmTasks('grunt-jsduck');

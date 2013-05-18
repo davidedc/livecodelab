@@ -14,6 +14,7 @@
     "grunt-targethtml": "~0.2.2",
     "docco": "~0.6.2",
     "grunt-docco": "~0.2.0",
-    "grunt-coffeelint": "0.0.6"
+    "grunt-coffeelint": "0.0.6",
+    "grunt-contrib-watch": "~0.4.3"
   }
 }
