@@ -410,7 +410,7 @@ module.exports = function (grunt) {
 
     // Default task.
     grunt.registerTask('default', 'coffeelint');
-    grunt.registerTask('lint', 'coffeelint');
+    grunt.registerTask('lint', ['coffeelint', 'recess:lint']);
 
     // Doc generation task. We create the docs in two steps:
     // first from the js files and then from the coffee files.
@@ -459,11 +459,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-coffeelint');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    // couldn't make these to work
-    //grunt.loadNpmTasks('grunt-contrib-jsdoc');
-    //grunt.loadNpmTasks('grunt-jsduck');
     grunt.loadNpmTasks('grunt-docco');
-    //grunt.loadNpmTasks('coffeedoc');
     process.stdout.write("\n\n\n\n");
     process.stdout.write("****************************************************************\n");
     process.stdout.write("* Note:\n");
