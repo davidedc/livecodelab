@@ -531,7 +531,7 @@ Random = (seed) ->
 
   
   # by default use standard random, otherwise seeded
-  random = (if (seed is `undefined`) then Math.random else (new Marsaglia(seed)).nextDouble)
+  random = (if (seed is undefined) then Math.random else (new Marsaglia(seed)).nextDouble)
 
 
 # Noise functions and helpers
@@ -554,7 +554,7 @@ PerlinNoise = (seed) ->
     (if (i & 1) is 0 then -x else x)
   lerp = (t, a, b) ->
     a + t * (b - a)
-  rnd = (if seed isnt `undefined` then new Marsaglia(seed) else Marsaglia.createRandomized())
+  rnd = (if seed isnt undefined then new Marsaglia(seed) else Marsaglia.createRandomized())
   i = undefined
   j = undefined
   perm = new Uint8Array(512)
@@ -610,10 +610,10 @@ PerlinNoise = (seed) ->
 
 # processing defaults
 noiseProfile =
-  generator: `undefined`
+  generator: undefined
   octaves: 4
   fallout: 0.5
-  seed: `undefined`
+  seed: undefined
 
 
 ###
@@ -649,7 +649,7 @@ but this will differ depending on use.
 noise = (x, y, z) ->
   
   # caching
-  noiseProfile.generator = new PerlinNoise(noiseProfile.seed)  if noiseProfile.generator is `undefined`
+  noiseProfile.generator = new PerlinNoise(noiseProfile.seed)  if noiseProfile.generator is undefined
   generator = noiseProfile.generator
   effect = 1
   k = 1
@@ -690,7 +690,7 @@ created by the noise() function can be adapted to fit very specific needs and ch
 ###
 noiseDetail = (octaves, fallout) ->
   noiseProfile.octaves = octaves
-  noiseProfile.fallout = fallout  if fallout isnt `undefined`
+  noiseProfile.fallout = fallout  if fallout isnt undefined
 
 
 ###
@@ -709,4 +709,4 @@ pseudo-random numbers each time the software is run.
 ###
 noiseSeed = (seed) ->
   noiseProfile.seed = seed
-  noiseProfile.generator = `undefined`
+  noiseProfile.generator = undefined

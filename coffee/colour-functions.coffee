@@ -174,8 +174,9 @@ class ColourFunctions
   # fold into a Javascript number, which is a float and it's 64 bits.
   # For example, the color black is 0xFF000000, which
   # in unsigned integer (or 64 bits float) would be 4278190080.
-  # OK, instead color(0) in Java return -16777216, because Java integers are signed in
-  # two's complement and they go from -2147483648 to 2147483647 included
+  # OK, instead color(0) in Java return -16777216, because Java
+  # integers are signed in two's complement and they go from -2147483648
+  # to 2147483647 included
   color$1: (aValue1) ->
     
     # so that special colors still work with "color", e.g.
@@ -189,13 +190,13 @@ class ColourFunctions
       return @color$4(0, 0, (aValue1 / @colorModeX) * @colorModeZ, @colorModeA)  if @curColorMode is @Constants.HSB
     
     # Color int
-    if aValue1      
+    if aValue1
       # Java Overflow
       # in two's complement, 2147483647 is 0xFFFFFFFF i.e. the very max of
-      # java integer's 32 bits, so if you add one you go back to the java int minimum
-      # so in java the following program gives -2147483648
-      #    int a = 2147483647 + 1; // equivalent to int a = color(2147483647 + 1)
-      #    println("a " + a); 
+      # java integer's 32 bits, so if you add one you go back to the java
+      # int minimum so in java the following program gives -2147483648
+      # int a = 2147483647 + 1; // equivalent to int a = color(2147483647 + 1)
+      # println("a " + a);
       # so we are emulating this here with this subtraction.
       # note that this stops being correct at 2147483647*3 + 3, i.e.
       #   int a = color(2147483647*3 + 3 ) ;
@@ -203,24 +204,25 @@ class ColourFunctions
       # in Java gives -2147483648
       # while this routine gives 2147483648
       aValue1 -= 4294967296  if aValue1 > 2147483647
-      # note that folding below the lower bound is not handled, i.e. -2147483648 -1
-      # doesn't fold to 2147483647
+      # note that folding below the lower bound is not handled,
+      # i.e. -2147483648 -1 doesn't fold to 2147483647
       aValue1
 
-  
+
   ###
-  Creates colors for storing in variables of the color datatype. The parameters are
-  interpreted as RGB or HSB values depending on the current colorMode(). The default
-  mode is RGB values from 0 to 255 and therefore, the function call color(255, 204, 0)
-  will return a bright yellow color. More about how colors are stored can be found in
-  the reference for the color datatype.
-  
+  Creates colors for storing in variables of the color datatype.
+  The parameters are interpreted as RGB or HSB values depending on the
+  current colorMode(). The default mode is RGB values from 0 to 255
+  and therefore, the function call color(255, 204, 0) will return a bright
+  yellow color. More about how colors are stored can be found in the
+  reference for the color datatype.
+
   @param {int|float} aValue1        red or hue or grey values relative to the current color range.
   Also can be color value in hexadecimal notation (i.e. #FFCC00 or 0xFFFFCC00)
   @param {int|float} aValue2        green or saturation values relative to the current color range
   @param {int|float} aValue3        blue or brightness values relative to the current color range
   @param {int|float} aValue4        relative to current color range. Represents alpha
-  
+
   @returns {color} the color
   
   @see colorMode
@@ -228,18 +230,18 @@ class ColourFunctions
   color: (aValue1, aValue2, aValue3, aValue4) ->
     
     # 4 arguments: (R, G, B, A) or (H, S, B, A)
-    return @color$4(aValue1, aValue2, aValue3, aValue4)  if aValue1 isnt `undefined` and aValue2 isnt `undefined` and aValue3 isnt `undefined` and aValue4 isnt `undefined`
+    return @color$4(aValue1, aValue2, aValue3, aValue4)  if aValue1 isnt undefined and aValue2 isnt undefined and aValue3 isnt undefined and aValue4 isnt undefined
     
     # 3 arguments: (R, G, B) or (H, S, B)
-    return @color$4(aValue1, aValue2, aValue3, @colorModeA)  if aValue1 isnt `undefined` and aValue2 isnt `undefined` and aValue3 isnt `undefined`
+    return @color$4(aValue1, aValue2, aValue3, @colorModeA)  if aValue1 isnt undefined and aValue2 isnt undefined and aValue3 isnt undefined
     
     # 2 arguments: (Color, A) or (Grayscale, A)
-    return @color$2(aValue1, aValue2)  if aValue1 isnt `undefined` and aValue2 isnt `undefined`
+    return @color$2(aValue1, aValue2)  if aValue1 isnt undefined and aValue2 isnt undefined
     
     # 1 argument: (Grayscale) or (Color)
     # we also accept strings because special colors such as angleColor are encoded
     # through strings
-    if typeof aValue1 is "number" or typeof aValue1 is "string" 
+    if typeof aValue1 is "number" or typeof aValue1 is "string"
       return @color$1(aValue1)
     
     # Default
