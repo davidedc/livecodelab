@@ -7,7 +7,7 @@
 var Autocoder, TOKEN_ARGDLIM, TOKEN_COLOUR, TOKEN_COLOUROP, TOKEN_COMMENT, TOKEN_DOONCE, TOKEN_ITERATION, TOKEN_MESH, TOKEN_NEWLINE, TOKEN_NUM, TOKEN_OP, TOKEN_SPACE, TOKEN_STATEFUN, TOKEN_TAB, TOKEN_TRANSLATION, TOKEN_UNKNOWN, TOKEN_VARIABLE;
 
 Autocoder = (function() {
-  "use strict";  Autocoder.prototype.active = false;
+  Autocoder.prototype.active = false;
 
   Autocoder.prototype.autocoderMutateTimeout = void 0;
 

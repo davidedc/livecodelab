@@ -1,6 +1,3 @@
-# jslint browser: true, maxerr: 100 
-# global LiveCodeLabCore, $, autocoder, initThreeJs, buzz 
-
 ###
 ## Init.js takes care of the setup of the whole environment up to
 ## cruise speed
@@ -11,10 +8,11 @@ $(document).ready ->
   # The div containing this canvas is supposed to be 100% width and height,
   # so this canvas in theory should be of the right size already. But it isn't,
   # so we are setting the width and height here again.
-  document.getElementById("blendedThreeJsSceneCanvas").width = window.innerWidth
-  document.getElementById("blendedThreeJsSceneCanvas").height = window.innerHeight
+  canvasName = "blendedThreeJsSceneCanvas"
+  document.getElementById(canvasName).width = window.innerWidth
+  document.getElementById(canvasName).height = window.innerHeight
   startEnvironment
-    blendedThreeJsSceneCanvas: document.getElementById("blendedThreeJsSceneCanvas")
+    blendedThreeJsSceneCanvas: document.getElementById(canvasName)
     canvasForBackground: document.getElementById("backGroundCanvas")
     forceCanvasRenderer: false
     bubbleUpErrorsForDebugging: false
@@ -34,7 +32,6 @@ isCanvasSupported = ->
   !!(elem.getContext and elem.getContext("2d"))
 
 startEnvironment = (paramsObject) ->
-  "use strict"
   
   #/////////////////////////////////////////////////////
   # Phase 1 - Preliminary checks and initialisations
@@ -50,19 +47,21 @@ startEnvironment = (paramsObject) ->
   
   # EventRouter manages all the events/callbacks across the whole
   # of livecodelab.
-  # For "heavy fire" callbacks one might want to use a classic callback system,
-  # because there might be some overhead in the triggering of events using this.
-  # (to be tested. just throwing it out there.)
+  # For "heavy fire" callbacks one might want to use a classic
+  # callback system, because there might be some overhead in the
+  # triggering of events using this. (to be tested. just throwing
+  # it out there.)
   eventRouter = new EventRouter()
   
   # Stats are updated in the animationLoop
   # add Stats.js - https://github.com/mrdoob/stats.js
   stats = new Stats
   
-  # ColourLiterals creates a bunch of global variables for all css colors (and more).
-  # Since background-painting.js initialises the background by means of
-  # CSS colors, this needs to be run before creating LiveCodeLabCore. This is also
-  # used by the autocoder because it needs to be able to swap color names that it
+  # ColourLiterals creates a bunch of global variables for all css
+  # colors (and more). Since background-painting.js initialises the
+  # background by means of CSS colors, this needs to be run before
+  # creating LiveCodeLabCore. This is also # used by the autocoder
+  # because it needs to be able to swap color names that it
   # finds as CSS color strings in the user program.
   colourNames = (new ColourLiterals()).colourNames
   
@@ -79,7 +78,7 @@ startEnvironment = (paramsObject) ->
   #  - colourFunctions
   #  - backgroundPainter
   #  - graphicsCommands
-  #  - lightSystem 
+  #  - lightSystem
   #  - drawFunctionRunner
   #  - codeTransformer
   #  - renderer
@@ -110,15 +109,19 @@ startEnvironment = (paramsObject) ->
   # requires threeJsSystem, blendControls, graphicsCommands, renderer
   # note that the programLoader variable below is never used. Leaving it
   # in for consistency.
-  programLoader = new ProgramLoader(eventRouter, editor, liveCodeLabCore) # $, Detector, blendControls
-  eventRouter.bind "load-program", programLoader.loadDemoOrTutorial, programLoader
+  programLoader = new ProgramLoader(
+    eventRouter, editor, liveCodeLabCore
+  ) # $, Detector, blendControls
+  eventRouter.bind(
+    "load-program", programLoader.loadDemoOrTutorial, programLoader
+  )
 
   #console.log('creating stats');
   ui = new Ui(eventRouter, stats, programLoader) # $
   # requires: ColourNames
   autocoder = new Autocoder(eventRouter, editor, colourNames) # McLexer
   # Setup Event Listeners
-  eventRouter.bind("reset", => autocoder.toggle(false))  
+  eventRouter.bind("reset", => autocoder.toggle(false))
   eventRouter.bind("toggle-autocoder", => autocoder.toggle())
   
   # EditorDimmer functions should probablly be rolled into the editor itself
@@ -126,9 +129,21 @@ startEnvironment = (paramsObject) ->
   # in for consistency.
   editorDimmer = new EditorDimmer(eventRouter, bigCursor) # $
   # Setup Event Listeners
-  eventRouter.bind "editor-dim", (=> editorDimmer.dimEditor()), editorDimmer
-  eventRouter.bind "editor-undim", (=> editorDimmer.undimEditor()), editorDimmer
-  eventRouter.bind "editor-toggle-dim", (=> editorDimmer.toggleDimCode()), editorDimmer
+  eventRouter.bind(
+    "editor-dim",
+    () => editorDimmer.dimEditor(),
+    editorDimmer
+  )
+  eventRouter.bind(
+    "editor-undim",
+    () => editorDimmer.undimEditor(),
+    editorDimmer
+  )
+  eventRouter.bind(
+    "editor-toggle-dim",
+    () => editorDimmer.toggleDimCode(),
+    editorDimmer
+  )
   
   
   #/////////////////////////////////////////////////////
@@ -142,8 +157,8 @@ startEnvironment = (paramsObject) ->
     if updatedCodeAsString isnt ""
       eventRouter.trigger "big-cursor-hide"
     else
-      # clearing history, otherwise the user can undo her way into a previous example
-      # but the hash in the URL would be misaligned.
+      # clearing history, otherwise the user can undo her way
+      # into a previous example but the hash in the URL would be misaligned.
       setTimeout((()=>editor.clearHistory()),30)
       eventRouter.trigger "set-url-hash", ""
       eventRouter.trigger "big-cursor-show"
@@ -261,7 +276,7 @@ startEnvironment = (paramsObject) ->
   
   # check if the url points to a particular demo,
   # in which case we load the demo directly.
-  # otherwise we do as usual.    
+  # otherwise we do as usual.
   if !urlRouter.urlPointsToDemoOrTutorial()
     setTimeout (()=>liveCodeLabCore.playStartupSound()), 650
   bigCursor.toggleBlink true
@@ -271,8 +286,8 @@ startEnvironment = (paramsObject) ->
 #    var printoutImageData = function(){
 #    	console.log(liveCodeLabCore.getForeground3DSceneImageData());
 #    }
-#    
+#
 #    if (paramsObject.testMode) {
 #      setTimeout(printoutImageData,3000);
 #    }
-#    
+#

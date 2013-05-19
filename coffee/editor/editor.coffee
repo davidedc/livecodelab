@@ -1,12 +1,9 @@
-# jslint browser: true, devel: true 
-
 ###
 ## The Editor is just a wrapper for the CodeMirror editor. Contains a couple of handful
 ## functions and hooks-up the contents with the other parts of LiveCodeLab.
 ###
 
 class Editor
-  "use strict"
 
   constructor: (@eventRouter, codemirror) ->
     # Setup Event Listeners
@@ -71,8 +68,6 @@ class Editor
   lineCount: ()->
    @codemirrorInstance.lineCount()
   
-  
-  
   suspendDimmingAndCheckIfLink: (editor) ->
     cursorP = undefined
     currentLineContent = undefined
@@ -94,6 +89,6 @@ class Editor
         setTimeout (=>
           @eventRouter.trigger "load-program", program
         ), 200
-    return  if @codemirrorInstance.getValue() is ""
+    return if @codemirrorInstance.getValue() is ""
     @eventRouter.trigger "editor-undim"
   

@@ -1,12 +1,13 @@
 /*
-## Simple helper to handle the code dimming. When to trigger dimming and un-dimming and
-## keeping track of status of the dedicated "automatic dimming" toggle switch.
+## Simple helper to handle the code dimming. When to trigger dimming and
+## un-dimming and keeping track of status of the dedicated
+## "automatic dimming" toggle switch.
 */
 
 var EditorDimmer;
 
 EditorDimmer = (function() {
-  "use strict";  EditorDimmer.prototype.cursorActivity = true;
+  EditorDimmer.prototype.cursorActivity = true;
 
   EditorDimmer.prototype.dimIntervalID = void 0;
 
@@ -46,7 +47,7 @@ EditorDimmer = (function() {
   EditorDimmer.prototype.toggleDimCode = function(dimmingActive) {
     var _this = this;
 
-    if (dimmingActive === undefined) {
+    if (dimmingActive == null) {
       this.dimCodeOn = !this.dimCodeOn;
     } else {
       this.dimCodeOn = dimmingActive;

@@ -1,37 +1,34 @@
-# jslint browser: true, devel: true 
-# global $ 
-
 ###
 ## The user can issue multiple solid fill and gradient fill commands
 ## and they are all painted on top of each other according to the
 ## order they have been issued in.
 ## So for example you can have one gradient and then
 ## a second one painted over it that uses some transparency.
-## 
+##
 ## This is why solid and gradient fills are all kept in an array
 ## and each time the user issues one of the two commands, an
 ## element is added to the array.
-## 
+##
 ## Both solid and gradient fills are stored as elements in the
 ## array, all elements are the same and accommodate for a description
 ## that either case (solid/gradient).
-## 
+##
 ## The background/gradients are drawn on a separate 2D canvas
 ## and we avoid repainting that canvas over and over if the
 ## painting commands stay the same (i.e. colors of their
 ## arguments and the order of the commands) across frames.
-## 
+##
 ## For quickly determining whether the order/content of the commands
 ## has changed across frames,
 ## a string is kept that represents the whole stack of commands
 ## issued in the current frame, and similarly the "previous frame"
 ## string representation is also kept.
 ## So it's kind of like a simplified JSON representation if you will.
-## 
+##
 ## If the strings are the same across frames, then the 2D layer of
 ## the background is not repainted, otherwise the array is iterated
 ## and each background/gradient is painted anew.
-## 
+##
 ## Note that we are not trying to be too clever here - for example
 ## a solid fill effectively invalidates the contents of the previous
 ## elements of the array, so we could discard those when such
@@ -39,7 +36,6 @@
 ###
 
 class BackgroundPainter
-  "use strict"
 
   constructor: (@canvasForBackground, @liveCodeLabCoreInstance) ->
     @gradStack = []
@@ -49,15 +45,15 @@ class BackgroundPainter
     @whichDefaultBackground = undefined
     @currentGradientStackValue = ""
     @previousGradientStackValue = 0
-    @canvasForBackground = document.createElement("canvas")  unless @canvasForBackground
+    @canvasForBackground = document.createElement("canvas") unless @canvasForBackground
     
     # the canvas background for the time being is only going to contain
     # gradients, so we can get away with creating a really tiny canvas and
     # stretch it. The advantage is that the fill operations are a lot faster.
     # We should try to use CSS instead of canvas, as in some browsers canvas
     # is not accelerated just as well as CSS.
-    # backGroundFraction specifies what fraction of the window the background canvas
-    # is going to be.
+    # backGroundFraction specifies what fraction of the window the
+    # background canvas is going to be.
     backGroundFraction = 1 / 15
     
     @canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction)
@@ -93,15 +89,15 @@ class BackgroundPainter
     @currentGradientStackValue =
       @currentGradientStackValue + " null null null null " + a + " "
     @gradStack.push
-      gradStacka: `undefined`
-      gradStackb: `undefined`
-      gradStackc: `undefined`
-      gradStackd: `undefined`
       solid: a
+      gradStacka: undefined
+      gradStackb: undefined
+      gradStackc: undefined
+      gradStackd: undefined
 
 
   paintARandomBackground: ->
-    if @whichDefaultBackground is `undefined`
+    if not @whichDefaultBackground?
       @whichDefaultBackground = Math.floor(Math.random() * 5)
     else
       @whichDefaultBackground = (@whichDefaultBackground + 1) % 5
@@ -160,7 +156,7 @@ class BackgroundPainter
     # some shorthands
     color = @liveCodeLabCoreInstance.colourFunctions.color
 
-    if @currentGradientStackValue isnt @previousGradientStackValue      
+    if @currentGradientStackValue isnt @previousGradientStackValue
       #alert('repainting the background');
       @previousGradientStackValue = @currentGradientStackValue
       diagonal =
@@ -168,7 +164,7 @@ class BackgroundPainter
         Math.pow(@canvasForBackground.height / 2, 2))
       
       for scanningGradStack in @gradStack
-        if scanningGradStack.gradStacka isnt `undefined`
+        if scanningGradStack.gradStacka?
           radgrad = @backgroundSceneContext.createLinearGradient(
             @canvasForBackground.width / 2,
             0,

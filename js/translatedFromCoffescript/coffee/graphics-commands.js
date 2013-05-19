@@ -2,19 +2,19 @@
 ## Please reference the colour-functions.js file for all colour-related
 ## functions and lights-functions.js for lights, which use a similar
 ## structure for caching and counting of light instances.
-## 
+
 ## Fundamentals
 ## ============
 ## There are a couple of fundamentals of LiveCodeLab and a couple of
 ## complications of Three.js that shape the way
 ## graphic primitives work in this file.
-## 
+
 ## LiveCodeLab uses immediate mode graphics
 ## ----------------------
 ## First off, like Processing, LiveCodeLab shies away from "retained" graphics
 ## and instead uses "immediate mode" graphics.
-## For context, "immediate mode" graphics means that when the user uses a graphic
-## primitive, he is
+## For context, "immediate mode" graphics means that when the user uses a
+## graphic primitive, he is
 ## NOT given a handle that he can use to modify properties of that element at a
 ## later stage, contrarily to flash, DOM, CSS, openGL and Three.JS
 ## (to different degrees).
@@ -27,81 +27,87 @@
 ## (no events, no input, no physics/overlap/collision/animation).
 ## Also, retained graphics mode usually is smart about updating
 ## only minimal parts of the screen that need updating rather than redrawing the
-## whole screen (again, openGL doesn't do that apart from basic frustum culling, but
-## for example there is nothing to detect occlusions and avoid painting occluded
-## objects).
+## whole screen (again, openGL doesn't do that apart from basic frustum culling,
+## but for example there is nothing to detect occlusions and avoid painting
+## occluded objects).
 ## There are a few drawbacks in retained modes: a) programs that manage
 ## handles are more lengthy than programs that don't
 ## b) they are often not needed for example in
 ## 2d sprites-based videogames c) most importantly,
 ## they require deeper understanding of the underlying
-## model (e.g. which property can I change? What are those called? How do I change
-## parent/child relationship? How do events bubble up and where should I catch them?).
-## Processing and LiveCodeLab go for immediate mode. Once the primitive is invoked, it
+## model (e.g. which property can I change?
+## What are those called?
+## How do I change parent/child relationship?
+## How do events bubble up and where should I catch them?).
+## Processing and LiveCodeLab go for immediate mode.
+## Once the primitive is invoked, it
 ## becomes pixels and there is no built-in way to do input/event/hierarchies...
-## Rather, there are a few properties that are set as a global state and apply to all
-## objects. Examples are "fill" and "stroke".
-## 
+## Rather, there are a few properties that are set as a global state and apply
+## to all objects. Examples are "fill" and "stroke".
+
 ## Relationship between objects, meshes, geometry, materials...
 ## ----------------------
-## A Three.js object (or to be more precise, Object3D) can be a line or a mesh. A line
-## is a line, a mesh can be anything else depending on what the geometry of the mesh
-## is. There are more possible types such as particles, etc. but they are not currently
-## used in LiveCodeLab. An object needs one more thing: a material.
-## 
+## A Three.js object (or to be more precise, Object3D) can be a line or a mesh.
+## A line is a line, a mesh can be anything else depending on what the geometry
+## of the mesh is. There are more possible types such as particles, etc. but
+## they are not currently used in LiveCodeLab.
+## An object needs one more thing: a material.
+
 ## Caching of objects
 ## ----------------------
-## Once created, objects are kept cached together with all possible materials that can be
-## associated with it. Each object has to have its own set of materials because
-## one can decide to draw one object in solid fill, one in normal color, one with
-## an ambient light (i.e. lambert material), etc.
-## 
+## Once created, objects are kept cached together with all possible materials
+## that can be associated with it. Each object has to have its own set of
+## materials because one can decide to draw one object in solid fill, one in
+## normal color, one with an ambient light (i.e. lambert material), etc.
+
 ## Objects are kept in the scene
 ## ----------------------
-## Once an object is added to the scene, it's never removed. Rather, it's hidden if it's
-## not used, but it's never removed. This is because adding/removing objects from the
-## scene is rather expensive. Note that Mr Doob mentioned via email that subsequent
-## versions of three.js have improved performance a lot, so it's worth trying another
-## approach.
-## 
+## Once an object is added to the scene, it's never removed. Rather, it's hidden
+## if it's not used, but it's never removed. This is because adding/removing
+## objects from the scene is rather expensive. Note that Mr Doob mentioned via
+## email that subsequent versions of three.js have improved performance a lot,
+## so it's worth trying another approach.
+
 ## Strokes are managed via separate objects for stroke and fill
 ## ----------------------
-## There is a particular flag in Three.js materials for drawing wireframes. But materials
-## cannot be combined, i.e. only one is associated at any time with a geometry. So one
-## can either draw a wireframe or a fill. In previous versions of Three.js more than
-## one material could be associated, but that has been deprecated, see
-## https://github.com/mrdoob/three.js/issues/751 and instead a
-## createMultiMaterialObject utility was put in place, which basically creates multiple
-## objects one for each material, see
+## There is a particular flag in Three.js materials for drawing wireframes.
+## But materials cannot be combined, i.e. only one is associated at any time
+## with a geometry. So one can either draw a wireframe or a fill. In previous
+## versions of Three.js more than one material could be associated, but that has
+## been deprecated, see https://github.com/mrdoob/three.js/issues/751 and
+## instead a createMultiMaterialObject utility was put in place, which basically
+## creates multiple objects one for each material, see
 ## https://github.com/mrdoob/three.js/blob/dev/src/extras/SceneUtils.js#L29
 ## So the solution here is to create two disting objects.
-## One for the fills and one, slightly "larger", for the strokes. In that way, the
-## strokes are visible "in front" of the fills, and the fills cover the strokes "at
-## the back"
-## 
+## One for the fills and one, slightly "larger", for the strokes. In that way,
+## the strokes are visible "in front" of the fills, and the fills cover the
+## strokes "at the back"
+
 ## The order of materials matters
 ## ----------------------
-## When an object is created, it must be first rendered with the most complex material,
-## because internally in Three.js/WebGL memory is allocated only once. So a special
-## mechanism is put in place by which new objects are drawn with the normalMaterial
-## with scale 0, so they are rendered but they are invisible. In the next frame (i.e.
-## after the first render) the correct material is used.
-## 
+## When an object is created, it must be first rendered with the most complex
+## material, because internally in Three.js/WebGL memory is allocated only once.
+## So a special mechanism is put in place by which new objects are drawn with
+## the normalMaterial with scale 0, so they are rendered but they are invisible.
+## In the next frame (i.e. after the first render) the correct material is used.
+
 ## "Spinning"
 ## ----------------------
-## "Spinning" applies to all objects added to an empty frame: it makes all objects spin
-## for a few frames. This has been implemented for two reasons a) cosmetic b) the user
-## is likely to first use "box", and without spinning that would look like a boring
-## square that appears without animation. Spinning gives many more cues: the environment
-## is 3d, the lighting is special by default and all faces have primary colors, things
-## animate. Without spinning, all those cues need to be further explained and demonstra
-## ted.
+## "Spinning" applies to all objects added to an empty frame: it makes all
+## objects spin for a few frames. This has been implemented for two reasons
+## a) cosmetic
+## b) the user is likely to first use "box", and without spinning that
+##    would look like a boring square that appears without animation.
+## Spinning gives many more cues:
+## the environment is 3d, the lighting is special by default and all faces have
+## primary colors, things animate. Without spinning, all those cues need to be
+## further explained and demonstra ted.
 */
 
 var GraphicsCommands;
 
 GraphicsCommands = (function() {
-  "use strict";  GraphicsCommands.prototype.primitiveTypes = {};
+  GraphicsCommands.prototype.primitiveTypes = {};
 
   GraphicsCommands.prototype.minimumBallDetail = 2;
 
@@ -195,6 +201,28 @@ GraphicsCommands = (function() {
     for (i = _i = 0, _ref = this.maximumBallDetail - this.minimumBallDetail + 1; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
       this.objectPools[this.primitiveTypes.ball + i] = [];
     }
+    /*
+    Since you can't change the geometry of an object once it's created, we keep
+    around a pool of objects for each mesh type. There is one pool for lines,
+    one for rectangles, one for boxes. There is one pool for each detail level
+    of balls (since they are different) meshes. For the time being there is
+    no detail level for cylinders so there is only one pool for cylinders.
+    
+    For how the mechanism works now, all pooled objects end up in the scene
+    graph.  The scene graph is traversed at each frame and only the used
+    objects are marked as visible, the other unused objects are hidden. This
+    is because adding/removing objects from the scene is expensive. Note that
+    this might have changed with more recent versions of Three.js of
+    the past 4 months.
+    
+    All object pools start empty. Note that each ball detail level must have
+    its own pool, because you can't change the geometry of an object.
+    If one doesn't like the idea of creating dozens of empty arrays that
+    won't ever be used (since probably only a few ball detail levels will
+    be used in a session) then one could leave all these arrays undefined
+    and define them at runtime only when needed.
+    */
+
     this.geometriesBank[this.primitiveTypes.line] = new this.liveCodeLabCore_three.Geometry();
     this.geometriesBank[this.primitiveTypes.line].vertices.push(new this.liveCodeLabCore_three.Vector3(0, -0.5, 0));
     this.geometriesBank[this.primitiveTypes.line].vertices.push(new this.liveCodeLabCore_three.Vector3(0, 0.5, 0));
@@ -215,12 +243,12 @@ GraphicsCommands = (function() {
     primitiveID = primitiveProperties.primitiveType + primitiveProperties.detailLevel;
     objectPool = this.objectPools[primitiveID];
     pooledObjectWithMaterials = objectPool[this.objectsUsedInFrameCounts[primitiveID]];
-    if (pooledObjectWithMaterials === undefined) {
+    if (pooledObjectWithMaterials == null) {
       pooledObjectWithMaterials = {
-        lineMaterial: undefined,
-        basicMaterial: undefined,
-        lambertMaterial: undefined,
-        normalMaterial: undefined,
+        lineMaterial: void 0,
+        basicMaterial: void 0,
+        lambertMaterial: void 0,
+        normalMaterial: void 0,
         threejsObject3D: new primitiveProperties.threeObjectConstructor(this.geometriesBank[primitiveID]),
         initialSpinCountdown: this.SPIN_DURATION_IN_FRAMES
       };
@@ -228,7 +256,7 @@ GraphicsCommands = (function() {
       objectPool.push(pooledObjectWithMaterials);
     }
     if (primitiveProperties.primitiveType === this.primitiveTypes.line) {
-      if (pooledObjectWithMaterials.lineMaterial === undefined) {
+      if (pooledObjectWithMaterials.lineMaterial == null) {
         pooledObjectWithMaterials.lineMaterial = new this.liveCodeLabCore_three.LineBasicMaterial();
       }
       if (this.currentStrokeColor === angleColor || this.defaultNormalStroke) {
@@ -240,18 +268,18 @@ GraphicsCommands = (function() {
       pooledObjectWithMaterials.lineMaterial.linewidth = this.currentStrokeSize;
       pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.lineMaterial;
     } else if (objectIsNew || (colorToBeUsed === angleColor || applyDefaultNormalColor)) {
-      if (pooledObjectWithMaterials.normalMaterial === undefined) {
+      if (pooledObjectWithMaterials.normalMaterial == null) {
         pooledObjectWithMaterials.normalMaterial = new this.liveCodeLabCore_three.MeshNormalMaterial();
       }
       pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.normalMaterial;
     } else if (!this.liveCodeLabCoreInstance.lightSystem.lightsAreOn) {
-      if (pooledObjectWithMaterials.basicMaterial === undefined) {
+      if (pooledObjectWithMaterials.basicMaterial == null) {
         pooledObjectWithMaterials.basicMaterial = new this.liveCodeLabCore_three.MeshBasicMaterial();
       }
       pooledObjectWithMaterials.basicMaterial.color.setHex(colorToBeUsed);
       pooledObjectWithMaterials.threejsObject3D.material = pooledObjectWithMaterials.basicMaterial;
     } else {
-      if (pooledObjectWithMaterials.lambertMaterial === undefined) {
+      if (pooledObjectWithMaterials.lambertMaterial == null) {
         pooledObjectWithMaterials.lambertMaterial = new this.liveCodeLabCore_three.MeshLambertMaterial();
       }
       pooledObjectWithMaterials.lambertMaterial.color.setHex(colorToBeUsed);
@@ -284,6 +312,14 @@ GraphicsCommands = (function() {
       this.liveCodeLabCoreInstance.matrixCommands.pushMatrix();
       this.liveCodeLabCoreInstance.matrixCommands.rotate(pooledObjectWithMaterials.initialSpinCountdown / 50);
     }
+    /*
+    see
+    https://github.com/mrdoob/three.js/wiki/Using-Matrices-&-Object3Ds-in-THREE
+    for info on how this works.
+    Around 11% of the time is spent doing matrix multiplications, which
+    happens every time there is a scale or rotate or move.
+    */
+
     pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = false;
     pooledObjectWithMaterials.threejsObject3D.matrix.copy(this.liveCodeLabCoreInstance.matrixCommands.getWorldMatrix());
     pooledObjectWithMaterials.threejsObject3D.matrixWorldNeedsUpdate = true;
@@ -305,15 +341,15 @@ GraphicsCommands = (function() {
   };
 
   GraphicsCommands.prototype.commonPrimitiveDrawingLogic = function(a, b, c, primitiveProperties) {
-    if (a === undefined) {
+    if (a == null) {
       a = 1;
       b = 1;
       c = 1;
-    } else if (b === undefined) {
+    } else if (b == null) {
       b = a;
       c = a;
     } else {
-      if (c === undefined) {
+      if (c == null) {
         c = 1;
       }
     }
@@ -360,7 +396,7 @@ GraphicsCommands = (function() {
       if (this.currentStrokeSize < 2) {
         this.currentStrokeSize = 2;
       }
-      if (a === undefined) {
+      if (a == null) {
         a = 1;
       }
       this.rect(0, a, 0);
@@ -418,7 +454,7 @@ GraphicsCommands = (function() {
   };
 
   GraphicsCommands.prototype.ballDetail = function(a) {
-    if (a === undefined) {
+    if (a == null) {
       return;
     }
     if (a < 2) {
@@ -452,7 +488,7 @@ GraphicsCommands = (function() {
     } else {
       this.defaultNormalFill = true;
       this.currentFillColor = angleColor;
-      if (b === undefined && g !== undefined) {
+      if ((b == null) && (g == null)) {
         return this.currentFillAlpha = g / this.liveCodeLabCoreInstance.colourFunctions.colorModeA;
       } else {
         return this.currentFillAlpha = 1;
@@ -475,8 +511,10 @@ GraphicsCommands = (function() {
   };
 
   /*
-  The stroke() function sets the color used to draw lines and borders around shapes.
-  This color is either specified in terms of the RGB or HSB color depending on the
+  The stroke() function sets the color used to
+  draw lines and borders around shapes.
+  This color is either specified in terms
+  of the RGB or HSB color depending on the
   current <b>colorMode()</b> (the default color space is RGB, with each
   value in the range from 0 to 255).
   <br><br>When using hexadecimal notation to specify a color, use "#" or
@@ -496,7 +534,8 @@ GraphicsCommands = (function() {
   @param {int|float} value3  blue or brightness value
   @param {int|float} alpha   opacity of the stroke
   @param {Color} color       any value of the color datatype
-  @param {int} hex           color value in hex notation (i.e. #FFCC00 or 0xFFFFCC00)
+  @param {int} hex           color value in hex notation
+                             (i.e. #FFCC00 or 0xFFFFCC00)
   
   @see #fill()
   @see #noStroke()
@@ -515,7 +554,7 @@ GraphicsCommands = (function() {
     } else {
       this.defaultNormalStroke = true;
       this.currentStrokeColor = angleColor;
-      if (b === undefined && g !== undefined) {
+      if ((b == null) && (g == null)) {
         return this.currentStrokeAlpha = g / this.liveCodeLabCoreInstance.colourFunctions.colorModeA;
       } else {
         return this.currentStrokeAlpha = 1;
@@ -537,7 +576,7 @@ GraphicsCommands = (function() {
   };
 
   GraphicsCommands.prototype.strokeSize = function(a) {
-    if (a === undefined) {
+    if (a == null) {
       a = 1;
     } else {
       if (a < 0) {

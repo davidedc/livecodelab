@@ -1,23 +1,20 @@
-# jslint browser: true 
-# global color, lightSystem, colorModeA, redF, greenF, blueF, alphaZeroToOne  
-
 ###
 ## Please reference the colour-functions.js file for all colour-related
 ## functions and lights-functions.js for lights, which use a similar
 ## structure for caching and counting of light instances.
-## 
+
 ## Fundamentals
 ## ============
 ## There are a couple of fundamentals of LiveCodeLab and a couple of
 ## complications of Three.js that shape the way
 ## graphic primitives work in this file.
-## 
+
 ## LiveCodeLab uses immediate mode graphics
 ## ----------------------
 ## First off, like Processing, LiveCodeLab shies away from "retained" graphics
 ## and instead uses "immediate mode" graphics.
-## For context, "immediate mode" graphics means that when the user uses a graphic
-## primitive, he is
+## For context, "immediate mode" graphics means that when the user uses a
+## graphic primitive, he is
 ## NOT given a handle that he can use to modify properties of that element at a
 ## later stage, contrarily to flash, DOM, CSS, openGL and Three.JS
 ## (to different degrees).
@@ -30,79 +27,84 @@
 ## (no events, no input, no physics/overlap/collision/animation).
 ## Also, retained graphics mode usually is smart about updating
 ## only minimal parts of the screen that need updating rather than redrawing the
-## whole screen (again, openGL doesn't do that apart from basic frustum culling, but
-## for example there is nothing to detect occlusions and avoid painting occluded
-## objects).
+## whole screen (again, openGL doesn't do that apart from basic frustum culling,
+## but for example there is nothing to detect occlusions and avoid painting
+## occluded objects).
 ## There are a few drawbacks in retained modes: a) programs that manage
 ## handles are more lengthy than programs that don't
 ## b) they are often not needed for example in
 ## 2d sprites-based videogames c) most importantly,
 ## they require deeper understanding of the underlying
-## model (e.g. which property can I change? What are those called? How do I change
-## parent/child relationship? How do events bubble up and where should I catch them?).
-## Processing and LiveCodeLab go for immediate mode. Once the primitive is invoked, it
+## model (e.g. which property can I change?
+## What are those called?
+## How do I change parent/child relationship?
+## How do events bubble up and where should I catch them?).
+## Processing and LiveCodeLab go for immediate mode.
+## Once the primitive is invoked, it
 ## becomes pixels and there is no built-in way to do input/event/hierarchies...
-## Rather, there are a few properties that are set as a global state and apply to all
-## objects. Examples are "fill" and "stroke".
-## 
+## Rather, there are a few properties that are set as a global state and apply
+## to all objects. Examples are "fill" and "stroke".
+
 ## Relationship between objects, meshes, geometry, materials...
 ## ----------------------
-## A Three.js object (or to be more precise, Object3D) can be a line or a mesh. A line
-## is a line, a mesh can be anything else depending on what the geometry of the mesh
-## is. There are more possible types such as particles, etc. but they are not currently
-## used in LiveCodeLab. An object needs one more thing: a material.
-## 
+## A Three.js object (or to be more precise, Object3D) can be a line or a mesh.
+## A line is a line, a mesh can be anything else depending on what the geometry
+## of the mesh is. There are more possible types such as particles, etc. but
+## they are not currently used in LiveCodeLab.
+## An object needs one more thing: a material.
+
 ## Caching of objects
 ## ----------------------
-## Once created, objects are kept cached together with all possible materials that can be
-## associated with it. Each object has to have its own set of materials because
-## one can decide to draw one object in solid fill, one in normal color, one with
-## an ambient light (i.e. lambert material), etc.
-## 
+## Once created, objects are kept cached together with all possible materials
+## that can be associated with it. Each object has to have its own set of
+## materials because one can decide to draw one object in solid fill, one in
+## normal color, one with an ambient light (i.e. lambert material), etc.
+
 ## Objects are kept in the scene
 ## ----------------------
-## Once an object is added to the scene, it's never removed. Rather, it's hidden if it's
-## not used, but it's never removed. This is because adding/removing objects from the
-## scene is rather expensive. Note that Mr Doob mentioned via email that subsequent
-## versions of three.js have improved performance a lot, so it's worth trying another
-## approach.
-## 
+## Once an object is added to the scene, it's never removed. Rather, it's hidden
+## if it's not used, but it's never removed. This is because adding/removing
+## objects from the scene is rather expensive. Note that Mr Doob mentioned via
+## email that subsequent versions of three.js have improved performance a lot,
+## so it's worth trying another approach.
+
 ## Strokes are managed via separate objects for stroke and fill
 ## ----------------------
-## There is a particular flag in Three.js materials for drawing wireframes. But materials
-## cannot be combined, i.e. only one is associated at any time with a geometry. So one
-## can either draw a wireframe or a fill. In previous versions of Three.js more than
-## one material could be associated, but that has been deprecated, see
-## https://github.com/mrdoob/three.js/issues/751 and instead a
-## createMultiMaterialObject utility was put in place, which basically creates multiple
-## objects one for each material, see
+## There is a particular flag in Three.js materials for drawing wireframes.
+## But materials cannot be combined, i.e. only one is associated at any time
+## with a geometry. So one can either draw a wireframe or a fill. In previous
+## versions of Three.js more than one material could be associated, but that has
+## been deprecated, see https://github.com/mrdoob/three.js/issues/751 and
+## instead a createMultiMaterialObject utility was put in place, which basically
+## creates multiple objects one for each material, see
 ## https://github.com/mrdoob/three.js/blob/dev/src/extras/SceneUtils.js#L29
 ## So the solution here is to create two disting objects.
-## One for the fills and one, slightly "larger", for the strokes. In that way, the
-## strokes are visible "in front" of the fills, and the fills cover the strokes "at
-## the back"
-## 
+## One for the fills and one, slightly "larger", for the strokes. In that way,
+## the strokes are visible "in front" of the fills, and the fills cover the
+## strokes "at the back"
+
 ## The order of materials matters
 ## ----------------------
-## When an object is created, it must be first rendered with the most complex material,
-## because internally in Three.js/WebGL memory is allocated only once. So a special
-## mechanism is put in place by which new objects are drawn with the normalMaterial
-## with scale 0, so they are rendered but they are invisible. In the next frame (i.e.
-## after the first render) the correct material is used.
-## 
+## When an object is created, it must be first rendered with the most complex
+## material, because internally in Three.js/WebGL memory is allocated only once.
+## So a special mechanism is put in place by which new objects are drawn with
+## the normalMaterial with scale 0, so they are rendered but they are invisible.
+## In the next frame (i.e. after the first render) the correct material is used.
+
 ## "Spinning"
 ## ----------------------
-## "Spinning" applies to all objects added to an empty frame: it makes all objects spin
-## for a few frames. This has been implemented for two reasons a) cosmetic b) the user
-## is likely to first use "box", and without spinning that would look like a boring
-## square that appears without animation. Spinning gives many more cues: the environment
-## is 3d, the lighting is special by default and all faces have primary colors, things
-## animate. Without spinning, all those cues need to be further explained and demonstra
-## ted.
+## "Spinning" applies to all objects added to an empty frame: it makes all
+## objects spin for a few frames. This has been implemented for two reasons
+## a) cosmetic
+## b) the user is likely to first use "box", and without spinning that
+##    would look like a boring square that appears without animation.
+## Spinning gives many more cues:
+## the environment is 3d, the lighting is special by default and all faces have
+## primary colors, things animate. Without spinning, all those cues need to be
+## further explained and demonstra ted.
 ###
 
 class GraphicsCommands
-  "use strict"
 
   primitiveTypes: {}
   minimumBallDetail: 2
@@ -122,7 +124,8 @@ class GraphicsCommands
   currentStrokeSize: 1
   # For each pool we have a count of how many of those entries
   # are actually used in the current frame.
-  # This is so that we can go through the scene graph and hide the unused objects.
+  # This is so that we can go through the scene graph
+  # and hide the unused objects.
   objectsUsedInFrameCounts: []
   # the "spinthingy" is because we want
   # users who type "box" to see that it's actually
@@ -164,24 +167,27 @@ class GraphicsCommands
     for i in [0...(@maximumBallDetail - @minimumBallDetail + 1)]
       @objectPools[@primitiveTypes.ball + i] = []
     
-    # Since you can't change the geometry of an object once it's created, we keep around
-    # a pool of objects for each mesh type. There is one pool for lines, one for rectangles,
-    # one for boxes. There is one pool for each detail level of balls (since they are
-    # different) meshes. For the time being there is no detail level for cylinders so there
-    # is only one pool for cylinders.
-    
-    # For how the mechanism works now, all pooled objects end up in the scene graph.
-    # The scene graph is traversed at each frame and only the used objects are marked as
-    # visible, the other unused objects are hidden. This is because adding/removing
-    # objects from the scene is expensive. Note that this might have changed with more
-    # recent versions of Three.js of the past 4 months.
-    
-    # All object pools start empty. Note that each ball detail level must have
-    # its own pool, because you can't change the geometry of an object.
-    # If one doesn't like the idea of creating dozens of empty arrays that won't ever be
-    # used (since probably only a few ball detail levels will be used in a session)
-    # then one could leave all these arrays undefined and define them at runtime
-    # only when needed.
+    ###
+    Since you can't change the geometry of an object once it's created, we keep
+    around a pool of objects for each mesh type. There is one pool for lines,
+    one for rectangles, one for boxes. There is one pool for each detail level
+    of balls (since they are different) meshes. For the time being there is
+    no detail level for cylinders so there is only one pool for cylinders.
+
+    For how the mechanism works now, all pooled objects end up in the scene
+    graph.  The scene graph is traversed at each frame and only the used
+    objects are marked as visible, the other unused objects are hidden. This
+    is because adding/removing objects from the scene is expensive. Note that
+    this might have changed with more recent versions of Three.js of
+    the past 4 months.
+
+    All object pools start empty. Note that each ball detail level must have
+    its own pool, because you can't change the geometry of an object.
+    If one doesn't like the idea of creating dozens of empty arrays that
+    won't ever be used (since probably only a few ball detail levels will
+    be used in a session) then one could leave all these arrays undefined
+    and define them at runtime only when needed.
+    ###
     
     @geometriesBank[@primitiveTypes.line] = new @liveCodeLabCore_three.Geometry()
     @geometriesBank[@primitiveTypes.line].vertices.push \
@@ -201,8 +207,8 @@ class GraphicsCommands
     
   
   createObjectIfNeededAndDressWithCorrectMaterial: (
-      a, b, c, primitiveProperties, strokeTime, colorToBeUsed,
-      alphaToBeUsed, applyDefaultNormalColor) ->
+    a, b, c, primitiveProperties, strokeTime, colorToBeUsed,
+    alphaToBeUsed, applyDefaultNormalColor) ->
     objectIsNew = false
     pooledObjectWithMaterials = undefined
     theAngle = undefined
@@ -210,13 +216,15 @@ class GraphicsCommands
     # the primitiveID is used to index three arrays:
     #   array of caches (pools) of objects
     #   array of caches (pools) of geometries
-    #   counters of how many objects of that type have been used in the current frame.
-    # Note that primitives that have an associated detail level span across
-    # multiple IDs, because geometries at different details levels are different.
+    #   counters of how many objects of that type have been used in the
+    #   current frame.
+    # Note that primitives that have an associated detail
+    # level span across multiple IDs, because geometries at
+    # different details levels are different.
     primitiveID = primitiveProperties.primitiveType + primitiveProperties.detailLevel
     objectPool = @objectPools[primitiveID]
     pooledObjectWithMaterials = objectPool[@objectsUsedInFrameCounts[primitiveID]]
-    if pooledObjectWithMaterials is `undefined`
+    if not pooledObjectWithMaterials?
       
       # each pooled object contains a geometry, and all the materials it could
       # ever need.
@@ -230,13 +238,13 @@ class GraphicsCommands
         # lines will ever only have the lineMaterial for example, and cubes
         # won't ever have the lineMaterial, but this initialisation costs
         # nothing and makes the code cleaner.
-        lineMaterial: `undefined`
+        lineMaterial: undefined
         
         # The basic material is for simple solid fill without lighting
-        basicMaterial: `undefined`
+        basicMaterial: undefined
         
         # The Lambert material is for fill with lighting
-        lambertMaterial: `undefined`
+        lambertMaterial: undefined
         
         # The normalMaterial is the trippy fill with each side of the cube
         # being a bright color (the default one).
@@ -251,15 +259,18 @@ class GraphicsCommands
         # the user will ever want to use it.
         # Another workaround would be to create an object
         # for each different type of material.
-        normalMaterial: `undefined`
-        threejsObject3D: \
-          new primitiveProperties.threeObjectConstructor(@geometriesBank[primitiveID])
+        normalMaterial: undefined
+        threejsObject3D: (
+          new primitiveProperties.threeObjectConstructor(
+            @geometriesBank[primitiveID]
+          )
+        )
         initialSpinCountdown: @SPIN_DURATION_IN_FRAMES
 
       objectIsNew = true
       objectPool.push pooledObjectWithMaterials
     if primitiveProperties.primitiveType is @primitiveTypes.line
-      if pooledObjectWithMaterials.lineMaterial is `undefined`
+      if not pooledObjectWithMaterials.lineMaterial?
         pooledObjectWithMaterials.lineMaterial =
           new @liveCodeLabCore_three.LineBasicMaterial()
       
@@ -268,18 +279,22 @@ class GraphicsCommands
         theAngle =
           pooledObjectWithMaterials.threejsObject3D.matrix.multiplyVector3(
             new @liveCodeLabCore_three.Vector3(0, 1, 0)).normalize()
-        pooledObjectWithMaterials.lineMaterial.color.setHex \
+        pooledObjectWithMaterials.lineMaterial.color.setHex(
           color(
             ((theAngle.x + 1) / 2) * 255,
             ((theAngle.y + 1) / 2) * 255,
-            ((theAngle.z + 1) / 2) * 255)
+            ((theAngle.z + 1) / 2) * 255
+          )
+        )
       else
         pooledObjectWithMaterials.lineMaterial.color.setHex @currentStrokeColor
       pooledObjectWithMaterials.lineMaterial.linewidth =
         @currentStrokeSize
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.lineMaterial
-    else if objectIsNew or (colorToBeUsed is angleColor or applyDefaultNormalColor)
+    else if objectIsNew or (
+      colorToBeUsed is angleColor or applyDefaultNormalColor
+    )
       
       # the first time we render a an object we need to
       # render it with the material that takes the
@@ -287,13 +302,13 @@ class GraphicsCommands
       # https://github.com/mrdoob/three.js/issues/1051
       # Another workaround would be to create a pooled object
       # for each different type of material.
-      if pooledObjectWithMaterials.normalMaterial is `undefined`
+      if not pooledObjectWithMaterials.normalMaterial?
         pooledObjectWithMaterials.normalMaterial =
           new @liveCodeLabCore_three.MeshNormalMaterial()
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.normalMaterial
     else unless @liveCodeLabCoreInstance.lightSystem.lightsAreOn
-      if pooledObjectWithMaterials.basicMaterial is `undefined`
+      if not pooledObjectWithMaterials.basicMaterial?
         pooledObjectWithMaterials.basicMaterial =
           new @liveCodeLabCore_three.MeshBasicMaterial()
       pooledObjectWithMaterials.basicMaterial.color.setHex colorToBeUsed
@@ -302,7 +317,7 @@ class GraphicsCommands
     else
       
       # lights are on
-      if pooledObjectWithMaterials.lambertMaterial is `undefined`
+      if not pooledObjectWithMaterials.lambertMaterial?
         pooledObjectWithMaterials.lambertMaterial =
           new @liveCodeLabCore_three.MeshLambertMaterial()
       pooledObjectWithMaterials.lambertMaterial.color.setHex colorToBeUsed
@@ -342,10 +357,13 @@ class GraphicsCommands
       @liveCodeLabCoreInstance.matrixCommands.rotate \
         pooledObjectWithMaterials.initialSpinCountdown / 50
     
-    # see https://github.com/mrdoob/three.js/wiki/Using-Matrices-&-Object3Ds-in-THREE
-    # for info on how this works.
-    # Around 11% of the time is spent doing matrix multiplications, which
-    # happens every time there is a scale or rotate or move.
+    ###
+    see
+    https://github.com/mrdoob/three.js/wiki/Using-Matrices-&-Object3Ds-in-THREE
+    for info on how this works.
+    Around 11% of the time is spent doing matrix multiplications, which
+    happens every time there is a scale or rotate or move.
+    ###
     pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = false
     pooledObjectWithMaterials.threejsObject3D.matrix.copy \
       @liveCodeLabCoreInstance.matrixCommands.getWorldMatrix()
@@ -365,7 +383,7 @@ class GraphicsCommands
       pooledObjectWithMaterials.threejsObject3D.matrix.scale \
         new @liveCodeLabCore_three.Vector3(0.0001, 0.0001, 0.0001)
     else if a isnt 1 or b isnt 1 or c isnt 1
-      if strokeTime        
+      if strokeTime
         # wireframes are built via separate objects with geometries that are
         # ever so slight larger than the "fill" object, so there
         # is no z-fighting and the stroke is drawn neatly on top of the fill
@@ -383,53 +401,65 @@ class GraphicsCommands
     # b and c are not functional in some geometric
     # primitives, but we handle them here in all cases
     # to make the code uniform and unifiable
-    if a is `undefined`
+    if not a?
       a = 1
       b = 1
       c = 1
-    else if b is `undefined`
+    else if not b?
       b = a
       c = a
-    else c = 1  if c is `undefined`
+    else c = 1 if not c?
     
     # Simple case - if there is no fill and
     # no stroke then there is nothing to do.
     # Also, even if we aren'd under a noFill command spell, some geometries
     # inherently don't have a fill, so we return if there is no stroke either.
     # (right now that applies only lines).
-    return  if not @doStroke and (not @doFill or not primitiveProperties.canFill)
+    return  if not @doStroke and (
+      not @doFill or not primitiveProperties.canFill
+    )
     
     # if we are under the influence of a noFill command OR
     # the wireframe is not going to be visible on top of the
     # fill then don't draw the stroke, only draw the fill
-    if (primitiveProperties.canFill and @doFill and (
-        @currentStrokeSize is 0 or not @doStroke or
+    if (
+      primitiveProperties.canFill and @doFill and
+      (@currentStrokeSize is 0 or not @doStroke or
         (@currentStrokeSize <= 1 and
-        not @defaultNormalFill and
-        not @defaultNormalStroke and
-        @currentStrokeColor is @currentFillColor and
-        @currentFillAlpha is 1 and @currentStrokeAlpha is 1))) or
-        (@currentStrokeSize <= 1 and
-        @defaultNormalFill and
-        @defaultNormalStroke)
-      @createObjectIfNeededAndDressWithCorrectMaterial \
-        a, b, c, primitiveProperties, false, @currentFillColor, @currentFillAlpha,
+         not @defaultNormalFill and
+         not @defaultNormalStroke and
+         @currentStrokeColor is @currentFillColor and
+         @currentFillAlpha is 1 and @currentStrokeAlpha is 1)
+      )
+    ) or (
+      @currentStrokeSize <= 1 and @defaultNormalFill and @defaultNormalStroke
+    )
+      @createObjectIfNeededAndDressWithCorrectMaterial(
+        a, b, c, primitiveProperties,
+        false, @currentFillColor, @currentFillAlpha,
         @defaultNormalFill
+      )
     else if (not @doFill or not primitiveProperties.canFill) and @doStroke
       
       # only doing the stroke
-      @createObjectIfNeededAndDressWithCorrectMaterial \
-        a, b, c, primitiveProperties, true, @currentStrokeColor, @currentStrokeAlpha,
+      @createObjectIfNeededAndDressWithCorrectMaterial(
+        a, b, c, primitiveProperties, true,
+        @currentStrokeColor, @currentStrokeAlpha,
         @defaultNormalStroke
+      )
     
     # doing both the fill and the stroke
     else
-      @createObjectIfNeededAndDressWithCorrectMaterial \
-        a, b, c, primitiveProperties, true, @currentStrokeColor, @currentStrokeAlpha,
+      @createObjectIfNeededAndDressWithCorrectMaterial(
+        a, b, c, primitiveProperties, true,
+        @currentStrokeColor, @currentStrokeAlpha,
         @defaultNormalStroke
-      @createObjectIfNeededAndDressWithCorrectMaterial \
-        a, b, c, primitiveProperties, false, @currentFillColor, @currentFillAlpha,
+      )
+      @createObjectIfNeededAndDressWithCorrectMaterial(
+        a, b, c, primitiveProperties, false,
+        @currentFillColor, @currentFillAlpha,
         @defaultNormalFill
+      )
 
   reset: ->
     @fill 0xFFFFFFFF
@@ -467,13 +497,13 @@ class GraphicsCommands
     # So in order to get lights to react to light we have to actually draw the
     # wireframe of a rectangle with one of the sides being zero length.
     # Since the stroke and the fill are drawn with two different objects and the
-    # fill is not needed, we temporarily switch off the fill and then put it back
-    # to whichever value it was.
+    # fill is not needed, we temporarily switch off the fill and then
+    # put it back to whichever value it was.
     if @liveCodeLabCoreInstance.lightSystem.lightsAreOn
       rememberIfThereWasAFill = @doFill
       rememberPreviousStrokeSize = @currentStrokeSize
       @currentStrokeSize = 2  if @currentStrokeSize < 2
-      a = 1  if a is `undefined`
+      a = 1 if not a?
       @rect 0, a, 0
       @doFill = rememberIfThereWasAFill
       @currentStrokeSize = rememberPreviousStrokeSize
@@ -491,7 +521,7 @@ class GraphicsCommands
     # end of primitive-specific initialisations:
     @commonPrimitiveDrawingLogic a, b, c, primitiveProperties
 
-  rect: (a, b, c) ->    
+  rect: (a, b, c) ->
     # primitive-specific initialisations:
     primitiveProperties =
       canFill: true
@@ -504,7 +534,7 @@ class GraphicsCommands
     # end of primitive-specific initialisations:
     @commonPrimitiveDrawingLogic a, b, c, primitiveProperties
 
-  box: (a, b, c) ->    
+  box: (a, b, c) ->
     # primitive-specific initialisations:
     primitiveProperties =
       canFill: true
@@ -517,7 +547,7 @@ class GraphicsCommands
     # end of primitive-specific initialisations:
     @commonPrimitiveDrawingLogic a, b, c, primitiveProperties
 
-  peg: (a, b, c) ->    
+  peg: (a, b, c) ->
     # primitive-specific initialisations:
     primitiveProperties =
       canFill: true
@@ -531,12 +561,12 @@ class GraphicsCommands
     @commonPrimitiveDrawingLogic a, b, c, primitiveProperties
 
   ballDetail: (a) ->
-    return  if a is `undefined`
+    return if not a?
     a = 2  if a < 2
     a = 30  if a > 30
     @ballDetLevel = Math.round(a)
 
-  ball: (a, b, c) ->    
+  ball: (a, b, c) ->
     # primitive-specific initialisations:
     primitiveProperties =
       canFill: true
@@ -551,7 +581,7 @@ class GraphicsCommands
 
   
   # Modified from Processing.js
-  fill: (r, g, b, a) ->    
+  fill: (r, g, b, a) ->
     # Three.js needs two integers to define an RGBA: the rgb as a 24 bit integer
     # and the alpha (from zero to one).
     # Now the thing is that the color gan be given in different
@@ -581,7 +611,7 @@ class GraphicsCommands
       # the fill
       @defaultNormalFill = true
       @currentFillColor = angleColor
-      if b is `undefined` and g isnt `undefined`
+      if not b? and not g?
         @currentFillAlpha = g / @liveCodeLabCoreInstance.colourFunctions.colorModeA
       else
         @currentFillAlpha = 1
@@ -600,8 +630,10 @@ class GraphicsCommands
 
   
   ###
-  The stroke() function sets the color used to draw lines and borders around shapes.
-  This color is either specified in terms of the RGB or HSB color depending on the
+  The stroke() function sets the color used to
+  draw lines and borders around shapes.
+  This color is either specified in terms
+  of the RGB or HSB color depending on the
   current <b>colorMode()</b> (the default color space is RGB, with each
   value in the range from 0 to 255).
   <br><br>When using hexadecimal notation to specify a color, use "#" or
@@ -621,7 +653,8 @@ class GraphicsCommands
   @param {int|float} value3  blue or brightness value
   @param {int|float} alpha   opacity of the stroke
   @param {Color} color       any value of the color datatype
-  @param {int} hex           color value in hex notation (i.e. #FFCC00 or 0xFFFFCC00)
+  @param {int} hex           color value in hex notation
+                             (i.e. #FFCC00 or 0xFFFFCC00)
   
   @see #fill()
   @see #noStroke()
@@ -629,7 +662,7 @@ class GraphicsCommands
   @see #background()
   @see #colorMode()
   ###
-  stroke: (r, g, b, a) ->    
+  stroke: (r, g, b, a) ->
     # see comment on fill method above
     # for some comments on how this method works.
     @doStroke = true
@@ -646,7 +679,7 @@ class GraphicsCommands
       # the fill
       @defaultNormalStroke = true
       @currentStrokeColor = angleColor
-      if b is `undefined` and g isnt `undefined`
+      if not b? and not g?
         @currentStrokeAlpha = g / @liveCodeLabCoreInstance.colourFunctions.colorModeA
       else
         @currentStrokeAlpha = 1
@@ -662,14 +695,14 @@ class GraphicsCommands
   noStroke: ->
     @doStroke = false
 
-  strokeSize: (a) ->    
+  strokeSize: (a) ->
     # note that either Three.js of the graphic card limit the size
     # of the stroke. This is because openGL strokes are VERY crude
     # (the cap is not even square, it's worse than that:
     # http://twolivesleft.com/Codea/LineCapShear.png )
     # So it's limited to 10. In some graphic cards this doesn't even have
     # any effect.
-    if a is `undefined`
+    if not a?
       a = 1
     else a = 0  if a < 0
     @currentStrokeSize = a

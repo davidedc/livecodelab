@@ -1,0 +1,72 @@
+/**
+Stylesheet for SooperFish by www.SooperThemes.com
+Author: Jurriaan Roelofs
+*/
+
+/* Configuration of menu width */
+
+/* Just to see where the bottom of the page shows through
+body {
+background-color:#ffff00;
+}
+*/
+ html body ul.sf-menu ul, html body ul.sf-menu ul li {
+    width:170px;
+}
+html body ul.sf-menu ul ul {
+    margin:0 0 0 170px;
+}
+/* Theming the menu */
+ul#nav {
+    float:left;
+    font-weight:bold;
+    /* normal colors of menu nav bar at rest */
+    background-color: black;
+    /* the menu bar is fixed at 30px */
+    height: 30px;
+}
+ul#nav ul {
+    text-transform:none;
+    font-weight:normal;
+}
+ul#nav li a, ul#nav li span {
+    padding:4px 15px;
+    font-family:MavenPro-Medium;
+    text-decoration:none;
+    color: white;
+}
+/*
+ul#nav ul li a,
+ul#nav ul li span {
+opacity:0.7;
+text-transform:lowercase;
+}
+*/
+ul#nav ul ul {
+    margin-top:-1px;
+}
+/* any item when hovered:*/
+ul#nav li a:hover, ul#nav li a:focus, ul#nav li span:hover, ul#nav li span:focus {
+    color:black;
+    background-color: white;
+}
+ul#nav li li {
+    /* unfortunately setting a left or right margin causes mahiem*/
+    border-top-style: dotted;
+    border-width: thin 0px 0px 0px;
+}
+li.sf-open:hover {
+    background-color:#0000ff;
+    background-color: orange;
+}
+li.sf-open span, li.sf-open li, li.sf-open ul {
+    background-color:black;
+}
+span div.sf-arrow {
+    top:14px;
+    right:2px;
+}
+ul ul span div.sf-arrow {
+    right:12px;
+    top:12px;
+}

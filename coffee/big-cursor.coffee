@@ -1,15 +1,11 @@
-# jslint browser: true, devel: true 
-# global $ 
-
 ###
-## The big cursor that flashes when the environment is first opened. It's a special div
-## which is actually not meant to contain text. It just shrinks/expands depending on
-## whether the user types something (shrinks) or whether the program turns empty
-## (expands).
+## The big cursor that flashes when the environment is first opened.
+## It's a special div which is actually not meant to contain text.
+## It just shrinks/expands depending on whether the user types something
+## (shrinks) or whether the program turns empty (expands).
 ###
 
 class BigCursor
-  "use strict"
 
   constructor: (eventRouter) ->
     @fakeCursorInterval = undefined
@@ -21,16 +17,21 @@ class BigCursor
 
   startBigCursorBlinkingAnimation: ->
     $("#fakeStartingBlinkingCursor").animate(
-        opacity: 0.2
-      , "fast", "swing").animate
-        opacity: 1
-      , "fast", "swing"
+      opacity: 0.2,
+      "fast",
+      "swing"
+    ).animate
+      opacity: 1,
+      "fast",
+      "swing"
 
   toggleBlink: (active) ->
     if active
       #avoid setting the animation twice, which causes
       # the cursor to start blinking twice as fast.
-      @fakeCursorInterval = setInterval(@startBigCursorBlinkingAnimation, 800)  unless @fakeCursorInterval
+      @fakeCursorInterval = setInterval(
+        @startBigCursorBlinkingAnimation, 800
+      ) unless @fakeCursorInterval
     else
       clearTimeout @fakeCursorInterval
       @fakeCursorInterval = null
