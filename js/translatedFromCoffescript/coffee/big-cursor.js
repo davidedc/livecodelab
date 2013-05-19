@@ -1,14 +1,14 @@
 /*
-## The big cursor that flashes when the environment is first opened. It's a special div
-## which is actually not meant to contain text. It just shrinks/expands depending on
-## whether the user types something (shrinks) or whether the program turns empty
-## (expands).
+## The big cursor that flashes when the environment is first opened.
+## It's a special div which is actually not meant to contain text.
+## It just shrinks/expands depending on whether the user types something
+## (shrinks) or whether the program turns empty (expands).
 */
 
 var BigCursor;
 
 BigCursor = (function() {
-  "use strict";  function BigCursor(eventRouter) {
+  function BigCursor(eventRouter) {
     this.fakeCursorInterval = void 0;
     this.isShowing = true;
   }

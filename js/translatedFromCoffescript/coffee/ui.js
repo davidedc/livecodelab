@@ -1,20 +1,20 @@
 /*
-## Ui handles all things UI such as the menus, the notification popups, the editor panel,
-## the big flashing cursor, the stats widget...
+## Ui handles all things UI such as the menus, the notification popups,
+## the editor panel, the big flashing cursor, the stats widget...
 */
 
 var Ui;
 
 Ui = (function() {
-  "use strict";  function Ui(eventRouter, stats, programLoader) {
+  function Ui(eventRouter, stats, programLoader) {
     var _this = this;
 
     this.eventRouter = eventRouter;
     this.stats = stats;
     this.programLoader = programLoader;
-    this.eventRouter.bind("report-runtime-or-compile-time-error", (function(e) {
+    this.eventRouter.bind("report-runtime-or-compile-time-error", function(e) {
       return _this.checkErrorAndReport(e);
-    }), this);
+    }, this);
     this.eventRouter.bind("clear-error", (function() {
       return _this.clearError();
     }), this);
@@ -142,7 +142,7 @@ Ui = (function() {
         _ref1 = demoSubmenus[demoSubmenu];
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
           demo = _ref1[_i];
-          a = "<li><a id='" + demo + "'>" + _this.programLoader.programs.demos[demo].title + "</a></li>";
+          a = "<li>\n<a id='" + demo + "'>\n" + _this.programLoader.programs.demos[demo].title + "\n</a>\n</li>";
           $(a).appendTo($('#' + demoSubmenuNoSpaces));
         }
       }
@@ -165,7 +165,7 @@ Ui = (function() {
         _ref3 = tutorialSubmenus[tutorialSubmenu];
         for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
           tutorial = _ref3[_j];
-          a = "<li><a id='" + tutorial + "'>" + _this.programLoader.programs.tutorials[tutorial].title + "</a></li>";
+          a = "<li>\n<a id='" + tutorial + "'>\n" + _this.programLoader.programs.tutorials[tutorial].title + "\n</a>\n</li>";
           $(a).appendTo($('#' + tutorialSubmenuNoSpaces));
         }
       }

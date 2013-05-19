@@ -1,15 +1,17 @@
 /*
-## BlendControls manages the three different blending styles. One can decide for either
-## 'normal' (e.g. next frame completely replaces the previous one) or 'paintOver'
-## (new frame is painted over the previous one, meaning that the previous frame shows through
-## the transparent bits of the new frame) or 'motionBlur' (previous frame is shown faintly
-## below the current one so to give a vague effect of motion blur).
+## BlendControls manages the three different blending styles.
+## One can decide for either 'normal' (e.g. next frame completely
+## replaces the previous one) or 'paintOver' (new frame is painted
+## over the previous one, meaning that the previous frame shows through
+## the transparent bits of the new frame) or 'motionBlur'
+## (previous frame is shown faintly below the current one so to give
+## a vague effect of motion blur).
 */
 
 var BlendControls;
 
 BlendControls = (function() {
-  "use strict";  BlendControls.prototype.previousanimationStyleValue = 0;
+  BlendControls.prototype.previousanimationStyleValue = 0;
 
   BlendControls.prototype.animationStyleValue = 0;
 
@@ -30,7 +32,7 @@ BlendControls = (function() {
   }
 
   BlendControls.prototype.animationStyle = function(a) {
-    if (a === false || a === undefined) {
+    if (a === false || (a == null)) {
       return;
     }
     return this.animationStyleValue = a;

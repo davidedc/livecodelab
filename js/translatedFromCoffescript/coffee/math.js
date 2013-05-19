@@ -1,5 +1,6 @@
 /*
-Calculates the absolute value (magnitude) of a number. The absolute value of a number is always positive.
+Calculates the absolute value (magnitude) of a number. The absolute value of a
+number is always positive.
 
 @param {int|float} value   int or float
 
@@ -11,8 +12,8 @@ var Marsaglia, PerlinNoise, Random, abs, acos, asin, atan, atan2, ceil, constrai
 abs = Math.abs;
 
 /*
-Calculates the closest int value that is greater than or equal to the value of the parameter.
-For example, ceil(9.03) returns the value 10.
+Calculates the closest int value that is greater than or equal to the value
+of the parameter. For example, ceil(9.03) returns the value 10.
 
 @param {float} value   float
 
@@ -85,7 +86,8 @@ dist = function() {
 };
 
 /*
-Returns Euler's number e (2.71828...) raised to the power of the value parameter.
+Returns Euler's number e (2.71828...) raised to the power of the
+value parameter.
 
 @param {int|float} value   int or float: the exponent to raise e to
 
@@ -96,7 +98,8 @@ Returns Euler's number e (2.71828...) raised to the power of the value parameter
 exp = Math.exp;
 
 /*
-Calculates the closest int value that is less than or equal to the value of the parameter.
+Calculates the closest int value that is less than or equal to the
+value of the parameter.
 
 @param {int|float} value        the value to floor
 
@@ -110,10 +113,11 @@ Calculates the closest int value that is less than or equal to the value of the 
 floor = Math.floor;
 
 /*
-Calculates a number between two numbers at a specific increment. The amt  parameter is the
-amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very
-near the first point, 0.5 is half-way in between, etc. The lerp function is convenient for
-creating motion along a straight path and for drawing dotted lines.
+Calculates a number between two numbers at a specific increment. The amt
+parameter is the amount to interpolate between the two values where 0.0 equal
+to the first point, 0.1 is very near the first point, 0.5 is half-way in
+between, etc. The lerp function is convenient for creating motion along a
+straight path and for drawing dotted lines.
 
 @param {int|float} value1       float or int: first value
 @param {int|float} value2       float or int: second value
@@ -131,8 +135,8 @@ lerp = function(value1, value2, amt) {
 };
 
 /*
-Calculates the natural logarithm (the base-e logarithm) of a number. This function
-expects the values greater than 0.0.
+Calculates the natural logarithm (the base-e logarithm) of a number.
+This function expects the values greater than 0.0.
 
 @param {int|float} value        int or float: number must be greater then 0.0
 
@@ -143,10 +147,11 @@ expects the values greater than 0.0.
 log = Math.log;
 
 /*
-Calculates the magnitude (or length) of a vector. A vector is a direction in space commonly
-used in computer graphics and linear algebra. Because it has no "start" position, the magnitude
-of a vector can be thought of as the distance from coordinate (0,0) to its (x,y) value.
-Therefore, mag() is a shortcut for writing "dist(0, 0, x, y)".
+Calculates the magnitude (or length) of a vector. A vector is a direction
+in space commonly used in computer graphics and linear algebra. Because it
+has no "start" position, the magnitude of a vector can be thought of as the
+distance from coordinate (0,0) to its (x,y) value. Therefore, mag() is a
+shortcut for writing "dist(0, 0, x, y)".
 
 @param {int|float} a       float or int: first value
 @param {int|float} b       float or int: second value
@@ -166,9 +171,11 @@ mag = function(a, b, c) {
 };
 
 /*
-Re-maps a number from one range to another. In the example above, the number '25' is converted from
-a value in the range 0..100 into a value that ranges from the left edge (0) to the right edge (width) of the screen.
-Numbers outside the range are not clamped to 0 and 1, because out-of-range values are often intentional and useful.
+Re-maps a number from one range to another. In the example above, the number
+'25' is converted from a value in the range 0..100 into a value that ranges
+from the left edge (0) to the right edge (width) of the screen. Numbers
+outside the range are not clamped to 0 and 1, because out-of-range values
+are often intentional and useful.
 
 @param {float} value        The incoming value to be converted
 @param {float} istart       Lower bound of the value's current range
@@ -209,7 +216,7 @@ max = function() {
   }
   numbers = (arguments.length === 1 ? arguments[0] : arguments);
   if (!("length" in numbers && numbers.length)) {
-    throw "Non-empty array is expected";
+    throw new Error("Non-empty array is expected");
   }
   max = numbers[0];
   count = numbers.length;
@@ -245,7 +252,7 @@ min = function() {
   }
   numbers = (arguments.length === 1 ? arguments[0] : arguments);
   if (!("length" in numbers && numbers.length)) {
-    throw "Non-empty array is expected";
+    throw new Error("Non-empty array is expected");
   }
   min = numbers[0];
   count = numbers.length;
@@ -298,7 +305,8 @@ is equivalent to 1 / 3*3*3*3*3.
 pow = Math.pow;
 
 /*
-Calculates the integer closest to the value parameter. For example, round(9.2) returns the value 9.
+Calculates the integer closest to the value parameter.
+For example, round(9.2) returns the value 9.
 
 @param {float} value        number to round
 
@@ -312,8 +320,10 @@ Calculates the integer closest to the value parameter. For example, round(9.2) r
 round = Math.round;
 
 /*
-Squares a number (multiplies a number by itself). The result is always a positive number,
-as multiplying two negative numbers always yields a positive result. For example, -1 * -1 = 1.
+Squares a number (multiplies a number by itself).
+The result is always a positive number,
+as multiplying two negative numbers always yields a
+positive result. For example, -1 * -1 = 1.
 
 @param {float} value        int or float
 
@@ -328,8 +338,10 @@ sq = function(aNumber) {
 };
 
 /*
-Calculates the square root of a number. The square root of a number is always positive,
-even though there may be a valid negative root. The square root s of number a is such
+Calculates the square root of a number.
+The square root of a number is always positive,
+even though there may be a valid negative root.
+The square root s of number a is such
 that s*s = a. It is the opposite of squaring.
 
 @param {float} value        int or float, non negative
@@ -344,8 +356,9 @@ that s*s = a. It is the opposite of squaring.
 sqrt = Math.sqrt;
 
 /*
-The inverse of cos(), returns the arc cosine of a value. This function expects the
-values in the range of -1 to 1 and values are returned in the range 0 to PI (3.1415927).
+The inverse of cos(), returns the arc cosine of a value.
+This function expects the values in the range of -1 to 1
+and values are returned in the range 0 to PI (3.1415927).
 
 @param {float} value        the value whose arc cosine is to be returned
 
@@ -360,8 +373,9 @@ values in the range of -1 to 1 and values are returned in the range 0 to PI (3.1
 acos = Math.acos;
 
 /*
-The inverse of sin(), returns the arc sine of a value. This function expects the values
-in the range of -1 to 1 and values are returned in the range -PI/2 to PI/2.
+The inverse of sin(), returns the arc sine of a value.
+This function expects the values in the range of -1 to 1
+and values are returned in the range -PI/2 to PI/2.
 
 @param {float} value        the value whose arc sine is to be returned
 
@@ -376,8 +390,9 @@ in the range of -1 to 1 and values are returned in the range -PI/2 to PI/2.
 asin = Math.asin;
 
 /*
-The inverse of tan(), returns the arc tangent of a value. This function expects the values
-in the range of -Infinity to Infinity (exclusive) and values are returned in the range -PI/2 to PI/2 .
+The inverse of tan(), returns the arc tangent of a value.
+This function expects the values in the range of -Infinity
+to Infinity (exclusive) and values are returned in the range -PI/2 to PI/2 .
 
 @param {float} value        -Infinity to Infinity (exclusive)
 
@@ -392,10 +407,13 @@ in the range of -Infinity to Infinity (exclusive) and values are returned in the
 atan = Math.atan;
 
 /*
-Calculates the angle (in radians) from a specified point to the coordinate origin as measured from
-the positive x-axis. Values are returned as a float in the range from PI to -PI. The atan2() function
-is most often used for orienting geometry to the position of the cursor. Note: The y-coordinate of the
-point is the first parameter and the x-coordinate is the second due the the structure of calculating the tangent.
+Calculates the angle (in radians) from a specified point to
+the coordinate origin as measured from the positive x-axis.
+Values are returned as a float in the range from PI to -PI.
+The atan2() function is most often used for orienting geometry
+to the position of the cursor. Note: The y-coordinate of the
+point is the first parameter and the x-coordinate is the second
+due the the structure of calculating the tangent.
 
 @param {float} y        y-coordinate of the point
 @param {float} x        x-coordinate of the point
@@ -409,8 +427,9 @@ point is the first parameter and the x-coordinate is the second due the the stru
 atan2 = Math.atan2;
 
 /*
-Calculates the cosine of an angle. This function expects the values of the angle parameter to be provided
-in radians (values from 0 to PI*2). Values are returned in the range -1 to 1.
+Calculates the cosine of an angle. This function expects the values
+of the angle parameter to be provided in radians (values from 0 to PI*2).
+Values are returned in the range -1 to 1.
 
 @param {float} value        an angle in radians
 
@@ -424,9 +443,11 @@ in radians (values from 0 to PI*2). Values are returned in the range -1 to 1.
 cos = Math.cos;
 
 /*
-Converts a radian measurement to its corresponding value in degrees. Radians and degrees are two ways of
-measuring the same thing. There are 360 degrees in a circle and 2*PI radians in a circle. For example,
-90 degrees = PI/2 = 1.5707964. All trigonometric methods in Processing require their parameters to be specified in radians.
+Converts a radian measurement to its corresponding value in degrees.
+Radians and degrees are two ways of measuring the same thing.
+There are 360 degrees in a circle and 2*PI radians in a circle.
+For example, 90 degrees = PI/2 = 1.5707964. All trigonometric methods
+in Processing require their parameters to be specified in radians.
 
 @param {int|float} value        an angle in radians
 
@@ -598,7 +619,7 @@ Random = function(seed) {
     haveNextNextGaussian = true;
     return v1 * multiplier;
   };
-  return random = (seed === undefined ? Math.random : (new Marsaglia(seed)).nextDouble);
+  return random = (seed === void 0 ? Math.random : (new Marsaglia(seed)).nextDouble);
 };
 
 PerlinNoise = function(seed) {
@@ -632,7 +653,7 @@ PerlinNoise = function(seed) {
   lerp = function(t, a, b) {
     return a + t * (b - a);
   };
-  rnd = (seed !== undefined ? new Marsaglia(seed) : Marsaglia.createRandomized());
+  rnd = (seed !== void 0 ? new Marsaglia(seed) : Marsaglia.createRandomized());
   i = void 0;
   j = void 0;
   perm = new Uint8Array(512);
@@ -697,10 +718,10 @@ PerlinNoise = function(seed) {
 };
 
 noiseProfile = {
-  generator: undefined,
+  generator: void 0,
   octaves: 4,
   fallout: 0.5,
-  seed: undefined
+  seed: void 0
 };
 
 /*
@@ -738,7 +759,7 @@ but this will differ depending on use.
 noise = function(x, y, z) {
   var effect, generator, i, k, sum;
 
-  if (noiseProfile.generator === undefined) {
+  if (noiseProfile.generator === void 0) {
     noiseProfile.generator = new PerlinNoise(noiseProfile.seed);
   }
   generator = noiseProfile.generator;
@@ -786,7 +807,7 @@ created by the noise() function can be adapted to fit very specific needs and ch
 
 noiseDetail = function(octaves, fallout) {
   noiseProfile.octaves = octaves;
-  if (fallout !== undefined) {
+  if (fallout !== void 0) {
     return noiseProfile.fallout = fallout;
   }
 };
@@ -809,5 +830,5 @@ pseudo-random numbers each time the software is run.
 
 noiseSeed = function(seed) {
   noiseProfile.seed = seed;
-  return noiseProfile.generator = undefined;
+  return noiseProfile.generator = void 0;
 };

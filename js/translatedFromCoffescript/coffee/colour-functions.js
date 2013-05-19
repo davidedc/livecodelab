@@ -6,7 +6,7 @@
 var ColourFunctions;
 
 ColourFunctions = (function() {
-  "use strict";  function ColourFunctions() {
+  function ColourFunctions() {
     var _this = this;
 
     window.color = function(a, b, c, d) {
@@ -211,11 +211,12 @@ ColourFunctions = (function() {
   };
 
   /*
-  Creates colors for storing in variables of the color datatype. The parameters are
-  interpreted as RGB or HSB values depending on the current colorMode(). The default
-  mode is RGB values from 0 to 255 and therefore, the function call color(255, 204, 0)
-  will return a bright yellow color. More about how colors are stored can be found in
-  the reference for the color datatype.
+  Creates colors for storing in variables of the color datatype.
+  The parameters are interpreted as RGB or HSB values depending on the
+  current colorMode(). The default mode is RGB values from 0 to 255
+  and therefore, the function call color(255, 204, 0) will return a bright
+  yellow color. More about how colors are stored can be found in the
+  reference for the color datatype.
   
   @param {int|float} aValue1        red or hue or grey values relative to the current color range.
   Also can be color value in hexadecimal notation (i.e. #FFCC00 or 0xFFFFCC00)
@@ -230,13 +231,13 @@ ColourFunctions = (function() {
 
 
   ColourFunctions.prototype.color = function(aValue1, aValue2, aValue3, aValue4) {
-    if (aValue1 !== undefined && aValue2 !== undefined && aValue3 !== undefined && aValue4 !== undefined) {
+    if (aValue1 !== void 0 && aValue2 !== void 0 && aValue3 !== void 0 && aValue4 !== void 0) {
       return this.color$4(aValue1, aValue2, aValue3, aValue4);
     }
-    if (aValue1 !== undefined && aValue2 !== undefined && aValue3 !== undefined) {
+    if (aValue1 !== void 0 && aValue2 !== void 0 && aValue3 !== void 0) {
       return this.color$4(aValue1, aValue2, aValue3, this.colorModeA);
     }
-    if (aValue1 !== undefined && aValue2 !== undefined) {
+    if (aValue1 !== void 0 && aValue2 !== void 0) {
       return this.color$2(aValue1, aValue2);
     }
     if (typeof aValue1 === "number" || typeof aValue1 === "string") {

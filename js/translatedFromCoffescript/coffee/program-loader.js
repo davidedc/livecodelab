@@ -1,13 +1,14 @@
 /*
-## ProgramLoader takes care of managing the URL and editor content when the user navigates
-## through demos and examples - either by selecting menu entries, or by clicking back/forward
-## arrow, or by landing on a URL with a hashtag.
+## ProgramLoader takes care of managing the URL and editor content
+## when the user navigates through demos and examples - either by
+## selecting menu entries, or by clicking back/forward arrow, or by
+## landing on a URL with a hashtag.
 */
 
 var ProgramLoader;
 
 ProgramLoader = (function() {
-  "use strict";  function ProgramLoader(eventRouter, texteditor, liveCodeLabCoreInstance) {
+  function ProgramLoader(eventRouter, texteditor, liveCodeLabCoreInstance) {
     var userWarnedAboutWebglExamples,
       _this = this;
 
@@ -114,7 +115,7 @@ ProgramLoader = (function() {
     this.programs.demos.webglshardsDemo = {
       submenu: "WebGL",
       title: "WebGL: Shards",
-      code: "scale 10\nfill 0\nstrokeSize 7\n5 times ->\n▶rotate 0,1,time/20000\n▶ball \n▶rotate 0,1,1\n▶ball -1.01".replace(/\u25B6/g, "\t")
+      code: "scale 10\nfill 0\nstrokeSize 7\n5 times ->\n▶rotate 0,1,time/20000\n▶ball\n▶rotate 0,1,1\n▶ball -1.01".replace(/\u25B6/g, "\t")
     };
     this.programs.demos.webglredthreadsDemo = {
       submenu: "WebGL",
@@ -174,7 +175,7 @@ ProgramLoader = (function() {
     this.programs.tutorials.fillTutorial = {
       submenu: "Graphics",
       title: "fill",
-      code: "// 'fill' changes the\n// color of all the faces:\n\nrotate 1\nfill 255,255,0\nbox\n\n// the three numbers indicate \n// red green and blue values.\n// You can also use color names such as 'indigo'\n// Try replacing the numbers with\n// 'angleColor'\n// next-tutorial:stroke".replace(/\u25B6/g, "\t")
+      code: "// 'fill' changes the\n// color of all the faces:\n\nrotate 1\nfill 255,255,0\nbox\n\n// the three numbers indicate\n// red green and blue values.\n// You can also use color names such as 'indigo'\n// Try replacing the numbers with\n// 'angleColor'\n// next-tutorial:stroke".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.strokeTutorial = {
       submenu: "Graphics",
@@ -189,7 +190,7 @@ ProgramLoader = (function() {
     this.programs.tutorials.lightsTutorial = {
       submenu: "Graphics",
       title: "lights",
-      code: "// 'ambientLight' creates an\n// ambient light so things have\n// some sort of shading:\n\nambientLight 0,255,255\nrotate time/1000\nbox\n\n// you can turn that light on and \n// off while you build the scene\n// by using 'lights' and 'noLights'\n// next-tutorial:background".replace(/\u25B6/g, "\t")
+      code: "// 'ambientLight' creates an\n// ambient light so things have\n// some sort of shading:\n\nambientLight 0,255,255\nrotate time/1000\nbox\n\n// you can turn that light on and\n// off while you build the scene\n// by using 'lights' and 'noLights'\n// next-tutorial:background".replace(/\u25B6/g, "\t")
     };
     this.programs.tutorials.backgroundTutorial = {
       submenu: "Graphics",

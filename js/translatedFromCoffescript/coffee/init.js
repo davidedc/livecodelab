@@ -6,10 +6,13 @@
 var isCanvasSupported, startEnvironment;
 
 $(document).ready(function() {
-  document.getElementById("blendedThreeJsSceneCanvas").width = window.innerWidth;
-  document.getElementById("blendedThreeJsSceneCanvas").height = window.innerHeight;
+  var canvasName;
+
+  canvasName = "blendedThreeJsSceneCanvas";
+  document.getElementById(canvasName).width = window.innerWidth;
+  document.getElementById(canvasName).height = window.innerHeight;
   return startEnvironment({
-    blendedThreeJsSceneCanvas: document.getElementById("blendedThreeJsSceneCanvas"),
+    blendedThreeJsSceneCanvas: document.getElementById(canvasName),
     canvasForBackground: document.getElementById("backGroundCanvas"),
     forceCanvasRenderer: false,
     bubbleUpErrorsForDebugging: false,
@@ -25,7 +28,6 @@ isCanvasSupported = function() {
 };
 
 startEnvironment = function(paramsObject) {
-  "use strict";
   var autocoder, bigCursor, colourNames, editor, editorDimmer, eventRouter, liveCodeLabCore, programLoader, stats, ui, urlRouter,
     _this = this;
 
@@ -71,15 +73,15 @@ startEnvironment = function(paramsObject) {
     return autocoder.toggle();
   });
   editorDimmer = new EditorDimmer(eventRouter, bigCursor);
-  eventRouter.bind("editor-dim", (function() {
+  eventRouter.bind("editor-dim", function() {
     return editorDimmer.dimEditor();
-  }), editorDimmer);
-  eventRouter.bind("editor-undim", (function() {
+  }, editorDimmer);
+  eventRouter.bind("editor-undim", function() {
     return editorDimmer.undimEditor();
-  }), editorDimmer);
-  eventRouter.bind("editor-toggle-dim", (function() {
+  }, editorDimmer);
+  eventRouter.bind("editor-toggle-dim", function() {
     return editorDimmer.toggleDimCode();
-  }), editorDimmer);
+  }, editorDimmer);
   eventRouter.bind("reset", (function() {
     return liveCodeLabCore.paintARandomBackground();
   }));

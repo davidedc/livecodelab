@@ -1,61 +1,70 @@
-<!DOCTYPE html>  <html> <head>   <title>animation-loop.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocoder.html">                 autocoder.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               animation-loop.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>jslint browser: true </p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>The animation loop is the loop that make each "frame" happen, i.e. whatever happend
-every 30 to 60 times (or, indeed, "frames") per second - which is the following:
+<!DOCTYPE html>  <html> <head>   <title>animation-loop.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocoder.html">                 autocoder.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               animation-loop.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>The animation loop is the loop that make each "frame" happen,
+i.e. whatever happend every 30 to 60 times (or, indeed, "frames")
+per second - which is the following:
 * the next frame is scheduled
 * the current program (i.e. a draw() Function) is run
 * the background is repainted if it has changed from the previous frame
 * the new 3d scene is painted
-* the stats widget on the top right is updated to show milliseconds taken by each loop
- frame.</p>
-
-<p>Note that the followings are NOT done as part of the animation loop:
-* Syntax checking of the program typed by the user (that's checked only when it changed)
-* sound playing. That happens by its own series of timeouts (as defined by the
- optional "bpm" command) separately from the
+* the stats widget on the top right is updated to show
+ milliseconds taken by each loop frame.
+#
+Note that the followings are NOT done as part of the animation loop:
+* Syntax checking of the program typed by the user
+ (that's checked only when it changed)
+* sound playing. That happens by its own series of timeouts
+ (as defined by the optional "bpm" command) separately from the
  animation loop.
-* blinking of the cursor</p>
-
-<p>About the current Function being run:
+* blinking of the cursor
+#
+About the current Function being run:
 note that this might not be the Function corresponding to the very latest
-content of the editor, because of two reasons: the newest content of the editor
-a) might just be syntactically incorrect or, b) even if it's syntactically correct
-it might not be "stable" i.e. it might have thrown
-a runtime error (for example used an undefined variable or function).</p>
-
-<p>Rather, the current
-draw() function is the latest program that is both syntactically correct and
-"stable" (or in the process of being proven stable). Stability of a
-program cannot be guaranteed, but LiveCodeLab heuristically considers as "stable" a
-program once it's able to run for 5 frames without throwing errors. If the program
-throws an error past this testing window, then LiveCodeLab currently has no
-further fallback, so the Function will be just run each frame and hope is that
-it has time to draw enough animation on the screen before it throws the error so that
-some kind of animation will still be playing.
-One could devise a mechanism by which a stack of stable functions is maintained, so
-each failing function of the stack would cause the previous one to become the current
-stable alternative. This would practically guarantee that there is a Function that
-is simple enough in the past that it would contain no runtime errors - unless a
-previous function has so dramatically borked the state of the entire system, but
-that would probably take some malice.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">class</span> <span class="nx">AnimationLoop</span>
-  <span class="s">&quot;use strict&quot;</span>
+content of the editor, for two reasons:
+1. the newest content of the editor might not be syntactically incorrect
+2. even if it's syntactically correct it might not be "stable"
+  i.e. it might have thrown a runtime error
+  (for example used an undefined variable or function).
+#
+Rather, the current draw() function is the latest program
+that is both syntactically correct and "stable" (or in the process of
+being proven stable).
+Stability of a program cannot be guaranteed, but LiveCodeLab heuristically
+considers as "stable" a program once it's able to run for 5 frames
+without throwing errors.
+If the program throws an error past this testing window, then LiveCodeLab
+currently has no further fallback, so the Function will be just run each
+frame and hope is that it has time to draw enough animation on the screen
+before it throws the error so that some kind of animation
+will still be playing.
+One could devise a mechanism by which a stack of stable functions
+is maintained, so each failing function of the stack would cause the
+previous one to become the current stable alternative.
+This would practically guarantee that there is a Function that
+is simple enough in the past that it would contain no runtime
+errors - unless a previous function has so dramatically borked the
+state of the entire system, but that would probably take some malice.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">class</span> <span class="nx">AnimationLoop</span>
 
   <span class="nv">loopInterval: </span><span class="kc">null</span>
   <span class="nv">wantedFramesPerSecond: </span><span class="kc">null</span>
   <span class="nv">liveCodeLabCoreInstance: </span><span class="kc">undefined</span>
   <span class="nv">AS_HIGH_FPS_AS_POSSIBLE: </span><span class="o">-</span><span class="mi">1</span>
 
-  <span class="nv">constructor: </span><span class="nf">(@eventRouter, @stats, @liveCodeLabCoreInstance, @forceUseOfTimeoutForScheduling = false) -&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Some basic initialisations and constant definitions</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="vi">@wantedFramesPerSecond = </span><span class="nx">@AS_HIGH_FPS_AS_POSSIBLE</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>global variale, keeps the count of how many frames
-since beginning of session (or since the
-program was last cleared). This variable is incremented and reset in the animation
+  <span class="nv">constructor: </span><span class="nf">(@eventRouter,</span>
+<span class="nf">                @stats,</span>
+<span class="nf">                @liveCodeLabCoreInstance,</span>
+<span class="nf">                @forceUseOfTimeoutForScheduling = false) -&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Some basic initialisations and constant definitions</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="vi">@wantedFramesPerSecond = </span><span class="nx">@AS_HIGH_FPS_AS_POSSIBLE</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>global variale, keeps the count of how many frames since beginning
+of session (or since the program was last cleared).
+This variable is incremented and reset in the animation
 loop "animate" function.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nb">window</span><span class="p">.</span><span class="nv">frame = </span><span class="mi">0</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>There are two different ways to schedule the next frame:
-1) using a native window.requestAnimationFrame implementation (supported by some
-   browsers)
-2) using timeouts</p>
+1. using a native window.requestAnimationFrame implementation
+   (supported by some browsers)
+2. using timeouts</p>
 
 <p>Notes and constraints:
-* window.requestAnimationFrame cannot be used if user wants a specific fps (i.e. you
-  can't pick a specific framerate)
-* for browser that don't have a window.requestAnimationFrame, a shim at the end
-  of the page replaces that with an implementation based on timeouts
+* window.requestAnimationFrame cannot be used if user wants a
+  specific fps (i.e. you can't pick a specific framerate)
+* for browser that don't have a window.requestAnimationFrame, a shim
+  at the end of the page replaces that with an implementation
+  based on timeouts
 * the user can decide to force the use of timeouts (for testing purposes)</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">scheduleNextFrame: </span><span class="nf">-&gt;</span>
     <span class="k">if</span> <span class="nx">@forceUseOfTimeoutForScheduling</span>
       <span class="k">if</span> <span class="nx">@wantedFramesPerSecond</span> <span class="o">is</span> <span class="nx">@AS_HIGH_FPS_AS_POSSIBLE</span>
@@ -71,7 +80,7 @@ loop "animate" function.</p>             </td>             <td class="code">    
         <span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span> <span class="o">=&gt;</span>
           <span class="nx">@animate</span><span class="p">()</span>
       <span class="k">else</span>
-        <span class="k">if</span> <span class="nx">loopInterval</span> <span class="o">is</span> <span class="o">`</span><span class="kc">undefined</span><span class="o">`</span>
+        <span class="k">if</span> <span class="nx">loopInterval</span><span class="o">?</span>
           <span class="nv">loopInterval = </span><span class="nx">setInterval</span><span class="p">(</span><span class="o">=&gt;</span>
             <span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span> <span class="nf">-&gt;</span>
               <span class="nx">@animate</span><span class="p">()</span>
@@ -100,14 +109,16 @@ changes. Note that this frame goes to completion anyways, because
 we actually do want to render one "empty screen" frame.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">drawFunctionRunner</span><span class="p">.</span><span class="nx">drawFunction</span>
       <span class="nx">@scheduleNextFrame</span><span class="p">()</span>
       </pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Now here there is another try/catch check when the draw function is ran.
-The reason is that there might be references to uninitialised or inexistent
-variables. For example:
+The reason is that there might be references to uninitialised
+or inexistent variables. For example:
   box
   background yeLow
   ball
-draws only a box, because the execution silently fails at the yeLow reference.
-So in that case we need to a) highlight the error and b) run the previously
-known good program.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">try</span>
+draws only a box, because the execution silently fails at
+the 'yeLow' reference.
+So in that case we need to
+1. highlight the error
+2. run the previously known good program.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">try</span>
         <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">drawFunctionRunner</span><span class="p">.</span><span class="nx">runDrawFunction</span><span class="p">()</span>
       <span class="k">catch</span> <span class="nx">e</span>
         </pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>alert('runtime error');</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">@eventRouter</span><span class="p">.</span><span class="nx">trigger</span> <span class="s">&quot;runtime-error-thrown&quot;</span><span class="p">,</span> <span class="nx">e</span>
