@@ -1,7 +1,7 @@
 /*
-## This could be an alternative to the lexer and the many regular expressions used
-## in the Autocoder and in the CodeTransformer. Not used at the moment. In development
-## stage.
+## This could be an alternative to the lexer and the many regular
+## expressions used in the Autocoder and in the CodeTransformer.
+## Not used at the moment. In development stage.
 */
 
 var CodeChecker, Parser,
@@ -9,7 +9,6 @@ var CodeChecker, Parser,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 Parser = (function() {
-  "use strict";
   var finished, position, source, sourceLength;
 
   source = void 0;
@@ -37,7 +36,7 @@ Parser = (function() {
     var c;
 
     if (this.position >= this.sourceLength) {
-      return undefined;
+      return void 0;
     }
     c = this.source.charAt(this.position);
     this.position += 1;

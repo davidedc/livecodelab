@@ -1,11 +1,10 @@
 ###
-## This could be an alternative to the lexer and the many regular expressions used
-## in the Autocoder and in the CodeTransformer. Not used at the moment. In development
-## stage.
+## This could be an alternative to the lexer and the many regular
+## expressions used in the Autocoder and in the CodeTransformer.
+## Not used at the moment. In development stage.
 ###
 
 class Parser
-  "use strict"
 
   source = undefined
   sourceLength = undefined
@@ -24,7 +23,7 @@ class Parser
       @finished = true
 
   pop: ->
-    return `undefined`  if @position >= @sourceLength
+    return undefined  if @position >= @sourceLength
     c = @source.charAt(@position)
     @position += 1
     @finished = true  if @position >= @sourceLength
@@ -39,7 +38,7 @@ class CodeChecker extends Parser
   constructor: ->
     @charHandlers =
     "[": ->
-      @states.bracketStack.push "["  if not @states.inSingleString and not @states.inDoubleString and not @states.inComment
+      @states.bracketStack.push "[" if not @states.inSingleString and not @states.inDoubleString and not @states.inComment
 
     "]": ->
       if not @states.inSingleString and not @states.inDoubleString and not @states.inComment
@@ -49,7 +48,7 @@ class CodeChecker extends Parser
           @states.message = @generateErrMessage(b)
 
     "(": ->
-      @states.bracketStack.push "("  if not @states.inSingleString and not @states.inDoubleString and not @states.inComment
+      @states.bracketStack.push "(" if not @states.inSingleString and not @states.inDoubleString and not @states.inComment
 
     ")": ->
       if not @states.inSingleString and not @states.inDoubleString and not @states.inComment

@@ -1,20 +1,17 @@
-# jslint browser: true 
-
 ###
 ## Defines several color constant literals, e.g. "red" being 0xffff0000,
-## modified from processing.js with added the missing ones from the CSS standard,
-## which includes the spelling "grey" on top of "gray"
+## modified from processing.js with added the missing ones from the
+## CSS standard, which includes the spelling "grey" on top of "gray"
 ## and also "angleColor", used to dress objects with the normal material.
 ###
 
 class ColourLiterals
-  "use strict"
 
   colourNames: []
 
   constructor: ->
     
-    colourNamesValues = 
+    colourNamesValues =
       aliceblue: "0xfff0f8ff"
       antiquewhite: "0xfffaebd7"
       aqua: "0xff00ffff"
@@ -171,8 +168,9 @@ class ColourLiterals
       angleColor: "angleColor"
 
     for colorName, colorValue of colourNamesValues
-      # Adding colours to the global namespace is avoidable once we have a "scope" object in
-      # which the code will be executed, then we can just dynamically add fields to that scope
+      # Adding colours to the global namespace is avoidable once we have
+      # a "scope" object in which the code will be executed,
+      # then we can just dynamically add fields to that scope
       window["#{colorName}"] = parseInt(colorValue)
       if isNaN(window["#{colorName}"])
         # this is the case of special colors that have string values

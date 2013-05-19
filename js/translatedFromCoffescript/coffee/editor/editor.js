@@ -6,7 +6,7 @@
 var Editor;
 
 Editor = (function() {
-  "use strict";  function Editor(eventRouter, codemirror) {
+  function Editor(eventRouter, codemirror) {
     var _this = this;
 
     this.eventRouter = eventRouter;

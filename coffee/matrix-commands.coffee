@@ -1,12 +1,8 @@
-# jslint browser: true 
-# global 
-
 ###
 ## Takes care of all matrix-related commands.
 ###
 
 class MatrixCommands
-  "use strict"
 
   matrixStack: []
 

@@ -5,7 +5,7 @@
 var LightsCommands;
 
 LightsCommands = (function() {
-  "use strict";  LightsCommands.prototype.lightsAreOn = false;
+  LightsCommands.prototype.lightsAreOn = false;
 
   function LightsCommands(liveCodeLabCore_graphicsCommands, liveCodeLabCoreInstance) {
     var _this = this;
@@ -40,7 +40,7 @@ LightsCommands = (function() {
     var ambientLightsPool, colorToBeUsed, newLightCreated, pooledAmbientLight;
 
     newLightCreated = false;
-    if (r === undefined) {
+    if (r == null) {
       colorToBeUsed = this.liveCodeLabCoreInstance.colourFunctions.color(255);
     } else {
       colorToBeUsed = this.liveCodeLabCoreInstance.colourFunctions.color(r, g, b, a);
@@ -50,7 +50,7 @@ LightsCommands = (function() {
     this.liveCodeLabCore_graphicsCommands.defaultNormalStroke = false;
     ambientLightsPool = this.objectPools[this.primitiveTypes.ambientLight];
     pooledAmbientLight = ambientLightsPool[this.objectsUsedInFrameCounts[this.primitiveTypes.ambientLight]];
-    if (pooledAmbientLight === undefined) {
+    if (pooledAmbientLight == null) {
       pooledAmbientLight = new this.liveCodeLabCoreInstance.three.PointLight(colorToBeUsed);
       pooledAmbientLight.position.set(10, 50, 130);
       newLightCreated = true;

@@ -5,7 +5,7 @@
 var UrlRouter;
 
 UrlRouter = (function() {
-  "use strict";  function UrlRouter(eventRouter) {
+  function UrlRouter(eventRouter) {
     this.eventRouter = eventRouter;
     this.eventRouter.bind("set-url-hash", this.setHash, this);
   }

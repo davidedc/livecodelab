@@ -1,22 +1,19 @@
-# jslint browser: true, devel: true 
-
 ###
-## Sets up canvas or webgl Threejs renderer based on browser capabilities and flags passed
-## in the constructor. Sets up all the post-filtering steps.
+## Sets up canvas or webgl Threejs renderer based on browser capabilities
+## and flags passed in the constructor. Sets up all the post-filtering steps.
 ###
 
 class ThreeJsSystem
-  "use strict"
 
   @isWebGLUsed: false
   @composer: {}
   constructor: ( \
     Detector, \
-	  THREEx, \
-	  @blendedThreeJsSceneCanvas, \
-	  @forceCanvasRenderer, \
-	  testMode, \
-	  liveCodeLabCore_three ) ->
+      THREEx, \
+      @blendedThreeJsSceneCanvas, \
+      @forceCanvasRenderer, \
+      testMode, \
+      liveCodeLabCore_three ) ->
 
     # if we've not been passed a canvas, then create a new one and make it
     # as big as the browser window content.
@@ -26,9 +23,9 @@ class ThreeJsSystem
       @blendedThreeJsSceneCanvas.height = window.innerHeight
   
   
-    if not @forceCanvasRenderer and Detector.webgl    
+    if not @forceCanvasRenderer and Detector.webgl
       # Webgl init.
-      # We allow for a bigger ball detail.        
+      # We allow for a bigger ball detail.
       # Also the WebGL context allows us to use the Three JS composer and the
       # postprocessing effects, which use shaders.
       @ballDefaultDetLevel = 16
@@ -44,11 +41,12 @@ class ThreeJsSystem
       )
       @isWebGLUsed = true
 
-    else    
+    else
       # Canvas init.
-      # Note that the canvas init requires two extra canvases in order to achieve
-      # the motion blur (as we need to keep the previous frame). Basically we have
-      # to do manually what the WebGL solution achieves through the Three.js composer
+      # Note that the canvas init requires two extra canvases in
+      # order to achieve the motion blur (as we need to keep the
+      # previous frame). Basically we have to do manually what the
+      # WebGL solution achieves through the Three.js composer
       # and postprocessing/shaders.
       @ballDefaultDetLevel = 6
       @currentFrameThreeJsSceneCanvas = document.createElement("canvas")
@@ -124,8 +122,10 @@ class ThreeJsSystem
       effectSaveTarget.clear = false
       
       # Uncomment the three lines containing "fxaaPass" below to try a fast
-      # antialiasing filter. Commented below because of two reasons: a) it's slow
-      # b) it blends in some black pixels, so it only looks good in dark backgrounds
+      # antialiasing filter. Commented below because of two reasons:
+      # a) it's slow
+      # b) it blends in some black pixels, so it only looks good
+      #     in dark backgrounds
       # The problem of blending with black pixels is the same problem of the
       # motionBlur leaving a black trail - tracked in github with
       # https://github.com/davidedc/livecodelab/issues/22

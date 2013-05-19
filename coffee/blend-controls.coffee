@@ -1,15 +1,14 @@
-#jslint browser: true 
-
 ###
-## BlendControls manages the three different blending styles. One can decide for either
-## 'normal' (e.g. next frame completely replaces the previous one) or 'paintOver'
-## (new frame is painted over the previous one, meaning that the previous frame shows through
-## the transparent bits of the new frame) or 'motionBlur' (previous frame is shown faintly
-## below the current one so to give a vague effect of motion blur).
+## BlendControls manages the three different blending styles.
+## One can decide for either 'normal' (e.g. next frame completely
+## replaces the previous one) or 'paintOver' (new frame is painted
+## over the previous one, meaning that the previous frame shows through
+## the transparent bits of the new frame) or 'motionBlur'
+## (previous frame is shown faintly below the current one so to give
+## a vague effect of motion blur).
 ###
 
 class BlendControls
-  "use strict"
   
   previousanimationStyleValue: 0
   animationStyleValue: 0
@@ -28,7 +27,7 @@ class BlendControls
   animationStyle: (a) ->
     # turns out when you type normal that the first two letters "no"
     # are sent as "false"
-    return  if a is false or a is `undefined`
+    return  if a is false or not a?
     @animationStyleValue = a
 
   animationStyleUpdateIfChanged: ->

@@ -1,14 +1,10 @@
-# jslint browser: true 
-# global Date 
-
 ###
-## Keeps the time. A small thing to do, but it allows tricks such as setting a fake time
-## for testing purposes, and avoiding repeated and unnecessary invokation of the Date and
-## getTime browser functions.
+## Keeps the time. A small thing to do, but it allows tricks such as
+## setting a fake time for testing purposes, and avoiding repeated and
+## unnecessary invokation of the Date and getTime browser functions.
 ###
 
 class TimeKeeper
-  "use strict"
   
   time: undefined
   timeAtStart: undefined

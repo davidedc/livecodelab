@@ -1,11 +1,8 @@
-# jslint browser: true 
-
 ###
 ## Implementation of all lights-related commands.
 ###
 
 class LightsCommands
-  "use strict"
 
   lightsAreOn: false
   constructor: (@liveCodeLabCore_graphicsCommands, @liveCodeLabCoreInstance) ->
@@ -31,7 +28,7 @@ class LightsCommands
   # ambientLight needs to be global
   ambientLight: (r, g, b, a) ->
     newLightCreated = false
-    if r is `undefined`
+    if not r?
       
       # empty arguments gives some sort
       # of grey ambient light.
@@ -51,7 +48,7 @@ class LightsCommands
     ambientLightsPool = @objectPools[@primitiveTypes.ambientLight]
     pooledAmbientLight = ambientLightsPool[@objectsUsedInFrameCounts[@primitiveTypes.ambientLight]]
 
-    if pooledAmbientLight is `undefined`      
+    if not pooledAmbientLight?
       # So here is the thing, the command is currently called AmbientLight but
       # in reality we are creating a PointLight in a specific position.
       # AmbientLight just fills the whole scene,

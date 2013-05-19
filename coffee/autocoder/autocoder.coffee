@@ -1,6 +1,3 @@
-# jslint devel: true 
-# global McLexer 
-
 ###
 ## Autocoder takes care of making random variations to the code. It lexes the input,
 ## collects the tokens that can be mutated, picks one at random, invokes a mutation on it,
@@ -8,7 +5,6 @@
 ###
 
 class Autocoder
-  "use strict"
   
   active: false
   autocoderMutateTimeout: undefined

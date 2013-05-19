@@ -1,10 +1,12 @@
 /*
 ## Although LiveCodeLab is ultimately running Javascript code behind the scenes,
-## the user uses a simpler syntax which is basically coffeescript with a little bit of
-## extra sugar. CodeTransformer takes care of translating this simplified syntax to
-## Javascript. Also note that CodeTransformer might return a program that substituted
-## the program passed as input. This is because doOnce statements get transformed by
-## pre-prending a tick once they are run, which prevents them from being run again.
+## the user uses a simpler syntax which is basically coffeescript with a
+## little bit of extra sugar.
+## CodeTransformer takes care of translating this simplified syntax to
+## Javascript. Also note that CodeTransformer might return a program
+## that substituted the program passed as input.
+## This is because doOnce statements get transformed by pre-prending a
+## tick once they are run, which prevents them from being run again.
 */
 
 var CodeTransformer;
@@ -23,12 +25,12 @@ CodeTransformer = (function() {
 
   /*
   ## Stops ticked doOnce blocks from running
-  ## 
+  ##
   ## doOnce statements which have a tick mark next to them
   ## are not run. This is achieved by replacing the line with
   ## the "doOnce" with "if false" or "//" depending on whether
   ## the doOnce is a multiline or an inline one, like so:
-  ## 
+  ##
   ##      ✓doOnce ->
   ##      background 255
   ##      fill 255,0,0
@@ -38,9 +40,9 @@ CodeTransformer = (function() {
   ##      background 255
   ##      fill 255,0,0
   ##      //doOnce -> ball
-  ## 
+  ##
   ## @param {string} code    the code to re-write
-  ## 
+  ##
   ## @returns {string}
   */
 
@@ -169,14 +171,14 @@ CodeTransformer = (function() {
 
   /*
   ## Some of the functions can be used with postfix notation
-  ## 
+  ##
   ## e.g.
-  ## 
+  ##
   ##      60 bpm
   ##      red fill
   ##      yellow stroke
   ##      black background
-  ## 
+  ##
   ## We need to switch this round before coffee script compilation
   */
 
@@ -220,11 +222,11 @@ CodeTransformer = (function() {
     }
     code = this.removeTickedDoOnce(code);
     /*
-      	## The CodeChecker will check for unbalanced brackets
-      	## and unfinished strings
-      	## 
-      	## If any errors are found then we quit compilation here
-      	## and display an error message
+    ## The CodeChecker will check for unbalanced brackets
+    ## and unfinished strings
+    ##
+    ## If any errors are found then we quit compilation here
+    ## and display an error message
     */
 
     code = this.stripCommentsAndCheckBasicSyntax(code);

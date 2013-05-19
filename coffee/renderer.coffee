@@ -1,12 +1,9 @@
-# jslint maxerr: 200, browser: true, devel: true, bitwise: true 
-
 ###
 ## The rendering requires some special steps that allow the display list
 ## to be reused as much as possible between frames.
 ###
 
 class Renderer
-  "use strict"
 
   constructor: (@liveCodeLabCoreInstance) ->
   
@@ -24,18 +21,22 @@ class Renderer
       threeJsSystem.composer.render()
     else
       
-      # the renderer draws into an offscreen canvas called currentFrameThreeJsSceneCanvas
+      # the renderer draws into an offscreen
+      # canvas called currentFrameThreeJsSceneCanvas
       renderer.render threeJsSystem.scene, threeJsSystem.camera
       
       # clear the final render context
       blendedThreeJsSceneCanvasContext.globalAlpha = 1.0
-      blendedThreeJsSceneCanvasContext.clearRect 0, 0, window.innerWidth, window.innerHeight
+      blendedThreeJsSceneCanvasContext.clearRect(
+        0, 0, window.innerWidth, window.innerHeight
+      )
       
       # draw the rendering of the scene on the blendedThreeJsSceneCanvasContext
-      # this needs a few steps so we can get the motionBlur or the paintOver effects right
+      # this needs a few steps so we can get the motionBlur or the paintOver
+      # effects right
       # TODO: I'm sure that this can be optimised for the case where there is no
-      # motionBlur and no paintOver, because we don't need to keep and blend with
-      # the previous frame in that case.
+      # motionBlur and no paintOver, because we don't need to keep and blend
+      # with the previous frame in that case.
       blendedThreeJsSceneCanvasContext.globalAlpha =
         @liveCodeLabCoreInstance.blendControls.blendAmount
       blendedThreeJsSceneCanvasContext.drawImage \
@@ -63,10 +64,11 @@ class Renderer
   # those that need to be hidden.
   # This is a scenario of how it works:
   #   frame 1: 3 boxes invoked. effect: 3 cubes are created and put in the scene
-  #   frame 2: 1 box invoked. effect: 1st cube is updated with new scale/matrix/material
-  #            and the other 2 boxes are set to hidden
-  # So there is a pool of objects for each primitive. It starts empty, new objects are
-  # added to the scene only if the ones available from previous draws are not sufficient.
+  #   frame 2: 1 box invoked. effect: 1st cube is updated with new
+  #            scale/matrix/material and the other 2 boxes are set to hidden
+  # So there is a pool of objects for each primitive. It starts empty, new
+  # objects are added to the scene only if the ones available from previous
+  # draws are not sufficient.
   # Note that in theory we could be smarter, instead of combing the whole scene
   # we could pack all the similar primitives together (because the order in the
   # display list doesn't matter, because there are no "matrix" nodes, each
@@ -78,9 +80,10 @@ class Renderer
   # function, so that should be determined first.
   # TODO a way to shrink the scene and delete from the scene objects that have
   # not been used for a long time.
-  # Note: Mr Doob said that the new scene destruction/creation primitives of Three.js
-  #       are much faster. Also the objects of the scene are harder to reach, so
-  #       it could be the case that this mechanism is not needed anymore.
+  # Note: Mr Doob said that the new scene destruction/creation primitives of
+  #       Three.js are much faster. Also the objects of the scene are harder
+  #       to reach, so it could be the case that this mechanism is not
+  #       needed anymore.
   combDisplayList: (graphics) ->
     i = undefined
     sceneObject = undefined
@@ -92,9 +95,9 @@ class Renderer
     
     # scan all the objects in the display list
     for sceneObject in threeJsSystem.scene.children
-      # check the type of object. Each type has one pool. Go through each object in the
-      # pool and set to visible the number of used objects in this frame, set the
-      # others to hidden.
+      # check the type of object. Each type has one pool. Go through each
+      # object in the pool and set to visible the number of used objects in
+      # this frame, set the others to hidden.
       # Only tiny exception is that the ball has one pool for each detail level.
       
       # set the first "used*****" objects to visible...

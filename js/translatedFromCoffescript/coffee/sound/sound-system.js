@@ -1,13 +1,14 @@
 /*
-## SoundSystem tries to abstract away different ways of playing sound, according to
-## weird performance characteristics of each browser (ad probably, OS). Cross-browser
-## sound playing is really in a sorry state, we are trying to make do here.
+## SoundSystem tries to abstract away different ways of playing sound,
+## according to weird performance characteristics of each browser
+## (and probably, OS). Cross-browser sound playing is really in a sorry
+## state, we are trying to make do here.
 */
 
 var SoundSystem;
 
 SoundSystem = (function() {
-  "use strict";  SoundSystem.prototype.oldupdatesPerMinute = 0;
+  SoundSystem.prototype.oldupdatesPerMinute = 0;
 
   SoundSystem.prototype.soundLoopTimer = void 0;
 
@@ -74,9 +75,7 @@ SoundSystem = (function() {
   };
 
   SoundSystem.prototype.bpm = function(a) {
-    if (a === undefined) {
-      return;
-    }
+    return a == null;
     if (a > 125) {
       a = 125;
     }
@@ -140,7 +139,7 @@ SoundSystem = (function() {
         break;
       }
     }
-    if (availableBuzzObject === undefined) {
+    if (availableBuzzObject == null) {
       if (this.totalCreatedSoundObjects > 31) {
         this.soundSystemIsMangled = true;
         $("#soundSystemIsMangledMessage").modal();
@@ -188,9 +187,9 @@ SoundSystem = (function() {
     if (this.oldupdatesPerMinute !== this.updatesPerMinute) {
       clearTimeout(this.soundLoopTimer);
       if (this.updatesPerMinute !== 0) {
-        this.soundLoopTimer = setInterval((function() {
+        this.soundLoopTimer = setInterval(function() {
           return _this.soundLoop();
-        }), (1000 * 60) / this.updatesPerMinute);
+        }, (1000 * 60) / this.updatesPerMinute);
       }
       return this.oldupdatesPerMinute = this.updatesPerMinute;
     }

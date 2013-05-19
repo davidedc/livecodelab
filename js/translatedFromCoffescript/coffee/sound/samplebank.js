@@ -1,14 +1,14 @@
 /*
 ## The SampleBank is responsible for holding the filepaths to any audio that
 ## needs to be loaded by the browser.
-## 
+##
 ## It automatically handles returning the ogg or mp3 file path.
 */
 
 var SampleBank;
 
 SampleBank = (function() {
-  "use strict";  SampleBank.prototype.sounds = [];
+  SampleBank.prototype.sounds = [];
 
   SampleBank.prototype.soundsByName = {};
 

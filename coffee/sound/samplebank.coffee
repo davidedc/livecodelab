@@ -1,12 +1,11 @@
 ###
 ## The SampleBank is responsible for holding the filepaths to any audio that
 ## needs to be loaded by the browser.
-## 
+##
 ## It automatically handles returning the ogg or mp3 file path.
 ###
 
 class SampleBank
-  "use strict"
 
   sounds: []
   soundsByName: {}
