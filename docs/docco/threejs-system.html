@@ -1,0 +1,124 @@
+<!DOCTYPE html>  <html> <head>   <title>threejs-system.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocoder.html">                 autocoder.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               threejs-system.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Sets up canvas or webgl Threejs renderer based on browser capabilities
+and flags passed in the constructor. Sets up all the post-filtering steps.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">class</span> <span class="nx">ThreeJsSystem</span>
+
+  <span class="vi">@isWebGLUsed: </span><span class="kc">false</span>
+  <span class="vi">@composer: </span><span class="p">{}</span>
+  <span class="nv">constructor: </span><span class="nf">( \</span>
+<span class="nf">    Detector, \</span>
+<span class="nf">      THREEx, \</span>
+<span class="nf">      @blendedThreeJsSceneCanvas, \</span>
+<span class="nf">      @forceCanvasRenderer, \</span>
+<span class="nf">      testMode, \</span>
+<span class="nf">      liveCodeLabCore_three ) -&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>if we've not been passed a canvas, then create a new one and make it
+as big as the browser window content.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">unless</span> <span class="nx">@blendedThreeJsSceneCanvas</span>
+      <span class="vi">@blendedThreeJsSceneCanvas = </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s">&quot;canvas&quot;</span><span class="p">)</span>
+      <span class="vi">@blendedThreeJsSceneCanvas.width = </span><span class="nb">window</span><span class="p">.</span><span class="nx">innerWidth</span>
+      <span class="vi">@blendedThreeJsSceneCanvas.height = </span><span class="nb">window</span><span class="p">.</span><span class="nx">innerHeight</span>
+  
+  
+    <span class="k">if</span> <span class="o">not</span> <span class="nx">@forceCanvasRenderer</span> <span class="o">and</span> <span class="nx">Detector</span><span class="p">.</span><span class="nx">webgl</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Webgl init.
+We allow for a bigger ball detail.
+Also the WebGL context allows us to use the Three JS composer and the
+postprocessing effects, which use shaders.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="vi">@ballDefaultDetLevel = </span><span class="mi">16</span>
+      <span class="vi">@blendedThreeJsSceneCanvasContext =</span>
+        <span class="nx">@blendedThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s">&quot;experimental-webgl&quot;</span><span class="p">)</span>
+      </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/WebGLRenderer</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="vi">@renderer = </span><span class="k">new</span> <span class="nx">liveCodeLabCore_three</span><span class="p">.</span><span class="nx">WebGLRenderer</span><span class="p">(</span>
+        <span class="nv">canvas: </span><span class="nx">@blendedThreeJsSceneCanvas</span>
+        <span class="nv">preserveDrawingBuffer: </span><span class="nx">testMode</span> <span class="c1"># to allow screenshot</span>
+        <span class="nv">antialias: </span><span class="kc">false</span>
+        <span class="nv">premultipliedAlpha: </span><span class="kc">false</span>
+      <span class="p">)</span>
+      <span class="vi">@isWebGLUsed = </span><span class="kc">true</span>
+
+    <span class="k">else</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Canvas init.
+Note that the canvas init requires two extra canvases in
+order to achieve the motion blur (as we need to keep the
+previous frame). Basically we have to do manually what the
+WebGL solution achieves through the Three.js composer
+and postprocessing/shaders.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="vi">@ballDefaultDetLevel = </span><span class="mi">6</span>
+      <span class="vi">@currentFrameThreeJsSceneCanvas = </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s">&quot;canvas&quot;</span><span class="p">)</span>
+      </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nv">currentFrameThreeJsSceneCanvas = </span><span class="nx">@currentFrameThreeJsSceneCanvas</span>
+      
+      <span class="nv">currentFrameThreeJsSceneCanvas.width = </span><span class="nx">@blendedThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">width</span>
+      <span class="nv">currentFrameThreeJsSceneCanvas.height = </span><span class="nx">@blendedThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">height</span>
+      
+      <span class="vi">@currentFrameThreeJsSceneCanvasContext =</span>
+        <span class="nx">currentFrameThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s">&quot;2d&quot;</span><span class="p">)</span>
+      
+      <span class="vi">@previousFrameThreeJSSceneRenderForBlendingCanvas =</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s">&quot;canvas&quot;</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nv">previousFrameThreeJSSceneRenderForBlendingCanvas =</span>
+        <span class="nx">@previousFrameThreeJSSceneRenderForBlendingCanvas</span>
+      <span class="nv">previousFrameThreeJSSceneRenderForBlendingCanvas.width =</span>
+        <span class="nx">@blendedThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">width</span>
+      <span class="nv">previousFrameThreeJSSceneRenderForBlendingCanvas.height =</span>
+        <span class="nx">@blendedThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">height</span>
+      
+      <span class="vi">@previousFrameThreeJSSceneRenderForBlendingCanvasContext =</span>
+        <span class="nx">@previousFrameThreeJSSceneRenderForBlendingCanvas</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s">&quot;2d&quot;</span><span class="p">)</span>
+      <span class="vi">@blendedThreeJsSceneCanvasContext =</span>
+        <span class="nx">@blendedThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s">&quot;2d&quot;</span><span class="p">)</span>
+      </pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/CanvasRenderer</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="vi">@renderer = </span><span class="k">new</span> <span class="nx">liveCodeLabCore_three</span><span class="p">.</span><span class="nx">CanvasRenderer</span><span class="p">(</span>
+        <span class="nv">canvas: </span><span class="nx">currentFrameThreeJsSceneCanvas</span>
+        <span class="nv">antialias: </span><span class="kc">true</span> <span class="c1"># to get smoother output</span>
+        <span class="nv">preserveDrawingBuffer: </span><span class="nx">testMode</span> <span class="c1"># to allow screenshot</span>
+      <span class="p">)</span>
+      
+    <span class="nx">@renderer</span><span class="p">.</span><span class="nx">setSize</span> <span class="nx">@blendedThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span> <span class="o">\</span>
+      <span class="nx">@blendedThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">height</span>
+    <span class="vi">@scene = </span><span class="k">new</span> <span class="nx">liveCodeLabCore_three</span><span class="p">.</span><span class="nx">Scene</span><span class="p">()</span>
+    <span class="vi">@scene.matrixAutoUpdate = </span><span class="kc">false</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>put a camera in the scene</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="vi">@camera = </span><span class="k">new</span> <span class="nx">liveCodeLabCore_three</span><span class="p">.</span><span class="nx">PerspectiveCamera</span><span class="p">(</span><span class="mi">35</span><span class="p">,</span> <span class="o">\</span>
+      <span class="nx">@blendedThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="o">\</span>
+      <span class="nx">@blendedThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">height</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+    <span class="nx">@camera</span><span class="p">.</span><span class="nx">position</span><span class="p">.</span><span class="nx">set</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span>
+    <span class="nx">@scene</span><span class="p">.</span><span class="nx">add</span> <span class="nx">@camera</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>transparently support window resize</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">THREEx</span><span class="p">.</span><span class="nx">WindowResize</span><span class="p">.</span><span class="nx">bind</span> <span class="nx">@renderer</span><span class="p">,</span> <span class="nx">@camera</span>
+    
+    <span class="k">if</span> <span class="nx">@isWebGLUsed</span>
+      <span class="nv">renderTargetParameters = </span><span class="kc">undefined</span>
+      <span class="nv">renderTarget = </span><span class="kc">undefined</span>
+      <span class="nv">effectSaveTarget = </span><span class="kc">undefined</span>
+      <span class="nv">fxaaPass = </span><span class="kc">undefined</span>
+      <span class="nv">screenPass = </span><span class="kc">undefined</span>
+      <span class="nv">renderModel = </span><span class="kc">undefined</span>
+      <span class="nv">renderTargetParameters =</span>
+        <span class="nv">format: </span><span class="nx">liveCodeLabCore_three</span><span class="p">.</span><span class="nx">RGBAFormat</span>
+        <span class="nv">stencilBuffer: </span><span class="kc">true</span>
+    
+      <span class="nv">renderTarget = </span><span class="k">new</span> <span class="nx">liveCodeLabCore_three</span><span class="p">.</span><span class="nx">WebGLRenderTarget</span><span class="p">(</span>
+        <span class="nx">@blendedThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span>
+        <span class="nx">@blendedThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">height</span><span class="p">,</span>
+        <span class="nx">renderTargetParameters</span><span class="p">)</span>
+      <span class="nv">effectSaveTarget = </span><span class="k">new</span> <span class="nx">liveCodeLabCore_three</span><span class="p">.</span><span class="nx">SavePass</span><span class="p">(</span>
+        <span class="k">new</span> <span class="nx">liveCodeLabCore_three</span><span class="p">.</span><span class="nx">WebGLRenderTarget</span><span class="p">(</span>
+          <span class="nx">@blendedThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span>
+          <span class="nx">@blendedThreeJsSceneCanvas</span><span class="p">.</span><span class="nx">height</span><span class="p">,</span>
+          <span class="nx">renderTargetParameters</span>
+        <span class="p">)</span>
+      <span class="p">)</span>
+      <span class="nv">effectSaveTarget.clear = </span><span class="kc">false</span>
+      </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Uncomment the three lines containing "fxaaPass" below to try a fast
+antialiasing filter. Commented below because of two reasons:
+a) it's slow
+b) it blends in some black pixels, so it only looks good
+    in dark backgrounds
+The problem of blending with black pixels is the same problem of the
+motionBlur leaving a black trail - tracked in github with
+https://github.com/davidedc/livecodelab/issues/22</p>             </td>             <td class="code">               <div class="highlight"><pre>      </pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>fxaaPass = new liveCodeLabCore<em>three.ShaderPass(liveCodeLabCore</em>three.ShaderExtras.fxaa);
+fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="vi">@effectBlend = </span><span class="k">new</span> <span class="nx">liveCodeLabCore_three</span><span class="p">.</span><span class="nx">ShaderPass</span><span class="p">(</span>
+        <span class="nx">liveCodeLabCore_three</span><span class="p">.</span><span class="nx">ShaderExtras</span><span class="p">.</span><span class="nx">blend</span><span class="p">,</span> <span class="s">&quot;tDiffuse1&quot;</span><span class="p">)</span>
+      <span class="nv">screenPass = </span><span class="k">new</span> <span class="nx">liveCodeLabCore_three</span><span class="p">.</span><span class="nx">ShaderPass</span><span class="p">(</span>
+        <span class="nx">liveCodeLabCore_three</span><span class="p">.</span><span class="nx">ShaderExtras</span><span class="p">.</span><span class="nx">screen</span><span class="p">)</span>
+      </pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>motion blur</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="vi">@effectBlend.uniforms.tDiffuse2.value = </span><span class="nx">effectSaveTarget</span><span class="p">.</span><span class="nx">renderTarget</span>
+      <span class="vi">@effectBlend.uniforms.mixRatio.value = </span><span class="mi">0</span>
+      <span class="nv">renderModel = </span><span class="k">new</span> <span class="nx">liveCodeLabCore_three</span><span class="p">.</span><span class="nx">RenderPass</span><span class="p">(</span>
+        <span class="nx">@scene</span><span class="p">,</span> <span class="nx">@camera</span><span class="p">)</span>
+      <span class="vi">@composer = </span><span class="k">new</span> <span class="nx">liveCodeLabCore_three</span><span class="p">.</span><span class="nx">EffectComposer</span><span class="p">(</span>
+        <span class="nx">@renderer</span><span class="p">,</span> <span class="nx">renderTarget</span><span class="p">)</span>
+      <span class="nx">@composer</span><span class="p">.</span><span class="nx">addPass</span> <span class="nx">renderModel</span>
+      </pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>@composer.addPass(fxaaPass);</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">@composer</span><span class="p">.</span><span class="nx">addPass</span> <span class="nx">@effectBlend</span>
+      <span class="nx">@composer</span><span class="p">.</span><span class="nx">addPass</span> <span class="nx">effectSaveTarget</span>
+      <span class="nx">@composer</span><span class="p">.</span><span class="nx">addPass</span> <span class="nx">screenPass</span>
+      <span class="nv">screenPass.renderToScreen = </span><span class="kc">true</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

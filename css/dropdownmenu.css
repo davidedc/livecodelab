@@ -1,0 +1,127 @@
+a:hover {
+    cursor: default;
+}
+.dd_menu {
+    background:#000000;
+    border-bottom: 1px;
+    border-bottom-color: white;
+    border-bottom-style: dotted;
+    padding:0px; margin:0;
+    list-style-type:none;
+    height:30px;
+    font-family: MavenPro-Medium;
+    font-size:12px;
+}
+.dd_menu li {
+    float:left;
+    height:30px;
+    border-right: solid 1px white;
+    border-right-style: dotted;
+}
+.dd_menu li a {
+    padding:9px 20px;
+    display:block; color:#fff;
+    text-decoration:none;
+}
+
+
+.dd_menu li:hover a {
+    color:black;
+}
+
+.dd_menu ul {
+    position:absolute;
+    left:-9999px;
+    top:-9999px;
+    list-style-type:none;
+}
+.dd_menu li:hover {
+    position:relative;
+    background:white;
+}
+.dd_menu li:hover ul {
+    left:0px;
+    top:30px;
+    background:#000000;
+    padding:3px;
+    border:0px solid white;
+    width:160px;
+}
+.dd_menu li:hover ul li {
+    height:18px;
+    border:none; 
+}
+.dd_menu li:hover ul li a {
+    height:18px;
+    padding:0px;
+    display:block;
+    font-size:11px;
+    width:158px;
+    line-height:18px;
+    text-indent:15px;
+    color:white;
+    background-color:#000000;
+    text-decoration:none;
+    border-top: 1px;
+    border-top-color: #333;
+    border-top-style: dotted;
+}
+.dd_menu li:hover ul li a:hover {
+    height:18px;
+    background:silver;
+    color:#000;
+    border:solid 1px #444;
+}
+
+#dangerSignText {
+    color:#000000;
+    text-decoration:none;
+}
+#dangerSign:hover {
+    background:#000000;
+}
+
+#errorMessageText {
+    text-decoration:none;
+}
+#errorMessage:hover {
+    background:#000000;
+}
+
+.verticalMiddleOfScreen {
+    color: white;
+    background-color: transparent;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    width: 100%;
+    height: 1px;
+    overflow: visible;
+    visibility: visible;
+    z-index: 3;
+    display: block
+}
+
+.fakeAnimationContent {
+    font-family: Verdana, Geneva, Arial, sans-serif;
+    background-color: transparent;
+    margin-left: -1.5em;
+    position: absolute;
+    top: -1.1em;
+    left: 50%;
+    width: 3em;
+    height: 2em;
+    padding-top: 0px;
+    visibility: visible
+}
+
+
+.dd_menu li span {
+    padding:9px 20px;
+    display:list-tem;
+    color:green;
+    text-decoration:none;
+    background-color: #000;
+}
+

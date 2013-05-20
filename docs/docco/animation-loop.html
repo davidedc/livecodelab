@@ -1,0 +1,164 @@
+<!DOCTYPE html>  <html> <head>   <title>animation-loop.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocoder.html">                 autocoder.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               animation-loop.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>The animation loop is the loop that make each "frame" happen,
+i.e. whatever happend every 30 to 60 times (or, indeed, "frames")
+per second - which is the following:
+* the next frame is scheduled
+* the current program (i.e. a draw() Function) is run
+* the background is repainted if it has changed from the previous frame
+* the new 3d scene is painted
+* the stats widget on the top right is updated to show
+ milliseconds taken by each loop frame.
+#
+Note that the followings are NOT done as part of the animation loop:
+* Syntax checking of the program typed by the user
+ (that's checked only when it changed)
+* sound playing. That happens by its own series of timeouts
+ (as defined by the optional "bpm" command) separately from the
+ animation loop.
+* blinking of the cursor
+#
+About the current Function being run:
+note that this might not be the Function corresponding to the very latest
+content of the editor, for two reasons:
+1. the newest content of the editor might not be syntactically incorrect
+2. even if it's syntactically correct it might not be "stable"
+  i.e. it might have thrown a runtime error
+  (for example used an undefined variable or function).
+#
+Rather, the current draw() function is the latest program
+that is both syntactically correct and "stable" (or in the process of
+being proven stable).
+Stability of a program cannot be guaranteed, but LiveCodeLab heuristically
+considers as "stable" a program once it's able to run for 5 frames
+without throwing errors.
+If the program throws an error past this testing window, then LiveCodeLab
+currently has no further fallback, so the Function will be just run each
+frame and hope is that it has time to draw enough animation on the screen
+before it throws the error so that some kind of animation
+will still be playing.
+One could devise a mechanism by which a stack of stable functions
+is maintained, so each failing function of the stack would cause the
+previous one to become the current stable alternative.
+This would practically guarantee that there is a Function that
+is simple enough in the past that it would contain no runtime
+errors - unless a previous function has so dramatically borked the
+state of the entire system, but that would probably take some malice.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">class</span> <span class="nx">AnimationLoop</span>
+
+  <span class="nv">loopInterval: </span><span class="kc">null</span>
+  <span class="nv">wantedFramesPerSecond: </span><span class="kc">null</span>
+  <span class="nv">liveCodeLabCoreInstance: </span><span class="kc">undefined</span>
+  <span class="nv">AS_HIGH_FPS_AS_POSSIBLE: </span><span class="o">-</span><span class="mi">1</span>
+
+  <span class="nv">constructor: </span><span class="nf">(@eventRouter,</span>
+<span class="nf">                @stats,</span>
+<span class="nf">                @liveCodeLabCoreInstance,</span>
+<span class="nf">                @forceUseOfTimeoutForScheduling = false) -&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Some basic initialisations and constant definitions</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="vi">@wantedFramesPerSecond = </span><span class="nx">@AS_HIGH_FPS_AS_POSSIBLE</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>global variale, keeps the count of how many frames since beginning
+of session (or since the program was last cleared).
+This variable is incremented and reset in the animation
+loop "animate" function.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nb">window</span><span class="p">.</span><span class="nv">frame = </span><span class="mi">0</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>There are two different ways to schedule the next frame:
+1. using a native window.requestAnimationFrame implementation
+   (supported by some browsers)
+2. using timeouts</p>
+
+<p>Notes and constraints:
+* window.requestAnimationFrame cannot be used if user wants a
+  specific fps (i.e. you can't pick a specific framerate)
+* for browser that don't have a window.requestAnimationFrame, a shim
+  at the end of the page replaces that with an implementation
+  based on timeouts
+* the user can decide to force the use of timeouts (for testing purposes)</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">scheduleNextFrame: </span><span class="nf">-&gt;</span>
+    <span class="k">if</span> <span class="nx">@forceUseOfTimeoutForScheduling</span>
+      <span class="k">if</span> <span class="nx">@wantedFramesPerSecond</span> <span class="o">is</span> <span class="nx">@AS_HIGH_FPS_AS_POSSIBLE</span>
+        <span class="nx">setTimeout</span> <span class="p">(</span><span class="o">=&gt;</span>
+          <span class="nx">@animate</span><span class="p">()</span>
+        <span class="p">),</span> <span class="mi">1000</span> <span class="o">/</span> <span class="mi">60</span>
+      <span class="k">else</span>
+        <span class="nx">setTimeout</span> <span class="p">(</span><span class="o">=&gt;</span>
+          <span class="nx">@animate</span><span class="p">()</span>
+        <span class="p">),</span> <span class="mi">1000</span> <span class="o">/</span> <span class="nx">@wantedFramesPerSecond</span>
+    <span class="k">else</span>
+      <span class="k">if</span> <span class="nx">@wantedFramesPerSecond</span> <span class="o">is</span> <span class="nx">@AS_HIGH_FPS_AS_POSSIBLE</span>
+        <span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span> <span class="o">=&gt;</span>
+          <span class="nx">@animate</span><span class="p">()</span>
+      <span class="k">else</span>
+        <span class="k">if</span> <span class="nx">loopInterval</span><span class="o">?</span>
+          <span class="nv">loopInterval = </span><span class="nx">setInterval</span><span class="p">(</span><span class="o">=&gt;</span>
+            <span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span> <span class="nf">-&gt;</span>
+              <span class="nx">@animate</span><span class="p">()</span>
+          <span class="p">,</span> <span class="mi">1000</span> <span class="o">/</span> <span class="nx">@wantedFramesPerSecond</span><span class="p">)</span>
+
+  </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>animation loop</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">animate: </span><span class="nf">-&gt;</span>
+    <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">matrixCommands</span><span class="p">.</span><span class="nx">resetMatrixStack</span><span class="p">()</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>the sound list needs to be cleaned
+so that the user program can create its own from scratch</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">soundSystem</span><span class="p">.</span><span class="nx">resetLoops</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">window</span><span class="p">.</span><span class="nx">frame</span> <span class="o">is</span> <span class="mi">0</span>
+      <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">timeKeeper</span><span class="p">.</span><span class="nx">resetTime</span><span class="p">()</span>
+    <span class="k">else</span>
+      <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">timeKeeper</span><span class="p">.</span><span class="nx">updateTime</span><span class="p">()</span>
+    <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">drawFunctionRunner</span><span class="p">.</span><span class="nx">resetTrackingOfDoOnceOccurrences</span><span class="p">()</span>
+    <span class="vi">@liveCodeLabCoreInstance.soundSystem.anyCodeReactingTobpm = </span><span class="kc">false</span>
+    <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">soundSystem</span><span class="p">.</span><span class="nx">SetUpdatesPerMinute</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">4</span>
+    <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">lightSystem</span><span class="p">.</span><span class="nx">noLights</span><span class="p">()</span>
+    <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">graphicsCommands</span><span class="p">.</span><span class="nx">reset</span><span class="p">()</span>
+    <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">blendControls</span><span class="p">.</span><span class="nx">animationStyle</span> <span class="o">\</span>
+      <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">blendControls</span><span class="p">.</span><span class="nx">animationStyles</span><span class="p">.</span><span class="nx">normal</span>
+    <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">backgroundPainter</span><span class="p">.</span><span class="nx">resetGradientStack</span><span class="p">()</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>if the draw function is empty, then don't schedule the
+next animation frame and set a "I'm sleeping" flag.
+We'll re-start the animation when the editor content
+changes. Note that this frame goes to completion anyways, because
+we actually do want to render one "empty screen" frame.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">drawFunctionRunner</span><span class="p">.</span><span class="nx">drawFunction</span>
+      <span class="nx">@scheduleNextFrame</span><span class="p">()</span>
+      </pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Now here there is another try/catch check when the draw function is ran.
+The reason is that there might be references to uninitialised
+or inexistent variables. For example:
+  box
+  background yeLow
+  ball
+draws only a box, because the execution silently fails at
+the 'yeLow' reference.
+So in that case we need to
+1. highlight the error
+2. run the previously known good program.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">try</span>
+        <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">drawFunctionRunner</span><span class="p">.</span><span class="nx">runDrawFunction</span><span class="p">()</span>
+      <span class="k">catch</span> <span class="nx">e</span>
+        </pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>alert('runtime error');</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">@eventRouter</span><span class="p">.</span><span class="nx">trigger</span> <span class="s">&quot;runtime-error-thrown&quot;</span><span class="p">,</span> <span class="nx">e</span>
+        <span class="k">return</span>
+      <span class="nv">drawFunctionRunner = </span><span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">drawFunctionRunner</span>
+      <span class="nx">drawFunctionRunner</span><span class="p">.</span><span class="nx">putTicksNextToDoOnceBlocksThatHaveBeenRun</span> <span class="o">\</span>
+        <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">codeTransformer</span>
+    <span class="k">else</span>
+      <span class="vi">@liveCodeLabCoreInstance.dozingOff = </span><span class="kc">true</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>the program is empty and so it's the screen. Effectively, the user
+is starting from scratch, so the frame variable should be reset to zero.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nb">window</span><span class="p">.</span><span class="nv">frame = </span><span class="mi">0</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>console.log('dozing off');</p>             </td>             <td class="code">               <div class="highlight"><pre>    </pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>we have to repeat this check because in the case
+the user has set frame = 0,
+then we have to catch that case here
+after the program has executed</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">timeKeeper</span><span class="p">.</span><span class="nx">resetTime</span><span class="p">()</span>  <span class="k">if</span> <span class="nx">frame</span> <span class="o">is</span> <span class="mi">0</span>
+    <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">blendControls</span><span class="p">.</span><span class="nx">animationStyleUpdateIfChanged</span><span class="p">()</span>
+    <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">backgroundPainter</span><span class="p">.</span><span class="nx">simpleGradientUpdateIfChanged</span><span class="p">()</span>
+    <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">soundSystem</span><span class="p">.</span><span class="nx">changeUpdatesPerMinuteIfNeeded</span><span class="p">()</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>"frame" starts at zero, so we increment after the first time the draw
+function has been run.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nb">window</span><span class="p">.</span><span class="nx">frame</span><span class="o">++</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>do the render</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">renderer</span><span class="p">.</span><span class="nx">render</span> <span class="nx">@liveCodeLabCoreInstance</span><span class="p">.</span><span class="nx">graphicsCommands</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>update stats</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="nx">@stats</span> <span class="k">then</span> <span class="nx">@stats</span><span class="p">.</span><span class="nx">update</span><span class="p">()</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>Shim for browser that don't have requestAnimationFrame, see
+http://paulirish.com/2011/requestanimationframe-for-smart-animating/</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">lastTime = </span><span class="mi">0</span>
+<span class="nv">vendors = </span><span class="p">[</span><span class="s">&quot;ms&quot;</span><span class="p">,</span> <span class="s">&quot;moz&quot;</span><span class="p">,</span> <span class="s">&quot;webkit&quot;</span><span class="p">,</span> <span class="s">&quot;o&quot;</span><span class="p">]</span>
+<span class="nv">x = </span><span class="mi">0</span>
+<span class="k">while</span> <span class="nx">x</span> <span class="o">&lt;</span> <span class="nx">vendors</span><span class="p">.</span><span class="nx">length</span> <span class="o">and</span> <span class="o">not</span> <span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span>
+  <span class="nb">window</span><span class="p">.</span><span class="nv">requestAnimationFrame = </span><span class="nb">window</span><span class="p">[</span><span class="nx">vendors</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;RequestAnimationFrame&quot;</span><span class="p">]</span>
+  <span class="nb">window</span><span class="p">.</span><span class="nv">cancelAnimationFrame = </span><span class="nb">window</span><span class="p">[</span><span class="nx">vendors</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;CancelAnimationFrame&quot;</span><span class="p">]</span> <span class="o">or</span>
+     <span class="nb">window</span><span class="p">[</span><span class="nx">vendors</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;CancelRequestAnimationFrame&quot;</span><span class="p">]</span>
+  <span class="o">++</span><span class="nx">x</span>
+<span class="k">unless</span> <span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span>
+  <span class="nb">window</span><span class="p">.</span><span class="nv">requestAnimationFrame = </span><span class="nf">(callback, element) -&gt;</span>
+    <span class="nv">currTime = </span><span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">()</span>
+    <span class="nv">timeToCall = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">16</span> <span class="o">-</span> <span class="p">(</span><span class="nx">currTime</span> <span class="o">-</span> <span class="nx">lastTime</span><span class="p">))</span>
+    <span class="nv">id = </span><span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="nf">-&gt;</span>
+      <span class="nx">callback</span> <span class="nx">currTime</span> <span class="o">+</span> <span class="nx">timeToCall</span>
+    <span class="p">,</span> <span class="nx">timeToCall</span><span class="p">)</span>
+    <span class="nv">lastTime = </span><span class="nx">currTime</span> <span class="o">+</span> <span class="nx">timeToCall</span>
+    <span class="nx">id</span>
+<span class="k">unless</span> <span class="nb">window</span><span class="p">.</span><span class="nx">cancelAnimationFrame</span>
+  <span class="nb">window</span><span class="p">.</span><span class="nv">cancelAnimationFrame = </span><span class="nf">(id) -&gt;</span>
+    <span class="nx">clearTimeout</span> <span class="nx">id</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

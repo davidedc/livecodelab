@@ -1,0 +1,270 @@
+<!DOCTYPE html>  <html> <head>   <title>livecodelab-core.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="animation-loop.html">                 animation-loop.coffee               </a>                                           <a class="source" href="autocoder.html">                 autocoder.coffee               </a>                                           <a class="source" href="lexer.html">                 lexer.coffee               </a>                                           <a class="source" href="background-painter.html">                 background-painter.coffee               </a>                                           <a class="source" href="big-cursor.html">                 big-cursor.coffee               </a>                                           <a class="source" href="blend-controls.html">                 blend-controls.coffee               </a>                                           <a class="source" href="code-transformer.html">                 code-transformer.coffee               </a>                                           <a class="source" href="colour-functions.html">                 colour-functions.coffee               </a>                                           <a class="source" href="colour-literals.html">                 colour-literals.coffee               </a>                                           <a class="source" href="editor.html">                 editor.coffee               </a>                                           <a class="source" href="event-router.html">                 event-router.coffee               </a>                                           <a class="source" href="globals.html">                 globals.coffee               </a>                                           <a class="source" href="graphics-commands.html">                 graphics-commands.coffee               </a>                                           <a class="source" href="init.html">                 init.coffee               </a>                                           <a class="source" href="lights-commands.html">                 lights-commands.coffee               </a>                                           <a class="source" href="livecodelab-core.html">                 livecodelab-core.coffee               </a>                                           <a class="source" href="math.html">                 math.coffee               </a>                                           <a class="source" href="matrix-commands.html">                 matrix-commands.coffee               </a>                                           <a class="source" href="parser.html">                 parser.coffee               </a>                                           <a class="source" href="program-loader.html">                 program-loader.coffee               </a>                                           <a class="source" href="program-runner.html">                 program-runner.coffee               </a>                                           <a class="source" href="renderer.html">                 renderer.coffee               </a>                                           <a class="source" href="samplebank.html">                 samplebank.coffee               </a>                                           <a class="source" href="sound-system.html">                 sound-system.coffee               </a>                                           <a class="source" href="text-dimming.html">                 text-dimming.coffee               </a>                                           <a class="source" href="threejs-system.html">                 threejs-system.coffee               </a>                                           <a class="source" href="time-keeper.html">                 time-keeper.coffee               </a>                                           <a class="source" href="ui.html">                 ui.coffee               </a>                                           <a class="source" href="url-router.html">                 url-router.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               livecodelab-core.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nx">A</span> <span class="nx">LiveCodeLabCore</span> <span class="nx">instance</span> <span class="nx">packs</span> <span class="nx">together</span> <span class="nx">the</span> <span class="nx">following</span> <span class="nv">parts:</span>
+
+<span class="o">-</span> <span class="nx">timeKeeper</span>
+<span class="o">-</span> <span class="nx">three</span>
+<span class="o">-</span> <span class="nx">threeJsSystem</span>
+<span class="o">-</span> <span class="nx">matrixCommands</span>
+<span class="o">-</span> <span class="nx">blendControls</span>
+<span class="o">-</span> <span class="nx">soundSystem</span>
+<span class="o">-</span> <span class="nx">colourFunctions</span>
+<span class="o">-</span> <span class="nx">backgroundPainter</span>
+<span class="o">-</span> <span class="nx">graphicsCommands</span>
+<span class="o">-</span> <span class="nx">lightSystem</span>
+<span class="o">-</span> <span class="nx">drawFunctionRunner</span>
+<span class="o">-</span> <span class="nx">codeTransformer</span>
+<span class="o">-</span> <span class="nx">renderer</span>
+<span class="o">-</span> <span class="nx">animationLoop</span>
+
+<span class="nx">LiveCodeLab</span> <span class="o">is</span> <span class="nx">built</span> <span class="nx">one</span> <span class="nx">part</span> <span class="nx">at</span> <span class="nx">a</span> <span class="nx">time</span><span class="p">,</span> <span class="o">and</span> <span class="nx">the</span> <span class="nx">arguments</span> <span class="k">in</span>
+<span class="nx">the</span> <span class="nx">constructor</span> <span class="nx">tell</span> <span class="nx">how</span> <span class="nx">they</span> <span class="nx">depend</span> <span class="kc">on</span> <span class="nx">each</span> <span class="nx">other</span> <span class="nx">at</span>
+<span class="nx">construction</span> <span class="nx">time</span> <span class="o">and</span> <span class="nx">how</span> <span class="nx">they</span> <span class="nx">interact</span> <span class="nx">at</span> <span class="nx">runtime</span><span class="p">.</span>
+
+<span class="o">-</span> <span class="nx">_A</span> <span class="nx">constructor</span> <span class="nx">with</span> <span class="kc">no</span> <span class="nx">arguments_</span> <span class="p">(</span><span class="o">or</span> <span class="nx">where</span> <span class="nx">the</span> <span class="nx">arguments</span> <span class="nx">are</span> <span class="nx">just</span> <span class="nx">passed</span>
+  <span class="k">by</span> <span class="nx">the</span> <span class="nx">caller</span> <span class="k">of</span> <span class="nx">the</span> <span class="nx">very</span> <span class="nx">createLiveCodeLabCore</span> <span class="nx">function</span> <span class="nx">we</span> <span class="nx">are</span> <span class="k">in</span><span class="p">),</span>
+  <span class="nx">such</span> <span class="nx">as</span> <span class="nx">createColourFunctions</span><span class="p">,</span> <span class="o">is</span> <span class="nx">a</span> <span class="nx">part</span>
+  <span class="nx">that</span> <span class="nx">does</span> <span class="o">not</span> <span class="nx">need</span> <span class="nx">any</span> <span class="nx">other</span> <span class="nx">part</span> <span class="nx">at</span> <span class="nx">construction</span> <span class="nx">time</span> <span class="o">and</span> <span class="nx">it</span> <span class="nx">doesn</span><span class="s">&#39;t</span>
+<span class="s">  interact with any of the other parts at run time.</span>
+<span class="s">- _A constructor with arguments other than</span>
+<span class="s">  &quot;liveCodeLabCoreInstance&quot;_ (such as threeJsSystem)</span>
+<span class="s">  only needs the parts passed at construction time for its own construction,</span>
+<span class="s">  and it can only interact with such parts at runtime.</span>
+<span class="s">- _A constructor which contains the &quot;liveCodeLabCoreInstance&quot; argument_, such as</span>
+<span class="s">  codeTransformer, might or might not need other parts for its own construction</span>
+<span class="s">  (if they are passed in addition to the &quot;liveCodeLabCoreInstance&quot; argument)</span>
+<span class="s">  but it does interact at runtime with other parts not passed in the constructor</span>
+<span class="s">  argument.</span>
+
+<span class="s">So, for determining the order of the constructors, one can just look at the</span>
+<span class="s">dependencies dictated by the arguments other than the &quot;liveCodeLabCoreInstance&quot;</span>
+<span class="s">argument. The &quot;liveCodeLabCoreInstance&quot; parameter</span>
+<span class="s">doesn&#39;</span><span class="nx">t</span> <span class="nx">create</span> <span class="nx">dependencies</span> <span class="nx">at</span> <span class="nx">creation</span> <span class="nx">time</span><span class="p">,</span>
+<span class="nx">it</span><span class="s">&#39;s just used by the parts to reference other parts that they need to</span>
+<span class="s">interact to at runtime.</span>
+
+<span class="s">It might well be that at runtime part A interacts with part B and viceversa.</span>
+<span class="s">This is why runtime interactions are not restricted to parts passed</span>
+<span class="s">as arguments at construction</span>
+<span class="s">time, because one would need to pass constructed part A to the constructor of</span>
+<span class="s">part B and viceversa, which is obviously impossible. This is why the runtime</span>
+<span class="s">interactions happen through the mother of all parts,</span>
+<span class="s">i.e. &quot;liveCodeLabCoreInstance&quot; itself.</span>
+
+<span class="s">To determine which parts any single part interacts with at runtime, one</span>
+<span class="s">has to check all the parameters passed to the constructor. The passed parts</span>
+<span class="s">are likely to mean that there is an interaction at runtime. If the &quot;mother&quot;</span>
+<span class="s">&quot;liveCodeLabCoreInstance&quot; is passed to the constructor, then one case to</span>
+<span class="s">look for all &quot;liveCodeLabCoreInstance&quot; occurrences and see which of its</span>
+<span class="s">children are accessed.</span>
+
+
+<span class="s">class LiveCodeLabCore</span>
+
+<span class="s">  constructor: (@paramsObject) -&gt;</span>
+<span class="s">    </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    @three = THREE</span>
+<span class="s">    </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    @timeKeeper = new TimeKeeper()</span>
+<span class="s">    </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    @blendControls = new BlendControls(@)</span>
+<span class="s">    @colourFunctions = new ColourFunctions()</span>
+<span class="s">    </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    @renderer = new Renderer(@)</span>
+<span class="s">    @soundSystem =</span>
+<span class="s">      new SoundSystem(</span>
+<span class="s">        @paramsObject.eventRouter, buzz, createBowser(), new SampleBank(buzz))</span>
+<span class="s">    </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    @backgroundPainter = new BackgroundPainter(</span>
+<span class="s">      @paramsObject.canvasForBackground,</span>
+<span class="s">      @</span>
+<span class="s">    )</span>
+<span class="s">    </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    @drawFunctionRunner =</span>
+<span class="s">      new ProgramRunner(@paramsObject.eventRouter, @)</span>
+<span class="s">    </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    @codeTransformer =</span>
+<span class="s">      new CodeTransformer(@paramsObject.eventRouter, CoffeeScript, @)</span>
+<span class="s">    </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    @animationLoop =</span>
+<span class="s">      new AnimationLoop(</span>
+<span class="s">        @paramsObject.eventRouter, @paramsObject.statsWidget, @)</span>
+<span class="s">    </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    @threeJsSystem =</span>
+<span class="s">      new ThreeJsSystem(</span>
+<span class="s">        Detector, THREEx, @paramsObject.blendedThreeJsSceneCanvas,</span>
+<span class="s">        @paramsObject.forceCanvasRenderer, @paramsObject.testMode,</span>
+<span class="s">        @three)</span>
+<span class="s">    </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    @matrixCommands =</span>
+<span class="s">      new MatrixCommands(</span>
+<span class="s">        @three, @)</span>
+<span class="s">    </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    @graphicsCommands =</span>
+<span class="s">      new GraphicsCommands(</span>
+<span class="s">        @three, @)</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    @lightSystem =</span>
+<span class="s">      new LightsCommands(@graphicsCommands, @)</span>
+<span class="s">  </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">  paintARandomBackground: -&gt;</span>
+<span class="s">    @backgroundPainter.paintARandomBackground()</span>
+
+<span class="s">  startAnimationLoop: -&gt;</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    @animationLoop.animate()</span>
+
+<span class="s">  runLastWorkingDrawFunction: -&gt;</span>
+<span class="s">    @drawFunctionRunner.reinstateLastWorkingDrawFunction()</span>
+
+<span class="s">  loadAndTestAllTheSounds: -&gt;</span>
+<span class="s">    @soundSystem.loadAndTestAllTheSounds()</span>
+
+<span class="s">  playStartupSound: -&gt;</span>
+<span class="s">    @soundSystem.playStartupSound()</span>
+
+<span class="s">  isAudioSupported: -&gt;</span>
+<span class="s">    @soundSystem.isAudioSupported()</span>
+
+<span class="s">  updateCode: (updatedCode) -&gt;</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    @codeTransformer.updateCode updatedCode</span>
+<span class="s">    if updatedCode isnt &quot;&quot; and @dozingOff</span>
+<span class="s">      @dozingOff = false</span>
+<span class="s">      @animationLoop.animate()</span>
+<span class="s">      </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">      @paramsObject.eventRouter.trigger &quot;livecodelab-waking-up&quot;</span>
+
+<span class="s">  </span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">  getForeground3DSceneImage: (backgroundColor) -&gt;</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    blendedThreeJsSceneCanvas =</span>
+<span class="s">      @threeJsSystem.blendedThreeJsSceneCanvas</span>
+
+<span class="s">    img = new Image</span>
+<span class="s">    img.src = blendedThreeJsSceneCanvas.toDataURL()</span>
+
+<span class="s">    if backgroundColor</span>
+<span class="s">      ctx = document.createElement(&quot;canvas&quot;)</span>
+<span class="s">      ctx.width = blendedThreeJsSceneCanvas.width</span>
+<span class="s">      ctx.height = blendedThreeJsSceneCanvas.height</span>
+<span class="s">      ctxContext = ctx.getContext(&quot;2d&quot;)</span>
+<span class="s">      ctxContext.drawImage img, 0, 0</span>
+<span class="s">      ctxContext.globalCompositeOperation = &quot;destination-over&quot;</span>
+<span class="s">      ctxContext.fillStyle = backgroundColor</span>
+<span class="s">      ctxContext.fillRect \</span>
+<span class="s">        0, 0, blendedThreeJsSceneCanvas.width, blendedThreeJsSceneCanvas.height</span>
+<span class="s">      img = new Image</span>
+<span class="s">      img.src = ctx.toDataURL()</span>
+<span class="s">    img</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>//////////////////////////////////////////////</p>
+
+<p>Phase 1
+initialise all the fields first</p>
+
+<p>//////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>three is a global defined in three.min.js and used in:
+ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
+The difference between three and the threeJsSystem is that
+a) three is the raw Three.js system without for example the blend options.
+b) threeJsSystem contains some convenience fields and abstractions,
+   for example it keeps the renderer (whether it's canvas-based or WebGL
+   based) in a "renderer" field.
+Several fields/methids in threeJsSystem are just conveniency mappings into
+the raw three object.
+But often in LiveCodeLab there are direct reference to three
+fields/methods. So, threeJsSystem provides some abstraction without
+attempting to be a complete abstraction layer.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>//////////////////////////////////////////////</p>
+
+<p>Phase 2
+initialise all the parts that don't
+have any dependencies for construction
+note that the "liveCodeLabCoreInstance" doesn't
+count because it's only used for interactions at
+runtime. Same for the arguments that come
+directly from the caller of this createLiveCodeLabCore
+function we are in.</p>
+
+<p>//////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>this one also interacts with threeJsSystem at runtime</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>this one also interacts with threeJsSystem and blendControls at runtime</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>this one also interacts with colourFunctions, backgroundSceneContext,
+canvasForBackground at runtime</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>this one also interacts with codeTransformer at runtime.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>temporary to migrate CodeTransformed code from js to coffeescript.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>this one also interacts with timeKeeper, matrixCommands, blendControls,
+   soundSystem,
+   backgroundPainter, graphicsCommands, lightSystem, drawFunctionRunner,
+   codeTransformer, renderer
+...at runtime</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>//////////////////////////////////////////////</p>
+
+<p>Phase 3
+initialise all the parts that do
+have dependencies with other parts
+for their construction.
+Note again that the "liveCodeLabCoreInstance" doesn't
+count because it's only used for interactions at
+runtime.
+If the other dependencies forms a cycle, something
+is wrong.</p>
+
+<p>//////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>this one doesn't interact with any other part at runtime.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>this one interacts with timeKeeper at runtime</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>this one also interacts with colourFunctions, lightSystem, matrixCommands
+threeJsSystem at runtime</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>color, lightSystem, matrixCommands, threeJsSystem, colorModeA,
+redF, greenF, blueF, alphaZeroToOne</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>this one also interacts with three,
+threeJsSystem, colourFunctions at runtime</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>//////////////////////////////////////////////</p>
+
+<p>Phase 4
+Grouped together here all the
+methods. Most of the time they just delegate
+to another part.</p>
+
+<p>//////////////////////////////////////////////</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>there is nothing special about starting the animation loop,
+it's just a call to animate(), which then creates its own request
+for the next frame. Abstracting a bit though, it's clearer this way.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>alert('updatedCode: ' + updatedCode);</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>console.log('waking up');</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>why do we leave the option to put a background?
+For two reasons:
+ a) leaving the transparent background makes it very
+    difficult to save a reference "expected" image. The way to do that would
+    be to save the image that appears in the failing test case. And when one
+    does it, the correct image with the transparent background gets saved.
+    But still, the expected image is slightly different from the generated
+    image. This is really weird as the two should be absolutely identical,
+    and yet (maybe because of compression artifacts reasons?) they are
+    different enough that it makes the testing unusable.
+ b) In theory one could get Three.js to directly render on an opaque
+    background but if we do it this way (as in after all the rendering has
+    happened) we keep the motionblur and the paintover styles. If we let
+    Three.js paint the backgrounds, then the postprocessing effects for
+    motionblur and for paintOver wouldn't work anymore.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>some shorthands</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
