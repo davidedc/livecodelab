@@ -18,7 +18,7 @@
 
         <script src='js_compiled/jquery.simplemodal.1.4.3.min.js'></script>
 
-        
+        <!--(if target dev)><!-->
         <link rel="stylesheet" type='text/css' href="css/main.css"/>
         <link rel="stylesheet" type='text/css' href="css/codemirror.css"/>
         <link rel="stylesheet" type='text/css' href="css/night.css"/>
@@ -83,6 +83,15 @@
         <script src="js/editor/mousewheel.js"></script>
         <script src="js/editor/coffeescript-livecodelab-mode.js"></script>
         <script src="js/translatedFromCoffescript/coffee/init.js"></script>
+        <!--<!(endif)-->
+
+        <!--(if target min)><!-->
+        <link rel='stylesheet' type='text/css' href='css_compiled/main.css'/>
+
+        <script src="js_compiled/Livecodelab-minified.js"></script>
+        <!--<!(endif)-->
+
+
     </head>
     <body>
 
