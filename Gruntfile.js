@@ -366,7 +366,11 @@ module.exports = function (grunt) {
                     'js/translatedFromCoffescript/coffee/blend-controls.js',
                     'js/translatedFromCoffescript/coffee/lights-commands.js',
                     'js/translatedFromCoffescript/coffee/ui.js',
-                    'js/browser-detection/bowser-2012-07-18.js'],
+                    'js/editor/mousewheel.js',
+                    'js/editor/coffeescript-livecodelab-mode.js',
+                    'js/browser-detection/bowser-2012-07-18.js',
+                    'js/translatedFromCoffescript/coffee/init.js'
+                ],
                 dest: 'dist/built.js'
             }
         },
@@ -383,7 +387,7 @@ module.exports = function (grunt) {
             ],
             build: [
                 'dist/',
-                'indexMinified.html',
+                'index-min.html',
                 'js_compiled/Livecodelab-minified.js',
                 'js/translatedFromCoffescript/',
                 'css_compiled/'
@@ -393,9 +397,13 @@ module.exports = function (grunt) {
             ]
         },
         targethtml: {
-            compile: {
-                src: 'index.html',
-                dest: 'indexMinified.html'
+            min: {
+                src: 'templts/index.html.templt',
+                dest: 'index-min.html'
+            },
+            dev: {
+                src: 'templts/index.html.templt',
+                dest: 'index.html'
             }
         },
         'closure-compiler': {
@@ -452,7 +460,8 @@ module.exports = function (grunt) {
         'closure-compiler',
         'copy',
         'recess:compile',
-        'targethtml:compile'
+        'targethtml:min',
+        'targethtml:dev'
     ]);
 
 
@@ -474,7 +483,7 @@ module.exports = function (grunt) {
     process.stdout.write("* You can use jitter to automatically translate\n");
     process.stdout.write("* the .coffee files - which is fine for testing\n");
     process.stdout.write("* changes using the non-minified version of livecodelab,\n");
-    process.stdout.write("* (i.e. index.html, NOT indexMinified.html)\n");
+    process.stdout.write("* (i.e. index.html, NOT index-min.html)\n");
     process.stdout.write("* just do:\n");
     process.stdout.write("*    npm install -g jitter \n");
     process.stdout.write("*    jitter --bare coffee/ js/translatedFromCoffescript/coffee/ \n");
