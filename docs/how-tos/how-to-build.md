@@ -27,7 +27,7 @@ More in general, to setup the build system:
 
 #### Use ####
 
- * From your livecodelab directory run ```grunt compile``` . A fresh new indexMinified.html is baked for you,
+ * From your livecodelab directory run ```grunt compile``` . A fresh new index-min.html is baked for you,
  * ...or run ```grunt docs``` for new docs,
  * ...or run ```grunt clean``` to clean the build files.
  * You can use jitter to automatically translate the .coffee files - which is fine for testing changes using the non-minified version of livecodelab, just do ```npm install -g jitter``` and then ```jitter --bare coffee/ js/translatedFromCoffescript/coffee/```
