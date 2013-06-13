@@ -17,7 +17,6 @@ TimeKeeper = (function() {
 
   TimeKeeper.prototype.updateTime = function() {
     var d;
-
     d = new Date();
     this.time = d.getTime() - this.timeAtStart;
     return window.time = d.getTime() - this.timeAtStart;
@@ -25,7 +24,6 @@ TimeKeeper = (function() {
 
   TimeKeeper.prototype.resetTime = function() {
     var d;
-
     d = new Date();
     this.time = 0;
     window.time = 0;

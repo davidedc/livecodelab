@@ -12,7 +12,6 @@ ThreeJsSystem = (function() {
 
   function ThreeJsSystem(Detector, THREEx, blendedThreeJsSceneCanvas, forceCanvasRenderer, testMode, liveCodeLabCore_three) {
     var currentFrameThreeJsSceneCanvas, effectSaveTarget, fxaaPass, previousFrameThreeJSSceneRenderForBlendingCanvas, renderModel, renderTarget, renderTargetParameters, screenPass;
-
     this.blendedThreeJsSceneCanvas = blendedThreeJsSceneCanvas;
     this.forceCanvasRenderer = forceCanvasRenderer;
     if (!this.blendedThreeJsSceneCanvas) {

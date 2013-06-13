@@ -9,7 +9,6 @@ LightsCommands = (function() {
 
   function LightsCommands(liveCodeLabCore_graphicsCommands, liveCodeLabCoreInstance) {
     var _this = this;
-
     this.liveCodeLabCore_graphicsCommands = liveCodeLabCore_graphicsCommands;
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
     this.objectPools = this.liveCodeLabCore_graphicsCommands.objectPools;
@@ -38,7 +37,6 @@ LightsCommands = (function() {
 
   LightsCommands.prototype.ambientLight = function(r, g, b, a) {
     var ambientLightsPool, colorToBeUsed, newLightCreated, pooledAmbientLight;
-
     newLightCreated = false;
     if (r == null) {
       colorToBeUsed = this.liveCodeLabCoreInstance.colourFunctions.color(255);

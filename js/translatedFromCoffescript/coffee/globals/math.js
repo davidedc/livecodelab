@@ -68,7 +68,6 @@ Calculates the distance between two points.
 
 dist = function() {
   var dx, dy, dz;
-
   dx = void 0;
   dy = void 0;
   dz = void 0;
@@ -210,7 +209,6 @@ Determines the largest value in a sequence of numbers.
 
 max = function() {
   var count, i, numbers;
-
   if (arguments.length === 2) {
     return (arguments[0] < arguments[1] ? arguments[1] : arguments[0]);
   }
@@ -246,7 +244,6 @@ Determines the smallest value in a sequence of numbers.
 
 min = function() {
   var count, i, numbers;
-
   if (arguments.length === 2) {
     return (arguments[0] < arguments[1] ? arguments[0] : arguments[1]);
   }
@@ -531,7 +528,6 @@ To convert a floating-point random number to an integer, use the int() function.
 
 random = function() {
   var aMax, aMin;
-
   if (!arguments.length) {
     return currentRandom();
   }
@@ -545,7 +541,6 @@ random = function() {
 
 Marsaglia = function(i1, i2) {
   var nextInt, w, z;
-
   z = i1 || 362436069;
   w = i2 || 521288629;
   nextInt = function() {
@@ -555,7 +550,6 @@ Marsaglia = function(i1, i2) {
   };
   this.nextDouble = function() {
     var i;
-
     i = nextInt() / 4294967296;
     if (i < 0) {
       return 1 + i;
@@ -568,7 +562,6 @@ Marsaglia = function(i1, i2) {
 
 Marsaglia.createRandomized = function() {
   var now;
-
   now = new Date();
   return new Marsaglia((now / 60000) & 0xFFFFFFFF, now & 0xFFFFFFFF);
 };
@@ -592,13 +585,11 @@ randomSeed = function(seed) {
 
 Random = function(seed) {
   var haveNextNextGaussian, nextNextGaussian;
-
   haveNextNextGaussian = false;
   nextNextGaussian = void 0;
   random = void 0;
   this.nextGaussian = function() {
     var multiplier, s, v1, v2;
-
     if (haveNextNextGaussian) {
       haveNextNextGaussian = false;
       return nextNextGaussian;
@@ -624,10 +615,8 @@ Random = function(seed) {
 
 PerlinNoise = function(seed) {
   var grad1d, grad2d, grad3d, i, j, perm, rnd, t;
-
   grad3d = function(i, x, y, z) {
     var h, u, v;
-
     h = i & 15;
     u = (h < 8 ? x : y);
     v = (h < 4 ? y : (h === 12 || h === 14 ? x : z));
@@ -635,7 +624,6 @@ PerlinNoise = function(seed) {
   };
   grad2d = function(i, x, y) {
     var v;
-
     v = ((i & 1) === 0 ? x : y);
     if ((i & 2) === 0) {
       return -v;
@@ -676,7 +664,6 @@ PerlinNoise = function(seed) {
   }
   this.noise3d = function(x, y, z) {
     var X, Y, Z, fx, fy, fz, p0, p00, p01, p1, p10, p11;
-
     X = Math.floor(x) & 255;
     Y = Math.floor(y) & 255;
     Z = Math.floor(z) & 255;
@@ -696,7 +683,6 @@ PerlinNoise = function(seed) {
   };
   this.noise2d = function(x, y) {
     var X, Y, fx, fy, p0, p1;
-
     X = Math.floor(x) & 255;
     Y = Math.floor(y) & 255;
     x -= Math.floor(x);
@@ -709,7 +695,6 @@ PerlinNoise = function(seed) {
   };
   return this.noise1d = function(x) {
     var X, fx;
-
     X = Math.floor(x) & 255;
     x -= Math.floor(x);
     fx = (3 - 2 * x) * x * x;
@@ -758,7 +743,6 @@ but this will differ depending on use.
 
 noise = function(x, y, z) {
   var effect, generator, i, k, sum;
-
   if (noiseProfile.generator === void 0) {
     noiseProfile.generator = new PerlinNoise(noiseProfile.seed);
   }
