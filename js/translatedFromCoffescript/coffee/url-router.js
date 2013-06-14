@@ -12,7 +12,6 @@ UrlRouter = (function() {
 
   UrlRouter.prototype.getHash = function() {
     var match;
-
     match = window.location.href.match(/#(.*)$/);
     if (match) {
       return match[1];
@@ -27,7 +26,6 @@ UrlRouter = (function() {
 
   UrlRouter.prototype.urlPointsToDemoOrTutorial = function() {
     var found, hash;
-
     found = false;
     hash = this.getHash();
     if (hash) {

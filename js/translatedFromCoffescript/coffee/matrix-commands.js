@@ -9,7 +9,6 @@ MatrixCommands = (function() {
 
   function MatrixCommands(liveCodeLabCore_three, liveCodeLabCoreInstance) {
     var _this = this;
-
     this.liveCodeLabCore_three = liveCodeLabCore_three;
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
     this.worldMatrix = new this.liveCodeLabCore_three.Matrix4();

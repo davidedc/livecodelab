@@ -7,7 +7,6 @@ var isCanvasSupported, startEnvironment;
 
 $(document).ready(function() {
   var canvasName;
-
   canvasName = "blendedThreeJsSceneCanvas";
   document.getElementById(canvasName).width = window.innerWidth;
   document.getElementById(canvasName).height = window.innerHeight;
@@ -22,7 +21,6 @@ $(document).ready(function() {
 
 isCanvasSupported = function() {
   var elem;
-
   elem = document.createElement("canvas");
   return !!(elem.getContext && elem.getContext("2d"));
 };
@@ -30,7 +28,6 @@ isCanvasSupported = function() {
 startEnvironment = function(paramsObject) {
   var autocoder, bigCursor, colourNames, editor, editorDimmer, eventRouter, liveCodeLabCore, programLoader, stats, ui, urlRouter,
     _this = this;
-
   if (!isCanvasSupported) {
     $("#noCanvasMessage").modal({
       onClose: function() {
@@ -89,7 +86,6 @@ startEnvironment = function(paramsObject) {
   eventRouter.bind("livecodelab-running-stably", ui.showStatsWidget);
   eventRouter.bind("code_changed", function(updatedCodeAsString) {
     var _this = this;
-
     if (updatedCodeAsString !== "") {
       eventRouter.trigger("big-cursor-hide");
     } else {

@@ -19,7 +19,6 @@ EventRouter = (function() {
 
   EventRouter.prototype.bind = function(name, callback, context) {
     var listenerInfo;
-
     listenerInfo = {
       callback: callback,
       context: context
@@ -32,7 +31,6 @@ EventRouter = (function() {
 
   EventRouter.prototype.trigger = function(name) {
     var args, callbacks, i, listenerInfo, _i, _len, _results;
-
     args = void 0;
     callbacks = void 0;
     i = void 0;

@@ -8,7 +8,6 @@ var ColourFunctions;
 ColourFunctions = (function() {
   function ColourFunctions() {
     var _this = this;
-
     window.color = function(a, b, c, d) {
       return _this.color(a, b, c, d);
     };
@@ -98,7 +97,6 @@ ColourFunctions = (function() {
     };
     this.color.toRGB = function(h, s, b) {
       var br, f, hue, p, q, t;
-
       br = void 0;
       hue = void 0;
       f = void 0;
@@ -140,7 +138,6 @@ ColourFunctions = (function() {
 
   ColourFunctions.prototype.color$4 = function(aValue1, aValue2, aValue3, aValue4) {
     var a, b, g, r, rgb;
-
     r = void 0;
     g = void 0;
     b = void 0;
@@ -170,7 +167,6 @@ ColourFunctions = (function() {
 
   ColourFunctions.prototype.color$2 = function(aValue1, aValue2) {
     var a, angleColor;
-
     a = void 0;
     angleColor = -16777217;
     if (aValue1 === angleColor) {
@@ -248,7 +244,6 @@ ColourFunctions = (function() {
 
   ColourFunctions.prototype.colorToHSB = function(colorInt) {
     var blue, green, hue, maxBright, minBright, red, saturation;
-
     red = void 0;
     green = void 0;
     blue = void 0;
@@ -471,7 +466,6 @@ ColourFunctions = (function() {
 
   ColourFunctions.prototype.lerpColor = function(c1, c2, amt) {
     var a, a1, a2, b, b1, b2, colorBits1, colorBits2, g, g1, g2, h, hsb1, hsb2, r, r1, r2, rgb, s;
-
     r = void 0;
     g = void 0;
     b = void 0;
@@ -565,7 +559,6 @@ ColourFunctions = (function() {
 
   ColourFunctions.prototype.modesFunction = function() {
     var ALPHA_MASK, BLUE_MASK, GREEN_MASK, RED_MASK, add, applyMode, blend, burn, darkest, difference, dodge, exclusion, hard_light, lightest, max, min, multiply, overlay, replace, screen, soft_light, subtract;
-
     ALPHA_MASK = this.Constants.ALPHA_MASK;
     RED_MASK = this.Constants.RED_MASK;
     GREEN_MASK = this.Constants.GREEN_MASK;
@@ -575,7 +568,6 @@ ColourFunctions = (function() {
     applyMode = void 0;
     applyMode = function(c1, f, ar, ag, ab, br, bg, bb, cr, cg, cb) {
       var a, b, g, r;
-
       a = void 0;
       r = void 0;
       g = void 0;
@@ -594,7 +586,6 @@ ColourFunctions = (function() {
     };
     blend = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, f;
-
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = c1 & RED_MASK;
       ag = c1 & GREEN_MASK;
@@ -606,25 +597,21 @@ ColourFunctions = (function() {
     };
     add = function(c1, c2) {
       var f;
-
       f = (c2 & ALPHA_MASK) >>> 24;
       return min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 | min((c1 & RED_MASK) + ((c2 & RED_MASK) >> 8) * f, RED_MASK) & RED_MASK | min((c1 & GREEN_MASK) + ((c2 & GREEN_MASK) >> 8) * f, GREEN_MASK) & GREEN_MASK | min((c1 & BLUE_MASK) + (((c2 & BLUE_MASK) * f) >> 8), BLUE_MASK);
     };
     subtract = function(c1, c2) {
       var f;
-
       f = (c2 & ALPHA_MASK) >>> 24;
       return min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 | max((c1 & RED_MASK) - ((c2 & RED_MASK) >> 8) * f, GREEN_MASK) & RED_MASK | max((c1 & GREEN_MASK) - ((c2 & GREEN_MASK) >> 8) * f, BLUE_MASK) & GREEN_MASK | max((c1 & BLUE_MASK) - (((c2 & BLUE_MASK) * f) >> 8), 0);
     };
     lightest = function(c1, c2) {
       var f;
-
       f = (c2 & ALPHA_MASK) >>> 24;
       return min(((c1 & ALPHA_MASK) >>> 24) + f, 0xff) << 24 | max(c1 & RED_MASK, ((c2 & RED_MASK) >> 8) * f) & RED_MASK | max(c1 & GREEN_MASK, ((c2 & GREEN_MASK) >> 8) * f) & GREEN_MASK | max(c1 & BLUE_MASK, ((c2 & BLUE_MASK) * f) >> 8);
     };
     darkest = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, f;
-
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = c1 & RED_MASK;
       ag = c1 & GREEN_MASK;
@@ -636,7 +623,6 @@ ColourFunctions = (function() {
     };
     difference = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
-
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -651,7 +637,6 @@ ColourFunctions = (function() {
     };
     exclusion = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
-
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -666,7 +651,6 @@ ColourFunctions = (function() {
     };
     multiply = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
-
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -681,7 +665,6 @@ ColourFunctions = (function() {
     };
     screen = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
-
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -696,7 +679,6 @@ ColourFunctions = (function() {
     };
     hard_light = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
-
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -711,7 +693,6 @@ ColourFunctions = (function() {
     };
     soft_light = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
-
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -726,7 +707,6 @@ ColourFunctions = (function() {
     };
     overlay = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
-
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -741,7 +721,6 @@ ColourFunctions = (function() {
     };
     dodge = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
-
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;
@@ -771,7 +750,6 @@ ColourFunctions = (function() {
     };
     return burn = function(c1, c2) {
       var ab, ag, ar, bb, bg, br, cb, cg, cr, f;
-
       f = (c2 & ALPHA_MASK) >>> 24;
       ar = (c1 & RED_MASK) >> 16;
       ag = (c1 & GREEN_MASK) >> 8;

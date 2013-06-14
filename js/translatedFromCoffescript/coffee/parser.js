@@ -34,7 +34,6 @@ Parser = (function() {
 
   Parser.prototype.pop = function() {
     var c;
-
     if (this.position >= this.sourceLength) {
       return void 0;
     }
@@ -70,7 +69,6 @@ CodeChecker = (function(_super) {
       },
       "]": function() {
         var b;
-
         if (!this.states.inSingleString && !this.states.inDoubleString && !this.states.inComment) {
           b = this.states.bracketStack.pop();
           if (b !== "[") {
@@ -86,7 +84,6 @@ CodeChecker = (function(_super) {
       },
       ")": function() {
         var b;
-
         if (!this.states.inSingleString && !this.states.inDoubleString && !this.states.inComment) {
           b = this.states.bracketStack.pop();
           if (b !== "(") {
@@ -102,7 +99,6 @@ CodeChecker = (function(_super) {
       },
       "}": function() {
         var b;
-
         if (!this.states.inSingleString && !this.states.inDoubleString && !this.states.inComment) {
           b = this.states.bracketStack.pop();
           if (b !== "{") {
@@ -162,7 +158,6 @@ CodeChecker = (function(_super) {
 
   CodeChecker.prototype.resetState = function() {
     var aFreshlyMadeState;
-
     return aFreshlyMadeState = {
       err: false,
       bracketStack: [],
@@ -177,7 +172,6 @@ CodeChecker = (function(_super) {
 
   CodeChecker.prototype.isErr = function(s) {
     var b;
-
     if (s.bracketStack.length) {
       b = s.bracketStack.pop();
       this.states.message = this.generateErrMessage(b);
@@ -194,7 +188,6 @@ CodeChecker = (function(_super) {
 
   CodeChecker.prototype.generateErrMessage = function(token) {
     var message;
-
     message = void 0;
     switch (token) {
       case "{":
@@ -226,7 +219,6 @@ CodeChecker = (function(_super) {
 
   CodeChecker.prototype.parse = function(source) {
     var c;
-
     c = void 0;
     this.states = this.resetState();
     this.setString(source);

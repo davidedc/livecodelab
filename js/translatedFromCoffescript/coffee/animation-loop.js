@@ -45,7 +45,7 @@
 ## state of the entire system, but that would probably take some malice.
 */
 
-var AnimationLoop, lastTime, vendors, x;
+var AnimationLoop;
 
 AnimationLoop = (function() {
   AnimationLoop.prototype.loopInterval = null;
@@ -68,7 +68,6 @@ AnimationLoop = (function() {
   AnimationLoop.prototype.scheduleNextFrame = function() {
     var loopInterval,
       _this = this;
-
     if (this.forceUseOfTimeoutForScheduling) {
       if (this.wantedFramesPerSecond === this.AS_HIGH_FPS_AS_POSSIBLE) {
         return setTimeout((function() {
@@ -98,7 +97,6 @@ AnimationLoop = (function() {
 
   AnimationLoop.prototype.animate = function() {
     var drawFunctionRunner, e;
-
     this.liveCodeLabCoreInstance.matrixCommands.resetMatrixStack();
     this.liveCodeLabCoreInstance.soundSystem.resetLoops();
     if (window.frame === 0) {
@@ -144,35 +142,3 @@ AnimationLoop = (function() {
   return AnimationLoop;
 
 })();
-
-lastTime = 0;
-
-vendors = ["ms", "moz", "webkit", "o"];
-
-x = 0;
-
-while (x < vendors.length && !window.requestAnimationFrame) {
-  window.requestAnimationFrame = window[vendors[x] + "RequestAnimationFrame"];
-  window.cancelAnimationFrame = window[vendors[x] + "CancelAnimationFrame"] || window[vendors[x] + "CancelRequestAnimationFrame"];
-  ++x;
-}
-
-if (!window.requestAnimationFrame) {
-  window.requestAnimationFrame = function(callback, element) {
-    var currTime, id, timeToCall;
-
-    currTime = new Date().getTime();
-    timeToCall = Math.max(0, 16 - (currTime - lastTime));
-    id = window.setTimeout(function() {
-      return callback(currTime + timeToCall);
-    }, timeToCall);
-    lastTime = currTime + timeToCall;
-    return id;
-  };
-}
-
-if (!window.cancelAnimationFrame) {
-  window.cancelAnimationFrame = function(id) {
-    return clearTimeout(id);
-  };
-}

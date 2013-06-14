@@ -18,7 +18,6 @@ Autocoder = (function() {
   function Autocoder(eventRouter, editor, colourNames) {
     var addRule, scanningAllColors, _i, _len, _ref,
       _this = this;
-
     this.eventRouter = eventRouter;
     this.editor = editor;
     this.colourNames = colourNames;
@@ -85,7 +84,6 @@ Autocoder = (function() {
 
   Autocoder.prototype.emit = function(stream) {
     var ret, scanningTheStream, _i, _len;
-
     ret = "";
     for (_i = 0, _len = stream.length; _i < _len; _i++) {
       scanningTheStream = stream[_i];
@@ -104,7 +102,6 @@ Autocoder = (function() {
 
   Autocoder.prototype.pickMutatableTokenAndMutateIt = function(stream) {
     var idx, mutatableTokens, scanningTheStream, _i, _len;
-
     mutatableTokens = [];
     idx = void 0;
     for (_i = 0, _len = stream.length; _i < _len; _i++) {
@@ -122,7 +119,6 @@ Autocoder = (function() {
 
   Autocoder.prototype.replaceTimeWithAConstant = function() {
     var allMatches, countWhichOneToSwap, editorContent, rePattern;
-
     editorContent = this.editor.getValue();
     rePattern = /(time)/g;
     allMatches = editorContent.match(rePattern);
@@ -145,7 +141,6 @@ Autocoder = (function() {
 
   Autocoder.prototype.mutate = function() {
     var e, editorContent, newContent;
-
     editorContent = this.editor.getValue();
     newContent = void 0;
     this.Tokens = [];
@@ -166,7 +161,6 @@ Autocoder = (function() {
 
   Autocoder.prototype.toggle = function(forcedState) {
     var _this = this;
-
     if (forcedState === undefined) {
       this.active = !this.active;
     } else {
@@ -265,7 +259,6 @@ TOKEN_NUM = (function() {
 
   TOKEN_NUM.prototype.mutate = function() {
     var num, offset, scalar;
-
     num = new Number(this.string);
     scalar = void 0;
     if (0 === num) {
@@ -391,7 +384,6 @@ TOKEN_ITERATION = (function() {
 
   TOKEN_ITERATION.prototype.mutate = function() {
     var num, pat;
-
     pat = /\d/;
     num = pat.exec(this.string);
     if (Math.random() > 0.5) {
@@ -431,7 +423,6 @@ TOKEN_COLOUR = (function() {
 
   TOKEN_COLOUR.prototype.mutate = function() {
     var idx;
-
     idx = Math.floor(Math.random() * this.colourNames.length);
     while (this.string === this.colourNames[idx]) {
       idx = Math.floor(Math.random() * this.colourNames.length);

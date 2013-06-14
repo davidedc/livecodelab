@@ -114,7 +114,6 @@ LiveCodeLabCore = (function() {
 
   LiveCodeLabCore.prototype.getForeground3DSceneImage = function(backgroundColor) {
     var blendedThreeJsSceneCanvas, ctx, ctxContext, img;
-
     blendedThreeJsSceneCanvas = this.threeJsSystem.blendedThreeJsSceneCanvas;
     img = new Image;
     img.src = blendedThreeJsSceneCanvas.toDataURL();

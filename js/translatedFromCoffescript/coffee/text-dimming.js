@@ -46,7 +46,6 @@ EditorDimmer = (function() {
 
   EditorDimmer.prototype.toggleDimCode = function(dimmingActive) {
     var _this = this;
-
     if (dimmingActive == null) {
       this.dimCodeOn = !this.dimCodeOn;
     } else {
