@@ -36,6 +36,7 @@
 ###
 
 define () ->
+
   class BackgroundPainter
 
     constructor: (@canvasForBackground, @liveCodeLabCoreInstance) ->

@@ -10,6 +10,7 @@
 ###
 
 define () ->
+
   class CodeTransformer
     currentCodeString: null
     
