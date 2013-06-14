@@ -46,6 +46,21 @@
 
 define () ->
 
+  ###
+  ## Each rule contains a regular expression to match, 
+  ## and action to execute upon finding a match.
+  ###
+
+  class LexerRule
+    constructor: (@regex, @action) ->  
+      # Each rule is re-written to match prefixes of the input string.
+      @regex = new RegExp("^(" + @regex.source + ")")
+      @regex.compile @regex  if @regex.compile
+    matches: (s) ->
+      m = s.match(@regex)
+      m.shift()  if m
+      m
+
   class LexerState
     rules: []
 
@@ -93,21 +108,6 @@ define () ->
     returnAFunctionThatAppliesRulesAndRunsActionFor: (input) ->
       =>
         @findAndRunActionPairedToLongestAppliableRegex input
-
-  ###
-  ## Each rule contains a regular expression to match, 
-  ## and action to execute upon finding a match.
-  ###
-
-  class LexerRule
-    constructor: (@regex, @action) ->  
-      # Each rule is re-written to match prefixes of the input string.
-      @regex = new RegExp("^(" + @regex.source + ")")
-      @regex.compile @regex  if @regex.compile
-    matches: (s) ->
-      m = s.match(@regex)
-      m.shift()  if m
-      m
 
   # Creates a continuation that switches analysis to another lexical state.  
   #McCONTINUE = (state) ->

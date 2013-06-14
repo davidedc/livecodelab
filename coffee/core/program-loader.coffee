@@ -5,7 +5,11 @@
 ## landing on a URL with a hashtag.
 ###
 
-define () ->
+define [
+  'Three.Detector'
+], (
+  Detector
+) ->
 
   class ProgramLoader
 

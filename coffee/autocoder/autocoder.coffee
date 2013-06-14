@@ -4,7 +4,7 @@
 ## and then re-builds a string pritout from the tokens so to obtain the mutated program.
 ###
 
-define ['autocoder/lexer'], () ->
+define ['autocoder/lexer'], (LexerState) ->
 
   class Autocoder
     
