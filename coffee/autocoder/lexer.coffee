@@ -94,10 +94,10 @@ define () ->
       =>
         @findAndRunActionPairedToLongestAppliableRegex input
 
-###
-## Each rule contains a regular expression to match, 
-## and action to execute upon finding a match.
-###
+  ###
+  ## Each rule contains a regular expression to match, 
+  ## and action to execute upon finding a match.
+  ###
 
   class LexerRule
     constructor: (@regex, @action) ->  
@@ -109,10 +109,10 @@ define () ->
       m.shift()  if m
       m
 
-# Creates a continuation that switches analysis to another lexical state.  
-#McCONTINUE = (state) ->
-#  (match, rest) ->
-#    state.findAndRunActionPairedToLongestAppliableRegex rest
+  # Creates a continuation that switches analysis to another lexical state.  
+  #McCONTINUE = (state) ->
+  #  (match, rest) ->
+  #    state.findAndRunActionPairedToLongestAppliableRegex rest
 
   LexerState
 
