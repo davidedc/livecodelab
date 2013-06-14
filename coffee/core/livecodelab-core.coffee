@@ -59,7 +59,7 @@ children are accessed.
 ###
 
 define [
-  'core/animation-looper'
+  'core/animation-loop'
   ,'core/background-painter'
   ,'core/blend-controls'
   ,'core/code-transformer'
@@ -71,6 +71,8 @@ define [
   ,'core/renderer'
   ,'core/threejs-system'
   ,'core/time-keeper'
+  ,'sound/samplebank'
+  ,'sound/sound-system'
   ,'bowser'
   ,'buzz'
   ,'coffeescript'
@@ -97,6 +99,8 @@ define [
   ,Renderer
   ,ThreeJsSystem
   ,TimeKeeper
+  ,SampleBank
+  ,SoundSystem
   ,createBowser
   ,buzz
   ,CoffeeScript
@@ -105,6 +109,8 @@ define [
   ,Detector
   ,Stats
 ) ->
+
+  console.log(Detector)
 
   class LiveCodeLabCore
 

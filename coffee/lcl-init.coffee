@@ -52,8 +52,12 @@ requirejs.config(
     'threejs':
       deps: []
       exports: 'THREE'
-    'Three.Detector': ['threejs']
-    'Three.Stats': ['threejs']
+    'Three.Detector':
+      deps: ['threejs']
+      exports: 'Detector'
+    'Three.Stats':
+      deps: ['threejs']
+      exports: 'Stats'
     'Three.ShaderExtras': ['threejs']
 
     'Three.EffectComposer': ['threejs']
@@ -67,44 +71,35 @@ requirejs.config(
 )
 
 
-define [
+require [
   'core/colour-literals'
   ,'core/event-router'
   ,'core/livecodelab-core'
   ,'core/program-loader'
+  ,'ui/url-router'
+  ,'ui/big-cursor'
+  ,'ui/text-dimming'
+  ,'ui/ui'
+  ,'editor/editor'
   ,'autocoder/autocoder'
   ,'codemirror'
-  ,'core/autocoder/autocoder'
+  ,'jquery'
   ,'mousewheel'
+  ,'codemirror-lcl-mode'
 ], (
   ColourLiterals
   ,EventRouter
   ,LiveCodeLabCore
   ,ProgramLoader
+  ,UrlRouter
+  ,BigCursor
+  ,EditorDimmer
+  ,Ui
+  ,Editor
+  ,Autocoder
   ,CodeMirror
-  ,AutoCoder
-  ,attachMouseWheelHandler
+  ,$
 ) ->
-
-  $(document).ready ->
-
-    # The div containing this canvas is supposed to be 100% width and height,
-    # so this canvas in theory should be of the right size already. But it
-    # isn't, so we are setting the width and height here again.
-    canvasName = "blendedThreeJsSceneCanvas"
-    document.getElementById(canvasName).width = window.innerWidth
-    document.getElementById(canvasName).height = window.innerHeight
-    startEnvironment
-      blendedThreeJsSceneCanvas: document.getElementById(canvasName)
-      canvasForBackground: document.getElementById("backGroundCanvas")
-      forceCanvasRenderer: false
-      bubbleUpErrorsForDebugging: false
-      
-      # testMode enables the webgl flag "preserverDrawingBuffer",
-      # see https://github.com/mrdoob/three.js/pull/421
-      testMode: false
-
-
 
   # see http://stackoverflow.com/questions/2745432
   isCanvasSupported = ->
@@ -194,7 +189,7 @@ define [
     # in for consistency.
     programLoader = new ProgramLoader(
       eventRouter, editor, liveCodeLabCore
-    ) # $, Detector, blendControls
+    )
     eventRouter.bind(
       "load-program", programLoader.loadDemoOrTutorial, programLoader
     )
@@ -364,4 +359,23 @@ define [
       setTimeout (()=>liveCodeLabCore.playStartupSound()), 650
     bigCursor.toggleBlink true
     ui.setup()
+
+  $(document).ready ->
+
+    # The div containing this canvas is supposed to be 100% width and height,
+    # so this canvas in theory should be of the right size already. But it
+    # isn't, so we are setting the width and height here again.
+    canvasName = "blendedThreeJsSceneCanvas"
+    document.getElementById(canvasName).width = window.innerWidth
+    document.getElementById(canvasName).height = window.innerHeight
+    startEnvironment
+      blendedThreeJsSceneCanvas: document.getElementById(canvasName)
+      canvasForBackground: document.getElementById("backGroundCanvas")
+      forceCanvasRenderer: false
+      bubbleUpErrorsForDebugging: false
+      
+      # testMode enables the webgl flag "preserverDrawingBuffer",
+      # see https://github.com/mrdoob/three.js/pull/421
+      testMode: false
+
 
