@@ -3,7 +3,9 @@
 ## and flags passed in the constructor. Sets up all the post-filtering steps.
 ###
 
-define () ->
+define [
+], (
+) ->
 
   class ThreeJsSystem
 
