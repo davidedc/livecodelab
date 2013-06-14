@@ -274,6 +274,14 @@ module.exports = function (grunt) {
                     src: ['**'],
                     dest: 'css_compiled/images/'
                 }]
+            },
+            jslibs: {
+                files: [{
+                    expand: true,
+                    cwd: 'js_lib/',
+                    src: ['**'],
+                    dest: 'js/'
+                }]
             }
         },
         recess: {
@@ -299,12 +307,12 @@ module.exports = function (grunt) {
         coffee: {
             app: {
                 expand: true,
-                src: ['coffee/**/*.coffee'],
-                dest: 'js/translatedFromCoffescript/',
+                cwd: 'coffee/',
+                src: ['**/*.coffee'],
+                dest: 'js/',
                 ext: '.js',
                 options: {
-                    bare: true,
-                    preserve_dirs: true
+                    bare: true
                 }
             },
             tests: {
@@ -397,6 +405,11 @@ module.exports = function (grunt) {
             ],
             tests: [
                 'tests/js/testLiveCodeLab.js'
+            ],
+            require: [
+                'index.html',
+                'index-min.html',
+                'js'
             ]
         },
         targethtml: {
@@ -454,6 +467,15 @@ module.exports = function (grunt) {
     grunt.registerTask('compile', [
         'coffee:app',
     ]);
+
+    grunt.registerTask('require-build', [
+        'clean:require',
+        'coffee:app',
+        'copy:jslibs',
+        'targethtml:dev'
+    ]);
+
+
 
     grunt.registerTask('build', [
         'clean:build',
