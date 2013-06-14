@@ -4,9 +4,9 @@
 ## @param func
 ## @param scope [optional]
 */
+
 Number.prototype.times = function(func, scope) {
   var i, v, _results;
-
   v = this.valueOf();
   i = 0;
   _results = [];
@@ -16,9 +16,3 @@ Number.prototype.times = function(func, scope) {
   }
   return _results;
 };
-
-window.back = function() {};
-
-window.forward = function() {};
-
-window.close = function() {};

@@ -152,7 +152,6 @@ GraphicsCommands = (function() {
   function GraphicsCommands(liveCodeLabCore_three, liveCodeLabCoreInstance) {
     var i, _i, _j, _ref, _ref1,
       _this = this;
-
     this.liveCodeLabCore_three = liveCodeLabCore_three;
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
     window.line = function(a, b, c) {
@@ -236,7 +235,6 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.createObjectIfNeededAndDressWithCorrectMaterial = function(a, b, c, primitiveProperties, strokeTime, colorToBeUsed, alphaToBeUsed, applyDefaultNormalColor) {
     var objectIsNew, objectPool, pooledObjectWithMaterials, primitiveID, theAngle;
-
     objectIsNew = false;
     pooledObjectWithMaterials = void 0;
     theAngle = void 0;
@@ -368,7 +366,6 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.reset = function() {
     var i, _i, _ref, _results;
-
     this.fill(0xFFFFFFFF);
     this.stroke(0xFFFFFFFF);
     this.currentStrokeSize = 1;
@@ -389,7 +386,6 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.line = function(a, b, c) {
     var primitiveProperties, rememberIfThereWasAFill, rememberPreviousStrokeSize;
-
     if (this.liveCodeLabCoreInstance.lightSystem.lightsAreOn) {
       rememberIfThereWasAFill = this.doFill;
       rememberPreviousStrokeSize = this.currentStrokeSize;
@@ -416,7 +412,6 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.rect = function(a, b, c) {
     var primitiveProperties;
-
     primitiveProperties = {
       canFill: true,
       primitiveType: this.primitiveTypes.rect,
@@ -429,7 +424,6 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.box = function(a, b, c) {
     var primitiveProperties;
-
     primitiveProperties = {
       canFill: true,
       primitiveType: this.primitiveTypes.box,
@@ -442,7 +436,6 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.peg = function(a, b, c) {
     var primitiveProperties;
-
     primitiveProperties = {
       canFill: true,
       primitiveType: this.primitiveTypes.peg,
@@ -468,7 +461,6 @@ GraphicsCommands = (function() {
 
   GraphicsCommands.prototype.ball = function(a, b, c) {
     var primitiveProperties;
-
     primitiveProperties = {
       canFill: true,
       primitiveType: this.primitiveTypes.ball,

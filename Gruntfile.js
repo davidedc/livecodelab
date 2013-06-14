@@ -328,6 +328,10 @@ module.exports = function (grunt) {
         concat: {
             dist: {
                 src: [
+                    'js/translatedFromCoffescript/coffee/globals/browsercontrols.js',
+                    'js/translatedFromCoffescript/coffee/globals/numbertimes.js',
+                    'js/translatedFromCoffescript/coffee/globals/requestAnimFrame.js',
+                    'js/translatedFromCoffescript/coffee/globals/math.js',
                     'js/translatedFromCoffescript/coffee/livecodelab-core.js',
                     'js/translatedFromCoffescript/coffee/event-router.js',
                     'js/translatedFromCoffescript/coffee/parser.js',
@@ -350,13 +354,11 @@ module.exports = function (grunt) {
                     'js/three.js/postprocessing/ShaderPass.js',
                     'js/three.js/postprocessing/MaskPass.js',
                     'js/three.js/postprocessing/SavePass.js',
-                    'js/translatedFromCoffescript/coffee/globals.js',
                     'js/translatedFromCoffescript/coffee/background-painter.js',
                     'js/translatedFromCoffescript/coffee/editor/editor.js',
                     'js/translatedFromCoffescript/coffee/colour-functions.js',
                     'js/translatedFromCoffescript/coffee/matrix-commands.js',
                     'js/translatedFromCoffescript/coffee/graphics-commands.js',
-                    'js/translatedFromCoffescript/coffee/math.js',
                     'js/translatedFromCoffescript/coffee/program-runner.js',
                     'js/translatedFromCoffescript/coffee/code-transformer.js',
                     'js/translatedFromCoffescript/coffee/program-loader.js',

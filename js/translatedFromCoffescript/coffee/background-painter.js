@@ -41,7 +41,6 @@ BackgroundPainter = (function() {
   function BackgroundPainter(canvasForBackground, liveCodeLabCoreInstance) {
     var backGroundFraction,
       _this = this;
-
     this.canvasForBackground = canvasForBackground;
     this.liveCodeLabCoreInstance = liveCodeLabCoreInstance;
     this.gradStack = [];
@@ -79,7 +78,6 @@ BackgroundPainter = (function() {
 
   BackgroundPainter.prototype.background = function() {
     var a;
-
     a = this.liveCodeLabCoreInstance.colourFunctions.color(arguments[0], arguments[1], arguments[2], arguments[3]);
     this.currentGradientStackValue = this.currentGradientStackValue + " null null null null " + a + " ";
     return this.gradStack.push({
@@ -140,7 +138,6 @@ BackgroundPainter = (function() {
 
   BackgroundPainter.prototype.simpleGradientUpdateIfChanged = function() {
     var color, diagonal, radgrad, scanningGradStack, _i, _len, _ref, _results;
-
     diagonal = void 0;
     radgrad = void 0;
     color = this.liveCodeLabCoreInstance.colourFunctions.color;

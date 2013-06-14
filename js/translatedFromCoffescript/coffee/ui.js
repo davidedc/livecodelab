@@ -8,7 +8,6 @@ var Ui;
 Ui = (function() {
   function Ui(eventRouter, stats, programLoader) {
     var _this = this;
-
     this.eventRouter = eventRouter;
     this.stats = stats;
     this.programLoader = programLoader;
@@ -39,7 +38,6 @@ Ui = (function() {
 
   Ui.prototype.resizeCanvas = function(canvasId) {
     var canvas, scale;
-
     canvas = $(canvasId);
     scale = {
       x: 1,
@@ -57,7 +55,6 @@ Ui = (function() {
 
   Ui.prototype.fullscreenify = function(canvasId) {
     var _this = this;
-
     window.addEventListener("resize", (function() {
       _this.adjustCodeMirrorHeight();
       return _this.resizeCanvas(canvasId);
@@ -67,7 +64,6 @@ Ui = (function() {
 
   Ui.prototype.checkErrorAndReport = function(e) {
     var errorMessage;
-
     $("#errorMessageDiv").css("color", "red");
     errorMessage = e.message || e;
     if (errorMessage.indexOf("Unexpected 'INDENT'") > -1) {
@@ -113,10 +109,8 @@ Ui = (function() {
 
   Ui.prototype.setup = function() {
     var _this = this;
-
     return $(document).ready(function() {
-      var a, allDemos, allTutorials, demo, demoSubmenu, demoSubmenuNoSpaces, demoSubmenus, eventRouter, submenuOfThisDemo, submenuOfThisTutorial, tutorial, tutorialSubmenu, tutorialSubmenuNoSpaces, tutorialSubmenus, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3;
-
+      var a, allDemos, allTutorials, demo, demoSubmenu, demoSubmenuNoSpaces, demoSubmenus, eventRouter, submenuOfThisDemo, submenuOfThisTutorial, tutorial, tutorialSubmenu, tutorialSubmenuNoSpaces, tutorialSubmenus, _i, _j, _len, _len1, _ref, _ref1;
       eventRouter = _this.eventRouter;
       $('<span >LiveCodeLab</span>').appendTo($('<li>').appendTo($('#nav'))).click(function() {
         $("#aboutWindow").modal();
@@ -129,7 +123,7 @@ Ui = (function() {
       demoSubmenus = {};
       for (demo in allDemos) {
         submenuOfThisDemo = allDemos[demo].submenu;
-        if ((_ref = demoSubmenus[submenuOfThisDemo]) == null) {
+        if (demoSubmenus[submenuOfThisDemo] == null) {
           demoSubmenus[submenuOfThisDemo] = [];
         }
         demoSubmenus[submenuOfThisDemo].push(demo);
@@ -139,9 +133,9 @@ Ui = (function() {
         $("<li></li>").appendTo($('#ulForDemos')).attr('id', 'hookforDemos' + demoSubmenuNoSpaces);
         $("<span>" + demoSubmenu + "</span>").appendTo($('#hookforDemos' + demoSubmenuNoSpaces));
         $("<ul id='" + demoSubmenuNoSpaces + "'></ul>").appendTo($('#hookforDemos' + demoSubmenuNoSpaces));
-        _ref1 = demoSubmenus[demoSubmenu];
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          demo = _ref1[_i];
+        _ref = demoSubmenus[demoSubmenu];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          demo = _ref[_i];
           a = "<li>\n<a id='" + demo + "'>\n" + _this.programLoader.programs.demos[demo].title + "\n</a>\n</li>";
           $(a).appendTo($('#' + demoSubmenuNoSpaces));
         }
@@ -152,7 +146,7 @@ Ui = (function() {
       tutorialSubmenus = {};
       for (tutorial in allTutorials) {
         submenuOfThisTutorial = allTutorials[tutorial].submenu;
-        if ((_ref2 = tutorialSubmenus[submenuOfThisTutorial]) == null) {
+        if (tutorialSubmenus[submenuOfThisTutorial] == null) {
           tutorialSubmenus[submenuOfThisTutorial] = [];
         }
         tutorialSubmenus[submenuOfThisTutorial].push(tutorial);
@@ -162,9 +156,9 @@ Ui = (function() {
         $("<li></li>").appendTo($('#ulForTutorials')).attr('id', 'hookforTutorials' + tutorialSubmenuNoSpaces);
         $("<span>" + tutorialSubmenu + "</span>").appendTo($('#hookforTutorials' + tutorialSubmenuNoSpaces));
         $("<ul id='" + tutorialSubmenuNoSpaces + "'></ul>").appendTo($('#hookforTutorials' + tutorialSubmenuNoSpaces));
-        _ref3 = tutorialSubmenus[tutorialSubmenu];
-        for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
-          tutorial = _ref3[_j];
+        _ref1 = tutorialSubmenus[tutorialSubmenu];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          tutorial = _ref1[_j];
           a = "<li>\n<a id='" + tutorial + "'>\n" + _this.programLoader.programs.tutorials[tutorial].title + "\n</a>\n</li>";
           $(a).appendTo($('#' + tutorialSubmenuNoSpaces));
         }

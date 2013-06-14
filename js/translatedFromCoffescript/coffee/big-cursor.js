@@ -34,7 +34,6 @@ BigCursor = (function() {
 
   BigCursor.prototype.shrinkBigCursor = function() {
     var currentCaption, shorterCaption;
-
     currentCaption = void 0;
     shorterCaption = void 0;
     if (this.isShowing) {

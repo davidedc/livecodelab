@@ -70,7 +70,6 @@ SampleBank = (function() {
 
   SampleBank.prototype.load = function(name, path) {
     var soundNumber;
-
     soundNumber = this.sounds.length;
     this.sounds.push({
       name: name,
