@@ -5,6 +5,8 @@
 ## It automatically handles returning the ogg or mp3 file path.
 ###
 
+define () ->
+
 class SampleBank
 
   sounds: []
@@ -82,4 +84,6 @@ class SampleBank
 
   getByNumber: (number) ->
     @sounds[number]
+
+  SampleBank
 

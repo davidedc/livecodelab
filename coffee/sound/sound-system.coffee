@@ -5,7 +5,9 @@
 ## state, we are trying to make do here.
 ###
 
-class SoundSystem
+define () ->
+
+  class SoundSystem
 
   oldupdatesPerMinute: 0
   soundLoopTimer: undefined
@@ -294,4 +296,9 @@ class SoundSystem
       #    )
     # end of the for loop
     
-    @eventRouter.trigger "all-sounds-loaded-and tested"#  unless @Bowser.safari
+      # if this is chrome, fire the callback immediately
+      # otherwise wait untill all the sounds have been tested
+      @eventRouter.trigger "all-sounds-loaded-and tested"  unless @Bowser.safari
+
+  SoundSystem
+

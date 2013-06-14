@@ -3,7 +3,9 @@
 ## the editor panel, the big flashing cursor, the stats widget...
 ###
 
-class Ui
+define () ->
+
+  class Ui
 
   constructor: (@eventRouter, @stats, @programLoader) ->
     # Setup Event Listeners
@@ -316,3 +318,6 @@ class Ui
       $("#formCode").css "opacity", 0
       @fullscreenify "#backGroundCanvas"
       @adjustCodeMirrorHeight()
+
+  Ui
+

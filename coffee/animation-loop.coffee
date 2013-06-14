@@ -45,8 +45,8 @@
 ## state of the entire system, but that would probably take some malice.
 ###
 
-
-class AnimationLoop
+define () ->
+  class AnimationLoop
 
   loopInterval: null
   wantedFramesPerSecond: null
@@ -212,4 +212,5 @@ class AnimationLoop
     # update stats
     if @stats then @stats.update()
 
+  AnimationLoop
 

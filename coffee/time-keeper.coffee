@@ -4,7 +4,9 @@
 ## unnecessary invokation of the Date and getTime browser functions.
 ###
 
-class TimeKeeper
+define () ->
+
+  class TimeKeeper
   
   time: undefined
   timeAtStart: undefined
@@ -27,3 +29,6 @@ class TimeKeeper
 
   getTime: ->
     @time
+
+  TimeKeeper
+
