@@ -280,7 +280,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'js_lib/',
                     src: ['**'],
-                    dest: 'js/'
+                    dest: 'js/lib'
                 }]
             }
         },
