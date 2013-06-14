@@ -58,7 +58,33 @@ look for all "liveCodeLabCoreInstance" occurrences and see which of its
 children are accessed.
 ###
 
-define () ->
+define [
+  'core/animation-looper'
+  ,'core/background-painter'
+  ,'core/blend-controls'
+  ,'core/code-transformer'
+  ,'core/colour-functions'
+  ,'core/graphics-commands'
+  ,'core/lights-commands'
+  ,'core/matrix-commands'
+  ,'core/program-runner'
+  ,'core/renderer'
+  ,'core/threejs-system'
+  ,'core/time-keeper'
+], (
+  AnimationLoop
+  ,BackgroundPainter
+  ,BlendControls
+  ,CodeTransformer
+  ,ColourFunctions
+  ,GraphicsCommands
+  ,LightsCommands
+  ,MatrixCommands
+  ,ProgramRunner
+  ,Renderer
+  ,ThreeJsSystem
+  ,TimeKeeper
+) ->
 
   class LiveCodeLabCore
 
