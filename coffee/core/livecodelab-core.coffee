@@ -71,6 +71,19 @@ define [
   ,'core/renderer'
   ,'core/threejs-system'
   ,'core/time-keeper'
+  ,'bowser'
+  ,'buzz'
+  ,'coffeescript'
+  ,'threejs'
+  ,'three-resize'
+  ,'Three.Detector'
+  ,'Three.Stats'
+  ,'Three.ShaderExtras'
+  ,'Three.EffectComposer'
+  ,'Three.MaskPass'
+  ,'Three.RenderPass'
+  ,'Three.SavePass'
+  ,'Three.ShaderPass'
 ], (
   AnimationLoop
   ,BackgroundPainter
@@ -84,6 +97,13 @@ define [
   ,Renderer
   ,ThreeJsSystem
   ,TimeKeeper
+  ,createBowser
+  ,buzz
+  ,CoffeeScript
+  ,THREE
+  ,THREEx
+  ,Detector
+  ,Stats
 ) ->
 
   class LiveCodeLabCore

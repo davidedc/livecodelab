@@ -3,7 +3,14 @@
 ## the editor panel, the big flashing cursor, the stats widget...
 ###
 
-define () ->
+define [
+  'jquery'
+  ,'sooperfish'
+  ,'sooperfish-easing'
+  ,'simplemodal'
+], (
+  $
+) ->
 
   class Ui
 
@@ -134,7 +141,8 @@ define () ->
   #console.log('hiding stats widget');
   showStatsWidget: ->
     
-    # I wish I could tell you why showing the widget straight away doesn't work.
+      # I wish I could tell you why showing
+      # the widget straight away doesn't work.
     # Postponing a little bit makes this work. It doesn't make any sense.
     setTimeout "$(\"#statsWidget\").show()", 1
 
@@ -180,7 +188,7 @@ define () ->
       demoSubmenus = {}
       for demo of allDemos
         submenuOfThisDemo = allDemos[demo].submenu
-        demoSubmenus[submenuOfThisDemo] ?= [] # create array if it didn't exist
+          demoSubmenus[submenuOfThisDemo] ?= []
         demoSubmenus[submenuOfThisDemo].push(demo)
 
       for demoSubmenu of demoSubmenus
@@ -262,7 +270,8 @@ define () ->
           )
 
       
-      # Now that all the menu items are in place in the DOM, invoke sooperfish,
+        # Now that all the menu items are in place in the DOM,
+        # invoke sooperfish,
       # which does some more transformations of its own.
       $('ul.sf-menu').sooperfish()
 
