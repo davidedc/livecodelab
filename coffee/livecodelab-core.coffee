@@ -58,191 +58,196 @@ look for all "liveCodeLabCoreInstance" occurrences and see which of its
 children are accessed.
 ###
 
-class LiveCodeLabCore
+define () ->
 
-  constructor: (@paramsObject) ->
-    
-    #//////////////////////////////////////////////
-    #
-    # ### Phase 1
-    # initialise all the fields first
-    #
-    #//////////////////////////////////////////////
-    
-    # three is a global defined in three.min.js and used in:
-    # ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
-    # The difference between three and the threeJsSystem is that
-    # a) three is the raw Three.js system without for example the blend options.
-    # b) threeJsSystem contains some convenience fields and abstractions,
-    #    for example it keeps the renderer (whether it's canvas-based or WebGL
-    #    based) in a "renderer" field.
-    # Several fields/methids in threeJsSystem are just conveniency mappings into
-    # the raw three object.
-    # But often in LiveCodeLab there are direct reference to three
-    # fields/methods. So, threeJsSystem provides some abstraction without
-    # attempting to be a complete abstraction layer.
-    @three = THREE
-    
-    #//////////////////////////////////////////////
-    #
-    # ### Phase 2
-    # initialise all the parts that don't
-    # have any dependencies for construction
-    # note that the "liveCodeLabCoreInstance" doesn't
-    # count because it's only used for interactions at
-    # runtime. Same for the arguments that come
-    # directly from the caller of this createLiveCodeLabCore
-    # function we are in.
-    #
-    #//////////////////////////////////////////////
-    @timeKeeper = new TimeKeeper()
-    
-    # this one also interacts with threeJsSystem at runtime
-    @blendControls = new BlendControls(@)
-    @colourFunctions = new ColourFunctions()
-    
-    # this one also interacts with threeJsSystem and blendControls at runtime
-    @renderer = new Renderer(@)
-    @soundSystem =
-      new SoundSystem(
-        @paramsObject.eventRouter, buzz, createBowser(), new SampleBank(buzz))
-    
-    # this one also interacts with colourFunctions, backgroundSceneContext,
-    # canvasForBackground at runtime
-    @backgroundPainter = new BackgroundPainter(
-      @paramsObject.canvasForBackground,
-      @
-    )
-    
-    # this one also interacts with codeTransformer at runtime.
-    @drawFunctionRunner =
-      new ProgramRunner(@paramsObject.eventRouter, @)
-    
-    # temporary to migrate CodeTransformed code from js to coffeescript.
-    @codeTransformer =
-      new CodeTransformer(@paramsObject.eventRouter, CoffeeScript, @)
-    
-    # this one also interacts with timeKeeper, matrixCommands, blendControls,
-    #    soundSystem,
-    #    backgroundPainter, graphicsCommands, lightSystem, drawFunctionRunner,
-    #    codeTransformer, renderer
-    # ...at runtime
-    @animationLoop =
-      new AnimationLoop(
-        @paramsObject.eventRouter, @paramsObject.statsWidget, @)
-    
-    #//////////////////////////////////////////////
-    #
-    # ### Phase 3
-    # initialise all the parts that do
-    # have dependencies with other parts
-    # for their construction.
-    # Note again that the "liveCodeLabCoreInstance" doesn't
-    # count because it's only used for interactions at
-    # runtime.
-    # If the other dependencies forms a cycle, something
-    # is wrong.
-    #
-    #//////////////////////////////////////////////
-    
-    # this one doesn't interact with any other part at runtime.
-    @threeJsSystem =
-      new ThreeJsSystem(
-        Detector, THREEx, @paramsObject.blendedThreeJsSceneCanvas,
-        @paramsObject.forceCanvasRenderer, @paramsObject.testMode,
-        @three)
-    
-    # this one interacts with timeKeeper at runtime
-    @matrixCommands =
-      new MatrixCommands(
-        @three, @)
-    
-    # this one also interacts with colourFunctions, lightSystem, matrixCommands
-    # threeJsSystem at runtime
-    @graphicsCommands =
-      new GraphicsCommands(
-        @three, @)
-        # color, lightSystem, matrixCommands, threeJsSystem, colorModeA,
-        # redF, greenF, blueF, alphaZeroToOne
-    
-    # this one also interacts with three,
-    # threeJsSystem, colourFunctions at runtime
-    @lightSystem =
-      new LightsCommands(@graphicsCommands, @)
-  
-  #//////////////////////////////////////////////
-  #
-  # ### Phase 4
-  # Grouped together here all the
-  # methods. Most of the time they just delegate
-  # to another part.
-  #
-  #//////////////////////////////////////////////
-  paintARandomBackground: ->
-    @backgroundPainter.paintARandomBackground()
+  class LiveCodeLabCore
 
-  startAnimationLoop: ->
-    # there is nothing special about starting the animation loop,
-    # it's just a call to animate(), which then creates its own request
-    # for the next frame. Abstracting a bit though, it's clearer this way.
-    @animationLoop.animate()
-
-  runLastWorkingDrawFunction: ->
-    @drawFunctionRunner.reinstateLastWorkingDrawFunction()
-
-  loadAndTestAllTheSounds: ->
-    @soundSystem.loadAndTestAllTheSounds()
-
-  playStartupSound: ->
-    @soundSystem.playStartupSound()
-
-  isAudioSupported: ->
-    @soundSystem.isAudioSupported()
-
-  updateCode: (updatedCode) ->
-    # alert('updatedCode: ' + updatedCode);
-    @codeTransformer.updateCode updatedCode
-    if updatedCode isnt "" and @dozingOff
-      @dozingOff = false
-      @animationLoop.animate()
+    constructor: (@paramsObject) ->
       
-      # console.log('waking up');
-      @paramsObject.eventRouter.trigger "livecodelab-waking-up"
+      #//////////////////////////////////////////////
+      #
+      # ### Phase 1
+      # initialise all the fields first
+      #
+      #//////////////////////////////////////////////
+      
+      # three is a global defined in three.min.js and used in:
+      # ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
+      # The difference between three and the threeJsSystem is that
+      # a) three is the raw Three.js system without for example the blend options.
+      # b) threeJsSystem contains some convenience fields and abstractions,
+      #    for example it keeps the renderer (whether it's canvas-based or WebGL
+      #    based) in a "renderer" field.
+      # Several fields/methids in threeJsSystem are just conveniency mappings into
+      # the raw three object.
+      # But often in LiveCodeLab there are direct reference to three
+      # fields/methods. So, threeJsSystem provides some abstraction without
+      # attempting to be a complete abstraction layer.
+      @three = THREE
+      
+      #//////////////////////////////////////////////
+      #
+      # ### Phase 2
+      # initialise all the parts that don't
+      # have any dependencies for construction
+      # note that the "liveCodeLabCoreInstance" doesn't
+      # count because it's only used for interactions at
+      # runtime. Same for the arguments that come
+      # directly from the caller of this createLiveCodeLabCore
+      # function we are in.
+      #
+      #//////////////////////////////////////////////
+      @timeKeeper = new TimeKeeper()
+      
+      # this one also interacts with threeJsSystem at runtime
+      @blendControls = new BlendControls(@)
+      @colourFunctions = new ColourFunctions()
+      
+      # this one also interacts with threeJsSystem and blendControls at runtime
+      @renderer = new Renderer(@)
+      @soundSystem =
+        new SoundSystem(
+          @paramsObject.eventRouter, buzz, createBowser(), new SampleBank(buzz))
+      
+      # this one also interacts with colourFunctions, backgroundSceneContext,
+      # canvasForBackground at runtime
+      @backgroundPainter = new BackgroundPainter(
+        @paramsObject.canvasForBackground,
+        @
+      )
+      
+      # this one also interacts with codeTransformer at runtime.
+      @drawFunctionRunner =
+        new ProgramRunner(@paramsObject.eventRouter, @)
+      
+      # temporary to migrate CodeTransformed code from js to coffeescript.
+      @codeTransformer =
+        new CodeTransformer(@paramsObject.eventRouter, CoffeeScript, @)
+      
+      # this one also interacts with timeKeeper, matrixCommands, blendControls,
+      #    soundSystem,
+      #    backgroundPainter, graphicsCommands, lightSystem, drawFunctionRunner,
+      #    codeTransformer, renderer
+      # ...at runtime
+      @animationLoop =
+        new AnimationLoop(
+          @paramsObject.eventRouter, @paramsObject.statsWidget, @)
+      
+      #//////////////////////////////////////////////
+      #
+      # ### Phase 3
+      # initialise all the parts that do
+      # have dependencies with other parts
+      # for their construction.
+      # Note again that the "liveCodeLabCoreInstance" doesn't
+      # count because it's only used for interactions at
+      # runtime.
+      # If the other dependencies forms a cycle, something
+      # is wrong.
+      #
+      #//////////////////////////////////////////////
+      
+      # this one doesn't interact with any other part at runtime.
+      @threeJsSystem =
+        new ThreeJsSystem(
+          Detector, THREEx, @paramsObject.blendedThreeJsSceneCanvas,
+          @paramsObject.forceCanvasRenderer, @paramsObject.testMode,
+          @three)
+      
+      # this one interacts with timeKeeper at runtime
+      @matrixCommands =
+        new MatrixCommands(
+          @three, @)
+      
+      # this one also interacts with colourFunctions, lightSystem, matrixCommands
+      # threeJsSystem at runtime
+      @graphicsCommands =
+        new GraphicsCommands(
+          @three, @)
+          # color, lightSystem, matrixCommands, threeJsSystem, colorModeA,
+          # redF, greenF, blueF, alphaZeroToOne
+      
+      # this one also interacts with three,
+      # threeJsSystem, colourFunctions at runtime
+      @lightSystem =
+        new LightsCommands(@graphicsCommands, @)
+    
+    #//////////////////////////////////////////////
+    #
+    # ### Phase 4
+    # Grouped together here all the
+    # methods. Most of the time they just delegate
+    # to another part.
+    #
+    #//////////////////////////////////////////////
+    paintARandomBackground: ->
+      @backgroundPainter.paintARandomBackground()
 
-  
-  # why do we leave the option to put a background?
-  # For two reasons:
-  #  a) leaving the transparent background makes it very
-  #     difficult to save a reference "expected" image. The way to do that would
-  #     be to save the image that appears in the failing test case. And when one
-  #     does it, the correct image with the transparent background gets saved.
-  #     But still, the expected image is slightly different from the generated
-  #     image. This is really weird as the two should be absolutely identical,
-  #     and yet (maybe because of compression artifacts reasons?) they are
-  #     different enough that it makes the testing unusable.
-  #  b) In theory one could get Three.js to directly render on an opaque
-  #     background but if we do it this way (as in after all the rendering has
-  #     happened) we keep the motionblur and the paintover styles. If we let
-  #     Three.js paint the backgrounds, then the postprocessing effects for
-  #     motionblur and for paintOver wouldn't work anymore.
-  getForeground3DSceneImage: (backgroundColor) ->
-    # some shorthands
-    blendedThreeJsSceneCanvas =
-      @threeJsSystem.blendedThreeJsSceneCanvas
+    startAnimationLoop: ->
+      # there is nothing special about starting the animation loop,
+      # it's just a call to animate(), which then creates its own request
+      # for the next frame. Abstracting a bit though, it's clearer this way.
+      @animationLoop.animate()
 
-    img = new Image
-    img.src = blendedThreeJsSceneCanvas.toDataURL()
+    runLastWorkingDrawFunction: ->
+      @drawFunctionRunner.reinstateLastWorkingDrawFunction()
 
-    if backgroundColor
-      ctx = document.createElement("canvas")
-      ctx.width = blendedThreeJsSceneCanvas.width
-      ctx.height = blendedThreeJsSceneCanvas.height
-      ctxContext = ctx.getContext("2d")
-      ctxContext.drawImage img, 0, 0
-      ctxContext.globalCompositeOperation = "destination-over"
-      ctxContext.fillStyle = backgroundColor
-      ctxContext.fillRect \
-        0, 0, blendedThreeJsSceneCanvas.width, blendedThreeJsSceneCanvas.height
+    loadAndTestAllTheSounds: ->
+      @soundSystem.loadAndTestAllTheSounds()
+
+    playStartupSound: ->
+      @soundSystem.playStartupSound()
+
+    isAudioSupported: ->
+      @soundSystem.isAudioSupported()
+
+    updateCode: (updatedCode) ->
+      # alert('updatedCode: ' + updatedCode);
+      @codeTransformer.updateCode updatedCode
+      if updatedCode isnt "" and @dozingOff
+        @dozingOff = false
+        @animationLoop.animate()
+        
+        # console.log('waking up');
+        @paramsObject.eventRouter.trigger "livecodelab-waking-up"
+
+    
+    # why do we leave the option to put a background?
+    # For two reasons:
+    #  a) leaving the transparent background makes it very
+    #     difficult to save a reference "expected" image. The way to do that would
+    #     be to save the image that appears in the failing test case. And when one
+    #     does it, the correct image with the transparent background gets saved.
+    #     But still, the expected image is slightly different from the generated
+    #     image. This is really weird as the two should be absolutely identical,
+    #     and yet (maybe because of compression artifacts reasons?) they are
+    #     different enough that it makes the testing unusable.
+    #  b) In theory one could get Three.js to directly render on an opaque
+    #     background but if we do it this way (as in after all the rendering has
+    #     happened) we keep the motionblur and the paintover styles. If we let
+    #     Three.js paint the backgrounds, then the postprocessing effects for
+    #     motionblur and for paintOver wouldn't work anymore.
+    getForeground3DSceneImage: (backgroundColor) ->
+      # some shorthands
+      blendedThreeJsSceneCanvas =
+        @threeJsSystem.blendedThreeJsSceneCanvas
+
       img = new Image
-      img.src = ctx.toDataURL()
-    img
+      img.src = blendedThreeJsSceneCanvas.toDataURL()
+
+      if backgroundColor
+        ctx = document.createElement("canvas")
+        ctx.width = blendedThreeJsSceneCanvas.width
+        ctx.height = blendedThreeJsSceneCanvas.height
+        ctxContext = ctx.getContext("2d")
+        ctxContext.drawImage img, 0, 0
+        ctxContext.globalCompositeOperation = "destination-over"
+        ctxContext.fillStyle = backgroundColor
+        ctxContext.fillRect \
+          0, 0, blendedThreeJsSceneCanvas.width, blendedThreeJsSceneCanvas.height
+        img = new Image
+        img.src = ctx.toDataURL()
+      img
+
+  LiveCodeLabCore
+
