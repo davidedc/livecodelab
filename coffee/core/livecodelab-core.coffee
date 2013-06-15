@@ -110,8 +110,6 @@ define [
   ,Stats
 ) ->
 
-  console.log(Detector)
-
   class LiveCodeLabCore
 
     constructor: (@paramsObject) ->
