@@ -11,3 +11,7 @@ npm-debug.log
 npm-debug.log
 
 npm-debug.log
+
+js/*
+index.html
+index-min.html

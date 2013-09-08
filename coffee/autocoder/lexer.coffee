@@ -44,71 +44,75 @@
 ## by step in a manner that does not rely on the runtime stack. There is no recursion.
 ###
 
-class LexerState
-  rules: []
+define () ->
 
-  addRule: (regex, action) ->
-      @rules.push new LexerRule(regex, action)
-  
-  lex: (input) ->
-    # findAndRunActionPairedToLongestAppliableRegex returns an action triggered by the
-    # longest regex appliable. An action is a function that takes the current matched
-    # part of the input, the remaining part of the input and the current state. It can
-    # do anything, but it must return a function that applies rules to the remaining
-    # part of the input and finds the next action.
-    # So note here that nextAction is a function that does stuff and returns a function
-    # to find the next action. We are not running it yet.
-    nextAction = @findAndRunActionPairedToLongestAppliableRegex(input)    
-    while typeof nextAction is "function"
-      # OK an action has been returned. Now by running it the action does some custom
-      # stuff and then it returns a function that finds the next action. So continue to
-      # run the action spawned by each action until no action is returned.
-      nextAction = nextAction()
-    return nextAction
+  ###
+  ## Each rule contains a regular expression to match, 
+  ## and action to execute upon finding a match.
+  ###
 
-  findAndRunActionPairedToLongestAppliableRegex: (input) ->
-    longestMatchedRule = null
-    longestMatch = null
-    longestMatchedLength = -1
+  class LexerRule
+    constructor: (@regex, @action) ->  
+      # Each rule is re-written to match prefixes of the input string.
+      @regex = new RegExp("^(" + @regex.source + ")")
+      @regex.compile @regex  if @regex.compile
+    matches: (s) ->
+      m = s.match(@regex)
+      m.shift()  if m
+      m
+
+  class LexerState
+    rules: []
+
+    addRule: (regex, action) ->
+        @rules.push new LexerRule(regex, action)
     
-    #console.log("trying to match: " + input)
-    for i in [@rules.length-1..0]
-      r = @rules[i]
+    lex: (input) ->
+      # findAndRunActionPairedToLongestAppliableRegex returns an action triggered by the
+      # longest regex appliable. An action is a function that takes the current matched
+      # part of the input, the remaining part of the input and the current state. It can
+      # do anything, but it must return a function that applies rules to the remaining
+      # part of the input and finds the next action.
+      # So note here that nextAction is a function that does stuff and returns a function
+      # to find the next action. We are not running it yet.
+      nextAction = @findAndRunActionPairedToLongestAppliableRegex(input)    
+      while typeof nextAction is "function"
+        # OK an action has been returned. Now by running it the action does some custom
+        # stuff and then it returns a function that finds the next action. So continue to
+        # run the action spawned by each action until no action is returned.
+        nextAction = nextAction()
+      return nextAction
+
+    findAndRunActionPairedToLongestAppliableRegex: (input) ->
+      longestMatchedRule = null
+      longestMatch = null
+      longestMatchedLength = -1
       
-      m = r.matches(input)
-      
-      if m and (m[0].length >= longestMatchedLength)
-        longestMatchedRule = r
-        longestMatch = m
-        longestMatchedLength = m[0].length
-    if longestMatchedRule
-      #console.log("found a matching rule")
-      # now return the result of the action, which is the next action
-      return (longestMatchedRule.action(longestMatch, input.substring(longestMatchedLength), this))
-    else
-      throw ("Lexing error; no match found for: '" + input + "'")
+      #console.log("trying to match: " + input)
+      for i in [@rules.length-1..0]
+        r = @rules[i]
+        
+        m = r.matches(input)
+        
+        if m and (m[0].length >= longestMatchedLength)
+          longestMatchedRule = r
+          longestMatch = m
+          longestMatchedLength = m[0].length
+      if longestMatchedRule
+        #console.log("found a matching rule")
+        # now return the result of the action, which is the next action
+        return (longestMatchedRule.action(longestMatch, input.substring(longestMatchedLength), this))
+      else
+        throw ("Lexing error; no match found for: '" + input + "'")
 
-  returnAFunctionThatAppliesRulesAndRunsActionFor: (input) ->
-    =>
-      @findAndRunActionPairedToLongestAppliableRegex input
+    returnAFunctionThatAppliesRulesAndRunsActionFor: (input) ->
+      =>
+        @findAndRunActionPairedToLongestAppliableRegex input
 
-###
-## Each rule contains a regular expression to match, 
-## and action to execute upon finding a match.
-###
+  # Creates a continuation that switches analysis to another lexical state.  
+  #McCONTINUE = (state) ->
+  #  (match, rest) ->
+  #    state.findAndRunActionPairedToLongestAppliableRegex rest
 
-class LexerRule
-  constructor: (@regex, @action) ->  
-    # Each rule is re-written to match prefixes of the input string.
-    @regex = new RegExp("^(" + @regex.source + ")")
-    @regex.compile @regex  if @regex.compile
-  matches: (s) ->
-    m = s.match(@regex)
-    m.shift()  if m
-    m
-
-# Creates a continuation that switches analysis to another lexical state.  
-#McCONTINUE = (state) ->
-#  (match, rest) ->
-#    state.findAndRunActionPairedToLongestAppliableRegex rest
+  LexerState
 
