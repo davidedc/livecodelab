@@ -10,9 +10,6 @@ LiveCodeLab is totally client side - once downloaded, no internet connection is 
 
 Play! http://sketchpatch.net/livecodelab/index.html
 
-French version : http://sketchpatch.net/livecodelab/indexFR.html
-
-
 #### Live coding in the browser ####
 
 LiveCodeLab has been used by several groups/people for:
