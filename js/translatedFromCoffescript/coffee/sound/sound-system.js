@@ -73,7 +73,9 @@ SoundSystem = (function() {
   };
 
   SoundSystem.prototype.bpm = function(a) {
-    return a == null;
+    if (a == null) {
+      return;
+    }
     if (a > 125) {
       a = 125;
     }

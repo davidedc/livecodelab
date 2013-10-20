@@ -187,7 +187,7 @@ Ui = (function() {
         $(_this).stop().fadeOut(100).fadeIn(100);
         return false;
       });
-      $('<span id="errorMessageDiv">msg will go here</span>').appendTo($('<li>').appendTo($('#nav')));
+      $('<span id="errorMessageDiv"></span>').appendTo($('<li>').appendTo($('#nav')));
       _this.stats.getDomElement().style.position = "absolute";
       _this.stats.getDomElement().style.right = "0px";
       _this.stats.getDomElement().style.top = "0px";
