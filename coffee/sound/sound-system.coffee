@@ -55,7 +55,7 @@ class SoundSystem
     # timid attempt at sanity check.
     # the sound system might well bork out
     # even below 500 bpm.
-    return not a?
+    return if not a?
     a = 125  if a > 125
     a = 0  if a < 0
     
