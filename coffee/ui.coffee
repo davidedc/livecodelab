@@ -299,7 +299,8 @@ class Ui
         $(@).stop().fadeOut(100).fadeIn 100
         false
 
-      $('<span id="errorMessageDiv">msg will go here</span>').appendTo(
+      # the error message will go in here
+      $('<span id="errorMessageDiv"></span>').appendTo(
         $('<li>').appendTo(
           $('#nav')
         )
