@@ -1,13 +1,13 @@
 Livecodelab Grunt Setup
 =====================
 
-There isn't any need to install anything to just use LiveCodeLab.
+If you just want to use LiveCodeLab, you only need to download it and open the index.html file.
 For modifying LiveCodeLab though one needs to set up the
 Grunt-based build system.
 
 #### Setup ####
 
-For a sample installation (assuming a fresh new Ubuntu install) please
+For a sample installation *from scratch* (assuming a clean fresh new Ubuntu install) please
 check the install.sh script in the ubuntuInstallScript directory.
 
 More in general, to setup the build system:
@@ -24,6 +24,14 @@ More in general, to setup the build system:
  * make sure that coffeescript is installed. Please check the
    coffeescript website for information.
  * install coffedoc module ```npm install -g coffeedoc```
+
+#### ...you are getting "Fatal error: Unable to find local grunt." on OSX ####
+Here's the trick:
+```
+sudo npm install grunt
+sudo npm install -g grunt-cli
+sudo npm install
+```
 
 #### Use ####
 
