@@ -8,6 +8,7 @@ class TimeKeeper
   
   time: undefined
   timeAtStart: undefined
+  milliseconds: undefined
   
   constructor: ->
     window.time = 0
@@ -16,6 +17,7 @@ class TimeKeeper
     d = new Date()
     @time = d.getTime() - @timeAtStart
     window.time = d.getTime() - @timeAtStart
+    @milliseconds = d.getMilliseconds()
 
   resetTime: ->
     d = new Date()
