@@ -188,7 +188,7 @@ define [
       demoSubmenus = {}
       for demo of allDemos
         submenuOfThisDemo = allDemos[demo].submenu
-          demoSubmenus[submenuOfThisDemo] ?= []
+        demoSubmenus[submenuOfThisDemo] ?= []
         demoSubmenus[submenuOfThisDemo].push(demo)
 
       for demoSubmenu of demoSubmenus
