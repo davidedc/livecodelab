@@ -35,10 +35,12 @@ class SoundSystem
     # now that all the various sound playing functions for the different cases
     # are defined, we set the "play" function to the best solution according
     # to the browser/os. We wish we could do this better.
-    if @Bowser.firefox
-      @playSound = (a,b,c) => @play_using_DYNAMICALLY_CREATED_AUDIO_TAG(a,b,c)
-    else if @Bowser.safari or @Bowser.msie or @Bowser.chrome
-      @playSound = (a,b,c) => @play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND(a,b,c)
+    #if @Bowser.firefox
+    #  @playSound = (a,b,c) => @play_using_DYNAMICALLY_CREATED_AUDIO_TAG(a,b,c)
+    #else if @Bowser.safari or @Bowser.msie or @Bowser.chrome
+    #  @playSound = (a,b,c) => @play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND(a,b,c)
+
+    @playSound = (a,b,c) => @play_using_LOWLAGJS(a,b,c)
 
     # These need to be global so it can be run by the draw function
     window.bpm = (a) => @bpm(a)
@@ -144,6 +146,13 @@ class SoundSystem
     ), true
     audioElement.play()
 
+  play_using_LOWLAGJS: (
+    soundFilesPaths,
+    loopedSoundID,
+    @buzzObjectsPool
+  ) ->
+    lowLag.play(loopedSoundID)
+
   play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND: (
     soundFilesPaths,
     loopedSoundID,
@@ -231,58 +240,58 @@ class SoundSystem
   
   # Called in init.js
   isAudioSupported: ->
-    setTimeout (=>
-      unless @buzz.isSupported()
-        $("#noAudioMessage").modal()
-        $("#simplemodal-container").height 200
-    ), 500
+  #  setTimeout (=>
+  #    unless @buzz.isSupported()
+  #      $("#noAudioMessage").modal()
+  #      $("#simplemodal-container").height 200
+  #  ), 500
 
   
   # Called from loadAndTestAllTheSounds
-  checkSound: (soundDef, soundInfo) ->
-    newSound = new @buzz.sound(soundInfo.path)
-    newSound.load()
-    newSound.mute()
-    newSound.bind "ended", (e) =>
-      newSound.unbind "ended"
-      newSound.unmute()
-      @endedFirstPlay += 1
-      if @endedFirstPlay is soundDef.sounds.length * @CHANNELSPERSOUND
-        @eventRouter.trigger "all-sounds-loaded-and tested"
-
-    newSound.play()
-    @buzzObjectsPool[soundInfo.name].push newSound
+  #checkSound: (soundDef, soundInfo) ->
+  #  newSound = new @buzz.sound(soundInfo.path)
+  #  newSound.load()
+  #  newSound.mute()
+  #  newSound.bind "ended", (e) =>
+  #    newSound.unbind "ended"
+  #    newSound.unmute()
+  #    @endedFirstPlay += 1
+  #    if @endedFirstPlay is soundDef.sounds.length * @CHANNELSPERSOUND
+  #      @eventRouter.trigger "all-sounds-loaded-and tested"#
+  #
+  #  newSound.play()
+  #  @buzzObjectsPool[soundInfo.name].push newSound
 
   
   # Called form the document ready block in init.js
   loadAndTestAllTheSounds: ->
+    lowLag.init()
     soundDef = undefined
     soundInfo = undefined
     preloadSounds = undefined
     soundDef = @samplebank
     for cycleSoundDefs in [0...soundDef.sounds.length]
       soundInfo = soundDef.getByNumber(cycleSoundDefs)
-      @buzzObjectsPool[soundInfo.name] = []
+      #@buzzObjectsPool[soundInfo.name] = []
       @soundFilesPaths[soundInfo.name] = soundInfo.path
+      lowLag.load(soundInfo.path,soundInfo.name)
       
       # Chrome can deal with dynamic loading
       # of many files but doesn't like loading too many audio objects
       # so fast - it crashes.
       # At the opposite end, Safari doesn't like loading sound dynamically
       # and instead works fine by loading sound all at the beginning.
-      if @Bowser.safari
-        for preloadSounds in [0...@CHANNELSPERSOUND]
-          # if you load and play all the channels of all the sounds
-          # all together the browser freezes, and the OS doesn't feel
-          # too well either so better stagger the checks in time.
-          setTimeout(
-            (soundDef,soundInfo)=>@checkSound(soundDef,soundInfo),
-            20 * cycleSoundDefs,
-            soundDef,
-            soundInfo
-          )
+      #if @Bowser.safari
+      #  for preloadSounds in [0...@CHANNELSPERSOUND]
+      #    # if you load and play all the channels of all the sounds
+      #    # all together the browser freezes, and the OS doesn't feel
+      #    # too well either so better stagger the checks in time.
+      #    setTimeout(
+      #      (soundDef,soundInfo)=>@checkSound(soundDef,soundInfo),
+      #      20 * cycleSoundDefs,
+      #      soundDef,
+      #      soundInfo
+      #    )
     # end of the for loop
     
-    # if this is chrome, fire the callback immediately
-    # otherwise wait untill all the sounds have been tested
-    @eventRouter.trigger "all-sounds-loaded-and tested"  unless @Bowser.safari
+    @eventRouter.trigger "all-sounds-loaded-and tested"#  unless @Bowser.safari
