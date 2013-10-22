@@ -44,15 +44,9 @@ SoundSystem = (function() {
     this.samplebank = samplebank;
     this.soundLoops.soundIDs = [];
     this.soundLoops.beatStrings = [];
-    if (this.Bowser.firefox) {
-      this.playSound = function(a, b, c) {
-        return _this.play_using_DYNAMICALLY_CREATED_AUDIO_TAG(a, b, c);
-      };
-    } else if (this.Bowser.safari || this.Bowser.msie || this.Bowser.chrome) {
-      this.playSound = function(a, b, c) {
-        return _this.play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND(a, b, c);
-      };
-    }
+    this.playSound = function(a, b, c) {
+      return _this.play_using_LOWLAGJS(a, b, c);
+    };
     window.bpm = function(a) {
       return _this.bpm(a);
     };
@@ -125,6 +119,11 @@ SoundSystem = (function() {
       return $(".filename span").html(audioElement.src);
     }), true);
     return audioElement.play();
+  };
+
+  SoundSystem.prototype.play_using_LOWLAGJS = function(soundFilesPaths, loopedSoundID, buzzObjectsPool) {
+    this.buzzObjectsPool = buzzObjectsPool;
+    return lowLag.play(loopedSoundID);
   };
 
   SoundSystem.prototype.play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND = function(soundFilesPaths, loopedSoundID, buzzObjectsPool) {
@@ -200,56 +199,21 @@ SoundSystem = (function() {
     }
   };
 
-  SoundSystem.prototype.isAudioSupported = function() {
-    var _this = this;
-    return setTimeout((function() {
-      if (!_this.buzz.isSupported()) {
-        $("#noAudioMessage").modal();
-        return $("#simplemodal-container").height(200);
-      }
-    }), 500);
-  };
-
-  SoundSystem.prototype.checkSound = function(soundDef, soundInfo) {
-    var newSound,
-      _this = this;
-    newSound = new this.buzz.sound(soundInfo.path);
-    newSound.load();
-    newSound.mute();
-    newSound.bind("ended", function(e) {
-      newSound.unbind("ended");
-      newSound.unmute();
-      _this.endedFirstPlay += 1;
-      if (_this.endedFirstPlay === soundDef.sounds.length * _this.CHANNELSPERSOUND) {
-        return _this.eventRouter.trigger("all-sounds-loaded-and tested");
-      }
-    });
-    newSound.play();
-    return this.buzzObjectsPool[soundInfo.name].push(newSound);
-  };
+  SoundSystem.prototype.isAudioSupported = function() {};
 
   SoundSystem.prototype.loadAndTestAllTheSounds = function() {
-    var cycleSoundDefs, preloadSounds, soundDef, soundInfo, _i, _j, _ref, _ref1,
-      _this = this;
+    var cycleSoundDefs, preloadSounds, soundDef, soundInfo, _i, _ref;
+    lowLag.init();
     soundDef = void 0;
     soundInfo = void 0;
     preloadSounds = void 0;
     soundDef = this.samplebank;
     for (cycleSoundDefs = _i = 0, _ref = soundDef.sounds.length; 0 <= _ref ? _i < _ref : _i > _ref; cycleSoundDefs = 0 <= _ref ? ++_i : --_i) {
       soundInfo = soundDef.getByNumber(cycleSoundDefs);
-      this.buzzObjectsPool[soundInfo.name] = [];
       this.soundFilesPaths[soundInfo.name] = soundInfo.path;
-      if (this.Bowser.safari) {
-        for (preloadSounds = _j = 0, _ref1 = this.CHANNELSPERSOUND; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; preloadSounds = 0 <= _ref1 ? ++_j : --_j) {
-          setTimeout(function(soundDef, soundInfo) {
-            return _this.checkSound(soundDef, soundInfo);
-          }, 20 * cycleSoundDefs, soundDef, soundInfo);
-        }
-      }
+      lowLag.load(soundInfo.path, soundInfo.name);
     }
-    if (!this.Bowser.safari) {
-      return this.eventRouter.trigger("all-sounds-loaded-and tested");
-    }
+    return this.eventRouter.trigger("all-sounds-loaded-and tested");
   };
 
   return SoundSystem;
