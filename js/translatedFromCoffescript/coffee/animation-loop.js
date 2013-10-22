@@ -56,6 +56,10 @@ AnimationLoop = (function() {
 
   AnimationLoop.prototype.AS_HIGH_FPS_AS_POSSIBLE = -1;
 
+  AnimationLoop.prototype.noDrawFrame = false;
+
+  AnimationLoop.prototype.fpsHistory = [10];
+
   function AnimationLoop(eventRouter, stats, liveCodeLabCoreInstance, forceUseOfTimeoutForScheduling) {
     this.eventRouter = eventRouter;
     this.stats = stats;
@@ -96,17 +100,27 @@ AnimationLoop = (function() {
   };
 
   AnimationLoop.prototype.animate = function() {
-    var drawFunctionRunner, e;
-    this.liveCodeLabCoreInstance.matrixCommands.resetMatrixStack();
-    this.liveCodeLabCoreInstance.soundSystem.resetLoops();
+    var beatRecurrence, currentTime, drawFunctionRunner, e, forbiddenZone, musicBeatStart, timeSinceMusicBeatStart;
     if (window.frame === 0) {
       this.liveCodeLabCoreInstance.timeKeeper.resetTime();
     } else {
       this.liveCodeLabCoreInstance.timeKeeper.updateTime();
     }
-    this.liveCodeLabCoreInstance.drawFunctionRunner.resetTrackingOfDoOnceOccurrences();
+    forbiddenZone = Math.max.apply(Math, this.fpsHistory);
+    currentTime = this.liveCodeLabCoreInstance.timeKeeper.milliseconds;
+    musicBeatStart = this.liveCodeLabCoreInstance.soundSystem.startOfInterval;
+    timeSinceMusicBeatStart = currentTime - musicBeatStart;
+    beatRecurrence = this.liveCodeLabCoreInstance.soundSystem.beatRecurrence;
+    if (timeSinceMusicBeatStart % beatRecurrence >= beatRecurrence - forbiddenZone * 2) {
+      this.noDrawFrame = true;
+    } else {
+      this.noDrawFrame = false;
+    }
+    this.liveCodeLabCoreInstance.matrixCommands.resetMatrixStack();
+    this.liveCodeLabCoreInstance.soundSystem.resetLoops();
     this.liveCodeLabCoreInstance.soundSystem.anyCodeReactingTobpm = false;
-    this.liveCodeLabCoreInstance.soundSystem.SetUpdatesPerMinute(60 * 4);
+    this.liveCodeLabCoreInstance.drawFunctionRunner.resetTrackingOfDoOnceOccurrences();
+    this.liveCodeLabCoreInstance.soundSystem.setUpdatesPerMinute(60 * 4);
     this.liveCodeLabCoreInstance.lightSystem.noLights();
     this.liveCodeLabCoreInstance.graphicsCommands.reset();
     this.liveCodeLabCoreInstance.blendControls.animationStyle(this.liveCodeLabCoreInstance.blendControls.animationStyles.normal);
@@ -133,7 +147,13 @@ AnimationLoop = (function() {
     this.liveCodeLabCoreInstance.backgroundPainter.simpleGradientUpdateIfChanged();
     this.liveCodeLabCoreInstance.soundSystem.changeUpdatesPerMinuteIfNeeded();
     window.frame++;
-    this.liveCodeLabCoreInstance.renderer.render(this.liveCodeLabCoreInstance.graphicsCommands);
+    if (!this.noDrawFrame || this.liveCodeLabCoreInstance.dozingOff) {
+      this.liveCodeLabCoreInstance.renderer.render(this.liveCodeLabCoreInstance.graphicsCommands);
+      this.fpsHistory.push((new Date().getMilliseconds()) - currentTime);
+      if (this.fpsHistory.length > 60) {
+        this.fpsHistory.shift();
+      }
+    }
     if (this.stats) {
       return this.stats.update();
     }

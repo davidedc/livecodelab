@@ -32,6 +32,10 @@ SoundSystem = (function() {
 
   SoundSystem.prototype.anyCodeReactingTobpm = false;
 
+  SoundSystem.prototype.startOfInterval = void 0;
+
+  SoundSystem.prototype.beatRecurrence = void 0;
+
   function SoundSystem(eventRouter, buzz, Bowser, samplebank) {
     var _this = this;
     this.eventRouter = eventRouter;
@@ -68,7 +72,7 @@ SoundSystem = (function() {
     return startup.play();
   };
 
-  SoundSystem.prototype.SetUpdatesPerMinute = function(updatesPerMinute) {
+  SoundSystem.prototype.setUpdatesPerMinute = function(updatesPerMinute) {
     this.updatesPerMinute = updatesPerMinute;
   };
 
@@ -179,12 +183,18 @@ SoundSystem = (function() {
 
   SoundSystem.prototype.changeUpdatesPerMinuteIfNeeded = function() {
     var _this = this;
+    if (!this.anyCodeReactingTobpm) {
+      this.updatesPerMinute = 1;
+    }
     if (this.oldupdatesPerMinute !== this.updatesPerMinute) {
+      console.log("updating bpm from " + this.oldupdatesPerMinute + " to: " + this.updatesPerMinute);
       clearTimeout(this.soundLoopTimer);
+      this.startOfInterval = new Date().getMilliseconds();
+      this.beatRecurrence = Math.round((1000 * 60) / this.updatesPerMinute);
       if (this.updatesPerMinute !== 0) {
         this.soundLoopTimer = setInterval(function() {
           return _this.soundLoop();
-        }, (1000 * 60) / this.updatesPerMinute);
+        }, this.beatRecurrence);
       }
       return this.oldupdatesPerMinute = this.updatesPerMinute;
     }
