@@ -341,6 +341,7 @@ module.exports = function (grunt) {
                     'js/translatedFromCoffescript/coffee/sound/samplebank.js',
                     'js/translatedFromCoffescript/coffee/sound/sound-system.js',
                     'js/sound/buzz.js',
+                    'js/sound/lowLag.js',
                     'js/translatedFromCoffescript/coffee/animation-loop.js',
                     'js/translatedFromCoffescript/coffee/threejs-system.js',
                     'js/translatedFromCoffescript/coffee/renderer.js',
