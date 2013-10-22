@@ -18,9 +18,15 @@ class SoundSystem
   soundFilesPaths: {}
   soundLoops: []
   updatesPerMinute: undefined
+
   # if there isn't any code using the bpm setting then we can save a timer, so
   # worth tracking with this variable
   anyCodeReactingTobpm: false
+
+  # these two are used to avoid as much as possible
+  # the collision of the graphics and sound timers
+  startOfInterval: undefined
+  beatRecurrence: undefined
   
   constructor: (@eventRouter, @buzz, @Bowser, @samplebank) ->
     @soundLoops.soundIDs = []
@@ -47,7 +53,7 @@ class SoundSystem
     startup = new @buzz.sound(@samplebank.getByName("bing").path)
     startup.play()
 
-  SetUpdatesPerMinute: (@updatesPerMinute) ->
+  setUpdatesPerMinute: (@updatesPerMinute) ->
     
   # sets BPM
   # is called by code in patches
@@ -201,11 +207,24 @@ class SoundSystem
   
   # Called from animate function in animation-controls.js
   changeUpdatesPerMinuteIfNeeded: ->
+    # if there is no play instruction anywhere, then we can
+    # set an absurdely long timer for sounds so that it doesn't
+    # interfere with the graphics (since the sounds times takes
+    # priority on the graphics times).
+    if ! @anyCodeReactingTobpm
+      @updatesPerMinute = 1
+
     if @oldupdatesPerMinute isnt @updatesPerMinute
+      console.log "updating bpm from " + @oldupdatesPerMinute + " to: " + @updatesPerMinute
       clearTimeout @soundLoopTimer
+      # remember when we start the interval so we can
+      # check before painting graphics: are we too close to the
+      # beat? If yes, we can cancel a frame.
+      @startOfInterval = new Date().getMilliseconds()
+      @beatRecurrence = Math.round( (1000 * 60) / @updatesPerMinute )
       @soundLoopTimer = setInterval(
         () => @soundLoop(),
-        (1000 * 60) / @updatesPerMinute
+        @beatRecurrence
       ) if @updatesPerMinute isnt 0
       @oldupdatesPerMinute = @updatesPerMinute
 

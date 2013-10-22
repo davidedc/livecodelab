@@ -52,6 +52,8 @@ class AnimationLoop
   wantedFramesPerSecond: null
   liveCodeLabCoreInstance: undefined
   AS_HIGH_FPS_AS_POSSIBLE: -1
+  noDrawFrame: false
+  fpsHistory: [10]
 
   constructor: (@eventRouter,
                 @stats,
@@ -102,18 +104,40 @@ class AnimationLoop
   
   # animation loop
   animate: ->
+
+    if window.frame is 0
+      @liveCodeLabCoreInstance.timeKeeper.resetTime()
+    else
+      @liveCodeLabCoreInstance.timeKeeper.updateTime()
+
+    # do the render ONLY if we are some ms away from the next
+    # scheduled beat. In other words, stay well clear of the
+    # sound timer!
+    forbiddenZone = Math.max.apply(Math, @fpsHistory);
+    currentTime = @liveCodeLabCoreInstance.timeKeeper.milliseconds
+    musicBeatStart = @liveCodeLabCoreInstance.soundSystem.startOfInterval
+    timeSinceMusicBeatStart = currentTime - musicBeatStart
+    beatRecurrence = @liveCodeLabCoreInstance.soundSystem.beatRecurrence
+    if timeSinceMusicBeatStart % beatRecurrence >= beatRecurrence - forbiddenZone * 2
+      @noDrawFrame = true
+    else
+      @noDrawFrame = false
+
     @liveCodeLabCoreInstance.matrixCommands.resetMatrixStack()
     
     # the sound list needs to be cleaned
     # so that the user program can create its own from scratch
     @liveCodeLabCoreInstance.soundSystem.resetLoops()
-    if window.frame is 0
-      @liveCodeLabCoreInstance.timeKeeper.resetTime()
-    else
-      @liveCodeLabCoreInstance.timeKeeper.updateTime()
-    @liveCodeLabCoreInstance.drawFunctionRunner.resetTrackingOfDoOnceOccurrences()
     @liveCodeLabCoreInstance.soundSystem.anyCodeReactingTobpm = false
-    @liveCodeLabCoreInstance.soundSystem.SetUpdatesPerMinute 60 * 4
+
+    @liveCodeLabCoreInstance.drawFunctionRunner.resetTrackingOfDoOnceOccurrences()
+
+    # set a
+    # default bpm (so user doesn't need to add bpm instruction). If
+    # the bpm instruction is invoked in the code,
+    # that new value will override this default value.
+    @liveCodeLabCoreInstance.soundSystem.setUpdatesPerMinute 60 * 4
+
     @liveCodeLabCoreInstance.lightSystem.noLights()
     @liveCodeLabCoreInstance.graphicsCommands.reset()
     @liveCodeLabCoreInstance.blendControls.animationStyle \
@@ -170,8 +194,20 @@ class AnimationLoop
     # function has been run.
     window.frame++
     
-    # do the render
-    @liveCodeLabCoreInstance.renderer.render @liveCodeLabCoreInstance.graphicsCommands
+    
+    # if livecodelab is dozing off, in that case you do
+    # want to do a render because it will clear the screen.
+    # otherwise the last frame of the sketch is going
+    # to remain painted in the background behind
+    # the big cursor.
+    if !@noDrawFrame or @liveCodeLabCoreInstance.dozingOff
+      @liveCodeLabCoreInstance.renderer.render @liveCodeLabCoreInstance.graphicsCommands
+      # keep the last 10 durations of when we actually
+      # drew the frame. This is used for trying to
+      # avoid collision between graphics and sound timers.
+      @fpsHistory.push((new Date().getMilliseconds())-(currentTime))
+      if @fpsHistory.length > 60
+        @fpsHistory.shift()
     
     # update stats
     if @stats then @stats.update()
