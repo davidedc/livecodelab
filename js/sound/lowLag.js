@@ -13,7 +13,8 @@ var lowLag = new function(){
 
 	this.soundUrl = "";
 
-	this.debug = "console";
+	//this.debug = "console";
+	this.debug = "";
 
 
 	this.init = function(config){
