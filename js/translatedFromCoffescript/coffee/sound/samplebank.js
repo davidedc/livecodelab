@@ -66,6 +66,7 @@ SampleBank = (function() {
     this.load("snap", "./sound/audioFiles/snap");
     this.load("thump2", "./sound/audioFiles/thump2");
     this.load("dish", "./sound/audioFiles/dish");
+    this.load("cosmos", "./sound/audioFiles/cosmos");
   }
 
   SampleBank.prototype.load = function(name, path) {
