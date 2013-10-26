@@ -62,6 +62,10 @@ class SampleBank
     @load "thump2", "./sound/audioFiles/thump2"
     @load "dish", "./sound/audioFiles/dish"
     @load "cosmos", "./sound/audioFiles/cosmos"
+    @load "detune", "./sound/audioFiles/detune"
+    @load "downstairs", "./sound/audioFiles/downstairs"
+    @load "glass", "./sound/audioFiles/glass"
+    @load "warm", "./sound/audioFiles/warm"
   
   # Should be either mp3 or ogg
   load: (name, path) ->
