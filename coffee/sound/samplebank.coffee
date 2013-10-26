@@ -64,7 +64,7 @@ class SampleBank
     @load "cosmos", "./sound/audioFiles/cosmos"
     @load "detune", "./sound/audioFiles/detune"
     @load "downstairs", "./sound/audioFiles/downstairs"
-    @load "glass", "./sound/audioFiles/glass"
+    @load "glasspad", "./sound/audioFiles/glass"
     @load "warm", "./sound/audioFiles/warm"
   
   # Should be either mp3 or ogg

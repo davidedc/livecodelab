@@ -67,6 +67,10 @@ SampleBank = (function() {
     this.load("thump2", "./sound/audioFiles/thump2");
     this.load("dish", "./sound/audioFiles/dish");
     this.load("cosmos", "./sound/audioFiles/cosmos");
+    this.load("detune", "./sound/audioFiles/detune");
+    this.load("downstairs", "./sound/audioFiles/downstairs");
+    this.load("glasspad", "./sound/audioFiles/glass");
+    this.load("warm", "./sound/audioFiles/warm");
   }
 
   SampleBank.prototype.load = function(name, path) {
