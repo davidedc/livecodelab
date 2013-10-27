@@ -171,6 +171,8 @@ module.exports = function (grunt) {
         });
     });
 
+
+
     // Project configuration.
     grunt.initConfig({
 
@@ -258,6 +260,7 @@ module.exports = function (grunt) {
                 }
             }
         },
+
         copy: {
             fonts: {
                 files: [{
@@ -273,6 +276,14 @@ module.exports = function (grunt) {
                     cwd: 'css/images/',
                     src: ['**'],
                     dest: 'css_compiled/images/'
+                }]
+            },
+            jslibs: {
+                files: [{
+                    expand: true,
+                    cwd: 'js_lib/',
+                    src: ['**'],
+                    dest: 'js/lib'
                 }]
             }
         },
@@ -299,12 +310,13 @@ module.exports = function (grunt) {
         coffee: {
             app: {
                 expand: true,
-                src: ['coffee/**/*.coffee'],
-                dest: 'js/translatedFromCoffescript/',
+                cwd: 'coffee/',
+                src: ['**/*.coffee'],
+                dest: 'js/',
                 ext: '.js',
                 options: {
-                    bare: true,
-                    preserve_dirs: true
+                    sourceMap: true,
+                    bare: true
                 }
             },
             tests: {
@@ -325,58 +337,6 @@ module.exports = function (grunt) {
                 tasks: ['compile']
             }
         },
-        concat: {
-            dist: {
-                src: [
-                    'js/translatedFromCoffescript/coffee/globals/browsercontrols.js',
-                    'js/translatedFromCoffescript/coffee/globals/numbertimes.js',
-                    'js/translatedFromCoffescript/coffee/globals/requestAnimFrame.js',
-                    'js/translatedFromCoffescript/coffee/globals/math.js',
-                    'js/translatedFromCoffescript/coffee/livecodelab-core.js',
-                    'js/translatedFromCoffescript/coffee/event-router.js',
-                    'js/translatedFromCoffescript/coffee/parser.js',
-                    'js/translatedFromCoffescript/coffee/url-router.js',
-                    'js/translatedFromCoffescript/coffee/big-cursor.js',
-                    'js/translatedFromCoffescript/coffee/autocoder/lexer.js',
-                    'js/translatedFromCoffescript/coffee/sound/samplebank.js',
-                    'js/translatedFromCoffescript/coffee/sound/sound-system.js',
-                    'js/sound/buzz.js',
-                    'js/sound/lowLag.js',
-                    'js/translatedFromCoffescript/coffee/animation-loop.js',
-                    'js/translatedFromCoffescript/coffee/threejs-system.js',
-                    'js/translatedFromCoffescript/coffee/renderer.js',
-                    'js/translatedFromCoffescript/coffee/colour-literals.js',
-                    'js/three.js/Detector.js',
-                    'js/three.js/Stats.js',
-                    'js/threex/THREEx.WindowResize.js',
-                    'js/three.js/ShaderExtras.js',
-                    'js/three.js/postprocessing/EffectComposer.js',
-                    'js/three.js/postprocessing/RenderPass.js',
-                    'js/three.js/postprocessing/ShaderPass.js',
-                    'js/three.js/postprocessing/MaskPass.js',
-                    'js/three.js/postprocessing/SavePass.js',
-                    'js/translatedFromCoffescript/coffee/background-painter.js',
-                    'js/translatedFromCoffescript/coffee/editor/editor.js',
-                    'js/translatedFromCoffescript/coffee/colour-functions.js',
-                    'js/translatedFromCoffescript/coffee/matrix-commands.js',
-                    'js/translatedFromCoffescript/coffee/graphics-commands.js',
-                    'js/translatedFromCoffescript/coffee/program-runner.js',
-                    'js/translatedFromCoffescript/coffee/code-transformer.js',
-                    'js/translatedFromCoffescript/coffee/program-loader.js',
-                    'js/translatedFromCoffescript/coffee/autocoder/autocoder.js',
-                    'js/translatedFromCoffescript/coffee/text-dimming.js',
-                    'js/translatedFromCoffescript/coffee/time-keeper.js',
-                    'js/translatedFromCoffescript/coffee/blend-controls.js',
-                    'js/translatedFromCoffescript/coffee/lights-commands.js',
-                    'js/translatedFromCoffescript/coffee/ui.js',
-                    'js/editor/mousewheel.js',
-                    'js/editor/coffeescript-livecodelab-mode.js',
-                    'js/browser-detection/bowser-2012-07-18.js',
-                    'js/translatedFromCoffescript/coffee/init.js'
-                ],
-                dest: 'dist/built.js'
-            }
-        },
         coffeelint: {
             lcl: ['coffee/*.coffee']
         },
@@ -388,25 +348,25 @@ module.exports = function (grunt) {
                 'docs/crojsdoc/',
                 'docs/deleteme/'
             ],
-            build: [
-                'dist/',
-                'index-min.html',
-                'js_compiled/Livecodelab-minified.js',
-                'js/translatedFromCoffescript/',
-                'css_compiled/'
-            ],
             tests: [
                 'tests/js/testLiveCodeLab.js'
+            ],
+            require: [
+                'index.html',
+                'index-min.html',
+                'js',
+                'js_compiled',
+                'css_compiled'
             ]
         },
         targethtml: {
-            min: {
+            main: {
                 src: 'templts/index.html.templt',
-                dest: 'index-min.html'
+                dest: 'index.html'
             },
             dev: {
                 src: 'templts/index.html.templt',
-                dest: 'index.html'
+                dest: 'index-dev.html'
             }
         },
         'closure-compiler': {
@@ -422,6 +382,16 @@ module.exports = function (grunt) {
                     language_in: 'ECMASCRIPT5_STRICT',
                     externs: [
                         'buildSystem/externs_common.js']
+                }
+            }
+        },
+        requirejs: {
+            compile: {
+                options: {
+                    name: 'lcl-init',
+                    baseUrl: 'js/',
+                    mainConfigFile: 'js/rjs-init.js',
+                    out: 'js_compiled/lcl-min.js'
                 }
             }
         }
@@ -450,21 +420,14 @@ module.exports = function (grunt) {
         'removeCopiedSourcesForDocs'
     ]);
 
-    // Compilation task
-    grunt.registerTask('compile', [
-        'coffee:app',
-    ]);
 
     grunt.registerTask('build', [
-        'clean:build',
+        'clean:require',
         'coffee:app',
-        'coffee:tests',
-        'concat',
-        'closure-compiler',
         'copy',
         'recess:compile',
-        'targethtml:min',
-        'targethtml:dev'
+        'requirejs',
+        'targethtml'
     ]);
 
 
@@ -475,22 +438,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-targethtml');
     grunt.loadNpmTasks('grunt-contrib-coffee');
-    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-coffeelint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-docco');
-    process.stdout.write("\n\n\n\n");
-    process.stdout.write("****************************************************************\n");
-    process.stdout.write("* Note:\n");
-    process.stdout.write("* You can use jitter to automatically translate\n");
-    process.stdout.write("* the .coffee files - which is fine for testing\n");
-    process.stdout.write("* changes using the non-minified version of livecodelab,\n");
-    process.stdout.write("* (i.e. index.html, NOT index-min.html)\n");
-    process.stdout.write("* just do:\n");
-    process.stdout.write("*    npm install -g jitter \n");
-    process.stdout.write("*    jitter --bare coffee/ js/translatedFromCoffescript/coffee/ \n");
-    process.stdout.write("****************************************************************\n");
-    process.stdout.write("\n\n\n\n");
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
 
 };

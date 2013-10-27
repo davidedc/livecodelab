@@ -1,13 +1,8 @@
 node_modules/
 dist/
-js_compiled/*.report.txt
-
+js_compiled/
+css_compiled/
 npm-debug.log
-
-node_modules alias
-
-npm-debug.log
-
-npm-debug.log
-
-npm-debug.log
+js/
+index.html
+index-dev.html
