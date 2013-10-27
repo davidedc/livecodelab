@@ -438,6 +438,16 @@ module.exports = function (grunt) {
                         'buildSystem/externs_common.js']
                 }
             }
+        },
+        requirejs: {
+            compile: {
+                options: {
+                    name: 'lcl-init',
+                    baseUrl: 'js/',
+                    mainConfigFile: 'js/rjs-init.js',
+                    out: 'js_compiled/lcl-min.js'
+                }
+            }
         }
     });
 
@@ -472,8 +482,10 @@ module.exports = function (grunt) {
     grunt.registerTask('require-build', [
         'clean:require',
         'coffee:app',
-        'copy:jslibs',
-        'targethtml:dev'
+        'copy',
+        'recess:compile',
+        'requirejs',
+        'targethtml'
     ]);
 
 
@@ -503,6 +515,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-coffeelint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-docco');
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
     process.stdout.write("\n\n\n\n");
     process.stdout.write("****************************************************************\n");
     process.stdout.write("* Note:\n");

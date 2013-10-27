@@ -11,10 +11,11 @@
         <script src="js/globals/numbertimes.js"></script>
         <script src="js/globals/requestAnimFrame.js"></script>
 
-        <script data-main="js/lcl-init" src="js/lib/require.js"></script>
-
 
         <!--(if target dev)><!-->
+
+        <script data-main="js/rjs-init" src="js/lib/require.js"></script>
+
         <link rel="stylesheet" type='text/css' href="css/main.css"/>
         <link rel="stylesheet" type='text/css' href="css/codemirror.css"/>
         <link rel="stylesheet" type='text/css' href="css/night.css"/>
@@ -26,6 +27,9 @@
         <!--<!(endif)-->
 
         <!--(if target min)><!-->
+
+        <script data-main="js_compiled/lcl-min" src="js/lib/require.js"></script>
+
         <link rel='stylesheet' type='text/css' href='css_compiled/main.css'/>
 
         <!--<!(endif)-->
