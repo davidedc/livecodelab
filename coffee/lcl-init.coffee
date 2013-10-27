@@ -311,6 +311,3 @@ require [
       # see https://github.com/mrdoob/three.js/pull/421
       testMode: false
 
-  () ->
-    console.log('require js lcl loaded')
-
