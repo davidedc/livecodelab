@@ -312,6 +312,7 @@ module.exports = function (grunt) {
                 dest: 'js/',
                 ext: '.js',
                 options: {
+                    sourceMap: true,
                     bare: true
                 }
             },
