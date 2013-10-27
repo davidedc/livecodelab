@@ -4,262 +4,8 @@ module.exports = function (grunt) {
 
     'use strict';
 
-    var exec = require('exec');
-
-    grunt.registerMultiTask('removeCopiedSourcesForDocs', 'Generate source documents from CoffeeScript files.', function () {
-        var target = this.data.target,
-            options = this.data.options || {},
-            cmds = ['buildSystem/removeCopiedSourcesForDocs.sh'],
-            done = this.async();
-
-        exec(cmds, function (err, out, code) {
-            if (code === 0) {
-                grunt.log.ok(cmds.join(' '));
-                grunt.log.ok('document created at ' + target);
-            } else {
-                grunt.fail.warn('If you want to using removeCopiedSourcesForDocs task. Please global install (option with -g) codo pakage from npm.');
-            }
-            done();
-        });
-    });
-
-
-    grunt.registerMultiTask('beautifyCoffeedoc', 'Generate source documents from CoffeeScript files.', function () {
-        var target = this.data.target,
-            options = this.data.options || {},
-            cmds = ['buildSystem/beautifyCoffeedoc.sh'],
-            done = this.async();
-
-        exec(cmds, function (err, out, code) {
-            if (code === 0) {
-                grunt.log.ok(cmds.join(' '));
-                grunt.log.ok('document created at ' + target);
-            } else {
-                grunt.fail.warn('If you want to using beautifyCoffeedoc task. Please global install (option with -g) codo pakage from npm.');
-            }
-            done();
-        });
-    });
-
-    grunt.registerMultiTask('copySourcesForCreatingDocs', 'Generate source documents from CoffeeScript files.', function () {
-        var target = this.data.target,
-            options = this.data.options || {},
-            cmds = ['buildSystem/copySourcesForCreatingDocs.sh'],
-            done = this.async();
-
-        exec(cmds, function (err, out, code) {
-            if (code === 0) {
-                grunt.log.ok(cmds.join(' '));
-                grunt.log.ok('document created at ' + target);
-            } else {
-                grunt.fail.warn('If you want to using copySourcesForCreatingDocs task. Please global install (option with -g) codo pakage from npm.');
-            }
-            done();
-        });
-    });
-
-    grunt.registerMultiTask('putBackBlockComments', 'Generate source documents from CoffeeScript files.', function () {
-        var target = this.data.target,
-            options = this.data.options || {},
-            cmds = ['buildSystem/putBackBlockComments.sh'],
-            done = this.async();
-
-        exec(cmds, function (err, out, code) {
-            if (code === 0) {
-                grunt.log.ok(cmds.join(' '));
-                grunt.log.ok('document created at ' + target);
-            } else {
-                grunt.fail.warn('If you want to using codo task. Please global install (option with -g) codo pakage from npm.');
-            }
-            done();
-        });
-    });
-
-    grunt.registerMultiTask('replaceBlockComments', 'Generate source documents from CoffeeScript files.', function () {
-        var target = this.data.target,
-            options = this.data.options || {},
-            cmds = ['buildSystem/replaceBlockComments.sh'],
-            done = this.async();
-
-        exec(cmds, function (err, out, code) {
-            if (code === 0) {
-                grunt.log.ok(cmds.join(' '));
-                grunt.log.ok('document created at ' + target);
-            } else {
-                grunt.fail.warn('If you want to using codo task. Please global install (option with -g) codo pakage from npm.');
-            }
-            done();
-        });
-    });
-
-
-    /**
-     * Task for crojsdoc. This one in theory generates nice documentation but
-     * a) can't get it to output the docs where it should
-     * b) only seems to generate docs for two files.
-     */
-    grunt.registerTask('crojsdoc', 'Generate source documents from CoffeeScript files.', function () {
-        var target = this.data.target,
-            options = this.data.options || {},
-            cmds = ['buildSystem/crojsdocHelper.sh'],
-            done = this.async();
-
-        cmds.push(target);
-
-        exec(cmds, function (err, out, code) {
-            if (code === 0) {
-                grunt.log.ok(cmds.join(' '));
-                grunt.log.ok('document created at ' + target);
-            } else {
-                grunt.fail.warn('If you want to using codo task. Please global install (option with -g) codo pakage from npm.');
-            }
-            done();
-        });
-    });
-
-
-    /**
-     * Task for coffeedoc from https://gist.github.com/3596427
-     */
-    grunt.registerMultiTask('coffeedoc', 'Generate source documents from CoffeeScript files.', function () {
-        var target = this.data.target,
-            options = this.data.options || {},
-            cmds = ['coffeedoc'],
-            done = this.async();
-
-        Object.keys(options).forEach(function (opt) {
-            cmds.push('--' + opt + '=' + options[opt]);
-        });
-
-        cmds.push(target);
-
-        exec(cmds, function (err, out, code) {
-            if (code === 0) {
-                grunt.log.ok(cmds.join(' '));
-                grunt.log.ok('document created at ' + target);
-            } else {
-                grunt.log.ok(cmds.join(' '));
-                grunt.fail.warn('If you want to using coffeedoc task. Please global install (option with -g) coffeedoc pakage from npm.');
-            }
-            done();
-        });
-    });
-
-    /**
-     * Task for codo
-     */
-    grunt.registerMultiTask('codo', 'Generate source documents from CoffeeScript files.', function () {
-        var target = this.data.target,
-            options = this.data.options || {},
-            cmds = ['codo'],
-            done = this.async();
-
-        Object.keys(options).forEach(function (opt) {
-            cmds.push('--' + opt.replace("_", "-") + '=' + options[opt]);
-        });
-
-        cmds.push(target);
-
-        exec(cmds, function (err, out, code) {
-            if (code === 0) {
-                grunt.log.ok(cmds.join(' '));
-                grunt.log.ok('document created at ' + target);
-            } else {
-                grunt.fail.warn('If you want to using codo task. Please global install (option with -g) codo pakage from npm.');
-            }
-            done();
-        });
-    });
-
-
-
     // Project configuration.
     grunt.initConfig({
-
-        removeCopiedSourcesForDocs: {
-            dist: {
-                target: 'coffee'
-            }
-        },
-        beautifyCoffeedoc: {
-            dist: {
-                target: 'coffee'
-            }
-        },
-        copySourcesForCreatingDocs: {
-            dist: {
-                target: 'coffee'
-            }
-        },
-        replaceBlockComments: {
-            dist: {
-                target: 'coffee'
-            }
-        },
-        putBackBlockComments: {
-            dist: {
-                target: 'coffee'
-            }
-        },
-        jsduck: {
-            dist: {
-                // source paths with your code
-                src: ['js/*.js', 'js/**/*.js'],
-
-                // docs output dir
-                dest: 'docs/jsduck',
-
-                // extra options
-                options: {
-                    'builtin-classes': true,
-                    'warnings': ['-no_doc', '-dup_member', '-link_ambiguous'],
-                    'external': ['XMLHttpRequest']
-                }
-            }
-        },
-        jsdoc: {
-            dist: {
-                src: ['js/*.js', 'js/**/*.js'],
-                dest: 'docs/jsdoc'
-            }
-        },
-        docco: {
-            Js: {
-                src: ['js/*/*.js'],
-                options: {
-                    output: 'docs/docco/'
-                }
-            },
-            Coffee: {
-                src: ['docs/deleteme/sourcesForDocco/**/*.coffee'],
-                options: {
-                    output: 'docs/docco/'
-                }
-            }
-        },
-        // currently not used, this is rather done
-        // via invokation of a helper sh script
-        // because I couldn't get crojsdoc to output
-        // in a specific directory.
-        crojsdoc: {
-            dist: {
-                target: 'docs/deleteme/sourcesWithBlockComments',
-                options: {
-                    o: './docs/crojsdoc/'
-                }
-            }
-        },
-
-        coffeedoc: {
-            dist: {
-                target: 'docs/deleteme/sourcesWithBlockComments',
-                options: {
-                    output: 'docs/coffeedoc',
-                    parser: 'requirejs',
-                    renderer: 'html'
-                }
-            }
-        },
 
         copy: {
             css: {
@@ -358,11 +104,7 @@ module.exports = function (grunt) {
         },
         clean: {
             docs: [
-                'docs/docco/',
-                'docs/codo/',
-                'docs/coffeedoc/',
-                'docs/crojsdoc/',
-                'docs/deleteme/'
+                'dist/docs/'
             ],
             tests: [
                 'dist/tests/js/testLiveCodeLab.js'
@@ -413,23 +155,8 @@ module.exports = function (grunt) {
     grunt.registerTask('default', 'coffeelint');
     grunt.registerTask('lint', ['coffeelint', 'recess:lint']);
 
-    // Doc generation task. We create the docs in two steps:
-    // first from the js files and then from the coffee files.
-    // This is because the js files compiled from the coffee files
-    // don't preserve the comments of the coffee files. So we
-    // re-write the docs generated from the (translated) js files
-    // with the docs generated from the coffee files.
     grunt.registerTask('docs', [
-        'clean:docs',
-        'copySourcesForCreatingDocs',
-        'replaceBlockComments',
-        'docco:Js',
-        'docco:Coffee',
-
-        'coffeedoc',
-
-        'beautifyCoffeedoc',
-        'removeCopiedSourcesForDocs'
+        'clean:docs'
     ]);
 
 
@@ -453,7 +180,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-coffeelint');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-docco');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
 
 };
