@@ -262,12 +262,20 @@ module.exports = function (grunt) {
         },
 
         copy: {
+            css: {
+                files: [{
+                    expand: true,
+                    cwd: 'css/',
+                    src: ['**'],
+                    dest: 'dist/css'
+                }]
+            },
             fonts: {
                 files: [{
                     expand: true,
                     cwd: 'css/fonts/',
                     src: ['**'],
-                    dest: 'css_compiled/fonts/'
+                    dest: 'dist/css_compiled/fonts/'
                 }]
             },
             images: {
@@ -275,7 +283,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'css/images/',
                     src: ['**'],
-                    dest: 'css_compiled/images/'
+                    dest: 'dist/css_compiled/images/'
                 }]
             },
             jslibs: {
@@ -283,7 +291,15 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'js_lib/',
                     src: ['**'],
-                    dest: 'js/lib'
+                    dest: 'dist/js/lib'
+                }]
+            },
+            sounds: {
+                files: [{
+                    expand: true,
+                    cwd: 'sound/',
+                    src: ['**'],
+                    dest: 'dist/sound'
                 }]
             }
         },
@@ -300,7 +316,7 @@ module.exports = function (grunt) {
             },
             compile: {
                 src: ['css/**/*.css'],
-                dest: 'css_compiled/main.css',
+                dest: 'dist/css_compiled/main.css',
                 options: {
                     compile: true,
                     compress: true
@@ -312,7 +328,7 @@ module.exports = function (grunt) {
                 expand: true,
                 cwd: 'coffee/',
                 src: ['**/*.coffee'],
-                dest: 'js/',
+                dest: 'dist/js/',
                 ext: '.js',
                 options: {
                     sourceMap: true,
@@ -323,7 +339,7 @@ module.exports = function (grunt) {
                 expand: true,
                 cwd: 'tests/coffee/',
                 src: ['*.coffee'],
-                dest: 'tests/js/',
+                dest: 'dist/tests/js/',
                 ext: '.js',
                 options: {
                     bare: true,
@@ -349,24 +365,20 @@ module.exports = function (grunt) {
                 'docs/deleteme/'
             ],
             tests: [
-                'tests/js/testLiveCodeLab.js'
+                'dist/tests/js/testLiveCodeLab.js'
             ],
-            require: [
-                'index.html',
-                'index-min.html',
-                'js',
-                'js_compiled',
-                'css_compiled'
+            build: [
+                'dist'
             ]
         },
         targethtml: {
             main: {
                 src: 'templts/index.html.templt',
-                dest: 'index.html'
+                dest: 'dist/index.html'
             },
             dev: {
                 src: 'templts/index.html.templt',
-                dest: 'index-dev.html'
+                dest: 'dist/index-dev.html'
             }
         },
         'closure-compiler': {
@@ -389,9 +401,9 @@ module.exports = function (grunt) {
             compile: {
                 options: {
                     name: 'lcl-init',
-                    baseUrl: 'js/',
-                    mainConfigFile: 'js/rjs-init.js',
-                    out: 'js_compiled/lcl-min.js'
+                    baseUrl: 'dist/js/',
+                    mainConfigFile: 'dist/js/rjs-init.js',
+                    out: 'dist/js_compiled/lcl-min.js'
                 }
             }
         }
@@ -422,7 +434,7 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask('build', [
-        'clean:require',
+        'clean:build',
         'coffee:app',
         'copy',
         'recess:compile',
