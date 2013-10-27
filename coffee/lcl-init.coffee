@@ -8,6 +8,7 @@ requirejs.config(
   paths:
     'bowser': 'lib/bowser'
     'buzz': 'lib/buzz'
+    'lowLag': 'lib/lowLag'
     'codemirror': 'lib/codemirror'
     'coffeescript': 'lib/coffee-script'
     'codemirror-lcl-mode': 'lib/coffeescript-livecodelab-mode'
@@ -36,6 +37,9 @@ requirejs.config(
     'buzz':
       deps: []
       exports: 'buzz'
+    'lowLag':
+        deps: []
+        exports: 'lowLag'
     'codemirror':
       deps: []
       exports: 'CodeMirror'

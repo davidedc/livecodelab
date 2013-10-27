@@ -75,6 +75,7 @@ define [
   ,'sound/sound-system'
   ,'bowser'
   ,'buzz'
+  ,'lowLag'
   ,'coffeescript'
   ,'threejs'
   ,'three-resize'
@@ -103,6 +104,7 @@ define [
   ,SoundSystem
   ,createBowser
   ,buzz
+  ,lowLag
   ,CoffeeScript
   ,THREE
   ,THREEx
@@ -157,7 +159,7 @@ define [
       @renderer = new Renderer(@)
       @soundSystem =
         new SoundSystem(
-          @paramsObject.eventRouter, buzz, createBowser(), new SampleBank(buzz))
+          @paramsObject.eventRouter, buzz, lowLag, createBowser(), new SampleBank(buzz))
       
       # this one also interacts with colourFunctions, backgroundSceneContext,
       # canvasForBackground at runtime
