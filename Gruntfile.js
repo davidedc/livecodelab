@@ -25,19 +25,6 @@ module.exports = function (grunt) {
                     src: ['**'],
                     dest: 'dist/js/lib'
                 }]
-            },
-            "gh-pages": {
-                files: [{
-                    expand: true,
-                    cwd: 'webpage/',
-                    src: ['**'],
-                    dest: 'gh-pages/'
-                }, {
-                    expand: true,
-                    cwd: 'dist/',
-                    src: ['**'],
-                    dest: 'gh-pages/play'
-                }]
             }
         },
         recess: {
@@ -102,9 +89,6 @@ module.exports = function (grunt) {
             ],
             build: [
                 'dist/*'
-            ],
-            "gh-pages": [
-                'gh-pages'
             ]
         },
         targethtml: {
@@ -145,14 +129,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-        'gh-pages': {
-            'gh-pages': {
-                options: {
-                    base: 'gh-pages'
-                },
-                src: '**/*'
-            }
-        },
         requirejs: {
             compile: {
                 options: {
@@ -184,20 +160,7 @@ module.exports = function (grunt) {
         'targethtml'
     ]);
 
-    grunt.registerTask('ghpage', [
-        'clean:gh-pages',
-        'build',
-        'docs',
-        'copy:gh-pages'
-    ]);
-
-    grunt.registerTask('release', [
-        'ghpage',
-        'gh-pages'
-    ]);
-
     // Load NPM Task modules
-    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-targethtml');
@@ -207,6 +170,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-docco');
-    grunt.loadNpmTasks('grunt-gh-pages');
 
 };
