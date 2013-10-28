@@ -178,7 +178,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:build',
         'coffee:app',
-        'copy',
+        'copy:main',
         'recess:compile',
         'requirejs',
         'targethtml'
@@ -188,11 +188,13 @@ module.exports = function (grunt) {
         'clean:gh-pages',
         'build',
         'docs',
-        'copy:gh-pages',
-        'gh-pages',
-        'clean:gh-pages',
+        'copy:gh-pages'
     ]);
 
+    grunt.registerTask('release', [
+        'ghpage',
+        'gh-pages'
+    ]);
 
     // Load NPM Task modules
     grunt.loadNpmTasks('grunt-contrib-clean');
