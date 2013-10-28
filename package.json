@@ -13,6 +13,7 @@
     "grunt-targethtml": "~0.2.2",
     "grunt-coffeelint": "0.0.6",
     "grunt-contrib-watch": "~0.4.3",
-    "grunt-contrib-requirejs": "~0.4.1"
+    "grunt-contrib-requirejs": "~0.4.1",
+    "grunt-docco": "~0.3.0"
   }
 }

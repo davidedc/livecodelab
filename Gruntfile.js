@@ -110,7 +110,7 @@ module.exports = function (grunt) {
                 'dist/tests/js/testLiveCodeLab.js'
             ],
             build: [
-                'dist'
+                'dist/*'
             ]
         },
         targethtml: {
@@ -139,6 +139,34 @@ module.exports = function (grunt) {
                 }
             }
         },
+        docco: {
+            index: {
+                src: [
+                    'docs/index.md'
+                ],
+                options: {
+                    output: 'dist/docs',
+                    layout: 'linear'
+                }
+            },
+            howtos: {
+                src: [
+                    'docs/how-tos/**/*.md'
+                ],
+                options: {
+                    output: 'dist/docs/how-to',
+                    layout: 'linear'
+                }
+            },
+            source: {
+                src: [
+                    'coffee/**/*.coffee'
+                ],
+                options: {
+                    output: 'dist/docs/source'
+                }
+            }
+        },
         requirejs: {
             compile: {
                 options: {
@@ -156,7 +184,8 @@ module.exports = function (grunt) {
     grunt.registerTask('lint', ['coffeelint', 'recess:lint']);
 
     grunt.registerTask('docs', [
-        'clean:docs'
+        'clean:docs',
+        'docco'
     ]);
 
 
@@ -181,5 +210,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-coffeelint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
+    grunt.loadNpmTasks('grunt-docco');
 
 };
