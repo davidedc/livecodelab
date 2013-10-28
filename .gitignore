@@ -1,8 +1,5 @@
 node_modules/
 dist/
-js_compiled/
-css_compiled/
 npm-debug.log
-js/
-index.html
-index-dev.html
+.grunt
+gh-pages
