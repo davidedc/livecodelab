@@ -14,7 +14,6 @@
     "grunt-contrib-watch": "~0.4.3",
     "grunt-contrib-requirejs": "~0.4.1",
     "grunt-docco": "~0.3.0",
-    "grunt": "~0.4.1",
-    "grunt-gh-pages": "~0.8.1"
+    "grunt": "~0.4.1"
   }
 }
