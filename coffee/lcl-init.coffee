@@ -19,6 +19,10 @@ require [
   ,'jquery'
   ,'mousewheel'
   ,'codemirror-lcl-mode'
+  ,'globals/browsercontrols'
+  ,'globals/math'
+  ,'globals/numbertimes'
+  ,'globals/requestAnimFrame'
 ], (
   ColourLiterals
   ,EventRouter

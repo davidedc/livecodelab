@@ -6,12 +6,6 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-        <script src="js/globals/browsercontrols.js"></script>
-        <script src="js/globals/math.js"></script>
-        <script src="js/globals/numbertimes.js"></script>
-        <script src="js/globals/requestAnimFrame.js"></script>
-
-
         <!--(if target dev)><!-->
 
         <script data-main="js/rjs-init" src="js/lib/require.js"></script>
@@ -33,7 +27,6 @@
         <link rel='stylesheet' type='text/css' href='css_compiled/main.css'/>
 
         <!--<!(endif)-->
-
 
     </head>
     <body>
