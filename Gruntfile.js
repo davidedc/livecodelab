@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
 
         copy: {
-            css: {
+            dev: {
                 files: [{
                     expand: true,
                     cwd: 'css/',
@@ -16,36 +16,30 @@ module.exports = function (grunt) {
                     dest: 'dist/css'
                 }]
             },
-            fonts: {
+            release: {
                 files: [{
                     expand: true,
                     cwd: 'css/fonts/',
                     src: ['**'],
                     dest: 'dist/css_compiled/fonts/'
-                }]
-            },
-            images: {
-                files: [{
+                }, {
                     expand: true,
                     cwd: 'css/images/',
                     src: ['**'],
                     dest: 'dist/css_compiled/images/'
                 }]
             },
-            jslibs: {
-                files: [{
-                    expand: true,
-                    cwd: 'js_lib/',
-                    src: ['**'],
-                    dest: 'dist/js/lib'
-                }]
-            },
-            sounds: {
+            all: {
                 files: [{
                     expand: true,
                     cwd: 'sound/',
                     src: ['**'],
                     dest: 'dist/sound'
+                }, {
+                    expand: true,
+                    cwd: 'js_lib/',
+                    src: ['**'],
+                    dest: 'dist/js/lib'
                 }]
             }
         },
