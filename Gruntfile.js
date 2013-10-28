@@ -191,6 +191,12 @@ module.exports = function (grunt) {
         'targethtml'
     ]);
 
+    grunt.registerTask('release', [
+        'build',
+        'docs',
+        'gh-pages'
+    ]);
+
 
     // Load NPM Task modules
     grunt.loadNpmTasks('grunt-contrib-clean');
