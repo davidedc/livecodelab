@@ -151,6 +151,15 @@ module.exports = function (grunt) {
                 }
             }
         },
+        'gh-pages': {
+            'gh-pages': {
+                options: {
+                    base: 'dist',
+                    push: false
+                },
+                src: '**/*'
+            }
+        },
         requirejs: {
             compile: {
                 options: {
@@ -194,5 +203,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-docco');
+    grunt.loadNpmTasks('grunt-gh-pages');
 
 };
