@@ -123,22 +123,6 @@ module.exports = function (grunt) {
                 dest: 'dist/index-dev.html'
             }
         },
-        'closure-compiler': {
-            frontend: {
-                closurePath: 'buildSystem',
-                js: 'dist/built.js',
-                jsOutputFile: 'js_compiled/Livecodelab-minified.js',
-                maxBuffer: 2000000,
-                options: {
-                    jscomp_off: [
-                        'globalThis',
-                        'checkTypes'],
-                    language_in: 'ECMASCRIPT5_STRICT',
-                    externs: [
-                        'buildSystem/externs_common.js']
-                }
-            }
-        },
         docco: {
             index: {
                 src: [
@@ -200,7 +184,6 @@ module.exports = function (grunt) {
 
 
     // Load NPM Task modules
-    grunt.loadNpmTasks('grunt-closure-compiler');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-recess');
