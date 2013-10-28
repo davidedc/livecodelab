@@ -25,6 +25,19 @@ module.exports = function (grunt) {
                     src: ['**'],
                     dest: 'dist/js/lib'
                 }]
+            },
+            "gh-pages": {
+                files: [{
+                    expand: true,
+                    cwd: 'webpage/',
+                    src: ['**'],
+                    dest: 'gh-pages/'
+                }, {
+                    expand: true,
+                    cwd: 'dist/',
+                    src: ['**'],
+                    dest: 'gh-pages/play'
+                }]
             }
         },
         recess: {
@@ -89,6 +102,9 @@ module.exports = function (grunt) {
             ],
             build: [
                 'dist/*'
+            ],
+            "gh-pages": [
+                'gh-pages'
             ]
         },
         targethtml: {
@@ -132,7 +148,7 @@ module.exports = function (grunt) {
         'gh-pages': {
             'gh-pages': {
                 options: {
-                    base: 'dist'
+                    base: 'gh-pages'
                 },
                 src: '**/*'
             }
@@ -168,10 +184,13 @@ module.exports = function (grunt) {
         'targethtml'
     ]);
 
-    grunt.registerTask('release', [
+    grunt.registerTask('ghpage', [
+        'clean:gh-pages',
         'build',
         'docs',
-        'gh-pages'
+        'copy:gh-pages',
+        'gh-pages',
+        'clean:gh-pages',
     ]);
 
 
