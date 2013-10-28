@@ -22,9 +22,9 @@
 
         <!--(if target main)><!-->
 
-        <script data-main="js_compiled/lcl-min" src="js/lib/require.js"></script>
+        <script data-main="js/lcl.min" src="js/lib/require.js"></script>
 
-        <link rel='stylesheet' type='text/css' href='css_compiled/main.css'/>
+        <link rel='stylesheet' type='text/css' href='css/lcl.min.css'/>
 
         <!--<!(endif)-->
 

@@ -8,29 +8,13 @@ module.exports = function (grunt) {
     grunt.initConfig({
 
         copy: {
-            dev: {
+            main: {
                 files: [{
                     expand: true,
                     cwd: 'css/',
                     src: ['**'],
                     dest: 'dist/css'
-                }]
-            },
-            release: {
-                files: [{
-                    expand: true,
-                    cwd: 'css/fonts/',
-                    src: ['**'],
-                    dest: 'dist/css_compiled/fonts/'
                 }, {
-                    expand: true,
-                    cwd: 'css/images/',
-                    src: ['**'],
-                    dest: 'dist/css_compiled/images/'
-                }]
-            },
-            all: {
-                files: [{
                     expand: true,
                     cwd: 'sound/',
                     src: ['**'],
@@ -56,7 +40,7 @@ module.exports = function (grunt) {
             },
             compile: {
                 src: ['css/**/*.css'],
-                dest: 'dist/css_compiled/main.css',
+                dest: 'dist/css/lcl.min.css',
                 options: {
                     compile: true,
                     compress: true
@@ -159,7 +143,7 @@ module.exports = function (grunt) {
                     name: 'lcl-init',
                     baseUrl: 'dist/js/',
                     mainConfigFile: 'dist/js/rjs-init.js',
-                    out: 'dist/js_compiled/lcl-min.js'
+                    out: 'dist/js/lcl.min.js'
                 }
             }
         }
