@@ -470,25 +470,28 @@ random = ->
 
 
 # Pseudo-random generator
-Marsaglia = (i1, i2) ->
-  
-  # from http://www.math.uni-bielefeld.de/~sillke/ALGORITHMS/random/marsaglia-c
-  z = i1 or 362436069
-  w = i2 or 521288629
-  nextInt = ->
+class Marsaglia
+  z:0
+  w:0
+
+  constructor:(i1, i2) ->
+    # from http://www.math.uni-bielefeld.de/~sillke/ALGORITHMS/random/marsaglia-c
+    z = i1 or 362436069
+    w = i2 or 521288629
+
+  @createRandomized: ->
+    now = new Date()
+    new Marsaglia((now / 60000) & 0xFFFFFFFF, now & 0xFFFFFFFF)
+
+  nextInt: ->
     z = (36969 * (z & 65535) + (z >>> 16)) & 0xFFFFFFFF
     w = (18000 * (w & 65535) + (w >>> 16)) & 0xFFFFFFFF
     (((z & 0xFFFF) << 16) | (w & 0xFFFF)) & 0xFFFFFFFF
 
-  @nextDouble = ->
-    i = nextInt() / 4294967296
+  nextDouble: ->
+    i = @nextInt() / 4294967296
     (if i < 0 then 1 + i else i)
 
-  @nextInt = nextInt
-
-Marsaglia.createRandomized = ->
-  now = new Date()
-  new Marsaglia((now / 60000) & 0xFFFFFFFF, now & 0xFFFFFFFF)
 
 
 ###
@@ -535,44 +538,55 @@ Random = (seed) ->
 
 
 # Noise functions and helpers
-PerlinNoise = (seed) ->
+# http://www.noisemachine.com/talk1/17b.html
+# http://mrl.nyu.edu/~perlin/noise/
+# generate permutation
+
+class PerlinNoise
+
+  seed:0
+  perm: null
+
+  constructor:(@seed) ->
+    rnd = (if @seed isnt undefined then new Marsaglia(@seed) else Marsaglia.createRandomized())
+    i = undefined
+    j = undefined
+    @perm = new Uint8Array(512)
+    i = 0
+    while i < 256
+      @perm[i] = i
+      ++i
+    i = 0
+    while i < 256
+      t = @perm[j = rnd.nextInt() & 0xFF]
+      @perm[j] = @perm[i]
+      @perm[i] = t
+      ++i
+    i = 0
+    while i < 256
+      @perm[i + 256] = @perm[i]
+      ++i
+
   
-  # http://www.noisemachine.com/talk1/17b.html
-  # http://mrl.nyu.edu/~perlin/noise/
-  # generate permutation
-  
-  # copy to avoid taking mod in perm[0];
-  grad3d = (i, x, y, z) ->
+  # copy to avoid taking mod in @perm[0];
+  grad3d: (i, x, y, z) ->
     h = i & 15 # convert into 12 gradient directions
     u = (if h < 8 then x else y)
     v = (if h < 4 then y else (if h is 12 or h is 14 then x else z))
     ((if (h & 1) is 0 then u else -u)) + ((if (h & 2) is 0 then v else -v))
-  grad2d = (i, x, y) ->
+  grad2d: (i, x, y) ->
     v = (if (i & 1) is 0 then x else y)
     (if (i & 2) is 0 then -v else v)
-  grad1d = (i, x) ->
+  grad1d: (i, x) ->
     (if (i & 1) is 0 then -x else x)
-  lerp = (t, a, b) ->
+
+  # there is a lerp defined already, with same
+  # behaviour, but I guess it makes sense to have
+  # one here to make things self-contained.
+  lerp: (t, a, b) ->
     a + t * (b - a)
-  rnd = (if seed isnt undefined then new Marsaglia(seed) else Marsaglia.createRandomized())
-  i = undefined
-  j = undefined
-  perm = new Uint8Array(512)
-  i = 0
-  while i < 256
-    perm[i] = i
-    ++i
-  i = 0
-  while i < 256
-    t = perm[j = rnd.nextInt() & 0xFF]
-    perm[j] = perm[i]
-    perm[i] = t
-    ++i
-  i = 0
-  while i < 256
-    perm[i + 256] = perm[i]
-    ++i
-  @noise3d = (x, y, z) ->
+
+  noise3d: (x, y, z) ->
     X = Math.floor(x) & 255
     Y = Math.floor(y) & 255
     Z = Math.floor(z) & 255
@@ -582,30 +596,30 @@ PerlinNoise = (seed) ->
     fx = (3 - 2 * x) * x * x
     fy = (3 - 2 * y) * y * y
     fz = (3 - 2 * z) * z * z
-    p0 = perm[X] + Y
-    p00 = perm[p0] + Z
-    p01 = perm[p0 + 1] + Z
-    p1 = perm[X + 1] + Y
-    p10 = perm[p1] + Z
-    p11 = perm[p1 + 1] + Z
-    lerp fz, lerp(fy, lerp(fx, grad3d(perm[p00], x, y, z), grad3d(perm[p10], x - 1, y, z)), lerp(fx, grad3d(perm[p01], x, y - 1, z), grad3d(perm[p11], x - 1, y - 1, z))), lerp(fy, lerp(fx, grad3d(perm[p00 + 1], x, y, z - 1), grad3d(perm[p10 + 1], x - 1, y, z - 1)), lerp(fx, grad3d(perm[p01 + 1], x, y - 1, z - 1), grad3d(perm[p11 + 1], x - 1, y - 1, z - 1)))
+    p0 = @perm[X] + Y
+    p00 = @perm[p0] + Z
+    p01 = @perm[p0 + 1] + Z
+    p1 = @perm[X + 1] + Y
+    p10 = @perm[p1] + Z
+    p11 = @perm[p1 + 1] + Z
+    @lerp fz, @lerp(fy, @lerp(fx, @grad3d(@perm[p00], x, y, z), @grad3d(@perm[p10], x - 1, y, z)), @lerp(fx, @grad3d(@perm[p01], x, y - 1, z), @grad3d(@perm[p11], x - 1, y - 1, z))), @lerp(fy, @lerp(fx, @grad3d(@perm[p00 + 1], x, y, z - 1), @grad3d(@perm[p10 + 1], x - 1, y, z - 1)), @lerp(fx, @grad3d(@perm[p01 + 1], x, y - 1, z - 1), @grad3d(@perm[p11 + 1], x - 1, y - 1, z - 1)))
 
-  @noise2d = (x, y) ->
+  noise2d: (x, y) ->
     X = Math.floor(x) & 255
     Y = Math.floor(y) & 255
     x -= Math.floor(x)
     y -= Math.floor(y)
     fx = (3 - 2 * x) * x * x
     fy = (3 - 2 * y) * y * y
-    p0 = perm[X] + Y
-    p1 = perm[X + 1] + Y
-    lerp fy, lerp(fx, grad2d(perm[p0], x, y), grad2d(perm[p1], x - 1, y)), lerp(fx, grad2d(perm[p0 + 1], x, y - 1), grad2d(perm[p1 + 1], x - 1, y - 1))
+    p0 = @perm[X] + Y
+    p1 = @perm[X + 1] + Y
+    @lerp fy, @lerp(fx, @grad2d(@perm[p0], x, y), @grad2d(@perm[p1], x - 1, y)), @lerp(fx, @grad2d(@perm[p0 + 1], x, y - 1), @grad2d(@perm[p1 + 1], x - 1, y - 1))
 
-  @noise1d = (x) ->
+  noise1d: (x) ->
     X = Math.floor(x) & 255
     x -= Math.floor(x)
     fx = (3 - 2 * x) * x * x
-    lerp fx, grad1d(perm[X], x), grad1d(perm[X + 1], x - 1)
+    @lerp fx, @grad1d(@perm[X], x), @grad1d(@perm[X + 1], x - 1)
 
 
 # processing defaults
