@@ -148,8 +148,7 @@ module.exports = function (grunt) {
         'gh-pages': {
             'gh-pages': {
                 options: {
-                    base: 'dist',
-                    push: false
+                    base: 'dist'
                 },
                 src: '**/*'
             }
@@ -186,6 +185,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('release', [
+        'clean',
         'build',
         'docs',
         'gh-pages'
