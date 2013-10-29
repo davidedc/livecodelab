@@ -7,14 +7,16 @@
 define () ->
 
   class TimeKeeper
-    
+
     time: undefined
     timeAtStart: undefined
     milliseconds: undefined
-    
+    wave: undefined
+
     constructor: ->
       window.time = 0
-    
+      window.wave = (a) => @wave(a)
+
     updateTime: ->
       d = new Date()
       @time = d.getTime() - @timeAtStart
@@ -29,6 +31,10 @@ define () ->
 
     getTime: ->
       @time
+
+    # Wave: simple harmonic motion where a is period in milliseconds
+    wave: (a) ->
+      sin((@time/a) * Math.PI)
 
   TimeKeeper
 
