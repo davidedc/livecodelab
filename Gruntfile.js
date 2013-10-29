@@ -129,6 +129,15 @@ module.exports = function (grunt) {
                 }
             }
         },
+        connect: {
+            server: {
+                options: {
+                    port: 8000,
+                    base: 'dist',
+                    keepalive: true
+                }
+            }
+        },
         requirejs: {
             compile: {
                 options: {
@@ -170,5 +179,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-docco');
+    grunt.loadNpmTasks('grunt-contrib-connect');
 
 };
