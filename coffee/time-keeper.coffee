@@ -5,19 +5,25 @@
 ###
 
 class TimeKeeper
-  
+
   time: undefined
   timeAtStart: undefined
   milliseconds: undefined
-  
+  shm: undefined
+
   constructor: ->
     window.time = 0
-  
+    window.shm = (a) => @shm(a)
+
   updateTime: ->
     d = new Date()
     @time = d.getTime() - @timeAtStart
     window.time = d.getTime() - @timeAtStart
     @milliseconds = d.getMilliseconds()
+
+  # Simple harmonic motion where a is period in milliseconds
+  shm: (a) ->
+    sin((@time/a) * Math.PI)
 
   resetTime: ->
     d = new Date()
@@ -27,3 +33,4 @@ class TimeKeeper
 
   getTime: ->
     @time
+

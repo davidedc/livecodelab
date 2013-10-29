@@ -13,8 +13,14 @@ TimeKeeper = (function() {
 
   TimeKeeper.prototype.milliseconds = void 0;
 
+  TimeKeeper.prototype.shm = void 0;
+
   function TimeKeeper() {
+    var _this = this;
     window.time = 0;
+    window.shm = function(a) {
+      return _this.shm(a);
+    };
   }
 
   TimeKeeper.prototype.updateTime = function() {
@@ -23,6 +29,10 @@ TimeKeeper = (function() {
     this.time = d.getTime() - this.timeAtStart;
     window.time = d.getTime() - this.timeAtStart;
     return this.milliseconds = d.getMilliseconds();
+  };
+
+  TimeKeeper.prototype.shm = function(a) {
+    return sin((this.time / a) * Math.PI);
   };
 
   TimeKeeper.prototype.resetTime = function() {
