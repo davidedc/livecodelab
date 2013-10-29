@@ -74,7 +74,7 @@ module.exports = function (grunt) {
         watch: {
             scripts: {
                 files: ['coffee/**/*.coffee'],
-                tasks: ['compile']
+                tasks: ['coffee:app']
             }
         },
         coffeelint: {
