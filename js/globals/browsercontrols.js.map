@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "browsercontrols.js",
+  "sourceRoot": "../../coffee/globals/",
+  "sources": [
+    "browsercontrols.coffee"
+  ],
+  "names": [],
+  "mappings": "AAWA,CAAO,EAAO,CAAd,EAAM,GAAQ;;AAEd,CAFA,EAEiB,GAAX,CAAN,EAAiB;;AAEjB,CAJA,EAIe,EAAf,CAAM,GAAS"
+}
