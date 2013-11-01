@@ -390,11 +390,13 @@ define () ->
       #   black background
       code = @adjustPostfixNotations(code)
       
-      # little trick. This is mangled up in the translation from coffeescript
-      # (1).times ->
+      # little trick. This is mangled up in the translation to javascript
+      # from the coffeescript translator:
+      #   (1).times ->
       # But this isn't:
-      # (1+0).times ->
+      #   (1+0).times ->
       # So here is the little replace.
+      # ( see http://coffeescript.org/#try:%23%20incorrect%0A1.times%20-%3E%0A%20%20test%0A%0A%23%20incorrect%0A(1).times%20-%3E%0A%20%20test%0A%0A%23%20correct%0A(1%2B0).times%20-%3E%0A%20%20test%0A%0A%23%20correct%0An.times%20-%3E%0A%20%20test%0A )
       # TODO:
       # you should be a little smarter about the substitution of the draw method
       # You can tell a method declaration because the line below is indented
