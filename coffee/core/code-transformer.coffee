@@ -470,6 +470,7 @@ define () ->
       code = code.replace(/([^a-zA-Z0-9])(rotate)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(move)(\s)+/g, "$1;$2$3")
 
+      code = code.replace(/([^a-zA-Z0-9])(box)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(rect)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(line)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(ball)(\s)+/g, "$1;$2$3")
