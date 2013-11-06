@@ -405,6 +405,7 @@ define () ->
       
       # code =  code.replace(
       #   /^([a-z]+[a-zA-Z0-9]+)\s*$/gm, "$1 = ->" );
+
       # some replacements add a semicolon for the
       # following reason: coffeescript allows you to split arguments
       # over multiple lines.
@@ -468,34 +469,41 @@ define () ->
       code = code.replace(/([^a-zA-Z0-9])(scale)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(rotate)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(move)(\s)+/g, "$1;$2$3")
+
       code = code.replace(/([^a-zA-Z0-9])(rect)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(line)(\s)+/g, "$1;$2$3")
+      code = code.replace(/([^a-zA-Z0-9])(ball)(\s)+/g, "$1;$2$3")
+      code = code.replace(/([^a-zA-Z0-9])(peg)(\s)+/g, "$1;$2$3")
+
       code = code.replace(/([^a-zA-Z0-9])(bpm)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(play)(\s)+/g, "$1;$2$3")
+
       code = code.replace(/([^a-zA-Z0-9])(pushMatrix)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(popMatrix)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(resetMatrix)(\s)+/g, "$1;$2$3")
+
       code = code.replace(/([^a-zA-Z0-9])(fill)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(noFill)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(stroke)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(noStroke)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(strokeSize)(\s)+/g, "$1;$2$3")
+      code = code.replace(/([^a-zA-Z0-9])(ballDetail)(\s)+/g, "$1;$2$3")
+
       code = code.replace(/([^a-zA-Z0-9])(animationStyle)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(simpleGradient)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(background)(\s)+/g, "$1;$2$3")
+
       code = code.replace(/([^a-zA-Z0-9])(colorMode)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(color)(\s)+/g, "$1;$2$3")
       
       #code =  code.replace(/([^a-zA-Z0-9])(ambient)(\s)+/g, "$1;$2$3" );
       #code =  code.replace(/([^a-zA-Z0-9])(reflect)(\s)+/g, "$1;$2$3" );
       #code =  code.replace(/([^a-zA-Z0-9])(refract)(\s)+/g, "$1;$2$3" );
+
       code = code.replace(/([^a-zA-Z0-9])(lights)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(noLights)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(ambientLight)(\s)+/g, "$1;$2$3")
       code = code.replace(/([^a-zA-Z0-9])(pointLight)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(ball)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(ballDetail)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(peg)(\s)+/g, "$1;$2$3")
       
       # Calculation
       code = code.replace(/([^a-zA-Z0-9])(abs)(\s)+/g, "$1;$2$3")
@@ -547,6 +555,7 @@ define () ->
       
       # the semicolon mangles the first line of else statements
       code = code.replace(/(\s);(else.*\s*);/g, "$1$2")
+
       try
         compiledOutput = @CoffeeCompiler.compile(code,
           bare: "on"
