@@ -707,7 +707,7 @@ define [
               """.replace(/\u25B6/g, "\t")
     
       @programs.tutorials.doonceTutorial =
-        submenu: "Controlling the flow"
+        submenu: "Controlling flow"
         title: "do once"
         code: """
               // delete either check mark below
@@ -728,7 +728,7 @@ define [
               """.replace(/\u25B6/g, "\t")
     
       @programs.tutorials.conditionalsTutorial =
-        submenu: "Controlling the flow"
+        submenu: "Controlling flow"
         title: "conditionals"
         code: """
               // you can draw different things
