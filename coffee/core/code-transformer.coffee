@@ -13,84 +13,79 @@ define () ->
 
   class CodeTransformer
     currentCodeString: null
-    
+    listOfPossibleFunctions: [
+      "function"
+      "alert"
+      # Geometry
+      "rect"
+      "line"
+      "box"
+      "ball"
+      "ballDetail"
+      "peg"
+      # Matrix manipulation
+      "rotate"
+      "move"
+      "scale"
+      "pushMatrix"
+      "popMatrix"
+      "resetMatrix"
+      # Sound
+      "bpm"
+      "play"
+      # Color and drawing styles
+      "fill"
+      "noFill"
+      "stroke"
+      "noStroke"
+      "strokeSize"
+      "animationStyle"
+      "background"
+      "simpleGradient"
+      "colorMode"
+      "color"
+      # Lighting
+      # "ambient""reflect" "refract"
+      "lights"
+      "noLights"
+      "ambientLight"
+      "pointLight"
+      # Calculations
+      "abs"
+      "ceil"
+      "constrain"
+      "dist"
+      "exp"
+      "floor"
+      "lerp"
+      "log"
+      "mag"
+      "map"
+      "max"
+      "min"
+      "norm"
+      "pow"
+      "round"
+      "sq"
+      "sqrt"
+      # Trigonometry
+      "acos"
+      "asin"
+      "atan"
+      "atan2"
+      "cos"
+      "degrees"
+      "radians"
+      "sin"
+      "tan"
+      # Random
+      "random"
+      "randomSeed"
+      "noise"
+      "noiseDetail"
+      "noiseSeed"
+    ]    
     constructor: (@eventRouter, @CoffeeCompiler, @liveCodeLabCoreInstance) ->
-      # This list is not used anywhere for the time being.
-      listOfPossibleFunctions = [
-        "function"
-        "alert"
-        # Geometry
-        "rect"
-        "line"
-        "box"
-        "ball"
-        "ballDetail"
-        "peg"
-        # Matrix manipulation
-        "rotate"
-        "move"
-        "scale"
-        "pushMatrix"
-        "popMatrix"
-        "resetMatrix"
-        # Sound
-        "bpm"
-        "play"
-        # Color and drawing styles
-        "fill"
-        "noFill"
-        "stroke"
-        "noStroke"
-        "strokeSize"
-        "animationStyle"
-        "background"
-        "simpleGradient"
-        "colorMode"
-        "color"
-        # Lighting
-        # "ambient""reflect" "refract"
-        "lights"
-        "noLights"
-        "ambientLight"
-        "pointLight"
-        # Calculations
-        "abs"
-        "ceil"
-        "constrain"
-        "dist"
-        "exp"
-        "floor"
-        "lerp"
-        "log"
-        "mag"
-        "map"
-        "max"
-        "min"
-        "norm"
-        "pow"
-        "round"
-        "sq"
-        "sqrt"
-        # Trigonometry
-        "acos"
-        "asin"
-        "atan"
-        "atan2"
-        "cos"
-        "degrees"
-        "radians"
-        "sin"
-        "tan"
-        # Random
-        "random"
-        "randomSeed"
-        "noise"
-        "noiseDetail"
-        "noiseSeed"
-        # do once
-        "addDoOnce"
-      ]
-
 
     ###
     ## Stops ticked doOnce blocks from running
@@ -174,7 +169,7 @@ define () ->
                 /^(\s*)doOnce[ ]*\->[ ]*$/g, "$1(1+0).times ->")
             elaboratedSourceByLine[iteratingOverSource + 1] =
               elaboratedSourceByLine[iteratingOverSource + 1].replace(
-                /^(\s*)(.+)$/g, "$1;addDoOnce(" + iteratingOverSource + "); $2")
+                /^(\s*)(.+)$/g, "$1addDoOnce(" + iteratingOverSource + "); $2")
         code = elaboratedSourceByLine.join("\n")
       
       #alert('soon after replacing doOnces'+code);
@@ -406,8 +401,7 @@ define () ->
       # code =  code.replace(
       #   /^([a-z]+[a-zA-Z0-9]+)\s*$/gm, "$1 = ->" );
 
-      # some replacements add a semicolon for the
-      # following reason: coffeescript allows you to split arguments
+      # Note that coffeescript allows you to split arguments
       # over multiple lines.
       # So if you have:
       #   rotate 0,0,1
@@ -421,8 +415,7 @@ define () ->
       #   rotate 0,0,1
       #   box
       # coffeescript takes the rotate as the second argument of scale
-      # causing mayhem.
-      # Instead, all is good if rotate is prepended with a semicolon.
+      # This doesn't seem to be a problem, but worth noting.
 
 
       # Each doBlock, when run, pushes its own line number to a particular
@@ -431,19 +424,43 @@ define () ->
       # (which prevents a second run to happen, as the tickmarks expand into
       # line comments).
       code = @addTracingInstructionsToDoOnceBlocks(code)
+
+      listOfFunctions = @listOfPossibleFunctions.join "|"
+
       
-      # adding () to single tokens left on their own
-      code = code.replace(/^(\s*)([a-z]+[a-zA-Z0-9]*)[ ]*$/gm, "$1;$2()")
+      # adding () to single tokens on their own at the start of a line
+      # ball
+      rx = RegExp("^(\\s*)("+listOfFunctions+")[ ]*$",'gm');
+      code = code.replace(rx, "$1$2();")
+
+      # adding () to single tokens at the start of the line
+      # that might be followed by more instructions
+      # ball;
+      # ball; somethingelse
+      rx = RegExp("^(\\s*)("+listOfFunctions+")[ ]*;",'gm');
+      code = code.replace(rx, "$1$2();")
+
+      # adding () to any functions not at the beginning
+      # of a line and followed by a ;
+      # something;ball
+      # something;ball;
+      # something;ball;ball
+      # something;ball;ball;
+      # ✓doOnce -> ball; background red
+      rx = RegExp("([^a-zA-Z0-9])("+listOfFunctions+")[ ;]*;",'g');
+      code = code.replace(rx, "$1$2();")
+
+      #box 0.5,2
+      #box; rotate; box
+      #if random() > 0.5 then box 0.2,3; ball; background red
       
-      # this takes care of when a token that it's supposed to be
-      # a function is inlined with something else with a semicolon:
+      # tokens at the end of the line without final semicolon
       # doOnce frame = 0; box
-      code = code.replace(/;\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2")
-      
-      # this takes care of when a token that it's supposed to be
-      # a function is inlined like with times like so:
+      # if random() > 0.5 then box
       # 2 times -> box
-      code = code.replace(/\->\s*([a-z]+[a-zA-Z0-9]*)[ ]*([;\n]+)/g, ";$1()$2")
+      rx = RegExp("([^a-zA-Z0-9])("+listOfFunctions+")[ ]*$",'gm');
+      code = code.replace(rx, "$1$2()")
+      
       
       # draw() could just be called by mistake and it's likely
       # to be disastrous. User doesn't even have visibility of such method,
@@ -455,107 +472,11 @@ define () ->
         @eventRouter.trigger "compile-time-error-thrown", "You can't call draw()"
         return
       
-      # we don't want if and for to undergo the same tratment as, say, box
-      # so put those back to normal.
-      code = code.replace(/;(if)\(\)/g, ";$1")
-      code = code.replace(/;(else)\(\)/g, ";$1")
-      code = code.replace(/;(for)\(\)/g, ";$1")
+      # allows // for comments
+      # the hash is more difficult to write
       code = code.replace(/\/\//g, "#")
+      console.log code
       
-      # Why do we have to match a non-digit non-letter?
-      # because we have to make sure that the keyword is "on its own"
-      # otherwise we interfere the replacements of "background" and "round"
-      # Checking whether the keyword is "on its own" avoid those interferences.
-      code = code.replace(/([^a-zA-Z0-9])(scale)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(rotate)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(move)(\s)+/g, "$1;$2$3")
-
-      code = code.replace(/([^a-zA-Z0-9])(box)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(rect)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(line)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(ball)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(peg)(\s)+/g, "$1;$2$3")
-
-      code = code.replace(/([^a-zA-Z0-9])(bpm)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(play)(\s)+/g, "$1;$2$3")
-
-      code = code.replace(/([^a-zA-Z0-9])(pushMatrix)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(popMatrix)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(resetMatrix)(\s)+/g, "$1;$2$3")
-
-      code = code.replace(/([^a-zA-Z0-9])(fill)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(noFill)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(stroke)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(noStroke)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(strokeSize)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(ballDetail)(\s)+/g, "$1;$2$3")
-
-      code = code.replace(/([^a-zA-Z0-9])(animationStyle)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(simpleGradient)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(background)(\s)+/g, "$1;$2$3")
-
-      code = code.replace(/([^a-zA-Z0-9])(colorMode)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(color)(\s)+/g, "$1;$2$3")
-      
-      #code =  code.replace(/([^a-zA-Z0-9])(ambient)(\s)+/g, "$1;$2$3" );
-      #code =  code.replace(/([^a-zA-Z0-9])(reflect)(\s)+/g, "$1;$2$3" );
-      #code =  code.replace(/([^a-zA-Z0-9])(refract)(\s)+/g, "$1;$2$3" );
-
-      code = code.replace(/([^a-zA-Z0-9])(lights)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(noLights)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(ambientLight)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(pointLight)(\s)+/g, "$1;$2$3")
-      
-      # Calculation
-      code = code.replace(/([^a-zA-Z0-9])(abs)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(ceil)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(constrain)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(dist)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(exp)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(floor)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(lerp)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(log)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(mag)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(map)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(max)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(min)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(norm)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(pow)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(round)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(sq)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(sqrt)(\s)+/g, "$1;$2$3")
-      
-      # Trigonometry
-      code = code.replace(/([^a-zA-Z0-9])(acos)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(asin)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(atan)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(atan2)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(cos)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(degrees)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(radians)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(sin)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(tan)(\s)+/g, "$1;$2$3")
-      
-      # Random
-      code = code.replace(/([^a-zA-Z0-9])(random)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(randomSeed)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(noise)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(noiseDetail)(\s)+/g, "$1;$2$3")
-      code = code.replace(/([^a-zA-Z0-9])(noiseSeed)(\s)+/g, "$1;$2$3")
-      
-      # you'd think that semicolons are OK anywhere before any command
-      # but coffee-script doesn't like some configurations - fixing those:
-      # the semicolon mangles the first line of the function definitions:
-      code = code.replace(/->(\s+);/g, "->$1")
-      
-      # the semicolon mangles the first line of if statements
-      code = code.replace(/(\sif\s*.*\s*);/g, "$1")
-      
-      # the semicolon mangles the first line of else if statements
-      code = code.replace(/(\s);(else\s*if\s*.*\s*);/g, "$1$2")
-      
-      # the semicolon mangles the first line of else statements
-      code = code.replace(/(\s);(else.*\s*);/g, "$1$2")
 
       try
         compiledOutput = @CoffeeCompiler.compile(code,
