@@ -458,6 +458,7 @@ define () ->
       # doOnce frame = 0; box
       # if random() > 0.5 then box
       # 2 times -> box
+      # 2 times -> rotate; box
       rx = RegExp("([^a-zA-Z0-9])("+listOfFunctions+")[ ]*$",'gm');
       code = code.replace(rx, "$1$2()")
       
@@ -475,7 +476,7 @@ define () ->
       # allows // for comments
       # the hash is more difficult to write
       code = code.replace(/\/\//g, "#")
-      console.log code
+      #console.log code
       
 
       try
