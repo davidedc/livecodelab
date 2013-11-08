@@ -454,13 +454,16 @@ define () ->
       #box 0.5,2
       #box; rotate; box
       #if random() > 0.5 then box 0.2,3; ball; background red
+      #if ball then ball if true then 0 else 1
+      #ball if true then 0 else 1
       
-      # tokens at the end of the line without final semicolon
+      # tokens at the end of the line (without final semicolon,
+      # if there is a final semicolon it's handled by previous case)
       # doOnce frame = 0; box
       # if random() > 0.5 then box
       # 2 times -> box
       # 2 times -> rotate; box
-      rx = RegExp("([^a-zA-Z0-9])("+listOfFunctions+")[ ]*$",'gm');
+      rx = RegExp("([^a-zA-Z0-9])("+listOfLCLKeywords+")[ \\t]*$",'gm');
       code = code.replace(rx, "$1$2()")
       
       
@@ -540,7 +543,7 @@ define () ->
       for iteratingOverSource in doOnceOccurrencesLineNumbers
         elaboratedSourceByLine[iteratingOverSource] =
           elaboratedSourceByLine[iteratingOverSource].replace(
-            /^(\s*)doOnce([ ]*\->[ ]*.*)$/gm, "$1✓doOnce$2")
+            /^(\s*)doOnce([ \t]*\->[ \t]*.*)$/gm, "$1✓doOnce$2")
       elaboratedSource = elaboratedSourceByLine.join("\n")
       
       # puts the new code (where the doOnce that have been executed have
