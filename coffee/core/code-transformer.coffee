@@ -13,6 +13,17 @@ define () ->
 
   class CodeTransformer
     currentCodeString: null
+
+    # We separate Statements from Expressions here.
+    # Expressions return a value that is useful
+    # for being further used.
+    # Statements don't. Note that actually in
+    # coffeescript everything returns a value,
+    # only in our case we really don't know what to
+    # do with return values of primitives.
+    # The explanation of why we need this separation
+    # is in the "implicit function" transformations
+    # code below.
     listOfStatements: [
       # Geometry
       "rect"
@@ -48,7 +59,8 @@ define () ->
       "noLights"
       "ambientLight"
       "pointLight"
-    ]    
+    ]
+
     listOfExpressions: [
       # Calculations
       "abs"
@@ -85,7 +97,8 @@ define () ->
       "noise"
       "noiseDetail"
       "noiseSeed"
-    ]    
+    ]
+    
     constructor: (@eventRouter, @CoffeeCompiler, @liveCodeLabCoreInstance) ->
 
     ###
