@@ -640,3 +640,54 @@ define () ->
 
   CodeTransformer
 
+### Tests for "times"
+
+6 times: rotate box
+
+6 times: rotate; box
+
+6 times:
+  rotate box
+
+// should give error
+peg
+times
+  box 2
+
+// should give error
+times
+  box
+
+1+1 times: rotate; box
+
+// should give error
+peg; times rotate box 2* wave
+
+peg; 2 times rotate box 2* wave
+
+n = 2; n times: rotate;box
+
+box; box ;  2 times: rotate; peg 1.3
+
+if random > 0.5 then 3 times: rotate; box else 3 times rotate; 2 times: peg; true
+
+if true then 3 times rotate; box
+
+// should give error
+if true then  times do that
+
+(9+0).times -> rotate; box
+
+if random() > 0.5 then rotate; box else 3 times rotate; peg; true
+
+// should give error
+if random() > 0.5 then rotate; box else times rotate; peg; true
+
+5 times
+  rotate 0,1,time/5000
+  move 0.2,0,0
+  3 times
+    rotate 1
+    box
+###
+
