@@ -34,6 +34,8 @@ define () ->
 
     # Wave: simple harmonic motion where a is period in milliseconds
     wave: (a) ->
+      if typeof a isnt "number"
+        a = 500
       sin((@time/a) * Math.PI)
 
   TimeKeeper
