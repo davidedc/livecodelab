@@ -415,7 +415,43 @@ define () ->
       # you should be a little smarter about the substitution of the draw method
       # You can tell a method declaration because the line below is indented
       # so you should check that.
-      code = code.replace(/(\d+)\s+times[ ]*\->/g, ";( $1 + 0).times ->")
+
+      # note that [a-zA-Z1-9] prevents the times being on his own
+      # without anything before it
+
+      # else has to be matched before the then, and then the semicolon.
+      # this is in order of specificity: the else dangles last so we match
+      # that first. Then the "then"s. The semicolons separations are last.
+      # example:
+      #  if random > 0.5 then 3 times: rotate; box else 3 times rotate; 2 times: peg; wave
+      # if you match the "then" first, then "; box else 3 times rotate; 2 times: peg; wave"
+      # is matched and becomes 
+      #  if random > 0.5 then 3 times: rotate; (box else 3+0).times ->  rotate; 2 times: peg; wave
+      # which is not correct
+      code = code.replace(/(else)\s+([a-zA-Z1-9])(.*?)[^\.]times[:]*(.*)/g, "$1 ($2$3+0).times -> $4")
+      code = code.replace(/(then)\s+([a-zA-Z1-9])(.*?)[^\.]times[:]*(.*)/g, "$1 ($2$3+0).times -> $4")
+      # the [^;]*? is to make sure that we don't take ; within the times argument
+      # example:
+      #  box; box ;  2 times: peg
+      # if we don't exclude the semicolon form the times argument then we transform into
+      #  box; (box ;  2+0).times ->  peg
+      # which is not correct
+      code = code.replace(/(;)\s*([a-zA-Z1-9])([^;]*?)[^\.]times[:]*(.*)/g, "$1 ($2$3+0).times -> $4")
+
+      # last (catch all other cases where it captures everything
+      # since the start of the line,
+      # which is why you need to handle the other cases before):
+
+      # the ^\r\n is to avoid matching a return, which would cause
+      #   peg
+      #   times
+      #     box
+      # to match ("p" as group 1, "eg[newline]" as group 2 and empty as group 3)
+      # the ^; is to avoid this matching:
+      #   peg; times rotate box 2* wave (group1: p group2: eg; group3: rot...wave)
+      code = code.replace(/^(\s*)([a-zA-Z1-9])(.*?)[^;\r\n\.]times[:]*(.*)$/gm, "$1($2$3+0).times -> $4")
+
+
       
       # code =  code.replace(
       #   /^([a-z]+[a-zA-Z0-9]+)\s*$/gm, "$1 = ->" );
