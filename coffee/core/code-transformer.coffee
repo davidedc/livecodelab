@@ -78,6 +78,7 @@ define () ->
       "radians"
       "sin"
       "tan"
+      "wave"
       # Random
       "random"
       "randomSeed"
