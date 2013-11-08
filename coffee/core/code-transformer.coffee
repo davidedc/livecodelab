@@ -385,6 +385,24 @@ define () ->
       #   yellow stroke
       #   black background
       code = @adjustPostfixNotations(code)
+
+      # if what we transform makes any sense at all, then
+      # coffeescript will translate it for us and run it, which
+      # in some cases we don't want.
+      # We want to simply rule out some common cases here
+      # so we don't need to make the regexpes too complicated
+      # for example we want to avoid
+      #   peg; times rotate box 2* wave
+      # to become
+      #   (peg()+0).times ->  rotate box 2* wave()
+      # and run simply because we forgot a number
+      if /^\s*times/gm.test(code) or
+        /;\s*times/g.test(code) or
+        /else\s+times/g.test(code) or
+        /then\s+times/g.test(code)
+          programHasBasicError = true
+          @eventRouter.trigger "compile-time-error-thrown", "how many times?"
+          return
       
       # little trick. This is mangled up in the translation to javascript
       # from the coffeescript translator:
