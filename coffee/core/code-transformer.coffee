@@ -13,9 +13,7 @@ define () ->
 
   class CodeTransformer
     currentCodeString: null
-    listOfPossibleFunctions: [
-      "function"
-      "alert"
+    listOfStatements: [
       # Geometry
       "rect"
       "line"
@@ -50,6 +48,8 @@ define () ->
       "noLights"
       "ambientLight"
       "pointLight"
+    ]    
+    listOfExpressions: [
       # Calculations
       "abs"
       "ceil"
@@ -444,30 +444,49 @@ define () ->
       # line comments).
       code = @addTracingInstructionsToDoOnceBlocks(code)
 
-      listOfFunctions = @listOfPossibleFunctions.join "|"
+      listOfStatements = @listOfStatements.join "|"
+      listOfExpressions = @listOfExpressions.join "|"
+      listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
 
       
       # adding () to single tokens on their own at the start of a line
       # ball
-      rx = RegExp("^(\\s*)("+listOfFunctions+")[ ]*$",'gm');
+      rx = RegExp("^(\\s*)("+listOfLCLKeywords+")[ ]*$",'gm');
       code = code.replace(rx, "$1$2();")
 
       # adding () to single tokens at the start of the line
-      # that might be followed by more instructions
+      # followed by a semicolon (might be followed by more instructions)
       # ball;
       # ball; somethingelse
-      rx = RegExp("^(\\s*)("+listOfFunctions+")[ ]*;",'gm');
+      rx = RegExp("^(\\s*)("+listOfLCLKeywords+")[ ]*;",'gm');
       code = code.replace(rx, "$1$2();")
 
-      # adding () to any functions not at the beginning
-      # of a line and followed by a ;
-      # something;ball
-      # something;ball;
-      # something;ball;ball
-      # something;ball;ball;
-      # ✓doOnce -> ball; background red
-      rx = RegExp("([^a-zA-Z0-9])("+listOfFunctions+")[ ;]*;",'g');
-      code = code.replace(rx, "$1$2();")
+      # adding () to any functions not at the beginning of a line
+      # and followed by a anything that might end the command
+      # eg semicolon, closing parenthesis, math sign, etc.
+      #   something;ball
+      #   something;ball;
+      #   something;ball;ball
+      #   something;ball;ball;
+      #   ✓doOnce -> ball; background red
+      #   if ball then ball else something
+      #   box wave
+      #   box wave(wave)
+      # Why do we handle Statements differently from expressions?
+      # cause they have different delimiters
+      # I expect
+      #   wave -1
+      # to be transformed into
+      #   wave() -1
+      # but I don't want
+      #   box -1
+      # to turn into box() -1
+      delimitersForStatements = ":|;|\\,|\\?|\\)|//|\\#|\\selse|\\sthen"
+      delimitersForExpressions = delimitersForStatements + "|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
+      rx = RegExp("([^a-zA-Z0-9])("+listOfStatements+")[ \\t]*("+delimitersForStatements+")",'g');
+      code = code.replace(rx, "$1$2()$3")
+      rx = RegExp("([^a-zA-Z0-9])("+listOfExpressions+")[ \\t]*("+delimitersForExpressions+")",'g');
+      code = code.replace(rx, "$1$2()$3")
 
       #box 0.5,2
       #box; rotate; box
