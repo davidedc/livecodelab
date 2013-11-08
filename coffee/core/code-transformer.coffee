@@ -162,7 +162,7 @@ define () ->
               "$1;addDoOnce(" + iteratingOverSource + "); (1+0).times -> $2")
           
           # add the line number tracing instruction to multiline case
-          if elaboratedSourceByLine[iteratingOverSource].match(/^(\s*)doOnce[ ]*\->[ ]*$/g)
+          if /^(\s*)doOnce[ ]*\->[ ]*$/g.test(elaboratedSourceByLine[iteratingOverSource])
             
             #alert('doOnce multiline!');
             elaboratedSourceByLine[iteratingOverSource] =
@@ -472,7 +472,7 @@ define () ->
       # why should he/she call it?
       # TODO: call draw() something else that the user is not
       # likely to use by mistake and take away this check.
-      if code.match(/[\s\+\;]+draw\s*\(/) or false
+      if /[\s\+\;]+draw\s*\(/.test(code)
         programHasBasicError = true
         @eventRouter.trigger "compile-time-error-thrown", "You can't call draw()"
         return
