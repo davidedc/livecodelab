@@ -98,7 +98,7 @@ define () ->
       "noiseDetail"
       "noiseSeed"
     ]
-    
+
     constructor: (@eventRouter, @CoffeeCompiler, @liveCodeLabCoreInstance) ->
 
     ###
@@ -502,6 +502,7 @@ define () ->
       # ball
       rx = RegExp("^(\\s*)("+listOfLCLKeywords+")[ ]*$",'gm');
       code = code.replace(rx, "$1$2();")
+
 
       # adding () to single tokens at the start of the line
       # followed by a semicolon (might be followed by more instructions)
