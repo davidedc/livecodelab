@@ -449,7 +449,7 @@ define () ->
       # if we don't exclude the semicolon form the times argument then we transform into
       #  box; (box ;  2+0).times ->  peg
       # which is not correct
-      code = code.replace(/(;)\s*([a-zA-Z1-9])([^;]*?)[^\.]times[:]*(.*)/g, "$1 ($2$3+0).times -> $4")
+      code = code.replace(/^(.*?)(;)\s*([a-zA-Z1-9])([^;\r\n]*?)[^\.\r\n]times[:]*(.*)$/gm, "$1$2 ($3$4+0).times -> $5")
 
       # last (catch all other cases where it captures everything
       # since the start of the line,
@@ -702,5 +702,16 @@ if random() > 0.5 then rotate; box else times rotate; peg; true
   3 times
     rotate 1
     box
+
+// testing whether mangled accross multiple lines
+if random() > 0.5 then box
+2 times: box
+2 times: rotate; box
+
+// testing whether mangled accross multiple lines
+6 times: rotate; box
+6 times:
+  rotate box
+
 ###
 
