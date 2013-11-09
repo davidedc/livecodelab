@@ -713,5 +713,27 @@ if random() > 0.5 then box
 6 times:
   rotate box
 
+// tests for the implicit functions
+ab
+box
+2 times rotate box wave; wave
+box + box
+wave wave wave
+if wave then box wave else wave
+if wave then box + wave else wave
+wave
+wave + wave
+;wave
+;wave;
+if random() > 0.5 then box
+2 times: box
+2 times: rotate; box
+2 times rotate box wave
+rotate box 2,33
+box wave
+box wave 3
+2 times: rotate box wave
+if rotate wave then rotate wave else rotate wave
+
 ###
 
