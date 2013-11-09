@@ -736,5 +736,8 @@ box wave 3
 2 times: rotate box wave
 if rotate wave then rotate wave else rotate wave
 
+2 times: move; rotate wave; box
+
+
 ###
 
