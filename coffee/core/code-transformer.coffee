@@ -492,25 +492,11 @@ define () ->
       code = code.replace(/\/\//g, "#")
       return [code, error]
 
-    updateCode: (code) ->
-      @currentCodeString = code
-
+    transformCode: (code) ->
       # we'll keep any errors in here as we transform the code
       # as soon as there is any error, all next stages of
       # transformation do nothing
       error = undefined
-
-      # we do a couple of special resets when
-      # the code is the empty string.
-      if code is ""
-        @liveCodeLabCoreInstance.graphicsCommands.resetTheSpinThingy = true
-        programHasBasicError = false
-        @eventRouter.trigger "clear-error"
-        @liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
-        functionFromCompiledCode = new Function("")
-        @liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction null
-        @liveCodeLabCoreInstance.drawFunctionRunner.lastStableDrawFunction = null
-        return functionFromCompiledCode
 
       [code, error] = @removeTickedDoOnce(code, error)
       [code, error] = @stripCommentsAndCheckBasicSyntax(code, error)
@@ -554,6 +540,24 @@ define () ->
       [code, error] = @adjustImplicitCalls(code, error)
 
       [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
+
+    updateCode: (code) ->
+      @currentCodeString = code
+
+
+      # we do a couple of special resets when
+      # the code is the empty string.
+      if code is ""
+        @liveCodeLabCoreInstance.graphicsCommands.resetTheSpinThingy = true
+        programHasBasicError = false
+        @eventRouter.trigger "clear-error"
+        @liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
+        functionFromCompiledCode = new Function("")
+        @liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction null
+        @liveCodeLabCoreInstance.drawFunctionRunner.lastStableDrawFunction = null
+        return functionFromCompiledCode
+
+      [code, error] = @transformCode code
 
       # if 'error' is anything else then undefined then it
       # means that the process of translation has found
