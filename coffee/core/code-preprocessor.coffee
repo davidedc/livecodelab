@@ -99,8 +99,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
     constructor: ->
       @testCases = (new CodePreprocessorTests()).testCases
-      #require ['core/code-preprocessor-tests'], (CodePreprocessorTests) =>
-      #  @testCases = (new CodePreprocessorTests()).testCases
 
     ###
     ## Stops ticked doOnce blocks from running
