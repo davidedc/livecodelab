@@ -328,14 +328,12 @@ define () ->
     ## We need to switch this round before coffee script compilation
     ###
     adjustPostfixNotations: (code) ->
-      elaboratedSource = undefined
-      elaboratedSource = code.replace(/(\d+)[ ]+bpm(\s)/g, "bpm $1$2")
-      elaboratedSource = elaboratedSource.replace(/([a-zA-Z]+)[ ]+fill(\s)/g, "fill $1$2")
-      elaboratedSource = elaboratedSource.replace(
-        /([a-zA-Z]+)[ ]+stroke(\s)/g, "stroke $1$2")
-      elaboratedSource = elaboratedSource.replace(
-        /([a-zA-Z]+)[ ]+background(\s)/g, "background $1$2")
-      elaboratedSource
+      # red background
+      # red fill;box
+      code = code.replace(/(\d+)[ ]+bpm(\s|$|;)/g, "bpm $1$2")
+      code = code.replace(/([a-zA-Z]+)[ ]+fill(\s|$|;)/g, "fill $1$2")
+      code = code.replace(/([a-zA-Z]+)[ ]+stroke(\s|$|;)/g, "stroke $1$2")
+      code = code.replace(/([a-zA-Z]+)[ ]+background(\s|$|;)/g, "background $1$2")
 
     checkBasicErrorsWithTimes:(code) ->
       # if what we transform makes any sense *at all*, then
