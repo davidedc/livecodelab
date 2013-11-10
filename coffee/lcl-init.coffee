@@ -3,11 +3,6 @@
 ## cruise speed
 ###
 
-# liveCodeLabCore is a global because
-# we need to access it from the browser console for debugging
-# reasons
-liveCodeLabCore = null
-
 require [
   'Three.Stats'
   ,'core/colour-literals'

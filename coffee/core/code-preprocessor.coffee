@@ -99,6 +99,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
     constructor: ->
       @testCases = (new CodePreprocessorTests()).testCases
+      # make the preprocessor tests easily accessible from the console.
+      window.testPreprocessor = => @test()
 
     ###
     ## Stops ticked doOnce blocks from running
@@ -542,6 +544,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
     test: ->
         alert ' ' + @testCases[1].input
+
 
 
 ### Tests for "times"
