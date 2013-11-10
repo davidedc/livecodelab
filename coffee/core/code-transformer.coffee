@@ -195,21 +195,18 @@ define () ->
       return [code, error]
 
     doesProgramContainStringsOrComments: (code) ->
-      # make a copy of the string because we are going to
-      # slice it in the process.
-      copyOfcode = code
       characterBeingExamined = undefined
       nextCharacterBeingExamined = undefined
-      while copyOfcode.length
-        characterBeingExamined = copyOfcode.charAt(0)
-        nextCharacterBeingExamined = copyOfcode.charAt(1)
+      while code.length
+        characterBeingExamined = code.charAt(0)
+        nextCharacterBeingExamined = code.charAt(1)
         if characterBeingExamined is "'" or
             characterBeingExamined is "\"" or
             (characterBeingExamined is "/" and
               (nextCharacterBeingExamined is "*" or
               nextCharacterBeingExamined is "/"))
           return true
-        copyOfcode = copyOfcode.slice(1)
+        code = code.slice(1)
 
     stripCommentsAndCheckBasicSyntax: (code, error) ->
       # if there is an error, just propagate it
