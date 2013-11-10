@@ -404,11 +404,13 @@ define () ->
       # in some cases we don't want.
       # We want to simply rule out some common cases here
       # so we don't need to make the regexpes too complicated
-      # for example we want to avoid
+      # For example we want to avoid
       #   peg; times rotate box 2* wave
       # to become
       #   (peg()+0).times ->  rotate box 2* wave()
-      # and run simply because we forgot a number
+      # and run simply because we forgot a number in front
+      # of 'times'
+
       if /^\s*times/gm.test(code) or
         /;\s*times/g.test(code) or
         /else\s+times/g.test(code) or
