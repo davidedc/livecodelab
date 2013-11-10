@@ -468,7 +468,10 @@ define () ->
 
     updateCode: (code) ->
       @currentCodeString = code
-      if @currentCodeString is ""
+
+      # we do a couple of special resets when
+      # the code is the empty string.
+      if code is ""
         @liveCodeLabCoreInstance.graphicsCommands.resetTheSpinThingy = true
         programHasBasicError = false
         @eventRouter.trigger "clear-error"
