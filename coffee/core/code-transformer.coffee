@@ -337,6 +337,137 @@ define () ->
         /([a-zA-Z]+)[ ]+background(\s)/g, "background $1$2")
       elaboratedSource
 
+    checkBasicErrorsWithTimes:(code) ->
+      # if what we transform makes any sense *at all*, then
+      # coffeescript will translate it to js and run it, which
+      # in some cases we don't want.
+      # We want to simply rule out some common cases here
+      # so we don't need to make the regexpes too complicated
+      # For example we want to avoid
+      #   peg; times rotate box 2* wave
+      # to become
+      #   (peg()+0).times ->  rotate box 2* wave()
+      # and run simply because we forgot a number in front
+      # of 'times'
+
+      if /^\s*times/gm.test(code) or
+        /;\s*times/g.test(code) or
+        /else\s+times/g.test(code) or
+        /then\s+times/g.test(code)
+          programHasBasicError = true
+          @eventRouter.trigger "compile-time-error-thrown", "how many times?"
+          return
+
+    transformTimesSyntax: (code) ->
+      # Note: this is mangled up in the translation to javascript
+      # from the coffeescript translator:
+      #   (1).times ->
+      # But this isn't:
+      #   (1+0).times ->
+      # So here is the little replace.
+      # ( see http://coffeescript.org/#try:%23%20incorrect%0A1.times%20-%3E%0A%20%20test%0A%0A%23%20incorrect%0A(1).times%20-%3E%0A%20%20test%0A%0A%23%20correct%0A(1%2B0).times%20-%3E%0A%20%20test%0A%0A%23%20correct%0An.times%20-%3E%0A%20%20test%0A )
+
+      # note that [a-zA-Z1-9] prevents the times being on his own
+      # without anything before it
+
+      # else has to be matched before the then, and then the semicolon.
+      # this is in order of specificity: the else dangles last so we match
+      # that first. Then the "then"s. The semicolons separations are last.
+      # example:
+      #  if random > 0.5 then 3 times: rotate; box else 3 times rotate; 2 times: peg; wave
+      # if you match the "then" first, then "; box else 3 times rotate; 2 times: peg; wave"
+      # is matched and becomes 
+      #  if random > 0.5 then 3 times: rotate; (box else 3+0).times ->  rotate; 2 times: peg; wave
+      # which is not correct
+      code = code.replace(/(else)\s+([a-zA-Z1-9])(.*?)[^\.]times[:]*(.*)/g, "$1 ($2$3+0).times -> $4")
+      code = code.replace(/(then)\s+([a-zA-Z1-9])(.*?)[^\.]times[:]*(.*)/g, "$1 ($2$3+0).times -> $4")
+      # the [^;]*? is to make sure that we don't take ; within the times argument
+      # example:
+      #  box; box ;  2 times: peg
+      # if we don't exclude the semicolon form the times argument then we transform into
+      #  box; (box ;  2+0).times ->  peg
+      # which is not correct
+      code = code.replace(/^(.*?)(;)\s*([a-zA-Z1-9])([^;\r\n]*?)[^\.\r\n]times[:]*(.*)$/gm, "$1$2 ($3$4+0).times -> $5")
+
+      # last (catch all other cases where it captures everything
+      # since the start of the line,
+      # which is why you need to handle the other cases before):
+
+      # the ^\r\n is to avoid matching a return, which would cause
+      #   peg
+      #   times
+      #     box
+      # to match ("p" as group 1, "eg[newline]" as group 2 and empty as group 3)
+      # the ^; is to avoid this matching:
+      #   peg; times rotate box 2* wave (group1: p group2: eg; group3: rot...wave)
+      code = code.replace(/^(\s*)([a-zA-Z1-9])(.*?)[^;\r\n\.]times[:]*(.*)$/gm, "$1($2$3+0).times -> $4")
+    
+    adjustImplicitCalls: (code) ->
+      listOfStatements = @listOfStatements.join "|"
+      listOfExpressions = @listOfExpressions.join "|"
+      listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
+
+      
+      # adding () to single tokens on their own at the start of a line
+      # ball
+      rx = RegExp("^(\\s*)("+listOfLCLKeywords+")[ ]*$",'gm');
+      code = code.replace(rx, "$1$2();")
+
+
+      # adding () to single tokens at the start of the line
+      # followed by a semicolon (might be followed by more instructions)
+      # ball;
+      # ball; somethingelse
+      rx = RegExp("^(\\s*)("+listOfLCLKeywords+")[ ]*;",'gm');
+      code = code.replace(rx, "$1$2();")
+
+      # adding () to any functions not at the beginning of a line
+      # and followed by a anything that might end the command
+      # eg semicolon, closing parenthesis, math sign, etc.
+      #   something;ball
+      #   something;ball;
+      #   something;ball;ball
+      #   something;ball;ball;
+      #   ✓doOnce -> ball; background red
+      #   if ball then ball else something
+      #   box wave
+      #   box wave(wave)
+      # Why do we handle Statements differently from expressions?
+      # cause they have different delimiters
+      # I expect
+      #   wave -1
+      # to be transformed into
+      #   wave() -1
+      # but I don't want
+      #   box -1
+      # to turn into box() -1
+      delimitersForStatements = ":|;|\\,|\\?|\\)|//|\\#|\\selse|\\sthen"
+      delimitersForExpressions = delimitersForStatements + "|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
+      rx = RegExp("([^a-zA-Z0-9])("+listOfStatements+")[ \\t]*("+delimitersForStatements+")",'g');
+      code = code.replace(rx, "$1$2()$3")
+      rx = RegExp("([^a-zA-Z0-9])("+listOfExpressions+")[ \\t]*("+delimitersForExpressions+")",'g');
+      code = code.replace(rx, "$1$2()$3")
+
+      #box 0.5,2
+      #box; rotate; box
+      #if random() > 0.5 then box 0.2,3; ball; background red
+      #if ball then ball if true then 0 else 1
+      #ball if true then 0 else 1
+      
+      # tokens at the end of the line (without final semicolon,
+      # if there is a final semicolon it's handled by previous case)
+      # doOnce frame = 0; box
+      # if random() > 0.5 then box
+      # 2 times -> box
+      # 2 times -> rotate; box
+      rx = RegExp("([^a-zA-Z0-9])("+listOfLCLKeywords+")[ \\t]*$",'gm');
+      code = code.replace(rx, "$1$2()")
+
+    adjustDoubleSlashSyntaxForComments: (code) ->
+      # allows // for comments
+      # the hash is more difficult to write
+      code = code.replace(/\/\//g, "#")
+
     updateCode: (code) ->
       elaboratedSource = undefined
       errResults = undefined
@@ -399,77 +530,10 @@ define () ->
       #   black background
       code = @adjustPostfixNotations(code)
 
-      # if what we transform makes any sense at all, then
-      # coffeescript will translate it for us and run it, which
-      # in some cases we don't want.
-      # We want to simply rule out some common cases here
-      # so we don't need to make the regexpes too complicated
-      # For example we want to avoid
-      #   peg; times rotate box 2* wave
-      # to become
-      #   (peg()+0).times ->  rotate box 2* wave()
-      # and run simply because we forgot a number in front
-      # of 'times'
-
-      if /^\s*times/gm.test(code) or
-        /;\s*times/g.test(code) or
-        /else\s+times/g.test(code) or
-        /then\s+times/g.test(code)
-          programHasBasicError = true
-          @eventRouter.trigger "compile-time-error-thrown", "how many times?"
-          return
+      @checkBasicErrorsWithTimes(code)
       
-      # little trick. This is mangled up in the translation to javascript
-      # from the coffeescript translator:
-      #   (1).times ->
-      # But this isn't:
-      #   (1+0).times ->
-      # So here is the little replace.
-      # ( see http://coffeescript.org/#try:%23%20incorrect%0A1.times%20-%3E%0A%20%20test%0A%0A%23%20incorrect%0A(1).times%20-%3E%0A%20%20test%0A%0A%23%20correct%0A(1%2B0).times%20-%3E%0A%20%20test%0A%0A%23%20correct%0An.times%20-%3E%0A%20%20test%0A )
-      # TODO:
-      # you should be a little smarter about the substitution of the draw method
-      # You can tell a method declaration because the line below is indented
-      # so you should check that.
+      code = @transformTimesSyntax(code)
 
-      # note that [a-zA-Z1-9] prevents the times being on his own
-      # without anything before it
-
-      # else has to be matched before the then, and then the semicolon.
-      # this is in order of specificity: the else dangles last so we match
-      # that first. Then the "then"s. The semicolons separations are last.
-      # example:
-      #  if random > 0.5 then 3 times: rotate; box else 3 times rotate; 2 times: peg; wave
-      # if you match the "then" first, then "; box else 3 times rotate; 2 times: peg; wave"
-      # is matched and becomes 
-      #  if random > 0.5 then 3 times: rotate; (box else 3+0).times ->  rotate; 2 times: peg; wave
-      # which is not correct
-      code = code.replace(/(else)\s+([a-zA-Z1-9])(.*?)[^\.]times[:]*(.*)/g, "$1 ($2$3+0).times -> $4")
-      code = code.replace(/(then)\s+([a-zA-Z1-9])(.*?)[^\.]times[:]*(.*)/g, "$1 ($2$3+0).times -> $4")
-      # the [^;]*? is to make sure that we don't take ; within the times argument
-      # example:
-      #  box; box ;  2 times: peg
-      # if we don't exclude the semicolon form the times argument then we transform into
-      #  box; (box ;  2+0).times ->  peg
-      # which is not correct
-      code = code.replace(/^(.*?)(;)\s*([a-zA-Z1-9])([^;\r\n]*?)[^\.\r\n]times[:]*(.*)$/gm, "$1$2 ($3$4+0).times -> $5")
-
-      # last (catch all other cases where it captures everything
-      # since the start of the line,
-      # which is why you need to handle the other cases before):
-
-      # the ^\r\n is to avoid matching a return, which would cause
-      #   peg
-      #   times
-      #     box
-      # to match ("p" as group 1, "eg[newline]" as group 2 and empty as group 3)
-      # the ^; is to avoid this matching:
-      #   peg; times rotate box 2* wave (group1: p group2: eg; group3: rot...wave)
-      code = code.replace(/^(\s*)([a-zA-Z1-9])(.*?)[^;\r\n\.]times[:]*(.*)$/gm, "$1($2$3+0).times -> $4")
-
-
-      
-      # code =  code.replace(
-      #   /^([a-z]+[a-zA-Z0-9]+)\s*$/gm, "$1 = ->" );
 
       # Note that coffeescript allows you to split arguments
       # over multiple lines.
@@ -488,87 +552,17 @@ define () ->
       # This doesn't seem to be a problem, but worth noting.
 
 
-      # Each doBlock, when run, pushes its own line number to a particular
+      # Each doOnce block, when run, pushes its own line number to a particular
       # array. It leaves traces of which doOnce block has been run and
       # where exactly it is so that we can go back and mark it with a tick
       # (which prevents a second run to happen, as the tickmarks expand into
       # line comments).
       code = @addTracingInstructionsToDoOnceBlocks(code)
 
-      listOfStatements = @listOfStatements.join "|"
-      listOfExpressions = @listOfExpressions.join "|"
-      listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
+      code = @adjustImplicitCalls(code)
 
-      
-      # adding () to single tokens on their own at the start of a line
-      # ball
-      rx = RegExp("^(\\s*)("+listOfLCLKeywords+")[ ]*$",'gm');
-      code = code.replace(rx, "$1$2();")
-
-
-      # adding () to single tokens at the start of the line
-      # followed by a semicolon (might be followed by more instructions)
-      # ball;
-      # ball; somethingelse
-      rx = RegExp("^(\\s*)("+listOfLCLKeywords+")[ ]*;",'gm');
-      code = code.replace(rx, "$1$2();")
-
-      # adding () to any functions not at the beginning of a line
-      # and followed by a anything that might end the command
-      # eg semicolon, closing parenthesis, math sign, etc.
-      #   something;ball
-      #   something;ball;
-      #   something;ball;ball
-      #   something;ball;ball;
-      #   ✓doOnce -> ball; background red
-      #   if ball then ball else something
-      #   box wave
-      #   box wave(wave)
-      # Why do we handle Statements differently from expressions?
-      # cause they have different delimiters
-      # I expect
-      #   wave -1
-      # to be transformed into
-      #   wave() -1
-      # but I don't want
-      #   box -1
-      # to turn into box() -1
-      delimitersForStatements = ":|;|\\,|\\?|\\)|//|\\#|\\selse|\\sthen"
-      delimitersForExpressions = delimitersForStatements + "|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
-      rx = RegExp("([^a-zA-Z0-9])("+listOfStatements+")[ \\t]*("+delimitersForStatements+")",'g');
-      code = code.replace(rx, "$1$2()$3")
-      rx = RegExp("([^a-zA-Z0-9])("+listOfExpressions+")[ \\t]*("+delimitersForExpressions+")",'g');
-      code = code.replace(rx, "$1$2()$3")
-
-      #box 0.5,2
-      #box; rotate; box
-      #if random() > 0.5 then box 0.2,3; ball; background red
-      #if ball then ball if true then 0 else 1
-      #ball if true then 0 else 1
-      
-      # tokens at the end of the line (without final semicolon,
-      # if there is a final semicolon it's handled by previous case)
-      # doOnce frame = 0; box
-      # if random() > 0.5 then box
-      # 2 times -> box
-      # 2 times -> rotate; box
-      rx = RegExp("([^a-zA-Z0-9])("+listOfLCLKeywords+")[ \\t]*$",'gm');
-      code = code.replace(rx, "$1$2()")
-      
-      
-      # draw() could just be called by mistake and it's likely
-      # to be disastrous. User doesn't even have visibility of such method,
-      # why should he/she call it?
-      # TODO: call draw() something else that the user is not
-      # likely to use by mistake and take away this check.
-      if /[\s\+\;]+draw\s*\(/.test(code)
-        programHasBasicError = true
-        @eventRouter.trigger "compile-time-error-thrown", "You can't call draw()"
-        return
-      
-      # allows // for comments
-      # the hash is more difficult to write
-      code = code.replace(/\/\//g, "#")
+      code = @adjustDoubleSlashSyntaxForComments(code)
+            
       #console.log code
       
 
