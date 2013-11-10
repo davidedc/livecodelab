@@ -480,34 +480,8 @@ define () ->
         @liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction null
         @liveCodeLabCoreInstance.drawFunctionRunner.lastStableDrawFunction = null
         return functionFromCompiledCode
+
       code = @removeTickedDoOnce(code)
-      
-      #////////////////// Newer code checks
-      ###
-      ## The CodeChecker will check for unbalanced brackets
-      ## and unfinished strings
-      ##
-      ## If any errors are found then we quit compilation here
-      ## and display an error message
-      ###
-      
-      #
-      # errResults = CodeChecker.parse(code);
-      #
-      # if (errResults.err === true) {
-      #     @eventRouter.trigger('compile-time-error-thrown', errResults.message);
-      #     return;
-      # }
-      #
-      # elaboratedSource = code;
-      # elaboratedSource = preprocessingFunctions.adjustPostfixNotations(elaboratedSource);
-      # elaboratedSource = preprocessingFunctions.fixTimesFunctions(elaboratedSource);
-      # elaboratedSource = preprocessingFunctions.addDoOnceTracing(elaboratedSource);
-      
-      #////////////////////////////////////
-      
-      #//////////////// Older code checks
-      
       code = @stripCommentsAndCheckBasicSyntax(code)
       return if code is null
       elaboratedSource = code
