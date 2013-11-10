@@ -131,7 +131,10 @@ define () ->
       code = code.replace(/\u2713/g, "//")
       return [code, error]
 
-    addTracingInstructionsToDoOnceBlocks: (code) ->
+    addTracingInstructionsToDoOnceBlocks: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
       # ADDING TRACING INSTRUCTION TO THE DOONCE BLOCKS
       # each doOnce block is made to start with an instruction that traces whether
       # the block has been run or not. This allows us to put back the tick where
@@ -189,7 +192,7 @@ define () ->
         code = elaboratedSourceByLine.join("\n")
       
       #alert('soon after replacing doOnces'+code);
-      code
+      return [code, error]
 
     doesProgramContainStringsOrComments: (code) ->
       # make a copy of the string because we are going to
@@ -208,7 +211,10 @@ define () ->
           return true
         copyOfcode = copyOfcode.slice(1)
 
-    stripCommentsAndCheckBasicSyntax: (code) ->
+    stripCommentsAndCheckBasicSyntax: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
       codeWithoutComments = undefined
       codeWithoutStringsOrComments = undefined
       
@@ -310,12 +316,11 @@ define () ->
         reasonOfBasicError = "Unbalanced ()"  if roundBrackCount & 1
         reasonOfBasicError = "Unbalanced {}"  if curlyBrackCount & 1
         reasonOfBasicError = "Unbalanced []"  if squareBrackCount & 1
-        @eventRouter.trigger "compile-time-error-thrown", reasonOfBasicError
-        return null
+        return [undefined,reasonOfBasicError]
       
       # no comments or strings were found, just return the same string
       # that was passed
-      code
+      return [code, error]
 
     ###
     ## Some of the functions can be used with postfix notation
@@ -329,15 +334,26 @@ define () ->
     ##
     ## We need to switch this round before coffee script compilation
     ###
-    adjustPostfixNotations: (code) ->
+    adjustPostfixNotations: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
       # red background
       # red fill;box
+
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
       code = code.replace(/(\d+)[ ]+bpm(\s|$|;)/g, "bpm $1$2")
       code = code.replace(/([a-zA-Z]+)[ ]+fill(\s|$|;)/g, "fill $1$2")
       code = code.replace(/([a-zA-Z]+)[ ]+stroke(\s|$|;)/g, "stroke $1$2")
       code = code.replace(/([a-zA-Z]+)[ ]+background(\s|$|;)/g, "background $1$2")
+      return [code, error]
 
-    checkBasicErrorsWithTimes:(code) ->
+    checkBasicErrorsWithTimes:(code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
       # if what we transform makes any sense *at all*, then
       # coffeescript will translate it to js and run it, which
       # in some cases we don't want.
@@ -355,10 +371,13 @@ define () ->
         /else\s+times/g.test(code) or
         /then\s+times/g.test(code)
           programHasBasicError = true
-          @eventRouter.trigger "compile-time-error-thrown", "how many times?"
-          return
+          return [undefined, "how many times?"]
+      return [code, error]
 
-    transformTimesSyntax: (code) ->
+    transformTimesSyntax: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
       # Note: this is mangled up in the translation to javascript
       # from the coffeescript translator:
       #   (1).times ->
@@ -401,8 +420,12 @@ define () ->
       # the ^; is to avoid this matching:
       #   peg; times rotate box 2* wave (group1: p group2: eg; group3: rot...wave)
       code = code.replace(/^(\s*)([a-zA-Z1-9])(.*?)[^;\r\n\.]times[:]*(.*)$/gm, "$1($2$3+0).times -> $4")
+      return [code, error]
     
-    adjustImplicitCalls: (code) ->
+    adjustImplicitCalls: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
       listOfStatements = @listOfStatements.join "|"
       listOfExpressions = @listOfExpressions.join "|"
       listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
@@ -462,11 +485,16 @@ define () ->
       # 2 times -> rotate; box
       rx = RegExp("([^a-zA-Z0-9])("+listOfLCLKeywords+")[ \\t]*$",'gm');
       code = code.replace(rx, "$1$2()")
+      return [code, error]
 
-    adjustDoubleSlashSyntaxForComments: (code) ->
+    adjustDoubleSlashSyntaxForComments: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
       # allows // for comments
       # the hash is more difficult to write
       code = code.replace(/\/\//g, "#")
+      return [code, error]
 
     updateCode: (code) ->
       @currentCodeString = code
@@ -489,19 +517,18 @@ define () ->
         return functionFromCompiledCode
 
       [code, error] = @removeTickedDoOnce(code, error)
-      code = @stripCommentsAndCheckBasicSyntax(code)
-      return if code is null
+      [code, error] = @stripCommentsAndCheckBasicSyntax(code, error)
 
       # allow some common command forms can be used in postfix notation, e.g.
       #   60 bpm
       #   red fill
       #   yellow stroke
       #   black background
-      code = @adjustPostfixNotations(code)
+      [code, error] = @adjustPostfixNotations(code, error)
 
-      @checkBasicErrorsWithTimes(code)
+      [code, error] = @checkBasicErrorsWithTimes(code, error)
       
-      code = @transformTimesSyntax(code)
+      [code, error] = @transformTimesSyntax(code, error)
 
 
       # Note that coffeescript allows you to split arguments
@@ -526,11 +553,20 @@ define () ->
       # where exactly it is so that we can go back and mark it with a tick
       # (which prevents a second run to happen, as the tickmarks expand into
       # line comments).
-      code = @addTracingInstructionsToDoOnceBlocks(code)
+      [code, error] = @addTracingInstructionsToDoOnceBlocks(code, error)
 
-      code = @adjustImplicitCalls(code)
+      [code, error] = @adjustImplicitCalls(code, error)
 
-      code = @adjustDoubleSlashSyntaxForComments(code)
+      [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
+
+      # if 'error' is anything else then undefined then it
+      # means that the process of translation has found
+      # some glaringly missing pieces. In which case,
+      # we report the error and skip the coffeescript
+      # to javascript translation step.
+      if error?
+        @eventRouter.trigger "compile-time-error-thrown", error
+        return
             
       #console.log code
       
