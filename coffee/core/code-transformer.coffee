@@ -467,18 +467,6 @@ define () ->
       code = code.replace(/\/\//g, "#")
 
     updateCode: (code) ->
-      elaboratedSource = undefined
-      errResults = undefined
-      characterBeingExamined = undefined
-      nextCharacterBeingExamined = undefined
-      aposCount = undefined
-      quoteCount = undefined
-      roundBrackCount = undefined
-      curlyBrackCount = undefined
-      squareBrackCount = undefined
-      elaboratedSourceByLine = undefined
-      iteratingOverSource = undefined
-      reasonOfBasicError = undefined
       @currentCodeString = code
       if @currentCodeString is ""
         @liveCodeLabCoreInstance.graphicsCommands.resetTheSpinThingy = true
