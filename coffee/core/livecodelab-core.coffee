@@ -172,7 +172,7 @@ define [
       @drawFunctionRunner =
         new ProgramRunner(@paramsObject.eventRouter, @)
       
-      # temporary to migrate CodeTransformed code from js to coffeescript.
+      # compiles the user sketch to js so it's ready to run.
       @codeCompiler =
         new CodeCompiler(@paramsObject.eventRouter, CoffeeScript, @)
       
