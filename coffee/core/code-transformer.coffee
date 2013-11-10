@@ -491,7 +491,6 @@ define () ->
       [code, error] = @removeTickedDoOnce(code, error)
       code = @stripCommentsAndCheckBasicSyntax(code)
       return if code is null
-      elaboratedSource = code
 
       # allow some common command forms can be used in postfix notation, e.g.
       #   60 bpm
