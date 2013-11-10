@@ -162,33 +162,32 @@ define () ->
       #   ones have been run regroup the lines into a single string again
       #
       elaboratedSourceByLine = undefined
-      iteratingOverSource = undefined
       if code.indexOf("doOnce") > -1
         
         #alert("a doOnce is potentially executable");
         elaboratedSourceByLine = code.split("\n")
         
         #alert('splitting: ' + elaboratedSourceByLine.length );
-        for iteratingOverSource in [0...elaboratedSourceByLine.length]
+        for eachLine in [0...elaboratedSourceByLine.length]
           
-          #alert('iterating: ' + iteratingOverSource );
+          #alert('iterating: ' + eachLine );
           
           # add the line number tracing instruction to inline case
-          elaboratedSourceByLine[iteratingOverSource] =
-            elaboratedSourceByLine[iteratingOverSource].replace(
+          elaboratedSourceByLine[eachLine] =
+            elaboratedSourceByLine[eachLine].replace(
               /^(\s*)doOnce[ ]*\->[ ]*(.+)$/g,
-              "$1;addDoOnce(" + iteratingOverSource + "); (1+0).times -> $2")
+              "$1;addDoOnce(" + eachLine + "); (1+0).times -> $2")
           
           # add the line number tracing instruction to multiline case
-          if /^(\s*)doOnce[ ]*\->[ ]*$/g.test(elaboratedSourceByLine[iteratingOverSource])
+          if /^(\s*)doOnce[ ]*\->[ ]*$/g.test(elaboratedSourceByLine[eachLine])
             
             #alert('doOnce multiline!');
-            elaboratedSourceByLine[iteratingOverSource] =
-              elaboratedSourceByLine[iteratingOverSource].replace(
+            elaboratedSourceByLine[eachLine] =
+              elaboratedSourceByLine[eachLine].replace(
                 /^(\s*)doOnce[ ]*\->[ ]*$/g, "$1(1+0).times ->")
-            elaboratedSourceByLine[iteratingOverSource + 1] =
-              elaboratedSourceByLine[iteratingOverSource + 1].replace(
-                /^(\s*)(.+)$/g, "$1addDoOnce(" + iteratingOverSource + "); $2")
+            elaboratedSourceByLine[eachLine + 1] =
+              elaboratedSourceByLine[eachLine + 1].replace(
+                /^(\s*)(.+)$/g, "$1addDoOnce(" + eachLine + "); $2")
         code = elaboratedSourceByLine.join("\n")
       
       #alert('soon after replacing doOnces'+code);
@@ -607,7 +606,6 @@ define () ->
         (CodeTransformer, doOnceOccurrencesLineNumbers) ->
       elaboratedSource = undefined
       elaboratedSourceByLine = undefined
-      iteratingOverSource = undefined
       drawFunction = undefined
       
       # if we are here, the following has happened: someone has added an element
@@ -625,9 +623,9 @@ define () ->
       # so we go there and add a tick next to each doOnce to indicate
       # that it has been run.
       elaboratedSourceByLine = elaboratedSource.split("\n")
-      for iteratingOverSource in doOnceOccurrencesLineNumbers
-        elaboratedSourceByLine[iteratingOverSource] =
-          elaboratedSourceByLine[iteratingOverSource].replace(
+      for eachLine in doOnceOccurrencesLineNumbers
+        elaboratedSourceByLine[eachLine] =
+          elaboratedSourceByLine[eachLine].replace(
             /^(\s*)doOnce([ \t]*\->[ \t]*.*)$/gm, "$1✓doOnce$2")
       elaboratedSource = elaboratedSourceByLine.join("\n")
       
