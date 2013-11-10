@@ -9,18 +9,18 @@
 ## makes it available to the ProgramRunner.
 ###
 
-define () ->
-
+define ['core/code-preprocessor', 'coffeescript'], (CodePreprocessor, CoffeescriptCompiler) ->
 
   class CodeCompiler
     currentCodeString: null
     codePreprocessor: null
 
 
-    constructor: (@eventRouter, @CoffeeCompiler, @liveCodeLabCoreInstance) ->
+    constructor: (@eventRouter, @liveCodeLabCoreInstance) ->
       # the code compiler needs the CodePreprocessor
-      require ['core/code-preprocessor'], (CodePreprocessor) =>
-        @codePreprocessor = new CodePreprocessor()
+      
+      @codePreprocessor = new CodePreprocessor()
+      #@codePreprocessor = new CodePreprocessor()
 
 
     updateCode: (code) ->
@@ -54,7 +54,7 @@ define () ->
       
 
       try
-        compiledOutput = @CoffeeCompiler.compile(code,
+        compiledOutput = CoffeescriptCompiler.compile(code,
           bare: "on"
         )
       catch e
@@ -133,8 +133,6 @@ define () ->
       # the already split code.
       drawFunction = @updateCode(elaboratedSource)
       drawFunction
-
-  CodeCompiler
 
 ### Tests for "times"
 

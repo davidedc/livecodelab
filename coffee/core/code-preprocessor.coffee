@@ -6,9 +6,11 @@
 ## returned in a dedicated variable.
 ###
 
-define ['core/code-preprocessor'], (CodePreprocessor) ->
+define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
   class CodePreprocessor
+
+    testCases: null
 
     # We separate Statements from Expressions here.
     # Expressions return a value that is useful
@@ -95,6 +97,10 @@ define ['core/code-preprocessor'], (CodePreprocessor) ->
       "noiseSeed"
     ]
 
+    constructor: ->
+      @testCases = (new CodePreprocessorTests()).testCases
+      #require ['core/code-preprocessor-tests'], (CodePreprocessorTests) =>
+      #  @testCases = (new CodePreprocessorTests()).testCases
 
     ###
     ## Stops ticked doOnce blocks from running
@@ -536,8 +542,9 @@ define ['core/code-preprocessor'], (CodePreprocessor) ->
 
       [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
 
-      
-  CodePreprocessor
+    test: ->
+        alert ' ' + @testCases[1].input
+
 
 ### Tests for "times"
 

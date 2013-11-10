@@ -76,11 +76,9 @@ define [
   ,'bowser'
   ,'buzz'
   ,'lowLag'
-  ,'coffeescript'
   ,'threejs'
   ,'three-resize'
   ,'Three.Detector'
-  ,'Three.Stats'
   ,'Three.ShaderExtras'
   ,'Three.EffectComposer'
   ,'Three.MaskPass'
@@ -105,12 +103,11 @@ define [
   ,createBowser
   ,buzz
   ,lowLag
-  ,CoffeeScript
   ,THREE
   ,THREEx
   ,Detector
-  ,Stats
 ) ->
+
 
   class LiveCodeLabCore
 
@@ -174,7 +171,7 @@ define [
       
       # compiles the user sketch to js so it's ready to run.
       @codeCompiler =
-        new CodeCompiler(@paramsObject.eventRouter, CoffeeScript, @)
+        new CodeCompiler(@paramsObject.eventRouter, @)
       
       # this one also interacts with timeKeeper, matrixCommands, blendControls,
       #    soundSystem,

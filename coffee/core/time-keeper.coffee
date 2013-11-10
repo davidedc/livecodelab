@@ -4,7 +4,7 @@
 ## unnecessary invokation of the Date and getTime browser functions.
 ###
 
-define () ->
+define ->
 
   class TimeKeeper
 
