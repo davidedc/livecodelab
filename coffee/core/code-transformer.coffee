@@ -123,11 +123,13 @@ define () ->
     ##
     ## @returns {string}
     ###
-    removeTickedDoOnce: (code) ->
-      newCode = undefined
-      newCode = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false")
-      newCode = newCode.replace(/\u2713/g, "//")
-      newCode
+    removeTickedDoOnce: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      code = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false")
+      code = code.replace(/\u2713/g, "//")
+      return [code, error]
 
     addTracingInstructionsToDoOnceBlocks: (code) ->
       # ADDING TRACING INSTRUCTION TO THE DOONCE BLOCKS
@@ -469,6 +471,11 @@ define () ->
     updateCode: (code) ->
       @currentCodeString = code
 
+      # we'll keep any errors in here as we transform the code
+      # as soon as there is any error, all next stages of
+      # transformation do nothing
+      error = undefined
+
       # we do a couple of special resets when
       # the code is the empty string.
       if code is ""
@@ -481,7 +488,7 @@ define () ->
         @liveCodeLabCoreInstance.drawFunctionRunner.lastStableDrawFunction = null
         return functionFromCompiledCode
 
-      code = @removeTickedDoOnce(code)
+      [code, error] = @removeTickedDoOnce(code, error)
       code = @stripCommentsAndCheckBasicSyntax(code)
       return if code is null
       elaboratedSource = code
