@@ -11,7 +11,7 @@
 
 define () ->
 
-  class CodeTransformer
+  class CodeCompiler
     currentCodeString: null
 
     # We separate Statements from Expressions here.
@@ -605,9 +605,9 @@ define () ->
       functionFromCompiledCode
 
     # this function is used externally after the code has been
-    # run, so we need to attach it to the CodeTransformer object.
+    # run, so we need to attach it to the CodeCompiler object.
     addCheckMarksAndUpdateCodeAndNotifyChange: \
-        (CodeTransformer, doOnceOccurrencesLineNumbers) ->
+        (CodeCompiler, doOnceOccurrencesLineNumbers) ->
       elaboratedSource = undefined
       elaboratedSourceByLine = undefined
       drawFunction = undefined
@@ -652,7 +652,7 @@ define () ->
       drawFunction = @updateCode(elaboratedSource)
       drawFunction
 
-  CodeTransformer
+  CodeCompiler
 
 ### Tests for "times"
 

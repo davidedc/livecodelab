@@ -95,7 +95,7 @@ require [
     #  - graphicsCommands
     #  - lightSystem
     #  - drawFunctionRunner
-    #  - codeTransformer
+    #  - codeCompiler
     #  - renderer
     #  - animationLoop
     liveCodeLabCore = new LiveCodeLabCore(
