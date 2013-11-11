@@ -40,6 +40,8 @@ define ['core/code-preprocessor', 'coffeescript'], (CodePreprocessor, Coffeescri
         return functionFromCompiledCode
 
       [code, error] = @codePreprocessor.preprocess code
+      #console.log code
+
 
       # if 'error' is anything else then undefined then it
       # means that the process of translation has found
