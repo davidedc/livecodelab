@@ -554,6 +554,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
             successfulTest++
           else
             console.log "!!!!!!!!!! testCase #{testCaseNumber} fail:" \
+              + '\ninput: \n' + testCase.input \
               + '\nobtained: \n' + transformed \
               + '\nwith error:\n' + error \
               + '\ninstead of:\n' + testCase.expected \
@@ -564,88 +565,4 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         console.log "   failed: #{failedTests}"
         return
 
-
-
-### Tests for "times"
-
-6 times: rotate box
-
-6 times: rotate; box
-
-6 times:
-  rotate box
-
-
-// should give error
-times
-  box
-
-1+1 times: rotate; box
-
-// should give error
-peg; times rotate box 2* wave
-
-peg; 2 times rotate box 2* wave
-
-n = 2; n times: rotate;box
-
-box; box ;  2 times: rotate; peg 1.3
-
-if random > 0.5 then 3 times: rotate; box else 3 times rotate; 2 times: peg; true
-
-if true then 3 times rotate; box
-
-// should give error
-if true then  times do that
-
-(9+0).times -> rotate; box
-
-if random() > 0.5 then rotate; box else 3 times rotate; peg; true
-
-// should give error
-if random() > 0.5 then rotate; box else times rotate; peg; true
-
-5 times
-  rotate 0,1,time/5000
-  move 0.2,0,0
-  3 times
-    rotate 1
-    box
-
-// testing whether mangled accross multiple lines
-if random() > 0.5 then box
-2 times: box
-2 times: rotate; box
-
-// testing whether mangled accross multiple lines
-6 times: rotate; box
-6 times:
-  rotate box
-
-// tests for the implicit functions
-ab
-box
-2 times rotate box wave; wave
-box + box
-wave wave wave
-if wave then box wave else wave
-if wave then box + wave else wave
-wave
-wave + wave
-;wave
-;wave;
-if random() > 0.5 then box
-2 times: box
-2 times: rotate; box
-2 times rotate box wave
-rotate box 2,33
-box wave
-box wave 3
-2 times: rotate box wave
-if rotate wave then rotate wave else rotate wave
-
-2 times: move; rotate wave; box
-
-
-###
 
