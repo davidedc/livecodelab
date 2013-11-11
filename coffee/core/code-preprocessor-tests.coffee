@@ -253,11 +253,37 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          error: undefined
         ,
+         # this is technically wrong,
+         # but in fact will work, because
+         # wave() + wave() is not assigned
+         # or used for anything.
+         # The transformation is only done when
+         # the expression is preceded by an
+         # operator, and in this case there is
+         # nothing using the expression, so
+         # this pre-processing is as good as
+         # the technically correct one.
          input:    """
                    wave + wave
                    """
          expected: """
-                   wave() + wave()
+                   wave + wave()
+                   """
+         error: undefined
+        ,
+         input:    """
+                   a = wave + wave
+                   """
+         expected: """
+                   a = wave()+ wave()
+                   """
+         error: undefined
+        ,
+         input:    """
+                   (wave + wave)
+                   """
+         expected: """
+                   (wave()+ wave())
                    """
          error: undefined
         ,
@@ -354,6 +380,156 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    (2+0).times ->  move(); rotate wave(); box()
+                   """
+         error: undefined
+        ,
+         input:    """
+                   rotate wave box
+                   """
+         expected: """
+                   rotate wave box()
+                   """
+         error: undefined
+        ,
+         input:    """
+                   box -1
+                   """
+         expected: """
+                   box -1
+                   """
+         error: undefined
+        ,
+         input:    """
+                   box - 1
+                   """
+         expected: """
+                   box - 1
+                   """
+         error: undefined
+        ,
+         input:    """
+                   a = box -1
+                   """
+         expected: """
+                   a = box -1
+                   """
+         error: undefined
+        ,
+         input:    """
+                   a = box - 1
+                   """
+         expected: """
+                   a = box - 1
+                   """
+         error: undefined
+        ,
+         # this is technically wrong,
+         # but in fact will work, because
+         # wave() + wave() is not assigned
+         # or used for anything.
+         # The transformation is only done when
+         # the expression is preceded by an
+         # operator, and in this case there is
+         # nothing using the expression, so
+         # this pre-processing is as good as
+         # the technically correct one.
+         input:    """
+                   wave -1
+                   """
+         expected: """
+                   wave -1
+                   """
+         error: undefined
+        ,
+         # this is technically wrong,
+         # but in fact will work, because
+         # wave() + wave() is not assigned
+         # or used for anything.
+         # The transformation is only done when
+         # the expression is preceded by an
+         # operator, and in this case there is
+         # nothing using the expression, so
+         # this pre-processing is as good as
+         # the technically correct one.
+         input:    """
+                   wave - 1
+                   """
+         expected: """
+                   wave - 1
+                   """
+         error: undefined
+        ,
+         input:    """
+                   a = wave -1
+                   """
+         expected: """
+                   a = wave()-1
+                   """
+         error: undefined
+        ,
+         input:    """
+                   a = wave - 1
+                   """
+         expected: """
+                   a = wave()- 1
+                   """
+         error: undefined
+        ,
+         # would probably prefer this to be processed into
+         # rotate (wave()+0).times ->  box()
+         # so that "times" captures up to anything that
+         # can be a number,
+         # but I can't think of any clear example of
+         # where this is clearly useful and where the
+         # translation below is clearly unexpected.
+         # It rather seems a very odd case with no
+         # clear purpose where the user is not
+         # expecting any particular result.
+         input:    """
+                   rotate wave times box
+                   """
+         expected: """
+                   (rotate wave()+0).times ->  box()
+                   """
+         error: undefined
+        ,
+         input:    """
+                   box(wave)
+                   """
+         expected: """
+                   box(wave())
+                   """
+         error: undefined
+        ,
+         input:    """
+                   box(wave,wave)
+                   """
+         expected: """
+                   box(wave(),wave())
+                   """
+         error: undefined
+        ,
+         input:    """
+                   box(wave,wave,wave)
+                   """
+         expected: """
+                   box(wave(),wave(),wave())
+                   """
+         error: undefined
+        ,
+         input:    """
+                   a=wave+wave+wave
+                   """
+         expected: """
+                   a=wave()+wave()+wave()
+                   """
+         error: undefined
+        ,
+         input:    """
+                   rotate(box,peg,line)
+                   """
+         expected: """
+                   rotate(box(),peg(),line())
                    """
          error: undefined
       ]
