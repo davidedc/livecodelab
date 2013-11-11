@@ -131,7 +131,7 @@ require [
       "load-program", programLoader.loadDemoOrTutorial, programLoader
     )
 
-    #console.log('creating stats');
+    #console.log('creating stats')
     ui = new Ui(eventRouter, stats, programLoader) # $
     # requires: ColourNames
     autocoder = new Autocoder(eventRouter, editor, colourNames) # McLexer

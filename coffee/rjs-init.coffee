@@ -38,8 +38,8 @@ requirejs.config(
       deps: []
       exports: 'buzz'
     'lowLag':
-        deps: []
-        exports: 'lowLag'
+      deps: []
+      exports: 'lowLag'
     'codemirror':
       deps: []
       exports: 'CodeMirror'
