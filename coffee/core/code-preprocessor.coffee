@@ -22,6 +22,12 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
     # The explanation of why we need this separation
     # is in the "implicit function" transformations
     # code below.
+    scaleRotateMoveStatements: [
+      # scale rotate move
+      "rotate"
+      "move"
+      "scale"
+    ]
     listOfStatements: [
       # Geometry
       "rect"
@@ -30,10 +36,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "ball"
       "ballDetail"
       "peg"
-      # Matrix manipulation
-      "rotate"
-      "move"
-      "scale"
+      # Matrix manipulation other than scale rotate move
       "pushMatrix"
       "popMatrix"
       "resetMatrix"
@@ -50,7 +53,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "background"
       "simpleGradient"
       "colorMode"
-      "color"
       # Lighting
       # "ambient""reflect" "refract"
       "lights"
@@ -95,6 +97,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "noise"
       "noiseDetail"
       "noiseSeed"
+      # Color
+      "color"
     ]
 
     constructor: ->
@@ -165,13 +169,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       elaboratedSourceByLine = undefined
       if code.indexOf("doOnce") > -1
         
-        #alert("a doOnce is potentially executable");
+        #alert("a doOnce is potentially executable")
         elaboratedSourceByLine = code.split("\n")
         
-        #alert('splitting: ' + elaboratedSourceByLine.length );
+        #alert('splitting: ' + elaboratedSourceByLine.length )
         for eachLine in [0...elaboratedSourceByLine.length]
           
-          #alert('iterating: ' + eachLine );
+          #alert('iterating: ' + eachLine )
           
           # add the line number tracing instruction to inline case
           elaboratedSourceByLine[eachLine] =
@@ -182,7 +186,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           # add the line number tracing instruction to multiline case
           if /^(\s*)doOnce[ ]*\->[ ]*$/g.test(elaboratedSourceByLine[eachLine])
             
-            #alert('doOnce multiline!');
+            #alert('doOnce multiline!')
             elaboratedSourceByLine[eachLine] =
               elaboratedSourceByLine[eachLine].replace(
                 /^(\s*)doOnce[ ]*\->[ ]*$/g, "$1(1+0).times ->")
@@ -191,7 +195,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
                 /^(\s*)(.+)$/g, "$1addDoOnce(" + eachLine + "); $2")
         code = elaboratedSourceByLine.join("\n")
       
-      #alert('soon after replacing doOnces'+code);
+      #alert('soon after replacing doOnces'+code)
       return [code, error]
 
     doesProgramContainStringsOrComments: (code) ->
@@ -405,6 +409,25 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # which is not correct
       code = code.replace(/^(.*?)(;)\s*([a-zA-Z1-9])([^;\r\n]*?)[^\.\r\n]times[:]*(.*)$/gm, "$1$2 ($3$4+0).times -> $5")
 
+
+      # "times" takes as its first argument (i.e. the number of times)
+      # anything before it up to the first statement or ; (or start of line)
+      # so for example rotate wave 2 times box becomes
+      # 
+
+      # start of line case first
+      #rx = RegExp("^("+listOfStatementsForStartOfLine+")([ \\t]*)([a-zA-Z1-9])((?!;|\\r|\\n|times|"+listOfStatementsForStartOfLine+")*)[^\\.\\r\\n]times[:]*(.*)$",'gm');
+      #alert rx
+      #alert code
+      #code = code.replace(rx, "$1;$2($3+0).times -> $5")
+      #alert code
+
+      # cases for non-start of line
+      #rx = RegExp("^(.*?)(;|"+listOfStatements+")([ \\t]*)([a-zA-Z1-9])((?!;|\\r|\\n|times|"+listOfStatements+")*)[^\\.\\r\\n]times[:]*(.*)$",'gm');
+      #code = code.replace(rx, "$1$2;$3($4+0).times -> $6")
+      #code = code.replace(/;+/g, ";")
+
+
       # last (catch all other cases where it captures everything
       # since the start of the line,
       # which is why you need to handle the other cases before):
@@ -423,14 +446,15 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      listOfStatements = @listOfStatements.join "|"
+      scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
+      listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
       listOfExpressions = @listOfExpressions.join "|"
       listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
 
       
       # adding () to single tokens on their own at the start of a line
       # ball
-      rx = RegExp("^(\\s*)("+listOfLCLKeywords+")[ ]*$",'gm');
+      rx = RegExp("^(\\s*)("+listOfLCLKeywords+")[ ]*$",'gm')
       code = code.replace(rx, "$1$2();")
 
 
@@ -438,7 +462,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # followed by a semicolon (might be followed by more instructions)
       # ball;
       # ball; somethingelse
-      rx = RegExp("^(\\s*)("+listOfLCLKeywords+")[ ]*;",'gm');
+      rx = RegExp("^(\\s*)("+listOfLCLKeywords+")[ ]*;",'gm')
       code = code.replace(rx, "$1$2();")
 
       # adding () to any functions not at the beginning of a line
@@ -470,10 +494,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # because the first matching wave consumes the comma before the
       # second...
       for i in [1..2]
-        rx = RegExp("([^a-zA-Z0-9])("+listOfStatements+")[ \\t]*("+delimitersForStatements+")",'g');
+        rx = RegExp("([^a-zA-Z0-9])("+listOfStatements+")[ \\t]*("+delimitersForStatements+")",'g')
         code = code.replace(rx, "$1$2()$3")
       for i in [1..2]
-        rx = RegExp("([^a-zA-Z0-9])("+listOfExpressions+")[ \\t]*("+delimitersForExpressions+")",'g');
+        rx = RegExp("([^a-zA-Z0-9])("+listOfExpressions+")[ \\t]*("+delimitersForExpressions+")",'g')
         code = code.replace(rx, "$1$2()$3")
 
       #box 0.5,2
@@ -488,9 +512,88 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if random() > 0.5 then box
       # 2 times -> box
       # 2 times -> rotate; box
-      rx = RegExp("([^a-zA-Z0-9])("+listOfLCLKeywords+")[ \\t]*$",'gm');
+      rx = RegExp("([^a-zA-Z0-9])("+listOfLCLKeywords+")[ \\t]*$",'gm')
       code = code.replace(rx, "$1$2()")
       return [code, error]
+
+    addCommandsSeparations: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
+      listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
+      listOfExpressions = @listOfExpressions.join "|"
+      listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
+
+      
+      for i in [1..2]
+        rx = RegExp("("+scaleRotateMoveStatements+")([ \\t]*)("+listOfStatements+")([ ]*)([^;\\r\\n]*)",'g')
+        #code = code.replace(rx, "C$1<>$2<>$3<>$4<>$5<>")
+        code = code.replace(rx, "$1();$2$3$4$5")
+
+
+      for i in [1..2]
+        rx = RegExp("("+listOfStatements+")([ \\t]*)("+listOfStatements+")([ ]*)($)?",'gm')
+        code = code.replace(rx, "$1();$2$3$4$5")
+
+      for i in [1..2]
+        rx = RegExp("("+scaleRotateMoveStatements+")([ \\t;]*)("+listOfStatements+")([ ]*)([^;\\r\\n]*)",'g')
+        code = code.replace(rx, "$1();$2$3$4$5;")
+
+      #for i in [1..2]
+      #  rx = RegExp("("+scaleRotateMoveStatements+")(.*)("+listOfStatements+")(.*)$",'gm')
+      #  code = code.replace(rx, "pushMatrix();$1$2$3;popMatrix();")
+
+
+
+      code = code.replace(/;+/g, ";")
+      code = code.replace(/;$/gm, "")
+      return [code, error]
+
+    evaluateAllExpressions: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
+      listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
+      listOfExpressions = @listOfExpressions.join "|"
+      listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
+
+      
+      rx = RegExp("([^;>\\( \\t])([ ])("+listOfStatements+")([^a-zA-Z0-9\\r\\n])",'gm')
+      code = code.replace(rx, "$1;$2$3$4")
+
+      rx = RegExp("("+listOfLCLKeywords+")([ \\t]*);",'g')
+      code = code.replace(rx, "$1();")
+      rx = RegExp("("+listOfLCLKeywords+")([ \\t]*)$",'gm')
+      code = code.replace(rx, "$1();")
+
+      rx = RegExp("([a-zA-Z\\d]*)[\\s]*[=]",'gm')
+      userFunctionsAndVariables = []
+      while match = rx.exec code
+        userFunctionsAndVariables.push(match[1])
+
+      userFunctionsAndVariables = '' + userFunctionsAndVariables.join "|"
+      #console.log "*****" + userFunctionsAndVariables
+
+      delimitersForStatementsMod = ":|;|\\,|\\?|//|\\#|\\selse|\\sthen"
+      delimitersForExpressions = delimitersForStatementsMod + "|if|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
+      if userFunctionsAndVariables != ""
+        delimitersForExpressions = userFunctionsAndVariables + "|"+ delimitersForExpressions
+      rx = RegExp("("+delimitersForExpressions+")([ \\t]*);",'g')
+      code = code.replace(rx, "$1$2")
+
+      #rx = RegExp("([^a-zA-Z0-9;>\\(])([ \\t]*)("+listOfStatements+")([^a-zA-Z0-9])",'g')
+      #code = code.replace(rx, "$1;$2$3$4")
+      #code = code.replace(/[>][ ]*;/g, "> ")
+      #code = code.replace(/[=][ ]*;/g, "= ")
+
+      code = code.replace(/[ ];/gm, "; ")
+      code = code.replace(/;+/g, ";")
+      code = code.replace(/;$/gm, "")
+      code = code.replace(/;([^ ])/gm, "; $1")
+      return [code, error]
+
 
     adjustDoubleSlashSyntaxForComments: (code, error) ->
       # if there is an error, just propagate it
@@ -546,9 +649,12 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # line comments).
       [code, error] = @addTracingInstructionsToDoOnceBlocks(code, error)
 
+      [code, error] = @addCommandsSeparations(code, error)
       [code, error] = @adjustImplicitCalls(code, error)
 
       [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
+      [code, error] = @evaluateAllExpressions(code, error)
+
 
     # to run the tests, just open the dev console
     # and type: testPreprocessor()
