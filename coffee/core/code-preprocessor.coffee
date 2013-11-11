@@ -463,7 +463,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # to turn into box() -1
       delimitersForStatements = ":|;|\\,|\\?|\\)|//|\\#|\\selse|\\sthen"
       delimitersForExpressions = delimitersForStatements + "|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
-      # these regexex needed to run twice 
+      # these regexes needed to run twice 
       # in order to reach the token in between
       # delimiters, such as "box(wave,wave,wave)"
       # the second "wave" is not reached by the just one run

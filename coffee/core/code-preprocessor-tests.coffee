@@ -255,7 +255,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
         ,
          # this is technically wrong,
          # but in fact will work, because
-         # wave() + wave() is not assigned
+         # wave + wave is not assigned
          # or used for anything.
          # The transformation is only done when
          # the expression is preceded by an
@@ -423,16 +423,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          error: undefined
         ,
-         # this is technically wrong,
-         # but in fact will work, because
-         # wave() + wave() is not assigned
-         # or used for anything.
-         # The transformation is only done when
-         # the expression is preceded by an
-         # operator, and in this case there is
-         # nothing using the expression, so
-         # this pre-processing is as good as
-         # the technically correct one.
          input:    """
                    wave -1
                    """
@@ -443,7 +433,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
         ,
          # this is technically wrong,
          # but in fact will work, because
-         # wave() + wave() is not assigned
+         # wave - 1 is not assigned
          # or used for anything.
          # The transformation is only done when
          # the expression is preceded by an
