@@ -542,8 +542,27 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
 
+    # to run the tests, just open the dev console
+    # and type: testPreprocessor()
     test: ->
-        alert ' ' + @testCases[1].input
+        failedTests = successfulTest = 0
+        for testCaseNumber in [0...@testCases.length]
+          testCase = @testCases[testCaseNumber]
+          [transformed, error] = @preprocess(testCase.input)
+          if transformed == testCase.expected and error == testCase.error
+            console.log "testCase #{testCaseNumber}: pass"
+            successfulTest++
+          else
+            console.log "!!!!!!!!!! testCase #{testCaseNumber} fail:" \
+              + '\nobtained: \n' + transformed \
+              + '\nwith error:\n' + error \
+              + '\ninstead of:\n' + testCase.expected \
+              + '\nwith error:\n' + testCase.error
+              failedTests++
+        console.log "  ####### summary #######"
+        console.log "   passed: #{successfulTest}"
+        console.log "   failed: #{failedTests}"
+        return
 
 
 
@@ -556,10 +575,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 6 times:
   rotate box
 
-// should give error
-peg
-times
-  box 2
 
 // should give error
 times

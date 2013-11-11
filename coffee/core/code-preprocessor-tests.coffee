@@ -15,15 +15,32 @@ define ['core/code-preprocessor-tests'], (foo) ->
     constructor: ->
 
       @testCases= [
-         input: """
-                <strong>
-                cup of coffeescript
-                </strong>
-                """
-         expected: "A2"
+         input:    """
+                   5 times
+                     rotate 0,1,time/5000
+                     move 0.2,0,0
+                     3 times
+                       rotate 1
+                       box
+                   """
+         expected: """
+                   (5+0).times -> 
+                     rotate 0,1,time/5000
+                     move 0.2,0,0
+                     (3+0).times -> 
+                       rotate 1
+                       box();
+                   """
+         error: undefined
         ,
-         input: "B1"
-         expected: "B2"
+         input:    """
+                   // should give error
+                   peg
+                   times
+                     box 2
+                   """
+         expected: undefined
+         error: "how many times?"
       ]
 
   CodePreprocessorTests
