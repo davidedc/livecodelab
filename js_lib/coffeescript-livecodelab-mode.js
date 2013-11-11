@@ -20,7 +20,7 @@ CodeMirror.defineMode('livecodelab', function(conf) {
     var wordOperators = wordRegexp(['and', 'or', 'not',
                                     'is', 'isnt', 'in',
                                     'instanceof', 'typeof']);
-    var indentKeywords = ['draw','for', 'while', 'loop', 'if', 'unless', 'else',
+    var indentKeywords = ['times','for', 'while', 'loop', 'if', 'unless', 'else',
                           'switch', 'try', 'catch', 'finally', 'class'];
     var commonKeywords = ['break', 'by', 'continue', 'debugger', 'delete',
                           'do', 'in', 'of', 'new', 'return', 'then',
@@ -67,12 +67,12 @@ CodeMirror.defineMode('livecodelab', function(conf) {
             return 'comment';
         }
 
-		// added by Davide Della Casa
+        // added by Davide Della Casa
         if (ch === '/') {
-		  if (stream.match(/\/\//i)) {
-			stream.skipToEnd();
-				return 'comment';
-		  }
+          if (stream.match(/\/\//i)) {
+            stream.skipToEnd();
+                return 'comment';
+          }
         }
         
         // Handle number literals
@@ -309,11 +309,11 @@ CodeMirror.defineMode('livecodelab', function(conf) {
         
         token: function(stream, state) {
 
-		  // way to add links taken form here:
-		  // http://groups.google.com/group/codemirror/browse_thread/thread/a96bb56548815163/87a3869e2cfd0a37?lnk=gst&q=links#87a3869e2cfd0a37
-		  if (stream.match(/\/\/\s*(next-tutorial:([^\s]+))\b/)) { 
-			   return "link"; 
-		  } 
+          // way to add links taken form here:
+          // http://groups.google.com/group/codemirror/browse_thread/thread/a96bb56548815163/87a3869e2cfd0a37?lnk=gst&q=links#87a3869e2cfd0a37
+          if (stream.match(/\/\/\s*(next-tutorial:([^\s]+))\b/)) { 
+               return "link"; 
+          } 
 
             var style = tokenLexer(stream, state);
             

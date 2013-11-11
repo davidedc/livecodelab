@@ -20,7 +20,7 @@ CodeMirror.defineMode('livecodelab', function(conf) {
     var wordOperators = wordRegexp(['and', 'or', 'not',
                                     'is', 'isnt', 'in',
                                     'instanceof', 'typeof']);
-    var indentKeywords = ['draw','for', 'while', 'loop', 'if', 'unless', 'else',
+    var indentKeywords = ['times','for', 'while', 'loop', 'if', 'unless', 'else',
                           'switch', 'try', 'catch', 'finally', 'class'];
     var commonKeywords = ['break', 'by', 'continue', 'debugger', 'delete',
                           'do', 'in', 'of', 'new', 'return', 'then',
