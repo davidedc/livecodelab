@@ -157,7 +157,7 @@ require [
     )
     eventRouter.bind(
       "editor-toggle-dim",
-      () => editorDimmer.toggleDimCode(),
+      (autoDim) => editorDimmer.toggleDimCode(autoDim),
       editorDimmer
     )
     
@@ -167,7 +167,7 @@ require [
     # compile time and runtime errors.
     #/////////////////////////////////////////////////////
     eventRouter.bind "reset", (()=>liveCodeLabCore.paintARandomBackground())
-    eventRouter.trigger "editor-toggle-dim", true
+    eventRouter.trigger "editor-toggle-dim", false
     eventRouter.bind "livecodelab-running-stably", ui.showStatsWidget
     eventRouter.bind "code_changed", (updatedCodeAsString) ->
       if updatedCodeAsString isnt ""
