@@ -181,6 +181,13 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
         ,
          input:    """
+                   ball line peg
+                   """
+         expected: """
+                   ball(); line(); peg()
+                   """
+        ,
+         input:    """
                    box
                    """
          expected: """
@@ -639,6 +646,62 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    for shape, size of shapes
                        move 2
                        eval(shape+"(" + size+")")
+                   """
+        ,
+         input:    """
+                   d = 2
+                   scale 2, d box b, c
+                   """
+         expected: """
+                   d = 2
+                   scale 2, d; box b, c
+                   """
+        ,
+         # This might not be what the use means,
+         # but it probably is.
+         input:    """
+                   d = -> 2
+                   scale 2, d box b, c
+                   """
+         expected: """
+                   d = -> 2
+                   scale 2, d(); box b, c
+                   """
+        ,
+         input:    """
+                   a = 2
+                   scale 2, a; box b, c
+                   """
+         expected: """
+                   a = 2
+                   scale 2, a; box b, c
+                   """
+        ,
+         input:    """
+                   either = (a,b) -> if random > 0.5 then a() else b()
+                   either (->box), (->peg)
+                   """
+         expected: """
+                   either = (a,b) -> if random()> 0.5 then a() else b()
+                   either (->box()), (->peg())
+                   """
+        ,
+         input:    """
+                   either = (a,b) -> if random > 0.5 then a() else b()
+                   either <box>, <peg>
+                   """
+         expected: """
+                   either = (a,b) -> if random()> 0.5 then a() else b()
+                   either box, peg
+                   """
+        ,
+         input:    """
+                   rand = (arg) -> random(arg)
+                   box rand line peg
+                   """
+         expected: """
+                   rand = (arg) -> random(arg)
+                   box rand(); line(); peg()
                    """
       ]
 

@@ -441,6 +441,34 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #   peg; times rotate box 2* wave (group1: p group2: eg; group3: rot...wave)
       code = code.replace(/^(\s*)([a-zA-Z1-9])(.*?)[^;\r\n\.]times[:]*(.*)$/gm, "$1($2$3+0).times -> $4")
       return [code, error]
+
+    markFunctionalReferences: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
+      listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
+      listOfExpressions = @listOfExpressions.join "|"
+      listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
+
+      rx = RegExp("<[\\s]*("+listOfLCLKeywords+")[\\s]*>",'g')
+      code = code.replace(rx, "MARKED$1")
+
+      return [code, error]
+
+    unmarkFunctionalReferences: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
+      listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
+      listOfExpressions = @listOfExpressions.join "|"
+      listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
+
+      rx = RegExp("MARKED("+listOfLCLKeywords+")",'g')
+      code = code.replace(rx, "$1")
+
+      return [code, error]
     
     adjustImplicitCalls: (code, error) ->
       # if there is an error, just propagate it
@@ -550,7 +578,20 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/;$/gm, "")
       return [code, error]
 
-    evaluateAllExpressions: (code, error) ->
+    findUserDefinedFunctions: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      rx = RegExp("([a-zA-Z\\d]+)([\\s]*)=([^>\\r\\n]*)->",'gm')
+      userDefinedFunctions = []
+      while match = rx.exec code
+        userDefinedFunctions.push(match[1])
+
+      #console.log "*****" + userDefinedFunctions
+      return [code, error, userDefinedFunctions]
+
+
+    evaluateAllExpressions: (code, userDefinedFunctions, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
@@ -563,23 +604,17 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       rx = RegExp("([^;>\\( \\t])([ ])("+listOfStatements+")([^a-zA-Z0-9\\r\\n])",'gm')
       code = code.replace(rx, "$1;$2$3$4")
 
-      rx = RegExp("("+listOfLCLKeywords+")([ \\t]*);",'g')
-      code = code.replace(rx, "$1();")
-      rx = RegExp("("+listOfLCLKeywords+")([ \\t]*)$",'gm')
-      code = code.replace(rx, "$1();")
+      rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfLCLKeywords+")([ \\t]*);",'g')
+      code = code.replace(rx, "$1$2();")
+      rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfLCLKeywords+")([ \\t]*)$",'gm')
+      code = code.replace(rx, "$1$2();")
 
-      rx = RegExp("([a-zA-Z\\d]*)[\\s]*[=]",'gm')
-      userFunctionsAndVariables = []
-      while match = rx.exec code
-        userFunctionsAndVariables.push(match[1])
-
-      userFunctionsAndVariables = '' + userFunctionsAndVariables.join "|"
-      #console.log "*****" + userFunctionsAndVariables
 
       delimitersForStatementsMod = ":|;|\\,|\\?|//|\\#|\\selse|\\sthen"
       delimitersForExpressions = delimitersForStatementsMod + "|if|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
-      if userFunctionsAndVariables != ""
-        delimitersForExpressions = userFunctionsAndVariables + "|"+ delimitersForExpressions
+      userDefinedFunctions = '' + userDefinedFunctions.join "|"
+      if userDefinedFunctions != ""
+        delimitersForExpressions = userDefinedFunctions + "|"+ delimitersForExpressions
       rx = RegExp("("+delimitersForExpressions+")([ \\t]*);",'g')
       code = code.replace(rx, "$1$2")
 
@@ -610,8 +645,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # transformation do nothing
       error = undefined
 
+      [code, error, userDefinedFunctions] = @findUserDefinedFunctions(code, error)
+
+      @listOfExpressions = @listOfExpressions.concat userDefinedFunctions
       [code, error] = @removeTickedDoOnce(code, error)
       [code, error] = @stripCommentsAndCheckBasicSyntax(code, error)
+
+      [code, error] = @markFunctionalReferences(code, error)
 
       # allow some common command forms can be used in postfix notation, e.g.
       #   60 bpm
@@ -651,9 +691,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       [code, error] = @addCommandsSeparations(code, error)
       [code, error] = @adjustImplicitCalls(code, error)
-
       [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
-      [code, error] = @evaluateAllExpressions(code, error)
+      [code, error] = @evaluateAllExpressions(code, userDefinedFunctions, error)
+      [code, error] = @unmarkFunctionalReferences(code, error)
 
 
     # to run the tests, just open the dev console
