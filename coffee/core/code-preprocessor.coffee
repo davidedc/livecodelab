@@ -659,7 +659,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
     # to run the tests, just open the dev console
     # and type: testPreprocessor()
     test: ->
-        failedTests = successfulTest = 0
+        failedTests = successfulTest = knownIssues = 0
         for testCaseNumber in [0...@testCases.length]
           testCase = @testCases[testCaseNumber]
           [transformed, error] = @preprocess(testCase.input)
@@ -667,16 +667,21 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
             console.log "testCase #{testCaseNumber}: pass"
             successfulTest++
           else
-            console.log "!!!!!!!!!! testCase #{testCaseNumber} fail:" \
-              + '\ninput: \n' + testCase.input \
-              + '\nobtained: \n' + transformed \
-              + '\nwith error:\n' + error \
-              + '\ninstead of:\n' + testCase.expected \
-              + '\nwith error:\n' + testCase.error
+            if testCase.knownIssue
+              console.log "!!!!!!!!!! testCase #{testCaseNumber} known fail"
+              knownIssues++
+            else
+              console.log "!!!!!!!!!! testCase #{testCaseNumber} fail:" \
+                + '\ninput: \n' + testCase.input \
+                + '\nobtained: \n' + transformed \
+                + '\nwith error:\n' + error \
+                + '\ninstead of:\n' + testCase.expected \
+                + '\nwith error:\n' + testCase.error
               failedTests++
-        console.log "  ####### summary #######"
-        console.log "   passed: #{successfulTest}"
-        console.log "   failed: #{failedTests}"
+        console.log "######### summary #######"
+        console.log "      passed: #{successfulTest}"
+        console.log "      failed: #{failedTests}"
+        console.log "known issues: #{knownIssues}"
         return
 
 
