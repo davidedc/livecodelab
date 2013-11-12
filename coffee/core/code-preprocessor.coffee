@@ -399,8 +399,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # is matched and becomes 
       #  if random > 0.5 then 3 times: rotate; (box else 3+0).times ->  rotate; 2 times: peg; wave
       # which is not correct
-      code = code.replace(/(else)\s+([a-zA-Z1-9])(.*?)[^\.]times[:]*(.*)/g, "$1 ($2$3+0).times -> $4")
-      code = code.replace(/(then)\s+([a-zA-Z1-9])(.*?)[^\.]times[:]*(.*)/g, "$1 ($2$3+0).times -> $4")
+      code = code.replace(/(else)\s+([a-zA-Z1-9])(.*?)[^\.\r\n]times[:]*(.*)/g, "$1 ($2$3+0).times -> $4")
+      code = code.replace(/(then)\s+([a-zA-Z1-9])(.*?)[^\.\r\n]times[:]*(.*)/g, "$1 ($2$3+0).times -> $4")
       # the [^;]*? is to make sure that we don't take ; within the times argument
       # example:
       #  box; box ;  2 times: peg
@@ -482,7 +482,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       
       # adding () to single tokens on their own at the start of a line
       # ball
-      rx = RegExp("^(\\s*)("+listOfLCLKeywords+")[ ]*$",'gm')
+      rx = RegExp("^([ \\t]*)("+listOfLCLKeywords+")[ ]*$",'gm')
       code = code.replace(rx, "$1$2();")
 
 
@@ -490,7 +490,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # followed by a semicolon (might be followed by more instructions)
       # ball;
       # ball; somethingelse
-      rx = RegExp("^(\\s*)("+listOfLCLKeywords+")[ ]*;",'gm')
+      rx = RegExp("^([ \\t]*)("+listOfLCLKeywords+")[ ]*;",'gm')
       code = code.replace(rx, "$1$2();")
 
       # adding () to any functions not at the beginning of a line
@@ -522,10 +522,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # because the first matching wave consumes the comma before the
       # second...
       for i in [1..2]
-        rx = RegExp("([^a-zA-Z0-9])("+listOfStatements+")[ \\t]*("+delimitersForStatements+")",'g')
+        rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfStatements+")[ \\t]*("+delimitersForStatements+")",'g')
         code = code.replace(rx, "$1$2()$3")
       for i in [1..2]
-        rx = RegExp("([^a-zA-Z0-9])("+listOfExpressions+")[ \\t]*("+delimitersForExpressions+")",'g')
+        rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfExpressions+")[ \\t]*("+delimitersForExpressions+")",'g')
         code = code.replace(rx, "$1$2()$3")
 
       #box 0.5,2
@@ -540,7 +540,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if random() > 0.5 then box
       # 2 times -> box
       # 2 times -> rotate; box
-      rx = RegExp("([^a-zA-Z0-9])("+listOfLCLKeywords+")[ \\t]*$",'gm')
+      rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfLCLKeywords+")[ \\t]*$",'gm')
       code = code.replace(rx, "$1$2()")
       return [code, error]
 
@@ -582,7 +582,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      rx = RegExp("([a-zA-Z\\d]+)([\\s]*)=([^>\\r\\n]*)->",'gm')
+      rx = RegExp("([a-zA-Z\\d]+)([ \\t]*)=([^>\\r\\n]*)->",'gm')
       userDefinedFunctions = []
       while match = rx.exec code
         userDefinedFunctions.push(match[1])
@@ -601,7 +601,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
 
       
-      rx = RegExp("([^;>\\( \\t])([ ])("+listOfStatements+")([^a-zA-Z0-9\\r\\n])",'gm')
+      rx = RegExp("([^;>\\( \\t\\r\\n])([ ])("+listOfStatements+")([^a-zA-Z0-9\\r\\n])",'gm')
       code = code.replace(rx, "$1;$2$3$4")
 
       rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfLCLKeywords+")([ \\t]*);",'g')
@@ -626,7 +626,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/[ ];/gm, "; ")
       code = code.replace(/;+/g, ";")
       code = code.replace(/;$/gm, "")
-      code = code.replace(/;([^ ])/gm, "; $1")
+      code = code.replace(/;([^ \r\n])/gm, "; $1")
       return [code, error]
 
 

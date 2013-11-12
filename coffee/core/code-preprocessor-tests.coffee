@@ -703,6 +703,29 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rand = (arg) -> random(arg)
                    box rand(); line(); peg()
                    """
+        ,
+         input:    """
+                   animationStyle paintOver
+                   noStroke
+                   rand = -> 255*random
+                   fill rand, 255*random, 255*random
+                   50 times
+                     resetMatrix
+                     scale 0.4
+                     move 5-(random 10), 5-(random 10), 5-(random 10)
+                     ball
+                   """
+         expected: """
+                   animationStyle paintOver
+                   noStroke()
+                   rand = -> 255*random()
+                   fill rand(), 255*random(), 255*random()
+                   (50+0).times -> 
+                     resetMatrix()
+                     scale 0.4
+                     move 5-(random 10), 5-(random 10), 5-(random 10)
+                     ball()
+                   """
       ]
 
   CodePreprocessorTests
