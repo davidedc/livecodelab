@@ -16,6 +16,7 @@ define () ->
     listOfPossibleFunctions: [
       "function"
       "alert"
+      "connect"
       # Geometry
       "rect"
       "line"
