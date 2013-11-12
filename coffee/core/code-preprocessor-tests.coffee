@@ -27,7 +27,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                        rotate 1
                        box()
                    """
-         error: undefined
         ,
          input:    """
                    // should give error
@@ -35,7 +34,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    times
                      box 2
                    """
-         expected: undefined
          error: "how many times?"
         ,
          input:    """
@@ -43,28 +41,24 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    times
                      box
                    """
-         expected: undefined
          error: "how many times?"
         ,
          input:    """
                    // should give error
                    peg; times rotate box 2* wave
                    """
-         expected: undefined
          error: "how many times?"
         ,
          input:    """
                    // should give error
                    if true then  times do that
                    """
-         expected: undefined
          error: "how many times?"
         ,
          input:    """
                    // should give error
                    if random() > 0.5 then rotate; box else times rotate; peg; true
                    """
-         expected: undefined
          error: "how many times?"
         ,
          input:    """
@@ -73,7 +67,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (6+0).times ->  rotate(); box()
                    """
-         error: undefined
         ,
          input:    """
                    6 times: rotate; box
@@ -81,7 +74,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (6+0).times ->  rotate(); box()
                    """
-         error: undefined
         ,
          input:    """
                    6 times:
@@ -91,7 +83,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    (6+0).times -> 
                      rotate(); box()
                    """
-         error: undefined
         ,
          input:    """
                    1+1 times: rotate; box
@@ -99,7 +90,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (1+1+0).times ->  rotate(); box()
                    """
-         error: undefined
         ,
          input:    """
                    peg; 2 times rotate box 2* wave
@@ -107,7 +97,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    peg(); (2+0).times ->  rotate(); box 2* wave()
                    """
-         error: undefined
         ,
          input:    """
                    n = 2; n times: rotate;box
@@ -115,7 +104,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    n = 2; (n+0).times ->  rotate(); box()
                    """
-         error: undefined
         ,
          input:    """
                    box; box ;  2 times: rotate; peg 1.3
@@ -123,7 +111,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    box(); box(); (2+0).times ->  rotate(); peg 1.3
                    """
-         error: undefined
         ,
          input:    """
                    if random > 0.5 then 3 times: rotate; box else 3 times rotate; 2 times: peg; true
@@ -131,7 +118,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    if random()> 0.5 then (3+0).times ->  rotate(); box() else (3+0).times ->  rotate(); (2+0).times ->  peg(); true
                    """
-         error: undefined
         ,
          input:    """
                    if true then 3 times rotate; box
@@ -139,7 +125,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    if true then (3+0).times ->  rotate(); box()
                    """
-         error: undefined
         ,
          input:    """
                    (9+0).times -> rotate; box
@@ -147,7 +132,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (9+0).times -> rotate(); box()
                    """
-         error: undefined
         ,
          input:    """
                    if random() > 0.5 then rotate; box else 3 times rotate; peg; true
@@ -155,7 +139,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    if random() > 0.5 then rotate(); box() else (3+0).times ->  rotate(); peg(); true
                    """
-         error: undefined
         ,
          input:    """
                    if random() > 0.5 then rotate 1 + wave box else 3 times rotate; peg; true
@@ -163,7 +146,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    if random() > 0.5 then rotate 1 + wave(); box() else (3+0).times ->  rotate(); peg(); true
                    """
-         error: undefined
         ,
          input:    """
                    // testing whether mangled accross multiple lines
@@ -177,7 +159,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    (2+0).times ->  box()
                    (2+0).times ->  rotate(); box()
                    """
-         error: undefined
         ,
          input:    """
                    // testing whether mangled accross multiple lines
@@ -191,7 +172,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    (6+0).times -> 
                      rotate(); box()
                    """
-         error: undefined
         ,
          input:    """
                    ab
@@ -199,7 +179,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    ab
                    """
-         error: undefined
         ,
          input:    """
                    box
@@ -207,7 +186,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    box()
                    """
-         error: undefined
         ,
          input:    """
                    2 times rotate box wave; wave
@@ -215,7 +193,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (2+0).times ->  rotate(); box wave(); wave()
                    """
-         error: undefined
         ,
          input:    """
                    box + box
@@ -223,7 +200,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    box + box()
                    """
-         error: undefined
         ,
          input:    """
                    wave wave wave
@@ -231,7 +207,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    wave wave wave()
                    """
-         error: undefined
         ,
          input:    """
                    if wave then box wave else wave
@@ -239,7 +214,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    if wave() then box wave() else wave()
                    """
-         error: undefined
         ,
          input:    """
                    if wave then box + wave else wave
@@ -247,7 +221,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    if wave() then box + wave() else wave()
                    """
-         error: undefined
         ,
          input:    """
                    wave
@@ -255,7 +228,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    wave()
                    """
-         error: undefined
         ,
          # this is technically wrong,
          # but in fact will work, because
@@ -273,7 +245,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    wave + wave()
                    """
-         error: undefined
         ,
          input:    """
                    a = wave + wave
@@ -281,7 +252,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    a = wave()+ wave()
                    """
-         error: undefined
         ,
          input:    """
                    (wave + wave)
@@ -289,7 +259,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (wave()+ wave())
                    """
-         error: undefined
         ,
          input:    """
                    ;wave
@@ -297,7 +266,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    ; wave()
                    """
-         error: undefined
         ,
          input:    """
                    ;wave;
@@ -305,7 +273,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    ; wave()
                    """
-         error: undefined
         ,
          input:    """
                    if random() > 0.5 then box
@@ -313,7 +280,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    if random() > 0.5 then box()
                    """
-         error: undefined
         ,
          input:    """
                    2 times: box
@@ -321,7 +287,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (2+0).times ->  box()
                    """
-         error: undefined
         ,
          input:    """
                    2 times: rotate; box
@@ -329,7 +294,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (2+0).times ->  rotate(); box()
                    """
-         error: undefined
         ,
          input:    """
                    2 times rotate box wave
@@ -337,7 +301,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (2+0).times ->  rotate(); box wave()
                    """
-         error: undefined
         ,
          input:    """
                    rotate box 2,33
@@ -345,7 +308,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    rotate(); box 2,33
                    """
-         error: undefined
         ,
          input:    """
                    box wave
@@ -353,7 +315,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    box wave()
                    """
-         error: undefined
         ,
          input:    """
                    box wave 3
@@ -361,7 +322,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    box wave 3
                    """
-         error: undefined
         ,
          input:    """
                    2 times: rotate box wave
@@ -369,7 +329,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (2+0).times ->  rotate(); box wave()
                    """
-         error: undefined
         ,
          input:    """
                    if rotate wave then rotate wave else rotate wave
@@ -377,7 +336,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    if rotate wave() then rotate wave() else rotate wave()
                    """
-         error: undefined
         ,
          input:    """
                    2 times: move; rotate wave; box
@@ -385,7 +343,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (2+0).times ->  move(); rotate wave(); box()
                    """
-         error: undefined
         ,
          input:    """
                    rotate wave box
@@ -393,7 +350,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    rotate wave(); box()
                    """
-         error: undefined
         ,
          input:    """
                    box -1
@@ -401,7 +357,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    box -1
                    """
-         error: undefined
         ,
          input:    """
                    box - 1
@@ -409,7 +364,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    box - 1
                    """
-         error: undefined
         ,
          input:    """
                    a = box -1
@@ -417,7 +371,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    a = box -1
                    """
-         error: undefined
         ,
          input:    """
                    a = box - 1
@@ -425,7 +378,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    a = box - 1
                    """
-         error: undefined
         ,
          input:    """
                    wave -1
@@ -433,7 +385,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    wave -1
                    """
-         error: undefined
         ,
          # this is technically wrong,
          # but in fact will work, because
@@ -451,7 +402,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    wave - 1
                    """
-         error: undefined
         ,
          input:    """
                    a = wave -1
@@ -459,7 +409,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    a = wave()-1
                    """
-         error: undefined
         ,
          input:    """
                    a = wave - 1
@@ -467,7 +416,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    a = wave()- 1
                    """
-         error: undefined
         ,
          # would probably prefer this to be processed into
          # rotate (wave()+0).times ->  box()
@@ -485,7 +433,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (rotate wave()+0).times ->  box()
                    """
-         error: undefined
         ,
          input:    """
                    rotate 2 times box
@@ -493,7 +440,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (rotate 2+0).times ->  box()
                    """
-         error: undefined
         ,
          input:    """
                    rotate wave 2 times box
@@ -501,7 +447,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (rotate wave 2+0).times ->  box()
                    """
-         error: undefined
         ,
          input:    """
                    rotate wave + 2 times box
@@ -509,7 +454,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (rotate wave()+ 2+0).times ->  box()
                    """
-         error: undefined
         ,
          input:    """
                    box 2 times box
@@ -517,7 +461,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    (box 2+0).times ->  box()
                    """
-         error: undefined
         ,
          input:    """
                    box(wave)
@@ -525,7 +468,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    box(wave())
                    """
-         error: undefined
         ,
          input:    """
                    box(wave,wave)
@@ -533,7 +475,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    box(wave(),wave())
                    """
-         error: undefined
         ,
          input:    """
                    box(wave,wave,wave)
@@ -541,7 +482,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    box(wave(),wave(),wave())
                    """
-         error: undefined
         ,
          input:    """
                    a=wave+wave+wave
@@ -549,7 +489,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    a=wave()+wave()+wave()
                    """
-         error: undefined
         ,
          # in this case the user probably
          # meant to keep a box, a peg and a line
@@ -566,7 +505,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    rotate(box(),peg(),line())
                    """
-         error: undefined
         ,
          input:    """
                    rotate box peg line
@@ -574,7 +512,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    rotate(); box(); peg(); line()
                    """
-         error: undefined
         ,
          input:    """
                    rotate 2 box peg line
@@ -582,7 +519,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    rotate 2; box(); peg(); line()
                    """
-         error: undefined
         ,
          input:    """
                    rotate 2 + n box peg line
@@ -590,7 +526,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    rotate 2 + n; box(); peg(); line()
                    """
-         error: undefined
         ,
          input:    """
                    for i in [0...wave * 2]
@@ -598,7 +533,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    for i in [0...wave()* 2]
                    """
-         error: undefined
         ,
          input:    """
                    for i in [0...2*wave]
@@ -606,7 +540,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    for i in [0...2*wave()]
                    """
-         error: undefined
         ,
          input:    """
                    either = (a,b) -> if random > 0.5 then a() else b()
@@ -616,7 +549,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    either = (a,b) -> if random()> 0.5 then a() else b()
                    either box(), peg()
                    """
-         error: undefined
         ,
          input:    """
                    either = (a,b) -> if random > 0.5 then a() else b()
@@ -626,7 +558,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    either = (a,b) -> if random()> 0.5 then a() else b()
                    rotate(); box(), peg()
                    """
-         error: undefined
         ,
          input:    """
                    scale 0.3
@@ -640,7 +571,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    move(); rotate(); scale 3; box(); peg(); line 2
                    move 0.1; peg(); move 0.4; box()
                    """
-         error: undefined
         ,
          input:    """
                    noFill
@@ -654,7 +584,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                        rotate time/100000
                        box i/8
                    """
-         error: undefined
         ,
          input:    """
                    noFill
@@ -668,7 +597,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                        rotate time/100000
                        box i/8
                    """
-         error: undefined
         ,
          input:    """
                    noFill
@@ -682,7 +610,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    ball size for size in sizes when size isnt 3
                    # yo dawg I heard you like balls so I put a; ball inside a; ball so you can see balls inside balls
                    """
-         error: undefined
         ,
          input:    """
                    noFill
@@ -696,7 +623,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                        rotate time/100000
                        box i/8
                    """
-         error: undefined
         ,
          input:    """
                    scale 0.1
@@ -714,7 +640,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                        move 2
                        eval(shape+"(" + size+")")
                    """
-         error: undefined
       ]
 
   CodePreprocessorTests
