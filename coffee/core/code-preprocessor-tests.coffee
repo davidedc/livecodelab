@@ -1,9 +1,5 @@
 ###
-## CodePreprocessor takes care of translating the simplified syntax
-## of livecodelb to a coffeescript that is degestible by the
-## coffeescript compiler.
-## This pre-processing step can raise some errors - which are
-## returned in a dedicated variable.
+## test cases for the CodePreprocessor
 ###
 
 define ['core/code-preprocessor-tests'], (foo) ->
