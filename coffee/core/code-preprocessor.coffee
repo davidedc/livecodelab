@@ -448,7 +448,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
       listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
-      listOfExpressions = @listOfExpressions.join "|"
+      listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
       listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
 
       rx = RegExp("<[\\s]*("+listOfLCLKeywords+")[\\s]*>",'g')
@@ -462,7 +462,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
       listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
-      listOfExpressions = @listOfExpressions.join "|"
+      listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
       listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
 
       rx = RegExp("MARKED("+listOfLCLKeywords+")",'g')
@@ -476,7 +476,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
       listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
-      listOfExpressions = @listOfExpressions.join "|"
+      listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
       listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
 
       
@@ -550,7 +550,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
       listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
-      listOfExpressions = @listOfExpressions.join "|"
+      listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
       listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
 
       
@@ -597,7 +597,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
       listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
-      listOfExpressions = @listOfExpressions.join "|"
+      listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
       listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
 
       
@@ -647,7 +647,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       [code, error, userDefinedFunctions] = @findUserDefinedFunctions(code, error)
 
-      @listOfExpressions = @listOfExpressions.concat userDefinedFunctions
+      @listOfExpressionsAnduserDefinedFunctions = @listOfExpressions.concat userDefinedFunctions
       [code, error] = @removeTickedDoOnce(code, error)
       [code, error] = @stripCommentsAndCheckBasicSyntax(code, error)
 
