@@ -703,7 +703,15 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         for testCaseNumber in [0...@testCases.length]
           testCase = @testCases[testCaseNumber]
           [transformed, error] = @preprocess(testCase.input)
-          if transformed == testCase.expected and error == testCase.error
+          # only check idempotency if there was no error
+          # in the first step and if the test case
+          # has no "notIdempotent" flag
+          testIdempotency = !error? and !(testCase.notIdempotent?)
+          if testIdempotency
+            [transformedTwice, error] = @preprocess(transformed)
+          if transformed == testCase.expected and
+              error == testCase.error and
+              (transformed == transformedTwice or !testIdempotency)
             console.log "testCase #{testCaseNumber}: pass"
             successfulTest++
           else
@@ -711,9 +719,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
               console.log "!!!!!!!!!! testCase #{testCaseNumber} known fail"
               knownIssues++
             else
-              console.log "!!!!!!!!!! testCase #{testCaseNumber} fail:" \
-                + '\ninput: \n' + testCase.input \
-                + '\nobtained: \n' + transformed \
+              console.log "!!!!!!!!!! testCase #{testCaseNumber} fail:"
+              if testIdempotency and transformed != transformedTwice
+                console.log "\nNot idempotent\n"
+              console.log '\ninput: \n' + testCase.input \
+                + '\nobtained: \n' + transformedTwice \
                 + '\nwith error:\n' + error \
                 + '\ninstead of:\n' + testCase.expected \
                 + '\nwith error:\n' + testCase.error
@@ -723,5 +733,4 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         console.log "      failed: #{failedTests}"
         console.log "known issues: #{knownIssues}"
         return
-
 

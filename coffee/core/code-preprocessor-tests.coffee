@@ -722,6 +722,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    either = (a,b) -> if random()> 0.5 then a() else b()
                    either box, peg
                    """
+         notIdempotent: true
         ,
          input:    """
                    rand = (arg) -> random(arg)
