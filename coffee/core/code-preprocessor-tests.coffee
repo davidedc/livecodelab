@@ -106,6 +106,27 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
         ,
          input:    """
+                   n = 2; (n+0).times ->  rotate(); box()
+                   """
+         expected: """
+                   n = 2; (n+0).times ->  rotate(); box()
+                   """
+        ,
+         input:    """
+                   n = 2; rotate(n+0);rotate(); box()
+                   """
+         expected: """
+                   n = 2; rotate(n+0); rotate(); box()
+                   """
+        ,
+         input:    """
+                   n = 2; rotate n + 1; box
+                   """
+         expected: """
+                   n = 2; rotate n + 1; box()
+                   """
+        ,
+         input:    """
                    box; box ;  2 times: rotate; peg 1.3
                    """
          expected: """
@@ -532,6 +553,13 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    rotate 2 + n; box(); peg(); line()
+                   """
+        ,
+         input:    """
+                   rotate 2 + time box peg line
+                   """
+         expected: """
+                   rotate 2 + time; box(); peg(); line()
                    """
         ,
          input:    """
