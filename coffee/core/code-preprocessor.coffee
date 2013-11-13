@@ -582,7 +582,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      rx = RegExp("([a-zA-Z\\d]+)([ \\t]*)=([^>\\r\\n]*)->",'gm')
+      rx = RegExp("([a-zA-Z\\d]+)([ \\t]*)=[ \\t]*[\\(-]([^>\\r\\n]*)>",'gm')
       userDefinedFunctions = []
       while match = rx.exec code
         userDefinedFunctions.push(match[1])
