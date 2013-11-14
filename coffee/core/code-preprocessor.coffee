@@ -425,24 +425,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/(->)\s+([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3+0).times -> $4")
 
 
-      # "times" takes as its first argument (i.e. the number of times)
-      # anything before it up to the first statement or ; (or start of line)
-      # so for example rotate wave 2 times box becomes
-      # 
-
-      # start of line case first
-      #rx = RegExp("^("+listOfStatementsForStartOfLine+")([ \\t]*)([a-zA-Z1-9])((?!;|\\r|\\n|times|"+listOfStatementsForStartOfLine+")*)[^\\.\\r\\n]times[:]*(.*)$",'gm');
-      #alert rx
-      #alert code
-      #code = code.replace(rx, "$1;$2($3+0).times -> $5")
-      #alert code
-
-      # cases for non-start of line
-      #rx = RegExp("^(.*?)(;|"+listOfStatements+")([ \\t]*)([a-zA-Z1-9])((?!;|\\r|\\n|times|"+listOfStatements+")*)[^\\.\\r\\n]times[:]*(.*)$",'gm');
-      #code = code.replace(rx, "$1$2;$3($4+0).times -> $6")
-      #code = code.replace(/;+/g, ";")
-
-
       # last (catch all other cases where it captures everything
       # since the start of the line,
       # which is why you need to handle the other cases before):
