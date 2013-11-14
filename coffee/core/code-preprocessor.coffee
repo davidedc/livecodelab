@@ -724,7 +724,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
     # to run the tests, just open the dev console
     # and type: testPreprocessor()
     test: ->
-        failedTests = successfulTest = knownIssues = failedIdempotency =0
+        failedTests = successfulTest = knownIssues = failedIdempotency = failedMootAppends = failedMootPrepends = 0
         for testCaseNumber in [0...@testCases.length]
           testCase = @testCases[testCaseNumber]
           [transformed, error] = @preprocess(testCase.input)
@@ -735,6 +735,49 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           #testIdempotency = false
           if testIdempotency
             [transformedTwice, error] = @preprocess(transformed)
+
+          scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
+          listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
+          listOfExpressions = @listOfExpressions.join "|"
+          listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
+          
+          [mootInput, errorMoot] = @stripCommentsAndCheckBasicSyntax(testCase.input,null)
+          if !errorMoot?
+            rx = RegExp("(("+listOfLCLKeywords+"|times)([^a-zA-Z0-9]|$))",'gm');
+            mootInputAppend = mootInput.replace(rx, "$2s$3")
+            mootInputPrepend = mootInput.replace(rx, "s$2$3")
+
+            mootInputAppend = @normaliseCode(mootInputAppend,null)[0]
+            [transformedMootAppend, errorMoot] = @preprocess(mootInputAppend)
+            mootInputPrepend = @normaliseCode(mootInputPrepend,null)[0]
+            [transformedMootPrepend, errorMootPrepend] = @preprocess(mootInputPrepend)
+            
+
+          userDefinedFunctions = @findUserDefinedFunctions(mootInput,null)[2]
+          listOfuserDefinedFunctions = userDefinedFunctions.join "|"
+          rx = RegExp("("+listOfuserDefinedFunctions+")\\(\\)",'gm');
+
+          if !errorMoot?
+            if userDefinedFunctions.length != 0
+              transformedMootAppend = transformedMootAppend.replace(rx, "$1")
+            transformedMootAppend = @stripCommentsAndCheckBasicSyntax(transformedMootAppend,null)[0]
+            if mootInputAppend != transformedMootAppend
+              failedMootAppends++
+              console.log "unexpected transformation"
+              console.log "moot input:\n" + mootInputAppend
+              console.log "transformed into:\n" + transformedMootAppend          
+
+          if !errorMootPrepend?
+            if userDefinedFunctions.length != 0
+              transformedMootPrepend = transformedMootPrepend.replace(rx, "$1")            
+            transformedMootPrepend = @stripCommentsAndCheckBasicSyntax(transformedMootPrepend,null)[0]
+            if mootInputPrepend != transformedMootPrepend
+              failedMootPrepends++
+              console.log "unexpected transformation"
+              console.log "moot input:\n" + mootInputPrepend
+              console.log "transformed into:\n" + transformedMootPrepend          
+
+
           if transformed == testCase.expected and
               error == testCase.error and
               (transformed == transformedTwice or !testIdempotency)
@@ -761,6 +804,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         console.log "######### summary #######"
         console.log "      passed: #{successfulTest}"
         console.log "      failed: #{failedTests}"
+        console.log "      failed moot appends: #{failedMootAppends}"
+        console.log "      failed moot prepends: #{failedMootPrepends}"
         console.log "      out of which only idempotency fails: #{failedIdempotency}"
         console.log "known issues: #{knownIssues}"
         return
