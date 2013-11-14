@@ -696,10 +696,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @unmarkFunctionalReferences(code, error)
 
 
+
     # to run the tests, just open the dev console
     # and type: testPreprocessor()
     test: ->
-        failedTests = successfulTest = knownIssues = 0
+        failedTests = successfulTest = knownIssues = failedIdempotency =0
         for testCaseNumber in [0...@testCases.length]
           testCase = @testCases[testCaseNumber]
           [transformed, error] = @preprocess(testCase.input)
@@ -707,6 +708,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           # in the first step and if the test case
           # has no "notIdempotent" flag
           testIdempotency = !error? and !(testCase.notIdempotent?)
+          #testIdempotency = false
           if testIdempotency
             [transformedTwice, error] = @preprocess(transformed)
           if transformed == testCase.expected and
@@ -721,9 +723,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
             else
               console.log "!!!!!!!!!! testCase #{testCaseNumber} fail:"
               if testIdempotency and transformed != transformedTwice
+                if transformed == testCase.expected
+                  failedIdempotency++
                 console.log "\nNot idempotent\n"
+                console.log "\n 2nd run result: \n"
+                console.log transformedTwice
               console.log '\ninput: \n' + testCase.input \
-                + '\nobtained: \n' + transformedTwice \
+                + '\nobtained: \n' + transformed \
                 + '\nwith error:\n' + error \
                 + '\ninstead of:\n' + testCase.expected \
                 + '\nwith error:\n' + testCase.error
@@ -731,6 +737,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         console.log "######### summary #######"
         console.log "      passed: #{successfulTest}"
         console.log "      failed: #{failedTests}"
+        console.log "      out of which only idempotency fails: #{failedIdempotency}"
         console.log "known issues: #{knownIssues}"
         return
 
