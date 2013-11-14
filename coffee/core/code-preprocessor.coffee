@@ -6,6 +6,8 @@
 ## returned in a dedicated variable.
 ###
 
+detailedDebug = false
+
 define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
   class CodePreprocessor
@@ -409,6 +411,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # is matched and becomes 
       #  if random > 0.5 then 3 times: rotate; (box else 3+0).times ->  rotate; 2 times: peg; wave
       # which is not correct
+      if detailedDebug then console.log "transformTimesSyntax-0\n" + code
       code = code.replace(/(else)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3+0).times -> $4")
       code = code.replace(/(then)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3+0).times -> $4")
 
@@ -418,10 +421,12 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if we don't exclude the semicolon form the times argument then we transform into
       #  box; (box ;  2+0).times ->  peg
       # which is not correct
+      if detailedDebug then console.log "transformTimesSyntax-1\n" + code
       code = code.replace(/^(.*?)(;)\s*([a-zA-Z1-9])([^;\r\n]*?) times[:]?([^a-zA-Z0-9].*)$/gm, "$1$2 ($3$4+0).times -> $5")
 
 
       # takes care of cases like myFunc = -> 20 times rotate box
+      if detailedDebug then console.log "transformTimesSyntax-2\n" + code
       code = code.replace(/(->)\s+([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3+0).times -> $4")
 
 
@@ -437,6 +442,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # the ^; is to avoid this matching:
       #   peg; times rotate box 2* wave (group1: p group2: eg; group3: rot...wave)
       code = code.replace(/^(\s*)([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9].*)$/gm, "$1($2$3+0).times -> $4")
+      if detailedDebug then console.log "transformTimesSyntax-3\n" + code
 
 
       return @normaliseCode(code, error)
@@ -473,8 +479,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
       rx = RegExp("\\(("+listOfStatements+") ",'g');
       code = code.replace(rx, "$1(); (")
+      if detailedDebug then console.log "unmarkFunctionalReferences-0\n" + code
 
       code = code.replace(/->;/gm, "->")
+      if detailedDebug then console.log "unmarkFunctionalReferences-1\n" + code
 
       return [code, error]
     
@@ -490,8 +498,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       
       # adding () to single tokens on their own at the start of a line
       # ball
+      if detailedDebug then console.log "adjustImplicitCalls-1\n" + code
       rx = RegExp("^([ \\t]*)("+listOfLCLKeywords+")[ ]*$",'gm')
       code = code.replace(rx, "$1$2();")
+      if detailedDebug then console.log "adjustImplicitCalls-2\n" + code
 
 
       # adding () to single tokens at the start of the line
@@ -500,6 +510,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # ball; somethingelse
       rx = RegExp("^([ \\t]*)("+listOfLCLKeywords+")[ ]*;",'gm')
       code = code.replace(rx, "$1$2();")
+      if detailedDebug then console.log "adjustImplicitCalls-3\n" + code
 
       # adding () to any functions not at the beginning of a line
       # and followed by a anything that might end the command
@@ -532,9 +543,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       for i in [1..2]
         rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfStatements+")[ \\t]*("+delimitersForStatements+")",'g')
         code = code.replace(rx, "$1$2()$3")
+      if detailedDebug then console.log "adjustImplicitCalls-4\n" + code
       for i in [1..2]
         rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfExpressions+")[ \\t]*("+delimitersForExpressions+")",'g')
         code = code.replace(rx, "$1$2()$3")
+      if detailedDebug then console.log "adjustImplicitCalls-5\n" + code
 
       #box 0.5,2
       #box; rotate; box
@@ -550,6 +563,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # 2 times -> rotate; box
       rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfLCLKeywords+")[ \\t]*$",'gm')
       code = code.replace(rx, "$1$2()")
+      if detailedDebug then console.log "adjustImplicitCalls-6\n" + code
       return [code, error]
 
     addCommandsSeparations: (code, error) ->
@@ -611,11 +625,14 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       
       rx = RegExp("([^;>\\( \\t\\r\\n])([ ])("+listOfStatements+")([^a-zA-Z0-9\\r\\n])",'gm')
       code = code.replace(rx, "$1;$2$3$4")
+      if detailedDebug then console.log "evaluateAllExpressions-1\n" + code
 
       rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfLCLKeywords+")([ \\t]*);",'g')
       code = code.replace(rx, "$1$2();")
+      if detailedDebug then console.log "evaluateAllExpressions-2\n" + code
       rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfLCLKeywords+")([ \\t]*)$",'gm')
       code = code.replace(rx, "$1$2();")
+      if detailedDebug then console.log "evaluateAllExpressions-3\n" + code
 
 
       delimitersForStatementsMod = ":|;|\\,|\\?|//|\\#|\\selse|\\sthen"
@@ -625,6 +642,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         delimitersForExpressions = userDefinedFunctions + "|"+ delimitersForExpressions
       rx = RegExp("("+delimitersForExpressions+")([ \\t]*);",'g')
       code = code.replace(rx, "$1$2")
+      if detailedDebug then console.log "evaluateAllExpressions-4\n" + code
 
       #rx = RegExp("([^a-zA-Z0-9;>\\(])([ \\t]*)("+listOfStatements+")([^a-zA-Z0-9])",'g')
       #code = code.replace(rx, "$1;$2$3$4")
@@ -649,13 +667,18 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # transformation do nothing
       error = undefined
 
+      if detailedDebug then console.log "preprocess-0\n" + code
       [code, error, userDefinedFunctions] = @findUserDefinedFunctions(code, error)
+      if detailedDebug then console.log "preprocess-1\n" + code
 
       @listOfExpressionsAnduserDefinedFunctions = @listOfExpressions.concat userDefinedFunctions
       [code, error] = @removeTickedDoOnce(code, error)
+      if detailedDebug then console.log "preprocess-2\n" + code
       [code, error] = @stripCommentsAndCheckBasicSyntax(code, error)
+      if detailedDebug then console.log "preprocess-3\n" + code
 
       [code, error] = @markFunctionalReferences(code, error)
+      if detailedDebug then console.log "preprocess-4\n" + code
 
       # allow some common command forms can be used in postfix notation, e.g.
       #   60 bpm
@@ -663,8 +686,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #   yellow stroke
       #   black background
       [code, error] = @adjustPostfixNotations(code, error)
+      if detailedDebug then console.log "preprocess-5\n" + code
 
       [code, error] = @checkBasicErrorsWithTimes(code, error)
+      if detailedDebug then console.log "preprocess-6\n" + code
       
 
 
@@ -690,15 +715,22 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # where exactly it is so that we can go back and mark it with a tick
       # (which prevents a second run to happen, as the tickmarks expand into
       # line comments).
+      if detailedDebug then console.log "preprocess-7\n" + code
       [code, error] = @addTracingInstructionsToDoOnceBlocks(code, error)
 
+      if detailedDebug then console.log "preprocess-8\n" + code
       [code, error] = @addCommandsSeparations(code, error)
+      if detailedDebug then console.log "preprocess-9\n" + code
       [code, error] = @adjustImplicitCalls(code, error)
+      if detailedDebug then console.log "preprocess-10\n" + code
       [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
+      if detailedDebug then console.log "preprocess-11\n" + code
       [code, error] = @evaluateAllExpressions(code, userDefinedFunctions, error)
       for i in [1..5] # todo avoid that, or make the loop tighter
         [code, error] = @transformTimesSyntax(code, error)
+      if detailedDebug then console.log "preprocess-12\n" + code
       [code, error] = @adjustImplicitCalls(code, error)
+      if detailedDebug then console.log "preprocess-13\n" + code
       [code, error] = @unmarkFunctionalReferences(code, error)
 
 
