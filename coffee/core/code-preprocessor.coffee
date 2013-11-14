@@ -399,15 +399,16 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # is matched and becomes 
       #  if random > 0.5 then 3 times: rotate; (box else 3+0).times ->  rotate; 2 times: peg; wave
       # which is not correct
-      code = code.replace(/(else)\s+([a-zA-Z1-9])(.*?)[^\.\r\n]times[:]*(.*)/g, "$1 ($2$3+0).times -> $4")
-      code = code.replace(/(then)\s+([a-zA-Z1-9])(.*?)[^\.\r\n]times[:]*(.*)/g, "$1 ($2$3+0).times -> $4")
+      code = code.replace(/(else)\s+([a-zA-Z1-9])([^;\r\n]*)[^\.\r\n]times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3+0).times -> $4")
+      code = code.replace(/(then)\s+([a-zA-Z1-9])([^;\r\n]*)[^\.\r\n]times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3+0).times -> $4")
+
       # the [^;]*? is to make sure that we don't take ; within the times argument
       # example:
       #  box; box ;  2 times: peg
       # if we don't exclude the semicolon form the times argument then we transform into
       #  box; (box ;  2+0).times ->  peg
       # which is not correct
-      code = code.replace(/^(.*?)(;)\s*([a-zA-Z1-9])([^;\r\n]*?)[^\.\r\n]times[:]*(.*)$/gm, "$1$2 ($3$4+0).times -> $5")
+      code = code.replace(/^(.*?)(;)\s*([a-zA-Z1-9])([^;\r\n]*?)[^\.\r\n]times[:]?([^a-zA-Z0-9].*)$/gm, "$1$2 ($3$4+0).times -> $5")
 
 
       # "times" takes as its first argument (i.e. the number of times)
@@ -439,7 +440,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # to match ("p" as group 1, "eg[newline]" as group 2 and empty as group 3)
       # the ^; is to avoid this matching:
       #   peg; times rotate box 2* wave (group1: p group2: eg; group3: rot...wave)
-      code = code.replace(/^(\s*)([a-zA-Z1-9])(.*?)[^;\r\n\.]times[:]*(.*)$/gm, "$1($2$3+0).times -> $4")
+      code = code.replace(/^(\s*)([a-zA-Z1-9])(.*?)[^;\r\n\.]times[:]?([^a-zA-Z0-9].*)$/gm, "$1($2$3+0).times -> $4")
       return [code, error]
 
     markFunctionalReferences: (code, error) ->

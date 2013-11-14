@@ -460,6 +460,13 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    (rotate wave()+0).times ->  box()
+        ,
+         input:    """
+                   rotates waves * waves timess boxs
+                   """
+         expected: """
+                   rotates waves * waves timess boxs
+                   """
                    """
         ,
          input:    """
