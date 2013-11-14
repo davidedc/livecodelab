@@ -351,6 +351,16 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/([a-zA-Z]+)[ ]+background(\s|$|;)/g, "background $1$2")
       return [code, error]
 
+    normaliseCode:(code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      code = code.replace(/[ ];/gm, "; ")
+      code = code.replace(/;+/g, ";")
+      code = code.replace(/;$/gm, "")
+      code = code.replace(/;([^ \r\n])/gm, "; $1")
+      return [code, error]
+
     checkBasicErrorsWithTimes:(code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
@@ -447,12 +457,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/^(\s*)([a-zA-Z1-9])(.*?)[^;\r\n\.]times[:]?([^a-zA-Z0-9].*)$/gm, "$1($2$3+0).times -> $4")
 
 
-      code = code.replace(/[ ];/gm, "; ")
-      code = code.replace(/;+/g, ";")
-      code = code.replace(/;$/gm, "")
-      code = code.replace(/;([^ \r\n])/gm, "; $1")
-
-      return [code, error]
+      return @normaliseCode(code, error)
 
     markFunctionalReferences: (code, error) ->
       # if there is an error, just propagate it
@@ -644,11 +649,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #code = code.replace(/[>][ ]*;/g, "> ")
       #code = code.replace(/[=][ ]*;/g, "= ")
 
-      code = code.replace(/[ ];/gm, "; ")
-      code = code.replace(/;+/g, ";")
-      code = code.replace(/;$/gm, "")
-      code = code.replace(/;([^ \r\n])/gm, "; $1")
-      return [code, error]
+      return @normaliseCode(code, error)
 
 
     adjustDoubleSlashSyntaxForComments: (code, error) ->
