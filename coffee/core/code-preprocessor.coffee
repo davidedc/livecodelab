@@ -411,6 +411,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/^(.*?)(;)\s*([a-zA-Z1-9])([^;\r\n]*?)[^\.\r\n]times[:]?([^a-zA-Z0-9].*)$/gm, "$1$2 ($3$4+0).times -> $5")
 
 
+      # takes care of cases like myFunc = -> 20 times rotate box
+      code = code.replace(/(->)\s+([a-zA-Z1-9])(.*?)[^\.\r\n;]times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3+0).times -> $4")
+
+
       # "times" takes as its first argument (i.e. the number of times)
       # anything before it up to the first statement or ; (or start of line)
       # so for example rotate wave 2 times box becomes
@@ -441,6 +445,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # the ^; is to avoid this matching:
       #   peg; times rotate box 2* wave (group1: p group2: eg; group3: rot...wave)
       code = code.replace(/^(\s*)([a-zA-Z1-9])(.*?)[^;\r\n\.]times[:]?([^a-zA-Z0-9].*)$/gm, "$1($2$3+0).times -> $4")
+
+
+      code = code.replace(/[ ];/gm, "; ")
+      code = code.replace(/;+/g, ";")
+      code = code.replace(/;$/gm, "")
+      code = code.replace(/;([^ \r\n])/gm, "; $1")
+
       return [code, error]
 
     markFunctionalReferences: (code, error) ->
@@ -468,6 +479,15 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       rx = RegExp("MARKED("+listOfLCLKeywords+")",'g')
       code = code.replace(rx, "$1")
+
+      # TODO this shouldn't be here
+      # replace stuff like (box 3+0).times -> into box; (3+0).times
+      scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
+      listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
+      rx = RegExp("\\(("+listOfStatements+") ",'g');
+      code = code.replace(rx, "$1(); (")
+
+      code = code.replace(/->;/gm, "->")
 
       return [code, error]
     
@@ -663,7 +683,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       [code, error] = @checkBasicErrorsWithTimes(code, error)
       
-      [code, error] = @transformTimesSyntax(code, error)
 
 
       # Note that coffeescript allows you to split arguments
@@ -694,6 +713,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @adjustImplicitCalls(code, error)
       [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
       [code, error] = @evaluateAllExpressions(code, userDefinedFunctions, error)
+      for i in [1..5] # todo avoid that, or make the loop tighter
+        [code, error] = @transformTimesSyntax(code, error)
+      [code, error] = @adjustImplicitCalls(code, error)
       [code, error] = @unmarkFunctionalReferences(code, error)
 
 
