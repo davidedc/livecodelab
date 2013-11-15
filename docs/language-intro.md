@@ -77,7 +77,7 @@ either <box>, <peg>
 ```
 basically, instead of forcing you to parentheses to evaluate functions, LiveCodeLab forces you to use brackets to *avoid* the evaluation, so that the two functions "box" and "peg" can be passed to "either" as unevaluated functions as it's supposed to be.
 
-Some examples
+Some examples (scroll table to the right)
 -----------
 
 ```
@@ -92,7 +92,7 @@ Some examples
 +--------------------------------------------------------------------------------------------------------------------------------------------------------------+
                                                      |                                                                       |
  aCertainAmount = -> sin(random)                     | aCertainAmount = -> sin(random())                                     | var aCertainAmount;	
- move aCertainAmount box	                            | move aCertainAmount(); box()                                          | 	
+ move aCertainAmount box	                         | move aCertainAmount(); box()                                          | 	
                                                      |                                                                       | 		aCertainAmount = function() {
                                                      |                                                                       | 		  return sin(random());
                                                      |                                                                       | 		};
@@ -114,14 +114,14 @@ Some examples
 +--------------------------------------------------------------------------------------------------------------------------------------------------------------+
                                                      |                                                                       |
  either = (a,b) -> if random > 0.5 then a() else b() |  either = (a,b) -> if random()> 0.5 then a() else b() either box, peg |  var either;
- either <box>, <peg>		                               |  either(box, peg);                                                    |  		either = function(a, b) {
+ either <box>, <peg>		                         |  either(box, peg);                                                    |  		either = function(a, b) {
                                                      |                                                                       |  		  if (random() > 0.5) {
                                                      |                                                                       |  		    return a();
                                                      |                                                                       |  		  } else {
                                                      |                                                                       |  		    return b();
                                                      |                                                                       |  		  }
                                                      |                                                                       |  		};
- 		                                                  |                                                                       |
+ 		                                             |                                                                       |
 +--------------------------------------------------------------------------------------------------------------------------------------------------------------+
                                                      |                                                                       |
  20 times rotate box                                 | 20.times ->  rotate(); box()                                          |  20.times(function() {
