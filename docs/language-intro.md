@@ -77,6 +77,64 @@ either <box>, <peg>
 ```
 basically, instead of forcing you to parentheses to evaluate functions, LiveCodeLab forces you to use brackets to *avoid* the evaluation, so that the two functions "box" and "peg" can be passed to "either" as unevaluated functions as it's supposed to be.
 
+Some examples
+-----------
+
+```
+                                                     +                                                                       +
+   LiveCodeLab                                       | Coffeescript                                                          | Javascript
++--------------------------------------------------------------------------------------------------------------------------------------------------------------+
+                                                     |                                                                       |
+ wave times rotate box                               |  wave().times -> rotate(); box()                                      | wave().times(function() {
+                                                     |                                                                       | 		  rotate();
+                                                     |                                                                       | 		  return box(); 
+                                                     |                                                                       | 		});
++--------------------------------------------------------------------------------------------------------------------------------------------------------------+
+                                                     |                                                                       |
+ aCertainAmount = -> sin(random)                     | aCertainAmount = -> sin(random())                                     | var aCertainAmount;	
+ move aCertainAmount box	                            | move aCertainAmount(); box()                                          | 	
+                                                     |                                                                       | 		aCertainAmount = function() {
+                                                     |                                                                       | 		  return sin(random());
+                                                     |                                                                       | 		};
+                                                     |                                                                       | 		
+                                                     |                                                                       | 		move(aCertainAmount());
+                                                     |                                                                       | 		
+                                                     |                                                                       | 		box();
++--------------------------------------------------------------------------------------------------------------------------------------------------------------+
+                                                     |                                                                       |
+ 2 times rotate box 2 times rotate line 2            |  (2+0).times -> rotate(); box(); (2+0).times -> rotate(); line 2      | 2.times(function() {
+                                                     |                                                                       | 		  rotate();
+                                                     |                                                                       | 		  box();
+                                                     |                                                                       | 		  return 2.times(function() {
+                                                     |                                                                       | 		    rotate();
+                                                     |                                                                       | 		    return line(2);
+                                                     |                                                                       | 		  }); 
+                                                     |                                                                       | 		});
+                                                     |                                                                       |
++--------------------------------------------------------------------------------------------------------------------------------------------------------------+
+                                                     |                                                                       |
+ either = (a,b) -> if random > 0.5 then a() else b() |  either = (a,b) -> if random()> 0.5 then a() else b() either box, peg |  var either;
+ either <box>, <peg>		                               |  either(box, peg);                                                    |  		either = function(a, b) {
+                                                     |                                                                       |  		  if (random() > 0.5) {
+                                                     |                                                                       |  		    return a();
+                                                     |                                                                       |  		  } else {
+                                                     |                                                                       |  		    return b();
+                                                     |                                                                       |  		  }
+                                                     |                                                                       |  		};
+ 		                                                  |                                                                       |
++--------------------------------------------------------------------------------------------------------------------------------------------------------------+
+                                                     |                                                                       |
+ 20 times rotate box                                 | 20.times ->  rotate(); box()                                          |  20.times(function() {
+                                                     |                                                                       |  		  rotate();
+                                                     |                                                                       |  		  return box(); 
+                                                     |                                                                       |  		});
+                                                     |                                                                       |
++--------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+		
+```
+
 Limitations and ambiguities
 -----------
 LiveCodeLab's "aggressive" euristics to shorten the typing are just that - euristics. They seem to work for us all the times, but if you run into trouble - just use short lines and use all the parentheses when needed. By doing so, LiveCodeLab won't have to do any guessing for you and will do exactly what you meant.
