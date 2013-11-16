@@ -156,12 +156,12 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #
       # it becomes:
       #
-      #      (1+0).times ->
+      #      1.times ->
       #        addDoOnce(1); background 255
       #        fill 255,0,0
       #
       #      ;addDoOnce(4);
-      #      (1+0).times -> ball
+      #      1.times -> ball
       #
       # So: if there is at least one doOnce
       #   split the source in lines
@@ -183,7 +183,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           elaboratedSourceByLine[eachLine] =
             elaboratedSourceByLine[eachLine].replace(
               /^(\s*)doOnce[ ]*\->[ ]*(.+)$/g,
-              "$1;addDoOnce(" + eachLine + "); (1+0).times -> $2")
+              "$1;addDoOnce(" + eachLine + "); 1.times -> $2")
           
           # add the line number tracing instruction to multiline case
           if /^(\s*)doOnce[ ]*\->[ ]*$/g.test(elaboratedSourceByLine[eachLine])
@@ -191,7 +191,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
             #alert('doOnce multiline!')
             elaboratedSourceByLine[eachLine] =
               elaboratedSourceByLine[eachLine].replace(
-                /^(\s*)doOnce[ ]*\->[ ]*$/g, "$1(1+0).times ->")
+                /^(\s*)doOnce[ ]*\->[ ]*$/g, "$11.times ->")
             elaboratedSourceByLine[eachLine + 1] =
               elaboratedSourceByLine[eachLine + 1].replace(
                 /^(\s*)(.+)$/g, "$1addDoOnce(" + eachLine + "); $2")
@@ -375,7 +375,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # For example we want to avoid
       #   peg; times rotate box 2* wave
       # to become
-      #   (peg()+0).times ->  rotate box 2* wave()
+      #   (peg()).times ->  rotate box 2* wave()
       # and run simply because we forgot a number in front
       # of 'times'
 
@@ -391,14 +391,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      # Note: this is mangled up in the translation to javascript
-      # from the coffeescript translator:
-      #   (1).times ->
-      # But this isn't:
-      #   (1+0).times ->
-      # So here is the little replace.
-      # ( see http://coffeescript.org/#try:%23%20incorrect%0A1.times%20-%3E%0A%20%20test%0A%0A%23%20incorrect%0A(1).times%20-%3E%0A%20%20test%0A%0A%23%20correct%0A(1%2B0).times%20-%3E%0A%20%20test%0A%0A%23%20correct%0An.times%20-%3E%0A%20%20test%0A )
-
       # note that [a-zA-Z1-9] prevents the times being on his own
       # without anything before it
 
@@ -409,25 +401,25 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #  if random > 0.5 then 3 times: rotate; box else 3 times rotate; 2 times: peg; wave
       # if you match the "then" first, then "; box else 3 times rotate; 2 times: peg; wave"
       # is matched and becomes 
-      #  if random > 0.5 then 3 times: rotate; (box else 3+0).times ->  rotate; 2 times: peg; wave
+      #  if random > 0.5 then 3 times: rotate; (box else 3).times ->  rotate; 2 times: peg; wave
       # which is not correct
       if detailedDebug then console.log "transformTimesSyntax-0\n" + code
-      code = code.replace(/(else)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3+0).times -> $4")
-      code = code.replace(/(then)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3+0).times -> $4")
+      code = code.replace(/(else)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3).times -> $4")
+      code = code.replace(/(then)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3).times -> $4")
 
       # the [^;]*? is to make sure that we don't take ; within the times argument
       # example:
       #  box; box ;  2 times: peg
       # if we don't exclude the semicolon form the times argument then we transform into
-      #  box; (box ;  2+0).times ->  peg
+      #  box; (box ;  2).times ->  peg
       # which is not correct
       if detailedDebug then console.log "transformTimesSyntax-1\n" + code
-      code = code.replace(/^(.*?)(;)\s*([a-zA-Z1-9])([^;\r\n]*?) times[:]?([^a-zA-Z0-9].*)$/gm, "$1$2 ($3$4+0).times -> $5")
+      code = code.replace(/^(.*?)(;)\s*([a-zA-Z1-9])([^;\r\n]*?) times[:]?([^a-zA-Z0-9].*)$/gm, "$1$2 ($3$4).times -> $5")
 
 
       # takes care of cases like myFunc = -> 20 times rotate box
       if detailedDebug then console.log "transformTimesSyntax-2\n" + code
-      code = code.replace(/(->)\s+([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3+0).times -> $4")
+      code = code.replace(/(->)\s+([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3).times -> $4")
 
 
       # last (catch all other cases where it captures everything
@@ -441,7 +433,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # to match ("p" as group 1, "eg[newline]" as group 2 and empty as group 3)
       # the ^; is to avoid this matching:
       #   peg; times rotate box 2* wave (group1: p group2: eg; group3: rot...wave)
-      code = code.replace(/^(\s*)([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9].*)$/gm, "$1($2$3+0).times -> $4")
+      code = code.replace(/^(\s*)([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9].*)$/gm, "$1($2$3).times -> $4")
       if detailedDebug then console.log "transformTimesSyntax-3\n" + code
 
 
@@ -483,6 +475,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       code = code.replace(/->;/gm, "->")
       if detailedDebug then console.log "unmarkFunctionalReferences-1\n" + code
+
+      # transform stuff like (3).times and (n).times
+      # into 3.times and n.times
+      code = code.replace(/\(\s*(\d+|[$A-Z_][0-9A-Z_$]*)\s*\)\.times/gi, "$1.times")
 
       return [code, error]
     
