@@ -702,8 +702,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
       if detailedDebug then console.log "preprocess-12\n" + code
       [code, error] = @evaluateAllExpressions(code, userDefinedFunctions, error)
-      for i in [1..5] # todo avoid that, or make the loop tighter
-        [code, error] = @transformTimesSyntax(code, error)
+      [code, error] = @transformTimesSyntax(code, error)
       if detailedDebug then console.log "preprocess-13\n" + code
       [code, error] = @adjustImplicitCalls(code, error)
       if detailedDebug then console.log "preprocess-14\n" + code
