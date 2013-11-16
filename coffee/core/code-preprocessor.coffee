@@ -706,8 +706,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
       if detailedDebug then console.log "preprocess-12\n" + code
       [code, error] = @evaluateAllExpressions(code, userDefinedFunctions, error)
-      [code, error] = @transformTimesSyntax(code, error)
       if detailedDebug then console.log "preprocess-13\n" + code
+      [code, error] = @transformTimesSyntax(code, error)
+      if detailedDebug then console.log "preprocess-14\n" + code
       [code, error] = @unmarkFunctionalReferences(code, error)
 
 
