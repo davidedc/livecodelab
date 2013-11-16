@@ -409,18 +409,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      # note that [a-zA-Z1-9] prevents the times being on his own
-      # without anything before it
-
-      # else has to be matched before the then, and then the semicolon.
-      # this is in order of specificity: the else dangles last so we match
-      # that first. Then the "then"s. The semicolons separations are last.
-      # example:
-      #  if random > 0.5 then 3 times: rotate; box else 3 times rotate; 2 times: peg; wave
-      # if you match the "then" first, then "; box else 3 times rotate; 2 times: peg; wave"
-      # is matched and becomes 
-      #  if random > 0.5 then 3 times: rotate; (box else 3).times ->  rotate; 2 times: peg; wave
-      # which is not correct
       if detailedDebug then console.log "transformTimesSyntax-0\n" + code
       code = code.replace(/(else)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
       code = code.replace(/(then)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
