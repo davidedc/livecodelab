@@ -422,8 +422,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #  if random > 0.5 then 3 times: rotate; (box else 3).times ->  rotate; 2 times: peg; wave
       # which is not correct
       if detailedDebug then console.log "transformTimesSyntax-0\n" + code
-      code = code.replace(/(else)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3).times -> $4")
-      code = code.replace(/(then)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3).times -> $4")
+      code = code.replace(/(else)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
+      code = code.replace(/(then)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
 
       # the [^;\r\n]*? is to make sure that we don't take ; within the times argument
       # example:
@@ -432,12 +432,12 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #  box; (box ;  2).times ->  peg
       # which is not correct
       if detailedDebug then console.log "transformTimesSyntax-1\n" + code
-      code = code.replace(/;[ \t]*([a-zA-Z1-9])([^;\r\n]*?) times[:]?([^a-zA-Z0-9].*)/g, "; ($1$2).times -> $3")
+      code = code.replace(/;[ \t]*([a-zA-Z1-9])([^;\r\n]*?) times[:]?([^a-zA-Z0-9])/g, "; ($1$2).times -> $3")
 
 
       # takes care of cases like myFunc = -> 20 times rotate box
       if detailedDebug then console.log "transformTimesSyntax-2\n" + code
-      code = code.replace(/(->)\s+([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3).times -> $4")
+      code = code.replace(/(->)\s+([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
 
 
       # last (catch all other cases where it captures everything
@@ -451,9 +451,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # to match ("p" as group 1, "eg[newline]" as group 2 and empty as group 3)
       # the ^; is to avoid this matching:
       #   peg; times rotate box 2* wave (group1: p group2: eg; group3: rot...wave)
-      code = code.replace(/^(\s*)([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9].*)$/gm, "$1($2$3).times -> $4")
+      code = code.replace(/([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9])/g, "($1$2).times -> $3")
       if detailedDebug then console.log "transformTimesSyntax-3\n" + code
-
 
       return @normaliseCode(code, error)
 
@@ -497,6 +496,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # transform stuff like (3).times and (n).times
       # into 3.times and n.times
       code = code.replace(/\(\s*(\d+|[$A-Z_][0-9A-Z_$]*)\s*\)\.times/gi, "$1.times")
+
+      code = code.replace(/->[ ]+/g, "-> ")
 
       return [code, error]
     

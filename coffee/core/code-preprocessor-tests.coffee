@@ -65,35 +65,35 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    6 times: rotate box
                    """
          expected: """
-                   6.times ->  rotate(); box()
+                   6.times -> rotate(); box()
                    """
         ,
          input:    """
                    myFunc = -> 20 times rotate box
                    """
          expected: """
-                   myFunc = -> 20.times ->  rotate(); box()
+                   myFunc = -> 20.times -> rotate(); box()
                    """
         ,
          input:    """
                    myFunc = (a,b) -> if true then 20 times rotate box
                    """
          expected: """
-                   myFunc = (a,b) -> if true then 20.times ->  rotate(); box()
+                   myFunc = (a,b) -> if true then 20.times -> rotate(); box()
                    """
         ,
          input:    """
                    if true then 2 times box 3 times line 2
                    """
          expected: """
-                   if true then 2.times ->  box(); 3.times ->  line 2
+                   if true then 2.times -> box(); 3.times -> line 2
                    """
         ,
          input:    """
                    6 times: rotate; box
                    """
          expected: """
-                   6.times ->  rotate(); box()
+                   6.times -> rotate(); box()
                    """
         ,
          input:    """
@@ -109,28 +109,28 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    1+1 times: rotate; box
                    """
          expected: """
-                   (1+1).times ->  rotate(); box()
+                   (1+1).times -> rotate(); box()
                    """
         ,
          input:    """
                    peg; 2 times rotate box 2* wave
                    """
          expected: """
-                   peg(); 2.times ->  rotate(); box 2* wave()
+                   peg(); 2.times -> rotate(); box 2* wave()
                    """
         ,
          input:    """
                    n = 2; n times: rotate;box
                    """
          expected: """
-                   n = 2; n.times ->  rotate(); box()
+                   n = 2; n.times -> rotate(); box()
                    """
         ,
          input:    """
-                   n = 2; (n+0).times ->  rotate(); box()
+                   n = 2; (n+0).times -> rotate(); box()
                    """
          expected: """
-                   n = 2; (n+0).times ->  rotate(); box()
+                   n = 2; (n+0).times -> rotate(); box()
                    """
         ,
          input:    """
@@ -151,21 +151,21 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    box; box ;  2 times: rotate; peg 1.3
                    """
          expected: """
-                   box(); box(); 2.times ->  rotate(); peg 1.3
+                   box(); box(); 2.times -> rotate(); peg 1.3
                    """
         ,
          input:    """
                    if random > 0.5 then 3 times: rotate; box else 3 times rotate; 2 times: peg; true
                    """
          expected: """
-                   if random()> 0.5 then 3.times ->  rotate(); box() else 3.times ->  rotate(); 2.times ->  peg(); true
+                   if random()> 0.5 then 3.times -> rotate(); box() else 3.times -> rotate(); 2.times -> peg(); true
                    """
         ,
          input:    """
                    if true then 3 times rotate; box
                    """
          expected: """
-                   if true then 3.times ->  rotate(); box()
+                   if true then 3.times -> rotate(); box()
                    """
         ,
          input:    """
@@ -179,14 +179,14 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if random() > 0.5 then rotate; box else 3 times rotate; peg; true
                    """
          expected: """
-                   if random() > 0.5 then rotate(); box() else 3.times ->  rotate(); peg(); true
+                   if random() > 0.5 then rotate(); box() else 3.times -> rotate(); peg(); true
                    """
         ,
          input:    """
                    if random() > 0.5 then rotate 1 + wave box else 3 times rotate; peg; true
                    """
          expected: """
-                   if random() > 0.5 then rotate 1 + wave(); box() else 3.times ->  rotate(); peg(); true
+                   if random() > 0.5 then rotate 1 + wave(); box() else 3.times -> rotate(); peg(); true
                    """
         ,
          input:    """
@@ -198,8 +198,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    
                    if random() > 0.5 then box()
-                   2.times ->  box()
-                   2.times ->  rotate(); box()
+                   2.times -> box()
+                   2.times -> rotate(); box()
                    """
         ,
          input:    """
@@ -210,7 +210,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    
-                   6.times ->  rotate(); box()
+                   6.times -> rotate(); box()
                    6.times -> 
                      rotate(); box()
                    """
@@ -240,7 +240,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    2 times rotate box wave; wave
                    """
          expected: """
-                   2.times ->  rotate(); box wave(); wave()
+                   2.times -> rotate(); box wave(); wave()
                    """
         ,
          input:    """
@@ -334,21 +334,21 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    2 times: box
                    """
          expected: """
-                   2.times ->  box()
+                   2.times -> box()
                    """
         ,
          input:    """
                    2 times: rotate; box
                    """
          expected: """
-                   2.times ->  rotate(); box()
+                   2.times -> rotate(); box()
                    """
         ,
          input:    """
                    2 times rotate box wave
                    """
          expected: """
-                   2.times ->  rotate(); box wave()
+                   2.times -> rotate(); box wave()
                    """
         ,
          input:    """
@@ -376,7 +376,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    2 times: rotate box wave
                    """
          expected: """
-                   2.times ->  rotate(); box wave()
+                   2.times -> rotate(); box wave()
                    """
         ,
          input:    """
@@ -390,7 +390,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    2 times: move; rotate wave; box
                    """
          expected: """
-                   2.times ->  move(); rotate wave(); box()
+                   2.times -> move(); rotate wave(); box()
                    """
         ,
          input:    """
@@ -470,28 +470,28 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate wave times box
                    """
          expected: """
-                   rotate(); (wave()).times ->  box()
+                   rotate(); (wave()).times -> box()
                    """
         ,
          input:    """
                    rotate 10*wave times box
                    """
          expected: """
-                   rotate(); (10*wave()).times ->  box()
+                   rotate(); (10*wave()).times -> box()
                    """
         ,
          input:    """
                    rotate 10 * wave times box
                    """
          expected: """
-                   rotate(); (10 * wave()).times ->  box()
+                   rotate(); (10 * wave()).times -> box()
                    """
         ,
          input:    """
                    rotate wave * wave times box
                    """
          expected: """
-                   rotate(); (wave()* wave()).times ->  box()
+                   rotate(); (wave()* wave()).times -> box()
                    """
         ,
          input:    """
@@ -505,56 +505,56 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate wave*wave times box
                    """
          expected: """
-                   rotate(); (wave()*wave()).times ->  box()
+                   rotate(); (wave()*wave()).times -> box()
                    """
         ,
          input:    """
                    rotate 2 times box
                    """
          expected: """
-                   rotate(); 2.times ->  box()
+                   rotate(); 2.times -> box()
                    """
         ,
          input:    """
                    rotate wave 2 times box
                    """
          expected: """
-                   rotate(); (wave 2).times ->  box()
+                   rotate(); (wave 2).times -> box()
                    """
         ,
          input:    """
                    rotate wave + 2 times box
                    """
          expected: """
-                   rotate(); (wave()+ 2).times ->  box()
+                   rotate(); (wave()+ 2).times -> box()
                    """
         ,
          input:    """
                    box 2 times box
                    """
          expected: """
-                   box(); 2.times ->  box()
+                   box(); 2.times -> box()
                    """
         ,
          input:    """
                    2 times 3 times box
                    """
          expected: """
-                   2.times -> 3.times ->  box()
+                   2.times -> 3.times -> box()
                    """
         ,
          input:    """
                    2 times 3 times 4 times box
                    """
          expected: """
-                   2.times -> 3.times -> 4.times ->  box()
+                   2.times -> 3.times -> 4.times -> box()
                    """
         ,
          input:    """
                    2 times box 3 times line 2
                    """
          expected: """
-                   2.times ->  box(); 3.times ->  line 2
+                   2.times -> box(); 3.times -> line 2
                    """
         ,
          input:    """
