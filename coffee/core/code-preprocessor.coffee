@@ -257,6 +257,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         # this is useful to remove all comments but keeping all the strings
         # the difference is that here I don't treat regular expressions.
         # Note that string take precedence over comments i.e.
+        #   "lorem ipsum //"
         # is a string, not half a string with a quote in a comment
         # get rid of the comments for good.
         # note the use of coffeescripts' "block regular expressions" here,
