@@ -112,7 +112,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
     constructor: ->
       @testCases = (new CodePreprocessorTests()).testCases
-      # make the preprocessor tests easily accessible from the console.
+      # make the preprocessor tests easily accessible from
+      # the debug console (just type testPreprocessor())
       window.testPreprocessor = => @test()
 
     ###
@@ -221,7 +222,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           return true
         code = code.slice(1)
 
-    stripCommentsAndCheckBasicSyntax: (code, error) ->
+    stripCommentsAndStrings: (code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
@@ -296,6 +297,15 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           code.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')/g, "")
       else
         codeWithoutStringsOrComments = code
+        codeWithoutComments = code
+
+      return [codeWithoutComments, codeWithoutStringsOrComments, error]
+
+    checkBasicSyntax: (code, codeWithoutStringsOrComments, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+
       aposCount = 0
       quoteCount = 0
       roundBrackCount = 0
@@ -677,11 +687,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       @listOfExpressionsAnduserDefinedFunctions = @listOfExpressions.concat userDefinedFunctions
       [code, error] = @removeTickedDoOnce(code, error)
       if detailedDebug then console.log "preprocess-2\n" + code
-      [code, error] = @stripCommentsAndCheckBasicSyntax(code, error)
+      [code, codeWithoutStringsOrComments, error] = @stripCommentsAndStrings(code, error)
       if detailedDebug then console.log "preprocess-3\n" + code
+      [code, error] = @checkBasicSyntax(code, codeWithoutStringsOrComments, error)
+      if detailedDebug then console.log "preprocess-4\n" + code
 
       [code, error] = @markFunctionalReferences(code, error)
-      if detailedDebug then console.log "preprocess-4\n" + code
+      if detailedDebug then console.log "preprocess-5\n" + code
 
       # allow some common command forms can be used in postfix notation, e.g.
       #   60 bpm
@@ -689,10 +701,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #   yellow stroke
       #   black background
       [code, error] = @adjustPostfixNotations(code, error)
-      if detailedDebug then console.log "preprocess-5\n" + code
+      if detailedDebug then console.log "preprocess-6\n" + code
 
       [code, error] = @checkBasicErrorsWithTimes(code, error)
-      if detailedDebug then console.log "preprocess-6\n" + code
+      if detailedDebug then console.log "preprocess-7\n" + code
       
 
 
@@ -718,22 +730,22 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # where exactly it is so that we can go back and mark it with a tick
       # (which prevents a second run to happen, as the tickmarks expand into
       # line comments).
-      if detailedDebug then console.log "preprocess-7\n" + code
+      if detailedDebug then console.log "preprocess-8\n" + code
       [code, error] = @addTracingInstructionsToDoOnceBlocks(code, error)
 
-      if detailedDebug then console.log "preprocess-8\n" + code
-      [code, error] = @addCommandsSeparations(code, error)
       if detailedDebug then console.log "preprocess-9\n" + code
-      [code, error] = @adjustImplicitCalls(code, error)
+      [code, error] = @addCommandsSeparations(code, error)
       if detailedDebug then console.log "preprocess-10\n" + code
-      [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
+      [code, error] = @adjustImplicitCalls(code, error)
       if detailedDebug then console.log "preprocess-11\n" + code
+      [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
+      if detailedDebug then console.log "preprocess-12\n" + code
       [code, error] = @evaluateAllExpressions(code, userDefinedFunctions, error)
       for i in [1..5] # todo avoid that, or make the loop tighter
         [code, error] = @transformTimesSyntax(code, error)
-      if detailedDebug then console.log "preprocess-12\n" + code
-      [code, error] = @adjustImplicitCalls(code, error)
       if detailedDebug then console.log "preprocess-13\n" + code
+      [code, error] = @adjustImplicitCalls(code, error)
+      if detailedDebug then console.log "preprocess-14\n" + code
       [code, error] = @unmarkFunctionalReferences(code, error)
 
 
@@ -758,7 +770,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           listOfExpressions = @listOfExpressions.join "|"
           listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
           
-          [mootInput, errorMoot] = @stripCommentsAndCheckBasicSyntax(testCase.input,null)
+          [mootInput, ignore, errorMoot] = @stripCommentsAndStrings(testCase.input,null)
           if !errorMoot?
             rx = RegExp("(("+listOfLCLKeywords+"|times)([^a-zA-Z0-9]|$))",'gm');
             mootInputAppend = mootInput.replace(rx, "$2s$3")
@@ -777,7 +789,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           if !errorMoot?
             if userDefinedFunctions.length != 0
               transformedMootAppend = transformedMootAppend.replace(rx, "$1")
-            transformedMootAppend = @stripCommentsAndCheckBasicSyntax(transformedMootAppend,null)[0]
+            transformedMootAppend = @stripCommentsAndStrings(transformedMootAppend,null)[0]
             if mootInputAppend != transformedMootAppend
               failedMootAppends++
               console.log "unexpected transformation"
@@ -787,7 +799,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           if !errorMootPrepend?
             if userDefinedFunctions.length != 0
               transformedMootPrepend = transformedMootPrepend.replace(rx, "$1")            
-            transformedMootPrepend = @stripCommentsAndCheckBasicSyntax(transformedMootPrepend,null)[0]
+            transformedMootPrepend = @stripCommentsAndStrings(transformedMootPrepend,null)[0]
             if mootInputPrepend != transformedMootPrepend
               failedMootPrepends++
               console.log "unexpected transformation"
