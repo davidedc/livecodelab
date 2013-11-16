@@ -530,19 +530,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # to turn into box() -1
       delimitersForCommands = ":|;|\\,|\\?|\\)|//|\\#|\\selse|\\sthen"
       delimitersForExpressions = delimitersForCommands + "|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
-      # these regexes needed to run twice 
-      # in order to reach the token in between
-      # delimiters, such as "box(wave,wave,wave)"
-      # the second "wave" is not reached by the just one run
-      # because the first matching wave consumes the comma before the
-      # second...
-      for i in [1..2]
-        rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfCommands+")[ \\t]*("+delimitersForCommands+")",'g')
-        code = code.replace(rx, "$1$2()$3")
+
+      rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfCommands+")[ \\t]*("+delimitersForCommands+")",'g')
+      code = code.replace(rx, "$1$2()$3")
       if detailedDebug then console.log "adjustImplicitCalls-4\n" + code
-      for i in [1..2]
-        rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfExpressions+")[ \\t]*("+delimitersForExpressions+")",'g')
-        code = code.replace(rx, "$1$2()$3")
+
+      rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfExpressions+")[ \\t]*("+delimitersForExpressions+")",'g')
+      code = code.replace(rx, "$1$2()$3")
       if detailedDebug then console.log "adjustImplicitCalls-5\n" + code
 
       #box 0.5,2
