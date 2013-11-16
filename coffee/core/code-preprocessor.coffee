@@ -531,12 +531,14 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       delimitersForCommands = ":|;|\\,|\\?|\\)|//|\\#|\\selse|\\sthen"
       delimitersForExpressions = delimitersForCommands + "|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
 
-      rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfCommands+")[ \\t]*("+delimitersForCommands+")",'g')
-      code = code.replace(rx, "$1$2()$3")
+      for i in [1..2]
+        rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfCommands+")[ \\t]*("+delimitersForCommands+")",'g')
+        code = code.replace(rx, "$1$2()$3")
       if detailedDebug then console.log "adjustImplicitCalls-4\n" + code
 
-      rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfExpressions+")[ \\t]*("+delimitersForExpressions+")",'g')
-      code = code.replace(rx, "$1$2()$3")
+      for i in [1..2]
+        rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfExpressions+")[ \\t]*("+delimitersForExpressions+")",'g')
+        code = code.replace(rx, "$1$2()$3")
       if detailedDebug then console.log "adjustImplicitCalls-5\n" + code
 
       #box 0.5,2
@@ -596,6 +598,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
       listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
 
+      rx = RegExp("("+listOfExpressions+")([ \\t]*)times",'g')
+      code = code.replace(rx, "$1()$2times")
       
       rx = RegExp("([^;>\\( \\t\\r\\n])([ ])("+listOfCommands+")([^a-zA-Z0-9\\r\\n])",'gm')
       code = code.replace(rx, "$1;$2$3$4")
@@ -704,7 +708,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @evaluateAllExpressions(code, userDefinedFunctions, error)
       [code, error] = @transformTimesSyntax(code, error)
       if detailedDebug then console.log "preprocess-13\n" + code
-      [code, error] = @adjustImplicitCalls(code, error)
       if detailedDebug then console.log "preprocess-14\n" + code
       [code, error] = @unmarkFunctionalReferences(code, error)
 
