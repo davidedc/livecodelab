@@ -474,7 +474,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(rx, "$1")
 
       # TODO this shouldn't be here
-      # replace stuff like (box 3+0).times -> into box; (3+0).times
+      # replace stuff like (box 3).times -> into box(); 3.times
       scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
       listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
       rx = RegExp("\\(("+listOfStatements+") ",'g');
