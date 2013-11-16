@@ -425,14 +425,14 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/(else)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3).times -> $4")
       code = code.replace(/(then)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9].*)/g, "$1 ($2$3).times -> $4")
 
-      # the [^;]*? is to make sure that we don't take ; within the times argument
+      # the [^;\r\n]*? is to make sure that we don't take ; within the times argument
       # example:
       #  box; box ;  2 times: peg
       # if we don't exclude the semicolon form the times argument then we transform into
       #  box; (box ;  2).times ->  peg
       # which is not correct
       if detailedDebug then console.log "transformTimesSyntax-1\n" + code
-      code = code.replace(/^(.*?)(;)\s*([a-zA-Z1-9])([^;\r\n]*?) times[:]?([^a-zA-Z0-9].*)$/gm, "$1$2 ($3$4).times -> $5")
+      code = code.replace(/;[ \t]*([a-zA-Z1-9])([^;\r\n]*?) times[:]?([^a-zA-Z0-9].*)/g, "; ($1$2).times -> $3")
 
 
       # takes care of cases like myFunc = -> 20 times rotate box
