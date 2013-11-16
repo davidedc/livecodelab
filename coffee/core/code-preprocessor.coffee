@@ -376,7 +376,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       return [undefined, error] if error?
 
       code = code.replace(/[ ];/gm, "; ")
-      code = code.replace(/;+/g, ";")
       code = code.replace(/;$/gm, "")
       code = code.replace(/;([^ \r\n])/gm, "; $1")
       return [code, error]
