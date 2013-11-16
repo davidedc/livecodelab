@@ -443,12 +443,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # last (catch all other cases where it captures everything
       # since the start of the line,
       # which is why you need to handle the other cases before):
-
-      # the ^\r\n is to avoid matching a return, which would cause
-      #   peg
-      #   times
-      #     box
-      # to match ("p" as group 1, "eg[newline]" as group 2 and empty as group 3)
       # the ^; is to avoid this matching:
       #   peg; times rotate box 2* wave (group1: p group2: eg; group3: rot...wave)
       code = code.replace(/([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9])/g, "($1$2).times -> $3")
