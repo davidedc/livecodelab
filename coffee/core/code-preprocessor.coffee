@@ -570,30 +570,14 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
       listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
       listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
-
       
-      for i in [1..2]
-        rx = RegExp("("+scaleRotateMoveCommands+")([ \\t]*)("+listOfCommands+")([ ]*)([^;\\r\\n]*)",'g')
-        #code = code.replace(rx, "C$1<>$2<>$3<>$4<>$5<>")
-        code = code.replace(rx, "$1();$2$3$4$5")
-
-
-      for i in [1..2]
-        rx = RegExp("("+listOfCommands+")([ \\t]*)("+listOfCommands+")([ ]*)($)?",'gm')
-        code = code.replace(rx, "$1();$2$3$4$5")
-
-      for i in [1..2]
-        rx = RegExp("("+scaleRotateMoveCommands+")([ \\t;]*)("+listOfCommands+")([ ]*)([^;\\r\\n]*)",'g')
-        code = code.replace(rx, "$1();$2$3$4$5;")
+      rx = RegExp("("+listOfCommands+")([ \\t]*)("+listOfCommands+")([ ]*)($)?",'gm')
+      code = code.replace(rx, "$1();$2$3$4$5")
 
       #for i in [1..2]
       #  rx = RegExp("("+scaleRotateMoveCommands+")(.*)("+listOfCommands+")(.*)$",'gm')
       #  code = code.replace(rx, "pushMatrix();$1$2$3;popMatrix();")
 
-
-
-      code = code.replace(/;+/g, ";")
-      code = code.replace(/;$/gm, "")
       return [code, error]
 
     findUserDefinedFunctions: (code, error) ->
