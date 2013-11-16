@@ -14,23 +14,30 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
     testCases: null
 
-    # We separate Statements from Expressions here.
-    # Expressions return a value that is useful
-    # for being further used.
-    # Statements don't. Note that actually in
+    # We separate Commands from Expressions here.
+    # Expressions return a value that is potentially
+    # useful, while Stataments just change some sort
+    # of state but don't return anything useful.
+    # For example you can say
+    #   wave + 1; scale wave
+    # but not
+    #   box + 1; scale box
+    # hence, wave is an expression while box is
+    # a command.
+    # Note that actually in
     # coffeescript everything returns a value,
     # only in our case we really don't know what to
-    # do with return values of primitives.
+    # do with return values of many functions.
     # The explanation of why we need this separation
     # is in the "implicit function" transformations
-    # code below.
-    scaleRotateMoveStatements: [
+    # code.
+    scaleRotateMoveCommands: [
       # scale rotate move
       "rotate"
       "move"
       "scale"
     ]
-    listOfStatements: [
+    listOfCommands: [
       # Geometry
       "rect"
       "line"
@@ -443,10 +450,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
-      listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
+      scaleRotateMoveCommands = @scaleRotateMoveCommands.join "|"
+      listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
       listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
-      listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
+      listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
 
       rx = RegExp("<[\\s]*("+listOfLCLKeywords+")[\\s]*>",'g')
       code = code.replace(rx, "MARKED$1")
@@ -457,19 +464,19 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
-      listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
+      scaleRotateMoveCommands = @scaleRotateMoveCommands.join "|"
+      listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
       listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
-      listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
+      listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
 
       rx = RegExp("MARKED("+listOfLCLKeywords+")",'g')
       code = code.replace(rx, "$1")
 
       # TODO this shouldn't be here
       # replace stuff like (box 3).times -> into box(); 3.times
-      scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
-      listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
-      rx = RegExp("\\(("+listOfStatements+") ",'g');
+      scaleRotateMoveCommands = @scaleRotateMoveCommands.join "|"
+      listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
+      rx = RegExp("\\(("+listOfCommands+") ",'g');
       code = code.replace(rx, "$1(); (")
       if detailedDebug then console.log "unmarkFunctionalReferences-0\n" + code
 
@@ -486,10 +493,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
-      listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
+      scaleRotateMoveCommands = @scaleRotateMoveCommands.join "|"
+      listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
       listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
-      listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
+      listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
 
       
       # adding () to single tokens on their own at the start of a line
@@ -519,7 +526,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #   if ball then ball else something
       #   box wave
       #   box wave(wave)
-      # Why do we handle Statements differently from expressions?
+      # Why do we handle Commands differently from expressions?
       # cause they have different delimiters
       # I expect
       #   wave -1
@@ -528,8 +535,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # but I don't want
       #   box -1
       # to turn into box() -1
-      delimitersForStatements = ":|;|\\,|\\?|\\)|//|\\#|\\selse|\\sthen"
-      delimitersForExpressions = delimitersForStatements + "|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
+      delimitersForCommands = ":|;|\\,|\\?|\\)|//|\\#|\\selse|\\sthen"
+      delimitersForExpressions = delimitersForCommands + "|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
       # these regexes needed to run twice 
       # in order to reach the token in between
       # delimiters, such as "box(wave,wave,wave)"
@@ -537,7 +544,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # because the first matching wave consumes the comma before the
       # second...
       for i in [1..2]
-        rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfStatements+")[ \\t]*("+delimitersForStatements+")",'g')
+        rx = RegExp("([^a-zA-Z0-9\\r\\n])("+listOfCommands+")[ \\t]*("+delimitersForCommands+")",'g')
         code = code.replace(rx, "$1$2()$3")
       if detailedDebug then console.log "adjustImplicitCalls-4\n" + code
       for i in [1..2]
@@ -566,28 +573,28 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
-      listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
+      scaleRotateMoveCommands = @scaleRotateMoveCommands.join "|"
+      listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
       listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
-      listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
+      listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
 
       
       for i in [1..2]
-        rx = RegExp("("+scaleRotateMoveStatements+")([ \\t]*)("+listOfStatements+")([ ]*)([^;\\r\\n]*)",'g')
+        rx = RegExp("("+scaleRotateMoveCommands+")([ \\t]*)("+listOfCommands+")([ ]*)([^;\\r\\n]*)",'g')
         #code = code.replace(rx, "C$1<>$2<>$3<>$4<>$5<>")
         code = code.replace(rx, "$1();$2$3$4$5")
 
 
       for i in [1..2]
-        rx = RegExp("("+listOfStatements+")([ \\t]*)("+listOfStatements+")([ ]*)($)?",'gm')
+        rx = RegExp("("+listOfCommands+")([ \\t]*)("+listOfCommands+")([ ]*)($)?",'gm')
         code = code.replace(rx, "$1();$2$3$4$5")
 
       for i in [1..2]
-        rx = RegExp("("+scaleRotateMoveStatements+")([ \\t;]*)("+listOfStatements+")([ ]*)([^;\\r\\n]*)",'g')
+        rx = RegExp("("+scaleRotateMoveCommands+")([ \\t;]*)("+listOfCommands+")([ ]*)([^;\\r\\n]*)",'g')
         code = code.replace(rx, "$1();$2$3$4$5;")
 
       #for i in [1..2]
-      #  rx = RegExp("("+scaleRotateMoveStatements+")(.*)("+listOfStatements+")(.*)$",'gm')
+      #  rx = RegExp("("+scaleRotateMoveCommands+")(.*)("+listOfCommands+")(.*)$",'gm')
       #  code = code.replace(rx, "pushMatrix();$1$2$3;popMatrix();")
 
 
@@ -613,13 +620,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
-      listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
+      scaleRotateMoveCommands = @scaleRotateMoveCommands.join "|"
+      listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
       listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
-      listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
+      listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
 
       
-      rx = RegExp("([^;>\\( \\t\\r\\n])([ ])("+listOfStatements+")([^a-zA-Z0-9\\r\\n])",'gm')
+      rx = RegExp("([^;>\\( \\t\\r\\n])([ ])("+listOfCommands+")([^a-zA-Z0-9\\r\\n])",'gm')
       code = code.replace(rx, "$1;$2$3$4")
       if detailedDebug then console.log "evaluateAllExpressions-1\n" + code
 
@@ -631,8 +638,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "evaluateAllExpressions-3\n" + code
 
 
-      delimitersForStatementsMod = ":|;|\\,|\\?|//|\\#|\\selse|\\sthen"
-      delimitersForExpressions = delimitersForStatementsMod + "|if|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
+      delimitersForCommandsMod = ":|;|\\,|\\?|//|\\#|\\selse|\\sthen"
+      delimitersForExpressions = delimitersForCommandsMod + "|if|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
       userDefinedFunctions = '' + userDefinedFunctions.join "|"
       if userDefinedFunctions != ""
         delimitersForExpressions = userDefinedFunctions + "|"+ delimitersForExpressions
@@ -640,7 +647,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(rx, "$1$2")
       if detailedDebug then console.log "evaluateAllExpressions-4\n" + code
 
-      #rx = RegExp("([^a-zA-Z0-9;>\\(])([ \\t]*)("+listOfStatements+")([^a-zA-Z0-9])",'g')
+      #rx = RegExp("([^a-zA-Z0-9;>\\(])([ \\t]*)("+listOfCommands+")([^a-zA-Z0-9])",'g')
       #code = code.replace(rx, "$1;$2$3$4")
       #code = code.replace(/[>][ ]*;/g, "> ")
       #code = code.replace(/[=][ ]*;/g, "= ")
@@ -746,10 +753,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           if testIdempotency
             [transformedTwice, error] = @preprocess(transformed)
 
-          scaleRotateMoveStatements = @scaleRotateMoveStatements.join "|"
-          listOfStatements = (@listOfStatements.join "|") + "|" + scaleRotateMoveStatements
+          scaleRotateMoveCommands = @scaleRotateMoveCommands.join "|"
+          listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
           listOfExpressions = @listOfExpressions.join "|"
-          listOfLCLKeywords = listOfStatements + "|" + listOfExpressions
+          listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
           
           [mootInput, errorMoot] = @stripCommentsAndCheckBasicSyntax(testCase.input,null)
           if !errorMoot?
