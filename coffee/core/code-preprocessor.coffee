@@ -730,14 +730,16 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           scaleRotateMoveCommands = @scaleRotateMoveCommands.join "|"
           listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
-          listOfExpressions = @listOfExpressions.join "|"
+          listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
           listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
           
+          appendString = 's'
+          prependString = 't'
           [mootInput, ignore, errorMoot] = @stripCommentsAndStrings(testCase.input,null)
           if !errorMoot?
             rx = RegExp("(("+listOfLCLKeywords+"|times)([^a-zA-Z0-9]|$))",'gm');
-            mootInputAppend = mootInput.replace(rx, "$2s$3")
-            mootInputPrepend = mootInput.replace(rx, "s$2$3")
+            mootInputAppend = mootInput.replace(rx, "$2"+appendString+"$3")
+            mootInputPrepend = mootInput.replace(rx, prependString+"$2$3")
 
             mootInputAppend = @normaliseCode(mootInputAppend,null)[0]
             [transformedMootAppend, errorMoot] = @preprocess(mootInputAppend)
@@ -747,11 +749,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           userDefinedFunctions = @findUserDefinedFunctions(mootInput,null)[2]
           listOfuserDefinedFunctions = userDefinedFunctions.join "|"
-          rx = RegExp("("+listOfuserDefinedFunctions+")\\(\\)",'gm');
 
           if !errorMoot?
             if userDefinedFunctions.length != 0
-              transformedMootAppend = transformedMootAppend.replace(rx, "$1")
+              rx = RegExp("("+listOfuserDefinedFunctions+")"+appendString+"\\(\\)",'gm');
+              transformedMootAppend = transformedMootAppend.replace(rx, "$1"+appendString)
             transformedMootAppend = @stripCommentsAndStrings(transformedMootAppend,null)[0]
             if mootInputAppend != transformedMootAppend
               failedMootAppends++
@@ -761,7 +763,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           if !errorMootPrepend?
             if userDefinedFunctions.length != 0
-              transformedMootPrepend = transformedMootPrepend.replace(rx, "$1")            
+              rx = RegExp(prependString+"("+listOfuserDefinedFunctions+")\\(\\)",'gm');
+              transformedMootPrepend = transformedMootPrepend.replace(rx, prependString+"$1")            
             transformedMootPrepend = @stripCommentsAndStrings(transformedMootPrepend,null)[0]
             if mootInputPrepend != transformedMootPrepend
               failedMootPrepends++
