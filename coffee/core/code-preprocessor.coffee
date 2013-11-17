@@ -437,13 +437,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       return @normaliseCode(code, error)
 
-    markFunctionalReferences: (code, error) ->
+    markFunctionalReferences: (code, error, userDefinedFunctions) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
       scaleRotateMoveCommands = @scaleRotateMoveCommands.join "|"
       listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
-      listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
+      listOfExpressions = (@listOfExpressions.join "|") + userDefinedFunctions
       listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
 
       rx = RegExp("<[\\s]*("+listOfLCLKeywords+")[\\s]*>",'g')
@@ -451,13 +451,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       return [code, error]
 
-    unmarkFunctionalReferences: (code, error) ->
+    unmarkFunctionalReferences: (code, error, userDefinedFunctions) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
       scaleRotateMoveCommands = @scaleRotateMoveCommands.join "|"
       listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
-      listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
+      listOfExpressions = (@listOfExpressions.join "|") + userDefinedFunctions
       listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
 
       rx = RegExp("MARKED("+listOfLCLKeywords+")",'g')
@@ -482,13 +482,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       return [code, error]
     
-    adjustImplicitCalls: (code, error) ->
+    adjustImplicitCalls: (code, error, userDefinedFunctions) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
       scaleRotateMoveCommands = @scaleRotateMoveCommands.join "|"
       listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
-      listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
+      listOfExpressions = (@listOfExpressions.join "|") + userDefinedFunctions
       listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
 
       
@@ -558,13 +558,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "adjustImplicitCalls-6\n" + code
       return [code, error]
 
-    addCommandsSeparations: (code, error) ->
+    addCommandsSeparations: (code, error, userDefinedFunctions) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
       scaleRotateMoveCommands = @scaleRotateMoveCommands.join "|"
       listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
-      listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
+      listOfExpressions = (@listOfExpressions.join "|") + userDefinedFunctions
       listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
       
       rx = RegExp("("+listOfCommands+")([ \\t]*)("+listOfCommands+")([ ]*)($)?",'gm')
@@ -585,17 +585,21 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       while match = rx.exec code
         userDefinedFunctions.push(match[1])
 
+      userDefinedFunctions = userDefinedFunctions.join "|"
+      if userDefinedFunctions != ""
+        userDefinedFunctions = "|"+userDefinedFunctions
+
       #console.log "*****" + userDefinedFunctions
       return [code, error, userDefinedFunctions]
 
 
-    evaluateAllExpressions: (code, userDefinedFunctions, error) ->
+    evaluateAllExpressions: (code, error, userDefinedFunctions) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
       scaleRotateMoveCommands = @scaleRotateMoveCommands.join "|"
       listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
-      listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
+      listOfExpressions = (@listOfExpressions.join "|") + userDefinedFunctions
       listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
 
       rx = RegExp("("+listOfExpressions+")([ \\t]*)times",'g')
@@ -615,9 +619,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       delimitersForCommandsMod = ":|;|\\,|\\?|//|\\#|\\selse|\\sthen"
       delimitersForExpressions = delimitersForCommandsMod + "|if|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
-      userDefinedFunctions = '' + userDefinedFunctions.join "|"
-      if userDefinedFunctions != ""
-        delimitersForExpressions = userDefinedFunctions + "|"+ delimitersForExpressions
+      delimitersForExpressions = delimitersForExpressions + userDefinedFunctions
       rx = RegExp("("+delimitersForExpressions+")([ \\t]*);",'g')
       code = code.replace(rx, "$1$2")
       if detailedDebug then console.log "evaluateAllExpressions-4\n" + code
@@ -649,7 +651,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error, userDefinedFunctions] = @findUserDefinedFunctions(code, error)
       if detailedDebug then console.log "preprocess-1\n" + code
 
-      @listOfExpressionsAnduserDefinedFunctions = @listOfExpressions.concat userDefinedFunctions
       [code, error] = @removeTickedDoOnce(code, error)
       if detailedDebug then console.log "preprocess-2\n" + code
       [code, codeWithoutStringsOrComments, error] = @stripCommentsAndStrings(code, error)
@@ -657,7 +658,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @checkBasicSyntax(code, codeWithoutStringsOrComments, error)
       if detailedDebug then console.log "preprocess-4\n" + code
 
-      [code, error] = @markFunctionalReferences(code, error)
+      [code, error] = @markFunctionalReferences(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-5\n" + code
 
       # allow some common command forms can be used in postfix notation, e.g.
@@ -699,17 +700,19 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @addTracingInstructionsToDoOnceBlocks(code, error)
 
       if detailedDebug then console.log "preprocess-9\n" + code
-      [code, error] = @addCommandsSeparations(code, error)
+      [code, error] = @addCommandsSeparations(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-10\n" + code
-      [code, error] = @adjustImplicitCalls(code, error)
+      [code, error] = @adjustImplicitCalls(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-11\n" + code
       [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
       if detailedDebug then console.log "preprocess-12\n" + code
-      [code, error] = @evaluateAllExpressions(code, userDefinedFunctions, error)
+      [code, error] = @evaluateAllExpressions(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-13\n" + code
       [code, error] = @transformTimesSyntax(code, error)
       if detailedDebug then console.log "preprocess-14\n" + code
-      [code, error] = @unmarkFunctionalReferences(code, error)
+      [code, error] = @unmarkFunctionalReferences(code, error, userDefinedFunctions)
+
+      return [code, error, userDefinedFunctions]
 
 
 
@@ -719,18 +722,18 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         failedTests = successfulTest = knownIssues = failedIdempotency = failedMootAppends = failedMootPrepends = 0
         for testCaseNumber in [0...@testCases.length]
           testCase = @testCases[testCaseNumber]
-          [transformed, error] = @preprocess(testCase.input)
+          [transformed, error, userDefinedFunctions] = @preprocess(testCase.input)
           # only check idempotency if there was no error
           # in the first step and if the test case
           # has no "notIdempotent" flag
           testIdempotency = !error? and !(testCase.notIdempotent?)
           #testIdempotency = false
           if testIdempotency
-            [transformedTwice, error] = @preprocess(transformed)
+            [transformedTwice, error, ] = @preprocess(transformed)
 
           scaleRotateMoveCommands = @scaleRotateMoveCommands.join "|"
           listOfCommands = (@listOfCommands.join "|") + "|" + scaleRotateMoveCommands
-          listOfExpressions = @listOfExpressionsAnduserDefinedFunctions.join "|"
+          listOfExpressions = (@listOfExpressions.join "|") + userDefinedFunctions
           listOfLCLKeywords = listOfCommands + "|" + listOfExpressions
           
           appendString = 's'
@@ -742,17 +745,15 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
             mootInputPrepend = mootInput.replace(rx, prependString+"$2$3")
 
             mootInputAppend = @normaliseCode(mootInputAppend,null)[0]
-            [transformedMootAppend, errorMoot] = @preprocess(mootInputAppend)
+            [transformedMootAppend, errorMoot,] = @preprocess(mootInputAppend)
             mootInputPrepend = @normaliseCode(mootInputPrepend,null)[0]
-            [transformedMootPrepend, errorMootPrepend] = @preprocess(mootInputPrepend)
+            [transformedMootPrepend, errorMootPrepend,] = @preprocess(mootInputPrepend)
             
 
-          userDefinedFunctions = @findUserDefinedFunctions(mootInput,null)[2]
-          listOfuserDefinedFunctions = userDefinedFunctions.join "|"
 
           if !errorMoot?
-            if userDefinedFunctions.length != 0
-              rx = RegExp("("+listOfuserDefinedFunctions+")"+appendString+"\\(\\)",'gm');
+            if userDefinedFunctions != ""
+              rx = RegExp("("+userDefinedFunctions+")"+appendString+"\\(\\)",'gm');
               transformedMootAppend = transformedMootAppend.replace(rx, "$1"+appendString)
             transformedMootAppend = @stripCommentsAndStrings(transformedMootAppend,null)[0]
             if mootInputAppend != transformedMootAppend
@@ -762,8 +763,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
               console.log "transformed into:\n" + transformedMootAppend          
 
           if !errorMootPrepend?
-            if userDefinedFunctions.length != 0
-              rx = RegExp(prependString+"("+listOfuserDefinedFunctions+")\\(\\)",'gm');
+            if userDefinedFunctions != ""
+              rx = RegExp(prependString+"("+userDefinedFunctions+")\\(\\)",'gm');
               transformedMootPrepend = transformedMootPrepend.replace(rx, prependString+"$1")            
             transformedMootPrepend = @stripCommentsAndStrings(transformedMootPrepend,null)[0]
             if mootInputPrepend != transformedMootPrepend
