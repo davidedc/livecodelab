@@ -734,13 +734,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
             mootInputPrepend = mootInput.replace(rx, prependString+"$2$3")
 
             mootInputAppend = @normaliseCode(mootInputAppend,null)[0]
-            [transformedMootAppend, errorMoot,] = @preprocess(mootInputAppend)
+            [transformedMootAppend, errorMootAppend,] = @preprocess(mootInputAppend)
             mootInputPrepend = @normaliseCode(mootInputPrepend,null)[0]
             [transformedMootPrepend, errorMootPrepend,] = @preprocess(mootInputPrepend)
             
 
 
-          if !errorMoot?
+          if !errorMootAppend?
             if userDefinedFunctions != ""
               rx = RegExp("("+userDefinedFunctions+")"+appendString+"\\(\\)",'gm');
               transformedMootAppend = transformedMootAppend.replace(rx, "$1"+appendString)
