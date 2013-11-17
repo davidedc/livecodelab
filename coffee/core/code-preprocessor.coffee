@@ -112,6 +112,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
     constructor: ->
       @testCases = (new CodePreprocessorTests()).testCases
+      @scaleRotateMoveCommandsRegex = @scaleRotateMoveCommands.join "|"
+      @allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") + "|" + @scaleRotateMoveCommandsRegex
+      @expressionsRegex = @expressions.join "|"
       # make the preprocessor tests easily accessible from
       # the debug console (just type testPreprocessor())
       window.testPreprocessor = => @test()
@@ -441,10 +444,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      scaleRotateMoveCommandsRegex = @scaleRotateMoveCommands.join "|"
-      allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") + "|" + scaleRotateMoveCommandsRegex
-      expressionsAndUserDefinedFunctionsRegex = (@expressions.join "|") + userDefinedFunctions
-      allFunctionsRegex = allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
+      expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
+      allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
 
       rx = RegExp("<[\\s]*("+allFunctionsRegex+")[\\s]*>",'g')
       code = code.replace(rx, "MARKED$1")
@@ -455,19 +456,15 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      scaleRotateMoveCommandsRegex = @scaleRotateMoveCommands.join "|"
-      allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") + "|" + scaleRotateMoveCommandsRegex
-      expressionsAndUserDefinedFunctionsRegex = (@expressions.join "|") + userDefinedFunctions
-      allFunctionsRegex = allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
+      expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
+      allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
 
       rx = RegExp("MARKED("+allFunctionsRegex+")",'g')
       code = code.replace(rx, "$1")
 
       # TODO this shouldn't be here
       # replace stuff like (box 3).times -> into box(); 3.times
-      scaleRotateMoveCommandsRegex = @scaleRotateMoveCommands.join "|"
-      allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") + "|" + scaleRotateMoveCommandsRegex
-      rx = RegExp("\\(("+allCommandsRegex+") ",'g');
+      rx = RegExp("\\(("+@allCommandsRegex+") ",'g');
       code = code.replace(rx, "$1(); (")
       if detailedDebug then console.log "unmarkFunctionalReferences-0\n" + code
 
@@ -486,10 +483,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      scaleRotateMoveCommandsRegex = @scaleRotateMoveCommands.join "|"
-      allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") + "|" + scaleRotateMoveCommandsRegex
-      expressionsAndUserDefinedFunctionsRegex = (@expressions.join "|") + userDefinedFunctions
-      allFunctionsRegex = allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
+      expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
+      allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
 
       
       # adding () to single tokens on their own at the start of a line
@@ -532,7 +527,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       delimitersForExpressions = delimitersForCommands + "|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
 
       for i in [1..2]
-        rx = RegExp("([^a-zA-Z0-9\\r\\n])("+allCommandsRegex+")[ \\t]*("+delimitersForCommands+")",'g')
+        rx = RegExp("([^a-zA-Z0-9\\r\\n])("+@allCommandsRegex+")[ \\t]*("+delimitersForCommands+")",'g')
         code = code.replace(rx, "$1$2()$3")
       if detailedDebug then console.log "adjustImplicitCalls-4\n" + code
 
@@ -562,16 +557,14 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      scaleRotateMoveCommandsRegex = @scaleRotateMoveCommands.join "|"
-      allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") + "|" + scaleRotateMoveCommandsRegex
-      expressionsAndUserDefinedFunctionsRegex = (@expressions.join "|") + userDefinedFunctions
-      allFunctionsRegex = allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
+      expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
+      allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
       
-      rx = RegExp("("+allCommandsRegex+")([ \\t]*)("+allCommandsRegex+")([ ]*)($)?",'gm')
+      rx = RegExp("("+@allCommandsRegex+")([ \\t]*)("+@allCommandsRegex+")([ ]*)($)?",'gm')
       code = code.replace(rx, "$1();$2$3$4$5")
 
       #for i in [1..2]
-      #  rx = RegExp("("+scaleRotateMoveCommandsRegex+")(.*)("+allCommandsRegex+")(.*)$",'gm')
+      #  rx = RegExp("("+@scaleRotateMoveCommandsRegex+")(.*)("+@allCommandsRegex+")(.*)$",'gm')
       #  code = code.replace(rx, "pushMatrix();$1$2$3;popMatrix();")
 
       return [code, error]
@@ -597,15 +590,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      scaleRotateMoveCommandsRegex = @scaleRotateMoveCommands.join "|"
-      allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") + "|" + scaleRotateMoveCommandsRegex
-      expressionsAndUserDefinedFunctionsRegex = (@expressions.join "|") + userDefinedFunctions
-      allFunctionsRegex = allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
+      expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
+      allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
 
       rx = RegExp("("+expressionsAndUserDefinedFunctionsRegex+")([ \\t]*)times",'g')
       code = code.replace(rx, "$1()$2times")
       
-      rx = RegExp("([^;>\\( \\t\\r\\n])([ ])("+allCommandsRegex+")([^a-zA-Z0-9\\r\\n])",'gm')
+      rx = RegExp("([^;>\\( \\t\\r\\n])([ ])("+@allCommandsRegex+")([^a-zA-Z0-9\\r\\n])",'gm')
       code = code.replace(rx, "$1;$2$3$4")
       if detailedDebug then console.log "evaluateAllExpressions-1\n" + code
 
@@ -624,7 +615,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(rx, "$1$2")
       if detailedDebug then console.log "evaluateAllExpressions-4\n" + code
 
-      #rx = RegExp("([^a-zA-Z0-9;>\\(])([ \\t]*)("+allCommandsRegex+")([^a-zA-Z0-9])",'g')
+      #rx = RegExp("([^a-zA-Z0-9;>\\(])([ \\t]*)("+@allCommandsRegex+")([^a-zA-Z0-9])",'g')
       #code = code.replace(rx, "$1;$2$3$4")
       #code = code.replace(/[>][ ]*;/g, "> ")
       #code = code.replace(/[=][ ]*;/g, "= ")
@@ -731,10 +722,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           if testIdempotency
             [transformedTwice, error, ] = @preprocess(transformed)
 
-          scaleRotateMoveCommandsRegex = @scaleRotateMoveCommands.join "|"
-          allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") + "|" + scaleRotateMoveCommandsRegex
-          expressionsAndUserDefinedFunctionsRegex = (@expressions.join "|") + userDefinedFunctions
-          allFunctionsRegex = allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
+          expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
+          allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
           
           appendString = 's'
           prependString = 't'
