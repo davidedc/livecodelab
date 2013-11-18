@@ -68,6 +68,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "noLights"
       "ambientLight"
       "pointLight"
+      # Server connections
+      "connect"
     ]
 
     expressions: [
@@ -100,6 +102,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "sin"
       "tan"
       "wave"
+      "beat"
+      "pulse"
       # Random
       "random"
       "randomSeed"

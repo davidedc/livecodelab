@@ -71,6 +71,7 @@ define [
   ,'core/renderer'
   ,'core/threejs-system'
   ,'core/time-keeper'
+  ,'core/connections'
   ,'sound/samplebank'
   ,'sound/sound-system'
   ,'bowser'
@@ -98,6 +99,7 @@ define [
   ,Renderer
   ,ThreeJsSystem
   ,TimeKeeper
+  ,Connections
   ,SampleBank
   ,SoundSystem
   ,createBowser
@@ -147,6 +149,8 @@ define [
       #
       #//////////////////////////////////////////////
       @timeKeeper = new TimeKeeper()
+
+      @connections = new Connections()
       
       # this one also interacts with threeJsSystem at runtime
       @blendControls = new BlendControls(@)

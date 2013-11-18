@@ -17,6 +17,7 @@ requirejs.config(
     'simplemodal': 'lib/jquery.simplemodal.min'
     'sooperfish': 'lib/jquery.sooperfish'
     'mousewheel': 'lib/mousewheel'
+    'pulse': 'lib/pulse'
     'threejs': 'lib/three.min'
 
     'Three.Detector': 'lib/three.js/Detector'
@@ -38,8 +39,8 @@ requirejs.config(
       deps: []
       exports: 'buzz'
     'lowLag':
-        deps: []
-        exports: 'lowLag'
+      deps: []
+      exports: 'lowLag'
     'codemirror':
       deps: []
       exports: 'CodeMirror'
@@ -53,6 +54,9 @@ requirejs.config(
     'mousewheel':
       deps: []
       exports: 'attachMouseWheelHandler'
+    'pulse':
+      deps: []
+      exports: 'pulse'
     'threejs':
       deps: []
       exports: 'THREE'
