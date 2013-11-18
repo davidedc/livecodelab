@@ -104,7 +104,7 @@ define [
         title: "WebGL: Two cubes"
         code: """
               background 155,255,255
-              2 times ->
+              2 times
               ▶rotate 0, 1, time/2000
               ▶box
               """.replace(/\u25B6/g, "\t")
@@ -115,11 +115,11 @@ define [
         code: """
               simpleGradient fuchsia,color(100,200,200),yellow
               scale 2.1
-              5 times ->
+              5 times
               ▶rotate 0,1,time/5000
               ▶box 0.1,0.1,0.1
               ▶move 0,0.1,0.1
-              ▶3 times ->
+              ▶3 times
               ▶▶rotate 0,1,1
               ▶▶box 0.01,0.01,1
               """.replace(/\u25B6/g, "\t")
@@ -129,7 +129,7 @@ define [
         title: "WebGL: Turbine"
         code: """
               background 155,55,255
-              70 times ->
+              70 times
               ▶rotate time/100000,1,time/100000
               ▶box
               """.replace(/\u25B6/g, "\t")
@@ -156,7 +156,7 @@ define [
         code: """
               background orange
               scale 0.1
-              10 times ->
+              10 times
               ▶rotate 0,1,time/1000
               ▶move 1,1,1
               ▶box
@@ -168,9 +168,9 @@ define [
         code: """
               background 155,255,155
               scale 0.15
-              3 times ->
+              3 times
               ▶rotate 0,1,1
-              ▶10 times ->
+              ▶10 times
               ▶▶rotate 0,1,time/1000
               ▶▶scale 0.9
               ▶▶move 1,1,1
@@ -186,7 +186,7 @@ define [
               //animationStyle paintOver
               scale 2
               rotate time/4000, time/4000,  time/4000
-              90 times ->
+              90 times
               ▶rotate time/200000, time/200000,  time/200000
               ▶line
               ▶move 0.5,0,0
@@ -204,7 +204,7 @@ define [
               move 2,0,0
               scale 2
               rotate
-              20 times ->
+              20 times
               ▶rotate
               ▶move 0.25,0,0
               ▶line
@@ -220,10 +220,10 @@ define [
               animationStyle motionBlur
               rotate time/5000
               simpleGradient fuchsia,aqua,yellow
-              5 times ->
+              5 times
               ▶rotate 0,1,time/5000
               ▶move 0.2,0,0
-              ▶3 times ->
+              ▶3 times
               ▶▶rotate 1
               ▶▶ball -1
               """.replace(/\u25B6/g, "\t")
@@ -291,9 +291,9 @@ define [
               animationStyle motionBlur
               simpleGradient fuchsia,color(100,200,200),yellow
               scale 0.3
-              3 times ->
+              3 times
               ▶move 0,0,0.5
-              ▶5 times ->
+              ▶5 times
               ▶▶rotate time/2000
               ▶▶move 0.7,0,0
               ▶▶rect
@@ -309,9 +309,9 @@ define [
               fill red,155
               move -0.5,0,0
               scale 0.3
-              3 times ->
+              3 times
               ▶move 0,0,0.5
-              ▶1 times ->
+              ▶1 times
               ▶▶rotate time/1000
               ▶▶move 2,0,0
               ▶▶box
@@ -322,7 +322,7 @@ define [
         title: "WebGL: Almost Voronoi"
         code: """
               scale 10
-              2 times ->
+              2 times
               ▶rotate 0,1,time/10000
               ▶ball -1
               """.replace(/\u25B6/g, "\t")
@@ -334,7 +334,7 @@ define [
               scale 10
               fill 0
               strokeSize 7
-              5 times ->
+              5 times
               ▶rotate 0,1,time/20000
               ▶ball
               ▶rotate 0,1,1
@@ -350,7 +350,7 @@ define [
               stroke red
               noFill
               strokeSize 7
-              5 times ->
+              5 times
               ▶rotate time/20000
               ▶ball
               ▶rotate 0,1,1
@@ -370,11 +370,11 @@ define [
               fill time%255,0,0
               pushMatrix
               count = 0
-              3 times ->
+              3 times
               ▶count++
               ▶pushMatrix
               ▶rotate count+3+time/1000,2+count + time/1000,4+count
-              ▶120 times ->
+              ▶120 times
               ▶▶scale 0.9
               ▶▶move 1,1,0
               ▶▶rotate time/100
@@ -526,7 +526,7 @@ define [
               // repeat operations like so:
               
               rotate 1
-              3 times ->
+              3 times
               ▶move 0.2,0.2,0.2
               ▶box
               
@@ -646,7 +646,7 @@ define [
         code: """
               // draw lines like this:
               
-              20 times ->
+              20 times
               ▶rotate time/9000
               ▶line
               
@@ -660,7 +660,7 @@ define [
               // draw balls like this:
               
               ballDetail 10
-              3 times ->
+              3 times
               ▶move 0.2,0.2,0.2
               ▶ball
               

@@ -3,9 +3,9 @@
 ## cruise speed
 ###
 
-
 require [
-  'core/colour-literals'
+  'Three.Stats'
+  ,'core/colour-literals'
   ,'core/event-router'
   ,'core/livecodelab-core'
   ,'core/program-loader'
@@ -24,7 +24,8 @@ require [
   ,'globals/numbertimes'
   ,'globals/requestAnimFrame'
 ], (
-  ColourLiterals
+  Stats
+  ,ColourLiterals
   ,EventRouter
   ,LiveCodeLabCore
   ,ProgramLoader
@@ -95,7 +96,7 @@ require [
     #  - graphicsCommands
     #  - lightSystem
     #  - drawFunctionRunner
-    #  - codeTransformer
+    #  - codeCompiler
     #  - renderer
     #  - animationLoop
     liveCodeLabCore = new LiveCodeLabCore(
@@ -156,7 +157,7 @@ require [
     )
     eventRouter.bind(
       "editor-toggle-dim",
-      () => editorDimmer.toggleDimCode(),
+      (autoDim) => editorDimmer.toggleDimCode(autoDim),
       editorDimmer
     )
     
@@ -166,7 +167,7 @@ require [
     # compile time and runtime errors.
     #/////////////////////////////////////////////////////
     eventRouter.bind "reset", (()=>liveCodeLabCore.paintARandomBackground())
-    eventRouter.trigger "editor-toggle-dim", true
+    eventRouter.trigger "editor-toggle-dim", false
     eventRouter.bind "livecodelab-running-stably", ui.showStatsWidget
     eventRouter.bind "code_changed", (updatedCodeAsString) ->
       if updatedCodeAsString isnt ""

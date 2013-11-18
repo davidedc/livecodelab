@@ -173,7 +173,7 @@ define () ->
           return
         drawFunctionRunner = @liveCodeLabCoreInstance.drawFunctionRunner
         drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun \
-          @liveCodeLabCoreInstance.codeTransformer
+          @liveCodeLabCoreInstance.codeCompiler
       else
         @liveCodeLabCoreInstance.dozingOff = true
         # the program is empty and so it's the screen. Effectively, the user

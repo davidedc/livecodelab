@@ -35,8 +35,8 @@ define [
       @eventRouter.bind "autocoderbutton-flash", =>
         $("#autocodeIndicatorContainer").fadeOut(100).fadeIn 100
 
-      @eventRouter.bind "auto-hide-code-button-pressed", (state) =>
-        if state is true
+      @eventRouter.bind "auto-hide-code-button-pressed", (autoDimmingIsOn) =>
+        if autoDimmingIsOn
           $("#dimCodeButtonContainer").html "Hide Code: on"
         else
           $("#dimCodeButtonContainer").html "Hide Code: off"
@@ -292,7 +292,12 @@ define [
           eventRouter.trigger "toggle-autocoder"
           false
 
-        $('<span >Hide Code: on</span>').appendTo(
+        # this is set at start by a call
+        # from trigger "editor-toggle-dim",
+        # but this setup method is run
+        # afterwards :-) so we actually have to
+        # care about what this says.
+        $('<span >Hide Code: off</span>').appendTo(
           $('<li>').appendTo(
             $('#nav')
           )

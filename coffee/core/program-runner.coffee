@@ -44,11 +44,11 @@ define () ->
       @doOnceOccurrencesLineNumbers = []
 
     putTicksNextToDoOnceBlocksThatHaveBeenRun: ->
-      codeTransformer = @liveCodeLabCoreInstance.codeTransformer
+      codeCompiler = @liveCodeLabCoreInstance.codeCompiler
       if @doOnceOccurrencesLineNumbers.length
         @setDrawFunction(
-          codeTransformer.addCheckMarksAndUpdateCodeAndNotifyChange(
-            codeTransformer, @doOnceOccurrencesLineNumbers
+          codeCompiler.addCheckMarksAndUpdateCodeAndNotifyChange(
+            codeCompiler, @doOnceOccurrencesLineNumbers
           )
         )
 

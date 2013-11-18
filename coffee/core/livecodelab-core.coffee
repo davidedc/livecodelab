@@ -12,7 +12,7 @@ A LiveCodeLabCore instance packs together the following parts:
 - graphicsCommands
 - lightSystem
 - drawFunctionRunner
-- codeTransformer
+- codeCompiler
 - renderer
 - animationLoop
 
@@ -30,7 +30,7 @@ construction time and how they interact at runtime.
   only needs the parts passed at construction time for its own construction,
   and it can only interact with such parts at runtime.
 - _A constructor which contains the "liveCodeLabCoreInstance" argument_, such as
-  codeTransformer, might or might not need other parts for its own construction
+  codeCompiler, might or might not need other parts for its own construction
   (if they are passed in addition to the "liveCodeLabCoreInstance" argument)
   but it does interact at runtime with other parts not passed in the constructor
   argument.
@@ -62,7 +62,7 @@ define [
   'core/animation-loop'
   ,'core/background-painter'
   ,'core/blend-controls'
-  ,'core/code-transformer'
+  ,'core/code-compiler'
   ,'core/colour-functions'
   ,'core/graphics-commands'
   ,'core/lights-commands'
@@ -77,11 +77,9 @@ define [
   ,'bowser'
   ,'buzz'
   ,'lowLag'
-  ,'coffeescript'
   ,'threejs'
   ,'three-resize'
   ,'Three.Detector'
-  ,'Three.Stats'
   ,'Three.ShaderExtras'
   ,'Three.EffectComposer'
   ,'Three.MaskPass'
@@ -92,7 +90,7 @@ define [
   AnimationLoop
   ,BackgroundPainter
   ,BlendControls
-  ,CodeTransformer
+  ,CodeCompiler
   ,ColourFunctions
   ,GraphicsCommands
   ,LightsCommands
@@ -107,12 +105,11 @@ define [
   ,createBowser
   ,buzz
   ,lowLag
-  ,CoffeeScript
   ,THREE
   ,THREEx
   ,Detector
-  ,Stats
 ) ->
+
 
   class LiveCodeLabCore
 
@@ -172,18 +169,18 @@ define [
         @
       )
       
-      # this one also interacts with codeTransformer at runtime.
+      # this one also interacts with codeCompiler at runtime.
       @drawFunctionRunner =
         new ProgramRunner(@paramsObject.eventRouter, @)
       
-      # temporary to migrate CodeTransformed code from js to coffeescript.
-      @codeTransformer =
-        new CodeTransformer(@paramsObject.eventRouter, CoffeeScript, @)
+      # compiles the user sketch to js so it's ready to run.
+      @codeCompiler =
+        new CodeCompiler(@paramsObject.eventRouter, @)
       
       # this one also interacts with timeKeeper, matrixCommands, blendControls,
       #    soundSystem,
       #    backgroundPainter, graphicsCommands, lightSystem, drawFunctionRunner,
-      #    codeTransformer, renderer
+      #    codeCompiler, renderer
       # ...at runtime
       @animationLoop =
         new AnimationLoop(
@@ -259,7 +256,7 @@ define [
 
     updateCode: (updatedCode) ->
       # alert('updatedCode: ' + updatedCode);
-      @codeTransformer.updateCode updatedCode
+      @codeCompiler.updateCode updatedCode
       if updatedCode isnt "" and @dozingOff
         @dozingOff = false
         @animationLoop.animate()
