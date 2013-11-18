@@ -14,11 +14,7 @@ define ['pulse'], (PulseEmpty) ->
 			
 			window.connect = (a) => @connect(a)
 
-		# The issue with this connect function is that
-		# it always needs to be wrapped in a doOnce. 
-		# The user might understand why, but there is NO 
-		# situation where you would want to execute it every frame.
-		# So there is probably a cleaner way to avoid repeated execution.
+		
 		connect: (address) ->
 
 			if !(@pulseClient.connecting || @pulseClient.currentConnection() == @pulseClient.cleanAddress(address))
