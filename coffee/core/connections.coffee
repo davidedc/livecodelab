@@ -3,13 +3,15 @@
 ## For now that is only the pulse.js server.
 ###
 
-define ['pulse'], (pulse) ->
+define ['pulse'], (PulseEmpty) ->
 
 	class Connections
 
 		constructor: ->
-			# It's really ugly to define this here. But where do?
-			@pulse = pulse
+
+			@pulseClient = new Pulse();
+			@connectTimeoutHandle = null
+			
 			window.connect = (a) => @connect(a)
 
 		# The issue with this connect function is that
@@ -18,9 +20,16 @@ define ['pulse'], (pulse) ->
 		# situation where you would want to execute it every frame.
 		# So there is probably a cleaner way to avoid repeated execution.
 		connect: (address) ->
-			console.log address
-			pulse.connect address
-			window.pulse = @pulse.pulse()
-			window.beat = @pulse.beat()
+
+			if !(@pulseClient.connecting || @pulseClient.currentConnection() == @pulseClient.cleanAddress(address))
+				console.log(@pulseClient.currentConnection())
+				console.log(@pulseClient.cleanAddress(address))
+				console.log 'Connecting to ' + address
+				@pulseClient.connect address
+			# pulse.connect address
+			window.pulse = () => @pulseClient.pulse()
+			window.beat = () => @pulseClient.beat()
+
+			return
 
 	Connections
