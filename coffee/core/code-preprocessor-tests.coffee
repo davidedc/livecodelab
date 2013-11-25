@@ -62,6 +62,15 @@ define ['core/code-preprocessor-tests'], (foo) ->
          error: "how many times?"
         ,
          input:    """
+                   a = 2
+                   box a + 3 times rotate peg
+                   """
+         expected: """
+                   a = 2
+                   box(); (a + 3).times -> rotate(); peg()
+                   """
+        ,
+         input:    """
                    6 times: rotate box
                    """
          expected: """
@@ -821,6 +830,83 @@ define ['core/code-preprocessor-tests'], (foo) ->
                      scale 0.4
                      move 5-(random 10), 5-(random 10), 5-(random 10)
                      ball()
+                   """
+        ,
+         input:    """
+                   scaling rotating box 2 peg 2.3
+                   """
+         expected: """
+                   pushMatrix(); scale(); pushMatrix(); popMatrix(); rotate(); box 2; peg 2.3; popMatrix()
+                   """
+        ,
+         input:    """
+                   scaling rotating box 2; peg 2.3
+                   """
+         expected: """
+                   pushMatrix(); scale(); pushMatrix(); popMatrix(); rotate(); box 2; popMatrix(); peg 2.3
+                   """
+        ,
+         input:    """
+                   rotating box peg 1.1
+                   """
+         expected: """
+                   pushMatrix(); rotate(); box(); peg 1.1; popMatrix()
+                   """
+        ,
+         input:    """
+                   rotating box; peg 1.1
+                   """
+         expected: """
+                   pushMatrix(); rotate(); box(); popMatrix(); peg 1.1
+                   """
+        ,
+         input:    """
+                   rotating box; rotating line 2
+                   """
+         expected: """
+                   pushMatrix(); rotate(); box(); popMatrix(); pushMatrix(); rotate(); line 2; popMatrix()
+                   """
+        ,
+         input:    """
+                   rotating box line 2
+                   """
+         expected: """
+                   pushMatrix(); rotate(); box(); line 2; popMatrix()
+                   """
+        ,
+         input:    """
+                   rotating rotating rotating rotating box line 2
+                   """
+         expected: """
+                   pushMatrix(); rotate(); pushMatrix(); rotate(); pushMatrix(); rotate(); pushMatrix(); rotate(); box(); line 2; popMatrix(); popMatrix(); popMatrix(); popMatrix()
+                   """
+        ,
+         input:    """
+                   2 times rotating box line 2
+                   """
+         expected: """
+                   2.times -> pushMatrix(); rotate(); box(); line 2; popMatrix()
+                   """
+        ,
+         input:    """
+                   rotate rotating box
+                   """
+         expected: """
+                   rotate(); pushMatrix(); rotate(); box(); popMatrix()
+                   """
+        ,
+         input:    """
+                   10 times rotate scaling box
+                   """
+         expected: """
+                   10.times -> rotate(); pushMatrix(); scale(); box(); popMatrix()
+                   """
+        ,
+         input:    """
+                   10 times rotate scale box
+                   """
+         expected: """
+                   10.times -> rotate(); scale(); box()
                    """
       ]
 

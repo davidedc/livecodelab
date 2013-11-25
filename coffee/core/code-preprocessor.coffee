@@ -14,6 +14,21 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
     testCases: null
 
+    # qualifiers are special keywords that make
+    # it easy to change qualities of some
+    # primitives without affecting the
+    # primitives that come afterwards.
+    qualifierKeywords: [
+      # the first one is the qualifier keyword,
+      # the next one is the command that will replace
+      # it, the last two are the commands that are added
+      # at the beginning of the sequence of primitives
+      # and the end to push and pop the state, so that
+      # the primitives that come *afterwards* are unaffected
+      "rotating", "rotate", "pushMatrix()", "popMatrix()"
+      "moving", "move", "pushMatrix()", "popMatrix()"
+      "scaling", "scale", "pushMatrix()", "popMatrix()"
+    ]
     # We separate Commands from Expressions here.
     # Expressions return a value that is potentially
     # useful, while Stataments just change some sort
@@ -382,6 +397,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
+      #code = code.replace(/;[ ]+/gm, "; ")
       code = code.replace(/[ ];/gm, "; ")
       code = code.replace(/;$/gm, "")
       code = code.replace(/;([^ \r\n])/gm, "; $1")
@@ -566,10 +582,32 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       
       rx = RegExp("("+@allCommandsRegex+")([ \\t]*)("+@allCommandsRegex+")([ ]*)($)?",'gm')
       code = code.replace(rx, "$1();$2$3$4$5")
+      if detailedDebug then console.log "addCommandsSeparations 1: " + code
 
-      #for i in [1..2]
-      #  rx = RegExp("("+@scaleRotateMoveCommandsRegex+")(.*)("+@allCommandsRegex+")(.*)$",'gm')
-      #  code = code.replace(rx, "pushMatrix();$1$2$3;popMatrix();")
+      return [code, error]
+
+    fleshOutQualifiers: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      previousCodeTransformations = ''
+
+      while code != previousCodeTransformations
+        previousCodeTransformations = code
+        for i in [0...@qualifierKeywords.length] by 4
+          toBeReplaced = @qualifierKeywords[i] + ""
+          replaceWith = @qualifierKeywords[i+1] + ""
+          prependWith = @qualifierKeywords[i+2] + ""
+          appendWith = @qualifierKeywords[i+3] + ""
+
+          rx = RegExp("^()("+toBeReplaced+")([^a-zA-Z0-9\\r\\n].*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'gm')
+          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
+          code = code.replace(rx,replacement)
+
+          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")([^a-zA-Z0-9\\r\\n].*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'gm')
+          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
+          code = code.replace(rx,replacement)
+      if detailedDebug then console.log "fleshOutQualifiers 1: " + code
 
       return [code, error]
 
@@ -695,16 +733,18 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @addTracingInstructionsToDoOnceBlocks(code, error)
 
       if detailedDebug then console.log "preprocess-9\n" + code
-      [code, error] = @addCommandsSeparations(code, error, userDefinedFunctions)
+      [code, error] = @fleshOutQualifiers(code, error)
       if detailedDebug then console.log "preprocess-10\n" + code
-      [code, error] = @adjustImplicitCalls(code, error, userDefinedFunctions)
+      [code, error] = @addCommandsSeparations(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-11\n" + code
-      [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
+      [code, error] = @adjustImplicitCalls(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-12\n" + code
-      [code, error] = @evaluateAllExpressions(code, error, userDefinedFunctions)
+      [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
       if detailedDebug then console.log "preprocess-13\n" + code
-      [code, error] = @transformTimesSyntax(code, error)
+      [code, error] = @evaluateAllExpressions(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-14\n" + code
+      [code, error] = @transformTimesSyntax(code, error)
+      if detailedDebug then console.log "preprocess-15\n" + code
       [code, error] = @unmarkFunctionalReferences(code, error, userDefinedFunctions)
 
       return [code, error, userDefinedFunctions]
@@ -728,6 +768,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
           allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
+
+          for i in [0...@qualifierKeywords.length] by 4
+            allFunctionsRegex = allFunctionsRegex + '|' + (@qualifierKeywords[i])
           
           appendString = 's'
           prependString = 't'
