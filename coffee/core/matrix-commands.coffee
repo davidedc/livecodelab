@@ -2,6 +2,10 @@
 ## Takes care of all matrix-related commands.
 ###
 
+isFunction = (functionToCheck) ->
+  getType = {}
+  functionToCheck and getType.toString.call(functionToCheck) is "[object Function]"
+
 define () ->
 
   class MatrixCommands
@@ -15,7 +19,7 @@ define () ->
       window.popMatrix   = () => @popMatrix()
       window.resetMatrix = () => @resetMatrix()
       window.move   = (a,b,c) => @move(a,b,c)
-      window.rotate = (a,b,c) => @rotate(a,b,c)
+      window.rotate = (a,b,c,d) => @rotate(a,b,c,d)
       window.scale  = (a,b,c) => @scale(a,b,c)
 
     getWorldMatrix: ->
@@ -48,15 +52,29 @@ define () ->
         c = a
       @worldMatrix.translate new @liveCodeLabCore_three.Vector3(a, b, c)
 
-    rotate: (a, b, c = 0) ->
+    rotate: (a, b, c = 0, d = null) ->
+      appendedFunction = undefined
+
       if typeof a isnt "number"
+        if isFunction a then appendedFunction = a
         a = @liveCodeLabCoreInstance.timeKeeper.getTime() / 1000
         b = a
         c = a
       else if typeof b isnt "number"
+        if isFunction b then appendedFunction = b
         b = a
         c = a
+      else if typeof c isnt "number"
+        if isFunction c then appendedFunction = c
+        c = 0
+      else if isFunction d
+        appendedFunction = d
+
+      @pushMatrix() if appendedFunction? 
       @worldMatrix.rotateX(a).rotateY(b).rotateZ c
+      if appendedFunction?
+        appendedFunction()
+        @popMatrix()
 
     scale: (a, b, c = 1) ->
       if typeof a isnt "number"
