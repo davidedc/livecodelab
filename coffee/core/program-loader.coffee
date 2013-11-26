@@ -45,7 +45,7 @@ define [
                   stroke 255-((frame/2)%255),0,0
                   scale 1-((frame/2)%255) / 255
                   box
-                  """.replace(/\u25B6/g, "\t")
+                  """
       
       @programs.demos.cheeseAndOlivesDemo =
         submenu: "Basic"
@@ -85,7 +85,7 @@ define [
               fill yellow
               stroke yellow
               ball
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.simpleCubeDemo =
         submenu: "Basic"
@@ -97,7 +97,7 @@ define [
               background yellow
               rotate 0,time/2000,time/2000
               box
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.webgltwocubesDemo =
         submenu: "WebGL"
@@ -107,7 +107,7 @@ define [
               2 times
               ▶rotate 0, 1, time/2000
               ▶box
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.cubesAndSpikes =
         submenu: "Basic"
@@ -122,7 +122,7 @@ define [
               ▶3 times
               ▶▶rotate 0,1,1
               ▶▶box 0.01,0.01,1
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.webglturbineDemo =
         submenu: "WebGL"
@@ -132,7 +132,7 @@ define [
               70 times
               ▶rotate time/100000,1,time/100000
               ▶box
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.webglzfightartDemo =
         submenu: "WebGL"
@@ -148,7 +148,7 @@ define [
               rotate 0.000001
               fill yellow
               box
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.littleSpiralOfCubes =
         submenu: "Basic"
@@ -160,7 +160,7 @@ define [
               ▶rotate 0,1,time/1000
               ▶move 1,1,1
               ▶box
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.tentacleDemo =
         submenu: "Basic"
@@ -175,7 +175,7 @@ define [
               ▶▶scale 0.9
               ▶▶move 1,1,1
               ▶▶box
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.lampDemo =
         submenu: "Basic"
@@ -194,7 +194,7 @@ define [
               ▶move -0.5,0,0
               ▶line
               ▶line
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.trillionfeathersDemo =
         submenu: "Basic"
@@ -210,7 +210,7 @@ define [
               ▶line
               ▶move -0.5,0,0
               ▶line
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.monsterblobDemo =
         submenu: "Basic"
@@ -226,7 +226,7 @@ define [
               ▶3 times
               ▶▶rotate 1
               ▶▶ball -1
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.industrialMusicDemo =
         submenu: "Sound"
@@ -240,7 +240,7 @@ define [
               play 'beepB'  ,'xzzx zzzz zxzz zxzz'
               play 'voltage'  ,'xzxz zxzz xzxx xzxx'
               play 'tranceKick'  ,'zxzx zzzx xzzz zzxx'
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.trySoundsDemo =
         submenu: "Sound"
@@ -282,7 +282,7 @@ define [
               //play 'beep'  ,'zzxz zzzz zzxz zzzz'
               //play 'hello'  ,'zzxz zzzz zzxz zzzz'
               //play 'alienBeep'  ,'zzxz zzzz zzxz zzzz'
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.springysquaresDemo =
         submenu: "Basic"
@@ -297,7 +297,7 @@ define [
               ▶▶rotate time/2000
               ▶▶move 0.7,0,0
               ▶▶rect
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.diceDemo =
         submenu: "Basic"
@@ -315,7 +315,7 @@ define [
               ▶▶rotate time/1000
               ▶▶move 2,0,0
               ▶▶box
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.webglalmostvoronoiDemo =
         submenu: "WebGL"
@@ -325,7 +325,7 @@ define [
               2 times
               ▶rotate 0,1,time/10000
               ▶ball -1
-              """.replace(/\u25B6/g, "\t")
+              """
 
       @programs.demos.webglshardsDemo =
         submenu: "WebGL"
@@ -339,7 +339,7 @@ define [
               ▶ball
               ▶rotate 0,1,1
               ▶ball -1.01
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.webglredthreadsDemo =
         submenu: "WebGL"
@@ -355,7 +355,7 @@ define [
               ▶ball
               ▶rotate 0,1,1
               ▶ball
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.demos.webglnuclearOctopusDemo =
         submenu: "WebGL"
@@ -380,7 +380,7 @@ define [
               ▶▶rotate time/100
               ▶▶box
               ▶popMatrix
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.introTutorial =
         submenu: "Intro"
@@ -396,7 +396,7 @@ define [
               // Click the link below to start the tutorial.
               
               // next-tutorial:hello_world
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.helloworldTutorial =
         submenu: "Intro"
@@ -411,7 +411,7 @@ define [
               // (you should then see a box facing you)
               // click below for the next tutorial
               // next-tutorial:some_notes
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.somenotesTutorial =
         submenu: "Intro"
@@ -426,7 +426,7 @@ define [
               // don't worry.
               
               // next-tutorial:rotate
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.rotateTutorial =
         submenu: "Intro"
@@ -442,7 +442,7 @@ define [
               
               // click for the next tutorial:
               // next-tutorial:frame
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.frameTutorial =
         submenu: "Animation"
@@ -459,7 +459,7 @@ define [
               // the screen is re-drawn.
               // (use 'frame/100' to slow it down)
               // next-tutorial:time
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.timeTutorial =
         submenu: "Animation"
@@ -479,7 +479,7 @@ define [
               // independent of how fast
               // the computer is at drawing.
               // next-tutorial:move
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.moveTutorial =
         submenu: "Placing things"
@@ -496,7 +496,7 @@ define [
               // the first box to see how the
               // scene changes.
               // next-tutorial:scale
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.scaleTutorial =
         submenu: "Placing things"
@@ -515,7 +515,7 @@ define [
               // the first box to see how the
               // scene changes.
               // next-tutorial:times
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.timesTutorial =
         submenu: "Repeating stuff"
@@ -534,7 +534,7 @@ define [
               // exactly the block of code
               // to be repeated.
               // next-tutorial:fill
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.fillTutorial =
         submenu: "Graphics"
@@ -553,7 +553,7 @@ define [
               // Try replacing the numbers with
               // 'angleColor'
               // next-tutorial:stroke
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.strokeTutorial =
         submenu: "Graphics"
@@ -573,7 +573,7 @@ define [
               // Also you can use 'strokeSize'
               // to specify the thickness.
               // next-tutorial:color_names
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.colornamesTutorial =
         submenu: "Graphics"
@@ -592,7 +592,7 @@ define [
               // http://html-color-codes.info/color-names/
               // (just use them in lower case)
               // next-tutorial:lights
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.lightsTutorial =
         submenu: "Graphics"
@@ -610,7 +610,7 @@ define [
               // off while you build the scene
               // by using 'lights' and 'noLights'
               // next-tutorial:background
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.backgroundTutorial =
         submenu: "Graphics"
@@ -624,7 +624,7 @@ define [
               box
               
               // next-tutorial:gradient
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.gradientTutorial =
         submenu: "Graphics"
@@ -638,7 +638,7 @@ define [
               box
               
               // next-tutorial:line
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.lineTutorial =
         submenu: "Graphics"
@@ -651,7 +651,7 @@ define [
               ▶line
               
               // next-tutorial:ball
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.ballTutorial =
         submenu: "Graphics"
@@ -666,7 +666,7 @@ define [
               
               // ('ballDetail' is optional)
               // next-tutorial:pushpopMatrix
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.pushpopMatrixTutorial =
         submenu: "Graphics"
@@ -688,7 +688,7 @@ define [
               resetMatrix // resets the position
               line // not affected by initial rotation
               // next-tutorial:animation_style
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.animationstyleTutorial =
         submenu: "Graphics"
@@ -704,7 +704,7 @@ define [
               box
               
               // next-tutorial:do_once
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.doonceTutorial =
         submenu: "Controlling flow"
@@ -725,7 +725,7 @@ define [
               // P.S. keep hitting the delete button
               // on that first check mark for seizures.
               // next-tutorial:conditionals
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.conditionalsTutorial =
         submenu: "Controlling flow"
@@ -745,7 +745,7 @@ define [
               ▶peg
               
               // next-tutorial:autocode
-              """.replace(/\u25B6/g, "\t")
+              """
     
       @programs.tutorials.autocodeTutorial =
         submenu: "Others"
@@ -761,7 +761,7 @@ define [
               // the steps even WHILE the autocoder is running,
               // if you see that things got
               // boring down a particular path of changes.
-              """.replace(/\u25B6/g, "\t")
+              """
     
     loadDemoOrTutorial: (demoName) ->
       if (not Detector.webgl or @liveCodeLabCoreInstance.threeJsSystem.forceCanvasRenderer) \
@@ -785,7 +785,7 @@ define [
         // in a WebGL-enabled browser.
         
         
-        """.replace(/\u25B6/g, "\t")
+        """
 
       # Note that setting the value of the texteditor (texteditor.setValue below)
       # triggers the codeMirror onChange callback, which registers the new
@@ -794,9 +794,13 @@ define [
       # have cleared the screen with the code below.
       if @programs.demos[demoName] || @programs.tutorials[demoName]
         if @programs.demos[demoName]
-          @texteditor.setValue prependMessage + @programs.demos[demoName].code
+          # the "replace" here is to change the arrows in tabs
+          @texteditor.setValue prependMessage +
+            @programs.demos[demoName].code.replace(/\u25B6/g, "\t")
         else if @programs.tutorials[demoName]
-          @texteditor.setValue prependMessage + @programs.tutorials[demoName].code
+          # the "replace" here is to change the arrows in tabs
+          @texteditor.setValue prependMessage +
+            @programs.tutorials[demoName].code.replace(/\u25B6/g, "\t")
         # clear history. Why? Because we want to avoid the follwing:
         # user opens an example. User opens another example.
         # User performs undo. Result: previous example is open, but the hashtag
