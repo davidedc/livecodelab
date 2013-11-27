@@ -757,6 +757,15 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         failedTests = successfulTest = knownIssues = failedIdempotency = failedMootAppends = failedMootPrepends = 0
         for testCaseNumber in [0...@testCases.length]
           testCase = @testCases[testCaseNumber]
+
+          # just like in demos and tutorials, we use an
+          # arrow to represent tabs so it's more
+          # readable when looking at the examples.
+          # We replace it with tabs here.
+          testCase.input = testCase.input.replace(/\u25B6/g, "\t")
+          if testCase.expected?
+            testCase.expected = testCase.expected.replace(/\u25B6/g, "\t")
+
           [transformed, error, userDefinedFunctions] = @preprocess(testCase.input)
           # only check idempotency if there was no error
           # in the first step and if the test case

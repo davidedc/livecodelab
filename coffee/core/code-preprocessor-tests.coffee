@@ -13,33 +13,33 @@ define ['core/code-preprocessor-tests'], (foo) ->
       @testCases= [
          input:    """
                    5 times
-                     rotate 0,1,time/5000
-                     move 0.2,0,0
-                     3 times
-                       rotate 1
-                       box
+                   ▶rotate 0,1,time/5000
+                   ▶move 0.2,0,0
+                   ▶3 times
+                   ▶▶rotate 1
+                   ▶▶box
                    """
          expected: """
                    5.times -> 
-                     rotate 0,1,time/5000
-                     move 0.2,0,0
-                     3.times -> 
-                       rotate 1
-                       box()
+                   ▶rotate 0,1,time/5000
+                   ▶move 0.2,0,0
+                   ▶3.times -> 
+                   ▶▶rotate 1
+                   ▶▶box()
                    """
         ,
          input:    """
                    // should give error
                    peg
                    times
-                     box 2
+                   ▶box 2
                    """
          error: "how many times?"
         ,
          input:    """
                    // should give error
                    times
-                     box
+                   ▶box
                    """
          error: "how many times?"
         ,
@@ -107,11 +107,11 @@ define ['core/code-preprocessor-tests'], (foo) ->
         ,
          input:    """
                    6 times:
-                     rotate box
+                   ▶rotate box
                    """
          expected: """
                    6.times -> 
-                     rotate(); box()
+                   ▶rotate(); box()
                    """
         ,
          input:    """
@@ -215,13 +215,13 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    // testing whether mangled accross multiple lines
                    6 times: rotate; box
                    6 times:
-                     rotate box
+                   ▶rotate box
                    """
          expected: """
                    
                    6.times -> rotate(); box()
                    6.times -> 
-                     rotate(); box()
+                   ▶rotate(); box()
                    """
         ,
          input:    """
@@ -686,27 +686,27 @@ define ['core/code-preprocessor-tests'], (foo) ->
          input:    """
                    noFill
                    for i in [1..20]
-                       rotate time/100000
-                       box i/8
+                   ▶rotate time/100000
+                   ▶box i/8
                    """
          expected: """
                    noFill()
                    for i in [1..20]
-                       rotate time/100000
-                       box i/8
+                   ▶rotate time/100000
+                   ▶box i/8
                    """
         ,
          input:    """
                    noFill
                    for i in [1..20] by 5
-                       rotate time/100000
-                       box i/8
+                   ▶rotate time/100000
+                   ▶box i/8
                    """
          expected: """
                    noFill()
                    for i in [1..20] by 5
-                       rotate time/100000
-                       box i/8
+                   ▶rotate time/100000
+                   ▶box i/8
                    """
         ,
          input:    """
@@ -725,14 +725,14 @@ define ['core/code-preprocessor-tests'], (foo) ->
          input:    """
                    noFill
                    20.times (i) ->
-                       rotate time/100000
-                       box i/8
+                   ▶rotate time/100000
+                   ▶box i/8
                    """
          expected: """
                    noFill()
                    20.times (i) ->
-                       rotate time/100000
-                       box i/8
+                   ▶rotate time/100000
+                   ▶box i/8
                    """
         ,
          input:    """
@@ -740,16 +740,16 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    shapes = 'box': 1, 'ball': 2, 'peg': 3
                    
                    for shape, size of shapes
-                       move 2
-                       eval(shape+"(" + size+")")
+                   ▶move 2
+                   ▶eval(shape+"(" + size+")")
                    """
          expected: """
                    scale 0.1
                    shapes = 'box': 1, 'ball': 2, 'peg': 3
                    
                    for shape, size of shapes
-                       move 2
-                       eval(shape+"(" + size+")")
+                   ▶move 2
+                   ▶eval(shape+"(" + size+")")
                    """
         ,
          input:    """
@@ -815,10 +815,10 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rand = -> 255*random
                    fill rand, 255*random, 255*random
                    50 times
-                     resetMatrix
-                     scale 0.4
-                     move 5-(random 10), 5-(random 10), 5-(random 10)
-                     ball
+                   ▶resetMatrix
+                   ▶scale 0.4
+                   ▶move 5-(random 10), 5-(random 10), 5-(random 10)
+                   ▶ball
                    """
          expected: """
                    animationStyle paintOver
@@ -826,10 +826,10 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rand = -> 255*random()
                    fill rand(), 255*random(), 255*random()
                    50.times -> 
-                     resetMatrix()
-                     scale 0.4
-                     move 5-(random 10), 5-(random 10), 5-(random 10)
-                     ball()
+                   ▶resetMatrix()
+                   ▶scale 0.4
+                   ▶move 5-(random 10), 5-(random 10), 5-(random 10)
+                   ▶ball()
                    """
         ,
          input:    """
