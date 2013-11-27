@@ -788,7 +788,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           prependString = 't'
           [mootInput, ignore, errorMoot] = @stripCommentsAndStrings(testCase.input,null)
           if !errorMoot?
-            rx = RegExp("(("+allFunctionsRegex+"|times)([^a-zA-Z0-9]|$))",'gm');
+            rx = RegExp("(("+allFunctionsRegex+"|times|doOnce)([^a-zA-Z0-9]|$))",'gm');
             mootInputAppend = mootInput.replace(rx, "$2"+appendString+"$3")
             mootInputPrepend = mootInput.replace(rx, prependString+"$2$3")
 

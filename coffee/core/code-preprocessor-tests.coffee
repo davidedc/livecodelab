@@ -908,6 +908,40 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    10.times -> rotate(); scale(); box()
                    """
+        ,
+         input:    """
+                   rotate time/1000
+                   ✓doOnce ->
+                   ▶background 255
+                   ▶fill 255,0,0
+                   ✓doOnce -> ball
+                   box
+                   """
+         expected: """
+                   rotate time/1000
+                   if false
+                   ▶background 255
+                   ▶fill 255,0,0
+
+                   box()
+                   """
+        ,
+         input:    """
+                   rotate time/1000
+                   doOnce ->
+                   ▶background 255
+                   ▶fill 255,0,0
+                   doOnce -> ball
+                   box
+                   """
+         expected: """
+                   rotate time/1000
+                   1.times ->
+                   ▶addDoOnce(1); background 255
+                   ▶fill 255,0,0
+                   ; addDoOnce(4); 1.times -> ball()
+                   box()
+                   """
       ]
 
   CodePreprocessorTests
