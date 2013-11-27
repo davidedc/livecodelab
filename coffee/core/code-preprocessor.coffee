@@ -164,8 +164,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      code = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false")
-      code = code.replace(/\u2713/g, "//")
+      code = code.replace(/^(\s*)✓[ ]*doOnce[ \t\-]*\>[ ]*$/gm, "$1if false")
+      code = code.replace(/^(\s*)✓([ ]*doOnce[ \t\-]*\>[ ]*)/gm, "$1//$2")
+      if detailedDebug then console.log "removeTickedDoOnce\n" + code + " error: " + error
+      if code.indexOf("✓") != -1
+        return [undefined,"✓ must be next to a doOnce"]
       return [code, error]
 
     addTracingInstructionsToDoOnceBlocks: (code, error) ->
