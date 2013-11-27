@@ -246,7 +246,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
     stripCommentsAndStrings: (code, error) ->
       # if there is an error, just propagate it
-      return [undefined, error] if error?
+      return [undefined, undefined, error] if error?
 
       codeWithoutComments = undefined
       codeWithoutStringsOrComments = undefined
