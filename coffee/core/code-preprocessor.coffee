@@ -212,16 +212,16 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           # add the line number tracing instruction to inline case
           elaboratedSourceByLine[eachLine] =
             elaboratedSourceByLine[eachLine].replace(
-              /^(\s*)doOnce[ ]*\->[ ]*(.+)$/g,
+              /(^|\s+)doOnce[ \t\-]*\>[ ]*(.+)$/g,
               "$1;addDoOnce(" + eachLine + "); 1.times -> $2")
           
           # add the line number tracing instruction to multiline case
-          if /^(\s*)doOnce[ ]*\->[ ]*$/g.test(elaboratedSourceByLine[eachLine])
+          if /(^|\s+)doOnce[ \t\-]*\>[ ]*$/g.test(elaboratedSourceByLine[eachLine])
             
             #alert('doOnce multiline!')
             elaboratedSourceByLine[eachLine] =
               elaboratedSourceByLine[eachLine].replace(
-                /^(\s*)doOnce[ ]*\->[ ]*$/g, "$11.times ->")
+                /(^|\s+)doOnce[ \t\-]*\>[ ]*$/g, "$11.times ->")
             elaboratedSourceByLine[eachLine + 1] =
               elaboratedSourceByLine[eachLine + 1].replace(
                 /^(\s*)(.+)$/g, "$1addDoOnce(" + eachLine + "); $2")
