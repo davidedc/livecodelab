@@ -597,6 +597,46 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       return [code, error]
 
+    findQualifiers: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      previousCodeTransformations = ''
+
+      while code != previousCodeTransformations
+        previousCodeTransformations = code
+        for i in [0...@qualifierKeywords.length] by 4
+          toBeReplaced = @qualifierKeywords[i+1] + ""
+          replaceWith = @qualifierKeywords[i] + ""
+
+          # a qualifier cannot span over a loop
+          # because it would create chaos with the
+          # pushMatrix being out and the popMatrix being in
+          # so neutralise those first by turning into
+          # something special that is going to fail the
+          # next matches
+          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)(times)(.*?)("+@primitivesRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
+          replacement = '$1'+ toBeReplaced + '~$3$4$5$6$7'
+          code = code.replace(rx,replacement)
+
+          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9~\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
+          replacement = '$1'+ replaceWith + '$3$4$5'
+          code = code.replace(rx,replacement)
+
+          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9~\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
+          replacement = '$1'+ replaceWith + '$3$4$5'
+          code = code.replace(rx,replacement)
+
+          # replace back what we put in order to fail
+          # the qualifiers spanning over loops
+          rx = RegExp("("+toBeReplaced+")~",'g')
+          replacement = '$1'
+          code = code.replace(rx,replacement)
+
+      if detailedDebug then console.log "findQualifiers 1: " + code
+
+      return [code, error]
+
     fleshOutQualifiers: (code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
@@ -611,11 +651,29 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           prependWith = @qualifierKeywords[i+2] + ""
           appendWith = @qualifierKeywords[i+3] + ""
 
-          rx = RegExp("^()("+toBeReplaced+")([^a-zA-Z0-9\\r\\n].*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'gm')
+          rx = RegExp("(else\\s*)("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'g')
           replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
           code = code.replace(rx,replacement)
 
-          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")([^a-zA-Z0-9\\r\\n].*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'gm')
+          rx = RegExp("(then\\s*)("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*?else )",'g')
+          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '; $6'
+          code = code.replace(rx,replacement)
+
+          # the next two substitutions deal with the cases like "move peg move box"
+          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*?("+toBeReplaced+"))",'gm')
+          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + ';$6'
+          code = code.replace(rx,replacement)
+
+          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*?("+toBeReplaced+"))",'g')
+          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + ';$6'
+          code = code.replace(rx,replacement)
+
+
+          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'gm')
+          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
+          code = code.replace(rx,replacement)
+
+          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'g')
           replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
           code = code.replace(rx,replacement)
 
