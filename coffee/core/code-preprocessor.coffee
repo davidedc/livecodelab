@@ -25,9 +25,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # at the beginning of the sequence of primitives
       # and the end to push and pop the state, so that
       # the primitives that come *afterwards* are unaffected
-      "rotating", "rotate", "pushMatrix()", "popMatrix()"
-      "moving", "move", "pushMatrix()", "popMatrix()"
-      "scaling", "scale", "pushMatrix()", "popMatrix()"
+      "rotatingQUALIFIER", "rotate", "pushMatrix()", "popMatrix()"
+      "movingQUALIFIER", "move", "pushMatrix()", "popMatrix()"
+      "scalingQUALIFIER", "scale", "pushMatrix()", "popMatrix()"
     ]
     # We separate Commands from Expressions here.
     # Expressions return a value that is potentially
