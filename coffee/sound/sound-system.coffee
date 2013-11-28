@@ -298,7 +298,7 @@ define () ->
       
         # if this is chrome, fire the callback immediately
         # otherwise wait untill all the sounds have been tested
-        @eventRouter.trigger "all-sounds-loaded-and tested"  unless @Bowser.safari
+        @eventRouter.emit("all-sounds-loaded-and tested")  unless @Bowser.safari
 
   SoundSystem
 

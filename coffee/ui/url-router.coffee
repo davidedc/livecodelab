@@ -7,7 +7,7 @@ define () ->
   class UrlRouter
 
     constructor: (@eventRouter) ->
-      @eventRouter.bind "set-url-hash", @setHash, @
+      @eventRouter.addListener("set-url-hash", => @setHash)
     
     getHash: ->
       match = window.location.href.match(/#(.*)$/)
@@ -20,7 +20,7 @@ define () ->
       found = false
       hash = @getHash()
       if hash
-        @eventRouter.trigger "url-hash-changed", hash
+        @eventRouter.trigger("url-hash-changed", hash)
         found = true
       found
 

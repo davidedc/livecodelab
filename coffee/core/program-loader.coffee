@@ -24,9 +24,9 @@ define [
           @pollHash()
         , 100)
       # Setup Event Listeners
-      eventRouter.bind "url-hash-changed", ((hash) =>
+      eventRouter.addListener("url-hash-changed", (hash) =>
         @loadAppropriateDemoOrTutorialBasedOnHash hash
-      ), @
+      )
       
       @programs.demos.roseDemo =
         submenu: "Basic"
@@ -772,9 +772,9 @@ define [
       # set the demo as a hash state
       # so that ideally people can link directly to
       # a specific demo they like.
-      @eventRouter.trigger "set-url-hash", "bookmark=" + demoName
-      @eventRouter.trigger "big-cursor-hide"
-      @eventRouter.trigger "editor-undim"
+      @eventRouter.emit("set-url-hash", "bookmark=" + demoName)
+      @eventRouter.emit("big-cursor-hide")
+      @eventRouter.emit("editor-undim")
       @liveCodeLabCoreInstance.graphicsCommands.doTheSpinThingy = false
       prependMessage = ""
       if (not Detector.webgl or @liveCodeLabCoreInstance.threeJsSystem.forceCanvasRenderer) \

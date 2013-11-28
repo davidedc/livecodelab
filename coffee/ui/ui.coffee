@@ -16,13 +16,12 @@ define [
 
     constructor: (@eventRouter, @stats, @programLoader) ->
       # Setup Event Listeners
-      @eventRouter.bind(
+      @eventRouter.addListener(
         "report-runtime-or-compile-time-error",
-        (e) => @checkErrorAndReport(e),
-        @
+        (e) => @checkErrorAndReport(e)
       )
-      @eventRouter.bind "clear-error", (=>@clearError()), @
-      @eventRouter.bind "autocoder-button-pressed", (state) =>
+      @eventRouter.addListener("clear-error", => @clearError() )
+      @eventRouter.addListener("autocoder-button-pressed", (state) =>
         if state is true
           $("#autocodeIndicatorContainer").html("Autocode: on").css(
             "background-color", "#FF0000"
@@ -31,15 +30,18 @@ define [
           $("#autocodeIndicatorContainer").html("Autocode").css(
             "background-color", ""
           )
+      )
 
-      @eventRouter.bind "autocoderbutton-flash", =>
-        $("#autocodeIndicatorContainer").fadeOut(100).fadeIn 100
+      @eventRouter.addListener("autocoderbutton-flash", =>
+        $("#autocodeIndicatorContainer").fadeOut(100).fadeIn 100 
+      )
 
-      @eventRouter.bind "auto-hide-code-button-pressed", (autoDimmingIsOn) =>
+      @eventRouter.addListener("auto-hide-code-button-pressed", (autoDimmingIsOn) =>
         if autoDimmingIsOn
           $("#dimCodeButtonContainer").html "Hide Code: on"
         else
           $("#dimCodeButtonContainer").html "Hide Code: off"
+      )
 
     resizeCanvas: (canvasId) ->
       canvas = $(canvasId)
@@ -276,11 +278,11 @@ define [
         $('ul.sf-menu').sooperfish()
 
         $("#demos ul li a").click ->
-          eventRouter.trigger "load-program", $(@).attr("id")
+          eventRouter.emit("load-program", $(@).attr("id"))
           false
 
         $("#tutorials li a").click ->
-          eventRouter.trigger "load-program", $(@).attr("id")
+          eventRouter.emit("load-program", $(@).attr("id"))
           false
 
         $('<span >Autocode</span>').appendTo(
@@ -289,7 +291,7 @@ define [
           )
         ).attr('id', 'autocodeIndicatorContainer')
         $("#autocodeIndicatorContainer").click =>
-          eventRouter.trigger "toggle-autocoder"
+          eventRouter.emit("toggle-autocoder")
           false
 
         # this is set at start by a call
@@ -303,7 +305,7 @@ define [
           )
         ).attr('id', 'dimCodeButtonContainer')
         $("#dimCodeButtonContainer").click =>
-          eventRouter.trigger "editor-toggle-dim"
+          eventRouter.emit("editor-toggle-dim")
           false
 
         $('<span >Reset</span>').appendTo(
@@ -311,7 +313,7 @@ define [
             $('#nav')
           )
         ).click =>
-          eventRouter.trigger "reset"
+          eventRouter.emit("reset")
           $(@).stop().fadeOut(100).fadeIn 100
           false
 

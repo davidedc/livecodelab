@@ -9,15 +9,15 @@ define () ->
 
     constructor: (@eventRouter, codemirror) ->
       # Setup Event Listeners
-      @eventRouter.bind "reset", =>
-        @codemirrorInstance.setValue ""
+      @eventRouter.addListener("reset", => @codemirrorInstance.setValue "")
 
-      @eventRouter.bind "code-updated-by-livecodelab", ((elaboratedSource) =>
+      @eventRouter.addListener("code-updated-by-livecodelab", ((elaboratedSource) =>
           cursorPositionBeforeAddingCheckMark = @codemirrorInstance.getCursor()
           cursorPositionBeforeAddingCheckMark.ch = cursorPositionBeforeAddingCheckMark.ch + 1
           @setValue elaboratedSource
           @setCursor cursorPositionBeforeAddingCheckMark
         )
+      )
 
       @codemirrorInstance = codemirror.fromTextArea(document.getElementById("code"),
         mode: "livecodelab"
@@ -40,7 +40,7 @@ define () ->
         # will pass in the "editor" instance as the first
         # argument to the function callback
         onChange: (editor) =>
-          @eventRouter.trigger "code_changed", @codemirrorInstance.getValue()
+          @eventRouter.emit("code_changed", @codemirrorInstance.getValue())
 
         onCursorActivity: (editor) =>
           @suspendDimmingAndCheckIfLink()
@@ -89,10 +89,10 @@ define () ->
           currentLineContent = currentLineContent.replace("_", "")
           program = currentLineContent + "Tutorial"
           setTimeout (=>
-            @eventRouter.trigger "load-program", program
+            @eventRouter.emit("load-program", program)
           ), 200
       return if @codemirrorInstance.getValue() is ""
-      @eventRouter.trigger "editor-undim"
+      @eventRouter.emit("editor-undim")
     
   Editor
 

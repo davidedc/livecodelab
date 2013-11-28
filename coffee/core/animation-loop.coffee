@@ -169,7 +169,7 @@ define () ->
         catch e
           
           #alert('runtime error');
-          @eventRouter.trigger "runtime-error-thrown", e
+          @eventRouter.emit("runtime-error-thrown", e)
           return
         drawFunctionRunner = @liveCodeLabCoreInstance.drawFunctionRunner
         drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun \

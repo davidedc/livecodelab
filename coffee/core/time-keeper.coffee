@@ -4,9 +4,9 @@
 ## unnecessary invokation of the Date and getTime browser functions.
 ###
 
-define ->
+define ['core/event-emitter'], (EventEmitter) ->
 
-  class TimeKeeper
+  class TimeKeeper extends EventEmitter
 
     time: undefined
     timeAtStart: undefined
