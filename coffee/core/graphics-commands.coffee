@@ -11,8 +11,8 @@
 
 ## LiveCodeLab uses immediate mode graphics
 ## ----------------------
-## First off, like Processing, LiveCodeLab shies away from "retained" graphics
-## and instead uses "immediate mode" graphics.
+## First off, like Processing, LiveCodeLab adopts an "immediate" graphics
+## mode instead of a "retained" mode.
 ## For context, "immediate mode" graphics means that when the user uses a
 ## graphic primitive, he is
 ## NOT given a handle that he can use to modify properties of that element at a
@@ -101,7 +101,7 @@
 ## Spinning gives many more cues:
 ## the environment is 3d, the lighting is special by default and all faces have
 ## primary colors, things animate. Without spinning, all those cues need to be
-## further explained and demonstra ted.
+## further explained and demonstrated.
 ###
 
 define () ->
