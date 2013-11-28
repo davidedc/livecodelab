@@ -51,6 +51,12 @@ define ['core/code-preprocessor-tests'], (foo) ->
         ,
          input:    """
                    // should give error
+                   peg times rotate box 2* wave
+                   """
+         error: "how many times?"
+        ,
+         input:    """
+                   // should give error
                    if true then  times do that
                    """
          error: "how many times?"

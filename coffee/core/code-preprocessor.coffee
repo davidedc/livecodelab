@@ -423,17 +423,26 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # in some cases we don't want.
       # We want to simply rule out some common cases here
       # so we don't need to make the regexpes too complicated
-      # For example we want to avoid
+      # For example we want to avoid:
+      #
       #   peg; times rotate box 2* wave
       # to become
       #   (peg()).times ->  rotate box 2* wave()
+      # or
+      #   peg times rotate box 2* wave
+      # to become
+      #   peg.times ->  rotate box 2* wave()
+      #
       # and run simply because we forgot a number in front
       # of 'times'
+
+      rx = RegExp("("+@allCommandsRegex+")\\s+times(?![a-zA-Z0-9])",'g')
 
       if /^\s*times/gm.test(code) or
         /;\s*times/g.test(code) or
         /else\s+times/g.test(code) or
-        /then\s+times/g.test(code)
+        /then\s+times/g.test(code) or
+        rx.test(code)
           programHasBasicError = true
           return [undefined, "how many times?"]
       return [code, error]
