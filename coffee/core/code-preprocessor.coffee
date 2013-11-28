@@ -164,7 +164,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
+      # doOnce multiline case
       code = code.replace(/^(\s*)✓[ ]*doOnce[ \t\-]*\>[ ]*$/gm, "$1if false")
+      # doOnce single-line case case
       code = code.replace(/^(\s*)✓([ ]*doOnce[ \t\-]*\>[ ]*)/gm, "$1//$2")
       if detailedDebug then console.log "removeTickedDoOnce\n" + code + " error: " + error
       if code.indexOf("✓") != -1
