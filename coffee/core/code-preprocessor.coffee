@@ -651,6 +651,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           prependWith = @qualifierKeywords[i+2] + ""
           appendWith = @qualifierKeywords[i+3] + ""
 
+          # ...we don't want a qualifier to span across a then/else, so dealing
+          # with those two cases here first.
           rx = RegExp("(else\\s*)("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'g')
           replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
           code = code.replace(rx,replacement)
