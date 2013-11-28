@@ -52,14 +52,17 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "move"
       "scale"
     ]
-    commandsExcludingScaleRotateMove: [
+    primitives: [
       # Geometry
       "rect"
       "line"
       "box"
       "ball"
-      "ballDetail"
       "peg"
+    ]
+    commandsExcludingScaleRotateMove: [
+      # Geometry
+      "ballDetail"
       # Matrix manipulation other than scale rotate move
       "pushMatrix"
       "popMatrix"
@@ -132,7 +135,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
     constructor: ->
       @testCases = (new CodePreprocessorTests()).testCases
       @scaleRotateMoveCommandsRegex = @scaleRotateMoveCommands.join "|"
-      @allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") + "|" + @scaleRotateMoveCommandsRegex
+      @primitivesRegex = @primitives.join "|"
+      @allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") +
+        "|" + @scaleRotateMoveCommandsRegex +
+        "|" + @primitivesRegex
       @expressionsRegex = @expressions.join "|"
       # make the preprocessor tests easily accessible from
       # the debug console (just type testPreprocessor())
