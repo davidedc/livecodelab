@@ -20,7 +20,7 @@ define () ->
       found = false
       hash = @getHash()
       if hash
-        @eventRouter.trigger("url-hash-changed", hash)
+        @eventRouter.emit("url-hash-changed", hash)
         found = true
       found
 
