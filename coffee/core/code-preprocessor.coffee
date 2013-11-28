@@ -612,6 +612,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")([^a-zA-Z0-9\\r\\n].*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'gm')
           replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
           code = code.replace(rx,replacement)
+
       if detailedDebug then console.log "fleshOutQualifiers 1: " + code
 
       return [code, error]
@@ -738,18 +739,20 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @addTracingInstructionsToDoOnceBlocks(code, error)
 
       if detailedDebug then console.log "preprocess-9\n" + code + " error: " + error
-      [code, error] = @fleshOutQualifiers(code, error)
+      [code, error] = @findQualifiers(code, error)
       if detailedDebug then console.log "preprocess-10\n" + code + " error: " + error
-      [code, error] = @addCommandsSeparations(code, error, userDefinedFunctions)
+      [code, error] = @fleshOutQualifiers(code, error)
       if detailedDebug then console.log "preprocess-11\n" + code + " error: " + error
-      [code, error] = @adjustImplicitCalls(code, error, userDefinedFunctions)
+      [code, error] = @addCommandsSeparations(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-12\n" + code + " error: " + error
-      [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
+      [code, error] = @adjustImplicitCalls(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-13\n" + code + " error: " + error
-      [code, error] = @evaluateAllExpressions(code, error, userDefinedFunctions)
+      [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
       if detailedDebug then console.log "preprocess-14\n" + code + " error: " + error
-      [code, error] = @transformTimesSyntax(code, error)
+      [code, error] = @evaluateAllExpressions(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-15\n" + code + " error: " + error
+      [code, error] = @transformTimesSyntax(code, error)
+      if detailedDebug then console.log "preprocess-16\n" + code + " error: " + error
       [code, error] = @unmarkFunctionalReferences(code, error, userDefinedFunctions)
 
       return [code, error, userDefinedFunctions]
