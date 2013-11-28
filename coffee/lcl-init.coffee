@@ -129,7 +129,7 @@ require [
       eventRouter, editor, liveCodeLabCore
     )
     eventRouter.addListener(
-      "load-program", => programLoader.loadDemoOrTutorial()
+      "load-program", (demoName) => programLoader.loadDemoOrTutorial(demoName)
     )
 
     #console.log('creating stats')

@@ -7,7 +7,7 @@ define () ->
   class UrlRouter
 
     constructor: (@eventRouter) ->
-      @eventRouter.addListener("set-url-hash", => @setHash)
+      @eventRouter.addListener("set-url-hash", (hash) => @setHash(hash) )
     
     getHash: ->
       match = window.location.href.match(/#(.*)$/)
