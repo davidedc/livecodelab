@@ -11,6 +11,11 @@ define ['core/code-preprocessor-tests'], (foo) ->
     constructor: ->
 
       @testCases= [
+         notes:    """
+                   An organic example which also
+                   tests whether multiple lines
+                   mangle things.
+                   """
          input:    """
                    5 times
                    ▶rotate 0,1,time/5000
@@ -28,6 +33,11 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    ▶▶box()
                    """
         ,
+         notes:    """
+                   Should give error as 'times'
+                   is missing how many times the
+                   loop has to go for
+                   """
          input:    """
                    // should give error
                    peg
@@ -36,6 +46,11 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          error: "how many times?"
         ,
+         notes:    """
+                   Should give error as 'times'
+                   is missing how many times the
+                   loop has to go for
+                   """
          input:    """
                    // should give error
                    times
@@ -43,30 +58,54 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          error: "how many times?"
         ,
+         notes:    """
+                   Should give error as 'times'
+                   is missing how many times the
+                   loop has to go for
+                   """
          input:    """
                    // should give error
                    peg; times rotate box 2* wave
                    """
          error: "how many times?"
         ,
+         notes:    """
+                   Should give error as 'times'
+                   is missing how many times the
+                   loop has to go for
+                   """
          input:    """
                    // should give error
                    peg times rotate box 2* wave
                    """
          error: "how many times?"
         ,
+         notes:    """
+                   Should give error as 'times'
+                   is missing how many times the
+                   loop has to go for
+                   """
          input:    """
                    // should give error
                    if true then  times do that
                    """
          error: "how many times?"
         ,
+         notes:    """
+                   Should give error as 'times'
+                   is missing how many times the
+                   loop has to go for
+                   """
          input:    """
                    // should give error
                    if random() > 0.5 then rotate; box else times rotate; peg; true
                    """
          error: "how many times?"
         ,
+         notes:    """
+                   Checking that times finds its "number of loops"
+                   expression correctly.
+                   """
          input:    """
                    a = 2
                    box a + 3 times rotate peg
@@ -76,6 +115,9 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    box(); (a + 3).times -> pushMatrix(); rotate(); peg(); popMatrix()
                    """
         ,
+         notes:    """
+                   Checking "qualifying" rotate
+                   """
          input:    """
                    6 times: rotate box
                    """
@@ -83,6 +125,10 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    6.times -> pushMatrix(); rotate(); box(); popMatrix()
                    """
         ,
+         notes:    """
+                   Checking "qualifying" rotate and times within
+                   a function definition
+                   """
          input:    """
                    myFunc = -> 20 times rotate box
                    """
@@ -90,6 +136,10 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    myFunc = -> 20.times -> pushMatrix(); rotate(); box(); popMatrix()
                    """
         ,
+         notes:    """
+                   Checking "qualifying" rotate and times within
+                   if within a function definition with arguments
+                   """
          input:    """
                    myFunc = (a,b) -> if true then 20 times rotate box
                    """
@@ -97,6 +147,9 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    myFunc = (a,b) -> if true then 20.times -> pushMatrix(); rotate(); box(); popMatrix()
                    """
         ,
+         notes:    """
+                   Checking multiple times within if then statement
+                   """
          input:    """
                    if true then 2 times box 3 times line 2
                    """
@@ -104,6 +157,10 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if true then 2.times -> box(); 3.times -> line 2
                    """
         ,
+         notes:    """
+                   Checking that separate rotate and primitive
+                   within a times body remain correctly separated.
+                   """
          input:    """
                    6 times: rotate; box
                    """
@@ -111,6 +168,9 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    6.times -> rotate(); box()
                    """
         ,
+         notes:    """
+                   Qualifying rotate within an indented "times" body
+                   """
          input:    """
                    6 times:
                    ▶rotate box
