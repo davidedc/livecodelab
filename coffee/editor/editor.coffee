@@ -40,7 +40,7 @@ define () ->
         # will pass in the "editor" instance as the first
         # argument to the function callback
         onChange: (editor) =>
-          @eventRouter.emit("code_changed", @codemirrorInstance.getValue())
+          @eventRouter.emit("code-changed", @codemirrorInstance.getValue())
 
         onCursorActivity: (editor) =>
           @suspendDimmingAndCheckIfLink()

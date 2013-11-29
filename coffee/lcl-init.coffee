@@ -166,7 +166,7 @@ require [
     eventRouter.addListener("reset", => liveCodeLabCore.paintARandomBackground())
     eventRouter.emit("editor-toggle-dim", false)
     eventRouter.addListener("livecodelab-running-stably", => ui.showStatsWidget)
-    eventRouter.addListener("code_changed", (updatedCodeAsString) ->
+    eventRouter.addListener("code-changed", (updatedCodeAsString) ->
       if updatedCodeAsString isnt ""
         eventRouter.emit("big-cursor-hide")
       else
