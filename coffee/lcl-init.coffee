@@ -272,10 +272,10 @@ require [
       editor.undo()  if autocoder.active
     )
 
-    eventRouter.addListener("clear-error", => ui.clearError)
+    eventRouter.addListener("clear-error", => ui.clearError())
     
     # create this binding before the sounds are loaded
-    eventRouter.addListener("all-sounds-loaded-and tested", => ui.soundSystemOk)
+    eventRouter.addListener("all-sounds-loaded-and tested", => ui.soundSystemOk())
     
     #/////////////////////////////////////////////////////
     # Phase 5- Kick-off the system and start of the
