@@ -9,27 +9,47 @@ define ['core/event-emitter'], (EventEmitter) ->
   class TimeKeeper extends EventEmitter
 
     constructor: ->      
-      @time: undefined
-      @timeAtStart: undefined
-      @milliseconds: undefined
-      @bpm: 100
-      @lastBeat: undefined
-      @nextBeat: undefined
+      @time = undefined          # current time in SECONDS
+      @millisAtStart = undefined # milliseconds at program start
+      @milliseconds = undefined  # current milliseconds
+      @bpm = 100
+      @mspb = 60000 / @bpm       # milliseconds per beat
+      @lastBeat = undefined      # milliseconds at last beat
+      @beatCount = 0             # current/last whole beat number
+      
+      @resetTime()
 
+      super()
+      
       window.time = 0
       window.wave = (a) => @wave(a)
 
-    updateTime: ->
-      @milliseconds = new Date().getTime()
-      @time = window.time = (@milliseconds - @timeAtStart) / 1000
+      @beatLoop()
 
+    ###
+    This is the beat loop that runs at 4 quarters to the beat, emitting
+    an event for every quarter.
+    ###
     beatLoop: ->
-      
+      now = new Date().getTime()
+      if now >= @lastBeat + @mspb
+        @lastBeat += @mspb
+        @beatCount += 1
+        console.log("whole beat")
+      fraction = Math.round((now - @lastBeat) / @mspb * 4) / 4;
+      @emit('beat', @beatCount + fraction)
+      # Set a timeout for the next beat
+      nextQuarterBeat = @lastBeat + @mspb * (fraction + 0.25)
+      delta = nextQuarterBeat - new Date().getTime()
+      setTimeout( (=> @beatLoop()) , delta)
 
     resetTime: ->
-      @time = 0
-      window.time = 0
-      @timeAtStart = new Date().getTime()
+      @lastBeat = @millisAtStart = new Date().getTime()
+      @updateTime()
+
+    updateTime: ->
+      @milliseconds = new Date().getTime()
+      @time = window.time = (@milliseconds - @millisAtStart) / 1000
 
     getTime: ->
       # TODO/tom: This will be obsolete soon
