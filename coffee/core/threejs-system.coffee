@@ -112,10 +112,13 @@ define [
           format: liveCodeLabCore_three.RGBAFormat
           stencilBuffer: true
       
+        # these are the two buffers.
+
         renderTarget = new liveCodeLabCore_three.WebGLRenderTarget(
           @blendedThreeJsSceneCanvas.width,
           @blendedThreeJsSceneCanvas.height,
           renderTargetParameters)
+
         effectSaveTarget = new liveCodeLabCore_three.SavePass(
           new liveCodeLabCore_three.WebGLRenderTarget(
             @blendedThreeJsSceneCanvas.width,
@@ -136,23 +139,36 @@ define [
         
         #fxaaPass = new liveCodeLabCore_three.ShaderPass(liveCodeLabCore_three.ShaderExtras.fxaa);
         #fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);
+
+        # this is the place where everything is mixed together
+        @composer = new liveCodeLabCore_three.EffectComposer(
+          @renderer, renderTarget)
+
+        # this is the effect that blends two buffers together
+        # for motion blur.
+        # it's going to blend the previous buffer that went to
+        # screen and the new rendered buffer
         @effectBlend = new liveCodeLabCore_three.ShaderPass(
           liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1")
+        @effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
+        @effectBlend.uniforms.mixRatio.value = 0
+
         screenPass = new liveCodeLabCore_three.ShaderPass(
           liveCodeLabCore_three.ShaderExtras.screen)
         
-        # motion blur
-        @effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
-        @effectBlend.uniforms.mixRatio.value = 0
         renderModel = new liveCodeLabCore_three.RenderPass(
           @scene, @camera)
-        @composer = new liveCodeLabCore_three.EffectComposer(
-          @renderer, renderTarget)
+
+
+        # first thing, render the model
         @composer.addPass renderModel
-        
+        # then apply some fake post-processed antialiasing      
         #@composer.addPass(fxaaPass);
+        # then blend using the previously saved buffer and a mixRatio
         @composer.addPass @effectBlend
+        # the result is saved in a copy: effectSaveTarget.renderTarget
         @composer.addPass effectSaveTarget
+        # last pass is the one that is put to screen
         @composer.addPass screenPass
         screenPass.renderToScreen = true
 
