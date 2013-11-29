@@ -32,7 +32,7 @@ define ['core/code-preprocessor', 'coffeescript'], (CodePreprocessor, Coffeescri
       if code is ""
         @liveCodeLabCoreInstance.graphicsCommands.resetTheSpinThingy = true
         programHasBasicError = false
-        @eventRouter.trigger "clear-error"
+        @eventRouter.emit("clear-error")
         @liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
         functionFromCompiledCode = new Function("")
         @liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction null
@@ -49,7 +49,7 @@ define ['core/code-preprocessor', 'coffeescript'], (CodePreprocessor, Coffeescri
       # we report the error and skip the coffeescript
       # to javascript translation step.
       if error?
-        @eventRouter.trigger "compile-time-error-thrown", error
+        @eventRouter.emit("compile-time-error-thrown", error)
         return
             
       #console.log code
@@ -63,11 +63,11 @@ define ['core/code-preprocessor', 'coffeescript'], (CodePreprocessor, Coffeescri
         # coffescript compiler has caught a syntax error.
         # we are going to display the error and we WON'T register
         # the new code
-        @eventRouter.trigger "compile-time-error-thrown", e
+        @eventRouter.emit("compile-time-error-thrown", e)
         return
       #alert compiledOutput
       programHasBasicError = false
-      @eventRouter.trigger "clear-error"
+      @eventRouter.emit("clear-error")
       
       @liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
       
@@ -120,7 +120,7 @@ define ['core/code-preprocessor', 'coffeescript'], (CodePreprocessor, Coffeescri
       # puts the new code (where the doOnce that have been executed have
       # tickboxes put back) in the editor. Which will trigger a re-registration
       # of the new code.
-      @eventRouter.trigger "code-updated-by-livecodelab", elaboratedSource
+      @eventRouter.emit("code-updated-by-livecodelab", elaboratedSource)
       #alert elaboratedSource
       # we want to avoid that another frame is run with the old
       # code, as this would mean that the

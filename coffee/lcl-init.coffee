@@ -6,7 +6,7 @@
 require [
   'Three.Stats'
   ,'core/colour-literals'
-  ,'core/event-router'
+  ,'core/event-emitter'
   ,'core/livecodelab-core'
   ,'core/program-loader'
   ,'ui/url-router'
@@ -26,7 +26,7 @@ require [
 ], (
   Stats
   ,ColourLiterals
-  ,EventRouter
+  ,EventEmitter
   ,LiveCodeLabCore
   ,ProgramLoader
   ,UrlRouter
@@ -67,7 +67,7 @@ require [
     # callback system, because there might be some overhead in the
     # triggering of events using this. (to be tested. just throwing
     # it out there.)
-    eventRouter = new EventRouter()
+    eventRouter = new EventEmitter()
     
     # Stats are updated in the animationLoop
     # add Stats.js - https://github.com/mrdoob/stats.js
@@ -112,12 +112,12 @@ require [
     # Phase 3 - Other satellite parts
     #/////////////////////////////////////////////////////
     urlRouter = new UrlRouter(eventRouter)
-    #eventRouter.bind("set-url-hash", (=> urlRouter.setHash()), @)
+    # eventRouter.addListener("set-url-hash", => urlRouter.setHash()))
     
     bigCursor = new BigCursor eventRouter # $
     # Setup Event Listeners
-    eventRouter.bind("big-cursor-show", => bigCursor.unshrinkBigCursor() )
-    eventRouter.bind("big-cursor-hide", => bigCursor.shrinkBigCursor()   )
+    eventRouter.addListener("big-cursor-show", => bigCursor.unshrinkBigCursor() )
+    eventRouter.addListener("big-cursor-hide", => bigCursor.shrinkBigCursor() )
 
     editor = new Editor(eventRouter, CodeMirror)
     attachMouseWheelHandler editor
@@ -128,8 +128,8 @@ require [
     programLoader = new ProgramLoader(
       eventRouter, editor, liveCodeLabCore
     )
-    eventRouter.bind(
-      "load-program", programLoader.loadDemoOrTutorial, programLoader
+    eventRouter.addListener(
+      "load-program", (demoName) => programLoader.loadDemoOrTutorial(demoName)
     )
 
     #console.log('creating stats')
@@ -137,28 +137,25 @@ require [
     # requires: ColourNames
     autocoder = new Autocoder(eventRouter, editor, colourNames) # McLexer
     # Setup Event Listeners
-    eventRouter.bind("reset", => autocoder.toggle(false))
-    eventRouter.bind("toggle-autocoder", => autocoder.toggle())
+    eventRouter.addListener("reset", => autocoder.toggle(false))
+    eventRouter.addListener("toggle-autocoder", => autocoder.toggle())
     
     # EditorDimmer functions should probablly be rolled into the editor itself
     # note that the editorDimmer variable below is never used. Leaving it
     # in for consistency.
     editorDimmer = new EditorDimmer(eventRouter, bigCursor) # $
     # Setup Event Listeners
-    eventRouter.bind(
+    eventRouter.addListener(
       "editor-dim",
-      () => editorDimmer.dimEditor(),
-      editorDimmer
+      () => editorDimmer.dimEditor()
     )
-    eventRouter.bind(
+    eventRouter.addListener(
       "editor-undim",
-      () => editorDimmer.undimEditor(),
-      editorDimmer
+      () => editorDimmer.undimEditor()
     )
-    eventRouter.bind(
+    eventRouter.addListener(
       "editor-toggle-dim",
-      (autoDim) => editorDimmer.toggleDimCode(autoDim),
-      editorDimmer
+      (autoDim) => editorDimmer.toggleDimCode(autoDim)
     )
     
     
@@ -166,20 +163,21 @@ require [
     # Phase 4 - Setup Of Event Listeners, including handling of
     # compile time and runtime errors.
     #/////////////////////////////////////////////////////
-    eventRouter.bind "reset", (()=>liveCodeLabCore.paintARandomBackground())
-    eventRouter.trigger "editor-toggle-dim", false
-    eventRouter.bind "livecodelab-running-stably", ui.showStatsWidget
-    eventRouter.bind "code_changed", (updatedCodeAsString) ->
+    eventRouter.addListener("reset", => liveCodeLabCore.paintARandomBackground())
+    eventRouter.emit("editor-toggle-dim", false)
+    eventRouter.addListener("livecodelab-running-stably", => ui.showStatsWidget())
+    eventRouter.addListener("code-changed", (updatedCodeAsString) ->
       if updatedCodeAsString isnt ""
-        eventRouter.trigger "big-cursor-hide"
+        eventRouter.emit("big-cursor-hide")
       else
         # clearing history, otherwise the user can undo her way
         # into a previous example but the hash in the URL would be misaligned.
         setTimeout((()=>editor.clearHistory()),30)
-        eventRouter.trigger "set-url-hash", ""
-        eventRouter.trigger "big-cursor-show"
+        eventRouter.emit("set-url-hash", "")
+        eventRouter.emit("big-cursor-show")
         ui.hideStatsWidget()
       liveCodeLabCore.updateCode updatedCodeAsString
+    )
 
     
     # runtime and compile-time error management //////////
@@ -252,8 +250,8 @@ require [
     # throws a runtime error, the editor "undoes" again, until a
     # program that is both syntactically correct and stable
     # is found.
-    eventRouter.bind "runtime-error-thrown", (e) ->
-      eventRouter.trigger "report-runtime-or-compile-time-error", e
+    eventRouter.addListener("runtime-error-thrown", (e) ->
+      eventRouter.emit("report-runtime-or-compile-time-error", e)
       if autocoder.active
         
         #alert('editor: ' + editor);
@@ -267,15 +265,17 @@ require [
       # (firebug, built-in, whathaveyous) can properly
       # catch the error and let the user inspect things.
       throw (e)  if paramsObject.bubbleUpErrorsForDebugging
+    )
 
-    eventRouter.bind "compile-time-error-thrown", (e) ->
-      eventRouter.trigger "report-runtime-or-compile-time-error", e
+    eventRouter.addListener("compile-time-error-thrown", (e) ->
+      eventRouter.emit("report-runtime-or-compile-time-error", e)
       editor.undo()  if autocoder.active
+    )
 
-    eventRouter.bind "clear-error", ui.clearError, ui
+    eventRouter.addListener("clear-error", => ui.clearError())
     
     # create this binding before the sounds are loaded
-    eventRouter.bind "all-sounds-loaded-and tested", ui.soundSystemOk
+    eventRouter.addListener("all-sounds-loaded-and tested", => ui.soundSystemOk())
     
     #/////////////////////////////////////////////////////
     # Phase 5- Kick-off the system and start of the

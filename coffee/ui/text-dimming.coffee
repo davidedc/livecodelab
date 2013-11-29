@@ -67,7 +67,7 @@ define () ->
         @dimIntervalID = setInterval((()=>@dimEditor()), 3000)
       else
         @undimEditor()
-      @eventRouter.trigger "auto-hide-code-button-pressed", @dimCodeOn
+      @eventRouter.emit("auto-hide-code-button-pressed", @dimCodeOn)
 
   EditorDimmer
 

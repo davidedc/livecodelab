@@ -69,7 +69,7 @@ define () ->
       @consecutiveFramesWithoutRunTimeError += 1
       if @consecutiveFramesWithoutRunTimeError is 5
         @lastStableDrawFunction = @drawFunction
-        @eventRouter.trigger "livecodelab-running-stably"
+        @eventRouter.emit("livecodelab-running-stably")
 
     reinstateLastWorkingDrawFunction: ->
       # mark the program as flawed and register the previous stable one.

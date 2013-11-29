@@ -262,7 +262,7 @@ define [
         @animationLoop.animate()
         
         # console.log('waking up');
-        @paramsObject.eventRouter.trigger "livecodelab-waking-up"
+        @paramsObject.eventRouter.emit("livecodelab-waking-up")
 
     
     # why do we leave the option to put a background?

@@ -240,7 +240,7 @@ define ['autocoder/lexer'], (LexerState) ->
       @editor.setValue newContent
 
     autocoderMutate: ->
-      @eventRouter.trigger "autocoderbutton-flash"
+      @eventRouter.emit("autocoderbutton-flash")
       @mutate()
 
     toggle: (forcedState) ->
@@ -254,10 +254,10 @@ define ['autocoder/lexer'], (LexerState) ->
         if @editor.getValue() is "" or
             ((window.location.hash.indexOf("bookmark") isnt -1) and
             (window.location.hash.indexOf("autocodeTutorial") isnt -1))
-          @eventRouter.trigger "load-program", "cubesAndSpikes"
+          @eventRouter.emit("load-program", "cubesAndSpikes")
       else
         clearInterval @autocoderMutateTimeout
-      @eventRouter.trigger "autocoder-button-pressed", @active
+      @eventRouter.emit("autocoder-button-pressed", @active)
 
 # Token types. If they contain a mutate() function, then they can be mutated.
 
