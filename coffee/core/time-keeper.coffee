@@ -11,7 +11,7 @@ define ['core/event-emitter'], (EventEmitter) ->
     constructor: ->      
       @time = undefined          # current time in SECONDS
       @millisAtStart = undefined # milliseconds at program start
-      @milliseconds = undefined  # current milliseconds
+      @milliseconds = undefined  # current time in MILLISECONDS
       @bpm = 100
       @mspb = 60000 / @bpm       # milliseconds per beat
       @lastBeat = undefined      # milliseconds at last beat
@@ -28,16 +28,18 @@ define ['core/event-emitter'], (EventEmitter) ->
 
     ###
     This is the beat loop that runs at 4 quarters to the beat, emitting
-    an event for every quarter.
+    an event for every quarter. It uses setTimeout in stead of setInterval
+    because the BPM could change.
     ###
     beatLoop: ->
       now = new Date().getTime()
       if now >= @lastBeat + @mspb
         @lastBeat += @mspb
         @beatCount += 1
-        console.log("whole beat")
       fraction = Math.round((now - @lastBeat) / @mspb * 4) / 4;
       @emit('beat', @beatCount + fraction)
+      # console.log("beat", @beatCount + fraction)
+      # TODO/tom: get bpm/phase from pulse
       # Set a timeout for the next beat
       nextQuarterBeat = @lastBeat + @mspb * (fraction + 0.25)
       delta = nextQuarterBeat - new Date().getTime()
