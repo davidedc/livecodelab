@@ -220,21 +220,29 @@ define () ->
       and define them at runtime only when needed.
       ###
       
+      # these set the relative size of the
+      # primitibes in respect to the box
+      boxProportion = 1
+      lineProportion = 1.4
+      rectProportion = 1.2
+      pegProportion = 1.1
+      ballProportion = 0.64
+
       @geometriesBank[@primitiveTypes.line] = new @liveCodeLabCore_three.Geometry()
       @geometriesBank[@primitiveTypes.line].vertices.push \
-        new @liveCodeLabCore_three.Vector3(0, -0.5, 0)
+        new @liveCodeLabCore_three.Vector3(0, -0.5 * lineProportion, 0)
       @geometriesBank[@primitiveTypes.line].vertices.push \
-        new @liveCodeLabCore_three.Vector3(0, 0.5, 0)
-      @geometriesBank[@primitiveTypes.rect] = new @liveCodeLabCore_three.PlaneGeometry(1, 1)
-      @geometriesBank[@primitiveTypes.box] = new @liveCodeLabCore_three.CubeGeometry(1, 1, 1)
+        new @liveCodeLabCore_three.Vector3(0, 0.5 * lineProportion, 0)
+      @geometriesBank[@primitiveTypes.rect] = new @liveCodeLabCore_three.PlaneGeometry(1 * rectProportion, 1 * rectProportion)
+      @geometriesBank[@primitiveTypes.box] = new @liveCodeLabCore_three.CubeGeometry(1 * boxProportion, 1 * boxProportion, 1 * boxProportion)
       @geometriesBank[@primitiveTypes.peg] =
-        new @liveCodeLabCore_three.CylinderGeometry(0.5, 0.5, 1, 32)
+        new @liveCodeLabCore_three.CylinderGeometry(0.5 * pegProportion, 0.5 * pegProportion, 1 * pegProportion, 32)
       
       # creating ball geometries
       for i in [0...(@maximumBallDetail - @minimumBallDetail + 1)]
         @geometriesBank[@primitiveTypes.ball + i] =
           new @liveCodeLabCore_three.SphereGeometry(
-            1, @minimumBallDetail + i, @minimumBallDetail + i)
+            1 * ballProportion, @minimumBallDetail + i, @minimumBallDetail + i)
       
       # creating a place to remember where
       # each primitive was placed last and how
