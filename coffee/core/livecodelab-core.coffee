@@ -148,9 +148,8 @@ define [
       # function we are in.
       #
       #//////////////////////////////////////////////
+      
       @timeKeeper = new TimeKeeper()
-
-      @connections = new Connections()
       
       # this one also interacts with threeJsSystem at runtime
       @blendControls = new BlendControls(@)

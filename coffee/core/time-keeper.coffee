@@ -4,11 +4,11 @@
 ## unnecessary invokation of the Date and getTime browser functions.
 ###
 
-define ['core/event-emitter'], (EventEmitter) ->
+define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
 
   class TimeKeeper extends EventEmitter
 
-    constructor: ->      
+    constructor: ->
       @time = undefined          # current time in SECONDS
       @millisAtStart = undefined # milliseconds at program start
       @milliseconds = undefined  # current time in MILLISECONDS
@@ -16,15 +16,35 @@ define ['core/event-emitter'], (EventEmitter) ->
       @mspb = 60000 / @bpm       # milliseconds per beat
       @lastBeat = undefined      # milliseconds at last beat
       @beatCount = 0             # current/last whole beat number
-      
-      @resetTime()
+
+      @pulseClient = new Pulse();      
 
       super()
       
-      window.time = 0
-      window.wave = (a) => @wave(a)
+      window.connect = (address) => @connect(address)
+      window.bpm = (bpm) => @setBpm(bpm)
+      window.beat = => @beat()
+      window.pulse = => @pulse()
+      window.wave = (period) => @wave(period)
 
+      @resetTime()
       @beatLoop()
+
+
+    ###
+    Connects to a pulse server, and read the bpm/beat from there.
+    ###
+    connect: (address) ->
+      if !(typeof address == 'undefined' || 
+           @pulseClient.connecting || 
+           @pulseClient.currentConnection() == 
+           @pulseClient.cleanAddress(address))
+        console.log(@pulseClient.currentConnection())
+        console.log(@pulseClient.cleanAddress(address))
+        console.log('Connecting to ' + address)
+        @pulseClient.connect(address)
+      
+      return
 
     ###
     This is the beat loop that runs at 4 quarters to the beat, emitting
@@ -38,9 +58,14 @@ define ['core/event-emitter'], (EventEmitter) ->
         @beatCount += 1
       fraction = Math.round((now - @lastBeat) / @mspb * 4) / 4;
       @emit('beat', @beatCount + fraction)
-      # console.log("beat", @beatCount + fraction)
-      # TODO/tom: get bpm/phase from pulse
-      # Set a timeout for the next beat
+      
+      # Set the BPM and phase from pulse if it's connected
+      if @pulseClient.currentConnection()
+        @setBpm(@pulseClient.bpm)
+        if @pulseClient.beats.length
+          @lastBeat = @pulseClient.beats[@pulseClient.beats.length-1]
+      
+      # Set a timeout for the next (quarter) beat
       nextQuarterBeat = @lastBeat + @mspb * (fraction + 0.25)
       delta = nextQuarterBeat - new Date().getTime()
       setTimeout( (=> @beatLoop()) , delta)
@@ -53,16 +78,30 @@ define ['core/event-emitter'], (EventEmitter) ->
       @milliseconds = new Date().getTime()
       @time = window.time = (@milliseconds - @millisAtStart) / 1000
 
+    setBpm: (bpm) ->
+      if bpm != @bpm
+        @bpm = Math.max(20, Math.min(bpm, 170))
+        @mspb = 60000 / @bpm
+
     getTime: ->
       # TODO/tom: This will be obsolete soon
       @time
 
+    beat: ->
+      passed = new Date().getTime() - @lastBeat
+      return @beatCount + passed / @mspb;
+
+    pulse: ->
+      return Math.exp(-Math.pow( Math.pow(@beat() % 1, 0.3) - 0.5, 2) / 0.05)
+
     # Wave: simple harmonic motion where a is period in milliseconds
-    wave: (a) ->
+    wave: (period) ->
       # TODO/tom: base on beat
-      if typeof a isnt "number"
-        a = 500
-      sin((@time/a) * Math.PI)
+      if typeof period isnt "number"
+        period = 500
+      sin((@time/period) * Math.PI)
+
+
 
   TimeKeeper
 

@@ -1,6 +1,6 @@
 /*!
   * Pulse - beat tracking from MIDI Clock
-  * v0.1.3
+  * v0.1.4
   * https://github.com/noio/pulse
   * MIT License | (c) Thomas "noio" van den Berg 2013
   */
@@ -15,7 +15,7 @@ var Pulse = function(module){
 		this.address = null;
 		this.connecting = false;
 		this.clocks = 0;
-		this.latest = 0;
+		this.count = 0;
 
 		this.deviceLatency = 0;
 		this.netLatency = 0;	
@@ -38,11 +38,12 @@ var Pulse = function(module){
 	Pulse.VALID_HOSTNAME = /^(http:\/\/)?(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])(:[0-9]+)?$/;
 	
 	/**
-	 * Handles the incoming MIDI clock messages.
-	 */
+	* Handles the incoming MIDI clock messages.
+	*/
 	Pulse.prototype.clock = function(){
 		if (this.clocks == 0){
-			this.tap()
+			var beatTime = (new Date).getTime() - this.deviceLatency - this.netLatency;
+			this.newBeat(beatTime);
 		}
 		this.clocks ++;
 		if (this.clocks == Pulse.PPQN){
@@ -51,25 +52,20 @@ var Pulse = function(module){
 	}
 
 	/**
-	 * Handles the midi start event,
-	 * which basically resets the PPQN counter to 0
-	 */
+	* Handles the midi start event,
+	* which basically resets the PPQN counter to 0
+	*/
 	Pulse.prototype.sync = function(){
 		console.log('MIDI Synced.')
 		this.clocks = 0;
-		this.latest = 0;
+		this.count = 0;
 	}
 
-
 	/**
-	 * This is fired every "whole" beat, and updates the BPM
-	 */
-	Pulse.prototype.tap = function(){
-		var now = (new Date).getTime();
-		if (now - this.beats[this.beats.length - 1] > Pulse.TAP_TIMEOUT * this.mspb) {
-			this.beats = []
-		}
-		this.beats.push(now);
+	* This updates the bpm when necessary
+	*/
+ 	Pulse.prototype.newBeat = function(t){
+ 		this.beats.push(t);
 		if (this.beats.length > 1){
 			if (this.beats.length >= 4){
 				this.beats.shift()
@@ -78,7 +74,19 @@ var Pulse = function(module){
 			// convert 'milliseconds per beats to 'beats per minute'
 			this.bpm = 60000 / this.mspb;
 		}
-		this.latest = Math.round(this.latest) + 1;
+		this.count = Math.round(this.count) + 1;
+ 	}
+
+
+	/**
+	* This is fired every "whole" beat, and updates the BPM
+	*/
+	Pulse.prototype.tap = function(){
+		var now = (new Date).getTime();
+		if (now - this.beats[this.beats.length - 1] > Pulse.TAP_TIMEOUT * this.mspb) {
+			this.beats = []
+		}
+		this.newBeat(now);
 	}
 
 	/**
@@ -86,7 +94,7 @@ var Pulse = function(module){
 	*/
 	Pulse.prototype.beat = function(){
 		var passed = (new Date).getTime() - this.beats[this.beats.length-1];
-		return this.latest + (passed + this.netLatency + this.deviceLatency) / this.mspb;
+		return this.count + passed / this.mspb;
 	}
 
 	/**
@@ -94,6 +102,17 @@ var Pulse = function(module){
 	*/
 	Pulse.prototype.pulse = function(){
 		return Math.exp(-Math.pow( Math.pow(this.beat() % 1, 0.3) - 0.5, 2) / 0.05)
+	}
+
+	/**
+	* Returns timestamp of the last beat
+	*/
+	Pulse.prototype.timeOfLastBeat = function(){
+		if (this.beats.length){
+			return this.beats[this.beats.length - 1]
+		} else {
+			return null
+		}
 	}
 
 	/*
@@ -122,18 +141,22 @@ var Pulse = function(module){
 	* Connect to a pulse server, get the socket.io script
 	*/
 	Pulse.prototype.connect = function(address){
+		if (typeof address == 'undefined') {
+			throw "No address."
+		}
+
 		address = this.cleanAddress(address);
 
 		if (!(address.match(Pulse.VALID_HOSTNAME) || address.match(Pulse.VALID_IP))){
-			throw "ConnectionError: Not a valid address (" + address + ")."
+			throw "Not a valid address (" + address + ")."
 		}
 
 		if (this.currentConnection() === address) {
-			throw "ConnectionError: Already connected to that address."
+			throw "Already connected to that address."
 		}
 
 		if (this.connecting){
-			throw "ConnectionError: Still attempting connection."
+			throw "Still attempting connection."
 		}
 
 		if (this.socket){
