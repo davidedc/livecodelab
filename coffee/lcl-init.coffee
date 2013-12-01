@@ -165,7 +165,7 @@ require [
     #/////////////////////////////////////////////////////
     eventRouter.addListener("reset", => liveCodeLabCore.paintARandomBackground())
     eventRouter.emit("editor-toggle-dim", false)
-    eventRouter.addListener("livecodelab-running-stably", => ui.showStatsWidget)
+    eventRouter.addListener("livecodelab-running-stably", => ui.showStatsWidget())
     eventRouter.addListener("code-changed", (updatedCodeAsString) ->
       if updatedCodeAsString isnt ""
         eventRouter.emit("big-cursor-hide")
@@ -272,10 +272,10 @@ require [
       editor.undo()  if autocoder.active
     )
 
-    eventRouter.addListener("clear-error", => ui.clearError)
+    eventRouter.addListener("clear-error", => ui.clearError())
     
     # create this binding before the sounds are loaded
-    eventRouter.addListener("all-sounds-loaded-and tested", => ui.soundSystemOk)
+    eventRouter.addListener("all-sounds-loaded-and tested", => ui.soundSystemOk())
     
     #/////////////////////////////////////////////////////
     # Phase 5- Kick-off the system and start of the
