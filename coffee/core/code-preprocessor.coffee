@@ -236,7 +236,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
             elaboratedSourceByLine[eachLine + 1] =
               elaboratedSourceByLine[eachLine + 1].replace(
                 /^(\s*)(.+)$/g, "$1addDoOnce(" + eachLine + "); $2")
-        code = elaboratedSourceByLine.join("\n")
+        code = elaboratedSourceByLine.join "\n"
       
       #alert('soon after replacing doOnces'+code)
       return [code, error]
