@@ -23,7 +23,7 @@ and writing
 ```
 box()
 ```
-while in LiveCodeLab, there isn't. Any time a function name appears without arguments and parentheses, the function is implicitely called on the spot. Since all LiveCodeLab functions have a valid and interesting meaning when invoked without arguments, this is useful, as it means that one can write
+while in LiveCodeLab, like in Ruby, there isn't. Any time a function name appears without arguments and parentheses, the function is implicitely called on the spot. Since all LiveCodeLab functions have a valid and interesting meaning when invoked without arguments, this is useful, as it means that one can write
 ```
 box
 move
@@ -79,6 +79,35 @@ basically, instead of forcing you to parentheses to evaluate functions, LiveCode
 
 Some examples (scroll table to the right)
 -----------
+
+"Scoped" matrix transformations
+-----------
+In processing, is one wants to apply transformation(s) to only some primitive(s), one does
+```
+pushMatrix();
+[transformation(s) here]
+[primitive(s) here]
+popMatrix();
+```
+indeed this also works in LiveCodeLab, but LiveCodeLab adds another coincise notation to scope the transformations, by simplt indenting the block one wants to be affected, e.g.
+```
+rotate 1,2 # this rotate only applies to the indented block below
+  box
+  [more primitives here]
+```
+or also
+```
+scale 1 # has no effect other than creating the "scope" below
+  [any series of transformations here]
+  box
+  [more primitives here]
+```
+These "scoped" matrix transformations can also be nested.
+
+
+Some examples (scroll table to the right)
+-----------
+
 
 ```
                                                      +                                                                       +
@@ -137,7 +166,7 @@ Some examples (scroll table to the right)
 
 Limitations and ambiguities
 -----------
-LiveCodeLab's "aggressive" euristics to shorten the typing are just that - euristics. They seem to work for us all the times, but if you run into trouble - just use short lines and use all the parentheses when needed. By doing so, LiveCodeLab won't have to do any guessing for you and will do exactly what you meant.
+LiveCodeLab's "aggressive" euristics to shorten the typing are just that - euristics. They seem to work for us all the times, but if you run into trouble - just use short lines and use all the parentheses when needed. By doing so, LiveCodeLab won't have to do any guessing for you and will do exactly what you mean.
 
 Also you might be under the impression that LiveCodeLab can guess any construct for you, for example
 ```
