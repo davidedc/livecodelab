@@ -19,6 +19,9 @@ define () ->
         threeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext
       
       @combDisplayList graphics
+      @resetExclusionPrincipleWobbleDataIfNeeded graphics
+
+
       if threeJsSystem.isWebGLUsed
         threeJsSystem.composer.render()
       else
@@ -110,6 +113,17 @@ define () ->
           
           # ... and the others to invisible
           sceneObject.visible = false
+
+    # we keep track of where each type of primitive was last drawn
+    # and how many of them were overlapping. Clean that data for
+    # each frame.
+    resetExclusionPrincipleWobbleDataIfNeeded: (graphics) ->
+      # resets the place where we recall where
+      # each type of primitive was placed last
+      if graphics.exclusionPrincipleWobble
+        for i in [0...graphics.lastPositionOfPrimitiveType.length]
+          graphics.lastPositionOfPrimitiveType[i].set 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          graphics.numberOfOverlappingPrimitives[i] = 0
 
   Renderer
 

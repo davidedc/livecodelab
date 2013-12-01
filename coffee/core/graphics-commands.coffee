@@ -105,6 +105,22 @@
 ## further explained and demonstrated.
 ###
 
+## "Exclusion-principle wobbling"
+## ----------------------
+## the exclusion principle says that no two
+## objects can be in the same place at the same
+## time. If we see that the user *consecutively*
+## draws the same primitive in the same place,
+## we jiggle the objects a bit. We could do
+## better: via some hash lookup we could also
+## check the non-consecutive cases, but we keep
+## it easy here. This is meant to show
+## early users when LCL is drawing many boxes
+## or lines in the same place.
+## helpful for example in
+##   20 times rotate box
+
+
 define () ->
 
   class GraphicsCommands
@@ -138,6 +154,12 @@ define () ->
     resetTheSpinThingy: false
     defaultNormalFill: true
     defaultNormalStroke: true
+    exclusionPrincipleWobble: true
+    # keeps track of the last position of each primitive type
+    # so we can enforce the exclusionPrinciple.
+    # Initialised in the constructor.
+    lastPositionOfPrimitiveType: []
+    numberOfOverlappingPrimitives: []
     
     constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance) ->
       window.line = (a,b,c) => @line(a,b,c)
@@ -214,6 +236,13 @@ define () ->
           new @liveCodeLabCore_three.SphereGeometry(
             1, @minimumBallDetail + i, @minimumBallDetail + i)
       
+      # creating a place to remember where
+      # each primitive was placed last and how
+      # many of them are overlapping so far
+      for i in [0..numberOfPrimitives + (@maximumBallDetail - @minimumBallDetail + 1)]
+        @lastPositionOfPrimitiveType[i] = new @liveCodeLabCore_three.Matrix4()
+        @numberOfOverlappingPrimitives[i] = 0
+
     
     createObjectIfNeededAndDressWithCorrectMaterial: (
       a, b, c, primitiveProperties, strokeTime, colorToBeUsed,
@@ -405,6 +434,28 @@ define () ->
         else
           pooledObjectWithMaterials.threejsObject3D.matrix.scale \
             new @liveCodeLabCore_three.Vector3(a, b, c)
+
+      if @exclusionPrincipleWobble
+        arrayEqual = (a, b) ->
+          for i in [0..15]
+            if a[i] != b[i]
+              return false
+          return true
+
+        if arrayEqual(
+          pooledObjectWithMaterials.threejsObject3D.matrix.elements,
+          @lastPositionOfPrimitiveType[primitiveID].elements
+          )
+          @numberOfOverlappingPrimitives[primitiveID]++
+          overlapPrimtives = @numberOfOverlappingPrimitives[primitiveID]
+          pert = sin(time/100) * sin(overlapPrimtives + time/100)/40
+          pooledObjectWithMaterials.threejsObject3D.matrix.rotateX(pert).rotateY(pert).rotateZ pert
+          pooledObjectWithMaterials.threejsObject3D.matrix.translate new @liveCodeLabCore_three.Vector3(pert, pert, pert)
+        else
+          @lastPositionOfPrimitiveType[primitiveID].copy \
+            pooledObjectWithMaterials.threejsObject3D.matrix
+
+
       @liveCodeLabCoreInstance.threeJsSystem.scene.add \
         pooledObjectWithMaterials.threejsObject3D  if objectIsNew
 
