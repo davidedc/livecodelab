@@ -357,6 +357,25 @@ define [
               ▶ball
               """
     
+      @programs.demos.webglribbon =
+        submenu: "WebGL"
+        title: "WebGL: Ribbon"
+        code: """
+              turns = 1 // 1 = Möbius strip
+              detail = 200 // try up to 400 or so
+              speed = 0.5
+              ambientLight 255,0,0 // comment out to see the seam
+
+              background black
+              rotate time /5000
+              scale 0.6
+              for i in [0...detail]
+              ▶rotate 0,0,2*Math.PI/(detail)
+              ▶move 2,0,0
+              ▶▶rotate 0,turns*i*Math.PI/(detail)+time/(1000/speed),0
+              ▶▶rect 1,0.04+1/detail
+              """
+    
       @programs.demos.webglnuclearOctopusDemo =
         submenu: "WebGL"
         title: "WebGL: Nuclear octopus"
