@@ -1025,6 +1025,50 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    pushMatrix(); move(); peg 1.2;  popMatrix(); pushMatrix(); move(); box(); popMatrix()
                    """
+        ,
+         input:    """
+                   rotate
+                   ▶box
+                   peg
+                   """
+         expected: """
+                   rotate ->
+                   ▶box()
+                   peg()
+                   """
+        ,
+         input:    """
+                   rotate 2
+                   ▶box
+                   peg
+                   """
+         expected: """
+                   rotate 2, ->
+                   ▶box()
+                   peg()
+                   """
+        ,
+         input:    """
+                   rotate
+                   rotate 2,1,0
+                   ▶box
+                   ▶rotate 1
+                   ▶▶line 3
+                   ▶▶move
+                   ▶▶rotate
+                   ▶▶▶ball 0.6
+                   """
+         expected: """
+                   rotate()
+                   rotate 2,1,0, ->
+                   ▶box()
+                   ▶rotate 1, ->
+                   ▶▶line 3
+                   ▶▶move()
+                   ▶▶rotate ->
+                   ▶▶▶ball 0.6
+                   """
+
       ]
 
   CodePreprocessorTests

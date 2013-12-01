@@ -813,6 +813,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "preprocess-8\n" + code + " error: " + error
       [code, error] = @addTracingInstructionsToDoOnceBlocks(code, error)
 
+      [ignore,a,ignore] = @identifyBlockStarts code, error
+      [code, error] = @completeImplicitFunctionPasses code, a, error
+      if detailedDebug then console.log "completeImplicitFunctionPasses:\n" + code + " error: " + error
+
+
       if detailedDebug then console.log "preprocess-9\n" + code + " error: " + error
       [code, error] = @findQualifiers(code, error)
       if detailedDebug then console.log "preprocess-10\n" + code + " error: " + error
@@ -830,8 +835,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "preprocess-16\n" + code + " error: " + error
       [code, error] = @unmarkFunctionalReferences(code, error, userDefinedFunctions)
 
-      return [code, error, userDefinedFunctions]
 
+      return [code, error, userDefinedFunctions]
 
 
     # to run the tests, just open the dev console
@@ -933,4 +938,78 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         console.log "      out of which only idempotency fails: #{failedIdempotency}"
         console.log "known issues: #{knownIssues}"
         return
+
+    identifyBlockStarts: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, undefined, error] if error?
+
+      sourceByLine = code.split("\n")
+      startOfPreviousLine = ""
+      linesWithBlockStart = []
+      
+      for eachLine in [0...sourceByLine.length]
+        line = sourceByLine[eachLine]
+        #console.log "checking " + line
+        rx = RegExp("^(\\s*)",'gm')
+        match = rx.exec line
+        continue if not match?
+        startOfThisLine = match[1]
+        #console.log "start of line: >" + startOfThisLine + "<"
+        if startOfThisLine.length > startOfPreviousLine.length
+          linesWithBlockStart.push eachLine-1
+        startOfPreviousLine = startOfThisLine
+
+      #console.log "code lenght at identifyBlockStarts: " + code.split("\n").length
+      return [code, linesWithBlockStart, undefined]
+
+    completeImplicitFunctionPasses: (code, linesWithBlockStart, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      sourceByLine = code.split("\n")
+      transformedLines = []
+      
+      countingLines = -1;
+      for line in sourceByLine
+        countingLines++
+        if countingLines in linesWithBlockStart
+          #console.log "checking " + line
+          
+          # if the line already ends with an arrow
+          # then there is nothing to do
+          rx = RegExp("->\\s*$",'gm')
+          match = rx.exec line
+          if match?
+            transformedLines.push line
+            continue
+
+          # case where the function-block is passed as first argument
+          # so no comma is needed
+          rx = RegExp("(^|;)\\s*("+@scaleRotateMoveCommandsRegex+")\\s*$",'gm')
+          match = rx.exec line
+          if match?
+            transformedLines.push line+" ->"
+            continue
+
+          # case where the function-block is passed as argument beyond
+          # the first, so a comma is needed
+          rx = RegExp("(^|;)\\s*("+@scaleRotateMoveCommandsRegex+")(?![a-zA-Z0-9])([^;\r\n]*)$",'gm')
+          match = rx.exec line
+          if match?
+            transformedLines.push line+", ->"
+            continue
+
+          # if we are here is means that there was no match
+          # meaning that there is nothing to add.
+          transformedLines.push line
+
+        else
+          transformedLines.push line
+
+      transformedCode = transformedLines.join "\n"
+
+      #console.log "code lenght at completeImplicitFunctionPasses: " + transformedCode.split("\n").length
+      return [transformedCode, undefined]
+
+
 
