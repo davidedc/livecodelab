@@ -18,9 +18,9 @@ define () ->
       window.pushMatrix  = () => @pushMatrix()
       window.popMatrix   = () => @popMatrix()
       window.resetMatrix = () => @resetMatrix()
-      window.move   = (a,b,c) => @move(a,b,c)
+      window.move   = (a,b,c,d) => @move(a,b,c,d)
       window.rotate = (a,b,c,d) => @rotate(a,b,c,d)
-      window.scale  = (a,b,c) => @scale(a,b,c)
+      window.scale  = (a,b,c,d) => @scale(a,b,c,d)
 
     getWorldMatrix: ->
       @worldMatrix
@@ -42,15 +42,29 @@ define () ->
     resetMatrix: ->
       @worldMatrix.identity()
 
-    move: (a, b, c = 0) ->
+    move: (a, b, c = 0, d = null) ->
+      appendedFunction = undefined
+
       if typeof a isnt "number"
+        if isFunction a then appendedFunction = a
         a = Math.sin(@liveCodeLabCoreInstance.timeKeeper.getTime() / 500)
         b = Math.cos(@liveCodeLabCoreInstance.timeKeeper.getTime() / 500)
         c = a
       else if typeof b isnt "number"
+        if isFunction b then appendedFunction = b
         b = a
         c = a
+      else if typeof c isnt "number"
+        if isFunction c then appendedFunction = c
+        c = 0
+      else if isFunction d
+        appendedFunction = d
+
+      @pushMatrix() if appendedFunction? 
       @worldMatrix.translate new @liveCodeLabCore_three.Vector3(a, b, c)
+      if appendedFunction?
+        appendedFunction()
+        @popMatrix()
 
     rotate: (a, b, c = 0, d = null) ->
       appendedFunction = undefined
@@ -76,20 +90,33 @@ define () ->
         appendedFunction()
         @popMatrix()
 
-    scale: (a, b, c = 1) ->
+    scale: (a, b, c = 1, d = null) ->
+      appendedFunction = undefined
+
       if typeof a isnt "number"
+        if isFunction a then appendedFunction = a
         a = 1 + Math.sin(@liveCodeLabCoreInstance.timeKeeper.getTime() / 500) / 4
         b = a
         c = a
       else if typeof b isnt "number"
+        if isFunction b then appendedFunction = b
         b = a
         c = a
+      else if typeof c isnt "number"
+        if isFunction c then appendedFunction = c
+        c = 1
+      else if isFunction d
+        appendedFunction = d
       
+      @pushMatrix() if appendedFunction? 
       # odd things happen setting scale to zero
       a = 0.000000001  if a > -0.000000001 and a < 0.000000001
       b = 0.000000001  if b > -0.000000001 and b < 0.000000001
       c = 0.000000001  if c > -0.000000001 and c < 0.000000001
       @worldMatrix.scale new @liveCodeLabCore_three.Vector3(a, b, c)
+      if appendedFunction?
+        appendedFunction()
+        @popMatrix()
 
   MatrixCommands
 
