@@ -39,7 +39,7 @@
 ## What are those called?
 ## How do I change parent/child relationship?
 ## How do events bubble up and where should I catch them?).
-## Processing and LiveCodeLab go for immediate mode.
+## Processing and LiveCodeLab go for immediate mode instead.
 ## Once the primitive is invoked, it
 ## becomes pixels and there is no built-in way to do input/event/hierarchies...
 ## Rather, there are a few properties that are set as a global state and apply
@@ -88,7 +88,8 @@
 ## When an object is created, it must be first rendered with the most complex
 ## material, because internally in Three.js/WebGL memory is allocated only once.
 ## So a special mechanism is put in place by which new objects are drawn with
-## the normalMaterial with scale 0, so they are rendered but they are invisible.
+## the normalMaterial with scale 0 (which so far is the most complex
+## material we apply), so they are rendered but they are invisible.
 ## In the next frame (i.e. after the first render) the correct material is used.
 
 ## "Spinning"
@@ -358,6 +359,7 @@ define () ->
         @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
         @liveCodeLabCoreInstance.matrixCommands.rotate \
           pooledObjectWithMaterials.initialSpinCountdown / 50
+
       
       ###
       see
@@ -369,12 +371,14 @@ define () ->
       pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = false
       pooledObjectWithMaterials.threejsObject3D.matrix.copy \
         @liveCodeLabCoreInstance.matrixCommands.getWorldMatrix()
+
       pooledObjectWithMaterials.threejsObject3D.matrixWorldNeedsUpdate = true
+
       if @doTheSpinThingy and
           pooledObjectWithMaterials.initialSpinCountdown > 0
         @liveCodeLabCoreInstance.matrixCommands.popMatrix()
-      if objectIsNew
-        
+
+      if objectIsNew        
         # if the object is new it means that the normal material
         # is applied to it, no matter what the current settings of fill
         # and lights are. So we make objects invisible in their very first
