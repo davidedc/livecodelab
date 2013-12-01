@@ -152,12 +152,18 @@ define () ->
       window.noStroke = () => @noStroke()
       window.strokeSize = (a) => @strokeSize(a)
       
-      @primitiveTypes.ambientLight = 0
-      @primitiveTypes.line = 1
-      @primitiveTypes.rect = 2
-      @primitiveTypes.box = 3
-      @primitiveTypes.peg = 4
-      @primitiveTypes.ball = 5
+      numberOfPrimitives = 0
+      @primitiveTypes.ambientLight = numberOfPrimitives++
+      @primitiveTypes.line = numberOfPrimitives++
+      @primitiveTypes.rect = numberOfPrimitives++
+      @primitiveTypes.box = numberOfPrimitives++
+      @primitiveTypes.peg = numberOfPrimitives++
+      # ball must be the last one cause
+      # we use the subsequent numbers for all the
+      # detail levels of balls.
+      # Todo: note this doesn't work if we decide that
+      # other primitives have a detail level...
+      @primitiveTypes.ball = numberOfPrimitives++
       
       # apparently in Coffeescript I can't initialise fields in the section
       # before the constructor, so initialising them here in the constructor
