@@ -247,6 +247,7 @@ define () ->
     createObjectIfNeededAndDressWithCorrectMaterial: (
       a, b, c, primitiveProperties, strokeTime, colorToBeUsed,
       alphaToBeUsed, applyDefaultNormalColor) ->
+
       objectIsNew = false
       pooledObjectWithMaterials = undefined
       theAngle = undefined
@@ -446,12 +447,14 @@ define () ->
           pooledObjectWithMaterials.threejsObject3D.matrix.elements,
           @lastPositionOfPrimitiveType[primitiveID].elements
           )
+          #console.log "something here already at  " + primitiveID
           @numberOfOverlappingPrimitives[primitiveID]++
           overlapPrimtives = @numberOfOverlappingPrimitives[primitiveID]
           pert = sin(time/100) * sin(overlapPrimtives + time/100)/40
           pooledObjectWithMaterials.threejsObject3D.matrix.rotateX(pert).rotateY(pert).rotateZ pert
           pooledObjectWithMaterials.threejsObject3D.matrix.translate new @liveCodeLabCore_three.Vector3(pert, pert, pert)
         else
+          #console.log "nothing here already - setting  " + primitiveID + " with " + pooledObjectWithMaterials.threejsObject3D.matrix
           @lastPositionOfPrimitiveType[primitiveID].copy \
             pooledObjectWithMaterials.threejsObject3D.matrix
 
