@@ -77,8 +77,6 @@ either <box>, <peg>
 ```
 basically, instead of forcing you to parentheses to evaluate functions, LiveCodeLab forces you to use brackets to *avoid* the evaluation, so that the two functions "box" and "peg" can be passed to "either" as unevaluated functions as it's supposed to be.
 
-Some examples (scroll table to the right)
------------
 
 "Scoped" matrix transformations
 -----------
@@ -103,6 +101,21 @@ scale 1 # has no effect other than creating the "scope" below
   [more primitives here]
 ```
 These "scoped" matrix transformations can also be nested.
+
+Super-short "Scoped" matrix transformations
+-----------
+If one wants to apply a transformation to only a primitive or two, just inline it all like so:
+```
+rotate box # creates a spinning box
+peg # not affected by rotate
+```
+basically, if a matrix transformation is followed by some primitives, LCL will interpret that as to mean that you want to apply the tranformation only to those primitives on the same line (up to the next semicolon).
+
+Note that a transformation immediately followed by a semicolon indicates that the transformation is not chained to the ony primitives on the same line, but rather the transformation applies to the whole world as standard.
+```
+rotate; box # rotate is not chained to the box
+peg # peg and anything following it are spinning
+```
 
 
 Some examples (scroll table to the right)
