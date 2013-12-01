@@ -430,6 +430,9 @@ define () ->
           # ever so slight larger than the "fill" object, so there
           # is no z-fighting and the stroke is drawn neatly on top of the fill
           # constant 0.001 below is to avoid z-fighting
+          # note that we avoid this on unitary box as it's a common
+          # case that is simple to check where there is no need
+          # of these 16 extra multiplications (of the scale)
           pooledObjectWithMaterials.threejsObject3D.matrix.scale \
             new @liveCodeLabCore_three.Vector3(a + 0.001, b + 0.001, c + 0.001)
         else
