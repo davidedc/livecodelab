@@ -439,7 +439,16 @@ define () ->
           pooledObjectWithMaterials.threejsObject3D.matrix.scale \
             new @liveCodeLabCore_three.Vector3(a, b, c)
 
-      if @exclusionPrincipleWobble
+
+      # exclusionPrincipleWobble doesn't apply in the
+      # normal case where there is a fill and there is a stroke
+      # because the fill and the stroke are technically the same
+      # geometry and the stroke is slightly bigger, so
+      # it would set a place in a different place where the
+      # fill is, and the "same place" check of the next
+      # geometry would fail. So in those cases, only
+      # the fill counts
+      if @exclusionPrincipleWobble and !(@doFill and strokeTime)
         arrayEqual = (a, b) ->
           for i in [0..15]
             if a[i] != b[i]
