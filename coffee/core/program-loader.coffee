@@ -375,6 +375,25 @@ define [
               ▶▶rotate 0,turns*i*Math.PI/(detail)+time/(1000/speed),0
               ▶▶rect 1,0.04+1/detail
               """
+
+      @programs.demos.theeye =
+        submenu: "WebGL"
+        title: "WebGL: The eye"
+        code: """
+              turns = Math.floor(time/10000)%6
+              detail = 100
+              speed = 3
+              if time%10000 < 5000
+              ▶ambientLight 255,255,255
+
+              background black
+              rotate time /5000
+              for i in [0...detail]
+              ▶rotate 0,0,2*Math.PI/(detail)
+              ▶move 2,0,0
+              ▶▶rotate turns*i*Math.PI/(detail)+time/(1000/speed),0,0
+              ▶▶rect 1
+              """
     
       @programs.demos.webglnuclearOctopusDemo =
         submenu: "WebGL"
