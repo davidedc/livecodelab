@@ -983,6 +983,14 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
             transformedLines.push line
             continue
 
+          # if the line already ends with "times"
+          # then stay away from this transformation
+          rx = RegExp("[^a-zA-Z0-9\\r\\n]times\\s*$",'gm')
+          match = rx.exec line
+          if match?
+            transformedLines.push line
+            continue
+
           # case where the function-block is passed as first argument
           # so no comma is needed
           rx = RegExp("(^|;)\\s*("+@scaleRotateMoveCommandsRegex+")\\s*$",'gm')
