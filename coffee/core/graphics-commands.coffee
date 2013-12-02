@@ -782,12 +782,15 @@ define () ->
       @doStroke = false
 
     strokeSize: (a) ->
-      # note that either Three.js of the graphic card limit the size
+      # note that either Three.js or the graphic card limit the size
       # of the stroke. This is because openGL strokes are VERY crude
       # (the cap is not even square, it's worse than that:
       # http://twolivesleft.com/Codea/LineCapShear.png )
       # So it's limited to 10. In some graphic cards this doesn't even have
-      # any effect.
+      # any effect. In windows there is no thickness beyond "1" cause
+      # ANGLE doesn't doesn't translate that properly to DirectX.
+      # Vice-versa, the canvas renderer of Three.js draws beautiful lines
+      # with round cap size of any thickness.
       if not a?
         a = 1
       else a = 0  if a < 0
