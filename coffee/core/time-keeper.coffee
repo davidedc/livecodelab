@@ -21,7 +21,7 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
 
       super()
       
-      window.connect = (address) => @connect(address)
+      # window.connect = (address) => @connect(address)
       window.bpm = (bpm) => @setBpm(bpm)
       window.beat = => @beat()
       window.pulse = => @pulse()
@@ -35,10 +35,7 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
     Connects to a pulse server, and read the bpm/beat from there.
     ###
     connect: (address) ->
-      if !(typeof address == 'undefined' || 
-           @pulseClient.connecting || 
-           @pulseClient.currentConnection() == 
-           @pulseClient.cleanAddress(address))
+      if address && !(@pulseClient.connecting || @pulseClient.currentConnection() == @pulseClient.cleanAddress(address))
         console.log(@pulseClient.currentConnection())
         console.log(@pulseClient.cleanAddress(address))
         console.log('Connecting to ' + address)
@@ -79,6 +76,13 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       @time = window.time = (@milliseconds - @millisAtStart) / 1000
 
     setBpm: (bpm) ->
+      if not bpm?
+        return
+
+      # Any string supplied is interpreted as the address
+      if typeof bpm == 'string'
+        connect(bpm)
+
       if bpm != @bpm
         @bpm = Math.max(20, Math.min(bpm, 170))
         @mspb = 60000 / @bpm
