@@ -18,11 +18,6 @@ define () ->
     buzzObjectsPool: []
     soundFilesPaths: {}
     soundLoops: []
-
-    # these two are used to avoid as much as possible
-    # the collision of the graphics and sound timers
-    startOfInterval: undefined
-    beatRecurrence: undefined
     
     constructor: (@eventRouter, @timeKeeper, @buzz, @lowLag, @Bowser, @samplebank) ->
       @soundLoops.soundIDs = []

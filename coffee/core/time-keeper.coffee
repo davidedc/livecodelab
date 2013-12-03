@@ -16,6 +16,7 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       @newBpm = undefined
       @mspb = 60000 / @bpm       # milliseconds per beat
       @lastBeat = undefined      # milliseconds at last beat
+      @nextQuarterBeat = 0       # timestamp at which next quarter beat runs
       @beatCount = 0             # current/last whole beat number
 
       @pulseClient = new Pulse();      
@@ -64,8 +65,8 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
           @lastBeat = @pulseClient.beats[@pulseClient.beats.length-1]
       
       # Set a timeout for the next (quarter) beat
-      nextQuarterBeat = @lastBeat + @mspb * (fraction + 0.25)
-      delta = nextQuarterBeat - new Date().getTime()
+      @nextQuarterBeat = @lastBeat + @mspb * (fraction + 0.25)
+      delta = @nextQuarterBeat - new Date().getTime()
       setTimeout( (=> @beatLoop()) , delta)
 
     resetTime: ->
@@ -80,8 +81,8 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       if (bpm != @newBpm)
         console.log(bpm, @newBpm)
         clearTimeout(@setBpmTimeout)
-        @setBpmTimeout = setTimeout( (=> @setBpm(bpm)) , 1000)
         @newBpm = bpm
+        @setBpmTimeout = setTimeout( (=> @setBpm(bpm)) , 1000)
 
     setBpm: (bpm) ->
       if not bpm?
@@ -94,10 +95,6 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       if bpm != @bpm
         @bpm = Math.max(20, Math.min(bpm, 170))
         @mspb = 60000 / @bpm
-
-    getTime: ->
-      # TODO/tom: This will be obsolete soon
-      @time
 
     beat: ->
       passed = new Date().getTime() - @lastBeat

@@ -111,16 +111,14 @@ define () ->
       else
         @liveCodeLabCoreInstance.timeKeeper.updateTime()
 
+      frameStartTime = @liveCodeLabCoreInstance.timeKeeper.milliseconds
+
       # do the render ONLY if we are some ms away from the next
       # scheduled beat. In other words, stay well clear of the
       # sound timer!
-      # TODO/tom: I don't think this code was ever running, can be replaced by TimeKeeper.beat anyways.
+      
       forbiddenZone = Math.max.apply(Math, @fpsHistory);
-      currentTime = @liveCodeLabCoreInstance.timeKeeper.milliseconds
-      musicBeatStart = @liveCodeLabCoreInstance.soundSystem.startOfInterval
-      timeSinceMusicBeatStart = currentTime - musicBeatStart
-      beatRecurrence = @liveCodeLabCoreInstance.soundSystem.beatRecurrence
-      if timeSinceMusicBeatStart % beatRecurrence >= beatRecurrence - forbiddenZone * 2
+      if @liveCodeLabCoreInstance.timeKeeper.nextQuarterBeat - frameStartTime < forbiddenZone
         @noDrawFrame = true
       else
         @noDrawFrame = false
@@ -199,7 +197,7 @@ define () ->
         # keep the last 10 durations of when we actually
         # drew the frame. This is used for trying to
         # avoid collision between graphics and sound timers.
-        @fpsHistory.push(new Date().getTime() - currentTime)
+        @fpsHistory.push(new Date().getTime() - frameStartTime)
         if @fpsHistory.length > 60
           @fpsHistory.shift()
       
