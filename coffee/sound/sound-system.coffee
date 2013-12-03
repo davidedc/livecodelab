@@ -9,7 +9,6 @@ define () ->
 
   class SoundSystem
 
-    oldupdatesPerMinute: 0
     soundLoopTimer: undefined
     beatNumber: 0
     totalCreatedSoundObjects: 0
@@ -19,7 +18,6 @@ define () ->
     buzzObjectsPool: []
     soundFilesPaths: {}
     soundLoops: []
-    updatesPerMinute: undefined
 
     # these two are used to avoid as much as possible
     # the collision of the graphics and sound timers
@@ -151,7 +149,6 @@ define () ->
       # (either an existing one that has stopped playing or a freshly-made one)
       availableBuzzObject.play()
     
-    # Called from changeUpdatesPerMinuteIfNeeded
     soundLoop: (beat) ->
       loopedSoundID = undefined
       playOrNoPlay = undefined

@@ -183,7 +183,6 @@ define () ->
       @liveCodeLabCoreInstance.timeKeeper.resetTime()  if frame is 0
       @liveCodeLabCoreInstance.blendControls.animationStyleUpdateIfChanged()
       @liveCodeLabCoreInstance.backgroundPainter.simpleGradientUpdateIfChanged()
-      @liveCodeLabCoreInstance.soundSystem.changeUpdatesPerMinuteIfNeeded()
       
       # "frame" starts at zero, so we increment after the first time the draw
       # function has been run.
