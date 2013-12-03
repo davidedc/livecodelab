@@ -44,8 +44,8 @@ define () ->
 
     move: (a, b, c = 0) ->
       if typeof a isnt "number"
-        a = Math.sin(@liveCodeLabCoreInstance.timeKeeper.getTime() / 500)
-        b = Math.cos(@liveCodeLabCoreInstance.timeKeeper.getTime() / 500)
+        a = Math.sin(@liveCodeLabCoreInstance.timeKeeper.beat() / 2 * Math.PI)
+        b = Math.cos(@liveCodeLabCoreInstance.timeKeeper.beat() / 2 * Math.PI)
         c = a
       else if typeof b isnt "number"
         b = a
@@ -57,9 +57,9 @@ define () ->
 
       if typeof a isnt "number"
         if isFunction a then appendedFunction = a
-        a = @liveCodeLabCoreInstance.timeKeeper.getTime() / 1000
+        a = @liveCodeLabCoreInstance.timeKeeper.beat() / 4 * Math.PI
         b = a
-        c = a
+        c = 0
       else if typeof b isnt "number"
         if isFunction b then appendedFunction = b
         b = a
@@ -71,14 +71,14 @@ define () ->
         appendedFunction = d
 
       @pushMatrix() if appendedFunction? 
-      @worldMatrix.rotateX(a).rotateY(b).rotateZ c
+      @worldMatrix.rotateX(a).rotateY(b).rotateZ(c)
       if appendedFunction?
         appendedFunction()
         @popMatrix()
 
     scale: (a, b, c = 1) ->
       if typeof a isnt "number"
-        a = 1 + Math.sin(@liveCodeLabCoreInstance.timeKeeper.getTime() / 500) / 4
+        a = 0.5 + @liveCodeLabCoreInstance.timeKeeper.pulse()
         b = a
         c = a
       else if typeof b isnt "number"

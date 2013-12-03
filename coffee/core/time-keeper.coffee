@@ -13,6 +13,7 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       @millisAtStart = undefined # milliseconds at program start
       @milliseconds = undefined  # current time in MILLISECONDS
       @bpm = 100
+      @newBpm = undefined
       @mspb = 60000 / @bpm       # milliseconds per beat
       @lastBeat = undefined      # milliseconds at last beat
       @beatCount = 0             # current/last whole beat number
@@ -22,7 +23,7 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       super()
       
       # window.connect = (address) => @connect(address)
-      window.bpm = (bpm) => @setBpm(bpm)
+      window.bpm = (bpm) => @setBpmLater(bpm)
       window.beat = => @beat()
       window.pulse = => @pulse()
       window.wave = (period) => @wave(period)
@@ -75,6 +76,12 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       @milliseconds = new Date().getTime()
       @time = window.time = (@milliseconds - @millisAtStart) / 1000
 
+    setBpmLater: (bpm) ->
+      if (bpm != newBpm)
+        clearTimeout(@setBpmTimeout)
+        @setBpmTimeout = setTimeout( (=> @setBpm(bpm)) , 500)
+        newBpm = bpm
+
     setBpm: (bpm) ->
       if not bpm?
         return
@@ -100,10 +107,9 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
 
     # Wave: simple harmonic motion where a is period in milliseconds
     wave: (period) ->
-      # TODO/tom: base on beat
       if typeof period isnt "number"
-        period = 500
-      sin((@time/period) * Math.PI)
+        period = 1
+      sin((@beat/period) * Math.PI)
 
 
 
