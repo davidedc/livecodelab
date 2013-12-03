@@ -71,7 +71,6 @@ define [
   ,'core/renderer'
   ,'core/threejs-system'
   ,'core/time-keeper'
-  ,'core/connections'
   ,'sound/samplebank'
   ,'sound/sound-system'
   ,'bowser'
@@ -99,7 +98,6 @@ define [
   ,Renderer
   ,ThreeJsSystem
   ,TimeKeeper
-  ,Connections
   ,SampleBank
   ,SoundSystem
   ,createBowser
@@ -159,7 +157,7 @@ define [
       @renderer = new Renderer(@)
       @soundSystem =
         new SoundSystem(
-          @paramsObject.eventRouter, buzz, lowLag, createBowser(), new SampleBank(buzz))
+          @paramsObject.eventRouter, @timeKeeper, buzz, lowLag, createBowser(), new SampleBank(buzz))
       
       # this one also interacts with colourFunctions, backgroundSceneContext,
       # canvasForBackground at runtime

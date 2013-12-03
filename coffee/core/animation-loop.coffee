@@ -130,15 +130,8 @@ define () ->
       # the sound list needs to be cleaned
       # so that the user program can create its own from scratch
       @liveCodeLabCoreInstance.soundSystem.resetLoops()
-      @liveCodeLabCoreInstance.soundSystem.anyCodeReactingTobpm = false
 
       @liveCodeLabCoreInstance.drawFunctionRunner.resetTrackingOfDoOnceOccurrences()
-
-      # set a
-      # default bpm (so user doesn't need to add bpm instruction). If
-      # the bpm instruction is invoked in the code,
-      # that new value will override this default value.
-      @liveCodeLabCoreInstance.soundSystem.setUpdatesPerMinute 60 * 4
 
       @liveCodeLabCoreInstance.lightSystem.noLights()
       @liveCodeLabCoreInstance.graphicsCommands.reset()

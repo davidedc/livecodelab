@@ -21,16 +21,12 @@ define () ->
     soundLoops: []
     updatesPerMinute: undefined
 
-    # if there isn't any code using the bpm setting then we can save a timer, so
-    # worth tracking with this variable
-    anyCodeReactingTobpm: false
-
     # these two are used to avoid as much as possible
     # the collision of the graphics and sound timers
     startOfInterval: undefined
     beatRecurrence: undefined
     
-    constructor: (@eventRouter, @buzz, @lowLag, @Bowser, @samplebank) ->
+    constructor: (@eventRouter, @timeKeeper, @buzz, @lowLag, @Bowser, @samplebank) ->
       @soundLoops.soundIDs = []
       @soundLoops.beatStrings = []
 
@@ -42,13 +38,13 @@ define () ->
       #else if @Bowser.safari or @Bowser.msie or @Bowser.chrome
       #  @playSound = (a,b,c) => @play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND(a,b,c)
 
+      @timeKeeper.addListener('beat', (beat) => @soundLoop(beat) );
+
       @playSound = (a,b,c) => @play_using_LOWLAGJS(a,b,c)
 
       # These need to be global so it can be run by the draw function
-      # window.bpm = (a) => @bpm(a)
       window.play = (a,b) => @play(a,b)
 
-    
     resetLoops: ->
       @soundLoops.soundIDs = []
       @soundLoops.beatStrings = []
@@ -57,32 +53,13 @@ define () ->
       startup = new @buzz.sound(@samplebank.getByName("bing").path)
       startup.play()
 
-    setUpdatesPerMinute: (@updatesPerMinute) ->
-      
-    # sets BPM
-    # is called by code in patches
-    bpm: (a) ->
-      # timid attempt at sanity check.
-      # the sound system might well bork out
-      # even below 500 bpm.
-      return if not a?
-      a = 125  if a > 125
-      a = 0  if a < 0
-      
-      # each beat is made of 4 parts, and we can trigger sounds
-      # on each of those, so updatesPerMinute is 4 times the bpm.
-      @updatesPerMinute = a * 4
-
-    
     # called from within patches
     play: (soundID, beatString) ->
-      @anyCodeReactingTobpm = true
       # ignore the whitespaced
       beatString = beatString.replace(/\s*/g, "")
       @soundLoops.soundIDs.push soundID
       @soundLoops.beatStrings.push beatString
 
-    
     # When each Audio object plays, it plays from start to end
     # and you can't get it to re-start until it's completely done
     # playing.
@@ -116,21 +93,13 @@ define () ->
     #    object is garbage collected.
     # The buzzObjectsPool parameter is not used but we put it here
     # for uniformity with the other playing alternatives
-    play_using_BUZZ_JS_FIRE_AND_FORGET: (
-      soundFilesPaths,
-      loopedSoundID,
-      @buzzObjectsPool
-    ) ->
+    play_using_BUZZ_JS_FIRE_AND_FORGET: (soundFilesPaths,loopedSoundID,@buzzObjectsPool) ->
       soundFilePath = undefined
       soundFilePath = soundFilesPaths[loopedSoundID]
       availableBuzzObject = new @buzz.sound(soundFilePath)
       availableBuzzObject.play()
 
-    play_using_DYNAMICALLY_CREATED_AUDIO_TAG: (
-      soundFilesPaths,
-      loopedSoundID,
-      @buzzObjectsPool
-    ) ->
+    play_using_DYNAMICALLY_CREATED_AUDIO_TAG: (soundFilesPaths,loopedSoundID,@buzzObjectsPool) ->
       audioElement = undefined
       source1 = undefined
       soundFilePath = undefined
@@ -148,18 +117,10 @@ define () ->
       ), true
       audioElement.play()
 
-    play_using_LOWLAGJS: (
-      soundFilesPaths,
-      loopedSoundID,
-      @buzzObjectsPool
-    ) ->
+    play_using_LOWLAGJS: (soundFilesPaths,loopedSoundID,@buzzObjectsPool) ->
       @lowLag.play(loopedSoundID)
 
-    play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND: (
-      soundFilesPaths,
-      loopedSoundID,
-      @buzzObjectsPool
-    ) ->
+    play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND: (soundFilesPaths,loopedSoundID,@buzzObjectsPool) ->
       availableBuzzObject = undefined
       allBuzzObjectsForWantedSound = @buzzObjectsPool[loopedSoundID]
       buzzObject = undefined
@@ -191,12 +152,12 @@ define () ->
       availableBuzzObject.play()
     
     # Called from changeUpdatesPerMinuteIfNeeded
-    soundLoop: ->
+    soundLoop: (beat) ->
       loopedSoundID = undefined
       playOrNoPlay = undefined
       beatString = undefined
       return  if @soundSystemIsMangled
-      @beatNumber += 1
+      # @beatNumber += 1
       for loopingTheSoundIDs in [0...@soundLoops.soundIDs.length]
         loopedSoundID = @soundLoops.soundIDs[loopingTheSoundIDs]
         
@@ -208,36 +169,12 @@ define () ->
           beatString = @soundLoops.beatStrings[loopingTheSoundIDs]
           
           # the beat string can be any length, we just wrap around if needed.
-          playOrNoPlay = beatString.charAt(@beatNumber % (beatString.length))
+          playOrNoPlay = beatString.charAt(beat * 4 % (beatString.length))
           
           # transparently plays using the best method for this
           # browser/os combination
           if playOrNoPlay is "x"
             @playSound @soundFilesPaths, loopedSoundID, @buzzObjectsPool
-
-    
-    # Called from animate function in animation-controls.js
-    changeUpdatesPerMinuteIfNeeded: ->
-      # if there is no play instruction anywhere, then we can
-      # set an absurdely long timer for sounds so that it doesn't
-      # interfere with the graphics (since the sounds times takes
-      # priority on the graphics times).
-      if ! @anyCodeReactingTobpm
-        @updatesPerMinute = 1
-
-      if @oldupdatesPerMinute isnt @updatesPerMinute
-        console.log "updating bpm from " + @oldupdatesPerMinute + " to: " + @updatesPerMinute
-        clearTimeout @soundLoopTimer
-        # remember when we start the interval so we can
-        # check before painting graphics: are we too close to the
-        # beat? If yes, we can cancel a frame.
-        @startOfInterval = new Date().getMilliseconds()
-        @beatRecurrence = Math.round( (1000 * 60) / @updatesPerMinute )
-        @soundLoopTimer = setInterval(
-          () => @soundLoop(),
-          @beatRecurrence
-        ) if @updatesPerMinute isnt 0
-        @oldupdatesPerMinute = @updatesPerMinute
 
     
     # Called in init.js
