@@ -77,10 +77,11 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       @time = window.time = (@milliseconds - @millisAtStart) / 1000
 
     setBpmLater: (bpm) ->
-      if (bpm != newBpm)
+      if (bpm != @newBpm)
+        console.log(bpm, @newBpm)
         clearTimeout(@setBpmTimeout)
-        @setBpmTimeout = setTimeout( (=> @setBpm(bpm)) , 500)
-        newBpm = bpm
+        @setBpmTimeout = setTimeout( (=> @setBpm(bpm)) , 1000)
+        @newBpm = bpm
 
     setBpm: (bpm) ->
       if not bpm?
