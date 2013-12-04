@@ -25,9 +25,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # at the beginning of the sequence of primitives
       # and the end to push and pop the state, so that
       # the primitives that come *afterwards* are unaffected
-      "rotating", "rotate", "pushMatrix()", "popMatrix()"
-      "moving", "move", "pushMatrix()", "popMatrix()"
-      "scaling", "scale", "pushMatrix()", "popMatrix()"
+      "rotatingQUALIFIER", "rotate", "pushMatrix()", "popMatrix()"
+      "movingQUALIFIER", "move", "pushMatrix()", "popMatrix()"
+      "scalingQUALIFIER", "scale", "pushMatrix()", "popMatrix()"
     ]
     # We separate Commands from Expressions here.
     # Expressions return a value that is potentially
@@ -52,14 +52,17 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "move"
       "scale"
     ]
-    commandsExcludingScaleRotateMove: [
+    primitives: [
       # Geometry
       "rect"
       "line"
       "box"
       "ball"
-      "ballDetail"
       "peg"
+    ]
+    commandsExcludingScaleRotateMove: [
+      # Geometry
+      "ballDetail"
       # Matrix manipulation other than scale rotate move
       "pushMatrix"
       "popMatrix"
@@ -132,7 +135,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
     constructor: ->
       @testCases = (new CodePreprocessorTests()).testCases
       @scaleRotateMoveCommandsRegex = @scaleRotateMoveCommands.join "|"
-      @allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") + "|" + @scaleRotateMoveCommandsRegex
+      @primitivesRegex = @primitives.join "|"
+      @allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") +
+        "|" + @scaleRotateMoveCommandsRegex +
+        "|" + @primitivesRegex
       @expressionsRegex = @expressions.join "|"
       # make the preprocessor tests easily accessible from
       # the debug console (just type testPreprocessor())
@@ -164,8 +170,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      code = code.replace(/^(\s)*✓[ ]*doOnce[ ]*\-\>[ ]*$/gm, "$1if false")
-      code = code.replace(/\u2713/g, "//")
+      # doOnce multiline case
+      code = code.replace(/^(\s*)✓[ ]*doOnce[ \t\-]*\>[ ]*$/gm, "$1if false")
+      # doOnce single-line case case
+      code = code.replace(/^(\s*)✓([ ]*doOnce[ \t\-]*\>[ ]*)/gm, "$1//$2")
+      if detailedDebug then console.log "removeTickedDoOnce\n" + code + " error: " + error
+      if code.indexOf("✓") != -1
+        return [undefined,"✓ must be next to a doOnce"]
       return [code, error]
 
     addTracingInstructionsToDoOnceBlocks: (code, error) ->
@@ -212,20 +223,20 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           # add the line number tracing instruction to inline case
           elaboratedSourceByLine[eachLine] =
             elaboratedSourceByLine[eachLine].replace(
-              /^(\s*)doOnce[ ]*\->[ ]*(.+)$/g,
+              /(^|\s+)doOnce[ \t\-]*\>[ ]*(.+)$/g,
               "$1;addDoOnce(" + eachLine + "); 1.times -> $2")
           
           # add the line number tracing instruction to multiline case
-          if /^(\s*)doOnce[ ]*\->[ ]*$/g.test(elaboratedSourceByLine[eachLine])
+          if /(^|\s+)doOnce[ \t\-]*\>[ ]*$/g.test(elaboratedSourceByLine[eachLine])
             
             #alert('doOnce multiline!')
             elaboratedSourceByLine[eachLine] =
               elaboratedSourceByLine[eachLine].replace(
-                /^(\s*)doOnce[ ]*\->[ ]*$/g, "$11.times ->")
+                /(^|\s+)doOnce[ \t\-]*\>[ ]*$/g, "$11.times ->")
             elaboratedSourceByLine[eachLine + 1] =
               elaboratedSourceByLine[eachLine + 1].replace(
                 /^(\s*)(.+)$/g, "$1addDoOnce(" + eachLine + "); $2")
-        code = elaboratedSourceByLine.join("\n")
+        code = elaboratedSourceByLine.join "\n"
       
       #alert('soon after replacing doOnces'+code)
       return [code, error]
@@ -246,7 +257,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
     stripCommentsAndStrings: (code, error) ->
       # if there is an error, just propagate it
-      return [undefined, error] if error?
+      return [undefined, undefined, error] if error?
 
       codeWithoutComments = undefined
       codeWithoutStringsOrComments = undefined
@@ -412,17 +423,26 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # in some cases we don't want.
       # We want to simply rule out some common cases here
       # so we don't need to make the regexpes too complicated
-      # For example we want to avoid
+      # For example we want to avoid:
+      #
       #   peg; times rotate box 2* wave
       # to become
       #   (peg()).times ->  rotate box 2* wave()
+      # or
+      #   peg times rotate box 2* wave
+      # to become
+      #   peg.times ->  rotate box 2* wave()
+      #
       # and run simply because we forgot a number in front
       # of 'times'
+
+      rx = RegExp("("+@allCommandsRegex+")\\s+times(?![a-zA-Z0-9])",'g')
 
       if /^\s*times/gm.test(code) or
         /;\s*times/g.test(code) or
         /else\s+times/g.test(code) or
-        /then\s+times/g.test(code)
+        /then\s+times/g.test(code) or
+        rx.test(code)
           programHasBasicError = true
           return [undefined, "how many times?"]
       return [code, error]
@@ -431,7 +451,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      if detailedDebug then console.log "transformTimesSyntax-0\n" + code
+      if detailedDebug then console.log "transformTimesSyntax-0\n" + code + " error: " + error
       code = code.replace(/(else)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
       code = code.replace(/(then)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
 
@@ -441,12 +461,12 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if we don't exclude the semicolon form the times argument then we transform into
       #  box; (box ;  2).times ->  peg
       # which is not correct
-      if detailedDebug then console.log "transformTimesSyntax-1\n" + code
+      if detailedDebug then console.log "transformTimesSyntax-1\n" + code + " error: " + error
       code = code.replace(/;[ \t]*([a-zA-Z1-9])([^;\r\n]*?) times[:]?([^a-zA-Z0-9])/g, "; ($1$2).times -> $3")
 
 
       # takes care of cases like myFunc = -> 20 times rotate box
-      if detailedDebug then console.log "transformTimesSyntax-2\n" + code
+      if detailedDebug then console.log "transformTimesSyntax-2\n" + code + " error: " + error
       code = code.replace(/(->)\s+([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
 
 
@@ -456,7 +476,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # the ^; is to avoid this matching:
       #   peg; times rotate box 2* wave (group1: p group2: eg; group3: rot...wave)
       code = code.replace(/([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9])/g, "($1$2).times -> $3")
-      if detailedDebug then console.log "transformTimesSyntax-3\n" + code
+      if detailedDebug then console.log "transformTimesSyntax-3\n" + code + " error: " + error
 
       return @normaliseCode(code, error)
 
@@ -486,10 +506,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # replace stuff like (box 3).times -> into box(); 3.times
       rx = RegExp("\\(("+@allCommandsRegex+") ",'g');
       code = code.replace(rx, "$1(); (")
-      if detailedDebug then console.log "unmarkFunctionalReferences-0\n" + code
+      if detailedDebug then console.log "unmarkFunctionalReferences-0\n" + code + " error: " + error
 
       code = code.replace(/->;/gm, "->")
-      if detailedDebug then console.log "unmarkFunctionalReferences-1\n" + code
+      if detailedDebug then console.log "unmarkFunctionalReferences-1\n" + code + " error: " + error
 
       # transform stuff like (3).times and (n).times
       # into 3.times and n.times
@@ -509,10 +529,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       
       # adding () to single tokens on their own at the start of a line
       # ball
-      if detailedDebug then console.log "adjustImplicitCalls-1\n" + code
+      if detailedDebug then console.log "adjustImplicitCalls-1\n" + code + " error: " + error
       rx = RegExp("^([ \\t]*)("+allFunctionsRegex+")[ ]*$",'gm')
       code = code.replace(rx, "$1$2();")
-      if detailedDebug then console.log "adjustImplicitCalls-2\n" + code
+      if detailedDebug then console.log "adjustImplicitCalls-2\n" + code + " error: " + error
 
 
       # adding () to single tokens at the start of the line
@@ -521,7 +541,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # ball; somethingelse
       rx = RegExp("^([ \\t]*)("+allFunctionsRegex+")[ ]*;",'gm')
       code = code.replace(rx, "$1$2();")
-      if detailedDebug then console.log "adjustImplicitCalls-3\n" + code
+      if detailedDebug then console.log "adjustImplicitCalls-3\n" + code + " error: " + error
 
       # adding () to any functions not at the beginning of a line
       # and followed by a anything that might end the command
@@ -549,12 +569,12 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       for i in [1..2]
         rx = RegExp("([^a-zA-Z0-9\\r\\n])("+@allCommandsRegex+")[ \\t]*("+delimitersForCommands+")",'g')
         code = code.replace(rx, "$1$2()$3")
-      if detailedDebug then console.log "adjustImplicitCalls-4\n" + code
+      if detailedDebug then console.log "adjustImplicitCalls-4\n" + code + " error: " + error
 
       for i in [1..2]
         rx = RegExp("([^a-zA-Z0-9\\r\\n])("+expressionsAndUserDefinedFunctionsRegex+")[ \\t]*("+delimitersForExpressions+")",'g')
         code = code.replace(rx, "$1$2()$3")
-      if detailedDebug then console.log "adjustImplicitCalls-5\n" + code
+      if detailedDebug then console.log "adjustImplicitCalls-5\n" + code + " error: " + error
 
       #box 0.5,2
       #box; rotate; box
@@ -570,7 +590,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # 2 times -> rotate; box
       rx = RegExp("([^a-zA-Z0-9\\r\\n])("+allFunctionsRegex+")[ \\t]*$",'gm')
       code = code.replace(rx, "$1$2()")
-      if detailedDebug then console.log "adjustImplicitCalls-6\n" + code
+      if detailedDebug then console.log "adjustImplicitCalls-6\n" + code + " error: " + error
       return [code, error]
 
     addCommandsSeparations: (code, error, userDefinedFunctions) ->
@@ -583,6 +603,46 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       rx = RegExp("("+@allCommandsRegex+")([ \\t]*)("+@allCommandsRegex+")([ ]*)($)?",'gm')
       code = code.replace(rx, "$1();$2$3$4$5")
       if detailedDebug then console.log "addCommandsSeparations 1: " + code
+
+      return [code, error]
+
+    findQualifiers: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      previousCodeTransformations = ''
+
+      while code != previousCodeTransformations
+        previousCodeTransformations = code
+        for i in [0...@qualifierKeywords.length] by 4
+          toBeReplaced = @qualifierKeywords[i+1] + ""
+          replaceWith = @qualifierKeywords[i] + ""
+
+          # a qualifier cannot span over a loop
+          # because it would create chaos with the
+          # pushMatrix being out and the popMatrix being in
+          # so neutralise those first by turning into
+          # something special that is going to fail the
+          # next matches
+          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)(times)(.*?)("+@primitivesRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
+          replacement = '$1'+ toBeReplaced + '~$3$4$5$6$7'
+          code = code.replace(rx,replacement)
+
+          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9~\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
+          replacement = '$1'+ replaceWith + '$3$4$5'
+          code = code.replace(rx,replacement)
+
+          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9~\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
+          replacement = '$1'+ replaceWith + '$3$4$5'
+          code = code.replace(rx,replacement)
+
+          # replace back what we put in order to fail
+          # the qualifiers spanning over loops
+          rx = RegExp("("+toBeReplaced+")~",'g')
+          replacement = '$1'
+          code = code.replace(rx,replacement)
+
+      if detailedDebug then console.log "findQualifiers 1: " + code
 
       return [code, error]
 
@@ -600,13 +660,34 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           prependWith = @qualifierKeywords[i+2] + ""
           appendWith = @qualifierKeywords[i+3] + ""
 
-          rx = RegExp("^()("+toBeReplaced+")([^a-zA-Z0-9\\r\\n].*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'gm')
+          # ...we don't want a qualifier to span across a then/else, so dealing
+          # with those two cases here first.
+          rx = RegExp("(else\\s*)("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'g')
           replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
           code = code.replace(rx,replacement)
 
-          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")([^a-zA-Z0-9\\r\\n].*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'gm')
+          rx = RegExp("(then\\s*)("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*?else )",'g')
+          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '; $6'
+          code = code.replace(rx,replacement)
+
+          # the next two substitutions deal with the cases like "move peg move box"
+          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*?("+toBeReplaced+"))",'gm')
+          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + ';$6'
+          code = code.replace(rx,replacement)
+
+          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*?("+toBeReplaced+"))",'g')
+          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + ';$6'
+          code = code.replace(rx,replacement)
+
+
+          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'gm')
           replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
           code = code.replace(rx,replacement)
+
+          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'g')
+          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
+          code = code.replace(rx,replacement)
+
       if detailedDebug then console.log "fleshOutQualifiers 1: " + code
 
       return [code, error]
@@ -640,14 +721,14 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       
       rx = RegExp("([^;>\\( \\t\\r\\n])([ ])("+@allCommandsRegex+")([^a-zA-Z0-9\\r\\n])",'gm')
       code = code.replace(rx, "$1;$2$3$4")
-      if detailedDebug then console.log "evaluateAllExpressions-1\n" + code
+      if detailedDebug then console.log "evaluateAllExpressions-1\n" + code + " error: " + error
 
       rx = RegExp("([^a-zA-Z0-9\\r\\n])("+allFunctionsRegex+")([ \\t]*);",'g')
       code = code.replace(rx, "$1$2();")
-      if detailedDebug then console.log "evaluateAllExpressions-2\n" + code
+      if detailedDebug then console.log "evaluateAllExpressions-2\n" + code + " error: " + error
       rx = RegExp("([^a-zA-Z0-9\\r\\n])("+allFunctionsRegex+")([ \\t]*)$",'gm')
       code = code.replace(rx, "$1$2();")
-      if detailedDebug then console.log "evaluateAllExpressions-3\n" + code
+      if detailedDebug then console.log "evaluateAllExpressions-3\n" + code + " error: " + error
 
 
       delimitersForCommandsMod = ":|;|\\,|\\?|//|\\#|\\selse|\\sthen"
@@ -655,7 +736,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       delimitersForExpressions = delimitersForExpressions + userDefinedFunctions
       rx = RegExp("("+delimitersForExpressions+")([ \\t]*);",'g')
       code = code.replace(rx, "$1$2")
-      if detailedDebug then console.log "evaluateAllExpressions-4\n" + code
+      if detailedDebug then console.log "evaluateAllExpressions-4\n" + code + " error: " + error
 
       #rx = RegExp("([^a-zA-Z0-9;>\\(])([ \\t]*)("+@allCommandsRegex+")([^a-zA-Z0-9])",'g')
       #code = code.replace(rx, "$1;$2$3$4")
@@ -680,19 +761,19 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # transformation do nothing
       error = undefined
 
-      if detailedDebug then console.log "preprocess-0\n" + code
+      if detailedDebug then console.log "preprocess-0\n" + code + " error: " + error
       [code, error, userDefinedFunctions] = @findUserDefinedFunctions(code, error)
-      if detailedDebug then console.log "preprocess-1\n" + code
+      if detailedDebug then console.log "preprocess-1\n" + code + " error: " + error
 
       [code, error] = @removeTickedDoOnce(code, error)
-      if detailedDebug then console.log "preprocess-2\n" + code
+      if detailedDebug then console.log "preprocess-2\n" + code + " error: " + error
       [code, codeWithoutStringsOrComments, error] = @stripCommentsAndStrings(code, error)
-      if detailedDebug then console.log "preprocess-3\n" + code
+      if detailedDebug then console.log "preprocess-3\n" + code + " error: " + error
       [code, error] = @checkBasicSyntax(code, codeWithoutStringsOrComments, error)
-      if detailedDebug then console.log "preprocess-4\n" + code
+      if detailedDebug then console.log "preprocess-4\n" + code + " error: " + error
 
       [code, error] = @markFunctionalReferences(code, error, userDefinedFunctions)
-      if detailedDebug then console.log "preprocess-5\n" + code
+      if detailedDebug then console.log "preprocess-5\n" + code + " error: " + error
 
       # allow some common command forms can be used in postfix notation, e.g.
       #   60 bpm
@@ -700,10 +781,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #   yellow stroke
       #   black background
       [code, error] = @adjustPostfixNotations(code, error)
-      if detailedDebug then console.log "preprocess-6\n" + code
+      if detailedDebug then console.log "preprocess-6\n" + code + " error: " + error
 
       [code, error] = @checkBasicErrorsWithTimes(code, error)
-      if detailedDebug then console.log "preprocess-7\n" + code
+      if detailedDebug then console.log "preprocess-7\n" + code + " error: " + error
       
 
 
@@ -729,26 +810,33 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # where exactly it is so that we can go back and mark it with a tick
       # (which prevents a second run to happen, as the tickmarks expand into
       # line comments).
-      if detailedDebug then console.log "preprocess-8\n" + code
+      if detailedDebug then console.log "preprocess-8\n" + code + " error: " + error
       [code, error] = @addTracingInstructionsToDoOnceBlocks(code, error)
 
-      if detailedDebug then console.log "preprocess-9\n" + code
+      [ignore,a,ignore] = @identifyBlockStarts code, error
+      [code, error] = @completeImplicitFunctionPasses code, a, error
+      if detailedDebug then console.log "completeImplicitFunctionPasses:\n" + code + " error: " + error
+
+
+      if detailedDebug then console.log "preprocess-9\n" + code + " error: " + error
+      [code, error] = @findQualifiers(code, error)
+      if detailedDebug then console.log "preprocess-10\n" + code + " error: " + error
       [code, error] = @fleshOutQualifiers(code, error)
-      if detailedDebug then console.log "preprocess-10\n" + code
+      if detailedDebug then console.log "preprocess-11\n" + code + " error: " + error
       [code, error] = @addCommandsSeparations(code, error, userDefinedFunctions)
-      if detailedDebug then console.log "preprocess-11\n" + code
+      if detailedDebug then console.log "preprocess-12\n" + code + " error: " + error
       [code, error] = @adjustImplicitCalls(code, error, userDefinedFunctions)
-      if detailedDebug then console.log "preprocess-12\n" + code
+      if detailedDebug then console.log "preprocess-13\n" + code + " error: " + error
       [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
-      if detailedDebug then console.log "preprocess-13\n" + code
+      if detailedDebug then console.log "preprocess-14\n" + code + " error: " + error
       [code, error] = @evaluateAllExpressions(code, error, userDefinedFunctions)
-      if detailedDebug then console.log "preprocess-14\n" + code
+      if detailedDebug then console.log "preprocess-15\n" + code + " error: " + error
       [code, error] = @transformTimesSyntax(code, error)
-      if detailedDebug then console.log "preprocess-15\n" + code
+      if detailedDebug then console.log "preprocess-16\n" + code + " error: " + error
       [code, error] = @unmarkFunctionalReferences(code, error, userDefinedFunctions)
 
-      return [code, error, userDefinedFunctions]
 
+      return [code, error, userDefinedFunctions]
 
 
     # to run the tests, just open the dev console
@@ -757,6 +845,15 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         failedTests = successfulTest = knownIssues = failedIdempotency = failedMootAppends = failedMootPrepends = 0
         for testCaseNumber in [0...@testCases.length]
           testCase = @testCases[testCaseNumber]
+
+          # just like in demos and tutorials, we use an
+          # arrow to represent tabs so it's more
+          # readable when looking at the examples.
+          # We replace it with tabs here.
+          testCase.input = testCase.input.replace(/\u25B6/g, "\t")
+          if testCase.expected?
+            testCase.expected = testCase.expected.replace(/\u25B6/g, "\t")
+
           [transformed, error, userDefinedFunctions] = @preprocess(testCase.input)
           # only check idempotency if there was no error
           # in the first step and if the test case
@@ -776,7 +873,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           prependString = 't'
           [mootInput, ignore, errorMoot] = @stripCommentsAndStrings(testCase.input,null)
           if !errorMoot?
-            rx = RegExp("(("+allFunctionsRegex+"|times)([^a-zA-Z0-9]|$))",'gm');
+            rx = RegExp("(("+allFunctionsRegex+"|times|doOnce)([^a-zA-Z0-9]|$))",'gm');
             mootInputAppend = mootInput.replace(rx, "$2"+appendString+"$3")
             mootInputPrepend = mootInput.replace(rx, prependString+"$2$3")
 
@@ -841,4 +938,86 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         console.log "      out of which only idempotency fails: #{failedIdempotency}"
         console.log "known issues: #{knownIssues}"
         return
+
+    identifyBlockStarts: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, undefined, error] if error?
+
+      sourceByLine = code.split("\n")
+      startOfPreviousLine = ""
+      linesWithBlockStart = []
+      
+      for eachLine in [0...sourceByLine.length]
+        line = sourceByLine[eachLine]
+        #console.log "checking " + line
+        rx = RegExp("^(\\s*)",'gm')
+        match = rx.exec line
+        continue if not match?
+        startOfThisLine = match[1]
+        #console.log "start of line: >" + startOfThisLine + "<"
+        if startOfThisLine.length > startOfPreviousLine.length
+          linesWithBlockStart.push eachLine-1
+        startOfPreviousLine = startOfThisLine
+
+      #console.log "code lenght at identifyBlockStarts: " + code.split("\n").length
+      return [code, linesWithBlockStart, undefined]
+
+    completeImplicitFunctionPasses: (code, linesWithBlockStart, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      sourceByLine = code.split("\n")
+      transformedLines = []
+      
+      countingLines = -1;
+      for line in sourceByLine
+        countingLines++
+        if countingLines in linesWithBlockStart
+          #console.log "checking " + line
+          
+          # if the line already ends with an arrow
+          # then there is nothing to do
+          rx = RegExp("->\\s*$",'gm')
+          match = rx.exec line
+          if match?
+            transformedLines.push line
+            continue
+
+          # if the line already ends with "times"
+          # then stay away from this transformation
+          rx = RegExp("[^a-zA-Z0-9\\r\\n]times\\s*$",'gm')
+          match = rx.exec line
+          if match?
+            transformedLines.push line
+            continue
+
+          # case where the function-block is passed as first argument
+          # so no comma is needed
+          rx = RegExp("(^|;)\\s*("+@scaleRotateMoveCommandsRegex+")\\s*$",'gm')
+          match = rx.exec line
+          if match?
+            transformedLines.push line+" ->"
+            continue
+
+          # case where the function-block is passed as argument beyond
+          # the first, so a comma is needed
+          rx = RegExp("(^|;)\\s*("+@scaleRotateMoveCommandsRegex+")(?![a-zA-Z0-9])([^;\r\n]*)$",'gm')
+          match = rx.exec line
+          if match?
+            transformedLines.push line+", ->"
+            continue
+
+          # if we are here is means that there was no match
+          # meaning that there is nothing to add.
+          transformedLines.push line
+
+        else
+          transformedLines.push line
+
+      transformedCode = transformedLines.join "\n"
+
+      #console.log "code lenght at completeImplicitFunctionPasses: " + transformedCode.split("\n").length
+      return [transformedCode, undefined]
+
+
 

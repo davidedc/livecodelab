@@ -11,8 +11,8 @@
 
 ## LiveCodeLab uses immediate mode graphics
 ## ----------------------
-## First off, like Processing, LiveCodeLab shies away from "retained" graphics
-## and instead uses "immediate mode" graphics.
+## First off, like Processing, LiveCodeLab adopts an "immediate" graphics
+## mode instead of a "retained" mode.
 ## For context, "immediate mode" graphics means that when the user uses a
 ## graphic primitive, he is
 ## NOT given a handle that he can use to modify properties of that element at a
@@ -39,7 +39,7 @@
 ## What are those called?
 ## How do I change parent/child relationship?
 ## How do events bubble up and where should I catch them?).
-## Processing and LiveCodeLab go for immediate mode.
+## Processing and LiveCodeLab go for immediate mode instead.
 ## Once the primitive is invoked, it
 ## becomes pixels and there is no built-in way to do input/event/hierarchies...
 ## Rather, there are a few properties that are set as a global state and apply
@@ -88,7 +88,8 @@
 ## When an object is created, it must be first rendered with the most complex
 ## material, because internally in Three.js/WebGL memory is allocated only once.
 ## So a special mechanism is put in place by which new objects are drawn with
-## the normalMaterial with scale 0, so they are rendered but they are invisible.
+## the normalMaterial with scale 0 (which so far is the most complex
+## material we apply), so they are rendered but they are invisible.
 ## In the next frame (i.e. after the first render) the correct material is used.
 
 ## "Spinning"
@@ -101,8 +102,24 @@
 ## Spinning gives many more cues:
 ## the environment is 3d, the lighting is special by default and all faces have
 ## primary colors, things animate. Without spinning, all those cues need to be
-## further explained and demonstra ted.
+## further explained and demonstrated.
 ###
+
+## "Exclusion-principle wobbling"
+## ----------------------
+## the exclusion principle says that no two
+## objects can be in the same place at the same
+## time. If we see that the user *consecutively*
+## draws the same primitive in the same place,
+## we jiggle the objects a bit. We could do
+## better: via some hash lookup we could also
+## check the non-consecutive cases, but we keep
+## it easy here. This is meant to show
+## early users when LCL is drawing many boxes
+## or lines in the same place.
+## helpful for example in
+##   20 times rotate box
+
 
 define () ->
 
@@ -137,6 +154,12 @@ define () ->
     resetTheSpinThingy: false
     defaultNormalFill: true
     defaultNormalStroke: true
+    exclusionPrincipleWobble: true
+    # keeps track of the last position of each primitive type
+    # so we can enforce the exclusionPrinciple.
+    # Initialised in the constructor.
+    lastPositionOfPrimitiveType: []
+    numberOfOverlappingPrimitives: []
     
     constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance) ->
       window.line = (a,b,c) => @line(a,b,c)
@@ -151,12 +174,18 @@ define () ->
       window.noStroke = () => @noStroke()
       window.strokeSize = (a) => @strokeSize(a)
       
-      @primitiveTypes.ambientLight = 0
-      @primitiveTypes.line = 1
-      @primitiveTypes.rect = 2
-      @primitiveTypes.box = 3
-      @primitiveTypes.peg = 4
-      @primitiveTypes.ball = 5
+      numberOfPrimitives = 0
+      @primitiveTypes.ambientLight = numberOfPrimitives++
+      @primitiveTypes.line = numberOfPrimitives++
+      @primitiveTypes.rect = numberOfPrimitives++
+      @primitiveTypes.box = numberOfPrimitives++
+      @primitiveTypes.peg = numberOfPrimitives++
+      # ball must be the last one cause
+      # we use the subsequent numbers for all the
+      # detail levels of balls.
+      # Todo: note this doesn't work if we decide that
+      # other primitives have a detail level...
+      @primitiveTypes.ball = numberOfPrimitives++
       
       # apparently in Coffeescript I can't initialise fields in the section
       # before the constructor, so initialising them here in the constructor
@@ -191,26 +220,42 @@ define () ->
       and define them at runtime only when needed.
       ###
       
+      # these set the relative size of the
+      # primitibes in respect to the box
+      boxProportion = 1
+      lineProportion = 1.4
+      rectProportion = 1.2
+      pegProportion = 1.1
+      ballProportion = 0.64
+
       @geometriesBank[@primitiveTypes.line] = new @liveCodeLabCore_three.Geometry()
       @geometriesBank[@primitiveTypes.line].vertices.push \
-        new @liveCodeLabCore_three.Vector3(0, -0.5, 0)
+        new @liveCodeLabCore_three.Vector3(0, -0.5 * lineProportion, 0)
       @geometriesBank[@primitiveTypes.line].vertices.push \
-        new @liveCodeLabCore_three.Vector3(0, 0.5, 0)
-      @geometriesBank[@primitiveTypes.rect] = new @liveCodeLabCore_three.PlaneGeometry(1, 1)
-      @geometriesBank[@primitiveTypes.box] = new @liveCodeLabCore_three.CubeGeometry(1, 1, 1)
+        new @liveCodeLabCore_three.Vector3(0, 0.5 * lineProportion, 0)
+      @geometriesBank[@primitiveTypes.rect] = new @liveCodeLabCore_three.PlaneGeometry(1 * rectProportion, 1 * rectProportion)
+      @geometriesBank[@primitiveTypes.box] = new @liveCodeLabCore_three.CubeGeometry(1 * boxProportion, 1 * boxProportion, 1 * boxProportion)
       @geometriesBank[@primitiveTypes.peg] =
-        new @liveCodeLabCore_three.CylinderGeometry(0.5, 0.5, 1, 32)
+        new @liveCodeLabCore_three.CylinderGeometry(0.5 * pegProportion, 0.5 * pegProportion, 1 * pegProportion, 32)
       
       # creating ball geometries
       for i in [0...(@maximumBallDetail - @minimumBallDetail + 1)]
         @geometriesBank[@primitiveTypes.ball + i] =
           new @liveCodeLabCore_three.SphereGeometry(
-            1, @minimumBallDetail + i, @minimumBallDetail + i)
+            1 * ballProportion, @minimumBallDetail + i, @minimumBallDetail + i)
       
+      # creating a place to remember where
+      # each primitive was placed last and how
+      # many of them are overlapping so far
+      for i in [0..numberOfPrimitives + (@maximumBallDetail - @minimumBallDetail + 1)]
+        @lastPositionOfPrimitiveType[i] = new @liveCodeLabCore_three.Matrix4()
+        @numberOfOverlappingPrimitives[i] = 0
+
     
     createObjectIfNeededAndDressWithCorrectMaterial: (
       a, b, c, primitiveProperties, strokeTime, colorToBeUsed,
       alphaToBeUsed, applyDefaultNormalColor) ->
+
       objectIsNew = false
       pooledObjectWithMaterials = undefined
       theAngle = undefined
@@ -358,6 +403,7 @@ define () ->
         @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
         @liveCodeLabCoreInstance.matrixCommands.rotate \
           pooledObjectWithMaterials.initialSpinCountdown / 50
+
       
       ###
       see
@@ -369,12 +415,14 @@ define () ->
       pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = false
       pooledObjectWithMaterials.threejsObject3D.matrix.copy \
         @liveCodeLabCoreInstance.matrixCommands.getWorldMatrix()
+
       pooledObjectWithMaterials.threejsObject3D.matrixWorldNeedsUpdate = true
+
       if @doTheSpinThingy and
           pooledObjectWithMaterials.initialSpinCountdown > 0
         @liveCodeLabCoreInstance.matrixCommands.popMatrix()
-      if objectIsNew
-        
+
+      if objectIsNew        
         # if the object is new it means that the normal material
         # is applied to it, no matter what the current settings of fill
         # and lights are. So we make objects invisible in their very first
@@ -390,11 +438,47 @@ define () ->
           # ever so slight larger than the "fill" object, so there
           # is no z-fighting and the stroke is drawn neatly on top of the fill
           # constant 0.001 below is to avoid z-fighting
+          # note that we avoid this on unitary box as it's a common
+          # case that is simple to check where there is no need
+          # of these 16 extra multiplications (of the scale)
           pooledObjectWithMaterials.threejsObject3D.matrix.scale \
             new @liveCodeLabCore_three.Vector3(a + 0.001, b + 0.001, c + 0.001)
         else
           pooledObjectWithMaterials.threejsObject3D.matrix.scale \
             new @liveCodeLabCore_three.Vector3(a, b, c)
+
+
+      # exclusionPrincipleWobble doesn't apply in the
+      # normal case where there is a fill and there is a stroke
+      # because the fill and the stroke are technically the same
+      # geometry and the stroke is slightly bigger, so
+      # it would set a place in a different place where the
+      # fill is, and the "same place" check of the next
+      # geometry would fail. So in those cases, only
+      # the fill counts
+      if @exclusionPrincipleWobble and !(@doFill and strokeTime)
+        arrayEqual = (a, b) ->
+          for i in [0..15]
+            if a[i] != b[i]
+              return false
+          return true
+
+        if arrayEqual(
+          pooledObjectWithMaterials.threejsObject3D.matrix.elements,
+          @lastPositionOfPrimitiveType[primitiveID].elements
+          )
+          #console.log "something here already at  " + primitiveID
+          @numberOfOverlappingPrimitives[primitiveID]++
+          overlapPrimtives = @numberOfOverlappingPrimitives[primitiveID]
+          pert = sin(time/100) * sin(overlapPrimtives + time/100)/40
+          pooledObjectWithMaterials.threejsObject3D.matrix.rotateX(pert).rotateY(pert).rotateZ pert
+          pooledObjectWithMaterials.threejsObject3D.matrix.translate new @liveCodeLabCore_three.Vector3(pert, pert, pert)
+        else
+          #console.log "nothing here already - setting  " + primitiveID + " with " + pooledObjectWithMaterials.threejsObject3D.matrix
+          @lastPositionOfPrimitiveType[primitiveID].copy \
+            pooledObjectWithMaterials.threejsObject3D.matrix
+
+
       @liveCodeLabCoreInstance.threeJsSystem.scene.add \
         pooledObjectWithMaterials.threejsObject3D  if objectIsNew
 
@@ -698,12 +782,15 @@ define () ->
       @doStroke = false
 
     strokeSize: (a) ->
-      # note that either Three.js of the graphic card limit the size
+      # note that either Three.js or the graphic card limit the size
       # of the stroke. This is because openGL strokes are VERY crude
       # (the cap is not even square, it's worse than that:
       # http://twolivesleft.com/Codea/LineCapShear.png )
       # So it's limited to 10. In some graphic cards this doesn't even have
-      # any effect.
+      # any effect. In windows there is no thickness beyond "1" cause
+      # ANGLE doesn't doesn't translate that properly to DirectX.
+      # Vice-versa, the canvas renderer of Three.js draws beautiful lines
+      # with round cap size of any thickness.
       if not a?
         a = 1
       else a = 0  if a < 0

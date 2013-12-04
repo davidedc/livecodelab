@@ -23,7 +23,7 @@ and writing
 ```
 box()
 ```
-while in LiveCodeLab, there isn't. Any time a function name appears without arguments and parentheses, the function is implicitely called on the spot. Since all LiveCodeLab functions have a valid and interesting meaning when invoked without arguments, this is useful, as it means that one can write
+while in LiveCodeLab, like in Ruby, there isn't. Any time a function name appears without arguments and parentheses, the function is implicitely called on the spot. Since all LiveCodeLab functions have a valid and interesting meaning when invoked without arguments, this is useful, as it means that one can write
 ```
 box
 move
@@ -77,8 +77,50 @@ either <box>, <peg>
 ```
 basically, instead of forcing you to parentheses to evaluate functions, LiveCodeLab forces you to use brackets to *avoid* the evaluation, so that the two functions "box" and "peg" can be passed to "either" as unevaluated functions as it's supposed to be.
 
+
+"Scoped" matrix transformations
+-----------
+In processing, is one wants to apply transformation(s) to only some primitive(s), one does
+```
+pushMatrix();
+[transformation(s) here]
+[primitive(s) here]
+popMatrix();
+```
+indeed this also works in LiveCodeLab, but LiveCodeLab adds another coincise notation to scope the transformations, by simplt indenting the block one wants to be affected, e.g.
+```
+rotate 1,2 # this rotate only applies to the indented block below
+  box
+  [more primitives here]
+```
+or also
+```
+scale 1 # has no effect other than creating the "scope" below
+  [any series of transformations here]
+  box
+  [more primitives here]
+```
+These "scoped" matrix transformations can also be nested.
+
+Super-short "Scoped" matrix transformations
+-----------
+If one wants to apply a transformation to only a primitive or two, just inline it all like so:
+```
+rotate box line # creates a box and a line, both spinning
+peg # not spinning
+```
+basically, if a matrix transformation is followed by some primitives, LCL will interpret that as to mean that you want to apply the tranformation only to those primitives on the same line (up to the next semicolon).
+
+Note that a transformation immediately followed by a semicolon indicates that the transformation is not chained to the ony primitives on the same line, but rather the transformation applies to the whole world as standard.
+```
+rotate; box line # rotate is not chained only to the box
+peg # box, line, peg and anything following are spinning
+```
+
+
 Some examples (scroll table to the right)
 -----------
+
 
 ```
                                                      +                                                                       +
@@ -137,7 +179,7 @@ Some examples (scroll table to the right)
 
 Limitations and ambiguities
 -----------
-LiveCodeLab's "aggressive" euristics to shorten the typing are just that - euristics. They seem to work for us all the times, but if you run into trouble - just use short lines and use all the parentheses when needed. By doing so, LiveCodeLab won't have to do any guessing for you and will do exactly what you meant.
+LiveCodeLab's "aggressive" euristics to shorten the typing are just that - euristics. They seem to work for us all the times, but if you run into trouble - just use short lines and use all the parentheses when needed. By doing so, LiveCodeLab won't have to do any guessing for you and will do exactly what you mean.
 
 Also you might be under the impression that LiveCodeLab can guess any construct for you, for example
 ```
