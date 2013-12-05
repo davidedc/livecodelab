@@ -564,7 +564,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #   box -1
       # to turn into box() -1
       delimitersForCommands = ":|;|\\,|\\?|\\)|//|\\#|\\selse|\\sthen"
-      delimitersForExpressions = delimitersForCommands + "|" + "\\+|-|\\*|/|%|&|]|<|>|=|\\|"
+      delimitersForExpressions = delimitersForCommands + "|" + "\\+|-|\\*|/|%|&|]|<|>|\\|"
 
       for i in [1..2]
         rx = RegExp("([^a-zA-Z0-9\\r\\n])("+@allCommandsRegex+")[ \\t]*("+delimitersForCommands+")",'g')

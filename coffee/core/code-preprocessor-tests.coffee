@@ -1068,7 +1068,19 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    ▶▶rotate ->
                    ▶▶▶ball 0.6
                    """
-
+        ,
+         notes:    """
+                   A complex case with nested if then else and
+                   function definition.
+                   """
+         input:    """
+                   if true then if true then box; a = -> ball; if true then peg; a = -> rect; else line; ball
+                   a
+                   """
+         expected: """
+                   if true then if true then box(); a = -> ball(); if true then peg(); a = -> rect(); else line(); ball()
+                   a()
+                   """
       ]
 
   CodePreprocessorTests
