@@ -454,6 +454,14 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "transformTimesSyntax-0\n" + code + " error: " + error
       code = code.replace(/(else)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
       code = code.replace(/(then)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
+      # without the following, "if 2 times a" becomes "(if 2).times a"
+      code = code.replace(/(if)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
+      # It's unclear whether the cases catered by the two 
+      # transformatione below ever make sense.
+      # without the following, "a = (2 times box)" becomes "(a = 2.times -> box())"
+      code = code.replace(/(\()\s*([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
+      # without the following, "a = 2 times box" becomes "(a = 2).times -> box()"
+      code = code.replace(/(=)\s*([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
 
       # the [^;\r\n]*? is to make sure that we don't take ; within the times argument
       # example:

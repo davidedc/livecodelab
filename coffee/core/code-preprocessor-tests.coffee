@@ -1134,7 +1134,48 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    if true then 2.times -> box(); if true then 2.times -> rect() else 2.times -> peg(); ball()
                    """
-
+        ,
+         notes:    """
+                   """
+         input:    """
+                   2 times if true then ball
+                   """
+         expected: """
+                   2.times -> if true then ball()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   2 times if true then ball
+                   """
+         expected: """
+                   2.times -> if true then ball()
+                   """
+        ,
+         notes:    """
+                   note that you cannot have anonymous
+                   functions in the test in coffeescript,
+                   i.e. pasting the "expected" below
+                   into coffeescript gives an error
+                   """
+         input:    """
+                   if 2 times a then ball
+                   """
+         expected: """
+                   if 2.times -> a then ball()
+                   """
+        ,
+         notes:    """
+                   this example doesn't mean anything
+                   meaningful...
+                   """
+         input:    """
+                   if (2 times a) then ball
+                   """
+         expected: """
+                   if ( 2.times -> a) then ball()
+                   """
       ]
 
   CodePreprocessorTests
