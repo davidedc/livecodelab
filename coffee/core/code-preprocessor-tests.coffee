@@ -1091,6 +1091,49 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    if true then pushMatrix(); move(); pushMatrix(); rotate(); box(); popMatrix(); popMatrix(); else pushMatrix(); move(); line(); popMatrix()
                    """
+        ,
+         notes:    """
+                   Some times nested in ifs. The final js,
+                   consistently with coffeescript, is:
+                     if (true) {
+                       2..times(function() {
+                         box();
+                         return line();
+                       });
+                     } else {
+                       peg();
+                     }                   
+                   """
+         input:    """
+                   if true then 2 times box; line else peg
+                   """
+         expected: """
+                   if true then 2.times -> box(); line() else peg()
+                   """
+        ,
+         notes:    """
+                   Some more "times nested in ifs". The final js,
+                   consistently with coffeescript, is:
+                   if (true) {
+                     2..times(function() {
+                       box();
+                       if (true) {
+                         return 2..times(function() {
+                           return rect();
+                         });
+                       }
+                     });
+                   } else {
+                     2..times(function() {
+                       peg();
+                       return ball();
+                   """
+         input:    """
+                   if true then 2 times box; if true then 2 times rect else 2 times peg; ball
+                   """
+         expected: """
+                   if true then 2.times -> box(); if true then 2.times -> rect() else 2.times -> peg(); ball()
+                   """
 
       ]
 
