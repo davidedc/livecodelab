@@ -627,10 +627,14 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)(times)(.*?)("+@primitivesRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
           replacement = '$1'+ toBeReplaced + '~$3$4$5$6$7'
           code = code.replace(rx,replacement)
+          
+          if detailedDebug then console.log "findQualifiers 1: " + code
 
           rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9~\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
           replacement = '$1'+ replaceWith + '$3$4$5'
           code = code.replace(rx,replacement)
+
+          if detailedDebug then console.log "findQualifiers 2: " + code
 
           rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9~\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
           replacement = '$1'+ replaceWith + '$3$4$5'
@@ -642,7 +646,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           replacement = '$1'
           code = code.replace(rx,replacement)
 
-      if detailedDebug then console.log "findQualifiers 1: " + code
+          if detailedDebug then console.log "findQualifiers 3: " + code
+
+      if detailedDebug then console.log "findQualifiers 4: " + code
 
       return [code, error]
 
@@ -664,7 +670,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           # with those two cases here first.
           rx = RegExp("(else\\s*)("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'g')
           replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
+          if detailedDebug then console.log "fleshOutQualifiers 1 inspect " + code +  ' rx: '  + rx
           code = code.replace(rx,replacement)
+
+          if detailedDebug then console.log "fleshOutQualifiers 1: " + code
 
         for i in [0...@qualifierKeywords.length] by 4
           toBeReplaced = @qualifierKeywords[i] + ""
@@ -675,6 +684,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           rx = RegExp("(then\\s*)("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*?else )",'g')
           replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '; $6'
           code = code.replace(rx,replacement)
+
+          if detailedDebug then console.log "fleshOutQualifiers 2: " + code
 
         for i in [0...@qualifierKeywords.length] by 4
           toBeReplaced = @qualifierKeywords[i] + ""
@@ -687,6 +698,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + ';$6'
           code = code.replace(rx,replacement)
 
+          if detailedDebug then console.log "fleshOutQualifiers 3: " + code
+
         for i in [0...@qualifierKeywords.length] by 4
           toBeReplaced = @qualifierKeywords[i] + ""
           replaceWith = @qualifierKeywords[i+1] + ""
@@ -696,6 +709,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*?("+toBeReplaced+"))",'g')
           replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + ';$6'
           code = code.replace(rx,replacement)
+
+          if detailedDebug then console.log "fleshOutQualifiers 4: " + code
 
         for i in [0...@qualifierKeywords.length] by 4
           toBeReplaced = @qualifierKeywords[i] + ""
@@ -707,6 +722,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
           code = code.replace(rx,replacement)
 
+          if detailedDebug then console.log "fleshOutQualifiers 5: " + code
+
         for i in [0...@qualifierKeywords.length] by 4
           toBeReplaced = @qualifierKeywords[i] + ""
           replaceWith = @qualifierKeywords[i+1] + ""
@@ -717,7 +734,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
           code = code.replace(rx,replacement)
 
-      if detailedDebug then console.log "fleshOutQualifiers 1: " + code
+          if detailedDebug then console.log "fleshOutQualifiers 6: " + code
+
+      if detailedDebug then console.log "fleshOutQualifiers 7: " + code
 
       return [code, error]
 
