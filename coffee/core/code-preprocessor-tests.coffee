@@ -1176,6 +1176,17 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    if ( 2.times -> a) then ball()
                    """
+        ,
+         notes:    """
+                   times and qualifiers within an if-then-else
+                   """
+         input:    """
+                   if random < 0.5 then 2 times rotate box else 3 times move peg
+                   """
+         expected: """
+                   if random()< 0.5 then 2.times -> pushMatrix(); rotate(); box(); popMatrix(); else 3.times -> pushMatrix(); move(); peg(); popMatrix()
+                   """
+
       ]
 
   CodePreprocessorTests

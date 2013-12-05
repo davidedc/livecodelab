@@ -25,9 +25,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # at the beginning of the sequence of primitives
       # and the end to push and pop the state, so that
       # the primitives that come *afterwards* are unaffected
-      "rotatingQUALIFIER", "rotate", "pushMatrix()", "popMatrix()"
-      "movingQUALIFIER", "move", "pushMatrix()", "popMatrix()"
-      "scalingQUALIFIER", "scale", "pushMatrix()", "popMatrix()"
+      "rotatingQUALIFIER", "rotate", "pushMatrix", "popMatrix"
+      "movingQUALIFIER", "move", "pushMatrix", "popMatrix"
+      "scalingQUALIFIER", "scale", "pushMatrix", "popMatrix"
     ]
     # We separate Commands from Expressions here.
     # Expressions return a value that is potentially
@@ -685,8 +685,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           # ...we don't want a qualifier to span across a then/else, so dealing
           # with those two cases here first.
-          rx = RegExp("(else\\s*)("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'g')
-          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
+          rx = RegExp("(else\\s+[^\\r\\n;]*?)("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^;\\r\\n]*)(.*)",'g')
+          replacement = '$1'+ prependWith + ' ' + replaceWith + '$3$4$5; ' + appendWith + '$6'
           if detailedDebug then console.log "fleshOutQualifiers 1 inspect " + code +  ' rx: '  + rx
           code = code.replace(rx,replacement)
 
@@ -698,8 +698,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           prependWith = @qualifierKeywords[i+2] + ""
           appendWith = @qualifierKeywords[i+3] + ""
 
-          rx = RegExp("(then\\s*)("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*?else )",'g')
-          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '; $6'
+          rx = RegExp("(then\\s+[^\\r\\n;]*?)("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^;\\r\\n]*)(.*?else )",'g')
+          replacement = '$1'+ prependWith + ' ' + replaceWith + '$3$4$5; ' + appendWith + '; $6'
           code = code.replace(rx,replacement)
 
           if detailedDebug then console.log "fleshOutQualifiers 2: " + code
@@ -711,8 +711,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           appendWith = @qualifierKeywords[i+3] + ""
 
           # the next two substitutions deal with the cases like "move peg move box"
-          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*?("+toBeReplaced+"))",'gm')
-          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + ';$6'
+          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^;\\r\\n]*)(.*?("+toBeReplaced+"))",'gm')
+          replacement = '$1'+ prependWith + ' ' + replaceWith + '$3$4$5; ' + appendWith + ';$6'
           code = code.replace(rx,replacement)
 
           if detailedDebug then console.log "fleshOutQualifiers 3: " + code
@@ -723,8 +723,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           prependWith = @qualifierKeywords[i+2] + ""
           appendWith = @qualifierKeywords[i+3] + ""
 
-          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*?("+toBeReplaced+"))",'g')
-          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + ';$6'
+          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^;\\r\\n]*)(.*?("+toBeReplaced+"))",'g')
+          replacement = '$1'+ prependWith + ' ' + replaceWith + '$3$4$5; ' + appendWith + ';$6'
           code = code.replace(rx,replacement)
 
           if detailedDebug then console.log "fleshOutQualifiers 4: " + code
@@ -735,8 +735,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           prependWith = @qualifierKeywords[i+2] + ""
           appendWith = @qualifierKeywords[i+3] + ""
 
-          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'gm')
-          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
+          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^;\\r\\n]*)(.*)",'gm')
+          replacement = '$1'+ prependWith + ' ' + replaceWith + '$3$4$5; ' + appendWith + '$6'
           code = code.replace(rx,replacement)
 
           if detailedDebug then console.log "fleshOutQualifiers 5: " + code
@@ -747,12 +747,14 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           prependWith = @qualifierKeywords[i+2] + ""
           appendWith = @qualifierKeywords[i+3] + ""
 
-          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@allCommandsRegex+")([^;\\r\\n]*)(.*)",'g')
-          replacement = '$1'+ prependWith + ';' + replaceWith + '$3$4$5; ' + appendWith + '$6'
+          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^;\\r\\n]*)(.*)",'g')
+          replacement = '$1'+ prependWith + ' ' + replaceWith + '$3$4$5; ' + appendWith + '$6'
           code = code.replace(rx,replacement)
 
           if detailedDebug then console.log "fleshOutQualifiers 6: " + code
 
+      # little cosmeting tydying up
+      code = code.replace(/popMatrix; ;/gm, "popMatrix;")
       if detailedDebug then console.log "fleshOutQualifiers 7: " + code
 
       return [code, error]
