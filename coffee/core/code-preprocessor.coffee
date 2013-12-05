@@ -1006,6 +1006,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         console.log "known issues: #{knownIssues}"
         return
 
+    # finds each possible block start
     identifyBlockStarts: (code, error) ->
       # if there is an error, just propagate it
       return [undefined, undefined, error] if error?
