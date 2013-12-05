@@ -1025,10 +1025,39 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         #console.log "start of line: >" + startOfThisLine + "<"
         if startOfThisLine.length > startOfPreviousLine.length
           linesWithBlockStart.push eachLine-1
+          blockStart = eachLine-1
+          #blockEnd = @identifyBlockEnd(sourceByLine, eachLine)
+          #console.log 'block ' + blockStart + ' to ' + blockEnd
         startOfPreviousLine = startOfThisLine
 
       #console.log "code lenght at identifyBlockStarts: " + code.split("\n").length
       return [code, linesWithBlockStart, undefined]
+
+    # we might not need this function, leaving it here,
+    # mute for the moment.
+    # finds where the block starting at line "startLine" ends
+    identifyBlockEnd: (sourceByLine, startLine) ->
+      # if there is an error, just propagate it
+      return [undefined, undefined, error] if error?
+
+      rx = RegExp("^(\\s*)",'gm')
+      match = rx.exec sourceByLine[startLine]
+      #console.log "start of line: >" + startOfThisLine + "<"
+      lengthToBeat = (match[1]).length
+
+      linesWithBlockStart = []
+      
+      for eachLine in [startLine...sourceByLine.length]
+        line = sourceByLine[eachLine]
+        rx = RegExp("^(\\s*)",'gm')
+        match = rx.exec line
+        continue if not match?
+        startOfThisLine = match[1]
+        if startOfThisLine.length < lengthToBeat
+          return eachLine - 1
+
+      bottomOfProgram = sourceByLine.length-1
+      return bottomOfProgram
 
     completeImplicitFunctionPasses: (code, linesWithBlockStart, error) ->
       # if there is an error, just propagate it
