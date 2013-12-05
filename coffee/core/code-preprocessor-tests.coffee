@@ -757,7 +757,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    scale 0.3
                    a = 3
-                   pushMatrix(); move(); pushMatrix(); popMatrix(); rotate(); pushMatrix(); scale 3; box(); peg(); line 2; popMatrix(); popMatrix()
+                   pushMatrix(); move(); pushMatrix(); rotate(); pushMatrix(); scale 3; box(); peg(); line 2; popMatrix(); popMatrix(); popMatrix()
                    pushMatrix(); move 0.1; peg(); popMatrix(); pushMatrix(); move 0.4; box(); popMatrix()
                    """
         ,
@@ -914,14 +914,14 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    scale rotate box 2 peg 2.3
                    """
          expected: """
-                   pushMatrix(); scale(); pushMatrix(); popMatrix(); rotate(); box 2; peg 2.3; popMatrix()
+                   pushMatrix(); scale(); pushMatrix(); rotate(); box 2; peg 2.3; popMatrix(); popMatrix()
                    """
         ,
          input:    """
                    scale rotate box 2; peg 2.3
                    """
          expected: """
-                   pushMatrix(); scale(); pushMatrix(); popMatrix(); rotate(); box 2; popMatrix(); peg 2.3
+                   pushMatrix(); scale(); pushMatrix(); rotate(); box 2; popMatrix(); popMatrix(); peg 2.3
                    """
         ,
          input:    """
@@ -1081,6 +1081,17 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if true then if true then box(); a = -> ball(); if true then peg(); a = -> rect(); else line(); ball()
                    a()
                    """
+        ,
+         notes:    """
+                   Check that qualifiers don't span over else
+                   """
+         input:    """
+                   if true then move rotate box else move line
+                   """
+         expected: """
+                   if true then pushMatrix(); move(); pushMatrix(); rotate(); box(); popMatrix(); popMatrix(); else pushMatrix(); move(); line(); popMatrix()
+                   """
+
       ]
 
   CodePreprocessorTests
