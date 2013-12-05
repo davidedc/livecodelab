@@ -410,8 +410,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       #code = code.replace(/;[ ]+/gm, "; ")
       code = code.replace(/[ ];/gm, "; ")
+      if detailedDebug then console.log "normalise-1:\n" + code + " error: " + error
       code = code.replace(/;$/gm, "")
+      if detailedDebug then console.log "normalise-2:\n" + code + " error: " + error
       code = code.replace(/;([^ \r\n])/gm, "; $1")
+      if detailedDebug then console.log "normalise-3:\n" + code + " error: " + error
       return [code, error]
 
     checkBasicErrorsWithTimes:(code, error) ->
@@ -453,15 +456,21 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       if detailedDebug then console.log "transformTimesSyntax-0\n" + code + " error: " + error
       code = code.replace(/(else)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
+      if detailedDebug then console.log "transformTimesSyntax-1\n" + code + " error: " + error
       code = code.replace(/(then)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
+      if detailedDebug then console.log "transformTimesSyntax-2\n" + code + " error: " + error
       # without the following, "if 2 times a" becomes "(if 2).times a"
       code = code.replace(/(if)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
+      if detailedDebug then console.log "transformTimesSyntax-3\n" + code + " error: " + error
+      
       # It's unclear whether the cases catered by the two 
       # transformatione below ever make sense.
       # without the following, "a = (2 times box)" becomes "(a = 2.times -> box())"
       code = code.replace(/(\()\s*([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
+      if detailedDebug then console.log "transformTimesSyntax-4\n" + code + " error: " + error
       # without the following, "a = 2 times box" becomes "(a = 2).times -> box()"
       code = code.replace(/(=)\s*([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
+      if detailedDebug then console.log "transformTimesSyntax-4\n" + code + " error: " + error
 
       # the [^;\r\n]*? is to make sure that we don't take ; within the times argument
       # example:
@@ -469,13 +478,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if we don't exclude the semicolon form the times argument then we transform into
       #  box; (box ;  2).times ->  peg
       # which is not correct
-      if detailedDebug then console.log "transformTimesSyntax-1\n" + code + " error: " + error
       code = code.replace(/;[ \t]*([a-zA-Z1-9])([^;\r\n]*?) times[:]?([^a-zA-Z0-9])/g, "; ($1$2).times -> $3")
+      if detailedDebug then console.log "transformTimesSyntax-5\n" + code + " error: " + error
 
 
       # takes care of cases like myFunc = -> 20 times rotate box
-      if detailedDebug then console.log "transformTimesSyntax-2\n" + code + " error: " + error
       code = code.replace(/(->)\s+([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
+      if detailedDebug then console.log "transformTimesSyntax-6\n" + code + " error: " + error
 
 
       # last (catch all other cases where it captures everything
@@ -484,7 +493,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # the ^; is to avoid this matching:
       #   peg; times rotate box 2* wave (group1: p group2: eg; group3: rot...wave)
       code = code.replace(/([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9])/g, "($1$2).times -> $3")
-      if detailedDebug then console.log "transformTimesSyntax-3\n" + code + " error: " + error
+      if detailedDebug then console.log "transformTimesSyntax-7\n" + code + " error: " + error
 
       return @normaliseCode(code, error)
 
