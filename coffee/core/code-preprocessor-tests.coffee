@@ -1186,6 +1186,20 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    if random()< 0.5 then 2.times -> pushMatrix(); rotate(); box(); popMatrix(); else 3.times -> pushMatrix(); move(); peg(); popMatrix()
                    """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   peg move
+                   ▶box
+                   peg
+                   """
+         expected: """
+                   peg(); move ->
+                   ▶box()
+                   peg()
+                   """
+
 
       ]
 

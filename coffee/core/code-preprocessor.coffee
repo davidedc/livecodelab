@@ -1090,7 +1090,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           # case where the function-block is passed as first argument
           # so no comma is needed
-          rx = RegExp("(^|;)\\s*("+@scaleRotateMoveCommandsRegex+")\\s*$",'gm')
+          rx = RegExp("(^|;| )\\s*("+@scaleRotateMoveCommandsRegex+")\\s*$",'gm')
           match = rx.exec line
           if match?
             transformedLines.push line+" ->"
@@ -1098,7 +1098,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           # case where the function-block is passed as argument beyond
           # the first, so a comma is needed
-          rx = RegExp("(^|;)\\s*("+@scaleRotateMoveCommandsRegex+")(?![a-zA-Z0-9])([^;\r\n]*)$",'gm')
+          rx = RegExp("(^|;| )\\s*("+@scaleRotateMoveCommandsRegex+")(?![a-zA-Z0-9])([^;\r\n]*)$",'gm')
           match = rx.exec line
           if match?
             transformedLines.push line+", ->"
