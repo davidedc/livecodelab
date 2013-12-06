@@ -734,6 +734,23 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       return [code, error]
 
+    # what we are trying to do here is to figure
+    # out which other keywords besides the LCL ones
+    # we need to automatically invoke as functions.
+    # Findind user functions is an ill-posed problem
+    # because the same variable might be a function
+    # in one place and a number in another. And yet
+    # once we find that there is a function definition
+    # with that name *anywhere* in the code, for us
+    # it's a function everywhere, so we force the
+    # function call. Note that this can
+    # be mitigated by wrapping the supposed user
+    # functions with a special function that invokes
+    # the supposed user function if it actually is
+    # a function, or otherwise returns
+    # the content of the variable if it is not a function.
+    # That way we would always make the right thing,
+    # although at some sort of performance penalty.
     findUserDefinedFunctions: (code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
