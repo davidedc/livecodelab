@@ -710,31 +710,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           prependWith = @qualifierKeywords[i+2] + ""
           appendWith = @qualifierKeywords[i+3] + ""
 
-          # the next two substitutions deal with the cases like "move peg move box"
-          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^;\\r\\n]*)(.*?("+toBeReplaced+"))",'gm')
-          replacement = '$1'+ prependWith + ' ' + replaceWith + '$3$4$5; ' + appendWith + ';$6'
-          code = code.replace(rx,replacement)
-
-          if detailedDebug then console.log "fleshOutQualifiers 3: " + code
-
-        for i in [0...@qualifierKeywords.length] by 4
-          toBeReplaced = @qualifierKeywords[i] + ""
-          replaceWith = @qualifierKeywords[i+1] + ""
-          prependWith = @qualifierKeywords[i+2] + ""
-          appendWith = @qualifierKeywords[i+3] + ""
-
-          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^;\\r\\n]*)(.*?("+toBeReplaced+"))",'g')
-          replacement = '$1'+ prependWith + ' ' + replaceWith + '$3$4$5; ' + appendWith + ';$6'
-          code = code.replace(rx,replacement)
-
-          if detailedDebug then console.log "fleshOutQualifiers 4: " + code
-
-        for i in [0...@qualifierKeywords.length] by 4
-          toBeReplaced = @qualifierKeywords[i] + ""
-          replaceWith = @qualifierKeywords[i+1] + ""
-          prependWith = @qualifierKeywords[i+2] + ""
-          appendWith = @qualifierKeywords[i+3] + ""
-
           rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^;\\r\\n]*)(.*)",'gm')
           replacement = '$1'+ prependWith + ' ' + replaceWith + '$3$4$5; ' + appendWith + '$6'
           code = code.replace(rx,replacement)

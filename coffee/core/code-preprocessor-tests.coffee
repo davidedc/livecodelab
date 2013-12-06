@@ -758,7 +758,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    scale 0.3
                    a = 3
                    pushMatrix(); move(); pushMatrix(); rotate(); pushMatrix(); scale 3; box(); peg(); line 2; popMatrix(); popMatrix(); popMatrix()
-                   pushMatrix(); move 0.1; peg(); popMatrix(); pushMatrix(); move 0.4; box(); popMatrix()
+                   pushMatrix(); move 0.1; peg(); pushMatrix(); move 0.4; box(); popMatrix(); popMatrix()
                    """
         ,
          input:    """
@@ -1014,16 +1014,13 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    box()
                    """
         ,
-         # note that the matrix operations don't chain in this case
-         # I think this is consistent, as I would expect
-         #    move box move box 
-         # to behave the same as
-         # 2 times move box
+         # note that the matrix operations do chain also this case
+         # just add a semicolon if you don't wand them to
          input:    """
                    move peg 1.2 move box
                    """
          expected: """
-                   pushMatrix(); move(); peg 1.2;  popMatrix(); pushMatrix(); move(); box(); popMatrix()
+                   pushMatrix(); move(); peg 1.2; pushMatrix(); move(); box(); popMatrix(); popMatrix()
                    """
         ,
          input:    """
