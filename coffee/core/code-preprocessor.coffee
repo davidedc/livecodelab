@@ -462,6 +462,12 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # without the following, "if 2 times a" becomes "(if 2).times a"
       code = code.replace(/(if)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
       if detailedDebug then console.log "transformTimesSyntax-3\n" + code + " error: " + error
+
+      # ([\d\w\(\)]+([ ]*[-+/*][ ]*[\d\w\(\)]+(\.[\d\w\(\)]+)?)+)+ captures
+      # simple mathematical expressions
+      # e.g. rotate 2,a+1+3*(a*2.32+Math.PI) 2 times box
+      code = code.replace(/(,([\d\w\(\)]+([ ]*[-+\/*][ ]*[\d\w\(\)]+(\.[\d\w\(\)]+)?)+)+)\s*([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1; ($5$6).times -> $7")
+      if detailedDebug then console.log "transformTimesSyntax-3\n" + code + " error: " + error
       
       # It's unclear whether the cases catered by the two 
       # transformatione below ever make sense.

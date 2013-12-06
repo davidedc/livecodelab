@@ -1196,6 +1196,19 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    ▶box()
                    peg()
                    """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   a = 3
+                   rotate 2,a+1+3*(a*2.32+Math.PI) 2+a+Math.PI times box
+                   peg
+                   """
+         expected: """
+                   a = 3
+                   rotate 2,a+1+3*(a*2.32+Math.PI); (2+a+Math.PI).times -> box()
+                   peg()
+                   """
 
 
       ]
