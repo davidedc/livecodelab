@@ -1236,6 +1236,27 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    if true then rotate(); move(); scale(); 2.times -> box() else pushMatrix(); rotate(); pushMatrix(); move(); pushMatrix(); scale(); box(); popMatrix(); popMatrix(); popMatrix()
                    """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   if true then scale rotate else scale rotate 2 times move
+                   """
+         expected: """
+                   if true then scale(); rotate() else scale(); rotate(); 2.times -> move()
+                   """
+        ,
+         notes:    """
+                   a long chain of matrix operations will tell
+                   whether there are some trandformations that
+                   don't quite complete their job.
+                   """
+         input:    """
+                   if true then rotate move scale scale scale scale move move rotate rotate box else rotate move scale scale scale scale move move rotate rotate 2 times box
+                   """
+         expected: """
+                   if true then pushMatrix(); rotate(); pushMatrix(); move(); pushMatrix(); scale(); pushMatrix(); scale(); pushMatrix(); scale(); pushMatrix(); scale(); pushMatrix(); move(); pushMatrix(); move(); pushMatrix(); rotate(); pushMatrix(); rotate(); box(); popMatrix(); popMatrix(); popMatrix(); popMatrix(); popMatrix(); popMatrix(); popMatrix(); popMatrix(); popMatrix(); popMatrix(); else rotate(); move(); scale(); scale(); scale(); scale(); move(); move(); rotate(); rotate(); 2.times -> box()
+                   """
 
 
       ]
