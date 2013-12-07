@@ -633,10 +633,16 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      previousCodeTransformations = ''
+      # this is to avoid transformations to span
+      # the else, since all transformations stop
+      # at semicolon. This is transformed back
+      # at the end of the method.
+      code = code.replace(/([^\w\d;])else(?![\w\d])/g, "$1;else")
 
+      previousCodeTransformations = ''
       while code != previousCodeTransformations
         previousCodeTransformations = code
+
         for i in [0...@qualifierKeywords.length] by 4
           toBeReplaced = @qualifierKeywords[i+1] + ""
           replaceWith = @qualifierKeywords[i] + ""
@@ -647,11 +653,32 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           # so neutralise those first by turning into
           # something special that is going to fail the
           # next matches
-          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)(times)(.*?)("+@primitivesRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
+          rx = RegExp("([^a-zA-Z0-9\\r\\n]*)("+toBeReplaced+")(?![a-zA-Z0-9~\\(])([^\\r\\n;]*?)(times)(.*?)("+@primitivesRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
           replacement = '$1'+ toBeReplaced + '~$3$4$5$6$7'
           code = code.replace(rx,replacement)
+
+        # in cases like
+        # rotate move scale 2 times box
+        # *all* the tranformations are not qualifiers, so we
+        # need to propagate the tilde (which prevents the
+        # transformation into qualifiers)
+        for i in [0...@qualifierKeywords.length] by 4
+          toBeReplaced = @qualifierKeywords[i+1] + ""
+          replaceWith = @qualifierKeywords[i] + ""
+
+          previousCodeTransformations2 = ''
+          while code != previousCodeTransformations2
+            previousCodeTransformations2 = code
+            #rx = RegExp("("+toBeReplaced+")(?![a-zA-Z0-9~\\r\\n])([^\\r\\n;~]*~)",'g')
+            rx = RegExp("~([^\\r\\n;~]*)("+toBeReplaced+")(?![a-zA-Z0-9~\\r\\n])",'g')
+            replacement = '~$1$2~'
+            code = code.replace(rx,replacement)
           
           if detailedDebug then console.log "findQualifiers 1: " + code
+
+        for i in [0...@qualifierKeywords.length] by 4
+          toBeReplaced = @qualifierKeywords[i+1] + ""
+          replaceWith = @qualifierKeywords[i] + ""
 
           rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9~\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
           replacement = '$1'+ replaceWith + '$3$4$5'
@@ -659,9 +686,17 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           if detailedDebug then console.log "findQualifiers 2: " + code
 
+        for i in [0...@qualifierKeywords.length] by 4
+          toBeReplaced = @qualifierKeywords[i+1] + ""
+          replaceWith = @qualifierKeywords[i] + ""
+
           rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9~\\(])([^\\r\\n;]*?)("+@primitivesRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
           replacement = '$1'+ replaceWith + '$3$4$5'
           code = code.replace(rx,replacement)
+
+        for i in [0...@qualifierKeywords.length] by 4
+          toBeReplaced = @qualifierKeywords[i+1] + ""
+          replaceWith = @qualifierKeywords[i] + ""
 
           # replace back what we put in order to fail
           # the qualifiers spanning over loops
@@ -671,6 +706,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           if detailedDebug then console.log "findQualifiers 3: " + code
 
+      code = code.replace(/;else/gm, "else")
       if detailedDebug then console.log "findQualifiers 4: " + code
 
       return [code, error]

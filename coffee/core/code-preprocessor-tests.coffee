@@ -1209,6 +1209,33 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate 2,a+1+3*(a*2.32+Math.PI); (2+a+Math.PI).times -> box()
                    peg()
                    """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   rotate move scale 2 times box
+                   """
+         expected: """
+                   rotate(); move(); scale(); 2.times -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   if true then rotate move scale box else rotate move scale 2 times box
+                   """
+         expected: """
+                   if true then pushMatrix(); rotate(); pushMatrix(); move(); pushMatrix(); scale(); box(); popMatrix(); popMatrix(); popMatrix(); else rotate(); move(); scale(); 2.times -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   if true then rotate move scale 2 times box else rotate move scale box
+                   """
+         expected: """
+                   if true then rotate(); move(); scale(); 2.times -> box() else pushMatrix(); rotate(); pushMatrix(); move(); pushMatrix(); scale(); box(); popMatrix(); popMatrix(); popMatrix()
+                   """
 
 
       ]
