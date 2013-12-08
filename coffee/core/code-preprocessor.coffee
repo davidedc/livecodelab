@@ -464,13 +464,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #if detailedDebug then console.log "transformTimesSyntax-3\n" + code + " error: " + error
 
       code = code.replace(/then/g, "then;")
-      code = code.replace(/else/g, "else;")
+      code = code.replace(/else/g, ";else;")
 
 
       # ([\d\w\(\)]+([ ]*[-+/*][ ]*[\d\w\(\)]+(\.[\d\w\(\)]+)?)+)+ captures
       # simple mathematical expressions
       # e.g. rotate 2,a+1+3*(a*2.32+Math.PI) 2 times box
-      code = code.replace(/(([\d\w\.\(\)]+(\s*[\+\-*\/]\s*))+[\d\w\.\(\)]+|[\d\w\.\(\)]+) times[:]?(?![a-zA-Z0-9])/g, "; ($1).times ->")
+      code = code.replace(/(([\d\w\.\(\)]+([\t ]*[\+\-*\/][\t ]*))+[\d\w\.\(\)]+|[\d\w\.\(\)]+) times[:]?(?![a-zA-Z0-9])/g, "; ($1).times ->")
       if detailedDebug then console.log "transformTimesSyntax-3\n" + code + " error: " + error
 
       allFunctionsRegex = @allCommandsRegex + "|" + @expressionsRegex
@@ -478,7 +478,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # ([\d\w\(\)]+([ ]*[-+/*][ ]*[\d\w\(\)]+(\.[\d\w\(\)]+)?)+)+ captures
       # simple mathematical expressions
       # e.g. rotate 2,a+1+3*(a*2.32+Math.PI) 2 times box
-      rx = RegExp("("+allFunctionsRegex+")\\s*;[; ]*\\((([\\d\\w\\.\\(\\)]+(\\s*[\\+\\-*/]\\s*))+[\\d\\w\\.\\(\\)]+|[\\d\\w\\.\\(\\)]+)\\)\\.times ->",'g')
+      rx = RegExp("("+allFunctionsRegex+")[\\t ]*;[; ]*\\((([\\d\\w\\.\\(\\)]+([\\t ]*[\\+\\-*/][\\t ]*))+[\\d\\w\\.\\(\\)]+|[\\d\\w\\.\\(\\)]+)\\)\\.times ->",'g')
       code = code.replace(rx, "$1(); ($2).times ->")
       if detailedDebug then console.log "transformTimesSyntax-3.5\n" + code + " error: " + error
 
@@ -536,6 +536,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #   peg; times rotate box 2* wave (group1: p group2: eg; group3: rot...wave)
       code = code.replace(/([a-zA-Z1-9])(.*?) times[:]?([^a-zA-Z0-9])/g, "($1$2).times -> $3")
       if detailedDebug then console.log "transformTimesSyntax-7\n" + code + " error: " + error
+
+      code = code.replace(/;*[\t ]*else/g, " else")
 
       return @normaliseCode(code, error)
 
@@ -749,7 +751,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           if detailedDebug then console.log "findQualifiers 3: " + code
 
-      code = code.replace(/;else/gm, "else")
+      code = code.replace(/;*[\t ]*else/gm, " else")
       code = code.replace(/⚠/g, "(->")
       if detailedDebug then console.log "findQualifiers 4: " + code
 
@@ -773,6 +775,12 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         replaceWith = @qualifierKeywords[i+1] + ""
         primtvsAndQualsRegex = primtvsAndQualsRegex + '|' + toBeReplaced
         primtvsAndQualsRegex = primtvsAndQualsRegex + '|' + replaceWith
+
+      # this is to avoid transformations to span
+      # the else, since all transformations stop
+      # at semicolon. This is transformed back
+      # at the end of the method.
+      code = code.replace(/([^\w\d;])else(?![\w\d])/g, "$1;else")
 
       previousCodeTransformations = ''
 
@@ -842,6 +850,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           code = code.replace(rx,replacement)
 
           if detailedDebug then console.log "fleshOutQualifiers 6: " + code
+
+      code = code.replace(/;*[\t ]*else/gm, " else")
 
       # the trasformations above add lots of redundant
       # semicolons and spaces like so:
@@ -1027,6 +1037,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "completeImplicitFunctionPasses:\n" + code + " error: " + error
 
 
+      if detailedDebug then console.log "preprocess-15\n" + code + " error: " + error
+      [code, error] = @transformTimesSyntax(code, error)
       if detailedDebug then console.log "preprocess-9\n" + code + " error: " + error
       [code, error] = @findQualifiers(code, error)
       if detailedDebug then console.log "preprocess-10\n" + code + " error: " + error
@@ -1039,13 +1051,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
       if detailedDebug then console.log "preprocess-14\n" + code + " error: " + error
       [code, error] = @evaluateAllExpressions(code, error, userDefinedFunctions)
-      if detailedDebug then console.log "preprocess-15\n" + code + " error: " + error
-      [code, error] = @transformTimesSyntax(code, error)
       if detailedDebug then console.log "preprocess-16\n" + code + " error: " + error
       [code, error] = @unmarkFunctionalReferences(code, error, userDefinedFunctions)
 
 
       code = code.replace(/;[\t ]*$/gm, ";") if not error?
+      code = code.replace(/([a-zA-Z1-9;\)])[\t ]*else/g, "$1 else") if not error?
+      code = code.replace(/;$/gm, "") if not error?
 
       return [code, error, userDefinedFunctions]
 
@@ -1132,7 +1144,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
               if testIdempotency and transformed != transformedTwice
                 if transformed == testCase.expected
                   failedIdempotency++
-                console.log "\nNot idempotent\n"
+                  console.log "\nNot idempotent but 1st result OK\n"
+                else
+                  console.log "\nNot idempotent and 1st result not OK\n"
                 console.log "\n 2nd run result: \n"
                 console.log transformedTwice
               console.log '\ninput: \n' + testCase.input \
