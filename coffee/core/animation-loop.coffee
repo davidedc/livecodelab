@@ -117,8 +117,9 @@ define () ->
       # scheduled beat. In other words, stay well clear of the
       # sound timer!
       
-      forbiddenZone = Math.max.apply(Math, @fpsHistory);
+      forbiddenZone = Math.min(Math.max.apply(Math, @fpsHistory), 1000/30)
       if @liveCodeLabCoreInstance.timeKeeper.nextQuarterBeat - frameStartTime < forbiddenZone
+        console.log("SKIPPING FRAME")
         @noDrawFrame = true
       else
         @noDrawFrame = false

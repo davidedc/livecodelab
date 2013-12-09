@@ -161,11 +161,12 @@ define () ->
           beatString = @soundLoops.beatStrings[loopingTheSoundIDs]
           
           # the beat string can be any length, we just wrap around if needed.
-          playOrNoPlay = beatString.charAt(beat * 4 % (beatString.length))
+          playOrNoPlay = beatString.charAt((beat * 4) % (beatString.length))
           
           # transparently plays using the best method for this
           # browser/os combination
           if playOrNoPlay is "x"
+            # console.log(beat)
             @playSound @soundFilesPaths, loopedSoundID, @buzzObjectsPool
 
     

@@ -15,9 +15,10 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       @bpm = 100
       @newBpm = undefined
       @mspb = 60000 / @bpm       # milliseconds per beat
-      @lastBeat = undefined      # milliseconds at last beat
+      @lastBeat = undefined      # milliseconds at last whole beat
       @nextQuarterBeat = 0       # timestamp at which next quarter beat runs
-      @beatCount = 0             # current/last whole beat number
+      @beatCount = 0             # last whole beat number
+      @fraction = 0              # fraction of the beat we're at
 
       @pulseClient = new Pulse();      
 
@@ -32,19 +33,6 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       @resetTime()
       @beatLoop()
 
-
-    ###
-    Connects to a pulse server, and read the bpm/beat from there.
-    ###
-    connect: (address) ->
-      if address && !(@pulseClient.connecting || @pulseClient.currentConnection() == @pulseClient.cleanAddress(address))
-        console.log(@pulseClient.currentConnection())
-        console.log(@pulseClient.cleanAddress(address))
-        console.log('Connecting to ' + address)
-        @pulseClient.connect(address)
-      
-      return
-
     ###
     This is the beat loop that runs at 4 quarters to the beat, emitting
     an event for every quarter. It uses setTimeout in stead of setInterval
@@ -52,20 +40,26 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
     ###
     beatLoop: ->
       now = new Date().getTime()
-      if now >= @lastBeat + @mspb
-        @lastBeat += @mspb
-        @beatCount += 1
-      fraction = Math.round((now - @lastBeat) / @mspb * 4) / 4;
-      @emit('beat', @beatCount + fraction)
+      @emit('beat', @beatCount + @fraction)
       
       # Set the BPM and phase from pulse if it's connected
       if @pulseClient.currentConnection()
+        console.log(@pulseClient.bpm)
         @setBpm(@pulseClient.bpm)
-        if @pulseClient.beats.length
+        # console.log(@bpm, @lastBeat, @pulseClient.beats[@pulseClient.beats.length-1]  )
+        if @pulseClient.beats.length and @beatCount == @pulseClient.count
           @lastBeat = @pulseClient.beats[@pulseClient.beats.length-1]
       
+      @fraction += 0.25
+      if @fraction >= 1
+        @lastBeat += @mspb
+        @beatCount += 1
+        @fraction = 0
+      # fraction = Math.round((now - @lastBeat) / @mspb * 4) / 4;
+      # console.log(@beatCount, @fraction, @bpm)  # TODO/tom remove 
+      
       # Set a timeout for the next (quarter) beat
-      @nextQuarterBeat = @lastBeat + @mspb * (fraction + 0.25)
+      @nextQuarterBeat = @lastBeat + @mspb * (@fraction + 0.25)
       delta = @nextQuarterBeat - new Date().getTime()
       setTimeout( (=> @beatLoop()) , delta)
 
@@ -79,22 +73,34 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
 
     setBpmLater: (bpm) ->
       if (bpm != @newBpm)
-        console.log(bpm, @newBpm)
         clearTimeout(@setBpmTimeout)
         @newBpm = bpm
-        @setBpmTimeout = setTimeout( (=> @setBpm(bpm)) , 1000)
+        @setBpmTimeout = setTimeout( (=> @setBpmOrConnect(bpm)) , 1000)
 
-    setBpm: (bpm) ->
-      if not bpm?
+    setBpmOrConnect: (bpmOrAddress) ->
+      if not bpmOrAddress?
         return
 
       # Any string supplied is interpreted as the address
-      if typeof bpm == 'string'
-        connect(bpm)
+      if typeof bpmOrAddress == 'string'
+        @connect(bpmOrAddress)
+      else if bpmOrAddress != @bpm
+        if @pulseClient.currentConnection()
+          @pulseClient.disconnect()
+        @setBpm(bpmOrAddress)
 
-      if bpm != @bpm
-        @bpm = Math.max(20, Math.min(bpm, 170))
-        @mspb = 60000 / @bpm
+    setBpm: (bpm) ->
+          @bpm = Math.max(20, Math.min(bpm, 250))
+          @mspb = 60000 / @bpm
+
+    ###
+    Connects to a pulse server, and read the bpm/beat from there.
+    ###
+    connect: (address) ->
+      if address && !(@pulseClient.connecting || @pulseClient.currentConnection() == @pulseClient.cleanAddress(address))
+        console.log('Connecting to ' + address)
+        @pulseClient.connect(address)
+      return
 
     beat: ->
       passed = new Date().getTime() - @lastBeat
