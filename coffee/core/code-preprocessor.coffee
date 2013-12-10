@@ -25,9 +25,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # at the beginning of the sequence of primitives
       # and the end to push and pop the state, so that
       # the primitives that come *afterwards* are unaffected
-      "rotating❤QUALIFIER", "rotate", "pushMatrix", "popMatrix"
-      "moving❤QUALIFIER", "move", "pushMatrix", "popMatrix"
-      "scaling❤QUALIFIER", "scale", "pushMatrix", "popMatrix"
+      "rotateing❤QUALIFIER", "rotate", "pushMatrix", "popMatrix"
+      "moveing❤QUALIFIER", "move", "pushMatrix", "popMatrix"
+      "scaleing❤QUALIFIER", "scale", "pushMatrix", "popMatrix"
     ]
     # We separate Commands from Expressions here.
     # Expressions return a value that is potentially
@@ -135,6 +135,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
     constructor: ->
       @testCases = (new CodePreprocessorTests()).testCases
       @scaleRotateMoveCommandsRegex = @scaleRotateMoveCommands.join "|"
+      @primitivesRegex = @primitives.join "|"
       @primitivesRegex = @primitives.join "|"
       @allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") +
         "|" + @scaleRotateMoveCommandsRegex +
@@ -700,7 +701,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # can't be transformed again, so
       # making sure that the qualifiers can't span
       # a function definition
-      code = code.replace(/\(->/g, "⚠")
 
       primitivesAndDiamondRegex = @primitivesRegex + '|♦'
 
@@ -708,71 +708,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       while code != previousCodeTransformations
         previousCodeTransformations = code
 
-        for i in [0...@qualifierKeywords.length] by 4
-          toBeReplaced = @qualifierKeywords[i+1] + ""
-          replaceWith = @qualifierKeywords[i] + ""
+        rx = RegExp("(^|[^a-zA-Z0-9\\r\\n])("+@scaleRotateMoveCommandsRegex+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+primitivesAndDiamondRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
+        replacement = '$1$2ing❤QUALIFIER$3$4$5'
+        code = code.replace(rx,replacement)
 
-          # a qualifier cannot span over a loop
-          # because it would create chaos with the
-          # pushMatrix being out and the popMatrix being in
-          # so neutralise those first by turning into
-          # something special that is going to fail the
-          # next matches
-          rx = RegExp("([^a-zA-Z0-9\\r\\n]*)("+toBeReplaced+")(?![a-zA-Z0-9~\\(])([^\\r\\n;♦⚠]*?)(times)(.*?)("+primitivesAndDiamondRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
-          replacement = '$1'+ toBeReplaced + '~$3$4$5$6$7'
-          code = code.replace(rx,replacement)
-
-        # in cases like
-        # rotate move scale 2 times box
-        # *all* the tranformations are not qualifiers, so we
-        # need to propagate the tilde (which prevents the
-        # transformation into qualifiers)
-        for i in [0...@qualifierKeywords.length] by 4
-          toBeReplaced = @qualifierKeywords[i+1] + ""
-          replaceWith = @qualifierKeywords[i] + ""
-
-          previousCodeTransformations2 = ''
-          while code != previousCodeTransformations2
-            previousCodeTransformations2 = code
-            #rx = RegExp("("+toBeReplaced+")(?![a-zA-Z0-9~\\r\\n])([^\\r\\n;~]*~)",'g')
-            rx = RegExp("~([^\\r\\n;⚠~]*)("+toBeReplaced+")(?![a-zA-Z0-9~\\r\\n])",'g')
-            replacement = '~$1$2~'
-            code = code.replace(rx,replacement)
-          
-          if detailedDebug then console.log "findQualifiers 1: " + code
-
-        for i in [0...@qualifierKeywords.length] by 4
-          toBeReplaced = @qualifierKeywords[i+1] + ""
-          replaceWith = @qualifierKeywords[i] + ""
-
-          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9~\\(])([^\\r\\n;⚠]*?)("+primitivesAndDiamondRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
-          replacement = '$1'+ replaceWith + '$3$4$5'
-          code = code.replace(rx,replacement)
-
-          if detailedDebug then console.log "findQualifiers 2: " + code
-
-        for i in [0...@qualifierKeywords.length] by 4
-          toBeReplaced = @qualifierKeywords[i+1] + ""
-          replaceWith = @qualifierKeywords[i] + ""
-
-          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9~\\(])([^\\r\\n;⚠]*?)("+primitivesAndDiamondRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
-          replacement = '$1'+ replaceWith + '$3$4$5'
-          code = code.replace(rx,replacement)
-
-        for i in [0...@qualifierKeywords.length] by 4
-          toBeReplaced = @qualifierKeywords[i+1] + ""
-          replaceWith = @qualifierKeywords[i] + ""
-
-          # replace back what we put in order to fail
-          # the qualifiers spanning over loops
-          rx = RegExp("("+toBeReplaced+")~",'g')
-          replacement = '$1'
-          code = code.replace(rx,replacement)
-
-          if detailedDebug then console.log "findQualifiers 3: " + code
-
-      code = code.replace(/;*[\t ]*else/gm, " else")
-      code = code.replace(/⚠/g, "(->")
       if detailedDebug then console.log "findQualifiers 4: " + code
 
       return [code, error]
@@ -816,84 +755,21 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       while code != previousCodeTransformations
         previousCodeTransformations = code
 
-       # handling the case of qualifiers in front of
-       # times, which we can do easily because
-       # there are diamonds marking the start of
-       # a times argument and block.
-       for i in [0...@qualifierKeywords.length] by 4
-          toBeReplaced = @qualifierKeywords[i] + ""
-          replaceWith = @qualifierKeywords[i+1] + ""
-          prependWith = @qualifierKeywords[i+2] + ""
-          appendWith = @qualifierKeywords[i+3] + ""
+        rx = RegExp("(^|[^a-zA-Z0-9\\r\\n])(("+@scaleRotateMoveCommandsRegex+")ing❤QUALIFIER)(?![a-zA-Z0-9\\(])([^\\r\\n;→]*?)("+primtvsAndQualsRegex+")([^;\\r\\n]*)(.*)",'gm')
+        replacement = '$1$3$4→ $5$6;$7'
+        code = code.replace(rx,replacement)
 
-          rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;→♦❤]*?)♦",'g')
-          replacement = '$1' + replaceWith + '$3 →'
-          code = code.replace(rx,replacement)
+        rx = RegExp("(^|[^a-zA-Z0-9\\r\\n])(("+@scaleRotateMoveCommandsRegex+")ing❤QUALIFIER)(?![a-zA-Z0-9\\(])([^\\r\\n;→♦❤]*?)♦",'g')
+        replacement = '$1$3$4 →'
+        code = code.replace(rx,replacement)
 
-          rx = RegExp("()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;→♦❤]*?)♦",'g')
-          replacement = '$1' + replaceWith + '$3 →'
-          code = code.replace(rx,replacement)
+        if detailedDebug then console.log "fleshOutQualifiers 6: " + code
 
-          if detailedDebug then console.log "fleshOutQualifiers 0.5: " + code
-
-
-        for i in [0...@qualifierKeywords.length] by 4
-          toBeReplaced = @qualifierKeywords[i] + ""
-          replaceWith = @qualifierKeywords[i+1] + ""
-          prependWith = @qualifierKeywords[i+2] + ""
-          appendWith = @qualifierKeywords[i+3] + ""
-
-          # ...we don't want a qualifier to span across a then/else, so dealing
-          # with those two cases here first.
-          rx = RegExp("(else\\s+[^\\r\\n;]*?)("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;→]*?)("+primtvsAndQualsRegex+")([^;\\r\\n]*)(.*)",'g')
-          replacement = '$1' + replaceWith + '$3→ $4$5;$6'
-          if detailedDebug then console.log "fleshOutQualifiers 1 inspect " + code +  ' rx: '  + rx
-          code = code.replace(rx,replacement)
-
-          if detailedDebug then console.log "fleshOutQualifiers 1: " + code
-
-        for i in [0...@qualifierKeywords.length] by 4
-          toBeReplaced = @qualifierKeywords[i] + ""
-          replaceWith = @qualifierKeywords[i+1] + ""
-          prependWith = @qualifierKeywords[i+2] + ""
-          appendWith = @qualifierKeywords[i+3] + ""
-
-          rx = RegExp("(then\\s+[^\\r\\n;]*?)("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;→]*?)("+primtvsAndQualsRegex+")([^;\\r\\n]*)(.*?else )",'g')
-          replacement = '$1' + replaceWith + '$3→ $4$5;$6'
-          code = code.replace(rx,replacement)
-
-          if detailedDebug then console.log "fleshOutQualifiers 2: " + code
-
-        for i in [0...@qualifierKeywords.length] by 4
-          toBeReplaced = @qualifierKeywords[i] + ""
-          replaceWith = @qualifierKeywords[i+1] + ""
-          prependWith = @qualifierKeywords[i+2] + ""
-          appendWith = @qualifierKeywords[i+3] + ""
-
-          rx = RegExp("^()("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;→]*?)("+primtvsAndQualsRegex+")([^;\\r\\n]*)(.*)",'gm')
-          replacement = '$1' + replaceWith + '$3→ $4$5;$6'
-          code = code.replace(rx,replacement)
-
-          if detailedDebug then console.log "fleshOutQualifiers 5: " + code
-
-        # the trasformations above creates
-        # stuff like:
-        #    rotate 1 + wave, -> (→ box); 
-        # so fixing that
-        code = code.replace(/->\s*\(→/g, "(→")
-
-        for i in [0...@qualifierKeywords.length] by 4
-          toBeReplaced = @qualifierKeywords[i] + ""
-          replaceWith = @qualifierKeywords[i+1] + ""
-          prependWith = @qualifierKeywords[i+2] + ""
-          appendWith = @qualifierKeywords[i+3] + ""
-
-          for ll in [1..10]
-            rx = RegExp("([^a-zA-Z0-9\\r\\n])("+toBeReplaced+")(?![a-zA-Z0-9\\(])([^\\r\\n;→]*?)("+primtvsAndQualsRegex+")([^;\\r\\n]*)(.*)",'g')
-            replacement = '$1' + replaceWith + '$3→ $4$5;$6'
-            code = code.replace(rx,replacement)
-
-          if detailedDebug then console.log "fleshOutQualifiers 6: " + code
+      # the trasformations above creates
+      # stuff like:
+      #    rotate 1 + wave, -> (→ box); 
+      # so fixing that
+      code = code.replace(/->\s*\(→/g, "(→")
 
       # we don't need the diamond anymore
       code = code.replace(/♦[♦\t ]*/g, "; ")
@@ -911,24 +787,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/→\s*->/g, "->")
       if detailedDebug then console.log "fleshOutQualifiers 7: " + code
 
-      # replace all the → that don't need to be prepended
-      # with a comma
-      for i in [0...@qualifierKeywords.length] by 4
-        toBeReplaced = @qualifierKeywords[i] + ""
-        replaceWith = @qualifierKeywords[i+1] + ""
-        prependWith = @qualifierKeywords[i+2] + ""
-        appendWith = @qualifierKeywords[i+3] + ""
-
-        rx = RegExp("(^|[^a-zA-Z0-9\\r\\n])("+replaceWith+")(?![a-zA-Z0-9\\(])(\\s*→)",'gm')
-        replacement = '$1$2 ->'
-        code = code.replace(rx,replacement)
-
-        rx = RegExp("(^|[^a-zA-Z0-9\\r\\n])("+replaceWith+")(?![a-zA-Z0-9\\(])(\\s*\\(→)",'gm')
-        replacement = '$1$2 (->'
-        code = code.replace(rx,replacement)
-
-        if detailedDebug then console.log "fleshOutQualifiers 9: " + code
-
+      rx = RegExp("(^|[^a-zA-Z0-9\\r\\n])("+@scaleRotateMoveCommandsRegex+")(?![a-zA-Z0-9\\(])(\\s*\\(?→)",'gm')
+      replacement = '$1$2 ->'
+      code = code.replace(rx,replacement)
+      if detailedDebug then console.log "fleshOutQualifiers 9: " + code
       
       # replace all the → that *do* need to be prepended
       # with a comma
