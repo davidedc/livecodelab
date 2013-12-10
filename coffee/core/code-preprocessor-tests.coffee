@@ -662,7 +662,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    a=wave+wave+wave
                    """
          expected: """
-                   a=wave()+wave()+wave()
+                   a = wave()+wave()+wave()
                    """
         ,
          # to be investigated
@@ -1425,6 +1425,57 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if true then rotate -> (10 * wave()).times -> box() else rotate -> (10 * wave()).times -> box()
                    if true then wave(); (wave()).times -> box() else wave(); (wave()).times -> box()
                    if true then rotate wave(), -> (wave()).times -> box() else rotate wave(), -> (wave()).times -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   a = 0
+                   af = -> 0
+                   b = true
+                   bf = -> true
+                   if a == 0 then line a
+                   if a != 0 then line a
+                   if a >= 0 then line a
+                   if a <= 0 then line a
+                   if af == 0 then line a
+                   if af != 0 then line a
+                   if af >= 0 then line a
+                   if af <= 0 then line a
+                   if b and true then line a
+                   if b or true then line a
+                   if not b then line a
+                   if ! b then line a
+                   if !b then line a
+                   if bf and true then line a
+                   if bf or true then line a
+                   if not bf then line a
+                   if ! bf then line a
+                   if !bf then line a
+                   """
+         expected: """
+                   a = 0
+                   af = -> 0
+                   b = true
+                   bf = -> true
+                   if a == 0 then line a
+                   if a != 0 then line a
+                   if a >= 0 then line a
+                   if a <= 0 then line a
+                   if af() == 0 then line a
+                   if af() != 0 then line a
+                   if af() >= 0 then line a
+                   if af() <= 0 then line a
+                   if b and true then line a
+                   if b or true then line a
+                   if not b then line a
+                   if ! b then line a
+                   if !b then line a
+                   if bf() and true then line a
+                   if bf() or true then line a
+                   if not bf() then line a
+                   if ! bf() then line a
+                   if !bf() then line a
                    """
 
       ]
