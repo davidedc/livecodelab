@@ -420,6 +420,28 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "normalise-3:\n" + code + " error: " + error
       return [code, error]
 
+    beautifyCode:(code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      code = code.replace(/->(?![ \t])/gm, "-> ") if not error?
+      code = code.replace(/->[\t ;]+/gm, "-> ") if not error?
+      code = code.replace(/->[\t ]+$/gm, "->") if not error?
+      code = code.replace(/if[\t ;]+/gm, "if ") if not error?
+      code = code.replace(/then[\t ;]+/gm, "then ") if not error?
+      code = code.replace(/else[\t ;]+/gm, "else ") if not error?
+      code = code.replace(/;[\t ]+/gm, "; ") if not error?
+      code = code.replace(/([a-zA-Z1-9;\)])[\t ]*then/g, "$1 then") if not error?
+      code = code.replace(/([a-zA-Z1-9;\)])[\t ]*else/g, "$1 else") if not error?
+      code = code.replace(/;$/gm, "") if not error?
+      code = code.replace(/([a-zA-Z1-9;\)])[\t ]*->/g, "$1 ->") if not error?
+      code = code.replace(/\)([\t ]+\d)/g, ");$1") if not error?
+      code = code.replace(/\)[\t ]*if/g, "); if") if not error?
+      code = code.replace(/;[\t ]+$/gm, "") if not error?
+
+      if detailedDebug then console.log "beautifyCode-1:\n" + code + " error: " + error
+      return [code, error]
+
     checkBasicErrorsWithTimes:(code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
@@ -963,22 +985,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @evaluateAllExpressions(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-16\n" + code + " error: " + error
       [code, error] = @unmarkFunctionalReferences(code, error, userDefinedFunctions)
+      if detailedDebug then console.log "preprocess-17\n" + code + " error: " + error
+      [code, error] = @beautifyCode(code, error)
+      if detailedDebug then console.log "preprocess-18\n" + code + " error: " + error
 
-
-      code = code.replace(/->(?![ \t])/gm, "-> ") if not error?
-      code = code.replace(/->[\t ;]+/gm, "-> ") if not error?
-      code = code.replace(/->[\t ]+$/gm, "->") if not error?
-      code = code.replace(/if[\t ;]+/gm, "if ") if not error?
-      code = code.replace(/then[\t ;]+/gm, "then ") if not error?
-      code = code.replace(/else[\t ;]+/gm, "else ") if not error?
-      code = code.replace(/;[\t ]+/gm, "; ") if not error?
-      code = code.replace(/([a-zA-Z1-9;\)])[\t ]*then/g, "$1 then") if not error?
-      code = code.replace(/([a-zA-Z1-9;\)])[\t ]*else/g, "$1 else") if not error?
-      code = code.replace(/;$/gm, "") if not error?
-      code = code.replace(/([a-zA-Z1-9;\)])[\t ]*->/g, "$1 ->") if not error?
-      code = code.replace(/\)([\t ]+\d)/g, ");$1") if not error?
-      code = code.replace(/\)[\t ]*if/g, "); if") if not error?
-      code = code.replace(/;[\t ]+$/gm, "") if not error?
 
       return [code, error, userDefinedFunctions]
 
