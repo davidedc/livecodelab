@@ -136,7 +136,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       @testCases = (new CodePreprocessorTests()).testCases
       @scaleRotateMoveCommandsRegex = @scaleRotateMoveCommands.join "|"
       @primitivesRegex = @primitives.join "|"
-      @primitivesRegex = @primitives.join "|"
+      @primitivesAndMatrixRegex = @scaleRotateMoveCommandsRegex + "|" + @primitivesRegex
       @allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") +
         "|" + @scaleRotateMoveCommandsRegex +
         "|" + @primitivesRegex
@@ -694,6 +694,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # the else, since all transformations stop
       # at semicolon. This is transformed back
       # at the end of the method.
+      code = code.replace(/([^\w\d;])then(?![\w\d])/g, "$1;then")
       code = code.replace(/([^\w\d;])else(?![\w\d])/g, "$1;else")
 
       # already transformer stuff like
@@ -702,13 +703,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # making sure that the qualifiers can't span
       # a function definition
 
-      primitivesAndDiamondRegex = @primitivesRegex + '|♦'
+      primitivesAndDiamondRegex = @primitivesAndMatrixRegex + '|♦'
 
       previousCodeTransformations = ''
       while code != previousCodeTransformations
         previousCodeTransformations = code
 
-        rx = RegExp("(^|[^a-zA-Z0-9\\r\\n])("+@scaleRotateMoveCommandsRegex+")(?![a-zA-Z0-9\\(])([^\\r\\n;]*?)("+primitivesAndDiamondRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
+        rx = RegExp("(^|[^a-zA-Z0-9\\r\\n])("+@primitivesAndMatrixRegex+")(?![a-zA-Z0-9\\(])([^\\r\\n;']*?)("+primitivesAndDiamondRegex+")([^a-zA-Z0-9\\r\\n]*)",'gm')
         replacement = '$1$2ing❤QUALIFIER$3$4$5'
         code = code.replace(rx,replacement)
 
@@ -728,19 +729,12 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # and not,
       #   rotate rotateQUALIFIER (→ box)
       # similar reason for adding rotate
-      primtvsAndQualsRegex = @primitivesRegex
-      for i in [0...@qualifierKeywords.length] by 4
-        toBeReplaced = @qualifierKeywords[i] + ""
-        replaceWith = @qualifierKeywords[i+1] + ""
-        primtvsAndQualsRegex = primtvsAndQualsRegex + '|' + toBeReplaced
-        primtvsAndQualsRegex = primtvsAndQualsRegex + '|' + replaceWith
-      primtvsAndQualsRegex = primtvsAndQualsRegex + '|♦'
-
-      # this is to avoid transformations to span
-      # the else, since all transformations stop
-      # at semicolon. This is transformed back
-      # at the end of the method.
-      code = code.replace(/([^\w\d;])else(?![\w\d])/g, "$1;else")
+      primtvsAndQualsRegex = ''
+      for i in [0...@scaleRotateMoveCommands.length]
+        primtvsAndQualsRegex = primtvsAndQualsRegex + @scaleRotateMoveCommands[i] + '|' + @scaleRotateMoveCommands[i]+"ing❤QUALIFIER|"
+      for i in [0...@primitives.length]
+        primtvsAndQualsRegex = primtvsAndQualsRegex + @primitives[i] + '|' + @primitives[i]+"ing❤QUALIFIER|"
+      primtvsAndQualsRegex = primtvsAndQualsRegex + '♦'
 
       previousCodeTransformations = ''
 
@@ -755,11 +749,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       while code != previousCodeTransformations
         previousCodeTransformations = code
 
-        rx = RegExp("(^|[^a-zA-Z0-9\\r\\n])(("+@scaleRotateMoveCommandsRegex+")ing❤QUALIFIER)(?![a-zA-Z0-9\\(])([^\\r\\n;→]*?)("+primtvsAndQualsRegex+")([^;\\r\\n]*)(.*)",'gm')
+        rx = RegExp("(^|[^a-zA-Z0-9\\r\\n])(("+@primitivesAndMatrixRegex+")ing❤QUALIFIER)(?![a-zA-Z0-9\\(])([^\\r\\n;→]*?)("+primtvsAndQualsRegex+")([^;\\r\\n]*)(.*)",'gm')
         replacement = '$1$3$4→ $5$6;$7'
         code = code.replace(rx,replacement)
 
-        rx = RegExp("(^|[^a-zA-Z0-9\\r\\n])(("+@scaleRotateMoveCommandsRegex+")ing❤QUALIFIER)(?![a-zA-Z0-9\\(])([^\\r\\n;→♦❤]*?)♦",'g')
+        rx = RegExp("(^|[^a-zA-Z0-9\\r\\n])(("+@primitivesAndMatrixRegex+")ing❤QUALIFIER)(?![a-zA-Z0-9\\(])([^\\r\\n;→♦❤]*?)♦",'g')
         replacement = '$1$3$4 →'
         code = code.replace(rx,replacement)
 
@@ -787,7 +781,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/→\s*->/g, "->")
       if detailedDebug then console.log "fleshOutQualifiers 7: " + code
 
-      rx = RegExp("(^|[^a-zA-Z0-9\\r\\n])("+@scaleRotateMoveCommandsRegex+")(?![a-zA-Z0-9\\(])(\\s*\\(?→)",'gm')
+      rx = RegExp("(^|[^a-zA-Z0-9\\r\\n])("+@primitivesAndMatrixRegex+")(?![a-zA-Z0-9\\(])(\\s*\\(?→)",'gm')
       replacement = '$1$2 ->'
       code = code.replace(rx,replacement)
       if detailedDebug then console.log "fleshOutQualifiers 9: " + code
@@ -800,6 +794,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # replace all the remaining arrows
       code = code.replace(/→/g, "->")
       if detailedDebug then console.log "fleshOutQualifiers 11: " + code
+
+      code = code.replace(/;*[\t ]*else/g, " else")
+      code = code.replace(/;*[\t ]*then/g, " then")
 
       return [code, error]
 
@@ -968,17 +965,20 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @unmarkFunctionalReferences(code, error, userDefinedFunctions)
 
 
-      code = code.replace(/;[\t ]*$/gm, ";") if not error?
+      code = code.replace(/->(?![ \t])/gm, "-> ") if not error?
       code = code.replace(/->[\t ;]+/gm, "-> ") if not error?
+      code = code.replace(/->[\t ]+$/gm, "->") if not error?
       code = code.replace(/if[\t ;]+/gm, "if ") if not error?
       code = code.replace(/then[\t ;]+/gm, "then ") if not error?
       code = code.replace(/else[\t ;]+/gm, "else ") if not error?
       code = code.replace(/;[\t ]+/gm, "; ") if not error?
+      code = code.replace(/([a-zA-Z1-9;\)])[\t ]*then/g, "$1 then") if not error?
       code = code.replace(/([a-zA-Z1-9;\)])[\t ]*else/g, "$1 else") if not error?
       code = code.replace(/;$/gm, "") if not error?
       code = code.replace(/([a-zA-Z1-9;\)])[\t ]*->/g, "$1 ->") if not error?
       code = code.replace(/\)([\t ]+\d)/g, ");$1") if not error?
       code = code.replace(/\)[\t ]*if/g, "); if") if not error?
+      code = code.replace(/;[\t ]+$/gm, "") if not error?
 
       return [code, error, userDefinedFunctions]
 
