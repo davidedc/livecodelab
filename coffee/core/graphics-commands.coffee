@@ -447,6 +447,10 @@ define () ->
           pooledObjectWithMaterials.threejsObject3D.matrix.scale \
             new @liveCodeLabCore_three.Vector3(a + 0.001, b + 0.001, c + 0.001)
         else
+          # odd things happen setting scale to zero
+          a = 0.000000001  if a > -0.000000001 and a < 0.000000001
+          b = 0.000000001  if b > -0.000000001 and b < 0.000000001
+          c = 0.000000001  if c > -0.000000001 and c < 0.000000001
           pooledObjectWithMaterials.threejsObject3D.matrix.scale \
             new @liveCodeLabCore_three.Vector3(a, b, c)
 

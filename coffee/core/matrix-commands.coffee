@@ -109,10 +109,12 @@ define () ->
         appendedFunction = d
       
       @pushMatrix() if appendedFunction? 
+
       # odd things happen setting scale to zero
       a = 0.000000001  if a > -0.000000001 and a < 0.000000001
       b = 0.000000001  if b > -0.000000001 and b < 0.000000001
       c = 0.000000001  if c > -0.000000001 and c < 0.000000001
+
       @worldMatrix.scale new @liveCodeLabCore_three.Vector3(a, b, c)
       if appendedFunction?
         appendedFunction()
