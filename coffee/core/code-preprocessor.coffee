@@ -1026,6 +1026,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           appendString = 's'
           prependString = 't'
           [mootInput, ignore, errorMoot] = @stripCommentsAndStrings(testCase.input,null)
+          [mootInput, ignore, errorMoot] = @beautifyCode(mootInput,errorMoot)
           if !errorMoot?
             rx = RegExp("(("+allFunctionsRegex+"|times|doOnce)([^a-zA-Z0-9]|$))",'gm');
             mootInputAppend = mootInput.replace(rx, "$2"+appendString+"$3")
