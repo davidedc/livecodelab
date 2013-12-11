@@ -444,6 +444,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/\)[\t ]*if/g, "); if") if not error?
       code = code.replace(/;[\t ]+$/gm, "") if not error?
 
+      # transform stuff like (3).times and (n).times
+      # into 3.times and n.times
+      code = code.replace(/\(\s*(\d+|[$A-Z_][0-9A-Z_$]*)\s*\)\.times/gi, "$1.times")
+
+
       if detailedDebug then console.log "beautifyCode-1:\n" + code + " error: " + error
       return [code, error]
 
@@ -592,37 +597,24 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       return @normaliseCode(code, error)
 
-    markFunctionalReferences: (code, error, userDefinedFunctions) ->
+
+    adjustFunctionalReferences: (code, error, userDefinedFunctions) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
+      # turns things like
+      #  either <rotate -> box>, <peg>
+      #  either <box 2>, <peg 2>
+      # into
+      #  either (-> rotate -> box), (->peg)
+      #  either (-> box 2), (->peg 2)
       expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
       allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
 
-      rx = RegExp("<[\\s]*("+allFunctionsRegex+")[\\s]*>",'g')
-      code = code.replace(rx, "MARKED$1")
+      rx = RegExp("<[\\s]*(("+allFunctionsRegex+")[^\\r\\n]*?)>\\s*([,]|\\s*$)",'gm')
+      code = code.replace(rx, "(->$1)$3")
 
-      return [code, error]
-
-    unmarkFunctionalReferences: (code, error, userDefinedFunctions) ->
-      # if there is an error, just propagate it
-      return [undefined, error] if error?
-
-      expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
-      allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
-
-      rx = RegExp("MARKED("+allFunctionsRegex+")",'g')
-      code = code.replace(rx, "$1")
-
-
-      code = code.replace(/->;/gm, "->")
-      if detailedDebug then console.log "unmarkFunctionalReferences-1\n" + code + " error: " + error
-
-      # transform stuff like (3).times and (n).times
-      # into 3.times and n.times
-      code = code.replace(/\(\s*(\d+|[$A-Z_][0-9A-Z_$]*)\s*\)\.times/gi, "$1.times")
-
-      code = code.replace(/->[ ]+/g, "-> ")
+      if detailedDebug then console.log "adjustFunctionalReferences-1\n" + code + " error: " + error
 
       return [code, error]
     
@@ -724,6 +716,14 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/([^\w\d;])then(?![\w\d])/g, "$1;then")
       code = code.replace(/([^\w\d;])else(?![\w\d])/g, "$1;else")
 
+      # we don't want the qualifiers
+      # to span across ">, <" in this case:
+      #   either <box 2>, <peg 2>
+      # otherwise box would become a qualifier
+      # and cause
+      #   either <box 2>, < ->peg 2>
+      code = code.replace(/\s*>\s*,/g, "♠")
+
       # already transformer stuff like
       #    rotate (-> box())
       # can't be transformed again, so
@@ -736,9 +736,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       while code != previousCodeTransformations
         previousCodeTransformations = code
 
-        rx = RegExp("(^|[^\\w\\d\\r\\n])("+@primitivesAndMatrixRegex+")(?![\\w\\d\\(])([^\\r\\n;']*?)("+primitivesAndDiamondRegex+")([^\\w\\d\\r\\n]*)",'gm')
+        rx = RegExp("(^|[^\\w\\d\\r\\n])("+@primitivesAndMatrixRegex+")(?![\\w\\d\\(])([^\\r\\n;'♠]*?)("+primitivesAndDiamondRegex+")([^\\w\\d\\r\\n]*)",'gm')
         replacement = '$1$2ing❤QUALIFIER$3$4$5'
         code = code.replace(rx,replacement)
+
+      code = code.replace(/♠/g, ">,")
 
       if detailedDebug then console.log "findQualifiers 4: " + code
 
@@ -747,6 +749,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
     fleshOutQualifiers: (code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
+
 
       # we need to consider things like rotateQUALIFIER
       # as a keyword beause we want
@@ -928,8 +931,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @checkBasicSyntax(code, codeWithoutStringsOrComments, error)
       if detailedDebug then console.log "preprocess-4\n" + code + " error: " + error
 
-      [code, error] = @markFunctionalReferences(code, error, userDefinedFunctions)
-      if detailedDebug then console.log "preprocess-5\n" + code + " error: " + error
 
       # allow some common command forms can be used in postfix notation, e.g.
       #   60 bpm
@@ -981,6 +982,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "preprocess-10\n" + code + " error: " + error
       [code, error] = @fleshOutQualifiers(code, error)
       if detailedDebug then console.log "preprocess-11\n" + code + " error: " + error
+      [code, error] = @adjustFunctionalReferences(code, error, userDefinedFunctions)
+      if detailedDebug then console.log "preprocess-17\n" + code + " error: " + error
       [code, error] = @addCommandsSeparations(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-12\n" + code + " error: " + error
       [code, error] = @adjustImplicitCalls(code, error, userDefinedFunctions)
@@ -989,8 +992,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "preprocess-14\n" + code + " error: " + error
       [code, error] = @evaluateAllExpressions(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-16\n" + code + " error: " + error
-      [code, error] = @unmarkFunctionalReferences(code, error, userDefinedFunctions)
-      if detailedDebug then console.log "preprocess-17\n" + code + " error: " + error
       [code, error] = @beautifyCode(code, error)
       if detailedDebug then console.log "preprocess-18\n" + code + " error: " + error
 
@@ -1018,6 +1019,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           # in the first step and if the test case
           # has no "notIdempotent" flag
           testIdempotency = !error? and !(testCase.notIdempotent?)
+          testMoots = !error? and !(testCase.failsMootAppends?)
           #testIdempotency = false
           if testIdempotency
             [transformedTwice, error, ] = @preprocess(transformed.replace(/;/g,""))
@@ -1028,43 +1030,44 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           for i in [0...@qualifierKeywords.length] by 4
             allFunctionsRegex = allFunctionsRegex + '|' + (@qualifierKeywords[i])
           
-          appendString = 's'
-          prependString = 't'
-          [mootInput, ignore, errorMoot] = @stripCommentsAndStrings(testCase.input,null)
-          [mootInput, ignore, errorMoot] = @beautifyCode(mootInput,errorMoot)
-          if !errorMoot?
-            rx = RegExp("(("+allFunctionsRegex+"|times|doOnce)([^\\w\\d]|$))",'gm');
-            mootInputAppend = mootInput.replace(rx, "$2"+appendString+"$3")
-            mootInputPrepend = mootInput.replace(rx, prependString+"$2$3")
+          if testMoots
+            appendString = 's'
+            prependString = 't'
 
-            mootInputAppend = @normaliseCode(mootInputAppend,null)[0]
-            [transformedMootAppend, errorMootAppend,] = @preprocess(mootInputAppend)
-            mootInputPrepend = @normaliseCode(mootInputPrepend,null)[0]
-            [transformedMootPrepend, errorMootPrepend,] = @preprocess(mootInputPrepend)
-            
+            [mootInput, ignore, errorMoot] = @stripCommentsAndStrings(testCase.input,null)
+            [mootInput, ignore, errorMoot] = @beautifyCode(mootInput,errorMoot)
 
+            if !errorMoot?
+              rx = RegExp("(("+allFunctionsRegex+"|times|doOnce)([^\\w\\d]|$))",'gm');
+              mootInputAppend = mootInput.replace(rx, "$2"+appendString+"$3")
+              mootInputPrepend = mootInput.replace(rx, prependString+"$2$3")
 
-          if !errorMootAppend?
-            if userDefinedFunctions != ""
-              rx = RegExp("("+userDefinedFunctions+")"+appendString+"\\(\\)",'gm');
-              transformedMootAppend = transformedMootAppend.replace(rx, "$1"+appendString)
-            transformedMootAppend = @stripCommentsAndStrings(transformedMootAppend,null)[0]
-            if mootInputAppend != transformedMootAppend
-              failedMootAppends++
-              console.log "unexpected transformation"
-              console.log "moot input:\n" + mootInputAppend
-              console.log "transformed into:\n" + transformedMootAppend          
+              mootInputAppend = @normaliseCode(mootInputAppend,null)[0]
+              [transformedMootAppend, errorMootAppend,] = @preprocess(mootInputAppend)
+              mootInputPrepend = @normaliseCode(mootInputPrepend,null)[0]
+              [transformedMootPrepend, errorMootPrepend,] = @preprocess(mootInputPrepend)            
 
-          if !errorMootPrepend?
-            if userDefinedFunctions != ""
-              rx = RegExp(prependString+"("+userDefinedFunctions+")\\(\\)",'gm');
-              transformedMootPrepend = transformedMootPrepend.replace(rx, prependString+"$1")            
-            transformedMootPrepend = @stripCommentsAndStrings(transformedMootPrepend,null)[0]
-            if mootInputPrepend != transformedMootPrepend
-              failedMootPrepends++
-              console.log "unexpected transformation"
-              console.log "moot input:\n" + mootInputPrepend
-              console.log "transformed into:\n" + transformedMootPrepend          
+            if !errorMootAppend?
+              if userDefinedFunctions != ""
+                rx = RegExp("("+userDefinedFunctions+")"+appendString+"\\(\\)",'gm');
+                transformedMootAppend = transformedMootAppend.replace(rx, "$1"+appendString)
+              transformedMootAppend = @stripCommentsAndStrings(transformedMootAppend,null)[0]
+              if mootInputAppend != transformedMootAppend
+                failedMootAppends++
+                console.log "unexpected transformation"
+                console.log "moot input:\n" + mootInputAppend
+                console.log "transformed into:\n" + transformedMootAppend          
+
+            if !errorMootPrepend? and testMoots
+              if userDefinedFunctions != ""
+                rx = RegExp(prependString+"("+userDefinedFunctions+")\\(\\)",'gm');
+                transformedMootPrepend = transformedMootPrepend.replace(rx, prependString+"$1")            
+              transformedMootPrepend = @stripCommentsAndStrings(transformedMootPrepend,null)[0]
+              if mootInputPrepend != transformedMootPrepend
+                failedMootPrepends++
+                console.log "unexpected transformation"
+                console.log "moot input:\n" + mootInputPrepend
+                console.log "transformed into:\n" + transformedMootPrepend          
 
 
           if transformed == testCase.expected and

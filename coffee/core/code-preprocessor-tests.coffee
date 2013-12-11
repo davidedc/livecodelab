@@ -861,9 +861,30 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    either = (a,b) -> if random()> 0.5 then a() else b()
-                   either box, peg
+                   either (-> box()), (-> peg())
                    """
          notIdempotent: true
+         failsMootAppends: true
+        ,
+         input:    """
+                   either = (a,b) -> if random > 0.5 then a() else b()
+                   either <box 2>, <peg 2>
+                   """
+         expected: """
+                   either = (a,b) -> if random()> 0.5 then a() else b()
+                   either (-> box 2), (-> peg 2)
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         input:    """
+                   either = (a,b) -> if random > 0.5 then a() else b()
+                   either (->box),(->rect)
+                   """
+         expected: """
+                   either = (a,b) -> if random()> 0.5 then a() else b()
+                   either (-> box()),(-> rect())
+                   """
         ,
          input:    """
                    rand = (arg) -> random(arg)
