@@ -40,16 +40,17 @@ move aCertainAmount box
 ```
 
 
-";" can also be omitted between commands
+";" is not used
 -----------
 Instead of writing...
 ```
 box; move; line; move; peg; move
 ```
-... one can just write:
+... one can just chain together the commands like so
 ```
 box move line move peg move
 ```
+for this reason, semicolons are actually prohibited in livecodelab. They add significant complexity for the parser for not much benefit (we used none outside of strings comments and regexes in the LiveCodeLab source).
 
 "times"
 ------
@@ -109,73 +110,8 @@ If one wants to apply a transformation to only a primitive or two, just inline i
 rotate box line # creates a box and a line, both spinning
 peg # not spinning
 ```
-basically, if a matrix transformation is followed by some primitives, LCL will interpret that as to mean that you want to apply the tranformation only to those primitives on the same line (up to the next semicolon).
+basically, if a matrix transformation is followed by some primitives, LCL will interpret that as to mean that you want to apply the tranformation only to those primitives on the same line (up to the end of the line).
 
-Note that a transformation immediately followed by a semicolon indicates that the transformation is not chained to the ony primitives on the same line, but rather the transformation applies to the whole world as standard.
-```
-rotate; box line # rotate is not chained only to the box
-peg # box, line, peg and anything following are spinning
-```
-
-
-Some examples (scroll table to the right)
------------
-
-
-```
-                                                     +                                                                       +
-   LiveCodeLab                                       | Coffeescript                                                          | Javascript
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
-                                                     |                                                                       |
- wave times rotate box                               |  wave().times -> rotate(); box()                                      | wave().times(function() {
-                                                     |                                                                       | 		  rotate();
-                                                     |                                                                       | 		  return box(); 
-                                                     |                                                                       | 		});
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
-                                                     |                                                                       |
- aCertainAmount = -> sin(random)                     | aCertainAmount = -> sin(random())                                     | var aCertainAmount;	
- move aCertainAmount box	                         | move aCertainAmount(); box()                                          | 	
-                                                     |                                                                       | 		aCertainAmount = function() {
-                                                     |                                                                       | 		  return sin(random());
-                                                     |                                                                       | 		};
-                                                     |                                                                       | 		
-                                                     |                                                                       | 		move(aCertainAmount());
-                                                     |                                                                       | 		
-                                                     |                                                                       | 		box();
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
-                                                     |                                                                       |
- 2 times rotate box 2 times rotate line 2            |  (2+0).times -> rotate(); box(); (2+0).times -> rotate(); line 2      | 2.times(function() {
-                                                     |                                                                       | 		  rotate();
-                                                     |                                                                       | 		  box();
-                                                     |                                                                       | 		  return 2.times(function() {
-                                                     |                                                                       | 		    rotate();
-                                                     |                                                                       | 		    return line(2);
-                                                     |                                                                       | 		  }); 
-                                                     |                                                                       | 		});
-                                                     |                                                                       |
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
-                                                     |                                                                       |
- either = (a,b) -> if random > 0.5 then a() else b() |  either = (a,b) -> if random()> 0.5 then a() else b() either box, peg |  var either;
- either <box>, <peg>		                         |  either(box, peg);                                                    |  		either = function(a, b) {
-                                                     |                                                                       |  		  if (random() > 0.5) {
-                                                     |                                                                       |  		    return a();
-                                                     |                                                                       |  		  } else {
-                                                     |                                                                       |  		    return b();
-                                                     |                                                                       |  		  }
-                                                     |                                                                       |  		};
- 		                                             |                                                                       |
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
-                                                     |                                                                       |
- 20 times rotate box                                 | 20.times ->  rotate(); box()                                          |  20.times(function() {
-                                                     |                                                                       |  		  rotate();
-                                                     |                                                                       |  		  return box(); 
-                                                     |                                                                       |  		});
-                                                     |                                                                       |
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
-
-
-		
-```
 
 Limitations and ambiguities
 -----------
