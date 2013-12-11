@@ -13,9 +13,10 @@
 ## array, all elements are the same and accommodate for a description
 ## that either case (solid/gradient).
 ##
-## The background/gradients are drawn on a separate 2D canvas
-## and we avoid repainting that canvas over and over if the
-## painting commands stay the same (i.e. colors of their
+## The background/gradients are drawn on a separate div
+## using normal CSS transforms - only when
+## painting commands change the state of
+## the background (i.e. colors of their
 ## arguments and the order of the commands) across frames.
 ##
 ## For quickly determining whether the order/content of the commands
@@ -25,9 +26,10 @@
 ## string representation is also kept.
 ## So it's kind of like a simplified JSON representation if you will.
 ##
-## If the strings are the same across frames, then the 2D layer of
-## the background is not repainted, otherwise the array is iterated
-## and each background/gradient is painted anew.
+## If the strings are the same across frames, then the no
+## new CSS transforms are applied for the background
+## , otherwise the array is iterated
+## and new background/gradient transform is applied.
 ##
 ## Note that we are not trying to be too clever here - for example
 ## a solid fill effectively invalidates the contents of the previous
@@ -35,11 +37,32 @@
 ## a command is issued.
 ###
 
+# Detect which browser prefix to use for the specified CSS value
+# (e.g., background-image: -moz-linear-gradient(...);
+#        background-image:   -o-linear-gradient(...); etc).
+#
+getCssValuePrefix = (name, value) ->
+  prefixes = ["", "-o-", "-ms-", "-moz-", "-webkit-"]
+  
+  # Create a temporary DOM object for testing
+  dom = document.createElement("div")
+  i = 0
+
+  while i < prefixes.length
+    
+    # Attempt to set the style
+    dom.style[name] = prefixes[i] + value
+    
+    # Detect if the style was successfully set
+    return prefixes[i]  if dom.style[name]
+    dom.style[name] = "" # Reset the style
+    i++
+
 define () ->
 
   class BackgroundPainter
 
-    constructor: (@canvasForBackground, @liveCodeLabCoreInstance) ->
+    constructor: (@backgroundDiv, @liveCodeLabCoreInstance) ->
       @gradStack = []
       @defaultGradientColor1 = orange
       @defaultGradientColor2 = red
@@ -47,20 +70,8 @@ define () ->
       @whichDefaultBackground = undefined
       @currentGradientStackValue = ""
       @previousGradientStackValue = 0
-      @canvasForBackground = document.createElement("canvas") unless @canvasForBackground
+      @gradientPrefix = getCssValuePrefix 'background', 'linear-gradient(left, #fff, #fff)'
       
-      # the canvas background for the time being is only going to contain
-      # gradients, so we can get away with creating a really tiny canvas and
-      # stretch it. The advantage is that the fill operations are a lot faster.
-      # We should try to use CSS instead of canvas, as in some browsers canvas
-      # is not accelerated just as well as CSS.
-      # backGroundFraction specifies what fraction of the window the
-      # background canvas is going to be.
-      backGroundFraction = 1 / 15
-      
-      @canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction)
-      @canvasForBackground.height = Math.floor(window.innerHeight * backGroundFraction)
-      @backgroundSceneContext = @canvasForBackground.getContext("2d")
 
       # This needs to be global so it can be run by the draw function
       window.simpleGradient = (a,b,c) => @simpleGradient(a,b,c)
@@ -152,8 +163,6 @@ define () ->
         @defaultGradientColor1, @defaultGradientColor2, @defaultGradientColor3
 
     simpleGradientUpdateIfChanged: ->
-      diagonal = undefined
-      radgrad = undefined
 
       # some shorthands
       color = @liveCodeLabCoreInstance.colourFunctions.color
@@ -161,30 +170,19 @@ define () ->
       if @currentGradientStackValue isnt @previousGradientStackValue
         #alert('repainting the background');
         @previousGradientStackValue = @currentGradientStackValue
-        diagonal =
-          Math.sqrt(Math.pow(@canvasForBackground.width / 2, 2) +
-          Math.pow(@canvasForBackground.height / 2, 2))
-        
+
+        cssStringPreamble = 'position: absolute; z-index:-3; top: 0px; left: 0px; width:10%; height:10%; '+@gradientPrefix+'transform-origin: 0% 0%; '+@gradientPrefix+'transform: scale(10,10);'
+        cssStringPreamble = cssStringPreamble + 'background:'
+        cssString = ''
         for scanningGradStack in @gradStack
           if scanningGradStack.gradStacka?
-            radgrad = @backgroundSceneContext.createLinearGradient(
-              @canvasForBackground.width / 2,
-              0,
-              @canvasForBackground.width / 2,
-              @canvasForBackground.height)
-            radgrad.addColorStop 0, color.toString(scanningGradStack.gradStacka)
-            radgrad.addColorStop 0.5,color.toString(scanningGradStack.gradStackb)
-            radgrad.addColorStop 1, color.toString(scanningGradStack.gradStackc)
-            @backgroundSceneContext.globalAlpha = 1.0
-            @backgroundSceneContext.fillStyle = radgrad
-            @backgroundSceneContext.fillRect \
-              0, 0, @canvasForBackground.width, @canvasForBackground.height
+            cssString = @gradientPrefix+"linear-gradient(top,  "+color.toString(scanningGradStack.gradStacka)+" 0%,"+color.toString(scanningGradStack.gradStackb)+" 50%,"+color.toString(scanningGradStack.gradStackc)+" 100%)," + cssString
           else
-            @backgroundSceneContext.globalAlpha = 1.0
-            @backgroundSceneContext.fillStyle =
-              color.toString(scanningGradStack.solid)
-            @backgroundSceneContext.fillRect \
-              0, 0, @canvasForBackground.width, @canvasForBackground.height
+            cssString = @gradientPrefix + "linear-gradient(top,  "+color.toString(scanningGradStack.solid)+" 0%,"+color.toString(scanningGradStack.solid)+" 100%)," + cssString
+        cssString = cssString.substring(0, cssString.length - 1);
+        cssString = cssStringPreamble + cssString + ";"
+        document.getElementById("backgroundDiv").style.cssText = cssString
+        #console.log cssString
 
   BackgroundPainter
 

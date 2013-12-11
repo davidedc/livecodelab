@@ -332,7 +332,7 @@ define [
         document.body.appendChild @stats.getDomElement()
         $("#startingCourtainScreen").fadeOut()
         $("#formCode").css "opacity", 0
-        @fullscreenify "#backGroundCanvas"
+        @fullscreenify "#backgroundDiv"
         @adjustCodeMirrorHeight()
 
   Ui
