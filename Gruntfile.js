@@ -103,7 +103,15 @@ module.exports = function (grunt) {
         watch: {
             scripts: {
                 files: ['coffee/**/*.coffee', 'tests/js/*.js', 'tests/testsSource/*.coffee', 'templts/tests.html.templt', 'tests/htmlsWithTests/images/*.png'],
-                tasks: ['coffee:app','coffee:tests', 'copy']
+                tasks: ['coffee:app', 'coffee:tests', 'copy']
+            },
+            grammar: {
+                files: ['grammar/**/*.jison'],
+                tasks: ['jison', 'langtest']
+            },
+            interpreter: {
+                files: ['js_lib/lcl/**/*.js'],
+                tasks: ['copy:main', 'langtest']
             }
         },
         coffeelint: {
