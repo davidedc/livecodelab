@@ -10,7 +10,6 @@ requirejs.config(
     'buzz': 'lib/buzz'
     'lowLag': 'lib/lowLag'
     'codemirror': 'lib/codemirror'
-    'coffeescript': 'lib/coffee-script'
     'codemirror-lcl-mode': 'lib/coffeescript-livecodelab-mode'
     'sooperfish-easing': 'lib/jquery.easing-sooper'
     'jquery': 'lib/jquery.min'
@@ -44,9 +43,6 @@ requirejs.config(
     'codemirror':
       deps: []
       exports: 'CodeMirror'
-    'coffeescript':
-      deps: []
-      exports: 'CoffeeScript'
     'codemirror-lcl-mode': ['codemirror']
     'sooperfish': ['jquery']
     'sooperfish-easing': ['jquery', 'sooperfish']
