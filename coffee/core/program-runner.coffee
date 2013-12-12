@@ -1,8 +1,8 @@
 ###
-## ProgramRunner manages the running function as it runs. E.g. this is not a
+## ProgramRunner manages interpretation of the AST. E.g. this is not a
 ## translation step, this is managing things such as the actually running of the
-## latest "stable" function and keeping track of when a function appears
-## to be stable, and reinstating the last stable function if the current one
+## latest "stable" program, keeping track of when a program appears
+## to be stable, and reinstating the last stable program if the current one
 ## throws a runtime error.
 ###
 
@@ -10,30 +10,27 @@ isFunction = (functionToCheck) ->
   getType = {}
   functionToCheck and getType.toString.call(functionToCheck) is "[object Function]"
 
-define () ->
+define [
+  'lib/lcl/interpreter'
+], (
+  Interpreter
+) ->
 
   class ProgramRunner
-    
-    # this array is used to keep track of all the instances of "doOnce" in the
-    # code we need to keep this so we can put the ticks next to doOnce once
-    # that doOnce block has run.
-    doOnceOccurrencesLineNumbers = []
-    
-    # contains the draw function as a Function object. Never mind the
-    # initialisation as an empty string.
-    drawFunction = ""
-    
-    consecutiveFramesWithoutRunTimeError = 0
 
-    # contains the last stable draw function as a Function object. Never mind the
-    # initialisation as an empty string.
-    lastStableDrawFunction = null
+    # contains the program AST
+    program = []
+
+    consecutiveFramesWithoutRunTimeError = 0
 
     # contains the code that is meant to be run, as a string.
     # note that it might be impossible to run it because of errors, in which case
     # LiveCodeLab might be running an older version.
     currentCodeString = ""
     
+    # contains the last stable program AST
+    lastStableProgram = []
+
     constructor: (@eventRouter, @liveCodeLabCoreInstance) ->
 
     addToScope: (scope) ->
@@ -64,35 +61,20 @@ define () ->
       if isFunction chainedFunction
         chainedFunction()
 
-    # This is the function called from the compiled code to add the doOnce line
-    addDoOnce: (lineNum) ->
-      @doOnceOccurrencesLineNumbers.push lineNum
+    setProgram: (programAST) ->
+      @program = programAST
 
-    setDrawFunction: (drawFunc) ->
-      @drawFunction = drawFunc
 
-    resetTrackingOfDoOnceOccurrences: ->
-      @doOnceOccurrencesLineNumbers = []
-
-    putTicksNextToDoOnceBlocksThatHaveBeenRun: ->
-      codeCompiler = @liveCodeLabCoreInstance.codeCompiler
-      if @doOnceOccurrencesLineNumbers.length
-        @setDrawFunction(
-          codeCompiler.addCheckMarksAndUpdateCodeAndNotifyChange(
-            codeCompiler, @doOnceOccurrencesLineNumbers
-          )
-        )
-
-    runDrawFunction: ->
+    runProgram: ->
       # this invokation below could be throwing an error,
       # in which case the lines afterwards are not executed
       # and the exception is propagated to the callee of this function,
       # which is the main animation loop.
-      #console.log "running runDrawFunction"
-      @drawFunction()
-      
-      # if we are here it means that the draw function didn't generate
-      # any runtime errors, so we increment a counter that tells how long
+      scope = {}
+      Interpreter.run(program, scope)
+
+      # if we are here it means that the interpreter didn't throw
+      # any runtime errors, so we increment a counter that tracks how long
       # this program has been stable for.
       # Beyond 5 frames, we consider this program as "stable" and we save
       # it in a special variable.
@@ -100,13 +82,13 @@ define () ->
       # so the new version too gets an opportunity to be tested and saved.
       @consecutiveFramesWithoutRunTimeError += 1
       if @consecutiveFramesWithoutRunTimeError is 5
-        @lastStableDrawFunction = @drawFunction
+        @lastStableProgram = @program
         @eventRouter.emit("livecodelab-running-stably")
 
-    reinstateLastWorkingDrawFunction: ->
+    reinstateLastWorkingProgram: ->
       # mark the program as flawed and register the previous stable one.
       @consecutiveFramesWithoutRunTimeError = 0
-      @drawFunction = @lastStableDrawFunction
+      @program = @lastStableProgram
 
   ProgramRunner
 
