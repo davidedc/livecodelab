@@ -5,7 +5,7 @@
 var requirejs = require('requirejs');
 
 requirejs.config({
-    baseUrl: 'lib',
+    baseUrl: 'dist/js/lib/lcl',
     nodeRequire: require
 });
 

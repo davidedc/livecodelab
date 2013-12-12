@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
 
         nodeunit: {
-            files: ['test/**/*_test.js']
+            files: ['langtests/**/*_test.js']
         },
 
 
@@ -193,7 +193,7 @@ module.exports = function (grunt) {
                     moduleType: 'amd'
                 },
                 src: 'grammar/lcl-grammar.jison',
-                dest: 'dist/js/parser.js'
+                dest: 'dist/js/lib/lcl/parser.js'
             }
         }
     });
@@ -217,6 +217,12 @@ module.exports = function (grunt) {
         'recess:compile',
         'requirejs',
         'targethtml'
+    ]);
+
+    grunt.registerTask('langtest', [
+        'copy:main',
+        'jison',
+        'nodeunit'
     ]);
 
     // Load NPM Task modules
