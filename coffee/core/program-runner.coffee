@@ -62,6 +62,7 @@ define [
         chainedFunction()
 
     setProgram: (programAST) ->
+      @consecutiveFramesWithoutRunTimeError = 0
       @program = programAST
 
 
