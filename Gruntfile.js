@@ -7,6 +7,11 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
 
+        nodeunit: {
+            files: ['test/**/*_test.js']
+        },
+
+
         copy: {
             main: {
                 files: [{
@@ -181,6 +186,15 @@ module.exports = function (grunt) {
                     out: 'dist/js/lcl.min.js'
                 }
             }
+        },
+        jison: {
+            main: {
+                options: {
+                    moduleType: 'amd'
+                },
+                src: 'grammar/lcl-grammar.jison',
+                dest: 'dist/js/parser.js'
+            }
         }
     });
 
@@ -199,6 +213,7 @@ module.exports = function (grunt) {
         'coffee:app',
         'coffee:tests',
         'copy:main',
+        'jison',
         'recess:compile',
         'requirejs',
         'targethtml'
@@ -215,5 +230,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-docco');
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-nodeunit');
+    grunt.loadNpmTasks('grunt-jison');
 
 };

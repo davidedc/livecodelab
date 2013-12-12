@@ -15,6 +15,10 @@
     "grunt-contrib-requirejs": "~0.4.1",
     "grunt-docco": "~0.3.0",
     "grunt": "~0.4.1",
-    "grunt-contrib-connect": "~0.5.0"
+    "grunt-contrib-connect": "~0.5.0",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "grunt-jison": "~1.2.1",
+    "jison": "~0.4.13",
+    "requirejs": "~2.1.9"
   }
 }
