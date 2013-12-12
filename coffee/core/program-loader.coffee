@@ -776,27 +776,6 @@ define [
               // next-tutorial:do_once
               """
     
-      @programs.tutorials.doonceTutorial =
-        submenu: "Controlling flow"
-        title: "do once"
-        code: """
-              // delete either check mark below
-              
-              rotate time
-              ✓doOnce
-              ▶background 255
-              ▶fill 255,0,0
-              ✓doOnce ball
-              box
-              
-              // ...the line or block of code
-              // are ran one time only, after that the
-              // check marks immediately re-appear
-              // P.S. keep hitting the delete button
-              // on that first check mark for seizures.
-              // next-tutorial:conditionals
-              """
-    
       @programs.tutorials.conditionalsTutorial =
         submenu: "Controlling flow"
         title: "conditionals"
