@@ -23,7 +23,7 @@ and writing
 ```
 box()
 ```
-while in LiveCodeLab, like in Ruby, there isn't. Any time a function name appears without arguments and parentheses, the function is implicitely called on the spot. Since all LiveCodeLab functions have a valid and interesting meaning when invoked without arguments, this is useful, as it means that one can write
+while in LiveCodeLab, like in Ruby, there isn't. Any time a "known" function name (e.g. any LiveCodeLab function and any user-defined function) appears without arguments and parentheses, the function is implicitely called on the spot. Since all LiveCodeLab functions have a valid and interesting meaning when invoked without arguments, this is useful, as it means that one can write
 ```
 box
 move
@@ -39,17 +39,29 @@ aCertainAmount = -> sin(random)
 move aCertainAmount box
 ```
 
+LiveCodeLab can't do this for functions that aren't "known" LiveCodeLab functions or user-defined.
 
-";" can also be omitted between commands
+For example, the following function takes a function and runs it.
+
+```
+runAFunction = (a) -> a()
+```
+
+In this case, ```a()``` needs to include the parentheses, as ```a``` could be a number, or a function, or a string, or anything, so LiveCodeLab needs to be explicitely told what to do with ```a```.
+
+
+
+";" is not needed
 -----------
 Instead of writing...
 ```
 box; move; line; move; peg; move
 ```
-... one can just write:
+... one can just chain together the commands like so
 ```
 box move line move peg move
 ```
+Since semicolons are not needed (we used none outside of strings comments and regexes in the LiveCodeLab source) and they add significant complexity to the parser, semicolons are actually not allowed in LCL sketches.
 
 "times"
 ------
@@ -70,12 +82,33 @@ or also
 
 What about functional programming?
 -----------
-If all functions are run as soon as they are mentioned, how can one use them without evaluating them? That's when LiveCodeLab *does* make things longer to type for you, and you'll have to use brackets, like in this example:
+If all functions are run as soon as they are mentioned, how can one use them without evaluating them?
+
+Passing a function is done just like coffeescript, the following works:
+
+```
+runAFunction = (a) -> a()
+runAFunction ->box
+```
+
+Note that if you want to pass multiple functions, then you need to wrap each one in parentheses, this is due to arrows (legitimally) taking priority over the comma (argument separator) in coffeescript.
+
+```
+either = (a,b) -> if random > 0.5 then a() else b()
+either (->box), (->peg)
+either (->box 2), (->peg 2)
+```
+
+There is also a shorthand for this, using brackets:
+
+
 ```
 either = (a,b) -> if random > 0.5 then a() else b()
 either <box>, <peg>
+either <box 2>, <peg 2>
 ```
-basically, instead of forcing you to parentheses to evaluate functions, LiveCodeLab forces you to use brackets to *avoid* the evaluation, so that the two functions "box" and "peg" can be passed to "either" as unevaluated functions as it's supposed to be.
+
+basically, instead of forcing you to parentheses to evaluate functions, LiveCodeLab forces you to use parentheses/brackets to *avoid* the evaluation, so that the two functions "box" and "peg" can be passed to "either" as unevaluated functions.
 
 
 "Scoped" matrix transformations
@@ -109,73 +142,8 @@ If one wants to apply a transformation to only a primitive or two, just inline i
 rotate box line # creates a box and a line, both spinning
 peg # not spinning
 ```
-basically, if a matrix transformation is followed by some primitives, LCL will interpret that as to mean that you want to apply the tranformation only to those primitives on the same line (up to the next semicolon).
+basically, if a matrix transformation is followed by some primitives, LCL will interpret that as to mean that you want to apply the tranformation only to those primitives on the same line (up to the end of the line).
 
-Note that a transformation immediately followed by a semicolon indicates that the transformation is not chained to the ony primitives on the same line, but rather the transformation applies to the whole world as standard.
-```
-rotate; box line # rotate is not chained only to the box
-peg # box, line, peg and anything following are spinning
-```
-
-
-Some examples (scroll table to the right)
------------
-
-
-```
-                                                     +                                                                       +
-   LiveCodeLab                                       | Coffeescript                                                          | Javascript
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
-                                                     |                                                                       |
- wave times rotate box                               |  wave().times -> rotate(); box()                                      | wave().times(function() {
-                                                     |                                                                       | 		  rotate();
-                                                     |                                                                       | 		  return box(); 
-                                                     |                                                                       | 		});
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
-                                                     |                                                                       |
- aCertainAmount = -> sin(random)                     | aCertainAmount = -> sin(random())                                     | var aCertainAmount;	
- move aCertainAmount box	                         | move aCertainAmount(); box()                                          | 	
-                                                     |                                                                       | 		aCertainAmount = function() {
-                                                     |                                                                       | 		  return sin(random());
-                                                     |                                                                       | 		};
-                                                     |                                                                       | 		
-                                                     |                                                                       | 		move(aCertainAmount());
-                                                     |                                                                       | 		
-                                                     |                                                                       | 		box();
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
-                                                     |                                                                       |
- 2 times rotate box 2 times rotate line 2            |  (2+0).times -> rotate(); box(); (2+0).times -> rotate(); line 2      | 2.times(function() {
-                                                     |                                                                       | 		  rotate();
-                                                     |                                                                       | 		  box();
-                                                     |                                                                       | 		  return 2.times(function() {
-                                                     |                                                                       | 		    rotate();
-                                                     |                                                                       | 		    return line(2);
-                                                     |                                                                       | 		  }); 
-                                                     |                                                                       | 		});
-                                                     |                                                                       |
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
-                                                     |                                                                       |
- either = (a,b) -> if random > 0.5 then a() else b() |  either = (a,b) -> if random()> 0.5 then a() else b() either box, peg |  var either;
- either <box>, <peg>		                         |  either(box, peg);                                                    |  		either = function(a, b) {
-                                                     |                                                                       |  		  if (random() > 0.5) {
-                                                     |                                                                       |  		    return a();
-                                                     |                                                                       |  		  } else {
-                                                     |                                                                       |  		    return b();
-                                                     |                                                                       |  		  }
-                                                     |                                                                       |  		};
- 		                                             |                                                                       |
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
-                                                     |                                                                       |
- 20 times rotate box                                 | 20.times ->  rotate(); box()                                          |  20.times(function() {
-                                                     |                                                                       |  		  rotate();
-                                                     |                                                                       |  		  return box(); 
-                                                     |                                                                       |  		});
-                                                     |                                                                       |
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
-
-
-		
-```
 
 Limitations and ambiguities
 -----------

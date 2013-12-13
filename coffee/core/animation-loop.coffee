@@ -1,36 +1,42 @@
 ###
-## The animation loop is the loop that make each "frame" happen,
-## i.e. whatever happend every 30 to 60 times (or, indeed, "frames")
-## per second - which is the following:
+## The animation loop takes care of drawing each "frame",
+## ideally 30 to 60 times (or, indeed, "frames")
+## per second. The following happens in each frame:
 ## * the next frame is scheduled
 ## * the current program (i.e. a draw() Function) is run
+## * the draw() function changes the state of the system
+##   e.g. changes the background, creates new scene graph
 ## * the background is repainted if it has changed from the previous frame
-## * the new 3d scene is painted
-## * the stats widget on the top right is updated to show
-##   milliseconds taken by each loop frame.
+## * the new 3d scene is rendered via Three.js
+## * the beat of the sound system is changed if needed
+## * the "frame" counter is incremented
+## * the stats widget in the top right corner is updated
+##   (it show either fps or milliseconds taken by each loop frame).
 ##
 ## Note that the followings are NOT done as part of the animation loop:
 ## * Syntax checking of the program typed by the user
-##   (that's checked only when it changed)
+##   (that's checked only when user changes via typing)
 ## * sound playing. That happens by its own series of timeouts
-##   (as defined by the optional "bpm" command) separately from the
+##   (as defined by the optional "bpm" command), separately from the
 ##   animation loop.
 ## * blinking of the cursor
 ##
 ## About the current Function being run:
 ## note that this might not be the Function corresponding to the very latest
 ## content of the editor, for two reasons:
-## 1. the newest content of the editor might not be syntactically incorrect
-## 2. even if it's syntactically correct it might not be "stable"
+## 1. the newest content of the editor might be syntactically incorrect
+##    and hence can't be turned into a Function than can be run
+## 2. even if syntactically correct, it might not be "stable"
 ##    i.e. it might have thrown a runtime error
-##    (for example used an undefined variable or function).
+##    (for example used an undefined variable or function),
+##    in which case an older "stable" program is used.
 ##
 ## Rather, the current draw() function is the latest program
 ## that is both syntactically correct and "stable" (or in the process of
 ## being proven stable).
 ## Stability of a program cannot be guaranteed, but LiveCodeLab heuristically
 ## considers as "stable" a program once it's able to run for 5 frames
-## without throwing errors.
+## without throwing runtime errors.
 ## If the program throws an error past this testing window, then LiveCodeLab
 ## currently has no further fallback, so the Function will be just run each
 ## frame and hope is that it has time to draw enough animation on the screen
@@ -39,10 +45,11 @@
 ## One could devise a mechanism by which a stack of stable functions
 ## is maintained, so each failing function of the stack would cause the
 ## previous one to become the current stable alternative.
-## This would practically guarantee that there is a Function that
-## is simple enough in the past that it would contain no runtime
-## errors - unless a previous function has so dramatically borked the
-## state of the entire system, but that would probably take some malice.
+## This would practically guarantee that there is a Function
+## somewhere in the past that is simple enough that it would
+## cause no runtime errors - unless a previous function has so
+## dramatically borked the state of the entire system,
+## but that would probably take some malice.
 ###
 
 define () ->

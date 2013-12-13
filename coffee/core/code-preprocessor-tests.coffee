@@ -25,10 +25,10 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    ▶▶box
                    """
          expected: """
-                   5.times -> 
+                   5.times ->
                    ▶rotate 0,1,time/5000
                    ▶move 0.2,0,0
-                   ▶3.times -> 
+                   ▶3.times ->
                    ▶▶rotate 1
                    ▶▶box()
                    """
@@ -65,7 +65,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          input:    """
                    // should give error
-                   peg; times rotate box 2* wave
+                   peg times rotate box 2* wave
                    """
          error: "how many times?"
         ,
@@ -98,7 +98,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          input:    """
                    // should give error
-                   if random() > 0.5 then rotate; box else times rotate; peg; true
+                   if random() > 0.5 then rotate box else times rotate peg true
                    """
          error: "how many times?"
         ,
@@ -112,7 +112,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    a = 2
-                   box(); (a + 3).times -> pushMatrix(); rotate(); peg(); popMatrix()
+                   box -> (a + 3).times -> rotate -> peg()
                    """
         ,
          notes:    """
@@ -122,7 +122,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    6 times: rotate box
                    """
          expected: """
-                   6.times -> pushMatrix(); rotate(); box(); popMatrix()
+                   6.times -> rotate -> box()
                    """
         ,
          notes:    """
@@ -133,7 +133,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    myFunc = -> 20 times rotate box
                    """
          expected: """
-                   myFunc = -> 20.times -> pushMatrix(); rotate(); box(); popMatrix()
+                   myFunc = -> 20.times -> rotate -> box()
                    """
         ,
          notes:    """
@@ -144,7 +144,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    myFunc = (a,b) -> if true then 20 times rotate box
                    """
          expected: """
-                   myFunc = (a,b) -> if true then 20.times -> pushMatrix(); rotate(); box(); popMatrix()
+                   myFunc = (a,b) -> if true then 20.times -> rotate -> box()
                    """
         ,
          notes:    """
@@ -154,7 +154,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if true then 2 times box 3 times line 2
                    """
          expected: """
-                   if true then 2.times -> box(); 3.times -> line 2
+                   if true then 2.times -> box -> 3.times -> line 2
                    """
         ,
          notes:    """
@@ -162,10 +162,10 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    within a times body remain correctly separated.
                    """
          input:    """
-                   6 times: rotate; box
+                   6 times: rotate box
                    """
          expected: """
-                   6.times -> rotate(); box()
+                   6.times -> rotate -> box()
                    """
         ,
          notes:    """
@@ -176,118 +176,118 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    ▶rotate box
                    """
          expected: """
-                   6.times -> 
-                   ▶pushMatrix(); rotate(); box(); popMatrix()
+                   6.times ->
+                   ▶rotate -> box()
                    """
         ,
          input:    """
-                   1+1 times: rotate; box
+                   1+1 times: rotate box
                    """
          expected: """
-                   (1+1).times -> rotate(); box()
+                   (1+1).times -> rotate -> box()
                    """
         ,
          input:    """
-                   peg; 2 times rotate box 2* wave
+                   peg 2 times rotate box 2* wave
                    """
          expected: """
-                   peg(); 2.times -> pushMatrix(); rotate(); box 2* wave(); popMatrix()
+                   peg -> 2.times -> rotate -> box 2* wave()
                    """
         ,
          input:    """
-                   n = 2; n times: rotate;box
+                   n = 2 n times: rotate box
                    """
          expected: """
-                   n = 2; n.times -> rotate(); box()
+                   n = 2; n.times -> rotate -> box()
                    """
         ,
          input:    """
+                   n = 2 (n+0).times -> rotate() box()
+                   """
+         expected: """
                    n = 2; (n+0).times -> rotate(); box()
                    """
-         expected: """
-                   n = 2; (n+0).times -> rotate(); box()
-                   """
         ,
          input:    """
-                   n = 2; rotate(n+0);rotate(); box()
+                   n = 2 rotate(n+0) rotate() box()
                    """
          expected: """
                    n = 2; rotate(n+0); rotate(); box()
                    """
         ,
          input:    """
-                   n = 2; rotate n + 1; box
+                   n = 2 rotate n + 1 box
                    """
          expected: """
-                   n = 2; rotate n + 1; box()
+                   n = 2; rotate n + 1, -> box()
                    """
         ,
          input:    """
-                   box; box ;  2 times: rotate; peg 1.3
+                   box box   2 times: rotate peg 1.3
                    """
          expected: """
-                   box(); box(); 2.times -> rotate(); peg 1.3
+                   box -> box -> 2.times -> rotate -> peg 1.3
                    """
         ,
          input:    """
-                   if random > 0.5 then 3 times: rotate; box else 3 times rotate; 2 times: peg; true
+                   if random > 0.5 then 3 times: rotate box else 3 times rotate 2 times: peg 1
                    """
          expected: """
-                   if random()> 0.5 then 3.times -> rotate(); box() else 3.times -> rotate(); 2.times -> peg(); true
+                   if random()> 0.5 then 3.times -> rotate -> box() else 3.times -> rotate -> 2.times -> peg 1
                    """
         ,
          input:    """
-                   if true then 3 times rotate; box
+                   if true then 3 times rotate box
                    """
          expected: """
-                   if true then 3.times -> rotate(); box()
+                   if true then 3.times -> rotate -> box()
                    """
         ,
          input:    """
-                   (9+0).times -> rotate; box
+                   (9+0).times -> rotate box
                    """
          expected: """
-                   (9+0).times -> rotate(); box()
+                   (9+0).times -> rotate -> box()
                    """
         ,
          input:    """
-                   if random() > 0.5 then rotate; box else 3 times rotate; peg; true
+                   if random() > 0.5 then rotate box else 3 times rotate peg 1
                    """
          expected: """
-                   if random() > 0.5 then rotate(); box() else 3.times -> rotate(); peg(); true
+                   if random() > 0.5 then rotate -> box() else 3.times -> rotate -> peg 1
                    """
         ,
          input:    """
-                   if random() > 0.5 then rotate 1 + wave box else 3 times rotate; peg; true
+                   if random() > 0.5 then rotate 1 + wave box else 3 times rotate peg 1
                    """
          expected: """
-                   if random() > 0.5 then pushMatrix(); rotate 1 + wave(); box(); popMatrix(); else 3.times -> rotate(); peg(); true
+                   if random() > 0.5 then rotate 1 + wave(), -> box() else 3.times -> rotate -> peg 1
                    """
         ,
          input:    """
                    // testing whether mangled accross multiple lines
                    if random() > 0.5 then box
                    2 times: box
-                   2 times: rotate; box
+                   2 times: rotate box
                    """
          expected: """
                    
                    if random() > 0.5 then box()
                    2.times -> box()
-                   2.times -> rotate(); box()
+                   2.times -> rotate -> box()
                    """
         ,
          input:    """
                    // testing whether mangled accross multiple lines
-                   6 times: rotate; box
+                   6 times: rotate box
                    6 times:
                    ▶rotate box
                    """
          expected: """
-                   
-                   6.times -> rotate(); box()
-                   6.times -> 
-                   ▶pushMatrix(); rotate(); box(); popMatrix()
+
+                   6.times -> rotate -> box()
+                   6.times ->
+                   ▶rotate -> box()
                    """
         ,
          input:    """
@@ -301,7 +301,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    ball line peg
                    """
          expected: """
-                   ball(); line(); peg()
+                   ball -> line -> peg()
                    """
         ,
          input:    """
@@ -312,17 +312,20 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
         ,
          input:    """
-                   2 times rotate box wave; wave
+                   2 times rotate box wave wave
                    """
          expected: """
-                   2.times -> pushMatrix(); rotate(); box wave(); popMatrix(); wave()
+                   2.times -> rotate -> box wave wave()
                    """
         ,
+         notes:    """
+                   we should give an error in these cases
+                   """
          input:    """
                    box + box
                    """
          expected: """
-                   box + box()
+                   box +, -> box()
                    """
         ,
          input:    """
@@ -385,17 +388,10 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
         ,
          input:    """
-                   ;wave
+                   wave
                    """
          expected: """
-                   ; wave()
-                   """
-        ,
-         input:    """
-                   ;wave;
-                   """
-         expected: """
-                   ; wave()
+                   wave()
                    """
         ,
          input:    """
@@ -413,24 +409,24 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
         ,
          input:    """
-                   2 times: rotate; box
+                   2 times: rotate box
                    """
          expected: """
-                   2.times -> rotate(); box()
+                   2.times -> rotate -> box()
                    """
         ,
          input:    """
                    2 times rotate box wave
                    """
          expected: """
-                   2.times -> pushMatrix(); rotate(); box wave(); popMatrix()
+                   2.times -> rotate -> box wave()
                    """
         ,
          input:    """
                    rotate box 2,33
                    """
          expected: """
-                   pushMatrix(); rotate(); box 2,33; popMatrix()
+                   rotate -> box 2,33
                    """
         ,
          input:    """
@@ -451,7 +447,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    2 times: rotate box wave
                    """
          expected: """
-                   2.times -> pushMatrix(); rotate(); box wave(); popMatrix()
+                   2.times -> rotate -> box wave()
                    """
         ,
          input:    """
@@ -462,17 +458,17 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
         ,
          input:    """
-                   2 times: move; rotate wave; box
+                   2 times: move rotate wave box
                    """
          expected: """
-                   2.times -> move(); rotate wave(); box()
+                   2.times -> move -> rotate wave(), -> box()
                    """
         ,
          input:    """
                    rotate wave box
                    """
          expected: """
-                   pushMatrix(); rotate wave(); box(); popMatrix()
+                   rotate wave(), -> box()
                    """
         ,
          input:    """
@@ -545,28 +541,28 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate wave times box
                    """
          expected: """
-                   rotate(); (wave()).times -> box()
+                   rotate -> (wave()).times -> box()
                    """
         ,
          input:    """
                    rotate 10*wave times box
                    """
          expected: """
-                   rotate(); (10*wave()).times -> box()
+                   rotate -> (10*wave()).times -> box()
                    """
         ,
          input:    """
                    rotate 10 * wave times box
                    """
          expected: """
-                   rotate(); (10 * wave()).times -> box()
+                   rotate -> (10 * wave()).times -> box()
                    """
         ,
          input:    """
                    rotate wave * wave times box
                    """
          expected: """
-                   rotate(); (wave()* wave()).times -> box()
+                   rotate -> (wave()* wave()).times -> box()
                    """
         ,
          input:    """
@@ -580,7 +576,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate wave*wave times box
                    """
          expected: """
-                   rotate(); (wave()*wave()).times -> box()
+                   rotate -> (wave()*wave()).times -> box()
                    """
         ,
          input:    """
@@ -596,28 +592,28 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate 2 times box
                    """
          expected: """
-                   rotate(); 2.times -> box()
+                   rotate -> 2.times -> box()
                    """
         ,
          input:    """
                    rotate wave 2 times box
                    """
          expected: """
-                   rotate(); (wave 2).times -> box()
+                   rotate wave(), -> 2.times -> box()
                    """
         ,
          input:    """
                    rotate wave + 2 times box
                    """
          expected: """
-                   rotate(); (wave()+ 2).times -> box()
+                   rotate -> (wave()+ 2).times -> box()
                    """
         ,
          input:    """
                    box 2 times box
                    """
          expected: """
-                   box(); 2.times -> box()
+                   box -> 2.times -> box()
                    """
         ,
          input:    """
@@ -638,7 +634,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    2 times box 3 times line 2
                    """
          expected: """
-                   2.times -> box(); 3.times -> line 2
+                   2.times -> box -> 3.times -> line 2
                    """
         ,
          input:    """
@@ -666,51 +662,43 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    a=wave+wave+wave
                    """
          expected: """
-                   a=wave()+wave()+wave()
+                   a = wave()+wave()+wave()
                    """
         ,
-         # in this case the user probably
-         # meant to keep a box, a peg and a line
-         # spinning. We don't give her that.
-         # we draw the box, the peg and the line
-         # and we do nothing. In this case
-         # the user should understand that
-         # one can't pass a primitive to
-         # a function that is meant to
-         # accept a number only.
+         # to be investigated
          input:    """
                    rotate(box,peg,line)
                    """
          expected: """
-                   rotate(box(),peg(),line())
+                   rotate(box(),-> peg(),-> line())
                    """
         ,
          input:    """
                    rotate box peg line
                    """
          expected: """
-                   pushMatrix(); rotate(); box(); peg(); line(); popMatrix()
+                   rotate -> box -> peg -> line()
                    """
         ,
          input:    """
                    rotate 2 box peg line
                    """
          expected: """
-                   pushMatrix(); rotate 2; box(); peg(); line(); popMatrix()
+                   rotate 2, -> box -> peg -> line()
                    """
         ,
          input:    """
                    rotate 2 + n box peg line
                    """
          expected: """
-                   pushMatrix(); rotate 2 + n; box(); peg(); line(); popMatrix()
+                   rotate 2 + n, -> box -> peg -> line()
                    """
         ,
          input:    """
                    rotate 2 + time box peg line
                    """
          expected: """
-                   pushMatrix(); rotate 2 + time; box(); peg(); line(); popMatrix()
+                   rotate 2 + time, -> box -> peg -> line()
                    """
         ,
          input:    """
@@ -728,24 +716,23 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
         ,
          # note that this example doesn't make sense
-         # but we want to check that it doesn't give
-         # any errors
          input:    """
                    either = (a,b) -> if random > 0.5 then a() else b()
                    either box, peg
                    """
          expected: """
                    either = (a,b) -> if random()> 0.5 then a() else b()
-                   either box(), peg()
+                   either box(), -> peg()
                    """
         ,
+         # note that this example doesn't make sense
          input:    """
                    either = (a,b) -> if random > 0.5 then a() else b()
                    rotate box, peg
                    """
          expected: """
                    either = (a,b) -> if random()> 0.5 then a() else b()
-                   pushMatrix(); rotate(); box(), peg(); popMatrix()
+                   rotate -> box(), -> peg()
                    """
         ,
          input:    """
@@ -757,8 +744,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    scale 0.3
                    a = 3
-                   pushMatrix(); move(); pushMatrix(); popMatrix(); rotate(); pushMatrix(); scale 3; box(); peg(); line 2; popMatrix(); popMatrix()
-                   pushMatrix(); move 0.1; peg(); popMatrix(); pushMatrix(); move 0.4; box(); popMatrix()
+                   move -> rotate -> scale 3, -> box -> peg -> line 2
+                   move 0.1, -> peg -> move 0.4, -> box()
                    """
         ,
          input:    """
@@ -788,16 +775,16 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
         ,
          input:    """
+                   // yo dawg I heard you like balls so I put a ball inside a ball so you can see balls inside balls
                    noFill
                    sizes = [1..3]
                    ball size for size in sizes when size isnt 3
-                   # yo dawg I heard you like balls so I put a ball inside a ball so you can see balls inside balls
                    """
          expected: """
+
                    noFill()
                    sizes = [1..3]
                    ball size for size in sizes when size isnt 3
-                   # yo dawg I heard you like balls so I put a; ball inside a; ball so you can see balls inside balls
                    """
         ,
          input:    """
@@ -836,7 +823,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    d = 2
-                   pushMatrix(); scale 2, d; box b, c; popMatrix()
+                   scale 2, d, -> box b, c
                    """
         ,
          # This might not be what the user means,
@@ -847,16 +834,16 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    d = -> 2
-                   pushMatrix(); scale 2, d(); box b, c; popMatrix()
+                   scale 2, d(), -> box b, c
                    """
         ,
          input:    """
                    a = 2
-                   scale 2, a; box b, c
+                   scale 2, a box b, c
                    """
          expected: """
                    a = 2
-                   scale 2, a; box b, c
+                   scale 2, a, -> box b, c
                    """
         ,
          input:    """
@@ -865,7 +852,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    either = (a,b) -> if random()> 0.5 then a() else b()
-                   either (->box()), (->peg())
+                   either (-> box()), (-> peg())
                    """
         ,
          input:    """
@@ -874,17 +861,38 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    either = (a,b) -> if random()> 0.5 then a() else b()
-                   either box, peg
+                   either (-> box()), (-> peg())
                    """
          notIdempotent: true
+         failsMootAppends: true
+        ,
+         input:    """
+                   either = (a,b) -> if random > 0.5 then a() else b()
+                   either <box 2>, <peg 2>
+                   """
+         expected: """
+                   either = (a,b) -> if random()> 0.5 then a() else b()
+                   either (-> box 2), (-> peg 2)
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         input:    """
+                   either = (a,b) -> if random > 0.5 then a() else b()
+                   either (->box),(->rect)
+                   """
+         expected: """
+                   either = (a,b) -> if random()> 0.5 then a() else b()
+                   either (-> box()),(-> rect())
+                   """
         ,
          input:    """
                    rand = (arg) -> random(arg)
-                   box rand line peg
+                   box (rand 2) ball 2
                    """
          expected: """
                    rand = (arg) -> random(arg)
-                   box rand(); line(); peg()
+                   box (rand 2), -> ball 2
                    """
         ,
          input:    """
@@ -903,7 +911,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    noStroke()
                    rand = -> 255*random()
                    fill rand(), 255*random(), 255*random()
-                   50.times -> 
+                   50.times ->
                    ▶resetMatrix()
                    ▶scale 0.4
                    ▶move 5-(random 10), 5-(random 10), 5-(random 10)
@@ -914,70 +922,63 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    scale rotate box 2 peg 2.3
                    """
          expected: """
-                   pushMatrix(); scale(); pushMatrix(); popMatrix(); rotate(); box 2; peg 2.3; popMatrix()
-                   """
-        ,
-         input:    """
-                   scale rotate box 2; peg 2.3
-                   """
-         expected: """
-                   pushMatrix(); scale(); pushMatrix(); popMatrix(); rotate(); box 2; popMatrix(); peg 2.3
+                   scale -> rotate -> box 2, -> peg 2.3
                    """
         ,
          input:    """
                    rotate box peg 1.1
                    """
          expected: """
-                   pushMatrix(); rotate(); box(); peg 1.1; popMatrix()
+                   rotate -> box -> peg 1.1
                    """
         ,
          input:    """
-                   rotate box; peg 1.1
+                   rotate box peg 1.1
                    """
          expected: """
-                   pushMatrix(); rotate(); box(); popMatrix(); peg 1.1
+                   rotate -> box -> peg 1.1
                    """
         ,
          input:    """
-                   rotate box; rotate line 2
+                   rotate box rotate line 2
                    """
          expected: """
-                   pushMatrix(); rotate(); box(); popMatrix(); pushMatrix(); rotate(); line 2; popMatrix()
+                   rotate -> box -> rotate -> line 2
                    """
         ,
          input:    """
                    rotate box line 2
                    """
          expected: """
-                   pushMatrix(); rotate(); box(); line 2; popMatrix()
+                   rotate -> box -> line 2
                    """
         ,
          input:    """
                    rotate rotate rotate rotate box line 2
                    """
          expected: """
-                   pushMatrix(); rotate(); pushMatrix(); rotate(); pushMatrix(); rotate(); pushMatrix(); rotate(); box(); line 2; popMatrix(); popMatrix(); popMatrix(); popMatrix()
+                   rotate -> rotate -> rotate -> rotate -> box -> line 2
                    """
         ,
          input:    """
                    2 times rotate box line 2
                    """
          expected: """
-                   2.times -> pushMatrix(); rotate(); box(); line 2; popMatrix()
+                   2.times -> rotate -> box -> line 2
                    """
         ,
          input:    """
                    rotate rotate box
                    """
          expected: """
-                   pushMatrix(); rotate(); pushMatrix(); rotate(); box(); popMatrix(); popMatrix()
+                   rotate -> rotate -> box()
                    """
         ,
          input:    """
                    10 times rotate scale box
                    """
          expected: """
-                   10.times -> pushMatrix(); rotate(); pushMatrix(); scale(); box(); popMatrix(); popMatrix()
+                   10.times -> rotate -> scale -> box()
                    """
         ,
          input:    """
@@ -1010,20 +1011,17 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    1.times ->
                    ▶addDoOnce(1); background 255
                    ▶fill 255,0,0
-                   ; addDoOnce(4); 1.times -> ball()
+                   addDoOnce(4); 1.times -> ball()
                    box()
                    """
         ,
-         # note that the matrix operations don't chain in this case
-         # I think this is consistent, as I would expect
-         #    move box move box 
-         # to behave the same as
-         # 2 times move box
+         # note that the matrix operations do chain also this case
+         # just add a semicolon if you don't wand them to
          input:    """
                    move peg 1.2 move box
                    """
          expected: """
-                   pushMatrix(); move(); peg 1.2;  popMatrix(); pushMatrix(); move(); box(); popMatrix()
+                   move -> peg 1.2, -> move -> box()
                    """
         ,
          input:    """
@@ -1067,6 +1065,438 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    ▶▶move()
                    ▶▶rotate ->
                    ▶▶▶ball 0.6
+                   """
+        ,
+         notes:    """
+                   A complex case with nested if then else and
+                   function definition.
+                   """
+         input:    """
+                   if true then if true then a = -> ball if true then a = -> rect else line ball
+                   a
+                   """
+         expected: """
+                   if true then if true then a = -> ball(); if true then a = -> rect() else line -> ball()
+                   a()
+                   """
+        ,
+         notes:    """
+                   Check that qualifiers don't span over else
+                   """
+         input:    """
+                   if true then move rotate box else move line
+                   """
+         expected: """
+                   if true then move -> rotate -> box() else move -> line()
+                   """
+        ,
+         notes:    """
+                   Some times nested in ifs. The final js,
+                   consistently with coffeescript, is:
+                     if (true) {
+                       2..times(function() {
+                         box();
+                         return line();
+                       });
+                     } else {
+                       peg();
+                     }                   
+                   """
+         input:    """
+                   if true then 2 times box line else peg
+                   """
+         expected: """
+                   if true then 2.times -> box -> line() else peg()
+                   """
+        ,
+         notes:    """
+                   Some more "times nested in ifs". The final js,
+                   consistently with coffeescript, is:
+                   if (true) {
+                     2..times(function() {
+                       box();
+                       if (true) {
+                         return 2..times(function() {
+                           return rect();
+                         });
+                       }
+                     });
+                   } else {
+                     2..times(function() {
+                       peg();
+                       return ball();
+                   """
+         input:    """
+                   if true then 2 times box if true then 2 times rect else 2 times peg ball
+                   """
+         expected: """
+                   if true then 2.times -> box(); if true then 2.times -> rect() else 2.times -> peg -> ball()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   2 times if true then ball
+                   """
+         expected: """
+                   2.times -> if true then ball()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   2 times if true then ball
+                   """
+         expected: """
+                   2.times -> if true then ball()
+                   """
+        ,
+         notes:    """
+                   note that you cannot have anonymous
+                   functions in the test in coffeescript,
+                   i.e. pasting the "expected" below
+                   into coffeescript gives an error
+                   """
+         input:    """
+                   if 2 times a then ball
+                   """
+         expected: """
+                   if 2.times -> a then ball()
+                   """
+        ,
+         notes:    """
+                   this example doesn't mean anything
+                   meaningful...
+                   """
+         input:    """
+                   if (2 times a) then ball
+                   """
+         expected: """
+                   if (2.times -> a) then ball()
+                   """
+        ,
+         notes:    """
+                   times and qualifiers within an if-then-else
+                   """
+         input:    """
+                   if random < 0.5 then 2 times rotate box else 3 times move peg
+                   """
+         expected: """
+                   if random()< 0.5 then 2.times -> rotate -> box() else 3.times -> move -> peg()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   peg move
+                   ▶box
+                   peg
+                   """
+         expected: """
+                   peg -> move ->
+                   ▶box()
+                   peg()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   a = 3
+                   rotate 2,a+1+3*(a*2.32+Math.PI) 2+a+Math.PI times box
+                   peg
+                   """
+         expected: """
+                   a = 3
+                   rotate 2,a+1+3*(a*2.32+Math.PI), -> (2+a+Math.PI).times -> box()
+                   peg()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   rotate move scale 2 times box
+                   """
+         expected: """
+                   rotate -> move -> scale -> 2.times -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   if true then rotate move scale box else rotate move scale 2 times box
+                   """
+         expected: """
+                   if true then rotate -> move -> scale -> box() else rotate -> move -> scale -> 2.times -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   if true then rotate move scale 2 times box else rotate move scale box
+                   """
+         expected: """
+                   if true then rotate -> move -> scale -> 2.times -> box() else rotate -> move -> scale -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   if true then scale rotate else scale rotate 2 times move
+                   """
+         expected: """
+                   if true then scale -> rotate() else scale -> rotate -> 2.times -> move()
+                   """
+        ,
+         notes:    """
+                   a long chain of matrix operations will tell
+                   whether there are some trandformations that
+                   don't quite complete their job.
+                   """
+         input:    """
+                   if true then rotate move scale scale scale scale move move rotate rotate box else rotate move scale scale scale scale move move rotate rotate 2 times box
+                   """
+         expected: """
+                   if true then rotate -> move -> scale -> scale -> scale -> scale -> move -> move -> rotate -> rotate -> box() else rotate -> move -> scale -> scale -> scale -> scale -> move -> move -> rotate -> rotate -> 2.times -> box()
+                   """
+        ,
+         notes:    """
+                   note that
+                     scale(3) ,(-> box());
+                   would give error in coffeescript
+                   """
+         input:    """
+                   scale (3) box
+                   ball
+                   """
+         expected: """
+                   scale (3), -> box()
+                   ball()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   scale(3) box
+                   ball
+                   """
+         expected: """
+                   scale(3); box()
+                   ball()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   scale 2, box
+                   """
+         expected: """
+                   scale 2, -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   scale 2,box
+                   """
+         expected: """
+                   scale 2,-> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   scale 2, -> box
+                   """
+         expected: """
+                   scale 2, -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   scale 2, ->box
+                   """
+         expected: """
+                   scale 2, -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   scale 2,->box
+                   """
+         expected: """
+                   scale 2,-> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   rotate 1 + wave, -> box
+                   """
+         expected: """
+                   rotate 1 + wave(), -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   a = 2
+
+                   rotate 2 times box box
+                   rotate 2 2+2*2 times box
+                   rotate 2,a 2+2*2 times box
+                   rotate a+1+3 2 times box
+                   rotate 2 2 times box
+                   rotate 2,a+1+3*(a*2.32+Math.PI) 2+a+Math.PI times box
+                   box a + 3 times rotate peg
+                   2 times box
+                   1+1 times box
+                   peg 2 times box
+                   n = 2 n times: box
+                   rotate wave times box
+                   rotate 10*wave times box
+                   rotate 10 * wave times box
+                   wave wave times box
+                   rotate wave wave times box
+
+                   if true then rotate 2 times box box
+                   if true then rotate 2 2+2*2 times box
+                   if true then rotate 2,a 2+2*2 times box
+                   if true then rotate a+1+3 2 times box
+                   if true then rotate 2 2 times box
+                   if true then rotate 2,a+1+3*(a*2.32+Math.PI) 2+a+Math.PI times box
+                   if true then box a + 3 times rotate peg
+                   if true then 2 times box
+                   if true then 1+1 times box
+                   if true then peg 2 times box
+                   if true then n = 2 n times: box
+                   if true then rotate wave times box
+                   if true then rotate 10*wave times box
+                   if true then rotate 10 * wave times box
+                   if true then wave wave times box
+                   if true then rotate wave wave times box
+
+                   if true then rotate 2 times box box else rotate 2 times box box
+                   if true then rotate 2 2+2*2 times box else rotate 2 2+2*2 times box
+                   if true then rotate 2,a 2+2*2 times box else rotate 2,a 2+2*2 times box
+                   if true then rotate a+1+3 2 times box else rotate a+1+3 2 times box
+                   if true then rotate 2 2 times box else rotate 2 2 times box
+                   if true then rotate 2,a+1+3*(a*2.32+Math.PI) 2+a+Math.PI times box else rotate 2,a+1+3*(a*2.32+Math.PI) 2+a+Math.PI times box
+                   if true then box a + 3 times rotate peg else box a + 3 times rotate peg
+                   if true then 2 times box else 2 times box
+                   if true then 1+1 times box else 1+1 times box
+                   if true then peg 2 times box else peg 2 times box
+                   if true then n = 2 n times: box else n = 2 n times: box
+                   if true then rotate wave times box else rotate wave times box
+                   if true then rotate 10*wave times box else rotate 10*wave times box
+                   if true then rotate 10 * wave times box else rotate 10 * wave times box
+                   if true then wave wave times box else wave wave times box
+                   if true then rotate wave wave times box else rotate wave wave times box                   """
+         expected: """
+                   a = 2
+
+                   rotate -> 2.times -> box -> box()
+                   rotate 2, -> (2+2*2).times -> box()
+                   rotate 2,a, -> (2+2*2).times -> box()
+                   rotate a+1+3, -> 2.times -> box()
+                   rotate 2, -> 2.times -> box()
+                   rotate 2,a+1+3*(a*2.32+Math.PI), -> (2+a+Math.PI).times -> box()
+                   box -> (a + 3).times -> rotate -> peg()
+                   2.times -> box()
+                   (1+1).times -> box()
+                   peg -> 2.times -> box()
+                   n = 2; n.times -> box()
+                   rotate -> (wave()).times -> box()
+                   rotate -> (10*wave()).times -> box()
+                   rotate -> (10 * wave()).times -> box()
+                   wave(); (wave()).times -> box()
+                   rotate wave(), -> (wave()).times -> box()
+
+                   if true then rotate -> 2.times -> box -> box()
+                   if true then rotate 2, -> (2+2*2).times -> box()
+                   if true then rotate 2,a, -> (2+2*2).times -> box()
+                   if true then rotate a+1+3, -> 2.times -> box()
+                   if true then rotate 2, -> 2.times -> box()
+                   if true then rotate 2,a+1+3*(a*2.32+Math.PI), -> (2+a+Math.PI).times -> box()
+                   if true then box -> (a + 3).times -> rotate -> peg()
+                   if true then 2.times -> box()
+                   if true then (1+1).times -> box()
+                   if true then peg -> 2.times -> box()
+                   if true then n = 2; n.times -> box()
+                   if true then rotate -> (wave()).times -> box()
+                   if true then rotate -> (10*wave()).times -> box()
+                   if true then rotate -> (10 * wave()).times -> box()
+                   if true then wave(); (wave()).times -> box()
+                   if true then rotate wave(), -> (wave()).times -> box()
+
+                   if true then rotate -> 2.times -> box -> box() else rotate -> 2.times -> box -> box()
+                   if true then rotate 2, -> (2+2*2).times -> box() else rotate 2, -> (2+2*2).times -> box()
+                   if true then rotate 2,a, -> (2+2*2).times -> box() else rotate 2,a, -> (2+2*2).times -> box()
+                   if true then rotate a+1+3, -> 2.times -> box() else rotate a+1+3, -> 2.times -> box()
+                   if true then rotate 2, -> 2.times -> box() else rotate 2, -> 2.times -> box()
+                   if true then rotate 2,a+1+3*(a*2.32+Math.PI), -> (2+a+Math.PI).times -> box() else rotate 2,a+1+3*(a*2.32+Math.PI), -> (2+a+Math.PI).times -> box()
+                   if true then box -> (a + 3).times -> rotate -> peg() else box -> (a + 3).times -> rotate -> peg()
+                   if true then 2.times -> box() else 2.times -> box()
+                   if true then (1+1).times -> box() else (1+1).times -> box()
+                   if true then peg -> 2.times -> box() else peg -> 2.times -> box()
+                   if true then n = 2; n.times -> box() else n = 2; n.times -> box()
+                   if true then rotate -> (wave()).times -> box() else rotate -> (wave()).times -> box()
+                   if true then rotate -> (10*wave()).times -> box() else rotate -> (10*wave()).times -> box()
+                   if true then rotate -> (10 * wave()).times -> box() else rotate -> (10 * wave()).times -> box()
+                   if true then wave(); (wave()).times -> box() else wave(); (wave()).times -> box()
+                   if true then rotate wave(), -> (wave()).times -> box() else rotate wave(), -> (wave()).times -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   a = 0
+                   af = -> 0
+                   b = true
+                   bf = -> true
+                   if a == 0 then line a
+                   if a != 0 then line a
+                   if a >= 0 then line a
+                   if a <= 0 then line a
+                   if af == 0 then line a
+                   if af != 0 then line a
+                   if af >= 0 then line a
+                   if af <= 0 then line a
+                   if b and true then line a
+                   if b or true then line a
+                   if not b then line a
+                   if ! b then line a
+                   if !b then line a
+                   if bf and true then line a
+                   if bf or true then line a
+                   if not bf then line a
+                   if ! bf then line a
+                   if !bf then line a
+                   """
+         expected: """
+                   a = 0
+                   af = -> 0
+                   b = true
+                   bf = -> true
+                   if a == 0 then line a
+                   if a != 0 then line a
+                   if a >= 0 then line a
+                   if a <= 0 then line a
+                   if af() == 0 then line a
+                   if af() != 0 then line a
+                   if af() >= 0 then line a
+                   if af() <= 0 then line a
+                   if b and true then line a
+                   if b or true then line a
+                   if not b then line a
+                   if ! b then line a
+                   if !b then line a
+                   if bf() and true then line a
+                   if bf() or true then line a
+                   if not bf() then line a
+                   if ! bf() then line a
+                   if !bf() then line a
                    """
 
       ]

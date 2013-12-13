@@ -308,7 +308,7 @@ require [
     document.getElementById(canvasName).height = window.innerHeight
     startEnvironment
       blendedThreeJsSceneCanvas: document.getElementById(canvasName)
-      canvasForBackground: document.getElementById("backGroundCanvas")
+      canvasForBackground: document.getElementById("backgroundDiv")
       forceCanvasRenderer: false
       bubbleUpErrorsForDebugging: true
       

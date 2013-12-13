@@ -193,7 +193,6 @@ define [
               ▶line
               ▶move -0.5,0,0
               ▶line
-              ▶line
               """
     
       @programs.demos.trillionfeathersDemo =

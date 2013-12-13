@@ -120,6 +120,9 @@
 ## helpful for example in
 ##   20 times rotate box
 
+isFunction = (functionToCheck) ->
+  getType = {}
+  functionToCheck and getType.toString.call(functionToCheck) is "[object Function]"
 
 define () ->
 
@@ -162,11 +165,11 @@ define () ->
     numberOfOverlappingPrimitives: []
     
     constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance) ->
-      window.line = (a,b,c) => @line(a,b,c)
-      window.rect = (a,b,c) => @rect(a,b,c)
-      window.box = (a,b,c) => @box(a,b,c)
-      window.peg = (a,b,c) => @peg(a,b,c)
-      window.ball = (a,b,c) => @ball(a,b,c)
+      window.line = (a,b,c,d) => @line(a,b,c,d)
+      window.rect = (a,b,c,d) => @rect(a,b,c,d)
+      window.box = (a,b,c,d) => @box(a,b,c,d)
+      window.peg = (a,b,c,d) => @peg(a,b,c,d)
+      window.ball = (a,b,c,d) => @ball(a,b,c,d)
       window.ballDetail = (a) => @ballDetail(a)
       window.fill = (a,b,c,d) => @fill(a,b,c,d)
       window.noFill = () => @noFill()
@@ -444,6 +447,10 @@ define () ->
           pooledObjectWithMaterials.threejsObject3D.matrix.scale \
             new @liveCodeLabCore_three.Vector3(a + 0.001, b + 0.001, c + 0.001)
         else
+          # odd things happen setting scale to zero
+          a = 0.000000001  if a > -0.000000001 and a < 0.000000001
+          b = 0.000000001  if b > -0.000000001 and b < 0.000000001
+          c = 0.000000001  if c > -0.000000001 and c < 0.000000001
           pooledObjectWithMaterials.threejsObject3D.matrix.scale \
             new @liveCodeLabCore_three.Vector3(a, b, c)
 
@@ -482,29 +489,36 @@ define () ->
       @liveCodeLabCoreInstance.threeJsSystem.scene.add \
         pooledObjectWithMaterials.threejsObject3D  if objectIsNew
 
-    commonPrimitiveDrawingLogic: (a, b, c, primitiveProperties) ->
+    commonPrimitiveDrawingLogic: (a, b, c, d, primitiveProperties) ->
       
       # b and c are not functional in some geometric
       # primitives, but we handle them here in all cases
       # to make the code uniform and unifiable
-      if not a?
+      if typeof a isnt "number"
+        if isFunction a then appendedFunction = a
         a = 1
         b = 1
         c = 1
-      else if not b?
+      else if typeof b isnt "number"
+        if isFunction b then appendedFunction = b
         b = a
         c = a
-      else c = 1 if not c?
+      else if typeof c isnt "number"
+        if isFunction c then appendedFunction = c
+        c = 1
+      else if isFunction d
+        appendedFunction = d
       
       # Simple case - if there is no fill and
       # no stroke then there is nothing to do.
       # Also, even if we aren'd under a noFill command spell, some geometries
       # inherently don't have a fill, so we return if there is no stroke either.
       # (right now that applies only lines).
-      return  if not @doStroke and (
-        not @doFill or not primitiveProperties.canFill
-      )
-      
+      if not @doStroke and
+       (not @doFill or not primitiveProperties.canFill)
+        if appendedFunction? then appendedFunction()
+        return
+
       # if we are under the influence of a noFill command OR
       # the wireframe is not going to be visible on top of the
       # fill then don't draw the stroke, only draw the fill
@@ -547,6 +561,9 @@ define () ->
           @defaultNormalFill
         )
 
+      if appendedFunction? then appendedFunction()
+      return
+
     reset: ->
       @fill 0xFFFFFFFF
       @stroke 0xFFFFFFFF
@@ -575,7 +592,7 @@ define () ->
     # an ambient light to the color of the stroke
     # (although which ambient light do you pick if there
     # is more than one?)
-    line: (a, b, c) ->
+    line: (a, b, c, d = null) ->
       
       # lines can only have one material, which is LineBasicMaterial
       # which doesn't react to lights (as opposed to MeshLambertMaterial, which
@@ -590,7 +607,7 @@ define () ->
         rememberPreviousStrokeSize = @currentStrokeSize
         @currentStrokeSize = 2  if @currentStrokeSize < 2
         a = 1 if not a?
-        @rect 0, a, 0
+        @rect 0, a, 0, d
         @doFill = rememberIfThereWasAFill
         @currentStrokeSize = rememberPreviousStrokeSize
         return
@@ -605,9 +622,9 @@ define () ->
 
       
       # end of primitive-specific initialisations:
-      @commonPrimitiveDrawingLogic a, b, c, primitiveProperties
+      @commonPrimitiveDrawingLogic a, b, c, d, primitiveProperties
 
-    rect: (a, b, c) ->
+    rect: (a, b, c, d = null) ->
       # primitive-specific initialisations:
       primitiveProperties =
         canFill: true
@@ -618,9 +635,9 @@ define () ->
 
       
       # end of primitive-specific initialisations:
-      @commonPrimitiveDrawingLogic a, b, c, primitiveProperties
+      @commonPrimitiveDrawingLogic a, b, c, d, primitiveProperties
 
-    box: (a, b, c) ->
+    box: (a, b, c, d = null) ->
       # primitive-specific initialisations:
       primitiveProperties =
         canFill: true
@@ -628,12 +645,11 @@ define () ->
         sidedness: @liveCodeLabCore_three.FrontSide
         threeObjectConstructor: @liveCodeLabCore_three.Mesh
         detailLevel: 0
-
       
       # end of primitive-specific initialisations:
-      @commonPrimitiveDrawingLogic a, b, c, primitiveProperties
+      @commonPrimitiveDrawingLogic a, b, c, d, primitiveProperties
 
-    peg: (a, b, c) ->
+    peg: (a, b, c, d = null) ->
       # primitive-specific initialisations:
       primitiveProperties =
         canFill: true
@@ -644,7 +660,7 @@ define () ->
 
       
       # end of primitive-specific initialisations:
-      @commonPrimitiveDrawingLogic a, b, c, primitiveProperties
+      @commonPrimitiveDrawingLogic a, b, c, d, primitiveProperties
 
     ballDetail: (a) ->
       return if not a?
@@ -652,7 +668,7 @@ define () ->
       a = 30  if a > 30
       @ballDetLevel = Math.round(a)
 
-    ball: (a, b, c) ->
+    ball: (a, b, c, d = null) ->
       # primitive-specific initialisations:
       primitiveProperties =
         canFill: true
@@ -663,7 +679,7 @@ define () ->
 
       
       # end of primitive-specific initialisations:
-      @commonPrimitiveDrawingLogic a, b, c, primitiveProperties
+      @commonPrimitiveDrawingLogic a, b, c, d, primitiveProperties
 
     
     # Modified from Processing.js
