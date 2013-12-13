@@ -270,8 +270,8 @@ define [
       # for the next frame. Abstracting a bit though, it's clearer this way.
       @animationLoop.animate()
 
-    runLastWorkingDrawProgram: ->
-      @programRunner.reinstateLastWorkingDrawProgram()
+    runLastWorkingProgram: ->
+      @programRunner.runLastWorkingProgram()
 
     loadAndTestAllTheSounds: ->
       @soundSystem.loadAndTestAllTheSounds()

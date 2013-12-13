@@ -86,7 +86,7 @@ define [
         @lastStableProgram = @program
         @eventRouter.emit("livecodelab-running-stably")
 
-    reinstateLastWorkingProgram: ->
+    runLastWorkingProgram: ->
       # mark the program as flawed and register the previous stable one.
       @consecutiveFramesWithoutRunTimeError = 0
       @program = @lastStableProgram
