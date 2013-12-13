@@ -171,8 +171,6 @@ define () ->
           @eventRouter.emit("runtime-error-thrown", e)
           return
         drawFunctionRunner = @liveCodeLabCoreInstance.drawFunctionRunner
-        drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun \
-          @liveCodeLabCoreInstance.codeCompiler
       else
         @liveCodeLabCoreInstance.dozingOff = true
         # the program is empty and so it's the screen. Effectively, the user
@@ -220,7 +218,11 @@ define () ->
       # so that the user program can create its own from scratch
       @liveCodeLabCoreInstance.soundSystem.resetLoops()
 
-      @liveCodeLabCoreInstance.drawFunctionRunner.resetTrackingOfDoOnceOccurrences()
+      # set a
+      # default bpm (so user doesn't need to add bpm instruction). If
+      # the bpm instruction is invoked in the code,
+      # that new value will override this default value.
+      @liveCodeLabCoreInstance.soundSystem.setUpdatesPerMinute 60 * 4
 
       @liveCodeLabCoreInstance.lightSystem.noLights()
       @liveCodeLabCoreInstance.graphicsCommands.reset()
