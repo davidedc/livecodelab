@@ -1341,6 +1341,17 @@ define ['core/code-preprocessor-tests'], (foo) ->
          notes:    """
                    """
          input:    """
+                   localMaterial <box peg 1.1 time rotate ball>
+                   """
+         expected: """
+                   localMaterial (-> box -> peg 1.1 time, -> rotate -> ball())
+                   """
+         failsMootAppends: true
+        ,
+
+         notes:    """
+                   """
+         input:    """
                    a = 2
 
                    rotate 2 times box box

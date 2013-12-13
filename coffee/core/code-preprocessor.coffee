@@ -611,7 +611,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
       allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
 
-      rx = RegExp("<[\\s]*(("+allFunctionsRegex+")[^\\r\\n]*?)>\\s*([,]|\\s*$)",'gm')
+      rx = RegExp("<[\\s]*(("+allFunctionsRegex+")[^\\r\\n]*?)>\\s*([,;]|\\s*$)",'gm')
       code = code.replace(rx, "(->$1)$3")
 
       if detailedDebug then console.log "adjustFunctionalReferences-1\n" + code + " error: " + error
