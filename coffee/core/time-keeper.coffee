@@ -47,14 +47,13 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
         @beatCount += 1
 
         # Set the BPM and phase from pulse if it's connected
-        if @pulseClient.currentConnection()
+        if @pulseClient.currentConnection() and @pulseClient.beats.length
           @setBpm(@pulseClient.bpm)
-          if @pulseClient.beats.length
-            if @pulseClient.count == 1 and @lastBeat != @pulseClient.beats[@pulseClient.beats.length-1]
-              @beatCount = 1
-              @lastBeat = @pulseClient.beats[@pulseClient.beats.length-1]
-            else
-              @lastBeat = @pulseClient.beats[@pulseClient.beats.length-1] + @mspb * (@beatCount - @pulseClient.count)
+          if @pulseClient.count == 1 and @lastBeat != @pulseClient.beats[@pulseClient.beats.length-1]
+            @beatCount = 1
+            @lastBeat = @pulseClient.beats[@pulseClient.beats.length-1]
+          else
+            @lastBeat = @pulseClient.beats[@pulseClient.beats.length-1] + @mspb * (@beatCount - @pulseClient.count)
         else
           @lastBeat += @mspb
       
