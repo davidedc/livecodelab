@@ -863,7 +863,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    either = (a,b) -> if random()> 0.5 then a() else b()
                    either (-> box()), (-> peg())
                    """
-         notIdempotent: true
          failsMootAppends: true
         ,
          input:    """
@@ -874,7 +873,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    either = (a,b) -> if random()> 0.5 then a() else b()
                    either (-> box 2), (-> peg 2)
                    """
-         notIdempotent: true
          failsMootAppends: true
         ,
          input:    """
