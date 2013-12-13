@@ -1,7 +1,7 @@
 /*global define */
 
 define([
-    'programdata'
+    'lib/lcl/programdata'
 ], function (
     ProgramData
 ) {

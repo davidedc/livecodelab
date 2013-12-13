@@ -1,7 +1,7 @@
 /*global define */
 
 define([
-    'interpreter-funcs'
+    'lib/lcl/interpreter-funcs'
 ], function (
     helpers
 ) {
