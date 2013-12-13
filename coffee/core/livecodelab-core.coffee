@@ -11,7 +11,7 @@ A LiveCodeLabCore instance packs together the following parts:
 - backgroundPainter
 - graphicsCommands
 - lightSystem
-- drawFunctionRunner
+- programRunner
 - codeCompiler
 - renderer
 - animationLoop
@@ -173,7 +173,7 @@ define [
       )
       
       # this one also interacts with codeCompiler at runtime.
-      @drawFunctionRunner =
+      @programRunner =
         new ProgramRunner(@paramsObject.eventRouter, @)
       
       # compiles the user sketch to js so it's ready to run.
@@ -182,7 +182,7 @@ define [
       
       # this one also interacts with timeKeeper, matrixCommands, blendControls,
       #    soundSystem,
-      #    backgroundPainter, graphicsCommands, lightSystem, drawFunctionRunner,
+      #    backgroundPainter, graphicsCommands, lightSystem, programRunner,
       #    codeCompiler, renderer
       # ...at runtime
       @animationLoop =
@@ -270,8 +270,8 @@ define [
       # for the next frame. Abstracting a bit though, it's clearer this way.
       @animationLoop.animate()
 
-    runLastWorkingDrawFunction: ->
-      @drawFunctionRunner.reinstateLastWorkingDrawFunction()
+    runLastWorkingDrawProgram: ->
+      @programRunner.reinstateLastWorkingDrawProgram()
 
     loadAndTestAllTheSounds: ->
       @soundSystem.loadAndTestAllTheSounds()

@@ -146,7 +146,7 @@ define () ->
       # We'll re-start the animation when the editor content
       # changes. Note that this frame goes to completion anyways, because
       # we actually do want to render one "empty screen" frame.
-      if @liveCodeLabCoreInstance.drawFunctionRunner.drawFunction
+      if @liveCodeLabCoreInstance.programRunner.program
         @scheduleNextFrame()
         
         # Now here there is another try/catch check when the draw function is ran.
@@ -161,7 +161,7 @@ define () ->
         # 1. highlight the error
         # 2. run the previously known good program.
         try
-          @liveCodeLabCoreInstance.drawFunctionRunner.runDrawFunction()
+          @liveCodeLabCoreInstance.programRunner.runProgram()
         catch e
           
           #alert('runtime error');
@@ -170,7 +170,6 @@ define () ->
           # then got an error, now you are re-running an old draw function.
           @eventRouter.emit("runtime-error-thrown", e)
           return
-        drawFunctionRunner = @liveCodeLabCoreInstance.drawFunctionRunner
       else
         @liveCodeLabCoreInstance.dozingOff = true
         # the program is empty and so it's the screen. Effectively, the user

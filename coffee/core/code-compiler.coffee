@@ -52,5 +52,5 @@ define [
 
       @eventRouter.emit("clear-error")
 
-      @liveCodeLabCoreInstance.drawFunctionRunner.setProgram programAST
+      @liveCodeLabCoreInstance.programRunner.setProgram programAST
 
