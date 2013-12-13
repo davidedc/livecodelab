@@ -17,7 +17,7 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       @mspb = 60000 / @bpm       # milliseconds per beat
       @lastBeat = undefined      # milliseconds at last whole beat
       @nextQuarterBeat = 0       # timestamp at which next quarter beat runs
-      @beatCount = 0             # last whole beat number
+      @beatCount = 1             # last whole beat number
       @fraction = 0              # fraction of the beat we're at
 
       @pulseClient = new Pulse();      
@@ -41,25 +41,27 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
     beatLoop: ->
       now = new Date().getTime()
       @emit('beat', @beatCount + @fraction)
-      
-      # Set the BPM and phase from pulse if it's connected
-      if @pulseClient.currentConnection()
-        console.log(@pulseClient.bpm)
-        @setBpm(@pulseClient.bpm)
-        # console.log(@bpm, @lastBeat, @pulseClient.beats[@pulseClient.beats.length-1]  )
-        if @pulseClient.beats.length and @beatCount == @pulseClient.count
-          @lastBeat = @pulseClient.beats[@pulseClient.beats.length-1]
+
+      if @fraction == 1
+        @fraction = 0
+        @beatCount += 1
+
+        # Set the BPM and phase from pulse if it's connected
+        if @pulseClient.currentConnection()
+          @setBpm(@pulseClient.bpm)
+          if @pulseClient.beats.length
+            if @pulseClient.count == 1 and @lastBeat != @pulseClient.beats[@pulseClient.beats.length-1]
+              @beatCount = 1
+              @lastBeat = @pulseClient.beats[@pulseClient.beats.length-1]
+            else
+              @lastBeat = @pulseClient.beats[@pulseClient.beats.length-1] + @mspb * (@beatCount - @pulseClient.count)
+        else
+          @lastBeat += @mspb
       
       @fraction += 0.25
-      if @fraction >= 1
-        @lastBeat += @mspb
-        @beatCount += 1
-        @fraction = 0
-      # fraction = Math.round((now - @lastBeat) / @mspb * 4) / 4;
-      # console.log(@beatCount, @fraction, @bpm)  # TODO/tom remove 
-      
+
       # Set a timeout for the next (quarter) beat
-      @nextQuarterBeat = @lastBeat + @mspb * (@fraction + 0.25)
+      @nextQuarterBeat = @lastBeat + @mspb * @fraction
       delta = @nextQuarterBeat - new Date().getTime()
       setTimeout( (=> @beatLoop()) , delta)
 

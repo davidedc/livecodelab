@@ -119,7 +119,6 @@ define () ->
       
       forbiddenZone = Math.min(Math.max.apply(Math, @fpsHistory), 1000/30)
       if @liveCodeLabCoreInstance.timeKeeper.nextQuarterBeat - frameStartTime < forbiddenZone
-        console.log("SKIPPING FRAME")
         @noDrawFrame = true
       else
         @noDrawFrame = false

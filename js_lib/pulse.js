@@ -1,6 +1,6 @@
 /*!
   * Pulse - beat tracking from MIDI Clock
-  * v0.1.6
+  * v0.1.7
   * https://github.com/noio/pulse
   * MIT License | (c) Thomas "noio" van den Berg 2013
   */
@@ -30,6 +30,7 @@ var Pulse = function(module){
 	// Static properties
 	Pulse.MIDI_CLOCK = 248;
 	Pulse.MIDI_START = 250;
+	Pulse.MIDI_CONTINUE = 251;
 	Pulse.PPQN = 4;
 	Pulse.TAP_TIMEOUT = 20;
 	Pulse.MAX_NET_LATENCY = 150;
@@ -210,7 +211,7 @@ var Pulse = function(module){
     		if (data == Pulse.MIDI_CLOCK){
     			_this.clock();
     		}
-    		else if (data == Pulse.MIDI_START){
+    		else if (data == Pulse.MIDI_START || data == Pulse.MIDI_CONTINUE){
     			_this.sync();
     		}
 		});
