@@ -13,8 +13,8 @@ if true
 Most of the coffeescript syntax can be used, however LiveCodeLab uses some euristics to make many short constructs a lot quicker to express and to type. For example "()" can be omitted all the times, and sequences of commands will almost always be disambiguated and interpreted correctly. The specifics follow.
 
 
-"()" can be omitted
------
+"()" can be omitted almost all the times
+----------------------------
 In coffeescript there is a difference between writing
 ```
 box
@@ -23,33 +23,42 @@ and writing
 ```
 box()
 ```
-while in LiveCodeLab, like in Ruby, there isn't. Any time a "known" function name (e.g. any LiveCodeLab function and any user-defined function) appears without arguments and parentheses, the function is implicitely called on the spot. Since all LiveCodeLab functions have a valid and interesting meaning when invoked without arguments, this is useful, as it means that one can write
+while in LiveCodeLab, a bit like in Ruby, there isn't. Any time a "known" function name (e.g. any LiveCodeLab function and any user-defined function) appears without arguments and parentheses, the function is implicitely called on the spot. Since all LiveCodeLab functions have a valid and interesting meaning when invoked without arguments, this is useful, as it means that one can write
 ```
 box
-move
-line
+rotate move line
 move
 peg
 ```
-and get a sketch going, without having to add any parentheses.
+and get a sketch going without having to add any of the parentheses.
 
-LiveCodeLab can do this "implicit invocation" for you for the LiveCodeLab commands and also for the names that you use directly in your function declarations, like in:
+LiveCodeLab can do this "implicit invocation" for you *only* for the LiveCodeLab commands and for the names you use for the functions you declare, like in:
 ```
 aCertainAmount = -> sin(random)
 move aCertainAmount box
 ```
 
-LiveCodeLab can't do this for functions that aren't "known" LiveCodeLab functions or user-defined.
+LiveCodeLab can't do this for functions names that aren't "known" LiveCodeLab functions or are not user-defined functions.
 
-For example, the following function takes a function and runs it.
+For example:
+
+```
+a = <box> // assigns to 'a' the function 'box'
+a // Won't draw a box. Should be a() instead.
+```
+
+does nothing. This is because 'a' has not the name of a known function.
+
+Another example, the following function takes a function and runs it.
+
 
 ```
 runAFunction = (a) -> a()
 ```
 
-In this case, ```a()``` needs to include the parentheses, as ```a``` could be a number, or a function, or a string, or anything, so LiveCodeLab needs to be explicitely told what to do with ```a```.
+In this case, ```a()``` needs to include the parentheses, because the name ```a``` is not a known LCL function. Since ```a``` could contain a number, or a function, or a string, or anything, LiveCodeLab needs to be explicitely told what to do with ```a```.
 
-
+For this reason, when variables are assigned functions, such variables have to have their invocations explicitly written down.
 
 ";" is not needed
 -----------
@@ -113,7 +122,7 @@ basically, instead of forcing you to parentheses to evaluate functions, LiveCode
 
 "Scoped" matrix transformations
 -----------
-In processing, is one wants to apply transformation(s) to only some primitive(s), one does
+In processing, if one wants to apply transformation(s) to only some primitive(s), one does:
 ```
 pushMatrix();
 [transformation(s) here]
