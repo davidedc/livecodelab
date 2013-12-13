@@ -43,7 +43,7 @@ define [
       #  return
 
       try
-        programAST = Parser.parser(code)
+        programAST = Parser.parse(code)
       catch e
         # parser has caught a syntax error.
         # we are going to display the error and we WON'T register the new code
