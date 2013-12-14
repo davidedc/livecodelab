@@ -68,7 +68,7 @@ exports.programdata = {
 
     },
 
-    'basic FFI': function (test) {
+    'basic foreign function call': function (test) {
         var i, output, scope, program, ast, p;
         i = Interpreter;
         p = parser;
@@ -79,7 +79,7 @@ exports.programdata = {
             }
         };
 
-        program = "a = 4\nb = 3\n@result(a + b)";
+        program = "a = 4\nb = 3\nresult(a + b)";
         ast = p.parse(program);
 
         i.run(ast, scope);
@@ -100,7 +100,7 @@ exports.programdata = {
             }
         };
 
-        program = "a = 0\n5 times ->\n {\n\ta = 5\n}\n@result(a)";
+        program = "a = 0\n5 times ->\n {\n\ta = 5\n}\nresult(a)";
         ast = p.parse(program);
 
         i.run(ast, scope);

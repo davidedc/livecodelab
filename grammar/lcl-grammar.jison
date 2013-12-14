@@ -57,7 +57,6 @@ number                (\-)?{digit}+("."{digit}+)?
 "="                   return "="
 
 /* misc */
-"@"                   return "t_ffi"
 \n+                   return "t_newline"
 ","                   return "t_comma"
 <<EOF>>               return "t_eof"
@@ -74,7 +73,6 @@ number                (\-)?{digit}+("."{digit}+)?
 %token                t_function
 %token                t_arrow
 %token                t_number
-%token                t_ffi
 %token                t_id
 %token                t_eof
 %token                t_newline
@@ -128,7 +126,6 @@ BlockStatement
 
 Statement
     : Assignment
-    | ForeignFunctionCall
     | FunctionCall
     | IfStructure
     | TimesLoop
@@ -159,12 +156,6 @@ FunctionArgs
 FunctionArgValue
     : Expression
     | FunctionDef
-    ;
-
-/* Calling a javascript function */
-ForeignFunctionCall
-    : t_ffi FunctionCall 
-        { $$ = ["FFI", $2]; }
     ;
 
 IfStructure
@@ -227,8 +218,6 @@ Expression
     | "(" Expression ")"
         { $$ = $2; }
     | FunctionCall
-        { $$ = $1; }
-    | ForeignFunctionCall
         { $$ = $1; }
     | Number
         { $$ = $1; }

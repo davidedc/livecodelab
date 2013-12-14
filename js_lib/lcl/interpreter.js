@@ -146,10 +146,6 @@ define([
             output = this.evaluateTimesLoop(branch, scope);
             break;
 
-        case 'FFI':
-            output = this.evaluateFFIFunctionCall(branch[1], scope);
-            break;
-
         default:
             throw 'Unknown Symbol';
         }
@@ -196,32 +192,6 @@ define([
 
     };
 
-    /* FFI functions are any functions written in javascript */
-    Interpreter.evaluateFFIFunctionCall = function (branch, scope) {
-
-        var func, funcname, args, evaledargs, output, i;
-
-        funcname = branch[1];
-
-        func = scope[funcname];
-        if (func === undefined) {
-            throw 'Function not defined';
-        }
-
-        evaledargs = [];
-
-        args = helpers.functionargs(branch[2]);
-
-        for (i = 0; i < args.length; i += 1) {
-            evaledargs.push(this.evaluate(args[i], scope));
-        }
-
-
-        output = scope[funcname].apply(scope, evaledargs);
-
-        return output;
-    };
-
     Interpreter.evaluateFunctionCall = function (branch, scope) {
 
         var func, funcname, args, evaledargs, output, i;
@@ -241,8 +211,11 @@ define([
             evaledargs.push(this.evaluate(args[i], scope));
         }
 
-
-        output = scope[funcname](scope, evaledargs);
+        if (typeof func === "function") {
+            output = scope[funcname].apply(scope, evaledargs);
+        } else {
+            output = scope[funcname](scope, evaledargs);
+        }
 
         return output;
     };
