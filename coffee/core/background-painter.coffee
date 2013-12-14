@@ -73,13 +73,18 @@ define () ->
       @gradientPrefix = getCssValuePrefix 'background', 'linear-gradient(left, #fff, #fff)'
       
 
+    addFunctionsToScope: (scope) ->
+
+      scope.add('simpleGradient', (a,b,c) => @simpleGradient(a,b,c))
+      scope.add('background', (a,b,c) => @background(a,b,c))
+
       # This needs to be global so it can be run by the draw function
       window.simpleGradient = (a,b,c) => @simpleGradient(a,b,c)
       
       # This needs to be global so it can be run by the draw function
       window.background = (a,b,c) => @background(a,b,c)
       
-      # This needs to be global so it can be run by the draw function
+    # This needs to be global so it can be run by the draw function
     simpleGradient: (a, b, c, d) ->
       @currentGradientStackValue =
         @currentGradientStackValue + " " + a + "" + b + "" + c + "" + d + "null "
