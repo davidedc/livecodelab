@@ -10,10 +10,12 @@ define () ->
 
   class GlobalScope
 
-    getScope: () ->
-      {
-        box: window.box
-      }
+    constructor: () ->
+      @scope = {}
 
-  new GlobalScope
+    add: (name, value) ->
+      window[name] = value
+      #@scope[name] = value
+
+    getScope: () -> @scope
 
