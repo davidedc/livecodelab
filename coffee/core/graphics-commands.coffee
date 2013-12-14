@@ -165,17 +165,6 @@ define () ->
     numberOfOverlappingPrimitives: []
     
     constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance) ->
-      window.line = (a,b,c,d) => @line(a,b,c,d)
-      window.rect = (a,b,c,d) => @rect(a,b,c,d)
-      window.box = (a,b,c,d) => @box(a,b,c,d)
-      window.peg = (a,b,c,d) => @peg(a,b,c,d)
-      window.ball = (a,b,c,d) => @ball(a,b,c,d)
-      window.ballDetail = (a) => @ballDetail(a)
-      window.fill = (a,b,c,d) => @fill(a,b,c,d)
-      window.noFill = () => @noFill()
-      window.stroke = (a,b,c,d) => @stroke(a,b,c,d)
-      window.noStroke = () => @noStroke()
-      window.strokeSize = (a) => @strokeSize(a)
       
       numberOfPrimitives = 0
       @primitiveTypes.ambientLight = numberOfPrimitives++
@@ -254,7 +243,20 @@ define () ->
         @lastPositionOfPrimitiveType[i] = new @liveCodeLabCore_three.Matrix4()
         @numberOfOverlappingPrimitives[i] = 0
 
-    
+    addFunctionsToScope: (scope) ->
+
+      scope.add('line',       (a,b,c,d) => @line(a,b,c,d))
+      scope.add('rect',       (a,b,c,d) => @rect(a,b,c,d))
+      scope.add('box',        (a,b,c,d) => @box(a,b,c,d))
+      scope.add('peg',        (a,b,c,d) => @peg(a,b,c,d))
+      scope.add('ball',       (a,b,c,d) => @ball(a,b,c,d))
+      scope.add('ballDetail', (a) => @ballDetail(a))
+      scope.add('fill',       (a,b,c,d) => @fill(a,b,c,d))
+      scope.add('noFill',     () => @noFill())
+      scope.add('stroke',     (a,b,c,d) => @stroke(a,b,c,d))
+      scope.add('noStroke',   () => @noStroke())
+      scope.add('strokeSize', (a) => @strokeSize(a))
+
     createObjectIfNeededAndDressWithCorrectMaterial: (
       a, b, c, primitiveProperties, strokeTime, colorToBeUsed,
       alphaToBeUsed, applyDefaultNormalColor) ->
