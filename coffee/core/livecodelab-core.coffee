@@ -237,6 +237,9 @@ define [
 
       @globalscope = new GlobalScope()
 
+      @graphicsCommands.addFunctionsToScope(@globalscope)
+      @matrixCommands.addFunctionsToScope(@globalscope)
+
     #//////////////////////////////////////////////
     #
     # ### Phase 5
