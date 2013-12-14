@@ -11,9 +11,11 @@ isFunction = (functionToCheck) ->
   functionToCheck and getType.toString.call(functionToCheck) is "[object Function]"
 
 define [
-  'lib/lcl/interpreter'
+   'lib/lcl/interpreter'
+  ,'core/global-scope'
 ], (
-  Interpreter
+   Interpreter
+  ,GlobalScope
 ) ->
 
   class ProgramRunner
@@ -71,8 +73,8 @@ define [
       # in which case the lines afterwards are not executed
       # and the exception is propagated to the callee of this function,
       # which is the main animation loop.
-      scope = {}
-      Interpreter.run(program, scope)
+      scope = GlobalScope.getScope()
+      Interpreter.run(@program, scope)
 
       # if we are here it means that the interpreter didn't throw
       # any runtime errors, so we increment a counter that tracks how long
