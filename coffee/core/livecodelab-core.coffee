@@ -71,6 +71,11 @@ define [
   ,'core/renderer'
   ,'core/threejs-system'
   ,'core/time-keeper'
+<<<<<<< HEAD
+=======
+  ,'core/connections'
+  ,'core/global-scope'
+>>>>>>> Creating global scope object in lcl core
   ,'sound/samplebank'
   ,'sound/sound-system'
   ,'bowser'
@@ -98,6 +103,11 @@ define [
   ,Renderer
   ,ThreeJsSystem
   ,TimeKeeper
+<<<<<<< HEAD
+=======
+  ,Connections
+  ,GlobalScope
+>>>>>>> Creating global scope object in lcl core
   ,SampleBank
   ,SoundSystem
   ,createBowser
@@ -221,10 +231,20 @@ define [
       # threeJsSystem, colourFunctions at runtime
       @lightSystem =
         new LightsCommands(@graphicsCommands, @)
-    
+
+      #//////////////////////////////////////////////
+      #
+      # ### Phase 4
+      # Setup the global scope object, and add all the
+      # necessary global functions/values to it
+      #
+      #//////////////////////////////////////////////
+
+      @globalscope = new GlobalScope()
+
     #//////////////////////////////////////////////
     #
-    # ### Phase 4
+    # ### Phase 5
     # Grouped together here all the
     # methods. Most of the time they just delegate
     # to another part.
@@ -261,7 +281,7 @@ define [
         # console.log('waking up');
         @paramsObject.eventRouter.emit("livecodelab-waking-up")
 
-    
+
     # why do we leave the option to put a background?
     # For two reasons:
     #  a) leaving the transparent background makes it very
