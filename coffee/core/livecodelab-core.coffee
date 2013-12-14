@@ -64,6 +64,7 @@ define [
   ,'core/blend-controls'
   ,'core/code-compiler'
   ,'core/colour-functions'
+  ,'core/colour-literals'
   ,'core/graphics-commands'
   ,'core/lights-commands'
   ,'core/matrix-commands'
@@ -93,6 +94,7 @@ define [
   ,BlendControls
   ,CodeCompiler
   ,ColourFunctions
+  ,ColourLiterals
   ,GraphicsCommands
   ,LightsCommands
   ,MatrixCommands
@@ -239,6 +241,11 @@ define [
 
       @graphicsCommands.addFunctionsToScope(@globalscope)
       @matrixCommands.addFunctionsToScope(@globalscope)
+      @lightSystem.addFunctionsToScope(@globalscope)
+      colourLiterals = new ColourLiterals()
+      console.log(colourLiterals)
+      colourLiterals.addVariablesToScope(@globalscope)
+
 
     #//////////////////////////////////////////////
     #
