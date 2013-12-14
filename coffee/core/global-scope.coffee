@@ -8,7 +8,12 @@
 
 define () ->
 
-    {
-      box: ["FFI", ["correct stuff will go here"]]
-    }
+  class GlobalScope
+
+    getScope: () ->
+      {
+        box: window.box
+      }
+
+  new GlobalScope
 
