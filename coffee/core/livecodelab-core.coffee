@@ -250,6 +250,7 @@ define [
       @lightSystem.addFunctionsToScope(@globalscope)
       @colourLiterals.addVariablesToScope(@globalscope)
       @backgroundPainter.addFunctionsToScope(@globalscope)
+      @blendControls.addFunctionsToScope(@globalscope)
 
 
     #//////////////////////////////////////////////
