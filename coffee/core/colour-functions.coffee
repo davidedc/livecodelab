@@ -10,20 +10,6 @@ define () ->
   class ColourFunctions
 
     constructor: ->
-      window.color = (a,b,c,d) => @color(a,b,c,d)
-      window.colorToHSB = (a) => @colorToHSB(a)
-      window.brightness = (a) => @brightness(a)
-      window.saturation = (a) => @saturation(a)
-      window.hue = (a) => @hue(a)
-      window.redF = (a) => @redF(a)
-      window.greenF = (a) => @greenF(a)
-      window.blueF = (a) => @blueF(a)
-      window.alpha = (a) => @alpha(a)
-      window.alphaZeroToOne = (a) => @alphaZeroToOne(a)
-      window.lerp = (a,b,c) => @lerp(a,b,c)
-      window.lerpColor = (a,b,c) => @lerpColor(a,b,c)
-      window.colorMode = (a,b,c,d,e) => @colorMode(a,b,c,d,e)
-      window.blendColor = (a,b,c) => @blendColor(a,b,c)
 
       @colorModeX = 255
       @colorModeY = 255
@@ -60,9 +46,6 @@ define () ->
         GREEN_MASK: 0x0000ff00
         BLUE_MASK: 0x000000ff
       
-      window.HSB = @Constants.HSB
-      window.RGB = @Constants.RGB
-
       @curColorMode = @Constants.RGB
 
       # Ease of use function to extract the colour bits into a string
@@ -119,6 +102,26 @@ define () ->
           when 5
             [br, p, q]
       @modes = @modesFunction()
+
+    addToScope: (scope) ->
+
+      scope.add('color',      (a,b,c,d) => @color(a,b,c,d))
+      scope.add('colorToHSB', (a) => @colorToHSB(a))
+      scope.add('brightness', (a) => @brightness(a))
+      scope.add('saturation', (a) => @saturation(a))
+      scope.add('hue',        (a) => @hue(a))
+      scope.add('redF',       (a) => @redF(a))
+      scope.add('greenF',     (a) => @greenF(a))
+      scope.add('blueF',      (a) => @blueF(a))
+      scope.add('alpha',      (a) => @alpha(a))
+      scope.add('alphaZeroToOne',      (a) => @alphaZeroToOne(a))
+      scope.add('lerp',       (a,b,c) => @lerp(a,b,c))
+      scope.add('lerpColor',  (a,b,c) => @lerpColor(a,b,c))
+      scope.add('colorMode',  (a,b,c,d,e) => @lerpColor(a,b,c,d,e))
+      scope.add('blendColor', (a,b,c) => @blendColor(a,b,c))
+
+      scope.add('HSB',      @Constants.HSB)
+      scope.add('RGB',      @Constants.RGB)
 
     color$4: (aValue1, aValue2, aValue3, aValue4) ->
       r = undefined

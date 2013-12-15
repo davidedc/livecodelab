@@ -253,6 +253,7 @@ define [
       @blendControls.addFunctionsToScope(@globalscope)
       @connections.addToScope(@globalscope)
       @soundSystem.addToScope(@globalscope)
+      @colourFunctions.addToScope(@globalscope)
 
 
     #//////////////////////////////////////////////
