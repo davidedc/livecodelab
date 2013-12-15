@@ -95,7 +95,7 @@ define [
               // a simple cube!
               
               background yellow
-              rotate 0,time/2000,time/2000
+              rotate 0,time/2,time/2
               box
               """
     
@@ -105,7 +105,7 @@ define [
         code: """
               background 155,255,255
               2 times
-              ▶rotate 0, 1, time/2000
+              ▶rotate 0, 1, time/2
               ▶box
               """
     
@@ -116,7 +116,7 @@ define [
               simpleGradient fuchsia,color(100,200,200),yellow
               scale 2.1
               5 times
-              ▶rotate 0,1,time/5000
+              ▶rotate 0,1,time/5
               ▶box 0.1,0.1,0.1
               ▶move 0,0.1,0.1
               ▶3 times
@@ -130,7 +130,7 @@ define [
         code: """
               background 155,55,255
               70 times
-              ▶rotate time/100000,1,time/100000
+              ▶rotate time/100,1,time/100
               ▶box
               """
     
@@ -157,7 +157,7 @@ define [
               background orange
               scale 0.1
               10 times
-              ▶rotate 0,1,time/1000
+              ▶rotate 0,1,time
               ▶move 1,1,1
               ▶box
               """
@@ -171,7 +171,7 @@ define [
               3 times
               ▶rotate 0,1,1
               ▶10 times
-              ▶▶rotate 0,1,time/1000
+              ▶▶rotate 0,1,time
               ▶▶scale 0.9
               ▶▶move 1,1,1
               ▶▶box
@@ -185,9 +185,9 @@ define [
               simpleGradient red,yellow,color(255,0,255)
               //animationStyle paintOver
               scale 2
-              rotate time/4000, time/4000,  time/4000
+              rotate time/4, time/4,  time/4
               90 times
-              ▶rotate time/200000, time/200000,  time/200000
+              ▶rotate time/200, time/200,  time/200
               ▶line
               ▶move 0.5,0,0
               ▶line
@@ -217,10 +217,10 @@ define [
         code: """
               ballDetail 6
               animationStyle motionBlur
-              rotate time/5000
+              rotate time/5
               simpleGradient fuchsia,aqua,yellow
               5 times
-              ▶rotate 0,1,time/5000
+              ▶rotate 0,1,time/5
               ▶move 0.2,0,0
               ▶3 times
               ▶▶rotate 1
@@ -293,7 +293,7 @@ define [
               3 times
               ▶move 0,0,0.5
               ▶5 times
-              ▶▶rotate time/2000
+              ▶▶rotate time/2
               ▶▶move 0.7,0,0
               ▶▶rect
               """
@@ -311,7 +311,7 @@ define [
               3 times
               ▶move 0,0,0.5
               ▶1 times
-              ▶▶rotate time/1000
+              ▶▶rotate time
               ▶▶move 2,0,0
               ▶▶box
               """
@@ -322,7 +322,7 @@ define [
         code: """
               scale 10
               2 times
-              ▶rotate 0,1,time/10000
+              ▶rotate 0,1,time/10
               ▶ball -1
               """
 
@@ -334,7 +334,7 @@ define [
               fill 0
               strokeSize 7
               5 times
-              ▶rotate 0,1,time/20000
+              ▶rotate 0,1,time/20
               ▶ball
               ▶rotate 0,1,1
               ▶ball -1.01
@@ -350,7 +350,7 @@ define [
               noFill
               strokeSize 7
               5 times
-              ▶rotate time/20000
+              ▶rotate time/20
               ▶ball
               ▶rotate 0,1,1
               ▶ball
@@ -366,12 +366,12 @@ define [
               ambientLight 255,0,0 // comment out to see the seam
 
               background black
-              rotate time /5000
+              rotate time /5
               scale 0.6
               for i in [0...detail]
               ▶rotate 0,0,2*Math.PI/(detail)
               ▶move 2,0,0
-              ▶▶rotate 0,turns*i*Math.PI/(detail)+time/(1000/speed),0
+              ▶▶rotate 0,turns*i*Math.PI/(detail)+time*speed,0
               ▶▶rect 1,0.04+1/detail
               """
 
@@ -379,18 +379,18 @@ define [
         submenu: "WebGL"
         title: "WebGL: The eye"
         code: """
-              turns = Math.floor(time/10000)%6
+              turns = Math.floor(time/10)%6
               detail = 100
               speed = 3
-              if time%10000 < 5000
+              if time%10 < 5
               ▶ambientLight 255,255,255
 
               background black
-              rotate time /5000
+              rotate time /5
               for i in [0...detail]
               ▶rotate 0,0,2*Math.PI/(detail)
               ▶move 2,0,0
-              ▶▶rotate turns*i*Math.PI/(detail)+time/(1000/speed),0,0
+              ▶▶rotate turns*i*Math.PI/(detail)+time*speed,0,0
               ▶▶rect 1
               """
     
@@ -398,23 +398,23 @@ define [
         submenu: "WebGL"
         title: "WebGL: Nuclear octopus"
         code: """
-              simpleGradient black,color(0,0,(time/5)%255),black
+              simpleGradient black,color(0,0,(time/.005)%255),black
               scale 0.2
               move 5,0,0
               animationStyle motionBlur
               //animationStyle paintOver
               stroke 255,0,0,120
-              fill time%255,0,0
+              fill (time*1000)%255,0,0
               pushMatrix
               count = 0
               3 times
               ▶count++
               ▶pushMatrix
-              ▶rotate count+3+time/1000,2+count + time/1000,4+count
+              ▶rotate count+3+time,2+count + time,4+count
               ▶120 times
               ▶▶scale 0.9
               ▶▶move 1,1,0
-              ▶▶rotate time/100
+              ▶▶rotate time/.1
               ▶▶box
               ▶popMatrix
               """
@@ -505,13 +505,13 @@ define [
               // 'frame/100' has one problem:
               // faster computers will make
               // the cube spin too fast.
-              // Replace it with 'time/2000'.
+              // Replace it with 'time/2'.
               
               rotate frame/100
               box
               
               // 'time' counts the
-              // number of milliseconds since
+              // number of seconds since
               // the program started, so it's
               // independent of how fast
               // the computer is at drawing.
@@ -640,7 +640,7 @@ define [
               // some sort of shading:
               
               ambientLight 0,255,255
-              rotate time/1000
+              rotate time
               box
               
               // you can turn that light on and
@@ -657,7 +657,7 @@ define [
               // solid background:
               
               background 0,0,255
-              rotate time/1000
+              rotate time
               box
               
               // next-tutorial:gradient
@@ -671,7 +671,7 @@ define [
               // background gradient:
               
               simpleGradient color(190,10,10),color(30,90,100),color(0)
-              rotate time/1000
+              rotate time
               box
               
               // next-tutorial:line
@@ -684,7 +684,7 @@ define [
               // draw lines like this:
               
               20 times
-              ▶rotate time/9000
+              ▶rotate time/9
               ▶line
               
               // next-tutorial:ball
@@ -714,7 +714,7 @@ define [
               // return to later by using popMatrix.
               // You can reset using 'resetMatrix'.
               
-              rotate time/1000
+              rotate time
               pushMatrix // bookmark the position after the rotation
               line
               move 0.5,0,0
@@ -749,7 +749,7 @@ define [
         code: """
               // delete either check mark below
               
-              rotate time/1000
+              rotate time
               ✓doOnce ->
               ▶background 255
               ▶fill 255,0,0
