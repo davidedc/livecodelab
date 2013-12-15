@@ -105,8 +105,8 @@ module.exports = function (grunt) {
                 files: ['coffee/**/*.coffee', 'tests/js/*.js', 'tests/testsSource/*.coffee', 'templts/tests.html.templt', 'tests/htmlsWithTests/images/*.png'],
                 tasks: ['coffee:app', 'coffee:tests', 'copy']
             },
-            grammar: {
-                files: ['grammar/**/*.jison'],
+            lcllang: {
+                files: ['grammar/**/*.jison', 'langtests/**/*.js'],
                 tasks: ['jison', 'langtest']
             },
             interpreter: {
