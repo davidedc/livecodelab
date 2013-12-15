@@ -74,7 +74,16 @@ define () ->
       # of session (or since the program was last cleared).
       # This variable is incremented and reset in the animation
       # loop "animate" function.
-      window.frame = 0
+      @setFrame(0)
+
+    addToScope: (scope) ->
+      @scope = scope
+      @scope.add('frame', @frame)
+
+    setFrame: (value) ->
+      @frame = value
+      if @scope
+        @scope.add('frame', value)
 
     # There are two different ways to schedule the next frame:
     # 1. using a native window.requestAnimationFrame implementation
@@ -113,7 +122,7 @@ define () ->
     # animation loop
     animate: ->
 
-      if window.frame is 0
+      if @frame is 0
         @liveCodeLabCoreInstance.timeKeeper.resetTime()
       else
         @liveCodeLabCoreInstance.timeKeeper.updateTime()
@@ -185,7 +194,7 @@ define () ->
         @liveCodeLabCoreInstance.dozingOff = true
         # the program is empty and so it's the screen. Effectively, the user
         # is starting from scratch, so the frame variable should be reset to zero.
-        window.frame = 0
+        @setFrame(0)
       
       #console.log('dozing off');
       
@@ -193,14 +202,14 @@ define () ->
       # the user has set frame = 0,
       # then we have to catch that case here
       # after the program has executed
-      @liveCodeLabCoreInstance.timeKeeper.resetTime()  if frame is 0
+      @liveCodeLabCoreInstance.timeKeeper.resetTime()  if @frame is 0
       @liveCodeLabCoreInstance.blendControls.animationStyleUpdateIfChanged()
       @liveCodeLabCoreInstance.backgroundPainter.simpleGradientUpdateIfChanged()
       @liveCodeLabCoreInstance.soundSystem.changeUpdatesPerMinuteIfNeeded()
       
       # "frame" starts at zero, so we increment after the first time the draw
       # function has been run.
-      window.frame++
+      @setFrame(@frame + 1)
       
       
       # if livecodelab is dozing off, in that case you do

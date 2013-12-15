@@ -13,7 +13,7 @@ define () ->
 
     constructor: ->
       
-      colourNamesValues =
+      @colourNamesValues =
         aliceblue: "0xfff0f8ff"
         antiquewhite: "0xfffaebd7"
         aqua: "0xff00ffff"
@@ -169,16 +169,27 @@ define () ->
       # case that it's OK to use a non-integer.
         angleColor: "angleColor"
 
-      for colorName, colorValue of colourNamesValues
-        # Adding colours to the global namespace is avoidable once we have
-        # a "scope" object in which the code will be executed,
-        # then we can just dynamically add fields to that scope
-        window["#{colorName}"] = parseInt(colorValue)
-        if isNaN(window["#{colorName}"])
-          # this is the case of special colors that have string values
-          window["#{colorName}"] = colorValue
-
+      for colorName, colorValue of @colourNamesValues
         @colourNames.push "#{colorName}"
+
+    addToScope: (scope) ->
+
+      for colorName, colorValue of @colourNamesValues
+        val = parseInt(colorValue)
+        if isNaN(val)
+          # this is the case of special colors that have string values
+          scope.add("#{colorName}", colorValue)
+        else
+          scope.add("#{colorName}", val)
+
+    getColour: (name) ->
+      colorValue = @colourNamesValues[name]
+      val = parseInt(colorValue)
+      if isNaN(val)
+        # this is the case of special colors that have string values
+        colorValue
+      else
+        val
 
   ColourLiterals
 

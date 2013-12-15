@@ -20,11 +20,15 @@ define () ->
     blendAmount: 0
     
     constructor: (@liveCodeLabCoreInstance) ->
-      # These all need to be made global so they can be used by sketches
-      window.normal = @animationStyles.normal = 0
-      window.paintOver = @animationStyles.paintOver = 1
-      window.motionBlur = @animationStyles.motionBlur = 2
-      window.animationStyle = (a) => @animationStyle(a)
+      @animationStyles.normal = 0
+      @animationStyles.paintOver = 1
+      @animationStyles.motionBlur = 2
+
+    addToScope: (scope) ->
+      scope.add('normal',         @animationStyles.normal)
+      scope.add('paintOver',      @animationStyles.paintOver)
+      scope.add('motionBlur',     @animationStyles.mothinBlur)
+      scope.add('animationStyle', (a) => @animationStyle(a))
 
     animationStyle: (a) ->
       # turns out when you type normal that the first two letters "no"

@@ -64,6 +64,7 @@ define [
   ,'core/blend-controls'
   ,'core/code-compiler'
   ,'core/colour-functions'
+  ,'core/colour-literals'
   ,'core/graphics-commands'
   ,'core/lights-commands'
   ,'core/matrix-commands'
@@ -72,6 +73,7 @@ define [
   ,'core/threejs-system'
   ,'core/time-keeper'
   ,'core/connections'
+  ,'core/global-scope'
   ,'sound/samplebank'
   ,'sound/sound-system'
   ,'bowser'
@@ -92,6 +94,7 @@ define [
   ,BlendControls
   ,CodeCompiler
   ,ColourFunctions
+  ,ColourLiterals
   ,GraphicsCommands
   ,LightsCommands
   ,MatrixCommands
@@ -100,6 +103,7 @@ define [
   ,ThreeJsSystem
   ,TimeKeeper
   ,Connections
+  ,GlobalScope
   ,SampleBank
   ,SoundSystem
   ,createBowser
@@ -155,6 +159,7 @@ define [
       # this one also interacts with threeJsSystem at runtime
       @blendControls = new BlendControls(@)
       @colourFunctions = new ColourFunctions()
+      @colourLiterals = new ColourLiterals()
       
       # this one also interacts with threeJsSystem and blendControls at runtime
       @renderer = new Renderer(@)
@@ -166,7 +171,8 @@ define [
       # canvasForBackground at runtime
       @backgroundPainter = new BackgroundPainter(
         @paramsObject.canvasForBackground,
-        @
+        @,
+        @colourLiterals
       )
       
       # this one also interacts with codeCompiler at runtime.
@@ -216,7 +222,9 @@ define [
       # threeJsSystem at runtime
       @graphicsCommands =
         new GraphicsCommands(
-          @three, @)
+          @three,
+          @,
+          @colourLiterals)
           # color, lightSystem, matrixCommands, threeJsSystem, colorModeA,
           # redF, greenF, blueF, alphaZeroToOne
       
@@ -224,10 +232,34 @@ define [
       # threeJsSystem, colourFunctions at runtime
       @lightSystem =
         new LightsCommands(@graphicsCommands, @)
-    
+
+      #//////////////////////////////////////////////
+      #
+      # ### Phase 4
+      # Setup the global scope object, and add all the
+      # necessary global functions/values to it
+      #
+      #//////////////////////////////////////////////
+
+      @globalscope = new GlobalScope()
+
+      @graphicsCommands.addToScope(@globalscope)
+      @matrixCommands.addToScope(@globalscope)
+      @lightSystem.addToScope(@globalscope)
+      @colourLiterals.addToScope(@globalscope)
+      @backgroundPainter.addToScope(@globalscope)
+      @blendControls.addToScope(@globalscope)
+      @connections.addToScope(@globalscope)
+      @soundSystem.addToScope(@globalscope)
+      @colourFunctions.addToScope(@globalscope)
+      @animationLoop.addToScope(@globalscope)
+      @timeKeeper.addToScope(@globalscope)
+      @drawFunctionRunner.addToScope(@globalscope)
+
+
     #//////////////////////////////////////////////
     #
-    # ### Phase 4
+    # ### Phase 5
     # Grouped together here all the
     # methods. Most of the time they just delegate
     # to another part.
@@ -264,7 +296,7 @@ define [
         # console.log('waking up');
         @paramsObject.eventRouter.emit("livecodelab-waking-up")
 
-    
+
     # why do we leave the option to put a background?
     # For two reasons:
     #  a) leaving the transparent background makes it very

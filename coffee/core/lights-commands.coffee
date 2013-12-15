@@ -17,9 +17,11 @@ define () ->
       @objectPools[@primitiveTypes.ambientLight] = []
       @objectsUsedInFrameCounts[@primitiveTypes.ambientLight] = 0
       
-      window.lights = () => @lights()
-      window.noLights = () => @noLights()
-      window.ambientLight = (a,b,c,d) => @ambientLight(a,b,c,d)
+    addToScope: (scope) ->
+
+      scope.add('lights', () => @lights())
+      scope.add('noLights', () => @noLights())
+      scope.add('ambientLight', (a,b,c,d) => @ambientLight(a,b,c,d))
 
     lights: ->
       @lightsAreOn = true

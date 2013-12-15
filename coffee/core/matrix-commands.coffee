@@ -14,13 +14,15 @@ define () ->
 
     constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance) ->
       @worldMatrix = new @liveCodeLabCore_three.Matrix4()
-      # These need to be global so it can be run by the draw function
-      window.pushMatrix  = () => @pushMatrix()
-      window.popMatrix   = () => @popMatrix()
-      window.resetMatrix = () => @resetMatrix()
-      window.move   = (a,b,c,d) => @move(a,b,c,d)
-      window.rotate = (a,b,c,d) => @rotate(a,b,c,d)
-      window.scale  = (a,b,c,d) => @scale(a,b,c,d)
+
+    addToScope: (scope) ->
+
+      scope.add('pushMatrix',  () => @pushMatrix())
+      scope.add('popMatrix',   () => @popMatrix())
+      scope.add('resetMatrix', () => @resetMatrix())
+      scope.add('move',        (a,b,c,d) => @move(a,b,c,d))
+      scope.add('rotate',      (a,b,c,d) => @rotate(a,b,c,d))
+      scope.add('scale',       (a,b,c,d) => @scale(a,b,c,d))
 
     getWorldMatrix: ->
       @worldMatrix

@@ -14,19 +14,27 @@ define ['core/event-emitter'], (EventEmitter) ->
     wave: undefined
 
     constructor: ->
-      window.time = 0
-      window.wave = (a) => @wave(a)
+      @setTime(0)
+
+    addToScope: (scope) ->
+
+      @scope = scope
+      scope.add('wave', (a) => @wave(a))
+      scope.add('time', @time)
+
+    setTime: (value) ->
+      @time = value
+      if @scope
+        @scope.add('time', value)
 
     updateTime: ->
       d = new Date()
-      @time = d.getTime() - @timeAtStart
-      window.time = d.getTime() - @timeAtStart
+      @setTime(d.getTime() - @timeAtStart)
       @milliseconds = d.getMilliseconds()
 
     resetTime: ->
       d = new Date()
-      @time = 0
-      window.time = 0
+      @setTime(0)
       @timeAtStart = d.getTime()
 
     getTime: ->
