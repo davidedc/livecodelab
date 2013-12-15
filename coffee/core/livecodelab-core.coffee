@@ -249,6 +249,7 @@ define [
       @matrixCommands.addFunctionsToScope(@globalscope)
       @lightSystem.addFunctionsToScope(@globalscope)
       @colourLiterals.addVariablesToScope(@globalscope)
+      @backgroundPainter.addFunctionsToScope(@globalscope)
 
 
     #//////////////////////////////////////////////
