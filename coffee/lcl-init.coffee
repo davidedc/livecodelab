@@ -5,7 +5,6 @@
 
 require [
   'Three.Stats'
-  ,'core/colour-literals'
   ,'core/event-emitter'
   ,'core/livecodelab-core'
   ,'core/program-loader'
@@ -25,7 +24,6 @@ require [
   ,'globals/requestAnimFrame'
 ], (
   Stats
-  ,ColourLiterals
   ,EventEmitter
   ,LiveCodeLabCore
   ,ProgramLoader
@@ -72,15 +70,7 @@ require [
     # Stats are updated in the animationLoop
     # add Stats.js - https://github.com/mrdoob/stats.js
     stats = new Stats
-    
-    # ColourLiterals creates a bunch of global variables for all css
-    # colors (and more). Since background-painting.js initialises the
-    # background by means of CSS colors, this needs to be run before
-    # creating LiveCodeLabCore. This is also # used by the autocoder
-    # because it needs to be able to swap color names that it
-    # finds as CSS color strings in the user program.
-    colourNames = (new ColourLiterals()).colourNames
-    
+
     #//////////////////////////////////////////////////////
     # Phase 2 - Initialise the core of livecodelab.
     # LiveCodeLabCore consists of the following main parts:
@@ -107,7 +97,7 @@ require [
       statsWidget: stats
       testMode: paramsObject.testMode
     )
-    
+
     #/////////////////////////////////////////////////////
     # Phase 3 - Other satellite parts
     #/////////////////////////////////////////////////////
@@ -135,7 +125,7 @@ require [
     #console.log('creating stats')
     ui = new Ui(eventRouter, stats, programLoader) # $
     # requires: ColourNames
-    autocoder = new Autocoder(eventRouter, editor, colourNames) # McLexer
+    autocoder = new Autocoder(eventRouter, editor, liveCodeLabCore.colourLiterals.colourNames) # McLexer
     # Setup Event Listeners
     eventRouter.addListener("reset", => autocoder.toggle(false))
     eventRouter.addListener("toggle-autocoder", => autocoder.toggle())

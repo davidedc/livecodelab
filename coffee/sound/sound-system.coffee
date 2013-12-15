@@ -35,9 +35,11 @@ define () ->
 
       @playSound = (a,b,c) => @play_using_LOWLAGJS(a,b,c)
 
-      # These need to be global so it can be run by the draw function
-      window.play = (a,b) => @play(a,b)
+    addToScope: (scope) ->
 
+      scope.add('bpm',  (a) => @bpm(a))
+      scope.add('play', (a,b) => @play(a,b))
+    
     resetLoops: ->
       @soundLoops.soundIDs = []
       @soundLoops.beatStrings = []

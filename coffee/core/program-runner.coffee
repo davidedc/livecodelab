@@ -31,7 +31,10 @@ define () ->
     currentCodeString = ""
     
     constructor: (@eventRouter, @liveCodeLabCoreInstance) ->
-      window.addDoOnce = (a) => @addDoOnce(a)
+
+    addToScope: (scope) ->
+
+      scope.add('addDoOnce', (a) => @addDoOnce(a))
 
     # This is the function called from the compiled code to add the doOnce line
     addDoOnce: (lineNum) ->

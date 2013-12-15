@@ -24,14 +24,22 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
 
       super()
       
-      # window.connect = (address) => @connect(address)
-      window.bpm = (bpm) => @setBpmLater(bpm)
-      window.beat = => @beat()
-      window.pulse = => @pulse()
-      window.wave = (period) => @wave(period)
-
       @resetTime()
       @beatLoop()
+
+    addToScope: (scope) ->
+
+      @scope = scope
+      scope.add('bpm',   (bpm) => @setBpmLater(bpm))
+      scope.add('beat',  () => @beat())
+      scope.add('pulse', () => @pulse())
+      scope.add('wave',  (period) => @wave(period))
+      scope.add('time', @time)
+
+    setTime: (value) ->
+      @time = value
+      if @scope
+        @scope.add('time', @time)
 
     ###
     This is the beat loop that runs at 4 quarters to the beat, emitting
@@ -70,7 +78,7 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
 
     updateTime: ->
       @milliseconds = new Date().getTime()
-      @time = window.time = (@milliseconds - @millisAtStart) / 1000
+      @setTime((@milliseconds - @millisAtStart) / 1000)
 
     setBpmLater: (bpm) ->
       if (bpm != @newBpm)
@@ -91,8 +99,8 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
         @setBpm(bpmOrAddress)
 
     setBpm: (bpm) ->
-          @bpm = Math.max(20, Math.min(bpm, 250))
-          @mspb = 60000 / @bpm
+      @bpm = Math.max(20, Math.min(bpm, 250))
+      @mspb = 60000 / @bpm
 
     ###
     Connects to a pulse server, and read the bpm/beat from there.
