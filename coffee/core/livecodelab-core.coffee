@@ -72,11 +72,7 @@ define [
   ,'core/renderer'
   ,'core/threejs-system'
   ,'core/time-keeper'
-<<<<<<< HEAD
-=======
-  ,'core/connections'
   ,'core/global-scope'
->>>>>>> Creating global scope object in lcl core
   ,'sound/samplebank'
   ,'sound/sound-system'
   ,'bowser'
@@ -105,11 +101,7 @@ define [
   ,Renderer
   ,ThreeJsSystem
   ,TimeKeeper
-<<<<<<< HEAD
-=======
-  ,Connections
   ,GlobalScope
->>>>>>> Creating global scope object in lcl core
   ,SampleBank
   ,SoundSystem
   ,createBowser
