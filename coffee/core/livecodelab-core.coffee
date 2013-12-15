@@ -65,6 +65,7 @@ define [
   ,'core/code-compiler'
   ,'core/colour-functions'
   ,'core/colour-literals'
+  ,'core/global-scope'
   ,'core/graphics-commands'
   ,'core/lights-commands'
   ,'core/matrix-commands'
@@ -94,6 +95,7 @@ define [
   ,CodeCompiler
   ,ColourFunctions
   ,ColourLiterals
+  ,GlobalScope
   ,GraphicsCommands
   ,LightsCommands
   ,MatrixCommands
@@ -153,6 +155,8 @@ define [
       
       @timeKeeper = new TimeKeeper()
       
+      @globalscope = new GlobalScope()
+
       # this one also interacts with threeJsSystem at runtime
       @blendControls = new BlendControls(@)
       @colourFunctions = new ColourFunctions()
@@ -174,7 +178,7 @@ define [
       
       # this one also interacts with codeCompiler at runtime.
       @programRunner =
-        new ProgramRunner(@paramsObject.eventRouter, @)
+        new ProgramRunner(@paramsObject.eventRouter, @, @globalscope)
       
       # compiles the user sketch to js so it's ready to run.
       @codeCompiler =
@@ -238,7 +242,6 @@ define [
       #
       #//////////////////////////////////////////////
 
-      @globalscope = new GlobalScope()
 
       @graphicsCommands.addToScope(@globalscope)
       @matrixCommands.addToScope(@globalscope)

@@ -12,10 +12,8 @@ isFunction = (functionToCheck) ->
 
 define [
    'lib/lcl/interpreter'
-  ,'core/global-scope'
 ], (
    Interpreter
-  ,GlobalScope
 ) ->
 
   class ProgramRunner
@@ -33,7 +31,7 @@ define [
     # contains the last stable program AST
     lastStableProgram = []
 
-    constructor: (@eventRouter, @liveCodeLabCoreInstance) ->
+    constructor: (@eventRouter, @liveCodeLabCoreInstance, @globalscope) ->
 
     addToScope: (scope) ->
 
@@ -72,7 +70,7 @@ define [
       # in which case the lines afterwards are not executed
       # and the exception is propagated to the callee of this function,
       # which is the main animation loop.
-      scope = GlobalScope.getScope()
+      scope = @globalscope.getScope()
       Interpreter.run(@program, scope)
 
       # if we are here it means that the interpreter didn't throw
