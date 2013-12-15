@@ -32,19 +32,31 @@ define () ->
       @worldMatrix.identity()
 
     pushMatrix: ->
+      if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
+        return
+
       @matrixStack.push @worldMatrix
       @worldMatrix = (new @liveCodeLabCore_three.Matrix4()).copy(@worldMatrix)
 
     popMatrix: ->
+      if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
+        return
+
       if @matrixStack.length
         @worldMatrix = @matrixStack.pop()
       else
         @worldMatrix.identity()
 
     resetMatrix: ->
+      if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
+        return
+
       @worldMatrix.identity()
 
     move: (a, b, c = 0, d = null) ->
+      if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
+        return
+
       appendedFunction = undefined
 
       if typeof a isnt "number"
@@ -69,6 +81,9 @@ define () ->
         @popMatrix()
 
     rotate: (a, b, c = 0, d = null) ->
+      if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
+        return
+
       appendedFunction = undefined
 
       if typeof a isnt "number"
@@ -93,6 +108,9 @@ define () ->
         @popMatrix()
 
     scale: (a, b, c = 1, d = null) ->
+      if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
+        return
+
       appendedFunction = undefined
 
       if typeof a isnt "number"

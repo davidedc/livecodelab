@@ -494,7 +494,11 @@ define () ->
         pooledObjectWithMaterials.threejsObject3D  if objectIsNew
 
     commonPrimitiveDrawingLogic: (a, b, c, d, primitiveProperties) ->
-      
+
+      if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
+        #console.log "skipping the frame"
+        return
+
       # b and c are not functional in some geometric
       # primitives, but we handle them here in all cases
       # to make the code uniform and unifiable
