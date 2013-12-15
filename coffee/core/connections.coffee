@@ -5,27 +5,27 @@
 
 define ['pulse'], (PulseEmpty) ->
 
-	class Connections
+    class Connections
 
-		constructor: ->
+        constructor: ->
 
-			@pulseClient = new Pulse();
-			@connectTimeoutHandle = null
-			
-			window.connect = (a) => @connect(a)
+            @pulseClient = new Pulse();
+            @connectTimeoutHandle = null
 
-		
-		connect: (address) ->
+            window.connect = (a) => @connect(a)
 
-			if !(@pulseClient.connecting || @pulseClient.currentConnection() == @pulseClient.cleanAddress(address))
-				console.log(@pulseClient.currentConnection())
-				console.log(@pulseClient.cleanAddress(address))
-				console.log 'Connecting to ' + address
-				@pulseClient.connect address
-			# pulse.connect address
-			window.pulse = () => @pulseClient.pulse()
-			window.beat = () => @pulseClient.beat()
 
-			return
+        connect: (address) ->
 
-	Connections
+            if !(@pulseClient.connecting || @pulseClient.currentConnection() == @pulseClient.cleanAddress(address))
+                console.log(@pulseClient.currentConnection())
+                console.log(@pulseClient.cleanAddress(address))
+                console.log 'Connecting to ' + address
+                @pulseClient.connect address
+            # pulse.connect address
+            window.pulse = () => @pulseClient.pulse()
+            window.beat = () => @pulseClient.beat()
+
+            return
+
+    Connections
