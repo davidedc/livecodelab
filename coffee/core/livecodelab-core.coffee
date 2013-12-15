@@ -164,6 +164,7 @@ define [
       # this one also interacts with threeJsSystem at runtime
       @blendControls = new BlendControls(@)
       @colourFunctions = new ColourFunctions()
+      @colourLiterals = new ColourLiterals()
       
       # this one also interacts with threeJsSystem and blendControls at runtime
       @renderer = new Renderer(@)
@@ -247,9 +248,7 @@ define [
       @graphicsCommands.addFunctionsToScope(@globalscope)
       @matrixCommands.addFunctionsToScope(@globalscope)
       @lightSystem.addFunctionsToScope(@globalscope)
-      colourLiterals = new ColourLiterals()
-      console.log(colourLiterals)
-      colourLiterals.addVariablesToScope(@globalscope)
+      @colourLiterals.addVariablesToScope(@globalscope)
 
 
     #//////////////////////////////////////////////

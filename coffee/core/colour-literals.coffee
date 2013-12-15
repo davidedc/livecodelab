@@ -170,23 +170,17 @@ define () ->
         angleColor: "angleColor"
 
       for colorName, colorValue of @colourNamesValues
-        # Adding colours to the global namespace is avoidable once we have
-        # a "scope" object in which the code will be executed,
-        # then we can just dynamically add fields to that scope
-        window["#{colorName}"] = parseInt(colorValue)
-        if isNaN(window["#{colorName}"])
-          # this is the case of special colors that have string values
-          window["#{colorName}"] = colorValue
-
         @colourNames.push "#{colorName}"
 
     addVariablesToScope: (scope) ->
 
       for colorName, colorValue of @colourNamesValues
-        scope.add("#{colorName}", parseInt(colorValue))
-        if isNaN(window["#{colorName}"])
+        val = parseInt(colorValue)
+        if isNaN(val)
           # this is the case of special colors that have string values
           scope.add("#{colorName}", colorValue)
+        else
+          scope.add("#{colorName}", val)
 
 
 
