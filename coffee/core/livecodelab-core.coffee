@@ -251,6 +251,7 @@ define [
       @colourLiterals.addVariablesToScope(@globalscope)
       @backgroundPainter.addFunctionsToScope(@globalscope)
       @blendControls.addFunctionsToScope(@globalscope)
+      @connections.addToScope(@globalscope)
 
 
     #//////////////////////////////////////////////
