@@ -5,12 +5,12 @@
 var requirejs = require('requirejs');
 
 requirejs.config({
-    baseUrl: 'dist/js/lib/lcl',
+    baseUrl: 'dist/js',
     nodeRequire: require
 });
 
-var Interpreter = requirejs('interpreter');
-var parser = requirejs('parser');
+var Interpreter = requirejs('lib/lcl/interpreter');
+var parser = requirejs('lib/lcl/parser');
 
 /*
   ======== A Handy Little Nodeunit Reference ========

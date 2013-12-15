@@ -5,11 +5,11 @@
 var requirejs = require('requirejs');
 
 requirejs.config({
-    baseUrl: 'dist/js/lib/lcl',
+    baseUrl: 'dist/js',
     nodeRequire: require
 });
 
-var ProgramData = requirejs('programdata');
+var ProgramData = requirejs('lib/lcl/programdata');
 
 /*
   ======== A Handy Little Nodeunit Reference ========
