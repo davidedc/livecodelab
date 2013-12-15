@@ -24,7 +24,7 @@ define () ->
       @animationStyles.paintOver = 1
       @animationStyles.motionBlur = 2
 
-    addFunctionsToScope: (scope) ->
+    addToScope: (scope) ->
       scope.add('normal',         @animationStyles.normal)
       scope.add('paintOver',      @animationStyles.paintOver)
       scope.add('motionBlur',     @animationStyles.mothinBlur)

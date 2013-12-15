@@ -243,7 +243,7 @@ define () ->
         @lastPositionOfPrimitiveType[i] = new @liveCodeLabCore_three.Matrix4()
         @numberOfOverlappingPrimitives[i] = 0
 
-    addFunctionsToScope: (scope) ->
+    addToScope: (scope) ->
 
       scope.add('line',       (a,b,c,d) => @line(a,b,c,d))
       scope.add('rect',       (a,b,c,d) => @rect(a,b,c,d))
