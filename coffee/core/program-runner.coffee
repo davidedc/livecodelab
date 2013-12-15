@@ -37,7 +37,6 @@ define [
 
     addToScope: (scope) ->
 
-      scope.add('addDoOnce', (a) => @addDoOnce(a))
       scope.add('run', (a,b) => @run(a,b))
 
     # the run function is used so one can write
