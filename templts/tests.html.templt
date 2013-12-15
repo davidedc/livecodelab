@@ -19,8 +19,9 @@
   <script type="text/javascript" src="test-page-files/jasmine/jasmine-html.js"></script>
   <script type="text/javascript" src="test-page-files/js/imagediff.js"></script>
   <script type="text/javascript" src="test-page-files/js/google-code-prettify/prettify.js"></script>
-
   <script data-main="js/rjs-init" src="js/lib/require.js"></script>
+  <script type="text/javascript" src="test-page-files/testsSource/testsSource.js"></script>
+
 
 </head>
 

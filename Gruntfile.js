@@ -85,9 +85,9 @@ module.exports = function (grunt) {
             },
             tests: {
                 expand: true,
-                cwd: 'tests/coffee/',
+                cwd: 'tests/testsSource/',
                 src: ['*.coffee'],
-                dest: 'dist/tests/js/',
+                dest: 'dist/test-page-files/testsSource/',
                 ext: '.js',
                 options: {
                     bare: true,
@@ -97,8 +97,8 @@ module.exports = function (grunt) {
         },
         watch: {
             scripts: {
-                files: ['coffee/**/*.coffee', 'tests/js/*.js', 'templts/tests.html.templt', 'tests/htmlsWithTests/images/*.png'],
-                tasks: ['coffee:app', 'copy']
+                files: ['coffee/**/*.coffee', 'tests/js/*.js', 'tests/testsSource/*.coffee', 'templts/tests.html.templt', 'tests/htmlsWithTests/images/*.png'],
+                tasks: ['coffee:app','coffee:tests', 'copy']
             }
         },
         coffeelint: {
@@ -188,6 +188,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:build',
         'coffee:app',
+        'coffee:tests',
         'copy:main',
         'recess:compile',
         'requirejs',
