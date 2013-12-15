@@ -172,7 +172,7 @@ define () ->
       for colorName, colorValue of @colourNamesValues
         @colourNames.push "#{colorName}"
 
-    addVariablesToScope: (scope) ->
+    addToScope: (scope) ->
 
       for colorName, colorValue of @colourNamesValues
         val = parseInt(colorValue)

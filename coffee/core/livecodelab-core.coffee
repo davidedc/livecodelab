@@ -240,12 +240,12 @@ define [
 
       @globalscope = new GlobalScope()
 
-      @graphicsCommands.addFunctionsToScope(@globalscope)
-      @matrixCommands.addFunctionsToScope(@globalscope)
-      @lightSystem.addFunctionsToScope(@globalscope)
-      @colourLiterals.addVariablesToScope(@globalscope)
-      @backgroundPainter.addFunctionsToScope(@globalscope)
-      @blendControls.addFunctionsToScope(@globalscope)
+      @graphicsCommands.addToScope(@globalscope)
+      @matrixCommands.addToScope(@globalscope)
+      @lightSystem.addToScope(@globalscope)
+      @colourLiterals.addToScope(@globalscope)
+      @backgroundPainter.addToScope(@globalscope)
+      @blendControls.addToScope(@globalscope)
       @connections.addToScope(@globalscope)
       @soundSystem.addToScope(@globalscope)
       @colourFunctions.addToScope(@globalscope)

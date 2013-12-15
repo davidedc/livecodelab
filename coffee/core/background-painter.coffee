@@ -73,7 +73,7 @@ define () ->
       @gradientPrefix = getCssValuePrefix 'background', 'linear-gradient(left, #fff, #fff)'
       
 
-    addFunctionsToScope: (scope) ->
+    addToScope: (scope) ->
 
       scope.add('simpleGradient', (a,b,c) => @simpleGradient(a,b,c))
       scope.add('background', (a,b,c) => @background(a,b,c))

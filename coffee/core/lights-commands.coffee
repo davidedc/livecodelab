@@ -17,7 +17,7 @@ define () ->
       @objectPools[@primitiveTypes.ambientLight] = []
       @objectsUsedInFrameCounts[@primitiveTypes.ambientLight] = 0
       
-    addFunctionsToScope: (scope) ->
+    addToScope: (scope) ->
 
       scope.add('lights', () => @lights())
       scope.add('noLights', () => @noLights())

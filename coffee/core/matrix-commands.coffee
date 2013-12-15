@@ -15,7 +15,7 @@ define () ->
     constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance) ->
       @worldMatrix = new @liveCodeLabCore_three.Matrix4()
 
-    addFunctionsToScope: (scope) ->
+    addToScope: (scope) ->
 
       scope.add('pushMatrix',  () => @pushMatrix())
       scope.add('popMatrix',   () => @popMatrix())
