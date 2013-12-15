@@ -481,7 +481,7 @@ define () ->
           #console.log "something here already at  " + primitiveID
           @numberOfOverlappingPrimitives[primitiveID]++
           overlapPrimtives = @numberOfOverlappingPrimitives[primitiveID]
-          pert = sin(time/100) * sin(overlapPrimtives + time/100)/40
+          pert = sin(time*10) * sin(overlapPrimtives + time*10)/40
           pooledObjectWithMaterials.threejsObject3D.matrix.rotateX(pert).rotateY(pert).rotateZ pert
           pooledObjectWithMaterials.threejsObject3D.matrix.translate new @liveCodeLabCore_three.Vector3(pert, pert, pert)
         else
