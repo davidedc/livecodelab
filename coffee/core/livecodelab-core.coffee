@@ -251,6 +251,7 @@ define [
       @colourFunctions.addToScope(@globalscope)
       @animationLoop.addToScope(@globalscope)
       @timeKeeper.addToScope(@globalscope)
+      @drawFunctionRunner.addToScope(@globalscope)
 
 
     #//////////////////////////////////////////////
