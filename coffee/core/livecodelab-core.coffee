@@ -247,6 +247,7 @@ define [
       @backgroundPainter.addFunctionsToScope(@globalscope)
       @blendControls.addFunctionsToScope(@globalscope)
       @connections.addToScope(@globalscope)
+      @soundSystem.addToScope(@globalscope)
 
 
     #//////////////////////////////////////////////
