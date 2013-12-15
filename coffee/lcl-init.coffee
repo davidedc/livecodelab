@@ -310,7 +310,7 @@ require [
       blendedThreeJsSceneCanvas: document.getElementById(canvasName)
       canvasForBackground: document.getElementById("backgroundDiv")
       forceCanvasRenderer: false
-      bubbleUpErrorsForDebugging: false
+      bubbleUpErrorsForDebugging: true
       
       # testMode enables the webgl flag "preserverDrawingBuffer",
       # see https://github.com/mrdoob/three.js/pull/421

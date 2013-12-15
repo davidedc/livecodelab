@@ -118,15 +118,14 @@ define () ->
       else
         @liveCodeLabCoreInstance.timeKeeper.updateTime()
 
+      frameStartTime = @liveCodeLabCoreInstance.timeKeeper.milliseconds
+
       # do the render ONLY if we are some ms away from the next
       # scheduled beat. In other words, stay well clear of the
       # sound timer!
-      forbiddenZone = Math.max.apply(Math, @fpsHistory);
-      currentTime = @liveCodeLabCoreInstance.timeKeeper.milliseconds
-      musicBeatStart = @liveCodeLabCoreInstance.soundSystem.startOfInterval
-      timeSinceMusicBeatStart = currentTime - musicBeatStart
-      beatRecurrence = @liveCodeLabCoreInstance.soundSystem.beatRecurrence
-      if timeSinceMusicBeatStart % beatRecurrence >= beatRecurrence - forbiddenZone * 2
+      
+      forbiddenZone = Math.min(Math.max.apply(Math, @fpsHistory), 1000/30)
+      if @liveCodeLabCoreInstance.timeKeeper.nextQuarterBeat - frameStartTime < forbiddenZone
         @noDrawFrame = true
       else
         @noDrawFrame = false
@@ -136,15 +135,8 @@ define () ->
       # the sound list needs to be cleaned
       # so that the user program can create its own from scratch
       @liveCodeLabCoreInstance.soundSystem.resetLoops()
-      @liveCodeLabCoreInstance.soundSystem.anyCodeReactingTobpm = false
 
       @liveCodeLabCoreInstance.drawFunctionRunner.resetTrackingOfDoOnceOccurrences()
-
-      # set a
-      # default bpm (so user doesn't need to add bpm instruction). If
-      # the bpm instruction is invoked in the code,
-      # that new value will override this default value.
-      @liveCodeLabCoreInstance.soundSystem.setUpdatesPerMinute 60 * 4
 
       @liveCodeLabCoreInstance.lightSystem.noLights()
       @liveCodeLabCoreInstance.graphicsCommands.reset()
@@ -196,7 +188,6 @@ define () ->
       @liveCodeLabCoreInstance.timeKeeper.resetTime()  if frame is 0
       @liveCodeLabCoreInstance.blendControls.animationStyleUpdateIfChanged()
       @liveCodeLabCoreInstance.backgroundPainter.simpleGradientUpdateIfChanged()
-      @liveCodeLabCoreInstance.soundSystem.changeUpdatesPerMinuteIfNeeded()
       
       # "frame" starts at zero, so we increment after the first time the draw
       # function has been run.
@@ -213,7 +204,7 @@ define () ->
         # keep the last 10 durations of when we actually
         # drew the frame. This is used for trying to
         # avoid collision between graphics and sound timers.
-        @fpsHistory.push((new Date().getMilliseconds())-(currentTime))
+        @fpsHistory.push(new Date().getTime() - frameStartTime)
         if @fpsHistory.length > 60
           @fpsHistory.shift()
       
