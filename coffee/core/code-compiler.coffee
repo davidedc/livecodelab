@@ -21,6 +21,11 @@ define [
 
       @codePreprocessor = Preprocessor
 
+      @parser = Parser
+      @parser.yy.parseError = (message, details) ->
+        console.log(details)
+        throw message
+
     updateCode: (codeString) ->
       @currentCodeString = codeString
 
@@ -43,10 +48,11 @@ define [
       #  return
 
       try
-        programAST = Parser.parse(code)
+        programAST = @parser.parse(code)
       catch e
         # parser has caught a syntax error.
         # we are going to display the error and we WON'T register the new code
+        console.log(code)
         @eventRouter.emit("compile-time-error-thrown", e)
         return
 
