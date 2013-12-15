@@ -300,7 +300,7 @@ require [
         blendedThreeJsSceneCanvas: document.getElementById(canvasName)
         canvasForBackground: document.getElementById("backgroundDiv")
         forceCanvasRenderer: false
-        bubbleUpErrorsForDebugging: true
+        bubbleUpErrorsForDebugging: false
         
         # testMode enables the webgl flag "preserverDrawingBuffer",
         # see https://github.com/mrdoob/three.js/pull/421
@@ -309,7 +309,6 @@ require [
   if setupForTestPage?
     $(document).ready ->
       console.log 'describing ImageTest'
-
 
       execJasmine = ->
         jasmineEnv.execute()
