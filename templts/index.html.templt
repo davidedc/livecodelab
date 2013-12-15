@@ -6,6 +6,14 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
+        <script type="text/javascript">
+           // makes it so LCL starts as soon as the document
+           // is ready with all the gadgets and gizomos
+           // needed for the normal LCL page
+           // This is as opposed as using LCL in the test setup
+           setupForNormalLCLPage = true
+        </script> 
+
         <!--(if target dev)><!-->
 
         <script data-main="js/rjs-init" src="js/lib/require.js"></script>

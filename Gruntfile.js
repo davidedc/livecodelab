@@ -20,6 +20,30 @@ module.exports = function (grunt) {
                     src: ['**'],
                     dest: 'dist/sound'
                 }, {
+                    expand: false,
+                    src: ['templts/tests.html.templt'],
+                    dest: 'dist/tests.html'
+                }, {
+                    expand: true,
+                    cwd: 'tests/lib/jasmine-1.3.1/',
+                    src: ['**'],
+                    dest: 'dist/test-page-files/jasmine/'
+                }, {
+                    expand: true,
+                    cwd: 'tests/css/',
+                    src: ['**'],
+                    dest: 'dist/test-page-files/css/'
+                }, {
+                    expand: true,
+                    cwd: 'tests/htmlsWithTests/images/',
+                    src: ['**'],
+                    dest: 'dist/test-page-files/images/'
+                }, {
+                    expand: true,
+                    cwd: 'tests/js/',
+                    src: ['**'],
+                    dest: 'dist/test-page-files/js/'
+                }, {
                     expand: true,
                     cwd: 'js_lib/',
                     src: ['**'],
@@ -73,8 +97,8 @@ module.exports = function (grunt) {
         },
         watch: {
             scripts: {
-                files: ['coffee/**/*.coffee'],
-                tasks: ['coffee:app']
+                files: ['coffee/**/*.coffee', 'tests/js/*.js', 'templts/tests.html.templt', 'tests/htmlsWithTests/images/*.png'],
+                tasks: ['coffee:app', 'copy']
             }
         },
         coffeelint: {

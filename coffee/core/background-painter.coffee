@@ -181,7 +181,9 @@ define () ->
             cssString = @gradientPrefix + "linear-gradient(top,  "+color.toString(scanningGradStack.solid)+" 0%,"+color.toString(scanningGradStack.solid)+" 100%)," + cssString
         cssString = cssString.substring(0, cssString.length - 1);
         cssString = cssStringPreamble + cssString + ";"
-        document.getElementById("backgroundDiv").style.cssText = cssString
+        
+        if (document.getElementById("backgroundDiv"))
+          document.getElementById("backgroundDiv").style.cssText = cssString
         #console.log cssString
 
   BackgroundPainter
