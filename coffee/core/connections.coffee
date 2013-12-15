@@ -12,8 +12,17 @@ define ['pulse'], (PulseEmpty) ->
             @pulseClient = new Pulse();
             @connectTimeoutHandle = null
 
-            window.connect = (a) => @connect(a)
+        addToScope: (scope) ->
 
+          scope.add('connect', (a) => @connect(a))
+          scope.add('pulse',   () => @pulse())
+          scope.add('beat',    () => @beat())
+
+        pulse: () ->
+          0
+
+        beat: () ->
+          0
 
         connect: (address) ->
 
@@ -23,8 +32,8 @@ define ['pulse'], (PulseEmpty) ->
                 console.log 'Connecting to ' + address
                 @pulseClient.connect address
             # pulse.connect address
-            window.pulse = () => @pulseClient.pulse()
-            window.beat = () => @pulseClient.beat()
+            @pulse = @pulseClient.pulse()
+            @beat = @pulseClient.beat()
 
             return
 
