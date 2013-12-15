@@ -60,6 +60,7 @@ define () ->
       # in which case the lines afterwards are not executed
       # and the exception is propagated to the callee of this function,
       # which is the main animation loop.
+      #console.log "running runDrawFunction"
       @drawFunction()
       
       # if we are here it means that the draw function didn't generate

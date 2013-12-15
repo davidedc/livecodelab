@@ -139,19 +139,7 @@ define () ->
       else
         @noDrawFrame = false
 
-      @liveCodeLabCoreInstance.matrixCommands.resetMatrixStack()
-      
-      # the sound list needs to be cleaned
-      # so that the user program can create its own from scratch
-      @liveCodeLabCoreInstance.soundSystem.resetLoops()
-
-      @liveCodeLabCoreInstance.drawFunctionRunner.resetTrackingOfDoOnceOccurrences()
-
-      @liveCodeLabCoreInstance.lightSystem.noLights()
-      @liveCodeLabCoreInstance.graphicsCommands.reset()
-      @liveCodeLabCoreInstance.blendControls.animationStyle \
-        @liveCodeLabCoreInstance.blendControls.animationStyles.normal
-      @liveCodeLabCoreInstance.backgroundPainter.resetGradientStack()
+      @cleanStateBeforeRunningDrawAndRendering()
       
       # if the draw function is empty, then don't schedule the
       # next animation frame and set a "I'm sleeping" flag.
@@ -177,6 +165,9 @@ define () ->
         catch e
           
           #alert('runtime error');
+          # note that this causes the running of the last stable function
+          # so you could have executed half of the original draw function,
+          # then got an error, now you are re-running an old draw function.
           @eventRouter.emit("runtime-error-thrown", e)
           return
         drawFunctionRunner = @liveCodeLabCoreInstance.drawFunctionRunner
@@ -219,6 +210,23 @@ define () ->
       
       # update stats
       if @stats then @stats.update()
+
+    cleanStateBeforeRunningDrawAndRendering: ->
+      @liveCodeLabCoreInstance.renderer.resetExclusionPrincipleWobbleDataIfNeeded @liveCodeLabCoreInstance.graphicsCommands
+
+      @liveCodeLabCoreInstance.matrixCommands.resetMatrixStack()
+      
+      # the sound list needs to be cleaned
+      # so that the user program can create its own from scratch
+      @liveCodeLabCoreInstance.soundSystem.resetLoops()
+
+      @liveCodeLabCoreInstance.drawFunctionRunner.resetTrackingOfDoOnceOccurrences()
+
+      @liveCodeLabCoreInstance.lightSystem.noLights()
+      @liveCodeLabCoreInstance.graphicsCommands.reset()
+      @liveCodeLabCoreInstance.blendControls.animationStyle \
+        @liveCodeLabCoreInstance.blendControls.animationStyles.normal
+      @liveCodeLabCoreInstance.backgroundPainter.resetGradientStack()
 
   AnimationLoop
 
