@@ -164,7 +164,7 @@ define () ->
     lastPositionOfPrimitiveType: []
     numberOfOverlappingPrimitives: []
     
-    constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance) ->
+    constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance, @colourLiterals) ->
       
       numberOfPrimitives = 0
       @primitiveTypes.ambientLight = numberOfPrimitives++
@@ -178,6 +178,8 @@ define () ->
       # Todo: note this doesn't work if we decide that
       # other primitives have a detail level...
       @primitiveTypes.ball = numberOfPrimitives++
+
+      @angleColor = @colourLiterals.getColour('angleColor')
       
       # apparently in Coffeescript I can't initialise fields in the section
       # before the constructor, so initialising them here in the constructor
@@ -327,12 +329,12 @@ define () ->
             new @liveCodeLabCore_three.LineBasicMaterial()
         
         # associating normal material to threejs' Object3D
-        if @currentStrokeColor is angleColor or @defaultNormalStroke
+        if @currentStrokeColor is @angleColor or @defaultNormalStroke
           theAngle =
             pooledObjectWithMaterials.threejsObject3D.matrix.multiplyVector3(
               new @liveCodeLabCore_three.Vector3(0, 1, 0)).normalize()
           pooledObjectWithMaterials.lineMaterial.color.setHex(
-            color(
+            @liveCodeLabCoreInstance.colourFunctions.color(
               ((theAngle.x + 1) / 2) * 255,
               ((theAngle.y + 1) / 2) * 255,
               ((theAngle.z + 1) / 2) * 255
@@ -345,7 +347,7 @@ define () ->
         pooledObjectWithMaterials.threejsObject3D.material =
           pooledObjectWithMaterials.lineMaterial
       else if objectIsNew or (
-        colorToBeUsed is angleColor or applyDefaultNormalColor
+        colorToBeUsed is @angleColor or applyDefaultNormalColor
       )
         
         # the first time we render a an object we need to
@@ -702,10 +704,10 @@ define () ->
       #   angleColor
       #   angleColor, alpha
       @doFill = true
-      if r isnt angleColor
+      if r isnt @angleColor
         @defaultNormalFill = false
-        @currentFillColor = color(r, g, b)
-        @currentFillAlpha = alphaZeroToOne(color(r, g, b, a))
+        @currentFillColor = @liveCodeLabCoreInstance.colourFunctions.color(r, g, b)
+        @currentFillAlpha = @liveCodeLabCoreInstance.colourFunctions.alphaZeroToOne(@liveCodeLabCoreInstance.colourFunctions.color(r, g, b, a))
       else
         
         # we keep track of the "normal fill" flag and the fill color
@@ -714,7 +716,7 @@ define () ->
         # and not draw the wireframe is it happens to be the same color as
         # the fill
         @defaultNormalFill = true
-        @currentFillColor = angleColor
+        @currentFillColor = @angleColor
         if not b? and not g?
           @currentFillAlpha = g / @liveCodeLabCoreInstance.colourFunctions.colorModeA
         else
@@ -770,10 +772,10 @@ define () ->
       # see comment on fill method above
       # for some comments on how this method works.
       @doStroke = true
-      if r isnt angleColor
+      if r isnt @angleColor
         @defaultNormalStroke = false
-        @currentStrokeColor = color(r, g, b)
-        @currentStrokeAlpha = alphaZeroToOne(color(r, g, b, a))
+        @currentStrokeColor = @liveCodeLabCoreInstance.colourFunctions.color(r, g, b)
+        @currentStrokeAlpha = @liveCodeLabCoreInstance.colourFunctions.alphaZeroToOne(@liveCodeLabCoreInstance.colourFunctions.color(r, g, b, a))
       else
         
         # we keep track of the "normal stroke" flag and the stroke color
@@ -782,7 +784,7 @@ define () ->
         # and not draw the wireframe is it happens to be the same color as
         # the fill
         @defaultNormalStroke = true
-        @currentStrokeColor = angleColor
+        @currentStrokeColor = @angleColor
         if not b? and not g?
           @currentStrokeAlpha = g / @liveCodeLabCoreInstance.colourFunctions.colorModeA
         else

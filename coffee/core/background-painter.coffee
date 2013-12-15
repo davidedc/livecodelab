@@ -62,7 +62,7 @@ define () ->
 
   class BackgroundPainter
 
-    constructor: (@backgroundDiv, @liveCodeLabCoreInstance) ->
+    constructor: (@backgroundDiv, @liveCodeLabCoreInstance, @colourLiterals) ->
       @gradStack = []
       @defaultGradientColor1 = 0
       @defaultGradientColor2 = 0
@@ -115,24 +115,24 @@ define () ->
         @whichDefaultBackground = (@whichDefaultBackground + 1) % 5
       switch @whichDefaultBackground
         when 0
-          @defaultGradientColor1 = orange
-          @defaultGradientColor2 = red
-          @defaultGradientColor3 = black
+          @defaultGradientColor1 = @colourLiterals.getColour('orange')
+          @defaultGradientColor2 = @colourLiterals.getColour('red')
+          @defaultGradientColor3 = @colourLiterals.getColour('black')
           $("#fakeStartingBlinkingCursor").css "color", "white"
         when 1
-          @defaultGradientColor1 = white
-          @defaultGradientColor2 = khaki
-          @defaultGradientColor3 = peachpuff
+          @defaultGradientColor1 = @colourLiterals.getColour('white')
+          @defaultGradientColor2 = @colourLiterals.getColour('khaki')
+          @defaultGradientColor3 = @colourLiterals.getColour('peachpuff')
           $("#fakeStartingBlinkingCursor").css "color", "LightPink"
         when 2
-          @defaultGradientColor1 = lightsteelblue
-          @defaultGradientColor2 = lightcyan
-          @defaultGradientColor3 = paleturquoise
+          @defaultGradientColor1 = @colourLiterals.getColour('lightsteelblue')
+          @defaultGradientColor2 = @colourLiterals.getColour('lightcyan')
+          @defaultGradientColor3 = @colourLiterals.getColour('paleturquoise')
           $("#fakeStartingBlinkingCursor").css "color", "CadetBlue"
         when 3
-          @defaultGradientColor1 = silver
-          @defaultGradientColor2 = lightgrey
-          @defaultGradientColor3 = gainsboro
+          @defaultGradientColor1 = @colourLiterals.getColour('silver')
+          @defaultGradientColor2 = @colourLiterals.getColour('lightgrey')
+          @defaultGradientColor3 = @colourLiterals.getColour('gainsboro')
           $("#fakeStartingBlinkingCursor").css "color", "white"
         when 4
           @defaultGradientColor1 = @liveCodeLabCoreInstance.colourFunctions.color(155,255,155)

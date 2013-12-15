@@ -176,7 +176,8 @@ define [
       # canvasForBackground at runtime
       @backgroundPainter = new BackgroundPainter(
         @paramsObject.canvasForBackground,
-        @
+        @,
+        @colourLiterals
       )
       
       # this one also interacts with codeCompiler at runtime.
@@ -226,7 +227,9 @@ define [
       # threeJsSystem at runtime
       @graphicsCommands =
         new GraphicsCommands(
-          @three, @)
+          @three,
+          @,
+          @colourLiterals)
           # color, lightSystem, matrixCommands, threeJsSystem, colorModeA,
           # redF, greenF, blueF, alphaZeroToOne
       

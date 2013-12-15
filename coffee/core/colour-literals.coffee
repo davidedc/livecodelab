@@ -182,7 +182,14 @@ define () ->
         else
           scope.add("#{colorName}", val)
 
-
+    getColour: (name) ->
+      colorValue = @colourNamesValues[name]
+      val = parseInt(colorValue)
+      if isNaN(val)
+        # this is the case of special colors that have string values
+        colorValue
+      else
+        val
 
   ColourLiterals
 
