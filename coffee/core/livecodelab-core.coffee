@@ -254,6 +254,8 @@ define [
       @connections.addToScope(@globalscope)
       @soundSystem.addToScope(@globalscope)
       @colourFunctions.addToScope(@globalscope)
+      @animationLoop.addToScope(@globalscope)
+      @timeKeeper.addToScope(@globalscope)
 
 
     #//////////////////////////////////////////////
