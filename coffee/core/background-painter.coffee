@@ -64,9 +64,9 @@ define () ->
 
     constructor: (@backgroundDiv, @liveCodeLabCoreInstance) ->
       @gradStack = []
-      @defaultGradientColor1 = orange
-      @defaultGradientColor2 = red
-      @defaultGradientColor3 = black
+      @defaultGradientColor1 = 0
+      @defaultGradientColor2 = 0
+      @defaultGradientColor3 = 0
       @whichDefaultBackground = undefined
       @currentGradientStackValue = ""
       @previousGradientStackValue = 0
