@@ -246,7 +246,6 @@ define [
       @colourLiterals.addToScope(@globalscope)
       @backgroundPainter.addToScope(@globalscope)
       @blendControls.addToScope(@globalscope)
-      @connections.addToScope(@globalscope)
       @soundSystem.addToScope(@globalscope)
       @colourFunctions.addToScope(@globalscope)
       @animationLoop.addToScope(@globalscope)

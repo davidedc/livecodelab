@@ -30,11 +30,16 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
     addToScope: (scope) ->
 
       @scope = scope
-      scope.add('bpm',   (bpm) => @wave(bpm))
+      scope.add('bpm',   (bpm) => @setBpmLater(bpm))
       scope.add('beat',  () => @beat())
       scope.add('pulse', () => @pulse())
-      scope.add('wave',  (period) => @period())
+      scope.add('wave',  (period) => @wave(period))
       scope.add('time', @time)
+
+    setTime: (value) ->
+      @time = value
+      if @scope
+        @scope.add('time', @time)
 
     ###
     This is the beat loop that runs at 4 quarters to the beat, emitting
@@ -94,8 +99,8 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
         @setBpm(bpmOrAddress)
 
     setBpm: (bpm) ->
-          @bpm = Math.max(20, Math.min(bpm, 250))
-          @mspb = 60000 / @bpm
+      @bpm = Math.max(20, Math.min(bpm, 250))
+      @mspb = 60000 / @bpm
 
     ###
     Connects to a pulse server, and read the bpm/beat from there.
