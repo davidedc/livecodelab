@@ -154,6 +154,24 @@ exports.programdata = {
 
         var programtext, expected, finalprog;
 
+        programtext = " alpha\t bravo\n\t charlie";
+        expected = [
+            " alpha\t bravo",
+            "{",
+            "\t charlie   \t",
+            "}"
+        ].join('\n');
+
+        finalprog = PreProcessor.process(programtext);
+
+        test.equal(finalprog, expected);
+        test.done();
+    },
+
+    'block finished at EOF': function (test) {
+
+        var programtext, expected, finalprog;
+
         programtext = " alpha\t bravo\n\t charlie   \t\n\t\t delta echo \n\t\t  \n\t\t foxtrot golf \n\t hotel \n\t\t india \t juliett \n kilo";
         expected = [
             " alpha\t bravo",
