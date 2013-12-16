@@ -154,7 +154,7 @@ exports.programdata = {
 
         var programtext, expected, finalprog;
 
-        programtext = " alpha\t bravo\n\t charlie";
+        programtext = " alpha\t bravo\n\t charlie   \t";
         expected = [
             " alpha\t bravo",
             "{",

@@ -52,11 +52,12 @@ define([
 
     PreProcessor.insertBlocks = function (programtext, blocks) {
 
-        var lines, i, output, lastblock, l, b, bdiff, bd;
+        var lines, i, output, lastblock, l, b, bdiff, bd, blockdepth;
 
         output = [];
         lines = programtext.split('\n');
         lastblock = 0;
+        blockdepth = 0;
 
         for (i = 0; i < lines.length; i += 1) {
             l = lines[i];
@@ -67,15 +68,22 @@ define([
                 bdiff = b - lastblock;
                 for (bd = 0; bd < bdiff; bd += 1) {
                     output.push('{');
+                    blockdepth += 1;
                 }
             } else if (b < lastblock) {
                 bdiff = lastblock - b;
                 for (bd = 0; bd < bdiff; bd += 1) {
                     output.push('}');
+                    blockdepth -= 1;
                 }
             }
             lastblock = b;
             output.push(l);
+        }
+        if (blockdepth > 0) {
+            for (bd = 0; bd < blockdepth; bd += 1) {
+                output.push('}');
+            }
         }
         return output.join('\n');
 
