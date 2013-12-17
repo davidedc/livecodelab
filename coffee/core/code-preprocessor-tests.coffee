@@ -861,8 +861,9 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    either = (a,b) -> if random()> 0.5 then a() else b()
-                   either (-> box()), (-> peg())
+                   either (box), (peg)
                    """
+         notIdempotent: true
          failsMootAppends: true
         ,
          input:    """
@@ -871,8 +872,9 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    either = (a,b) -> if random()> 0.5 then a() else b()
-                   either (-> box 2), (-> peg 2)
+                   either (-> (box 2)), (-> (peg 2))
                    """
+         notIdempotent: true
          failsMootAppends: true
         ,
          input:    """
@@ -1342,7 +1344,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    localMaterial <box peg 1.1 time rotate ball>
                    """
          expected: """
-                   localMaterial (-> box -> peg 1.1 time, -> rotate -> ball())
+                   localMaterial (-> (box -> peg 1.1 time, -> rotate -> ball()))
                    """
          failsMootAppends: true
         ,
@@ -1507,7 +1509,19 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if ! bf() then line a
                    if !bf() then line a
                    """
-
+        ,
+         notes:    """
+                   """
+         input:    """
+                   myBoxFunc = -> <box>
+                   rotate myBoxFunc() 1, 2, 3
+                   """
+         expected: """
+                   myBoxFunc = -> (box)
+                   rotate myBoxFunc() 1, 2, 3
+                   """
+         notIdempotent: true
+         failsMootAppends: true
       ]
 
   CodePreprocessorTests

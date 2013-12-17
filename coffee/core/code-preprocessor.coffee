@@ -425,31 +425,52 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       return [undefined, error] if error?
 
       code = code.replace(/->(?![ \t])/gm, "-> ") if not error?
+      if detailedDebug then console.log "beautifyCode-1:\n" + code + " error: " + error
       code = code.replace(/->[\t ;]+/gm, "-> ") if not error?
+      if detailedDebug then console.log "beautifyCode-2:\n" + code + " error: " + error
       code = code.replace(/->[\t ]+$/gm, "->") if not error?
+      if detailedDebug then console.log "beautifyCode-3:\n" + code + " error: " + error
       code = code.replace(/if[\t ;]+/gm, "if ") if not error?
+      if detailedDebug then console.log "beautifyCode-4:\n" + code + " error: " + error
       code = code.replace(/then[\t ;]+/gm, "then ") if not error?
+      if detailedDebug then console.log "beautifyCode-5:\n" + code + " error: " + error
       code = code.replace(/else[\t ;]+/gm, "else ") if not error?
+      if detailedDebug then console.log "beautifyCode-6:\n" + code + " error: " + error
       code = code.replace(/;[\t ]+/gm, "; ") if not error?
+      if detailedDebug then console.log "beautifyCode-7:\n" + code + " error: " + error
       code = code.replace(/([\w\d;\)])[\t ]*then/g, "$1 then") if not error?
+      if detailedDebug then console.log "beautifyCode-8:\n" + code + " error: " + error
       code = code.replace(/([\w\d;\)])[\t ]*else/g, "$1 else") if not error?
+      if detailedDebug then console.log "beautifyCode-9:\n" + code + " error: " + error
       code = code.replace(/;$/gm, "") if not error?
+      if detailedDebug then console.log "beautifyCode-10:\n" + code + " error: " + error
       code = code.replace(/([\w\d;\)])[\t ]*->/g, "$1 ->") if not error?
+      if detailedDebug then console.log "beautifyCode-11:\n" + code + " error: " + error
       code = code.replace(/([\w\d;\)])[\t ]*!=/g, "$1 !=") if not error?
+      if detailedDebug then console.log "beautifyCode-12:\n" + code + " error: " + error
       code = code.replace(/([\w\d;\)])[\t ]*>=/g, "$1 >=") if not error?
+      if detailedDebug then console.log "beautifyCode-13:\n" + code + " error: " + error
       code = code.replace(/([\w\d;\)])[\t ]*<=/g, "$1 <=") if not error?
+      if detailedDebug then console.log "beautifyCode-14:\n" + code + " error: " + error
       code = code.replace(/([\w\d;\)])[\t ]*=/g, "$1 =") if not error?
+      if detailedDebug then console.log "beautifyCode-15:\n" + code + " error: " + error
       code = code.replace(/\=([\w\d\(])/g, "= $1") if not error?
-      code = code.replace(/\)([\t ]+\d)/g, ");$1") if not error?
+      if detailedDebug then console.log "beautifyCode-16:\n" + code + " error: " + error
+      #code = code.replace(/\)([\t ]+\d)/g, ");$1") if not error?
+      #if detailedDebug then console.log "beautifyCode-17:\n" + code + " error: " + error
       code = code.replace(/\)[\t ]*if/g, "); if") if not error?
+      if detailedDebug then console.log "beautifyCode-18:\n" + code + " error: " + error
       code = code.replace(/;[\t ]+$/gm, "") if not error?
+      if detailedDebug then console.log "beautifyCode-19:\n" + code + " error: " + error
+      code = code.replace(/♠/g, "") if not error?
+      if detailedDebug then console.log "beautifyCode-20:\n" + code + " error: " + error
 
       # transform stuff like (3).times and (n).times
       # into 3.times and n.times
       code = code.replace(/\(\s*(\d+|[$A-Z_][0-9A-Z_$]*)\s*\)\.times/gi, "$1.times")
+      if detailedDebug then console.log "beautifyCode-21:\n" + code + " error: " + error
 
 
-      if detailedDebug then console.log "beautifyCode-1:\n" + code + " error: " + error
       return [code, error]
 
     checkBasicErrorsWithTimes:(code, error) ->
@@ -611,8 +632,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
       allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
 
+      rx = RegExp("<[\\s]*(("+allFunctionsRegex+")[\\t ]*)>\\s*([,;]|\\s*$)",'gm')
+      code = code.replace(rx, "($1♠)$3")
+
       rx = RegExp("<[\\s]*(("+allFunctionsRegex+")[^\\r\\n]*?)>\\s*([,;]|\\s*$)",'gm')
-      code = code.replace(rx, "(->$1)$3")
+      code = code.replace(rx, "(->($1))$3")
 
       if detailedDebug then console.log "adjustFunctionalReferences-1\n" + code + " error: " + error
 
