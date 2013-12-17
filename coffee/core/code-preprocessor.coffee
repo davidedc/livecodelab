@@ -368,11 +368,26 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if aposCount & 1 or quoteCount & 1 or roundBrackCount & 1 or
           curlyBrackCount & 1 or squareBrackCount & 1
         programHasBasicError = true
-        reasonOfBasicError = "Missing '"  if aposCount & 1
-        reasonOfBasicError = "Missing \""  if quoteCount & 1
-        reasonOfBasicError = "Unbalanced ()"  if roundBrackCount & 1
-        reasonOfBasicError = "Unbalanced {}"  if curlyBrackCount & 1
-        reasonOfBasicError = "Unbalanced []"  if squareBrackCount & 1
+        reasonOfBasicError = ''
+
+        reasonOfBasicErrorMissing = ''
+        reasonOfBasicErrorMissing = reasonOfBasicErrorMissing + "', "  if aposCount & 1
+        reasonOfBasicErrorMissing = reasonOfBasicErrorMissing + "\", "  if quoteCount & 1
+
+        if (aposCount & 1) or (quoteCount & 1)
+          reasonOfBasicErrorMissing =  "Missing " + reasonOfBasicErrorMissing
+          reasonOfBasicErrorMissing = reasonOfBasicErrorMissing.substring(0, reasonOfBasicErrorMissing.length - 2)
+
+        reasonOfBasicErrorUnbalanced = ''
+        reasonOfBasicErrorUnbalanced = reasonOfBasicErrorUnbalanced + "(), "  if roundBrackCount & 1
+        reasonOfBasicErrorUnbalanced = reasonOfBasicErrorUnbalanced + "{}, "  if curlyBrackCount & 1
+        reasonOfBasicErrorUnbalanced = reasonOfBasicErrorUnbalanced + "[], "  if squareBrackCount & 1
+
+        if (roundBrackCount & 1) or (curlyBrackCount & 1) or (squareBrackCount & 1)
+          reasonOfBasicErrorUnbalanced = "Unbalanced " + reasonOfBasicErrorUnbalanced
+          reasonOfBasicErrorUnbalanced = reasonOfBasicErrorUnbalanced.substring(0, reasonOfBasicErrorUnbalanced.length - 2)
+
+        reasonOfBasicError = reasonOfBasicErrorMissing + " " + reasonOfBasicErrorUnbalanced
         return [undefined,reasonOfBasicError]
       
       # no comments or strings were found, just return the same string
