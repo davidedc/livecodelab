@@ -623,6 +623,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
+      # this one is so that arrow is not mistaken
+      # for a closed bracket
+      code = code.replace(/->/g, "→")
+
       # turns things like
       #  either <rotate -> box>, <peg>
       #  either <box 2>, <peg 2>
@@ -637,6 +641,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       rx = RegExp("<[\\s]*(("+allFunctionsRegex+")[^\\r\\n]*?)>\\s*([,;]|\\s*$)",'gm')
       code = code.replace(rx, "(->($1))$3")
+
+      code = code.replace(/→/g, "->")
 
       if detailedDebug then console.log "adjustFunctionalReferences-1\n" + code + " error: " + error
 

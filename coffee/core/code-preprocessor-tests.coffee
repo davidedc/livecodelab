@@ -1341,10 +1341,10 @@ define ['core/code-preprocessor-tests'], (foo) ->
          notes:    """
                    """
          input:    """
-                   localMaterial <box peg 1.1 time rotate ball>
+                   localMaterial <box peg 1.1, time rotate ball>
                    """
          expected: """
-                   localMaterial (-> (box -> peg 1.1 time, -> rotate -> ball()))
+                   localMaterial (-> (box -> peg 1.1, time, -> rotate -> ball()))
                    """
          failsMootAppends: true
         ,
@@ -1585,6 +1585,19 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate ->
                    ▶myBoxFunc 1, 2, 3
                    """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   flickr = (code) -> if random < 0.5 then code()
+                   flickr <box peg 1.1 2 times rotate ball>
+                   """
+         expected: """
+                   flickr = (code) -> if random()< 0.5 then code()
+                   flickr (-> (box -> peg 1.1, -> 2.times -> rotate -> ball()))
+                   """
+         notIdempotent: true
+         failsMootAppends: true
 
       ]
 
