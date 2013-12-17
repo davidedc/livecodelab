@@ -36,7 +36,6 @@ define [
                   // Mozilla Festival 2012
                   // adapted from 'A rose' by Lib4tech
                   
-                  doOnce -> frame = 0
                   background red
                   scale 1.5
                   animationStyle paintOver
