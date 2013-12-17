@@ -122,7 +122,7 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
     wave: (period) ->
       if typeof period isnt "number"
         period = 1
-      sin((@beat/period) * Math.PI)
+      sin((@beat()/period) * Math.PI)
 
 
 
