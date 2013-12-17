@@ -1513,12 +1513,12 @@ define ['core/code-preprocessor-tests'], (foo) ->
          notes:    """
                    """
          input:    """
-myBoxFunc = <box>
-rotate -> myBoxFunc 1, 2, 3
+                   myBoxFunc = <box>
+                   rotate -> myBoxFunc 1, 2, 3
                    """
          expected: """
-myBoxFunc = (box)
-rotate -> myBoxFunc 1, 2, 3
+                   myBoxFunc = (box)
+                   rotate -> myBoxFunc 1, 2, 3
                    """
          notIdempotent: true
          failsMootAppends: true
@@ -1526,14 +1526,14 @@ rotate -> myBoxFunc 1, 2, 3
          notes:    """
                    """
          input:    """
-myBoxFunc = <box>
-rotate
-▶myBoxFunc 1, 2, 3
+                   myBoxFunc = <box>
+                   rotate
+                   ▶myBoxFunc 1, 2, 3
                    """
          expected: """
-myBoxFunc = (box)
-rotate ->
-▶myBoxFunc 1, 2, 3
+                   myBoxFunc = (box)
+                   rotate ->
+                   ▶myBoxFunc 1, 2, 3
                    """
          notIdempotent: true
          failsMootAppends: true
@@ -1541,12 +1541,12 @@ rotate ->
          notes:    """
                    """
          input:    """
-myBoxFunc = -> <box>
-rotate -> myBoxFunc() 1, 2, 3
+                   myBoxFunc = -> <box>
+                   rotate -> myBoxFunc() 1, 2, 3
                    """
          expected: """
-myBoxFunc = -> (box)
-rotate -> myBoxFunc() 1, 2, 3
+                   myBoxFunc = -> (box)
+                   rotate -> myBoxFunc() 1, 2, 3
                    """
          notIdempotent: true
          failsMootAppends: true
@@ -1554,24 +1554,38 @@ rotate -> myBoxFunc() 1, 2, 3
          notes:    """
                    """
          input:    """
-myBoxFunc = (a,b,c) -> box a,b,c
-rotate -> myBoxFunc 1, 2, 3
+                   myBoxFunc = (a,b,c) -> box a,b,c
+                   rotate -> myBoxFunc 1, 2, 3
                    """
          expected: """
-myBoxFunc = (a,b,c) -> box a,b,c
-rotate -> myBoxFunc 1, 2, 3
+                   myBoxFunc = (a,b,c) -> box a,b,c
+                   rotate -> myBoxFunc 1, 2, 3
                    """
         ,
          notes:    """
                    """
          input:    """
-myBoxFunc = (a,b,c) -> -> box a,b,c
-rotate myBoxFunc 1, 2, 3
+                   myBoxFunc = (a,b,c) -> -> box a,b,c
+                   rotate myBoxFunc 1, 2, 3
                    """
          expected: """
-myBoxFunc = (a,b,c) -> -> box a,b,c
-rotate myBoxFunc 1, 2, 3
+                   myBoxFunc = (a,b,c) -> -> box a,b,c
+                   rotate myBoxFunc 1, 2, 3
                    """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   myBoxFunc = (a,b,c) -> box a,b,c
+                   rotate
+                   ▶myBoxFunc 1, 2, 3
+                   """
+         expected: """
+                   myBoxFunc = (a,b,c) -> box a,b,c
+                   rotate ->
+                   ▶myBoxFunc 1, 2, 3
+                   """
+
       ]
 
   CodePreprocessorTests
