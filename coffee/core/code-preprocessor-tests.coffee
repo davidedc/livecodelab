@@ -1513,15 +1513,65 @@ define ['core/code-preprocessor-tests'], (foo) ->
          notes:    """
                    """
          input:    """
-                   myBoxFunc = -> <box>
-                   rotate myBoxFunc() 1, 2, 3
+myBoxFunc = <box>
+rotate -> myBoxFunc 1, 2, 3
                    """
          expected: """
-                   myBoxFunc = -> (box)
-                   rotate myBoxFunc() 1, 2, 3
+myBoxFunc = (box)
+rotate -> myBoxFunc 1, 2, 3
                    """
          notIdempotent: true
          failsMootAppends: true
+        ,
+         notes:    """
+                   """
+         input:    """
+myBoxFunc = <box>
+rotate
+▶myBoxFunc 1, 2, 3
+                   """
+         expected: """
+myBoxFunc = (box)
+rotate ->
+▶myBoxFunc 1, 2, 3
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   """
+         input:    """
+myBoxFunc = -> <box>
+rotate -> myBoxFunc() 1, 2, 3
+                   """
+         expected: """
+myBoxFunc = -> (box)
+rotate -> myBoxFunc() 1, 2, 3
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   """
+         input:    """
+myBoxFunc = (a,b,c) -> box a,b,c
+rotate -> myBoxFunc 1, 2, 3
+                   """
+         expected: """
+myBoxFunc = (a,b,c) -> box a,b,c
+rotate -> myBoxFunc 1, 2, 3
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+myBoxFunc = (a,b,c) -> -> box a,b,c
+rotate myBoxFunc 1, 2, 3
+                   """
+         expected: """
+myBoxFunc = (a,b,c) -> -> box a,b,c
+rotate myBoxFunc 1, 2, 3
+                   """
       ]
 
   CodePreprocessorTests
