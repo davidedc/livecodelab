@@ -89,6 +89,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # Server connections
       "connect"
     ]
+    colorCommands: [
+      "fill"
+      "stroke"      
+    ]
 
     expressions: [
       # Calculations
@@ -132,6 +136,12 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "color"
     ]
 
+    colors: [
+      "red"
+      "green"
+      "blue"
+    ]
+
     constructor: ->
       @testCases = (new CodePreprocessorTests()).testCases
       @scaleRotateMoveCommandsRegex = @scaleRotateMoveCommands.join "|"
@@ -141,6 +151,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         "|" + @scaleRotateMoveCommandsRegex +
         "|" + @primitivesRegex
       @expressionsRegex = @expressions.join "|"
+      @colorsRegex = @colors.join "|"
+      @colorsCommandsRegex = @colorCommands.join "|"
       # make the preprocessor tests easily accessible from
       # the debug console (just type testPreprocessor())
       window.testPreprocessor = => @test()
@@ -1048,6 +1060,25 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/\/\//g, "#")
       return [code, error]
 
+    rearrangeColorCommands: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      rx = RegExp("(^|;| )(\\s*)("+@colorsRegex+")(?![\\w\\d])",'gm')
+      code = code.replace(rx, "$1$2♦$3♦")
+
+      rx = RegExp("(^|;| )(\\s*)("+@colorsCommandsRegex+")(?![\\w\\d])",'gm')
+      code = code.replace(rx, "$1$2♠$3♠")
+
+
+      #color1,exp color2 stroke/fill nocolor -> color1,exp stroke/fill color2 nocolor
+
+      # ([\d\w\(\)]+([ ]*[-+/*][ ]*[\d\w\(\)]+(\.[\d\w\(\)]+)?)+)+ captures
+      # simple mathematical expressions
+      # e.g. rotate 2,a+1+3*(a*2.32+Math.PI) 2 times box
+
+
+
     preprocess: (code) ->
       # we'll keep any errors in here as we transform the code
       # as soon as there is any error, all next stages of
@@ -1065,6 +1096,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @checkBasicSyntax(code, codeWithoutStringsOrComments, error)
       if detailedDebug then console.log "preprocess-4\n" + code + " error: " + error
 
+
+      #[code, error] = @rearrangeColorCommands(code, error)
+      #if detailedDebug then console.log "preprocess-5\n" + code + " error: " + error
 
       # allow some common command forms can be used in postfix notation, e.g.
       #   60 bpm
