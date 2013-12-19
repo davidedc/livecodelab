@@ -878,6 +878,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       return [code, error]
 
+    wasFunctionNameAlreadyFound: (str, strArray) ->
+      j = 0
+      while j < strArray.length
+        if strArray[j].match(str) then return true
+        j++
+      false
+
     # what we are trying to do here is to figure
     # out which other keywords besides the LCL ones
     # we need to automatically invoke as functions.
@@ -895,18 +902,54 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
     # the content of the variable if it is not a function.
     # That way we would always make the right thing,
     # although at some sort of performance penalty.
+    #
+    # Also we keep a separate list of names of functions
+    # that need a parameter. This is because expressions
+    # containing these functions consume an argument,
+    # so we need to be aware of that to correctly
+    # consume the argument, as for example
+    # "myFunc a" is an expression even though there
+    # is no operator between the two tokens.
+    # also in automatic parentheses explicitation,
+    # stuff like "myFunc() a" should actually be
+    # "myFunc a".
+
     findUserDefinedFunctions: (code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      rx = RegExp("([a-zA-Z\\d]+)([ \\t]*)=[ \\t]*[\\(-]([^>\\r\\n]*)>",'gm')
       userDefinedFunctions = []
+      userDefinedFunctionsWithArguments = []
+
+      # form a = -> ...
+      rx = RegExp("([a-zA-Z\\d]+)([ \\t]*)=[ \\t]*->",'gm')
       while match = rx.exec code
         userDefinedFunctions.push(match[1])
+      if detailedDebug then console.log "findUserDefinedFunctions-1\n" + code + " error: " + error
+
+      # form a = () -> ...
+      rx = RegExp("([a-zA-Z\\d]+)([ \\t]*)=[ \\t]*\\([ \\t]*\\)[ \\t]*->",'gm')
+      while match = rx.exec code
+        userDefinedFunctions.push(match[1])
+      if detailedDebug then console.log "findUserDefinedFunctions-2\n" + code + " error: " + error
+
+      # all other forms. Finds all forms so just check whether
+      # we didn't get this function name already
+      rx = RegExp("([a-zA-Z\\d]+)([ \\t]*)=[ \\t]*[\\(-]([^>\\r\\n]*)>",'gm')
+      while match = rx.exec code
+        functionName = match[1]
+        if not @wasFunctionNameAlreadyFound functionName, userDefinedFunctions
+          userDefinedFunctions.push(functionName)
+          userDefinedFunctionsWithArguments.push(functionName)
+      if detailedDebug then console.log "findUserDefinedFunctions-3\n" + code + " error: " + error
 
       userDefinedFunctions = userDefinedFunctions.join "|"
       if userDefinedFunctions != ""
         userDefinedFunctions = "|"+userDefinedFunctions
+
+      userDefinedFunctionsWithArguments = userDefinedFunctionsWithArguments.join "|"
+      if userDefinedFunctionsWithArguments != ""
+        userDefinedFunctionsWithArguments = "|"+userDefinedFunctionsWithArguments
 
       #console.log "*****" + userDefinedFunctions
       return [code, error, userDefinedFunctions]
