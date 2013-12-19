@@ -485,6 +485,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/\(\s*(\d+|[$A-Z_][0-9A-Z_$]*)\s*\)\.times/gi, "$1.times")
       if detailedDebug then console.log "beautifyCode-21:\n" + code + " error: " + error
 
+      code = code.replace(/\=[\t ]+-/g, "= -") if not error?
+      if detailedDebug then console.log "beautifyCode-22:\n" + code + " error: " + error
+
 
       return [code, error]
 
