@@ -737,7 +737,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # 2 times -> rotate; box
       rx = RegExp("([^\\w\\d\\r\\n])("+allFunctionsRegex+")[ \\t]*$",'gm')
       code = code.replace(rx, "$1$2()")
-      if detailedDebug then console.log "adjustImplicitCalls-6\n" + code + " error: " + error
+      if detailedDebug then console.log "adjustImplicitCalls-7\n" + code + " error: " + error
       return [code, error]
 
     addCommandsSeparations: (code, error, userDefinedFunctions) ->
