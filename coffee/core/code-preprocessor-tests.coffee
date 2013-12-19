@@ -233,7 +233,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if random > 0.5 then 3 times: rotate box else 3 times rotate 2 times: peg 1
                    """
          expected: """
-                   if random()> 0.5 then 3.times -> rotate -> box() else 3.times -> rotate -> 2.times -> peg 1
+                   if random() > 0.5 then 3.times -> rotate -> box() else 3.times -> rotate -> 2.times -> peg 1
                    """
         ,
          input:    """
@@ -377,14 +377,14 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    a = wave + wave
                    """
          expected: """
-                   a = wave()+ wave()
+                   a = wave() + wave()
                    """
         ,
          input:    """
                    (wave + wave)
                    """
          expected: """
-                   (wave()+ wave())
+                   (wave() + wave())
                    """
         ,
          input:    """
@@ -527,14 +527,14 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    a = wave -1
                    """
          expected: """
-                   a = wave()-1
+                   a = wave() -1
                    """
         ,
          input:    """
                    a = wave - 1
                    """
          expected: """
-                   a = wave()- 1
+                   a = wave() - 1
                    """
         ,
          input:    """
@@ -562,7 +562,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate wave * wave times box
                    """
          expected: """
-                   rotate -> (wave()* wave()).times -> box()
+                   rotate -> (wave() * wave()).times -> box()
                    """
         ,
          input:    """
@@ -606,7 +606,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate wave + 2 times box
                    """
          expected: """
-                   rotate -> (wave()+ 2).times -> box()
+                   rotate -> (wave() + 2).times -> box()
                    """
         ,
          input:    """
@@ -705,7 +705,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    for i in [0...wave * 2]
                    """
          expected: """
-                   for i in [0...wave()* 2]
+                   for i in [0...wave() * 2]
                    """
         ,
          input:    """
@@ -721,7 +721,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    either box, peg
                    """
          expected: """
-                   either = (a,b) -> if random()> 0.5 then a() else b()
+                   either = (a,b) -> if random() > 0.5 then a() else b()
                    either box(), -> peg()
                    """
         ,
@@ -731,7 +731,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate box, peg
                    """
          expected: """
-                   either = (a,b) -> if random()> 0.5 then a() else b()
+                   either = (a,b) -> if random() > 0.5 then a() else b()
                    rotate -> box(), -> peg()
                    """
         ,
@@ -851,7 +851,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    either (->box), (->peg)
                    """
          expected: """
-                   either = (a,b) -> if random()> 0.5 then a() else b()
+                   either = (a,b) -> if random() > 0.5 then a() else b()
                    either (-> box()), (-> peg())
                    """
         ,
@@ -860,7 +860,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    either <box>, <peg>
                    """
          expected: """
-                   either = (a,b) -> if random()> 0.5 then a() else b()
+                   either = (a,b) -> if random() > 0.5 then a() else b()
                    either (box), (peg)
                    """
          notIdempotent: true
@@ -871,7 +871,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    either <box 2>, <peg 2>
                    """
          expected: """
-                   either = (a,b) -> if random()> 0.5 then a() else b()
+                   either = (a,b) -> if random() > 0.5 then a() else b()
                    either (-> (box 2)), (-> (peg 2))
                    """
          notIdempotent: true
@@ -882,7 +882,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    either (->box),(->rect)
                    """
          expected: """
-                   either = (a,b) -> if random()> 0.5 then a() else b()
+                   either = (a,b) -> if random() > 0.5 then a() else b()
                    either (-> box()),(-> rect())
                    """
         ,
@@ -1182,7 +1182,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if random < 0.5 then 2 times rotate box else 3 times move peg
                    """
          expected: """
-                   if random()< 0.5 then 2.times -> rotate -> box() else 3.times -> move -> peg()
+                   if random() < 0.5 then 2.times -> rotate -> box() else 3.times -> move -> peg()
                    """
         ,
          notes:    """
@@ -1593,7 +1593,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    flickr <box peg 1.1 2 times rotate ball>
                    """
          expected: """
-                   flickr = (code) -> if random()< 0.5 then code()
+                   flickr = (code) -> if random() < 0.5 then code()
                    flickr (-> (box -> peg 1.1, -> 2.times -> rotate -> ball()))
                    """
          notIdempotent: true

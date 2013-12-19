@@ -719,8 +719,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "adjustImplicitCalls-4\n" + code + " error: " + error
 
       for i in [1..2]
-        rx = RegExp("([^\\w\\d\\r\\n])("+expressionsAndUserDefinedFunctionsRegex+")[ \\t]*("+delimitersForExpressions+")",'g')
-        code = code.replace(rx, "$1$2()$3")
+        rx = RegExp("([^\\w\\d\\r\\n])("+expressionsAndUserDefinedFunctionsRegex+")([ \\t]*)("+delimitersForExpressions+")",'g')
+        code = code.replace(rx, "$1$2()$3$4")
       if detailedDebug then console.log "adjustImplicitCalls-5\n" + code + " error: " + error
 
       #box 0.5,2
