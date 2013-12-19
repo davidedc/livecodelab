@@ -524,9 +524,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           return [undefined, "how many times?"]
       return [code, error]
 
-    transformTimesSyntax: (code, error) ->
+    transformTimesSyntax: (code, error, userDefinedFunctionsWithArguments) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
+
 
       if detailedDebug then console.log "transformTimesSyntax-0\n" + code + " error: " + error
       #code = code.replace(/(else)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
@@ -545,10 +546,31 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # the qualifiers will be able to be fleshed out
       # correctly
 
-      # ([\d\w\(\)]+([ ]*[-+/*][ ]*[\d\w\(\)]+(\.[\d\w\(\)]+)?)+)+ captures
+      # we don't want "sin times" to be considered an expression
+      # so introduce a blocker character to avoid "sin times"
+      # to becomde "sin⨁ times"
+      rx = RegExp("([^\\w\\d\\r\\n])("+(@allCommandsRegex+"|times")+")(?![\w\d])",'g')
+      code = code.replace(rx, "$1⧻$2")
+      if detailedDebug then console.log "transformTimesSyntax-1\n" + code + " error: " + error
+
+
+      # "expression" functions such as in "sin a,b" need to become
+      # "sin⨁a,b" 
+      # the for is needed for example for cases like round(pulse 15) times
+      expsAndUserFunctionsWithArgs =  @expressionsRegex + userDefinedFunctionsWithArguments
+      for i in [0...5]
+        rx = RegExp("(^|[^\\w\\d\\r\\n])("+expsAndUserFunctionsWithArgs+")([ \\(]+)(?![⧻\\+\\-*/%,⨁])",'gm')
+        code = code.replace(rx, "$1$2$3⨁")
+        if detailedDebug then console.log "transformTimesSyntax-2\n" + code + " error: " + error
+
+      # remove blocker character to avoid "sin times"
+      # to becomde "sin⨁ times"
+      code = code.replace(/⧻/g, "")
+      
+
       # simple mathematical expressions
       # e.g. rotate 2,a+1+3*(a*2.32+Math.PI) 2 times box
-      code = code.replace(/(([\d\w\.\(\)]+([\t ]*[\+\-*\/][\t ]*))+[\d\w\.\(\)]+|[\d\w\.\(\)]+) times[:]?(?![\w\d])/g, "♦ ($1).times ->")
+      code = code.replace(/(([\d\w\.\(\)]+([\t ]*[\+\-*\/⨁%,][\t ]*))+[\d\w\.\(\)]+|[\d\w\.\(\)]+) times[:]?(?![\w\d])/g, "♦ ($1).times ->")
       if detailedDebug then console.log "transformTimesSyntax-3\n" + code + " error: " + error
 
       allFunctionsRegex = @allCommandsRegex + "|" + @expressionsRegex
@@ -556,17 +578,25 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # ([\d\w\(\)]+([ ]*[-+/*][ ]*[\d\w\(\)]+(\.[\d\w\(\)]+)?)+)+ captures
       # simple mathematical expressions
       # e.g. rotate 2,a+1+3*(a*2.32+Math.PI) 2 times box
-      rx = RegExp("("+allFunctionsRegex+")[\\t ]*;[; ]*\\(?(([\\d\\w\\.\\(\\)]+([\\t ]*[\\+\\-*/][\\t ]*))+[\\d\\w\\.\\(\\)]+|[\\d\\w\\.\\(\\)]+)\\)\\.times ->",'g')
+      rx = RegExp("("+allFunctionsRegex+")[\\t ]*;[; ]*\\(?(([\\d\\w\\.\\(\\)]+([\\t ]*[\\+\\-*/⨁%,][\\t ]*))+[\\d\\w\\.\\(\\)]+|[\\d\\w\\.\\(\\)]+)\\)\\.times ->",'g')
       code = code.replace(rx, "$1()♦ ($2).times ->")
       if detailedDebug then console.log "transformTimesSyntax-3.5\n" + code + " error: " + error
 
       # whatever is remaining should be turned into a normal form with semicolon before it.
-      code = code.replace(/\((([\d\w\.\(\)]+([\t ]*[\+\-*\/][\t ]*))+[\d\w\.\(\)]+|[\d\w\.\(\)]+)\)[ \.]*times[:]?(?![\w\d])/g, ";($1).times ")
+      code = code.replace(/\((([\d\w\.\(\)]+([\t ]*[\+\-*\/⨁%,][\t ]*))+[\d\w\.\(\)]+|[\d\w\.\(\)]+)\)[ \.]*times[:]?(?![\w\d])/g, ";($1).times ")
       if detailedDebug then console.log "transformTimesSyntax-3.55\n" + code + " error: " + error
 
       # whatever is remaining should be turned into a normal form with semicolon before it.
-      code = code.replace(/[ ](([\d\w\.\(\)]+([\t ]*[\+\-*\/][\t ]*))+[\d\w\.\(\)]+|[\d\w\.\(\)]+)\.times[:]?(?![\w\d])/g, "; $1.times ")
-      if detailedDebug then console.log "transformTimesSyntax-3.55\n" + code + " error: " + error
+      code = code.replace(/[ ](([\d\w\.\(\)]+([\t ]*[\+\-*\/⨁%,][\t ]*))+[\d\w\.\(\)]+|[\d\w\.\(\)]+)\.times[:]?(?![\w\d])/g, "; $1.times ")
+      if detailedDebug then console.log "transformTimesSyntax-3.56\n" + code + " error: " + error
+
+      # transformation above transforms ;(sin ⨁ 5).times  ->  into ;(sin ⨁; 5).times   ->
+      # so fixing that
+      code = code.replace(/⨁;/g, "")
+
+      # put back in place "sin⨁a,b" into "sin a,b" 
+      code = code.replace(/⨁/g, "")
+
 
       # repairs myFunc = -> ; 20.times -> rotate -> box()
       code = code.replace(/->[\t ]*[♦;\t ]*[\t ]*\(/g, "-> (")
@@ -666,7 +696,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       return [code, error]
     
-    adjustImplicitCalls: (code, error, userDefinedFunctions) ->
+    adjustImplicitCalls: (code, error, userDefinedFunctions, userDefinedFunctionsWithArguments) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
@@ -722,6 +752,19 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         rx = RegExp("([^\\w\\d\\r\\n])("+expressionsAndUserDefinedFunctionsRegex+")([ \\t]*)("+delimitersForExpressions+")",'g')
         code = code.replace(rx, "$1$2()$3$4")
       if detailedDebug then console.log "adjustImplicitCalls-5\n" + code + " error: " + error
+
+      # user functions that take an argument can't be
+      # in the form myF()
+      # so myF() -4 should really be myF -4
+      userDefinedFunctionsWithArguments = userDefinedFunctionsWithArguments.substring(1)
+      if userDefinedFunctionsWithArguments != ""
+        for i in [1..2]
+          rx = RegExp("([^\\w\\d\\r\\n])("+userDefinedFunctionsWithArguments+")\\(\\)",'g')
+          #console.log "userDefinedFunctionsWithArguments " + userDefinedFunctionsWithArguments
+          code = code.replace(rx, "$1$2")
+        if detailedDebug then console.log "adjustImplicitCalls-6\n" + code + " error: " + error
+
+
 
       #box 0.5,2
       #box; rotate; box
@@ -952,7 +995,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         userDefinedFunctionsWithArguments = "|"+userDefinedFunctionsWithArguments
 
       #console.log "*****" + userDefinedFunctions
-      return [code, error, userDefinedFunctions]
+      return [code, error, userDefinedFunctions, userDefinedFunctionsWithArguments]
 
 
     evaluateAllExpressions: (code, error, userDefinedFunctions) ->
@@ -1012,7 +1055,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       error = undefined
 
       if detailedDebug then console.log "preprocess-0\n" + code + " error: " + error
-      [code, error, userDefinedFunctions] = @findUserDefinedFunctions(code, error)
+      [code, error, userDefinedFunctions, userDefinedFunctionsWithArguments] = @findUserDefinedFunctions(code, error)
       if detailedDebug then console.log "preprocess-1\n" + code + " error: " + error
 
       [code, error] = @removeTickedDoOnce(code, error)
@@ -1067,7 +1110,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
 
       if detailedDebug then console.log "preprocess-15\n" + code + " error: " + error
-      [code, error] = @transformTimesSyntax(code, error)
+      [code, error] = @transformTimesSyntax(code, error, userDefinedFunctionsWithArguments)
       if detailedDebug then console.log "preprocess-9\n" + code + " error: " + error
       [code, error] = @findQualifiers(code, error)
       if detailedDebug then console.log "preprocess-10\n" + code + " error: " + error
@@ -1077,7 +1120,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "preprocess-17\n" + code + " error: " + error
       [code, error] = @addCommandsSeparations(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-12\n" + code + " error: " + error
-      [code, error] = @adjustImplicitCalls(code, error, userDefinedFunctions)
+      [code, error] = @adjustImplicitCalls(code, error, userDefinedFunctions, userDefinedFunctionsWithArguments)
       if detailedDebug then console.log "preprocess-13\n" + code + " error: " + error
       [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
       if detailedDebug then console.log "preprocess-14\n" + code + " error: " + error

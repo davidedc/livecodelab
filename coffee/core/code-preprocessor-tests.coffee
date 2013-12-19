@@ -595,11 +595,15 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate -> 2.times -> box()
                    """
         ,
+         notes:    """
+                   There are two ways to interpret this,
+                   we pick one
+                   """
          input:    """
                    rotate wave 2 times box
                    """
          expected: """
-                   rotate wave(), -> 2.times -> box()
+                   rotate -> (wave 2).times -> box()
                    """
         ,
          input:    """
@@ -1421,8 +1425,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate -> (wave()).times -> box()
                    rotate -> (10*wave()).times -> box()
                    rotate -> (10 * wave()).times -> box()
-                   wave(); (wave()).times -> box()
-                   rotate wave(), -> (wave()).times -> box()
+                   (wave wave()).times -> box()
+                   rotate -> (wave wave()).times -> box()
 
                    if true then rotate -> 2.times -> box -> box()
                    if true then rotate 2, -> (2+2*2).times -> box()
@@ -1438,8 +1442,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if true then rotate -> (wave()).times -> box()
                    if true then rotate -> (10*wave()).times -> box()
                    if true then rotate -> (10 * wave()).times -> box()
-                   if true then wave(); (wave()).times -> box()
-                   if true then rotate wave(), -> (wave()).times -> box()
+                   if true then (wave wave()).times -> box()
+                   if true then rotate -> (wave wave()).times -> box()
 
                    if true then rotate -> 2.times -> box -> box() else rotate -> 2.times -> box -> box()
                    if true then rotate 2, -> (2+2*2).times -> box() else rotate 2, -> (2+2*2).times -> box()
@@ -1455,8 +1459,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if true then rotate -> (wave()).times -> box() else rotate -> (wave()).times -> box()
                    if true then rotate -> (10*wave()).times -> box() else rotate -> (10*wave()).times -> box()
                    if true then rotate -> (10 * wave()).times -> box() else rotate -> (10 * wave()).times -> box()
-                   if true then wave(); (wave()).times -> box() else wave(); (wave()).times -> box()
-                   if true then rotate wave(), -> (wave()).times -> box() else rotate wave(), -> (wave()).times -> box()
+                   if true then (wave wave()).times -> box() else (wave wave()).times -> box()
+                   if true then rotate -> (wave wave()).times -> box() else rotate -> (wave wave()).times -> box()
                    """
         ,
          notes:    """
@@ -1598,7 +1602,128 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          notIdempotent: true
          failsMootAppends: true
+        ,
+         notes:    """
+                   """
+         input:    """
+                   sin time*10 times
+                   ▶box
+                   """
+         expected: """
+                   (sin time*10).times ->
+                   ▶box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   (sin time*10) times
+                   ▶box
+                   """
+         expected: """
+                   ((sin time*10)).times ->
+                   ▶box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   time*100 % 1 times
+                   ▶box
+                   """
+         expected: """
+                   (time*100 % 1).times ->
+                   ▶box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   round(wave 0.5) times
+                   ▶box
+                   """
+         expected: """
+                   (round(wave 0.5)).times ->
+                   ▶box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   myF = (a)-> sin time*a
 
+                   myF 2 times
+                   ▶box
+                   """
+         expected: """
+                   myF = (a) -> sin time*a
+
+                   (myF 2).times ->
+                   ▶box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   myF = ()-> sin time*2
+
+                   myF 2 times
+                   ▶box
+                   """
+         expected: """
+                   myF = () -> sin time*2
+
+                   myF(); 2.times ->
+                   ▶box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   myF = -> sin time*2
+
+                   myF 2 times
+                   ▶box
+                   """
+         expected: """
+                   myF = -> sin time*2
+
+                   myF(); 2.times ->
+                   ▶box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   myF = (a)-> sin time*2
+                   b = myF +4
+                   """
+         expected: """
+                   myF = (a) -> sin time*2
+                   b = myF +4
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   myF = ()-> sin time*2
+                   b = myF -4
+                   """
+         expected: """
+                   myF = () -> sin time*2
+                   b = myF() -4
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   myF = -> sin time*2
+                   b = myF -4
+                   """
+         expected: """
+                   myF = -> sin time*2
+                   b = myF() -4
+                   """
       ]
 
   CodePreprocessorTests
