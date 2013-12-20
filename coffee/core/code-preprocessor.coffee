@@ -570,8 +570,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # "sin⨁a,b" 
       # the for is needed for example for cases like round(pulse 15) times
       expsAndUserFunctionsWithArgs =  @expressionsRegex + userDefinedFunctionsWithArguments
+      rx = RegExp("(^|[^\\w\\d\\r\\n])("+expsAndUserFunctionsWithArgs+")([ \\(]+)(?![⧻\\+\\-*/%,⨁])",'gm')
       for i in [0...5]
-        rx = RegExp("(^|[^\\w\\d\\r\\n])("+expsAndUserFunctionsWithArgs+")([ \\(]+)(?![⧻\\+\\-*/%,⨁])",'gm')
         code = code.replace(rx, "$1$2$3⨁")
         if detailedDebug then console.log "transformTimesSyntax-2\n" + code + " error: " + error
 
@@ -776,13 +776,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       delimitersForCommands = ":|;|\\,|\\?|\\)|//|\\#|\\s+if|\\s+else|\\s+then"
       delimitersForExpressions = delimitersForCommands + "|" + "\\+|-|\\*|/|%|&|]|<|>|==|!=|>=|<=|!(?![=])|\\s+and\\s+|\\s+or\\s+|\\s+not\\s+|\\|"
 
+      rx = RegExp("([^\\w\\d\\r\\n])("+@allCommandsRegex+")[ \\t]*("+delimitersForCommands+")",'g')
       for i in [1..2]
-        rx = RegExp("([^\\w\\d\\r\\n])("+@allCommandsRegex+")[ \\t]*("+delimitersForCommands+")",'g')
         code = code.replace(rx, "$1$2()$3")
       if detailedDebug then console.log "adjustImplicitCalls-4\n" + code + " error: " + error
 
+      rx = RegExp("([^\\w\\d\\r\\n])("+expressionsAndUserDefinedFunctionsRegex+")([ \\t]*)("+delimitersForExpressions+")",'g')
       for i in [1..2]
-        rx = RegExp("([^\\w\\d\\r\\n])("+expressionsAndUserDefinedFunctionsRegex+")([ \\t]*)("+delimitersForExpressions+")",'g')
         code = code.replace(rx, "$1$2()$3$4")
       if detailedDebug then console.log "adjustImplicitCalls-5\n" + code + " error: " + error
 
@@ -791,8 +791,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # so myF() -4 should really be myF -4
       userDefinedFunctionsWithArguments = userDefinedFunctionsWithArguments.substring(1)
       if userDefinedFunctionsWithArguments != ""
+        rx = RegExp("([^\\w\\d\\r\\n])("+userDefinedFunctionsWithArguments+")\\(\\)",'g')
         for i in [1..2]
-          rx = RegExp("([^\\w\\d\\r\\n])("+userDefinedFunctionsWithArguments+")\\(\\)",'g')
           #console.log "userDefinedFunctionsWithArguments " + userDefinedFunctionsWithArguments
           code = code.replace(rx, "$1$2")
         if detailedDebug then console.log "adjustImplicitCalls-6\n" + code + " error: " + error
