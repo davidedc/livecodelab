@@ -1724,6 +1724,17 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    myF = -> sin time*2
                    b = myF() -4
                    """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   rotate 1
+                   rotate (wave 0.5) * 0.1 box 2
+                   """
+         expected: """
+                   rotate 1
+                   rotate (wave 0.5) * 0.1, -> box 2
+                   """
       ]
 
   CodePreprocessorTests
