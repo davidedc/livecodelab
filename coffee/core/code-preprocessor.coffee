@@ -447,6 +447,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "normalise-3:\n" + code + " error: " + error
       return [code, error]
 
+    # these transformations are supposed to take as input
+    # working coffeescript code and give as output
+    # beautified and "normalised" coffeescript code
+    # with the same exact meaning.
     beautifyCode:(code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
