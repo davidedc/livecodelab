@@ -540,27 +540,23 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
           return [undefined, "how many times?"]
       return [code, error]
 
-    transformTimesSyntax: (code, error, userDefinedFunctionsWithArguments) ->
+    unbindFunctionsToArguments: (code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
+      # put back in place "sin⨁a,b" into "sin a,b" 
+      code = code.replace(/⨁/g, "")
+      return @normaliseCode(code, error)
 
-
-      if detailedDebug then console.log "transformTimesSyntax-0\n" + code + " error: " + error
-      #code = code.replace(/(else)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
-      #if detailedDebug then console.log "transformTimesSyntax-1\n" + code + " error: " + error
-      #code = code.replace(/(then)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
-      #if detailedDebug then console.log "transformTimesSyntax-2\n" + code + " error: " + error
-      # without the following, "if 2 times a" becomes "(if 2).times a"
-      #code = code.replace(/(if)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
-      #if detailedDebug then console.log "transformTimesSyntax-3\n" + code + " error: " + error
-
-      code = code.replace(/then/g, "then;")
-      code = code.replace(/else/g, ";else;")
-
-      # the diamond (♦) will be in front of the "times"
-      # argument. This is needed to make it so
-      # the qualifiers will be able to be fleshed out
-      # correctly
+    # in order to proper recognise where expressions
+    # start and end, we need to tie the functions with their
+    # arguments. For example "sin a" has to becomde
+    # sin⨁ a.
+    # The regexp for isolating expressions stops capturing
+    # when there are two tokens not tied by an operator,
+    # so this is why adding that special operator is needed
+    bindFunctionsToArguments: (code, error, userDefinedFunctionsWithArguments) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
 
       # we don't want "sin times" to be considered an expression
       # so introduce a blocker character to avoid "sin times"
@@ -582,6 +578,30 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # remove blocker character to avoid "sin times"
       # to becomde "sin⨁ times"
       code = code.replace(/⧻/g, "")
+
+      return @normaliseCode(code, error)
+
+    transformTimesSyntax: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+
+      if detailedDebug then console.log "transformTimesSyntax-0\n" + code + " error: " + error
+      #code = code.replace(/(else)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
+      #if detailedDebug then console.log "transformTimesSyntax-1\n" + code + " error: " + error
+      #code = code.replace(/(then)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
+      #if detailedDebug then console.log "transformTimesSyntax-2\n" + code + " error: " + error
+      # without the following, "if 2 times a" becomes "(if 2).times a"
+      #code = code.replace(/(if)\s+([a-zA-Z1-9])([^;\r\n]*) times[:]?([^a-zA-Z0-9])/g, "$1 ($2$3).times -> $4")
+      #if detailedDebug then console.log "transformTimesSyntax-3\n" + code + " error: " + error
+
+      code = code.replace(/then/g, "then;")
+      code = code.replace(/else/g, ";else;")
+
+      # the diamond (♦) will be in front of the "times"
+      # argument. This is needed to make it so
+      # the qualifiers will be able to be fleshed out
+      # correctly
       
 
       # simple mathematical expressions
@@ -609,9 +629,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # transformation above transforms ;(sin ⨁ 5).times  ->  into ;(sin ⨁; 5).times   ->
       # so fixing that
       code = code.replace(/⨁;/g, "")
-
-      # put back in place "sin⨁a,b" into "sin a,b" 
-      code = code.replace(/⨁/g, "")
 
 
       # repairs myFunc = -> ; 20.times -> rotate -> box()
@@ -1146,10 +1163,12 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @completeImplicitFunctionPasses code, a, error
       if detailedDebug then console.log "completeImplicitFunctionPasses:\n" + code + " error: " + error
 
-
-      if detailedDebug then console.log "preprocess-15\n" + code + " error: " + error
-      [code, error] = @transformTimesSyntax(code, error, userDefinedFunctionsWithArguments)
+      [code, error] = @bindFunctionsToArguments(code, error, userDefinedFunctionsWithArguments)
+      if detailedDebug then console.log "preprocess-8.5\n" + code + " error: " + error
+      [code, error] = @transformTimesSyntax(code, error)
       if detailedDebug then console.log "preprocess-9\n" + code + " error: " + error
+      [code, error] = @unbindFunctionsToArguments(code, error)
+      if detailedDebug then console.log "preprocess-9.5\n" + code + " error: " + error
       [code, error] = @findQualifiers(code, error)
       if detailedDebug then console.log "preprocess-10\n" + code + " error: " + error
       [code, error] = @fleshOutQualifiers(code, error)
