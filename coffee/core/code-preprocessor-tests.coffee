@@ -1735,6 +1735,49 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate 1
                    rotate (wave 0.5) * 0.1, -> box 2
                    """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   a = (val) -> val * 2
+                   rotate 3, a 1 box 3, 4, a 1
+                   """
+         expected: """
+                   a = (val) -> val * 2
+                   rotate 3, (a 1), -> box 3, 4, a 1
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   a = (val) -> val * 2
+                   rotate 3, wave wave 2 box 3, 4, a 1
+                   """
+         expected: """
+                   a = (val) -> val * 2
+                   rotate 3, (wave wave 2), -> box 3, 4, a 1
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   a = (val) -> val * 2
+                   rotate 3, wave pulse / 10 box 3, 4, a 1
+                   """
+         expected: """
+                   a = (val) -> val * 2
+                   rotate 3, (wave pulse() / 10), -> box 3, 4, a 1
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   rotate 3 scale 2 box 3, 4
+                   """
+         expected: """
+                   rotate 3, -> scale 2, -> box 3, 4
+                   """
+
       ]
 
   CodePreprocessorTests

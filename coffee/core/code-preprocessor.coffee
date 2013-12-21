@@ -1098,7 +1098,63 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # simple mathematical expressions
       # e.g. rotate 2,a+1+3*(a*2.32+Math.PI) 2 times box
 
+    # handles the example
+    #   a = (val) -> val * 2
+    #   rotate 3, a 1 box 3, 4, a 1
+    # so it's translated in
+    #   a = (val) -> val * 2
+    #   rotate 3, (a 1), -> box 3, 4, a 1 
+    # instead of
+    #   a = (val) -> val * 2
+    #   rotate 3, a (1, -> box 3, 4, a 1)
+    # same for
+    #   rotate 3, wave wave 2 box 3, 4, a 1
+    # and also
+    #   rotate 3, wave pulse / 10 box 3, 4, a 1
+    avoidLastArgumentInvocationOverflowing: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
 
+      # the following transformation only leaves
+      # normal parentheses if they contain
+      # a comma or the ->
+      # the comma is obvious, the -> is
+      # to avoid to turn
+      #   move 0.1 peg move 0.4 box
+      # into
+      #   move 0.1, (-> peg -> move 0.4), -> box()
+
+      code = code.replace(/->/g, "→")
+      if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-0\n" + code + " error: " + error
+
+      previousCodeTransformations = ''
+      while code != previousCodeTransformations
+        previousCodeTransformations = code
+        code = code.replace(/\(([^,\(\)\r\n→]*)\)/g, "❪$1❫")
+      if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-1\n" + code + " error: " + error
+
+      # by avoiding normal parentheses we avoid anything with a comma
+      # [^\❪→] is needed to avoid to add more and more
+      # nested parentheses
+      # and to avoid that
+      #   rotate 3, → scale 2, → box 3, 4, a 2
+      # becomes
+      #   rotate 3, (→ scale 2), -> box 3, 4, a 2
+      code = code.replace(/(,[ \t]+)([^\❪→][^\(\)\r\n,→]*),([ \t]*)→/g, "$1($2), ->")
+      if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-2\n" + code + " error: " + error
+
+      # put the thick parentheses back to normal
+      code = code.replace(/❪/g, "(")
+      code = code.replace(/❫/g, ")")
+      code = code.replace(/→/g, "->")
+      if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-3\n" + code + " error: " + error
+
+      # you end up generating stuff like , (a), and , (a()),
+      # so simplify those
+      code = code.replace(/(,[ \t]*)\(([\d\w]+)\)([ \t]*,)/g, "$1$2$3")
+      code = code.replace(/(,[ \t]*)\(([\d\w]+\(\))\)([ \t]*,)/g, "$1$2$3")
+
+      return [code, error]
 
     preprocess: (code) ->
       # we'll keep any errors in here as we transform the code
@@ -1183,6 +1239,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "preprocess-14\n" + code + " error: " + error
       [code, error] = @evaluateAllExpressions(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-16\n" + code + " error: " + error
+      [code, error] = @avoidLastArgumentInvocationOverflowing(code, error)
+      if detailedDebug then console.log "preprocess-17\n" + code + " error: " + error
       [code, error] = @beautifyCode(code, error)
       if detailedDebug then console.log "preprocess-18\n" + code + " error: " + error
 
