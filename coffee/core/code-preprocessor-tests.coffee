@@ -1777,6 +1777,22 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    rotate 3, -> scale 2, -> box 3, 4
                    """
+        ,
+         notes:    """
+                   Code blocks being passed to a function,
+                   one accepting a parameter and the other one
+                   returning a value
+                   """
+         input:    """
+                   either = (a,b) -> if random > 0.5 then a 2 else b()
+                   console.log either <box>, <random>
+                   """
+         expected: """
+                   either = (a,b) -> if random() > 0.5 then a 2 else b()
+                   console.log either (box), (random)
+                   """
+
+
 
       ]
 
