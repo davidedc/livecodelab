@@ -32,8 +32,8 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       @scope = scope
       scope.add('bpm',   (bpm) => @setBpmLater(bpm))
       scope.add('beat',  () => @beat())
-      scope.add('pulse', () => @pulse())
-      scope.add('wave',  (period) => @wave(period))
+      scope.add('pulse', (frequency) => @pulse(frequency))
+      scope.add('wave',  (frequency) => @wave(frequency))
       scope.add('time', @time)
 
     setTime: (value) ->
@@ -115,14 +115,17 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       passed = new Date().getTime() - @lastBeat
       return @beatCount + passed / @mspb;
 
-    pulse: ->
-      return Math.exp(-Math.pow( Math.pow(@beat() % 1, 0.3) - 0.5, 2) / 0.05)
+    pulse: (frequency) ->
+      console.log(frequency)
+      if typeof frequency != "number"
+        frequency = 1
+      return Math.exp(-Math.pow( Math.pow((@beat() * frequency) % 1, 0.3) - 0.5, 2) / 0.05)
 
     # Wave: simple harmonic motion where a is period in milliseconds
-    wave: (period) ->
-      if typeof period isnt "number"
-        period = 1
-      sin((@beat()/period) * Math.PI)
+    wave: (frequency) ->
+      if typeof frequency != "number"
+        frequency = 1
+      sin((@beat() * frequency) * Math.PI)
 
 
 
