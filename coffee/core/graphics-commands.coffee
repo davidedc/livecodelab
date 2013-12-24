@@ -259,29 +259,31 @@ define () ->
       @defaultNormalStroke = true
 
 
-    pushFill: (defaultNormalFill,currentFillColor,currentFillAlpha)->
+    pushFill: (defaultNormalFill,currentFillColor,currentFillAlpha, doFill)->
       if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
         return
 
       @fillStack.push defaultNormalFill
       @fillStack.push currentFillColor
       @fillStack.push currentFillAlpha
+      @fillStack.push doFill
       
-      #console.log 'just pushed: ' + currentFillAlpha + " " + currentFillColor + " " + defaultNormalFill
 
-    pushStroke: (defaultNormalStroke,currentStrokeColor,currentStrokeAlpha)->
+    pushStroke: (defaultNormalStroke,currentStrokeColor,currentStrokeAlpha, doStroke)->
       if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
         return
 
       @strokeStack.push defaultNormalStroke
       @strokeStack.push currentStrokeColor
       @strokeStack.push currentStrokeAlpha
+      @strokeStack.push doStroke
 
     popFill: ->
       if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
         return
 
       if @fillStack.length
+        @doFill = @fillStack.pop()
         @currentFillAlpha = @fillStack.pop()
         @currentFillColor = @fillStack.pop()
         @defaultNormalFill = @fillStack.pop()
@@ -294,6 +296,7 @@ define () ->
         return
 
       if @strokeStack.length
+        @doStroke = @strokeStack.pop()
         @currentStrokeAlpha = @strokeStack.pop()
         @currentStrokeColor = @strokeStack.pop()
         @defaultNormalStroke = @strokeStack.pop()
@@ -770,7 +773,7 @@ define () ->
       #console.log "fill-2 " + r + " " + g + " " + b + " " + a + " appendedFunction: " + appendedFunction
 
       if appendedFunction?
-        @pushFill @defaultNormalFill,@currentFillColor,@currentFillAlpha
+        @pushFill @defaultNormalFill,@currentFillColor,@currentFillAlpha,@doFill
 
       # Three.js needs two integers to define an RGBA: the rgb as a 24 bit integer
       # and the alpha (from zero to one).
@@ -877,7 +880,7 @@ define () ->
         appendedFunction = undefined
 
       if appendedFunction?
-        @pushStroke @defaultNormalStroke,@currentStrokeColor,@currentStrokeAlpha
+        @pushStroke @defaultNormalStroke,@currentStrokeColor,@currentStrokeAlpha,@doStroke
 
       # see comment on fill method above
       # for some comments on how this method works.
