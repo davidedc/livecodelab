@@ -1791,6 +1791,9 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    either = (a,b) -> if random() > 0.5 then a 2 else b()
                    console.log either (box), (random)
                    """
+         notIdempotent: true
+         failsMootAppends: true
+         failsMootPrepends: true
 
 
 
