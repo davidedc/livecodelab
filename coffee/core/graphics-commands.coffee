@@ -128,6 +128,8 @@ define () ->
 
   class GraphicsCommands
 
+    fillStack: []
+
     primitiveTypes: {}
     minimumBallDetail: 2
     maximumBallDetail: 30
@@ -245,6 +247,35 @@ define () ->
         @lastPositionOfPrimitiveType[i] = new @liveCodeLabCore_three.Matrix4()
         @numberOfOverlappingPrimitives[i] = 0
 
+    resetFillStack: ->
+      @fillStack = []
+      @fill 0xFFFFFFFF
+      @defaultNormalFill = true
+
+
+    #@pushFill @defaultNormalFill,@currentFillColor,@currentFillAlpha
+    pushFill: (defaultNormalFill,currentFillColor,currentFillAlpha)->
+      if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
+        return
+
+      @fillStack.push defaultNormalFill
+      @fillStack.push currentFillColor
+      @fillStack.push currentFillAlpha
+      
+      #console.log 'just pushed: ' + currentFillAlpha + " " + currentFillColor + " " + defaultNormalFill
+
+    popFill: ->
+      if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
+        return
+
+      if @fillStack.length
+        @currentFillAlpha = @fillStack.pop()
+        @currentFillColor = @fillStack.pop()
+        @defaultNormalFill = @fillStack.pop()
+        #console.log "just popped: " + @currentFillAlpha + " " + @currentFillColor + " " + @defaultNormalFill
+      else
+        @resetFillStack()
+
     addToScope: (scope) ->
 
       scope.add('line',       (a,b,c,d) => @line(a,b,c,d))
@@ -253,9 +284,9 @@ define () ->
       scope.add('peg',        (a,b,c,d) => @peg(a,b,c,d))
       scope.add('ball',       (a,b,c,d) => @ball(a,b,c,d))
       scope.add('ballDetail', (a) => @ballDetail(a))
-      scope.add('fill',       (a,b,c,d) => @fill(a,b,c,d))
+      scope.add('fill',       (a,b,c,d,e) => @fill(a,b,c,d,e))
       scope.add('noFill',     () => @noFill())
-      scope.add('stroke',     (a,b,c,d) => @stroke(a,b,c,d))
+      scope.add('stroke',     (a,b,c,d,e) => @stroke(a,b,c,d,e))
       scope.add('noStroke',   () => @noStroke())
       scope.add('strokeSize', (a) => @strokeSize(a))
 
@@ -573,10 +604,10 @@ define () ->
       return
 
     reset: ->
-      @fill 0xFFFFFFFF
+      @resetFillStack()
+
       @stroke 0xFFFFFFFF
       @currentStrokeSize = 1
-      @defaultNormalFill = true
       @defaultNormalStroke = true
       @ballDetLevel =
         @liveCodeLabCoreInstance.threeJsSystem.ballDefaultDetLevel
@@ -691,7 +722,33 @@ define () ->
 
     
     # Modified from Processing.js
-    fill: (r, g, b, a) ->
+    fill: (r, g, b, a, f) ->
+
+      #console.log "fill-1 " + r + " " + g + " " + b + " " + a + " "  
+
+      if typeof r isnt "number"
+        if isFunction r then appendedFunction = r
+        r = undefined; g = undefined; b = undefined; a = undefined; f = undefined
+      else if typeof g isnt "number"
+        if isFunction g then appendedFunction = g
+        g = undefined; b = undefined; a = undefined; f = undefined
+      else if typeof b isnt "number"
+        if isFunction b then appendedFunction = b
+        b = undefined; a = undefined; f = undefined
+      else if typeof a isnt "number"
+        if isFunction a then appendedFunction = a
+        a = undefined; f = undefined
+      else if typeof f isnt "number"
+        if isFunction f then appendedFunction = f
+        f = undefined
+      else
+        appendedFunction = undefined
+
+      #console.log "fill-2 " + r + " " + g + " " + b + " " + a + " appendedFunction: " + appendedFunction
+
+      if appendedFunction?
+        @pushFill @defaultNormalFill,@currentFillColor,@currentFillAlpha
+
       # Three.js needs two integers to define an RGBA: the rgb as a 24 bit integer
       # and the alpha (from zero to one).
       # Now the thing is that the color gan be given in different
@@ -726,7 +783,12 @@ define () ->
         else
           @currentFillAlpha = 1
 
-    
+      if appendedFunction?
+        #console.log "fill: running function " + appendedFunction
+        appendedFunction()
+        #console.log "fill: popping fill"
+        @popFill()
+
     ###
     The noFill() function disables filling geometry.
     If both <b>noStroke()</b> and <b>noFill()</b>

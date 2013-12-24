@@ -36,6 +36,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "rotate"
       "move"
       "scale"
+      "fill"
     ]
     primitives: [
       # Geometry
@@ -56,7 +57,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "bpm"
       "play"
       # Color and drawing styles
-      "fill"
       "noFill"
       "stroke"
       "noStroke"
@@ -402,7 +402,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
     ##      black background
     ##
     ## We need to switch this round before coffee script compilation
-    ###
     adjustPostfixNotations: (code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
@@ -418,6 +417,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/([a-zA-Z]+)[ ]+stroke(\s|$|;)/g, "stroke $1$2")
       code = code.replace(/([a-zA-Z]+)[ ]+background(\s|$|;)/g, "background $1$2")
       return [code, error]
+    ###
 
     normaliseCode:(code, error) ->
       # if there is an error, just propagate it
@@ -1171,8 +1171,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #   red fill
       #   yellow stroke
       #   black background
-      [code, error] = @adjustPostfixNotations(code, error)
-      if detailedDebug then console.log "preprocess-6\n" + code + " error: " + error
+      #[code, error] = @adjustPostfixNotations(code, error)
+      #if detailedDebug then console.log "preprocess-6\n" + code + " error: " + error
 
       [code, error] = @checkBasicErrorsWithTimes(code, error)
       if detailedDebug then console.log "preprocess-7\n" + code + " error: " + error
