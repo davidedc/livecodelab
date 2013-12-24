@@ -854,13 +854,13 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # making sure that the qualifiers can't span
       # a function definition
 
-      primitivesAndDiamondRegex = @primitivesAndMatrixRegex + '|♦'
+      primitivesAndMatrixAndDiamondRegex = @primitivesAndMatrixRegex + '|♦'
 
       previousCodeTransformations = ''
       while code != previousCodeTransformations
         previousCodeTransformations = code
 
-        rx = RegExp("(^|[^\\w\\d\\r\\n])("+@primitivesAndMatrixRegex+")(?![\\w\\d\\(])([^\\r\\n;'♠]*?)("+primitivesAndDiamondRegex+")([^\\w\\d\\r\\n]*)",'gm')
+        rx = RegExp("(^|[^\\w\\d\\r\\n])("+@primitivesAndMatrixRegex+")(?![\\w\\d\\(])([^\\r\\n;'♠]*?)("+primitivesAndMatrixAndDiamondRegex+")([^\\w\\d\\r\\n]*)",'gm')
         replacement = '$1$2ing❤QUALIFIER$3$4$5'
         code = code.replace(rx,replacement)
 
