@@ -14,21 +14,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
     testCases: null
 
-    # qualifiers are special keywords that make
-    # it easy to change qualities of some
-    # primitives without affecting the
-    # primitives that come afterwards.
-    qualifierKeywords: [
-      # the first one is the qualifier keyword,
-      # the next one is the command that will replace
-      # it, the last two are the commands that are added
-      # at the beginning of the sequence of primitives
-      # and the end to push and pop the state, so that
-      # the primitives that come *afterwards* are unaffected
-      "rotateing❤QUALIFIER", "rotate", "pushMatrix", "popMatrix"
-      "moveing❤QUALIFIER", "move", "pushMatrix", "popMatrix"
-      "scaleing❤QUALIFIER", "scale", "pushMatrix", "popMatrix"
-    ]
     # We separate Commands from Expressions here.
     # Expressions return a value that is potentially
     # useful, while Stataments just change some sort
@@ -829,6 +814,10 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       return [code, error]
 
+    # Qualifiers are special keywords that make
+    # it easy to change qualities of some
+    # primitives without affecting the
+    # primitives that come afterwards.
     findQualifiers: (code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
@@ -1275,9 +1264,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
           allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
-
-          for i in [0...@qualifierKeywords.length] by 4
-            allFunctionsRegex = allFunctionsRegex + '|' + (@qualifierKeywords[i])
           
           if testMoots
             appendString = 's'
