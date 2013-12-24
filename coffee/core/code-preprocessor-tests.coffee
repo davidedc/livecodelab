@@ -1794,6 +1794,19 @@ define ['core/code-preprocessor-tests'], (foo) ->
          notIdempotent: true
          failsMootAppends: true
          failsMootPrepends: true
+        ,
+         notes:    """
+                   """
+         input:    """
+                   noFill
+                   fill red stroke white rect
+                   ball
+                   """
+         expected: """
+                   noFill()
+                   fill red, -> stroke white, -> rect()
+                   ball()
+                   """
 
 
 
