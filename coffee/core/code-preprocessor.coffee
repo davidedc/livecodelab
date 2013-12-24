@@ -31,12 +31,14 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
     # The explanation of why we need this separation
     # is in the "implicit function" transformations
     # code.
-    scaleRotateMoveCommands: [
-      # scale rotate move
+    qualifyingCommands: [
+      # Matrix ops
       "rotate"
       "move"
       "scale"
+      # Color and drawing styles
       "fill"
+      "stroke"
     ]
     primitives: [
       # Geometry
@@ -58,7 +60,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "play"
       # Color and drawing styles
       "noFill"
-      "stroke"
       "noStroke"
       "strokeSize"
       "animationStyle"
@@ -129,11 +130,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
     constructor: ->
       @testCases = (new CodePreprocessorTests()).testCases
-      @scaleRotateMoveCommandsRegex = @scaleRotateMoveCommands.join "|"
+      @qualifyingCommandsRegex = @qualifyingCommands.join "|"
       @primitivesRegex = @primitives.join "|"
-      @primitivesAndMatrixRegex = @scaleRotateMoveCommandsRegex + "|" + @primitivesRegex
+      @primitivesAndMatrixRegex = @qualifyingCommandsRegex + "|" + @primitivesRegex
       @allCommandsRegex = (@commandsExcludingScaleRotateMove.join "|") +
-        "|" + @scaleRotateMoveCommandsRegex +
+        "|" + @qualifyingCommandsRegex +
         "|" + @primitivesRegex
       @expressionsRegex = @expressions.join "|"
       @colorsRegex = @colors.join "|"
@@ -873,8 +874,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #   rotate rotateQUALIFIER (→ box)
       # similar reason for adding rotate
       primtvsAndQualsRegex = ''
-      for i in [0...@scaleRotateMoveCommands.length]
-        primtvsAndQualsRegex = primtvsAndQualsRegex + @scaleRotateMoveCommands[i] + '|' + @scaleRotateMoveCommands[i]+"ing❤QUALIFIER|"
+      for i in [0...@qualifyingCommands.length]
+        primtvsAndQualsRegex = primtvsAndQualsRegex + @qualifyingCommands[i] + '|' + @qualifyingCommands[i]+"ing❤QUALIFIER|"
       for i in [0...@primitives.length]
         primtvsAndQualsRegex = primtvsAndQualsRegex + @primitives[i] + '|' + @primitives[i]+"ing❤QUALIFIER|"
       primtvsAndQualsRegex = primtvsAndQualsRegex + '♦'
@@ -1423,7 +1424,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           # case where the function-block is passed as first argument
           # so no comma is needed
-          rx = RegExp("(^|;| )\\s*("+@scaleRotateMoveCommandsRegex+")\\s*$",'gm')
+          rx = RegExp("(^|;| )\\s*("+@qualifyingCommandsRegex+")\\s*$",'gm')
           match = rx.exec line
           if match?
             transformedLines.push line+" ->"
@@ -1431,7 +1432,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           # case where the function-block is passed as argument beyond
           # the first, so a comma is needed
-          rx = RegExp("(^|;| )\\s*("+@scaleRotateMoveCommandsRegex+")(?![\\w\\d])([^;\r\n]*)$",'gm')
+          rx = RegExp("(^|;| )\\s*("+@qualifyingCommandsRegex+")(?![\\w\\d])([^;\r\n]*)$",'gm')
           match = rx.exec line
           if match?
             transformedLines.push line+", ->"

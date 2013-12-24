@@ -129,6 +129,7 @@ define () ->
   class GraphicsCommands
 
     fillStack: []
+    strokeStack: []
 
     primitiveTypes: {}
     minimumBallDetail: 2
@@ -252,8 +253,12 @@ define () ->
       @fill 0xFFFFFFFF
       @defaultNormalFill = true
 
+    resetStrokeStack: ->
+      @strokeStack = []
+      @stroke 0xFFFFFFFF
+      @defaultNormalStroke = true
 
-    #@pushFill @defaultNormalFill,@currentFillColor,@currentFillAlpha
+
     pushFill: (defaultNormalFill,currentFillColor,currentFillAlpha)->
       if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
         return
@@ -263,6 +268,14 @@ define () ->
       @fillStack.push currentFillAlpha
       
       #console.log 'just pushed: ' + currentFillAlpha + " " + currentFillColor + " " + defaultNormalFill
+
+    pushStroke: (defaultNormalStroke,currentStrokeColor,currentStrokeAlpha)->
+      if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
+        return
+
+      @strokeStack.push defaultNormalStroke
+      @strokeStack.push currentStrokeColor
+      @strokeStack.push currentStrokeAlpha
 
     popFill: ->
       if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
@@ -275,6 +288,17 @@ define () ->
         #console.log "just popped: " + @currentFillAlpha + " " + @currentFillColor + " " + @defaultNormalFill
       else
         @resetFillStack()
+
+    popStroke: ->
+      if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
+        return
+
+      if @strokeStack.length
+        @currentStrokeAlpha = @strokeStack.pop()
+        @currentStrokeColor = @strokeStack.pop()
+        @defaultNormalStroke = @strokeStack.pop()
+      else
+        @resetStrokeStack()
 
     addToScope: (scope) ->
 
@@ -605,10 +629,9 @@ define () ->
 
     reset: ->
       @resetFillStack()
+      @resetStrokeStack()
 
-      @stroke 0xFFFFFFFF
       @currentStrokeSize = 1
-      @defaultNormalStroke = true
       @ballDetLevel =
         @liveCodeLabCoreInstance.threeJsSystem.ballDefaultDetLevel
       @objectsUsedInFrameCounts\
@@ -834,7 +857,28 @@ define () ->
     @see #background()
     @see #colorMode()
     ###
-    stroke: (r, g, b, a) ->
+    stroke: (r, g, b, a, f) ->
+      if typeof r isnt "number"
+        if isFunction r then appendedFunction = r
+        r = undefined; g = undefined; b = undefined; a = undefined; f = undefined
+      else if typeof g isnt "number"
+        if isFunction g then appendedFunction = g
+        g = undefined; b = undefined; a = undefined; f = undefined
+      else if typeof b isnt "number"
+        if isFunction b then appendedFunction = b
+        b = undefined; a = undefined; f = undefined
+      else if typeof a isnt "number"
+        if isFunction a then appendedFunction = a
+        a = undefined; f = undefined
+      else if typeof f isnt "number"
+        if isFunction f then appendedFunction = f
+        f = undefined
+      else
+        appendedFunction = undefined
+
+      if appendedFunction?
+        @pushStroke @defaultNormalStroke,@currentStrokeColor,@currentStrokeAlpha
+
       # see comment on fill method above
       # for some comments on how this method works.
       @doStroke = true
@@ -856,6 +900,9 @@ define () ->
         else
           @currentStrokeAlpha = 1
 
+      if appendedFunction?
+        appendedFunction()
+        @popStroke()
     
     ###
     The noStroke() function disables drawing the stroke (outline).
