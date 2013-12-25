@@ -26,6 +26,24 @@ number                (\-)?{digit}+("."{digit}+)?
 /* function creation */
 "->"                  return "t_arrow"
 
+/* primitives */
+"line"                return "t_shape"
+"rect"                return "t_shape"
+"box"                 return "t_shape"
+"peg"                 return "t_shape"
+"ball"                return "t_shape"
+
+/* matrix command */
+"rotate"              return "t_matrix"
+"scale"               return "t_matrix"
+"move"                return "t_matrix"
+
+/* colour commands */
+"fill"                return "t_style"
+"noFill"              return "t_style"
+"stroke"              return "t_style"
+"noStroke"            return "t_style"
+
 {number}              return "t_number"
 {identifier}          return "t_id"
 
@@ -73,6 +91,9 @@ number                (\-)?{digit}+("."{digit}+)?
 %token                t_function
 %token                t_arrow
 %token                t_number
+%token                t_primitive
+%token                t_matrix
+%token                t_style
 %token                t_id
 %token                t_eof
 %token                t_newline
@@ -225,6 +246,14 @@ Expression
         { $$ = $1; }
     ;
 
+Primitive
+    : t_shape
+        { $$ = yytext; }
+    | t_matrix
+        { $$ = yytext; }
+    | t_style
+        { $$ = yytext; }
+    ;
 
 Number
     : t_number
