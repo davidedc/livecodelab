@@ -151,7 +151,6 @@ Statement
     | PrimitiveCall
     | IfStructure
     | TimesLoop
-    | FunctionDef
     ;
 
 Assignment
