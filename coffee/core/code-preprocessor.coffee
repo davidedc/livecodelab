@@ -258,6 +258,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, undefined, error] if error?
 
+      # for some strange reason the comments on the last line
+      # are not stripped, so adding a new line which we'll
+      # then strip off
+      code = code + "\n"
+
       codeWithoutComments = undefined
       codeWithoutStringsOrComments = undefined
       
@@ -331,6 +336,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       else
         codeWithoutStringsOrComments = code
         codeWithoutComments = code
+
+      # taking away the new line we added to
+      # work around the fact that comments on the last
+      # line are not stripped
+      codeWithoutComments = code.substring(0, code.length - 1)
 
       return [codeWithoutComments, codeWithoutStringsOrComments, error]
 

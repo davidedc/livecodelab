@@ -1796,7 +1796,22 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    fill red, -> stroke white, -> rect()
                    ball()
                    """
-
+        ,
+         notes:    """
+                   checking that comments on the last line
+                   are properly stripped
+                   """
+         input:    """
+                   either = (a,b) -> if random > 0.5 then a() else b() // ouch
+                   either <box>, <peg> //ouch
+                   """
+         expected: """
+                   either = (a,b) -> if random() > 0.5 then a() else b() 
+                   either (box), (peg)
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+         failsMootPrepends: true
 
 
       ]
