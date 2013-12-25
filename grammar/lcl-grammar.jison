@@ -148,6 +148,7 @@ BlockStatement
 Statement
     : Assignment
     | FunctionCall
+    | PrimitiveCall
     | IfStructure
     | TimesLoop
     | FunctionDef
@@ -160,7 +161,17 @@ Assignment
         { $$ = ["=", $1, $3]; }
     ;
 
+PrimitiveCall
+    : Primitive FunctionArgs
+        { $$ = ["FUNCTIONCALL", $1, $3]; }
+    ;
+
 FunctionCall
+    : Identifier FunctionArgs
+        { $$ = ["FUNCTIONCALL", $1, $3]; }
+    ;
+
+ExprFunctionCall
     : Identifier "(" FunctionArgs ")"
         { $$ = ["FUNCTIONCALL", $1, $3]; }
     ;
@@ -238,7 +249,7 @@ Expression
 
     | "(" Expression ")"
         { $$ = $2; }
-    | FunctionCall
+    | ExprFunctionCall
         { $$ = $1; }
     | Number
         { $$ = $1; }
