@@ -186,6 +186,7 @@ FunctionArgs
 
 FunctionArgValue
     : Expression
+    | Block
     | FunctionDef
     ;
 
