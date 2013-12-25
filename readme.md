@@ -51,7 +51,7 @@ For a more fine-grained look at ideas and bugs, take a look at <a href="https://
 
  * Davide Della Casa. Made the first version.
  * Guy John aka @rumblesan. Massive, massive contributions: refactored the code big times, set-up a proper build system, undoes the entropy done by others, working on new parser.
- * Thomas van den Berg aka noio: support for midi input, refactoring of event system.
+ * Thomas van den Berg aka noio: support for midi input, refactoring of event system, tweaking of several bpm-related functions.
  * Matthew Lawrence: replaced the old "plasters and regexes" autocoder hack with a much more proper lexer-based solution.
  * Julien Dorra: contributed to french version, refactoring and great UX/UI feedback.
 
