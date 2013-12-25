@@ -97,4 +97,3 @@ overview of the available documentation.
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/Thumb3.png" width="200" height="115">
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/Thumb2.png" width="200" height="115">
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/Thumb1.png" width="200" height="115">
-
