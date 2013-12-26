@@ -214,10 +214,10 @@ FunctionArgNames
     ;
 
 TimesLoop
-    : Number t_times Block
-        { $$ = ["TIMES", $1, $3]; }
-    | Number t_times "with" Identifier Block
-        { $$ = ["TIMES", $1, $5, $4]; }
+    : Number t_times t_newline Block
+        { $$ = ["TIMES", $1, $4]; }
+    | Number t_times "with" Identifier t_newline Block
+        { $$ = ["TIMES", $1, $6, $4]; }
     ;
 
 Expression
