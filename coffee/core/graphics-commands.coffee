@@ -312,9 +312,9 @@ define () ->
       scope.add('ball',       (a,b,c,d) => @ball(a,b,c,d))
       scope.add('ballDetail', (a) => @ballDetail(a))
       scope.add('fill',       (a,b,c,d,e) => @fill(a,b,c,d,e))
-      scope.add('noFill',     () => @noFill())
+      scope.add('noFill',     (a) => @noFill(a))
       scope.add('stroke',     (a,b,c,d,e) => @stroke(a,b,c,d,e))
-      scope.add('noStroke',   () => @noStroke())
+      scope.add('noStroke',   (a) => @noStroke(a))
       scope.add('strokeSize', (a) => @strokeSize(a))
 
     createObjectIfNeededAndDressWithCorrectMaterial: (
@@ -822,9 +822,18 @@ define () ->
     
     @see #fill()
     ###
-    noFill: ->
+    noFill: (a)->
+      if isFunction a then appendedFunction = a
+
+      if appendedFunction?
+        @pushFill @defaultNormalFill,@currentFillColor,@currentFillAlpha,@doFill
+
       @doFill = false
       @defaultNormalFill = false
+
+      if appendedFunction?
+        appendedFunction()
+        @popFill()    
 
     
     ###
@@ -914,8 +923,18 @@ define () ->
     
     @see #stroke()
     ###
-    noStroke: ->
+    noStroke: (a)->
+
+      if isFunction a then appendedFunction = a
+
+      if appendedFunction?
+        @pushStroke @defaultNormalStroke,@currentStrokeColor,@currentStrokeAlpha,@doStroke
+
       @doStroke = false
+
+      if appendedFunction?
+        appendedFunction()
+        @popStroke()
 
     strokeSize: (a) ->
       # note that either Three.js or the graphic card limit the size

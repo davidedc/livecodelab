@@ -39,6 +39,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # Color and drawing styles
       "fill"
       "stroke"
+      "noFill"
+      "noStroke"
     ]
     primitives: [
       # Geometry
@@ -59,8 +61,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "bpm"
       "play"
       # Color and drawing styles
-      "noFill"
-      "noStroke"
       "strokeSize"
       "animationStyle"
       "background"
