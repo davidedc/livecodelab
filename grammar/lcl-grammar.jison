@@ -162,12 +162,12 @@ Assignment
 
 PrimitiveCall
     : Primitive FunctionArgs
-        { $$ = ["FUNCTIONCALL", $1, $3]; }
+        { $$ = ["FUNCTIONCALL", $1, $2]; }
     ;
 
 FunctionCall
     : Identifier FunctionArgs
-        { $$ = ["FUNCTIONCALL", $1, $3]; }
+        { $$ = ["FUNCTIONCALL", $1, $2]; }
     ;
 
 ExprFunctionCall

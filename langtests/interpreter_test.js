@@ -100,7 +100,7 @@ exports.programdata = {
             }
         };
 
-        program = "a = 0\n5 times ->\n {\n\ta = 5\n}\nresult(a)";
+        program = "a = 0\n5 times\n{\n\ta = 5\n}\nresult a";
         ast = p.parse(program);
 
         i.run(ast, scope);
