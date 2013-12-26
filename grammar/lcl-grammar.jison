@@ -44,6 +44,9 @@ number                (\-)?{digit}+("."{digit}+)?
 "stroke"              return "t_style"
 "noStroke"            return "t_style"
 
+/* inline block commands */
+">>"                  return "t_inlined"
+
 {number}              return "t_number"
 {identifier}          return "t_id"
 
