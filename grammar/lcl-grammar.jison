@@ -122,9 +122,13 @@ number                (\-)?{digit}+("."{digit}+)?
 %% /* language grammar */
 
 Program
-    : t_eof
+    : t_newline t_eof
+        { return []; }
+    | t_eof
         { return []; }
     | SourceElements t_eof
+        { return $SourceElements; }
+    | t_newline SourceElements t_eof
         { return $SourceElements; }
     ;
 
