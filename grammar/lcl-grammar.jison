@@ -4,6 +4,7 @@
 
 /* lexical grammar */
 
+comment               "//"
 letter                [a-zA-Z]
 digit                 [0-9]
 whitespace            [ \t]+
@@ -25,6 +26,9 @@ number                (\-)?{digit}+("."{digit}+)?
 
 /* function creation */
 "->"                  return "t_arrow"
+
+/* comments */
+{comment}.*\n         /* skip comments */
 
 /* primitives */
 "line"                return "t_shape"
