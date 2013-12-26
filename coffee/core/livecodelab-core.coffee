@@ -73,7 +73,6 @@ define [
   ,'core/renderer'
   ,'core/threejs-system'
   ,'core/time-keeper'
-  ,'core/global-scope'
   ,'sound/samplebank'
   ,'sound/sound-system'
   ,'bowser'
@@ -103,7 +102,6 @@ define [
   ,Renderer
   ,ThreeJsSystem
   ,TimeKeeper
-  ,GlobalScope
   ,SampleBank
   ,SoundSystem
   ,createBowser
