@@ -1796,6 +1796,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    fill red, -> stroke white, -> rect()
                    ball()
                    """
+         failsMootAppends: true
+         failsMootPrepends: true
         ,
          notes:    """
                    checking that comments on the last line
@@ -1812,6 +1814,61 @@ define ['core/code-preprocessor-tests'], (foo) ->
          notIdempotent: true
          failsMootAppends: true
          failsMootPrepends: true
+        ,
+         notes:    """
+                   """
+         input:    """
+                   red box
+                   """
+         expected: """
+                   fill red, -> box()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   """
+         input:    """
+                   line red box
+                   """
+         expected: """
+                   line -> fill red, -> box()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   """
+         input:    """
+                   fill red,22 red box
+                   """
+         expected: """
+                   fill red,22, -> fill red, -> box()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   """
+         input:    """
+                   fill red,20+5*pulse+sin(time) box 3,5 yellow stroke box
+                   """
+         expected: """
+                   fill red,20+5*pulse()+sin(time), -> box 3,5, -> stroke yellow, -> box()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   """
+         input:    """
+                   red yellow stroke box
+                   """
+         expected: """
+                   fill red, -> stroke yellow, -> box()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
 
 
       ]

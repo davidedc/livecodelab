@@ -126,6 +126,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "red"
       "green"
       "blue"
+      "yellow"
+      "white"
     ]
 
     constructor: ->
@@ -1085,18 +1087,39 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      rx = RegExp("(^|;| )(\\s*)("+@colorsRegex+")(?![\\w\\d])",'gm')
+      rx = RegExp("(^|;| )([\\t ]*)("+@colorsRegex+")(?![\\w\\d])",'gm')
       code = code.replace(rx, "$1$2♦$3♦")
+      if detailedDebug then console.log "rearrangeColorCommands-1\n" + code + " error: " + error
 
-      rx = RegExp("(^|;| )(\\s*)("+@colorsCommandsRegex+")(?![\\w\\d])",'gm')
+      rx = RegExp("(^|;| )([\\t ]*)("+@colorsCommandsRegex+")(?![\\w\\d])",'gm')
       code = code.replace(rx, "$1$2♠$3♠")
+      if detailedDebug then console.log "rearrangeColorCommands-2\n" + code + " error: " + error
+
+      # 0.5)
+      # noFill/noStroke/noColor color noFill/noStroke/noColor -> fill color
+      rx = RegExp("(^|; |([\\w\\d] ))♦("+@colorsRegex+")♦[ \\t]+([^♠\\r\\n])",'gm')
+      code = code.replace(rx, "$1♠fill♠ ♦$3♦ $4")
+      if detailedDebug then console.log "rearrangeColorCommands-3\n" + code + " error: " + error
+
+      
+      # 1)
+      # color1,exp color2 stroke/fill nocolor -> color1,exp stroke/fill color2 nocolor
+      rx = RegExp("♦("+@colorsRegex+")♦[\\t ]*([,][\\t ]*)(([\\d\\w\\.\\(\\),]+([\\t ]*[\\+\\-*\\/⨁%,][\\t ]*))+[\\d\\w\\.\\(\\)]+|[\\d\\w\\.\\(\\)]+)*[\\t ]*♦("+@colorsRegex+")♦[\\t ]*♠("+@colorsCommandsRegex+")♠[\\t ]+(?!♦)",'gm')
+      code = code.replace(rx, "♦$1♦$2$3 ♠$6♠ ♦$5♦")
+      if detailedDebug then console.log "rearrangeColorCommands-4\n" + code + " error: " + error
 
 
-      #color1,exp color2 stroke/fill nocolor -> color1,exp stroke/fill color2 nocolor
+      # 2)
+      # noFill/noStroke color stroke/fill nocolor -> stroke/fill colour
+      rx = RegExp("([^♠\\r\\n][\\t ]*)♦("+@colorsRegex+")♦[\\t ]*♠("+@colorsCommandsRegex+")♠[\\t ]+(?!♦)",'gm')
+      code = code.replace(rx, "$1♠$3♠ ♦$2♦ ")
+      if detailedDebug then console.log "rearrangeColorCommands-5\n" + code + " error: " + error
 
-      # ([\d\w\(\)]+([ ]*[-+/*][ ]*[\d\w\(\)]+(\.[\d\w\(\)]+)?)+)+ captures
-      # simple mathematical expressions
-      # e.g. rotate 2,a+1+3*(a*2.32+Math.PI) 2 times box
+      code = code.replace(/[♠♦]/g, "")
+
+      return [code, error]
+
+
 
     # handles the example
     #   a = (val) -> val * 2
@@ -1174,8 +1197,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "preprocess-4\n" + code + " error: " + error
 
 
-      #[code, error] = @rearrangeColorCommands(code, error)
-      #if detailedDebug then console.log "preprocess-5\n" + code + " error: " + error
+      [code, error] = @rearrangeColorCommands(code, error)
+      if detailedDebug then console.log "preprocess-5\n" + code + " error: " + error
 
       # allow some common command forms can be used in postfix notation, e.g.
       #   60 bpm
