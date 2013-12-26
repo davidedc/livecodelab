@@ -116,7 +116,6 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       return @beatCount + passed / @mspb;
 
     pulse: (frequency) ->
-      console.log(frequency)
       if typeof frequency != "number"
         frequency = 1
       return Math.exp(-Math.pow( Math.pow((@beat() * frequency) % 1, 0.3) - 0.5, 2) / 0.05)
