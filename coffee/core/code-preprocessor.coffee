@@ -489,6 +489,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       #if detailedDebug then console.log "beautifyCode-17:\n" + code + " error: " + error
       code = code.replace(/\)[\t ]*if/g, "); if")
       if detailedDebug then console.log "beautifyCode-18:\n" + code + " error: " + error
+      code = code.replace(/,[\t ]*->/gm, ", ->")
+      if detailedDebug then console.log "beautifyCode-18.5:\n" + code + " error: " + error
       code = code.replace(/;[\t ]+$/gm, "")
       if detailedDebug then console.log "beautifyCode-19:\n" + code + " error: " + error
       code = code.replace(/♠/g, "")
@@ -1119,65 +1121,111 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       return [code, error]
 
-
-
-    # handles the example
+    # the last argument of any qualifier, if it's
+    # a function call, might capture the following
+    # function chaining, like so:
+    #   a = (val) -> val * 2
+    #   rotate 3, a 1 box 3, 4, a 1
+    # might become, incorrectly:
+    #   a = (val) -> val * 2
+    #   rotate 3, a(1, -> box 3, 4, a 1)
+    #
+    # handles the following examples
     #   a = (val) -> val * 2
     #   rotate 3, a 1 box 3, 4, a 1
     # so it's translated in
     #   a = (val) -> val * 2
     #   rotate 3, (a 1), -> box 3, 4, a 1 
-    # instead of
-    #   a = (val) -> val * 2
-    #   rotate 3, a (1, -> box 3, 4, a 1)
     # same for
-    #   rotate 3, wave wave 2 box 3, 4, a 1
+    #   rotate 3, wave wave 2 box 3, 4
+    # ...turned into
+    #   rotate 3, wave(wave(2)), -> box 3, 4
     # and also
-    #   rotate 3, wave pulse / 10 box 3, 4, a 1
-    avoidLastArgumentInvocationOverflowing: (code, error) ->
+    #   rotate 3, wave pulse / 10 box 3, 4
+    # ...turned into
+    #   rotate 3, wave(pulse() / 10), -> box 3, 4
+    #
+    # HOW DOES IT WORK?
+    # Example: in
+    #   rotate 3, wave pulse / 10, -> box 3, 4
+    # 1) the part between the qualifiers and the function chaining
+    # is isolated:
+    #   3, wave pulse / 10
+    # then a count is made of the expressions and
+    # user functions accepting arguments followed by
+    # a space, which
+    # in this case is 1 (wave)
+    # 2) then 2 closing parens are added before the chaining:
+    #   rotate 3, wave pulse / 10), -> box 3, 4
+    # 3) then an open parens replaces each
+    # expression or user function followed by a space:
+    #   rotate 3, wave(pulse / 10)), -> box 3, 4
+    avoidLastArgumentInvocationOverflowing: (code, error, userDefinedFunctionsWithArguments) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      # the following transformation only leaves
-      # normal parentheses if they contain
-      # a comma or the ->
-      # the comma is obvious, the -> is
-      # to avoid to turn
-      #   move 0.1 peg move 0.4 box
-      # into
-      #   move 0.1, (-> peg -> move 0.4), -> box()
+      expsAndUserFunctionsWithArgs =  @expressionsRegex + userDefinedFunctionsWithArguments
 
-      code = code.replace(/->/g, "→")
-      if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-0\n" + code + " error: " + error
-
-      previousCodeTransformations = ''
       while code != previousCodeTransformations
         previousCodeTransformations = code
-        code = code.replace(/\(([^,\(\)\r\n→]*)\)/g, "❪$1❫")
-      if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-1\n" + code + " error: " + error
 
-      # by avoiding normal parentheses we avoid anything with a comma
-      # [^\❪→] is needed to avoid to add more and more
-      # nested parentheses
-      # and to avoid that
-      #   rotate 3, → scale 2, → box 3, 4, a 2
-      # becomes
-      #   rotate 3, (→ scale 2), -> box 3, 4, a 2
-      code = code.replace(/(,[ \t]+)([^\❪→][^\(\)\r\n,→]*),([ \t]*)→/g, "$1($2), ->")
-      if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-2\n" + code + " error: " + error
+        # find the code between the qualifier and the
+        # arrow
+        rx = RegExp("("+@qualifyingCommandsRegex+")(.*)(, *->)",'')
+        match = rx.exec code
+        
+        if not match
+          code = code.replace(rx, "$1$2, →")
+          continue
 
-      # put the thick parentheses back to normal
-      code = code.replace(/❪/g, "(")
-      code = code.replace(/❫/g, ")")
+        match2 = match[2]
+
+        # within that snippet of code, search for
+        # qualifiers and user functions followed by a space
+        # so to determine how many parens need to be added
+        rx2 = RegExp("(("+expsAndUserFunctionsWithArgs+") +)",'g')
+        match3 = match2.match(rx2)
+        
+        if not match3
+          code = code.replace(rx, "$1$2, →")
+          continue
+
+        numOfExpr = match3.length
+
+        if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing--1 number of matches: " + match3.length
+        if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing--1 finding qualifiers in: " + match2
+        if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing--1 finding using regex: " + rx2
+        if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing--1 number of parens to add: " + numOfExpr
+
+        # add the closing parens
+        code = code.replace(rx, "$1$2"+(Array(numOfExpr+1).join(")"))+"$3")
+
+        # now add all the opening parens.
+        # Note that there might be more than one parens to be
+        # added for example in
+        #   rotate 3, wave wave 2 box 3, 4
+        for i in [0..numOfExpr]
+          rx = RegExp("("+@qualifyingCommandsRegex+")(.*)(("+expsAndUserFunctionsWithArgs+") +)(.*)(, *->)",'')
+          if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-0 regex: " + rx
+          if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-0 on: " + code
+          
+          code = code.replace(rx, "$1$2$4($5, ->")
+
+        # finally, we change the arrow so that
+        # we don't come back to this snippet of code again
+        code = code.replace(rx, "$1$2$4$5, →")
+
+        if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-1\n" + code + " error: " + error
+        #alert match2 + " num of expr " + numOfExpr + " code: " + code
+
       code = code.replace(/→/g, "->")
-      if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-3\n" + code + " error: " + error
 
-      # you end up generating stuff like , (a), and , (a()),
-      # so simplify those
-      code = code.replace(/(,[ \t]*)\(([\d\w]+)\)([ \t]*,)/g, "$1$2$3")
-      code = code.replace(/(,[ \t]*)\(([\d\w]+\(\))\)([ \t]*,)/g, "$1$2$3")
+      while code != previousCodeTransformations
+        previousCodeTransformations = code
+        code = code.replace(/\(\(\)\)/g, "()")
 
       return [code, error]
+
 
     preprocess: (code) ->
       # we'll keep any errors in here as we transform the code
@@ -1262,7 +1310,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       if detailedDebug then console.log "preprocess-14\n" + code + " error: " + error
       [code, error] = @evaluateAllExpressions(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-16\n" + code + " error: " + error
-      [code, error] = @avoidLastArgumentInvocationOverflowing(code, error)
+      [code, error] = @avoidLastArgumentInvocationOverflowing(code, error, userDefinedFunctionsWithArguments)
       if detailedDebug then console.log "preprocess-17\n" + code + " error: " + error
       [code, error] = @beautifyCode(code, error)
       if detailedDebug then console.log "preprocess-18\n" + code + " error: " + error

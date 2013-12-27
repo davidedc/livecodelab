@@ -663,7 +663,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate(box,peg,line)
                    """
          expected: """
-                   rotate(box(),-> peg(),-> line())
+                   rotate(box(), -> peg(), -> line())
                    """
         ,
          input:    """
@@ -1292,7 +1292,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    scale 2,box
                    """
          expected: """
-                   scale 2,-> box()
+                   scale 2, -> box()
                    """
         ,
          notes:    """
@@ -1319,7 +1319,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    scale 2,->box
                    """
          expected: """
-                   scale 2,-> box()
+                   scale 2, -> box()
                    """
         ,
          notes:    """
@@ -1722,7 +1722,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    rotate 1
-                   rotate (wave 0.5) * 0.1, -> box 2
+                   rotate (wave(0.5) * 0.1), -> box 2
                    """
         ,
          notes:    """
@@ -1733,7 +1733,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    a = (val) -> val * 2
-                   rotate 3, (a 1), -> box 3, 4, a 1
+                   rotate 3, a(1), -> box 3, 4, a 1
                    """
         ,
          notes:    """
@@ -1744,7 +1744,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    a = (val) -> val * 2
-                   rotate 3, (wave wave 2), -> box 3, 4, a 1
+                   rotate 3, wave(wave(2)), -> box 3, 4, a 1
                    """
         ,
          notes:    """
@@ -1755,7 +1755,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    a = (val) -> val * 2
-                   rotate 3, (wave pulse() / 10), -> box 3, 4, a 1
+                   rotate 3, wave(pulse() / 10), -> box 3, 4, a 1
                    """
         ,
          notes:    """
@@ -1911,7 +1911,51 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate noStroke fill 255*pulse,0,0, 255*pulse box
                    """
          expected: """
-                   rotate -> noStroke -> fill 255*pulse(),0,0, (255*pulse()), -> box()
+                   rotate -> noStroke -> fill 255*pulse(),0,0, 255*pulse(), -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   f = (a,b) -> a
+                   rotate 2, f f 3,4 box
+                   rotate 2, f(f(3,4)) box
+                   fill red,20 box
+                   """
+         expected: """
+                   f = (a,b) -> a
+                   rotate 2, f(f(3,4)), -> box()
+                   rotate 2, f(f(3,4)), -> box()
+                   fill red,20, -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   rotate wave wave wave  0.5 * 0.1 box
+                   """
+         expected: """
+                   rotate wave(wave(wave(0.5 * 0.1))), -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   background black
+                   rotate noStroke fill 255*pulse 2 box
+                   """
+         expected: """
+                   background black
+                   rotate -> noStroke -> fill 255*pulse(2), -> box()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   rotate 2, sin sin time 1 times box
+                   """
+         expected: """
+                   rotate 2, sin(sin(time)), -> 1.times -> box()
                    """
 
       ]
