@@ -1111,7 +1111,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       # 2)
       # noFill/noStroke color stroke/fill nocolor -> stroke/fill colour
-      rx = RegExp("([^♠\\r\\n][\\t ]*)♦("+@colorsRegex+")♦[\\t ]*♠("+@colorsCommandsRegex+")♠[\\t ]+(?!♦)",'gm')
+      rx = RegExp("(^|[^♠\\r\\n][\\t ]*)♦("+@colorsRegex+")♦[\\t ]*♠("+@colorsCommandsRegex+")♠[\\t ]+(?!♦)",'gm')
       code = code.replace(rx, "$1♠$3♠ ♦$2♦ ")
       if detailedDebug then console.log "rearrangeColorCommands-5\n" + code + " error: " + error
 

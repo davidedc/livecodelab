@@ -1869,7 +1869,37 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          notIdempotent: true
          failsMootAppends: true
-
+        ,
+         notes:    """
+                   """
+         input:    """
+                   red fill stroke yellow ball
+                   """
+         expected: """
+                   fill red, -> stroke yellow, -> ball()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   """
+         input:    """
+                   red fill noStroke peg
+                   """
+         expected: """
+                   fill red, -> noStroke -> peg()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   """
+         input:    """
+                   rotate noStroke fill 255*pulse,0,0, 255*pulse box
+                   """
+         expected: """
+                   rotate -> noStroke -> fill 255*pulse(),0,0, (255*pulse()), -> box()
+                   """
 
       ]
 
