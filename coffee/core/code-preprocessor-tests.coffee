@@ -1829,6 +1829,19 @@ define ['core/code-preprocessor-tests'], (foo) ->
          notes:    """
                    """
          input:    """
+                   rotate red box
+                   rotate  red box
+                   """
+         expected: """
+                   rotate -> fill red, -> box()
+                   rotate -> fill red, -> box()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   """
+         input:    """
                    line red box
                    """
          expected: """

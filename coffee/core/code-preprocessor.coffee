@@ -1097,7 +1097,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       # 0.5)
       # noFill/noStroke/noColor color noFill/noStroke/noColor -> fill color
-      rx = RegExp("(^|; |([\\w\\d] ))♦("+@colorsRegex+")♦[ \\t]+([^♠\\r\\n])",'gm')
+      rx = RegExp("(^|; |([\\w\\d] *))♦("+@colorsRegex+")♦[ \\t]+([^♠\\r\\n])",'gm')
       code = code.replace(rx, "$1♠fill♠ ♦$3♦ $4")
       if detailedDebug then console.log "rearrangeColorCommands-3\n" + code + " error: " + error
 
