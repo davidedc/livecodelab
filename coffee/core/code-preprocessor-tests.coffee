@@ -1823,8 +1823,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    fill red, -> box()
                    """
-         notIdempotent: true
          failsMootAppends: true
+         failsMootPrepends: true
         ,
          notes:    """
                    """
@@ -1836,8 +1836,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate -> fill red, -> box()
                    rotate -> fill red, -> box()
                    """
-         notIdempotent: true
          failsMootAppends: true
+         failsMootPrepends: true
         ,
          notes:    """
                    """
@@ -1847,8 +1847,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    line -> fill red, -> box()
                    """
-         notIdempotent: true
          failsMootAppends: true
+         failsMootPrepends: true
         ,
          notes:    """
                    """
@@ -1858,8 +1858,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    fill red,22, -> fill red, -> box()
                    """
-         notIdempotent: true
          failsMootAppends: true
+         failsMootPrepends: true
         ,
          notes:    """
                    """
@@ -1869,8 +1869,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    fill red,20+5*pulse()+sin(time), -> box 3,5, -> stroke yellow, -> box()
                    """
-         notIdempotent: true
          failsMootAppends: true
+         failsMootPrepends: true
         ,
          notes:    """
                    """
@@ -1880,8 +1880,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    fill red, -> stroke yellow, -> box()
                    """
-         notIdempotent: true
          failsMootAppends: true
+         failsMootPrepends: true
         ,
          notes:    """
                    """
@@ -1891,8 +1891,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    fill red, -> stroke yellow, -> ball()
                    """
-         notIdempotent: true
          failsMootAppends: true
+         failsMootPrepends: true
         ,
          notes:    """
                    """
@@ -1902,8 +1902,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    fill red, -> noStroke -> peg()
                    """
-         notIdempotent: true
          failsMootAppends: true
+         failsMootPrepends: true
         ,
          notes:    """
                    """
@@ -1957,6 +1957,130 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    rotate 2, sin(sin(time)), -> 1.times -> box()
                    """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   rotate red fill red stroke box
+                   """
+         expected: """
+                   rotate -> fill red, -> stroke red, -> box()
+                   """
+         failsMootAppends: true
+         failsMootPrepends: true
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   stroke stroke
+                   """
+         error: "redundant stroke"
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   fill fill
+                   """
+         error: "redundant fill"
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   stroke red stroke
+                   """
+         error: "redundant stroke"
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   fill red fill
+                   """
+         error: "redundant fill"
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   box fill red stroke box
+                   """
+         error: "missing color"
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   box fill red stroke fill
+                   """
+         error: "missing color"
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   box fill red stroke stroke
+                   """
+         error: "redundant stroke"
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   box red red box
+                   """
+         error: "missing color command"
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   fill red red box
+                   """
+         error: "redundant color"
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   box red red fill
+                   """
+         error: "missing color command"
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   box red fill red box
+                   """
+         error: "missing color command"
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   red fill red red
+                   """
+         error: "redundant color"
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   red red fill red
+                   """
+         error: "redundant color"
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   red red red
+                   """
+         error: "redundant color"
+
 
       ]
 
