@@ -1242,13 +1242,14 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       return [undefined, error] if error?
 
       expsAndUserFunctionsWithArgs =  @expressionsRegex + userDefinedFunctionsWithArguments
+      qualifyingFunctionsRegex = @qualifyingCommandsRegex + userDefinedFunctionsWithArguments
 
       while code != previousCodeTransformations
         previousCodeTransformations = code
 
         # find the code between the qualifier and the
         # arrow
-        rx = RegExp("("+@qualifyingCommandsRegex+")(.*)(, *->)",'')
+        rx = RegExp("("+qualifyingFunctionsRegex+")(.*)(, *->)",'')
         match = rx.exec code
         
         if not match
@@ -1282,7 +1283,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         # added for example in
         #   rotate 3, wave wave 2 box 3, 4
         for i in [0..numOfExpr]
-          rx = RegExp("("+@qualifyingCommandsRegex+")(.*)(("+expsAndUserFunctionsWithArgs+") +)(.*)(, *->)",'')
+          rx = RegExp("("+qualifyingFunctionsRegex+")(.*)(("+expsAndUserFunctionsWithArgs+") +)(.*)(, *->)",'')
           if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-0 regex: " + rx
           if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-0 on: " + code
           

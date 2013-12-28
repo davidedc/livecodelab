@@ -2107,6 +2107,31 @@ define ['core/code-preprocessor-tests'], (foo) ->
          failsMootAppends: true
          failsMootPrepends: true
 
+        ,
+         notes:    """
+                   """
+         input:    """
+                   skel = (numberOfTimes, code) ->
+                   ▶for i in [1..numberOfTimes]
+                   ▶▶rotate i*time scale i noFill
+                   ▶▶▶code()
+
+                   scale 1/4
+                   skel 10 * wave 0.1
+                   ▶ball
+                   """
+         expected: """
+                   skel = (numberOfTimes, code) ->
+                   ▶for i in [1..numberOfTimes]
+                   ▶▶rotate i*time, -> scale i, -> noFill ->
+                   ▶▶▶code()
+
+                   scale 1/4
+                   skel 10 * wave(0.1), ->
+                   ▶ball()
+                   """
+         failsMootAppends: true
+         failsMootPrepends: true
 
       ]
 
