@@ -1364,7 +1364,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       [code, error] = @addTracingInstructionsToDoOnceBlocks(code, error)
 
       [ignore,a,ignore] = @identifyBlockStarts code, error
-      [code, error] = @completeImplicitFunctionPasses code, a, error
+      [code, error] = @completeImplicitFunctionPasses code, a, error, userDefinedFunctionsWithArguments
       if detailedDebug then console.log "completeImplicitFunctionPasses:\n" + code + " error: " + error
 
       [code, error] = @bindFunctionsToArguments(code, error, userDefinedFunctionsWithArguments)
@@ -1551,9 +1551,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       bottomOfProgram = sourceByLine.length-1
       return bottomOfProgram
 
-    completeImplicitFunctionPasses: (code, linesWithBlockStart, error) ->
+    completeImplicitFunctionPasses: (code, linesWithBlockStart, error, userDefinedFunctionsWithArguments) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
+
+      qualifyingFunctions = @qualifyingCommandsRegex + userDefinedFunctionsWithArguments
 
       sourceByLine = code.split("\n")
       transformedLines = []
@@ -1582,7 +1584,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           # case where the function-block is passed as first argument
           # so no comma is needed
-          rx = RegExp("(^|;| )\\s*("+@qualifyingCommandsRegex+")\\s*$",'gm')
+          rx = RegExp("(^|;| )\\s*("+qualifyingFunctions+")\\s*$",'gm')
           match = rx.exec line
           if match?
             transformedLines.push line+" ->"
@@ -1590,7 +1592,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
           # case where the function-block is passed as argument beyond
           # the first, so a comma is needed
-          rx = RegExp("(^|;| )\\s*("+@qualifyingCommandsRegex+")(?![\\w\\d])([^;\r\n]*)$",'gm')
+          rx = RegExp("(^|;| )\\s*("+qualifyingFunctions+")(?![\\w\\d])([^;\r\n]*)$",'gm')
           match = rx.exec line
           if match?
             transformedLines.push line+", ->"

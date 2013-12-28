@@ -1650,6 +1650,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    (myF 2).times ->
                    ▶box()
                    """
+         failsMootAppends: true
+         failsMootPrepends: true
         ,
          notes:    """
                    """
@@ -2080,6 +2082,30 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    red red red
                    """
          error: "redundant color"
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   a = (code) -> code()
+
+                   a <ball>
+
+                   a
+                   ▶rect
+                   ▶peg
+                   """
+         expected: """
+                   a = (code) -> code()
+
+                   a (ball)
+                   a ->
+                   ▶rect()
+                   ▶peg()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+         failsMootPrepends: true
 
 
       ]
