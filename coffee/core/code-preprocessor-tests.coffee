@@ -854,7 +854,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    either = (a,b) -> if random() > 0.5 then a() else b()
-                   either (box), (peg)
+                   either box, peg
                    """
          notIdempotent: true
          failsMootAppends: true
@@ -867,7 +867,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    either = (a,b) -> if random() > 0.5 then a() else b()
                    either (-> (box 2)), (-> (peg 2))
                    """
-         notIdempotent: true
          failsMootAppends: true
         ,
          input:    """
@@ -1510,7 +1509,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate -> myBoxFunc 1, 2, 3
                    """
          expected: """
-                   myBoxFunc = (box)
+                   myBoxFunc = box
                    rotate -> myBoxFunc 1, 2, 3
                    """
          notIdempotent: true
@@ -1524,7 +1523,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    ▶myBoxFunc 1, 2, 3
                    """
          expected: """
-                   myBoxFunc = (box)
+                   myBoxFunc = box
                    rotate ->
                    ▶myBoxFunc 1, 2, 3
                    """
@@ -1538,7 +1537,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate -> myBoxFunc() 1, 2, 3
                    """
          expected: """
-                   myBoxFunc = -> (box)
+                   myBoxFunc = -> box
                    rotate -> myBoxFunc() 1, 2, 3
                    """
          notIdempotent: true
@@ -1589,7 +1588,6 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    flickr = (code) -> if random() < 0.5 then code()
                    flickr (-> (box -> peg 1.1, -> 2.times -> rotate -> ball()))
                    """
-         notIdempotent: true
          failsMootAppends: true
         ,
          notes:    """
@@ -1780,7 +1778,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    either = (a,b) -> if random() > 0.5 then a 2 else b()
-                   console.log either (box), (random)
+                   console.log either box, random
                    """
          notIdempotent: true
          failsMootAppends: true
@@ -1811,7 +1809,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    either = (a,b) -> if random() > 0.5 then a() else b() 
-                   either (box), (peg)
+                   either box, peg 
                    """
          notIdempotent: true
          failsMootAppends: true
@@ -2098,7 +2096,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    a = (code) -> code()
 
-                   a (ball)
+                   a ball
+
                    a ->
                    ▶rect()
                    ▶peg()
@@ -2132,6 +2131,47 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          failsMootAppends: true
          failsMootPrepends: true
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   run <box> 2
+                   """
+         expected: """
+                   run -> box 2
+                   """
+         failsMootAppends: true
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   a = <box>
+                   noFill
+                   rotate run a scale 2 run a
+                   """
+         expected: """
+                   a = box
+                   noFill()
+                   rotate -> run a, -> scale 2, -> run a
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+         failsMootPrepends: true
+
+        ,
+         notes:    """
+                   """
+         input:    """
+                   a = (code) -> code()
+                   a <ball wave>
+                   """
+         expected: """
+                   a = (code) -> code()
+                   a (-> (ball wave()))
+                   """
+         failsMootAppends: true
 
       ]
 

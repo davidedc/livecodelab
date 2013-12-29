@@ -49,6 +49,8 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "box"
       "ball"
       "peg"
+      # Others
+      "run"
     ]
     commandsExcludingScaleRotateMove: [
       # Geometry
@@ -504,6 +506,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       code = code.replace(/\=[\t ]+-/g, "= -")
       if detailedDebug then console.log "beautifyCode-22:\n" + code + " error: " + error
 
+      allFunctionsRegex = @allCommandsRegex + "|" + @expressionsRegex
+      rx = RegExp("\\(("+allFunctionsRegex+")\\)",'g')
+      code = code.replace(rx, "$1")
+      if detailedDebug then console.log "beautifyCode-23:\n" + code + " error: " + error
+
 
       return [code, error]
 
@@ -717,11 +724,11 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
       allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
 
-      rx = RegExp("<[\\s]*(("+allFunctionsRegex+")[\\t ]*)>\\s*([,;]|\\s*$)",'gm')
-      code = code.replace(rx, "($1♠)$3")
+      rx = RegExp("<[\\s]*(("+allFunctionsRegex+")[\\t ]*)>",'gm')
+      code = code.replace(rx, "($1♠)")
 
-      rx = RegExp("<[\\s]*(("+allFunctionsRegex+")[^\\r\\n]*?)>\\s*([,;]|\\s*$)",'gm')
-      code = code.replace(rx, "(->($1))$3")
+      rx = RegExp("<[\\s]*(("+allFunctionsRegex+")[^\\r\\n]*?)>",'gm')
+      code = code.replace(rx, "(->($1))")
 
       code = code.replace(/→/g, "->")
 
@@ -861,13 +868,15 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       primitivesAndMatrixAndDiamondRegex = @primitivesAndMatrixRegex + '|♦'
 
       previousCodeTransformations = ''
+      code = code.replace(/->/g, "→")
       while code != previousCodeTransformations
         previousCodeTransformations = code
 
-        rx = RegExp("(^|[^\\w\\d\\r\\n])("+@primitivesAndMatrixRegex+")(?![\\w\\d\\(])([^\\r\\n;'♠]*?)("+primitivesAndMatrixAndDiamondRegex+")([^\\w\\d\\r\\n]*)",'gm')
+        rx = RegExp("(^|[^\\w\\d\\r\\n])("+@primitivesAndMatrixRegex+")(?![\\w\\d\\(])([^\\r\\n;'♠→]*?)("+primitivesAndMatrixAndDiamondRegex+")([^\\w\\d\\r\\n]*)",'gm')
         replacement = '$1$2ing❤QUALIFIER$3$4$5'
         code = code.replace(rx,replacement)
 
+      code = code.replace(/→/g, "->")
       code = code.replace(/♠/g, ">,")
 
       if detailedDebug then console.log "findQualifiers 4: " + code
@@ -919,9 +928,9 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       # the trasformations above creates
       # stuff like:
-      #    rotate 1 + wave, -> (→ box); 
+      #    run <→ box> 2;
       # so fixing that
-      code = code.replace(/->\s*\(→/g, "(→")
+      code = code.replace(/<→/g, "→ <")
 
       # we don't need the diamond anymore
       code = code.replace(/♦[♦\t ]*/g, "; ")
@@ -1313,7 +1322,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
 
       if detailedDebug then console.log "preprocess-0\n" + code + " error: " + error
       [code, error, userDefinedFunctions, userDefinedFunctionsWithArguments] = @findUserDefinedFunctions(code, error)
-      if detailedDebug then console.log "preprocess-1\n" + code + " error: " + error
+      if detailedDebug then console.log "preprocess-0.5\n" + code + " error: " + error
 
       [code, error] = @removeTickedDoOnce(code, error)
       if detailedDebug then console.log "preprocess-2\n" + code + " error: " + error

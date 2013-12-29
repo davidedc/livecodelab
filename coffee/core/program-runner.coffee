@@ -6,6 +6,10 @@
 ## throws a runtime error.
 ###
 
+isFunction = (functionToCheck) ->
+  getType = {}
+  functionToCheck and getType.toString.call(functionToCheck) is "[object Function]"
+
 define () ->
 
   class ProgramRunner
@@ -35,6 +39,30 @@ define () ->
     addToScope: (scope) ->
 
       scope.add('addDoOnce', (a) => @addDoOnce(a))
+      scope.add('run', (a,b) => @run(a,b))
+
+    # the run function is used so one can write
+    #   a = <box>
+    #   run a
+    # instead of
+    #   a = <box>
+    #   a()
+    # Note that the pre-processor appends an arrow
+    # after "run", so that
+    #   run <box> 2
+    # becomes
+    #   
+    run: (functionToBeRun, chainedFunction) ->
+      # in the case "run <box> 2" the box is
+      # already painted here.
+
+      # in the case "run <box>"
+      # we have to paint it now
+      if isFunction functionToBeRun
+        functionToBeRun()
+
+      if isFunction chainedFunction
+        chainedFunction()
 
     # This is the function called from the compiled code to add the doOnce line
     addDoOnce: (lineNum) ->
