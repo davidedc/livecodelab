@@ -1253,6 +1253,14 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       expsAndUserFunctionsWithArgs =  @expressionsRegex + userDefinedFunctionsWithArguments
       qualifyingFunctionsRegex = @qualifyingCommandsRegex + userDefinedFunctionsWithArguments
 
+      # this transformation is to handle the case
+      #   f = (a,b)-> rotate a run b
+      #   f 2 * sin time, <ball>
+      # where the second line is transformed into
+      #   f 2 * sin(time), ball
+      rx = RegExp(",\\s*(\\()("+@primitivesRegex+")",'g')
+      code = code.replace(rx, ", ->★$2")
+
       while code != previousCodeTransformations
         previousCodeTransformations = code
 
@@ -1306,6 +1314,7 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         #alert match2 + " num of expr " + numOfExpr + " code: " + code
 
       code = code.replace(/→/g, "->")
+      code = code.replace(/, ->★/g, ", (")
 
       while code != previousCodeTransformations
         previousCodeTransformations = code

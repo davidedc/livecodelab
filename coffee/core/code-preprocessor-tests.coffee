@@ -2173,6 +2173,22 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          failsMootAppends: true
 
+        ,
+         notes:    """
+                   """
+         input:    """
+                   f = (a,b)-> rotate a run b
+                   f 2 * sin time, <ball>
+                   """
+         expected: """
+                   f = (a,b) -> rotate a, -> run b
+                   f 2 * sin(time), ball
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+
+
+
       ]
 
   CodePreprocessorTests
