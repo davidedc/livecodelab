@@ -24,8 +24,9 @@ number                (\-)?{digit}+("."{digit}+)?
 "function"            return "t_function"
 "return"              return "t_return"
 
-/* function creation */
+/* arrows */
 "->"                  return "t_arrow"
+">>"                  return "t_inlined"
 
 /* comments */
 {comment}.*\n         /* skip comments */
@@ -47,9 +48,6 @@ number                (\-)?{digit}+("."{digit}+)?
 "noFill"              return "t_style"
 "stroke"              return "t_style"
 "noStroke"            return "t_style"
-
-/* inline block commands */
-">>"                  return "t_inlined"
 
 {number}              return "t_number"
 {identifier}          return "t_id"
@@ -171,13 +169,37 @@ Assignment
         { $$ = ["=", $1, $3]; }
     ;
 
-PrimitiveCall
-    : Primitive FunctionArgs
+FunctionCall
+    : Identifier FunctionArgs
         { $$ = ["FUNCTIONCALL", $1, $2]; }
     ;
 
-FunctionCall
-    : Identifier FunctionArgs
+PrimitiveCall
+    : MatrixCall
+    | ColourCall
+    | ShapeCall
+    ;
+
+MatrixCall
+    : MatrixFunction FunctionArgs
+        { $$ = ["FUNCTIONCALL", $1, $2]; }
+    | MatrixFunction FunctionArgs t_inlined PrimitiveCall
+        { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
+    | MatrixFunction FunctionArgs t_inlined t_newline Block
+        { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
+    ;
+
+ColourCall
+    : ColourFunction FunctionArgs
+        { $$ = ["FUNCTIONCALL", $1, $2]; }
+    | ColourFunction FunctionArgs t_inlined PrimitiveCall
+        { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
+    | ColourFunction FunctionArgs t_inlined t_newline Block
+        { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
+    ;
+
+ShapeCall
+    : ShapeFunction FunctionArgs
         { $$ = ["FUNCTIONCALL", $1, $2]; }
     ;
 
@@ -197,7 +219,6 @@ FunctionArgs
 
 FunctionArgValue
     : Expression
-    | Block
     | FunctionDef
     ;
 
@@ -270,12 +291,18 @@ Expression
         { $$ = $1; }
     ;
 
-Primitive
+ShapeFunction
     : t_shape
         { $$ = yytext; }
-    | t_matrix
+    ;
+
+MatrixFunction
+    : t_matrix
         { $$ = yytext; }
-    | t_style
+    ;
+
+ColourFunction
+    : t_colour
         { $$ = yytext; }
     ;
 
