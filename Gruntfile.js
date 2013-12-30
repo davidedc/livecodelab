@@ -107,7 +107,7 @@ module.exports = function (grunt) {
             },
             lcllang: {
                 files: ['grammar/**/*.jison', 'langtests/**/*.js'],
-                tasks: ['jison', 'langtest']
+                tasks: ['langtest']
             },
             interpreter: {
                 files: ['js_lib/lcl/**/*.js'],
