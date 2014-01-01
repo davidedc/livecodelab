@@ -1129,31 +1129,32 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if /(^|[^\w\d\r\n])fill[\t ]+fill([^\w\d\r\n]|$)/gm.test code
         return [undefined, "redundant fill"]
 
-      rx = RegExp("(^|[^\\w\\d\\r\\n])stroke[\\t ]+("+@colorsRegex+")[\\t ]+stroke([^\\w\\d\\r\\n]|$)",'gm')
-      if rx.test code
-        return [undefined, "redundant stroke"]
-
-      rx = RegExp("(^|[^\\w\\d\\r\\n])fill[\\t ]+("+@colorsRegex+")[\\t ]+fill([^\\w\\d\\r\\n]|$)",'gm')
-      if rx.test code
-        return [undefined, "redundant fill"]
-
-      rx = RegExp("(^|[^\\w\\d\\r\\n])("+@colorsRegex+")[\\t ]+("+@colorsCommandsRegex+")[\\t ]+("+@colorsRegex+")[\\t ]+("+@colorsRegex+")([^\\w\\d\\r\\n]|$)",'gm')
-      if rx.test code
-        return [undefined, "redundant color"]
-
-      rx = RegExp("(^|[^\\w\\d\\r\\n])("+@colorsRegex+")[\\t ]+("+@colorsRegex+")[\\t ]+("+@colorsCommandsRegex+")[\\t ]+("+@colorsRegex+")([^\\w\\d\\r\\n]|$)",'gm')
-      if rx.test code
-        return [undefined, "redundant color"]
-
-      rx = RegExp("(^|[^\\w\\d\\r\\n])("+@colorsRegex+")[\\t ]+("+@colorsRegex+")[\\t ]+("+@colorsRegex+")([^\\w\\d\\r\\n]|$)",'gm')
-      if rx.test code
-        return [undefined, "redundant color"]
 
       rx = RegExp("(^|;| )([\\t ]*)("+@colorsRegex+")(?![\\w\\d])",'gm')
       code = code.replace(rx, "$1$2♦$3♦")
       if detailedDebug then console.log "rearrangeColorCommands-1\n" + code + " error: " + error
 
-      rx = RegExp("(^|[^♦\\r\\n])[\\t ]+("+@colorsCommandsRegex+")[\\t ]+♦("+@colorsRegex+")♦[\\t ]+("+@colorsCommandsRegex+")[\\t ]+([^♦\\r\\n]|$)",'gm')
+      rx = RegExp("(^|[^\\w\\d\\r\\n])stroke[\\t ]+♦([^♦]*)♦[\\t ]+stroke([^\\w\\d\\r\\n]|$)",'gm')
+      if rx.test code
+        return [undefined, "redundant stroke"]
+
+      rx = RegExp("(^|[^\\w\\d\\r\\n])fill[\\t ]+♦([^♦]*)♦[\\t ]+fill([^\\w\\d\\r\\n]|$)",'gm')
+      if rx.test code
+        return [undefined, "redundant fill"]
+
+      rx = RegExp("(^| )♦([^♦]*)♦[\\t ]+("+@colorsCommandsRegex+")[\\t ]+♦([^♦]*)♦[\\t ]+♦([^♦]*)♦([^\\w\\d\\r\\n]|$)",'gm')
+      if rx.test code
+        return [undefined, "redundant color"]
+
+      rx = RegExp("(^| )♦([^♦]*)♦[\\t ]+♦([^♦]*)♦[\\t ]+("+@colorsCommandsRegex+")[\\t ]+♦([^♦]*)♦([^\\w\\d\\r\\n]|$)",'gm')
+      if rx.test code
+        return [undefined, "redundant color"]
+
+      rx = RegExp("(^| )♦([^♦]*)♦[\\t ]+♦([^♦]*)♦[\\t ]+♦([^♦]*)♦( |$)",'gm')
+      if rx.test code
+        return [undefined, "redundant color"]
+
+      rx = RegExp("(^|[^♦\\r\\n])[\\t ]+("+@colorsCommandsRegex+")[\\t ]+♦([^♦]*)♦[\\t ]+("+@colorsCommandsRegex+")[\\t ]+([^♦\\r\\n]|$)",'gm')
       if rx.test code
         return [undefined, "missing color"]
 
@@ -1161,47 +1162,47 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       code = code.replace(rx, "$1$2♠$3♠")
       if detailedDebug then console.log "rearrangeColorCommands-2\n" + code + " error: " + error
 
-      rx = RegExp("(^|[^♠\\r\\n])[\\t ]+♦("+@colorsRegex+")♦[\\t ]+♦("+@colorsRegex+")♦[\\t ]+([^♦\\r\\n]|$)",'gm')
+      rx = RegExp("(^|[^♠\\r\\n])[\\t ]+♦([^♦]*)♦[\\t ]+♦([^♦]*)♦[\\t ]+([^♦\\r\\n]|$)",'gm')
       if rx.test code
         return [undefined, "missing color command"]
 
       # fill red red box
       # stroke red red box
-      rx = RegExp("(^|[^♦\\r\\n][\\t ]+)♠("+@colorsCommandsRegex+")♠[\\t ]+♦("+@colorsRegex+")♦[\\t ]+♦("+@colorsRegex+")♦[\\t ]+([^♠\\r\\n]|$)",'gm')
+      rx = RegExp("(^|[^♦\\r\\n][\\t ]+)♠("+@colorsCommandsRegex+")♠[\\t ]+♦([^♦]*)♦[\\t ]+♦([^♦]*)♦[\\t ]+([^♠\\r\\n]|$)",'gm')
       if rx.test code
         return [undefined, "redundant color"]
 
-      rx = RegExp("(^|[^♠\\r\\n])[\\t ]+♦("+@colorsRegex+")♦[\\t ]+♦("+@colorsRegex+")♦[\\t ]+♠("+@colorsCommandsRegex+")♠(?![\\w\\d])",'gm')
+      rx = RegExp("(^|[^♠\\r\\n])[\\t ]+♦([^♦]*)♦[\\t ]+♦([^♦]*)♦[\\t ]+♠("+@colorsCommandsRegex+")♠(?![\\w\\d])",'gm')
       if rx.test code
         return [undefined, "missing color command"]
 
-      rx = RegExp("(^|[^♠\\r\\n])[\\t ]+♦("+@colorsRegex+")♦[\\t ]+♠("+@colorsCommandsRegex+")♠[\\t ]+♦("+@colorsRegex+")♦[\\t ]+([^♠\\r\\n]|$)",'gm')
+      rx = RegExp("(^|[^♠\\r\\n])[\\t ]+♦([^♦]*)♦[\\t ]+♠("+@colorsCommandsRegex+")♠[\\t ]+♦([^♦]*)♦[\\t ]+([^♠\\r\\n]|$)",'gm')
       if rx.test code
         return [undefined, "missing color command"]
 
       # 0.5)
       # noFill/noStroke/noColor color noFill/noStroke/noColor -> fill color
-      rx = RegExp("(^|; |([\\w\\d] *))♦("+@colorsRegex+")♦[ \\t]+([^♠\\r\\n])",'gm')
+      rx = RegExp("(^|; |([\\w\\d] *))♦([^♦]*)♦[ \\t]+([^♠\\r\\n])",'gm')
       code = code.replace(rx, "$1♠fill♠ ♦$3♦ $4")
       if detailedDebug then console.log "rearrangeColorCommands-3\n" + code + " error: " + error
 
       
       # 1)
       # color1,exp color2 stroke/fill nocolor -> color1,exp stroke/fill color2 nocolor
-      rx = RegExp("♦("+@colorsRegex+")♦[\\t ]*([,][\\t ]*)(([\\d\\w\\.\\(\\),]+([\\t ]*[\\+\\-*\\/⨁%,][\\t ]*))+[\\d\\w\\.\\(\\)]+|[\\d\\w\\.\\(\\)]+)*[\\t ]*♦("+@colorsRegex+")♦[\\t ]*♠("+@colorsCommandsRegex+")♠[\\t ]+(?!♦)",'gm')
+      rx = RegExp("♦([^♦]*)♦[\\t ]+([,][\\t ]*)(([\\d\\w\\.\\(\\),]+([\\t ]*[\\+\\-*\\/⨁%,][\\t ]*))+[\\d\\w\\.\\(\\)]+|[\\d\\w\\.\\(\\)]+)*[\\t ]+♦([^♦]*)♦[\\t ]+♠("+@colorsCommandsRegex+")♠[\\t ]+(?!♦)",'gm')
       code = code.replace(rx, "♦$1♦$2$3 ♠$6♠ ♦$5♦")
       if detailedDebug then console.log "rearrangeColorCommands-4\n" + code + " error: " + error
 
 
       # 2)
       # noFill/noStroke color stroke/fill nocolor -> stroke/fill colour
-      rx = RegExp("(^|[^♠\\r\\n][\\t ]*)♦("+@colorsRegex+")♦[\\t ]*♠("+@colorsCommandsRegex+")♠[\\t ]+(?!♦)",'gm')
+      rx = RegExp("(^|[^♠\\r\\n][\\t ]*)♦([^♦]*)♦[\\t ]*♠("+@colorsCommandsRegex+")♠[\\t ]+(?!♦)",'gm')
       code = code.replace(rx, "$1♠$3♠ ♦$2♦ ")
       if detailedDebug then console.log "rearrangeColorCommands-5\n" + code + " error: " + error
 
       # 2)
       # noFill/noStroke color stroke/fill1 stroke/fill2 -> stroke/fill1 colour stroke/fill2
-      rx = RegExp("(^|[^♠\\r\\n][\\t ]*)♦("+@colorsRegex+")♦[\\t ]*♠("+@colorsCommandsRegex+")♠[\\t ]*♠",'gm')
+      rx = RegExp("(^|[^♠\\r\\n][\\t ]*)♦([^♦]*)♦[\\t ]*♠("+@colorsCommandsRegex+")♠[\\t ]*♠",'gm')
       code = code.replace(rx, "$1♠$3♠ ♦$2♦ ")
       if detailedDebug then console.log "rearrangeColorCommands-6\n" + code + " error: " + error
 
