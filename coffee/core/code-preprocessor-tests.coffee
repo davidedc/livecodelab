@@ -975,10 +975,10 @@ define ['core/code-preprocessor-tests'], (foo) ->
         ,
          input:    """
                    rotate time/1000
-                   ✓doOnce ->
+                   ✓doOnce
                    ▶background 255
                    ▶fill 255,0,0
-                   ✓doOnce -> ball
+                   ✓doOnce ball
                    box
                    """
          expected: """
@@ -992,10 +992,10 @@ define ['core/code-preprocessor-tests'], (foo) ->
         ,
          input:    """
                    rotate time/1000
-                   doOnce ->
+                   doOnce
                    ▶background 255
                    ▶fill 255,0,0
-                   doOnce -> ball
+                   doOnce ball
                    box
                    """
          expected: """

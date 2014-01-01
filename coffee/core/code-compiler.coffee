@@ -114,7 +114,7 @@ define ['core/code-preprocessor', 'coffeescript'], (CodePreprocessor, Coffeescri
       for eachLine in doOnceOccurrencesLineNumbers
         elaboratedSourceByLine[eachLine] =
           elaboratedSourceByLine[eachLine].replace(
-            /(^|\s+)doOnce([ \t\-]*\>[ \t]*.*)$/gm, "$1✓doOnce$2")
+            /(^|\s+)doOnce([ \t]*.*)$/gm, "$1✓doOnce$2")
       elaboratedSource = elaboratedSourceByLine.join("\n")
       
       # puts the new code (where the doOnce that have been executed have

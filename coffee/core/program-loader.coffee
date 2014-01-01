@@ -749,10 +749,10 @@ define [
               // delete either check mark below
               
               rotate time
-              ✓doOnce ->
+              ✓doOnce
               ▶background 255
               ▶fill 255,0,0
-              ✓doOnce -> ball
+              ✓doOnce ball
               box
               
               // ...the line or block of code

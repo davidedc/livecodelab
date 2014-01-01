@@ -157,15 +157,15 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
     ## the "doOnce" with "if false" or "//" depending on whether
     ## the doOnce is a multiline or an inline one, like so:
     ##
-    ##      ✓doOnce ->
-    ##      background 255
-    ##      fill 255,0,0
-    ##      ✓doOnce -> ball
+    ##      ✓doOnce
+    ##        background 255
+    ##        fill 255,0,0
+    ##      ✓doOnce ball
     ##      becomes:
-    ##      if false ->
-    ##      background 255
-    ##      fill 255,0,0
-    ##      //doOnce -> ball
+    ##      if false
+    ##        background 255
+    ##        fill 255,0,0
+    ##      //doOnce ball
     ##
     ## @param {string} code    the code to re-write
     ##
@@ -176,9 +176,9 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       return [undefined, error] if error?
 
       # doOnce multiline case
-      code = code.replace(/^(\s*)✓[ ]*doOnce[ \t\-]*\>[ ]*$/gm, "$1if false")
-      # doOnce single-line case case
-      code = code.replace(/^(\s*)✓([ ]*doOnce[ \t\-]*\>[ ]*)/gm, "$1//$2")
+      code = code.replace(/^(\s*)✓[ ]*doOnce[ \t]*$/gm, "$1if false")
+      # doOnce single-line case
+      code = code.replace(/^(\s*)✓([ ]*doOnce[ \t]+)/gm, "$1//$2")
       if detailedDebug then console.log "removeTickedDoOnce\n" + code + " error: " + error
       if code.indexOf("✓") != -1
         return [undefined,"✓ must be next to a doOnce"]
@@ -194,11 +194,11 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       # necessary, so the doOnce block is not run again.
       # Example - let's say one pastes in this code:
       #
-      #      doOnce ->
+      #      doOnce
       #        background 255
       #        fill 255,0,0
       #
-      #      doOnce -> ball
+      #      doOnce ball
       #
       # it becomes:
       #
@@ -228,16 +228,16 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
           # add the line number tracing instruction to inline case
           elaboratedSourceByLine[eachLine] =
             elaboratedSourceByLine[eachLine].replace(
-              /(^|\s+)doOnce[ \t\-]*\>[ ]*(.+)$/g,
+              /(^|\s+)doOnce[ \t]+(.+)$/g,
               "$1;addDoOnce(" + eachLine + "); 1.times -> $2")
           
           # add the line number tracing instruction to multiline case
-          if /(^|\s+)doOnce[ \t\-]*\>[ ]*$/g.test(elaboratedSourceByLine[eachLine])
+          if /(^|\s+)doOnce[ \t]*$/g.test(elaboratedSourceByLine[eachLine])
             
             #alert('doOnce multiline!')
             elaboratedSourceByLine[eachLine] =
               elaboratedSourceByLine[eachLine].replace(
-                /(^|\s+)doOnce[ \t\-]*\>[ ]*$/g, "$11.times ->")
+                /(^|\s+)doOnce[ \t]*$/g, "$11.times ->")
             elaboratedSourceByLine[eachLine + 1] =
               elaboratedSourceByLine[eachLine + 1].replace(
                 /^(\s*)(.+)$/g, "$1addDoOnce(" + eachLine + "); $2")
@@ -769,7 +769,7 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       #   something;ball;
       #   something;ball;ball
       #   something;ball;ball;
-      #   ✓doOnce -> ball; background red
+      #   ✓doOnce ball; background red
       #   if ball then ball else something
       #   box wave
       #   box wave(wave)
