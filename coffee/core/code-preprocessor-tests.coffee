@@ -2187,6 +2187,23 @@ define ['core/code-preprocessor-tests'], (foo) ->
          notIdempotent: true
          failsMootAppends: true
 
+        ,
+         notes:    """
+                   tests more exotic colors
+                   """
+         input:    """
+                   background black
+                   rotate noStroke lemonchiffon box
+                   rotate 4 red stroke rect
+                   """
+         expected: """
+                   background black
+                   rotate -> noStroke -> fill lemonchiffon, -> box()
+                   rotate 4, -> stroke red, -> rect()
+                   """
+         failsMootAppends: true
+         failsMootPrepends: true
+
 
 
       ]

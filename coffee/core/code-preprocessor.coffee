@@ -8,7 +8,7 @@
 
 detailedDebug = false
 
-define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
+define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocessorTests, ColourLiterals) ->
 
   class CodePreprocessor
 
@@ -124,13 +124,6 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
       "color"
     ]
 
-    colors: [
-      "red"
-      "green"
-      "blue"
-      "yellow"
-      "white"
-    ]
 
     constructor: ->
       @testCases = (new CodePreprocessorTests()).testCases
@@ -141,7 +134,16 @@ define ['core/code-preprocessor-tests'], (CodePreprocessorTests) ->
         "|" + @qualifyingCommandsRegex +
         "|" + @primitivesRegex
       @expressionsRegex = @expressions.join "|"
-      @colorsRegex = @colors.join "|"
+
+      # build the regex for the colour literals
+      @colorsRegex = ""
+      colourLiterals = new ColourLiterals
+      for key of colourLiterals.colourNamesValues
+        if colourLiterals.colourNamesValues.hasOwnProperty key
+          @colorsRegex = @colorsRegex + "|"+key
+      # delete the pre-pended pipe character
+      @colorsRegex = @colorsRegex.substring(1, @colorsRegex.length)
+
       @colorsCommandsRegex = @colorCommands.join "|"
       # make the preprocessor tests easily accessible from
       # the debug console (just type testPreprocessor())
