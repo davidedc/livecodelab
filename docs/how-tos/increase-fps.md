@@ -3,16 +3,15 @@ Performance considerations i.e. how to get 60 fps.
 
 If LiveCodeLab is not running at 60 fps there could be 3 limiting factors. Here is a description of those possible bottlenecks with solutions/workarounds.
 
-1. **Low-power devices**. For example we've noticed that on Chrome on Macbook Air, requestAnimationFrame doesn't "serve" more than 30 fps even for very "light" scenes (e.g. one line). This is likely an explicit sw constrain maybe because of battery/heat management. Same on some tablets. This could be worked around by triggering the frames via timeouts rather than requestAnimationFrame (but this setting is not currently exposed to the user). Or maybe via some settings in the browser (unknown to us at the moment).
+1. **Low-power devices**. For example we've noticed that on Chrome on Macbook Air, requestAnimationFrame doesn't "serve" more than 30 fps even for very "light" scenes (e.g. one line). This is likely an explicit sw constraint, probably because of battery/heat management. Same on some tablets. This could be worked around by triggering the frames via timeouts rather than requestAnimationFrame (but this setting is not currently exposed to the user). Or maybe via some settings in the browser (unknown to us at the moment).
 2. **CPU/memory**. It could be that the running program does a lot of calculations or creates/destroys a lot of memory. For example it might be creating and initialising long arrays 30 times per second. The solution in this case is to slim down the program, or to use a browser with a fast and efficient javascript implementation.
-3. **Geometry**. This is the case where complex meshes are frequently changed, or several thousands of objects (even if of very small size) are placed in the scene. LiveCodeLab gives only a handful of meshes and caches them, but one could still create scenes with several thousands object. Possible solutions:
- - try to reduce the detail levels e.g. using ballDetail
- - omit drawing models that are too small to be visible
- - omit drawing models that are occluded by other models (inside them or behind them)
+3. **Geometry**. This is the case where thousands of objects (even if of very small size) are placed in the scene. Objects with complex meshes (such as spheres drawn with high detail) can be expecially heavy. Possible solutions:
+ - try to reduce the detail level using ballDetail
+ - omit drawing objects that are too small to be visible, off-screen or occluded by other objects (i.e. inside them or behind them)
  - draw fewer objects
-4. **Fill**. This is when there is a lot of painting going on in the screen or lots of surfaces in the scene. This usually happens when objects are drawn on a "big surface" i.e. in case of a big browser window size. As an example, one can bring fps down by drawing a few screen-wide primitives on a 27 inches external monitor. You can check whether this is the bottleneck by resizing the browser window (and restarting livecodelab) and noticing whether fps improves. If it does, then the "fill" is the bottleneck.
+4. **Fill**. This is when there is a lot of "surface extent" being painted on the screen. This usually happens when objects are drawn on a "big surface" i.e. in case of a big browser window size. As an example, one can bring fps down by drawing a few screen-wide primitives on a 27 inches external monitor. You can check whether this is the bottleneck by resizing the browser window (and restarting livecodelab) and noticing whether fps improves. If it does, then the "fill" is the bottleneck.
 There are three possible solutions to the fill bottleneck:
- - confirm that the browser supports WebGl. Firefox and Chrome can support WebGL on many HW configurations, but even mainstream HW can sometimes lack support in some browser versions (e.g. macbook Airs). WebGL support on Linux systems is somewhat spotty, because of the point below:
+ - confirm that the browser supports WebGl. Firefox and Chrome can support WebGL on many HW configurations, but even mainstream HW can sometimes lack support in some browser/OS versions. WebGL support on Linux systems is somewhat spotty, because of the point below:
  - confirm that your OS has drivers that support OpenGL ES > 2.0 hardware acceleration for your graphic card. Updating to recent OS versions and checking the site of your graphic card vendor for recent drivers might do the trick.
  -  reduce the number of pixels being drawn / surface extents in the scene. This can be achieved by either:
      - reducing the size of the models being painted on screen
