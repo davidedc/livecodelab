@@ -40,10 +40,11 @@ exports.programdata = {
 
     'basic function calls work': function (test) {
 
-        var program, ast, expected;
+        var program, ast, expected, processed;
 
         program = "\n\nbox\n";
-        ast = parser.parse(program);
+        processed = preproc.process(program);
+        ast = parser.parse(processed);
 
         expected = [
             ['FUNCTIONCALL', 'box', []]
