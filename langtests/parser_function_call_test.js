@@ -42,7 +42,7 @@ exports.programdata = {
 
         var program, ast, expected;
 
-        program = "box";
+        program = "\n\nbox\n";
         ast = parser.parse(program);
 
         expected = [
@@ -57,7 +57,7 @@ exports.programdata = {
 
         var program, ast, expected, processed;
 
-        program = "rotate 2, 3\n\tbox";
+        program = "rotate 2, 3\n\tbox\n";
         processed = preproc.process(program);
         ast = parser.parse(processed);
 
@@ -65,6 +65,74 @@ exports.programdata = {
             ['FUNCTIONCALL', 'rotate', [2, [3]],
                 ['BLOCK', [
                     ['FUNCTIONCALL', 'box', []]
+                ]]
+                ]
+        ];
+
+        test.deepEqual(ast, expected);
+        test.done();
+    },
+
+    'inline calls': function (test) {
+
+        var program, ast, expected, processed;
+
+        program = "rotate 2, 3 >> box\n";
+        processed = preproc.process(program);
+        ast = parser.parse(processed);
+
+        expected = [
+            ['FUNCTIONCALL', 'rotate', [2, [3]],
+                ['BLOCK', [
+                    ['FUNCTIONCALL', 'box', []]
+                ]]
+                ]
+        ];
+
+        test.deepEqual(ast, expected);
+        test.done();
+    },
+
+    'multiple inline calls': function (test) {
+
+        var program, ast, expected, processed;
+
+        program = "rotate 2, 3 >> fill red >> box\n";
+        processed = preproc.process(program);
+        ast = parser.parse(processed);
+
+        expected = [
+            ['FUNCTIONCALL', 'rotate', [2, [3]],
+                ['BLOCK', [
+                    ['FUNCTIONCALL', 'fill', ['red'],
+                        ['BLOCK', [
+                            ['FUNCTIONCALL', 'box', []]
+                        ]]
+                        ]
+                ]]
+                ]
+        ];
+
+        test.deepEqual(ast, expected);
+        test.done();
+    },
+
+    'multiple inline calls with no arrows': function (test) {
+
+        var program, ast, expected, processed;
+
+        program = "rotate 2, 3 fill red box\n";
+        processed = preproc.process(program);
+        ast = parser.parse(processed);
+
+        expected = [
+            ['FUNCTIONCALL', 'rotate', [2, [3]],
+                ['BLOCK', [
+                    ['FUNCTIONCALL', 'fill', ['red'],
+                        ['BLOCK', [
+                            ['FUNCTIONCALL', 'box', []]
+                        ]]
+                        ]
                 ]]
                 ]
         ];
