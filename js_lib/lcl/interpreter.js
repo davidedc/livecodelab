@@ -194,7 +194,9 @@ define([
 
     Interpreter.evaluateFunctionCall = function (branch, scope) {
 
-        var func, funcname, args, evaledargs, output, i;
+        var func, funcname, args, evaledargs, output, i, block, self;
+
+        self = this;
 
         funcname = branch[1];
 
@@ -211,6 +213,16 @@ define([
             evaledargs.push(this.evaluate(args[i], scope));
         }
 
+        // if this function call has a block section then add it to the args
+        block = branch[3];
+        if (block !== undefined) {
+            evaledargs.push(function () {
+                self.evaluate(block, childScope);
+            });
+        }
+
+        // TODO
+        // remember why the hell this piece of code is here
         if (typeof func === "function") {
             output = scope[funcname].apply(scope, evaledargs);
         } else {
