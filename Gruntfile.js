@@ -110,7 +110,7 @@ module.exports = function (grunt) {
                 tasks: ['langtest']
             },
             interpreter: {
-                files: ['js_lib/lcl/**/*.js'],
+                files: ['js_lib/lcl/**/*.js', 'langtests/**/*.js'],
                 tasks: ['copy:main', 'langtest']
             }
         },
