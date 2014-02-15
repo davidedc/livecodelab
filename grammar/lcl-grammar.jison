@@ -21,6 +21,7 @@ number                (\-)?{digit}+("."{digit}+)?
 "elif"                return "t_elif"
 "else"                return "t_else"
 "times"               return "t_times"
+"with"                return "t_with"
 "function"            return "t_function"
 "return"              return "t_return"
 
@@ -263,8 +264,8 @@ FunctionArgNames
 TimesLoop
     : Number t_times Block
         { $$ = ["TIMES", $1, $3]; }
-    | Number t_times "with" Identifier Block
-        { $$ = ["TIMES", $1, $6, $3]; }
+    | Number t_times t_with Identifier Block
+        { $$ = ["TIMES", $1, $5, $4]; }
     ;
 
 Expression

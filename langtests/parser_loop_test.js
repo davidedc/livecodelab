@@ -10,6 +10,7 @@ requirejs.config({
 });
 
 var parser = requirejs('lib/lcl/parser');
+var preproc = requirejs('lib/lcl/preprocessor');
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -31,24 +32,44 @@ var parser = requirejs('lib/lcl/parser');
     test.ifError(value)
 */
 
-parser.yy.parseError = function () {
-    console.log(arguments);
+parser.yy.parseError = function (error) {
+    console.log(error);
 };
 
 exports.programdata = {
 
     'basic times loop works': function (test) {
 
-        var program, ast, expected;
+        var program, ast, expected, processed;
 
-        program = "4 times {\nbox(4)\n}";
-        ast = parser.parse(program);
+        program = "4 times\n\tbox(4)";
+        processed = preproc.process(program);
+        ast = parser.parse(processed);
 
         expected = [
             ['TIMES', 4,
                 ['BLOCK', [
                     ['FUNCTIONCALL', 'box', [4]]
                 ]]]
+        ];
+
+        test.deepEqual(ast, expected);
+        test.done();
+    },
+
+    'times loop with variable': function (test) {
+
+        var program, ast, expected, processed;
+
+        program = "4 times with i\n\tbox(4)";
+        processed = preproc.process(program);
+        ast = parser.parse(processed);
+
+        expected = [
+            ['TIMES', 4,
+                ['BLOCK', [
+                    ['FUNCTIONCALL', 'box', [4]]
+                ]], 'i']
         ];
 
         test.deepEqual(ast, expected);

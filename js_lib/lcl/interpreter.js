@@ -233,13 +233,21 @@ define([
     };
 
     Interpreter.evaluateTimesLoop = function (branch, scope) {
-        var times, block, i;
+        var times, block, i, loopvar, statements, childScope;
 
-        times = branch[1];
-        block = branch[2];
+        times   = branch[1];
+        block   = branch[2];
+        loopvar = branch[3];
+
+        statements = block[1];
+
+        childScope = helpers.createChildScope(scope);
 
         for (i = 0; i < times; i += 1) {
-            this.evaluateBlock(block, scope);
+
+            childScope[loopvar] = i;
+
+            this.runAST(statements, childScope);
         }
 
     };
