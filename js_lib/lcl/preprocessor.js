@@ -52,39 +52,88 @@ define([
 
     PreProcessor.insertBlocks = function (programtext, blocks) {
 
-        var lines, i, output, lastblock, l, b, bdiff, bd, blockdepth;
+        var programlines,
+            i,
+            output,
+            lastblockdepth,
+            currentline,
+            currentdepth,
+            bdiff,
+            bd,
+            trackeddepth,
+            prevline,
+            emptylines;
 
         output = [];
-        lines = programtext.split('\n');
-        lastblock = 0;
-        blockdepth = 0;
+        programlines = programtext.split('\n');
+        lastblockdepth = 0;
+        trackeddepth = 0;
+        emptylines = [];
 
-        for (i = 0; i < lines.length; i += 1) {
-            l = lines[i];
-            b = blocks[i];
-            if (b === -1) {
-                b = lastblock;
-            } else if (b > lastblock) {
-                bdiff = b - lastblock;
+        for (i = 0; i < programlines.length; i += 1) {
+
+            currentline = programlines[i];
+            currentdepth = blocks[i];
+
+            if (currentdepth === -1) {
+                emptylines.push(currentline);
+            } else if (currentdepth > lastblockdepth) {
+
+                bdiff = currentdepth - lastblockdepth;
+
                 for (bd = 0; bd < bdiff; bd += 1) {
-                    output.push('{');
-                    blockdepth += 1;
+                    prevline = output.pop();
+                    output.push(prevline + ' {');
+                    trackeddepth += 1;
                 }
-            } else if (b < lastblock) {
-                bdiff = lastblock - b;
+
+                if (emptylines.length !== 0) {
+                    for (bd = 0; bd < emptylines.length; bd += 1) {
+                        output.push(emptylines[bd]);
+                    }
+                    emptylines = [];
+                }
+
+                lastblockdepth = currentdepth;
+                output.push(currentline);
+
+            } else if (currentdepth < lastblockdepth) {
+                bdiff = lastblockdepth - currentdepth;
+
+                if (emptylines.length !== 0) {
+                    for (bd = 0; bd < emptylines.length; bd += 1) {
+                        output.push(emptylines[bd]);
+                    }
+                    emptylines = [];
+                }
+
                 for (bd = 0; bd < bdiff; bd += 1) {
                     output.push('}');
-                    blockdepth -= 1;
+                    trackeddepth -= 1;
                 }
+                lastblockdepth = currentdepth;
+                output.push(currentline);
+            } else {
+                lastblockdepth = currentdepth;
+
+                if (emptylines.length !== 0) {
+                    for (bd = 0; bd < emptylines.length; bd += 1) {
+                        output.push(emptylines[bd]);
+                    }
+                    emptylines = [];
+                }
+
+                output.push(currentline);
             }
-            lastblock = b;
-            output.push(l);
         }
-        if (blockdepth > 0) {
-            for (bd = 0; bd < blockdepth; bd += 1) {
+
+        /* if there are any unclosed blocks then close them off */
+        if (trackeddepth > 0) {
+            for (bd = 0; bd < trackeddepth; bd += 1) {
                 output.push('}');
             }
         }
+
         return output.join('\n');
 
     };
