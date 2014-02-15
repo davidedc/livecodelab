@@ -120,14 +120,19 @@ number                (\-)?{digit}+("."{digit}+)?
 %% /* language grammar */
 
 Program
-    : t_newline t_eof
+    : ProgramStart ProgramEnd
         { return []; }
-    | t_eof
-        { return []; }
-    | SourceElements t_eof
+    | ProgramStart SourceElements ProgramEnd
         { return $SourceElements; }
-    | t_newline SourceElements t_eof
-        { return $SourceElements; }
+    ;
+
+ProgramStart
+    :
+    | t_newline
+    ;
+
+ProgramEnd
+    : t_eof
     ;
 
 SourceElements
@@ -135,6 +140,8 @@ SourceElements
         { $$ = [$1]; }
     | Statement t_newline SourceElements
         { $$ = [$1, $3]; }
+    | Statement t_newline
+        { $$ = [$1]; }
     ;
 
 Block
