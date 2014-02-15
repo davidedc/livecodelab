@@ -41,7 +41,7 @@ exports.programdata = {
 
         var program, ast, expected;
 
-        program = "4 times\n{\nbox(4)\n}";
+        program = "4 times {\nbox(4)\n}";
         ast = parser.parse(program);
 
         expected = [
@@ -49,7 +49,7 @@ exports.programdata = {
                 ['BLOCK', [
                     ['FUNCTIONCALL', 'box', [4]]
                 ]]]
-            ];
+        ];
 
         test.deepEqual(ast, expected);
         test.done();

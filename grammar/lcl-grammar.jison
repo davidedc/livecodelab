@@ -185,7 +185,7 @@ MatrixCall
         { $$ = ["FUNCTIONCALL", $1, $2]; }
     | MatrixFunction FunctionArgs t_inlined PrimitiveCall
         { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
-    | MatrixFunction FunctionArgs t_inlined t_newline Block
+    | MatrixFunction FunctionArgs t_inlined Block
         { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
     ;
 
@@ -194,7 +194,7 @@ ColourCall
         { $$ = ["FUNCTIONCALL", $1, $2]; }
     | ColourFunction FunctionArgs t_inlined PrimitiveCall
         { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
-    | ColourFunction FunctionArgs t_inlined t_newline Block
+    | ColourFunction FunctionArgs t_inlined Block
         { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
     ;
 
@@ -246,10 +246,10 @@ FunctionArgNames
     ;
 
 TimesLoop
-    : Number t_times t_newline Block
-        { $$ = ["TIMES", $1, $4]; }
-    | Number t_times "with" Identifier t_newline Block
-        { $$ = ["TIMES", $1, $6, $4]; }
+    : Number t_times Block
+        { $$ = ["TIMES", $1, $3]; }
+    | Number t_times "with" Identifier Block
+        { $$ = ["TIMES", $1, $6, $3]; }
     ;
 
 Expression
