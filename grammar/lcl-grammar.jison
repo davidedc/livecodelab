@@ -187,6 +187,8 @@ MatrixCall
         { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
     | MatrixFunction FunctionArgs t_inlined Block
         { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
+    | MatrixFunction FunctionArgs Block
+        { $$ = ["FUNCTIONCALL", $1, $2, $4]; }
     ;
 
 ColourCall
@@ -195,6 +197,8 @@ ColourCall
     | ColourFunction FunctionArgs t_inlined PrimitiveCall
         { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
     | ColourFunction FunctionArgs t_inlined Block
+        { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
+    | ColourFunction FunctionArgs Block
         { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
     ;
 
