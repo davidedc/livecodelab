@@ -235,7 +235,7 @@ define([
     Interpreter.evaluateTimesLoop = function (branch, scope) {
         var times, block, i, loopvar, statements, childScope;
 
-        times   = branch[1];
+        times   = this.evaluate(branch[1], scope);
         block   = branch[2];
         loopvar = branch[3];
 

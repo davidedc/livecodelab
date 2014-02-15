@@ -262,7 +262,11 @@ FunctionArgNames
     ;
 
 TimesLoop
-    : Number t_times Block
+    : Identifier t_times Block
+        { $$ = ["TIMES", $1, $3]; }
+    | Identifer t_times t_with Identifier Block
+        { $$ = ["TIMES", $1, $5, $4]; }
+    | Number t_times Block
         { $$ = ["TIMES", $1, $3]; }
     | Number t_times t_with Identifier Block
         { $$ = ["TIMES", $1, $5, $4]; }
