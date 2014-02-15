@@ -43,7 +43,7 @@ number                (\-)?{digit}+("."{digit}+)?
 "scale"               return "t_matrix"
 "move"                return "t_matrix"
 
-/* colour commands */
+/* style commands */
 "fill"                return "t_style"
 "noFill"              return "t_style"
 "stroke"              return "t_style"
@@ -183,7 +183,7 @@ FunctionCall
 
 PrimitiveCall
     : MatrixCall
-    | ColourCall
+    | StyleCall
     | ShapeCall
     ;
 
@@ -191,21 +191,25 @@ MatrixCall
     : MatrixFunction FunctionArgs
         { $$ = ["FUNCTIONCALL", $1, $2]; }
     | MatrixFunction FunctionArgs t_inlined PrimitiveCall
-        { $$ = ["FUNCTIONCALL", $1, $2, $4]; }
+        { $$ = ["FUNCTIONCALL", $1, $2, ['BLOCK', [$4]]]; }
+    | MatrixFunction FunctionArgs PrimitiveCall
+        { $$ = ["FUNCTIONCALL", $1, $2, ['BLOCK', [$3]]]; }
     | MatrixFunction FunctionArgs t_inlined Block
         { $$ = ["FUNCTIONCALL", $1, $2, $4]; }
     | MatrixFunction FunctionArgs Block
         { $$ = ["FUNCTIONCALL", $1, $2, $3]; }
     ;
 
-ColourCall
-    : ColourFunction FunctionArgs
+StyleCall
+    : StyleFunction FunctionArgs
         { $$ = ["FUNCTIONCALL", $1, $2]; }
-    | ColourFunction FunctionArgs t_inlined PrimitiveCall
+    | StyleFunction FunctionArgs t_inlined PrimitiveCall
+        { $$ = ["FUNCTIONCALL", $1, $2, ['BLOCK', [$4]]]; }
+    | StyleFunction FunctionArgs PrimitiveCall
+        { $$ = ["FUNCTIONCALL", $1, $2, ['BLOCK', [$3]]]; }
+    | StyleFunction FunctionArgs t_inlined Block
         { $$ = ["FUNCTIONCALL", $1, $2, $4]; }
-    | ColourFunction FunctionArgs t_inlined Block
-        { $$ = ["FUNCTIONCALL", $1, $2, $4]; }
-    | ColourFunction FunctionArgs Block
+    | StyleFunction FunctionArgs Block
         { $$ = ["FUNCTIONCALL", $1, $2, $3]; }
     ;
 
@@ -312,8 +316,8 @@ MatrixFunction
         { $$ = yytext; }
     ;
 
-ColourFunction
-    : t_colour
+StyleFunction
+    : t_style
         { $$ = yytext; }
     ;
 
