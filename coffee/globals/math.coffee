@@ -4,6 +4,23 @@
 # Math functions
 #//////////////////////////////////////////////////////////////////////////
 
+define () ->
+
+  class MathFunctions
+
+    constructor: ->
+      @abs = Math.abs
+      @ceil = Math.ceil
+      @floor = Math.floor
+
+      @pi = Math.PI
+
+    addToScope: (scope) ->
+      scope.add('abs',   @abs)
+      scope.add('ceil',  @ceil)
+      scope.add('floor', @floor)
+      scope.add('pi',    @pi)
+
 # Calculation
 ###
 Calculates the absolute value (magnitude) of a number. The absolute value of a
