@@ -184,22 +184,22 @@ MatrixCall
     : MatrixFunction FunctionArgs
         { $$ = ["FUNCTIONCALL", $1, $2]; }
     | MatrixFunction FunctionArgs t_inlined PrimitiveCall
-        { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
-    | MatrixFunction FunctionArgs t_inlined Block
-        { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
-    | MatrixFunction FunctionArgs Block
         { $$ = ["FUNCTIONCALL", $1, $2, $4]; }
+    | MatrixFunction FunctionArgs t_inlined Block
+        { $$ = ["FUNCTIONCALL", $1, $2, $4]; }
+    | MatrixFunction FunctionArgs Block
+        { $$ = ["FUNCTIONCALL", $1, $2, $3]; }
     ;
 
 ColourCall
     : ColourFunction FunctionArgs
         { $$ = ["FUNCTIONCALL", $1, $2]; }
     | ColourFunction FunctionArgs t_inlined PrimitiveCall
-        { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
+        { $$ = ["FUNCTIONCALL", $1, $2, $4]; }
     | ColourFunction FunctionArgs t_inlined Block
-        { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
+        { $$ = ["FUNCTIONCALL", $1, $2, $4]; }
     | ColourFunction FunctionArgs Block
-        { $$ = ["FUNCTIONCALL", $1, $2, $5]; }
+        { $$ = ["FUNCTIONCALL", $1, $2, $3]; }
     ;
 
 ShapeCall

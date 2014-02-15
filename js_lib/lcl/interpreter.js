@@ -147,7 +147,7 @@ define([
             break;
 
         default:
-            throw 'Unknown Symbol';
+            throw 'Unknown Symbol: ' + symbol;
         }
 
         return output;
@@ -217,7 +217,7 @@ define([
         block = branch[3];
         if (block !== undefined) {
             evaledargs.push(function () {
-                self.evaluate(block, childScope);
+                self.evaluateBlock(block, scope);
             });
         }
 
