@@ -44,7 +44,7 @@ define([
         case 'string':
             output = scope[expression];
             if (output === undefined) {
-                throw 'Undefined Variable';
+                throw 'Undefined Variable: ' + expression;
             }
             break;
 
@@ -53,7 +53,7 @@ define([
             break;
 
         default:
-            throw 'Unknown AST type';
+            throw 'Unknown AST type: ' + typeof expression;
         }
 
         return output;
@@ -202,7 +202,7 @@ define([
 
         func = scope[funcname];
         if (func === undefined) {
-            throw 'Function not defined';
+            throw 'Function not defined: ' + funcname;
         }
 
         evaledargs = [];
