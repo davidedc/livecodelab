@@ -30,7 +30,7 @@ number                (\-)?{digit}+("."{digit}+)?
 ">>"                  return "t_inlined"
 
 /* comments */
-{comment}.*\n         /* skip comments */
+{comment}.*{newline}  /* skip comments */
 
 /* primitives */
 "line"                return "t_shape"

@@ -41,7 +41,7 @@ exports.programdata = {
 
         var program, ast, expected;
 
-        program = '// this is a comment \n// parser should ignore\nbox 4';
+        program = '\n\n// this is a comment \n\n\n// parser should ignore\n\n\nbox 4';
         ast = parser.parse(program);
 
         expected = [ ['FUNCTIONCALL', 'box', [4] ] ];
