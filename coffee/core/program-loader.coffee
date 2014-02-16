@@ -31,10 +31,10 @@ define [
                   background red
                   scale 1.5
                   animationStyle paintOver
-                  rotate frame/100
-                  fill 255-((frame/2)%255),0,0
-                  stroke 255-((frame/2)%255),0,0
-                  scale 1-((frame/2)%255) / 255
+                  rotate frame / 100
+                  fill 255 - ((frame / 2) % 255), 0, 0
+                  stroke 255 - ((frame / 2) % 255), 0, 0
+                  scale 1 - ((frame / 2) % 255) / 255
                   box
                   """
       
@@ -47,8 +47,8 @@ define [
               // Mozilla festival 2012
               
               background white
-              scale .3
-              move 0,-1
+              scale 0.3
+              move 0, -1
               fill yellow
               stroke black
               rotate
@@ -56,9 +56,9 @@ define [
               line 4
               box
               
-              rotate 2,3
-              move 0,3
-              scale .3
+              rotate 2, 3
+              move 0, 3
+              scale 0.3
               fill black
               stroke black
               ball
@@ -86,7 +86,7 @@ define [
               // a simple cube!
               
               background yellow
-              rotate 0,time/2,time/2
+              rotate 0, time / 2, time / 2
               box
               """
     
@@ -94,9 +94,9 @@ define [
         submenu: "WebGL"
         title: "WebGL: Two cubes"
         code: """
-              background 155,255,255
+              background 155, 255, 255
               2 times
-              ▶rotate 0, 1, time/2
+              ▶rotate 0, 1, time / 2
               ▶box
               """
     
@@ -104,24 +104,24 @@ define [
         submenu: "Basic"
         title: "Cubes and spikes"
         code: """
-              simpleGradient fuchsia,color(100,200,200),yellow
+              simpleGradient fuchsia, color(100, 200, 200), yellow
               scale 2.1
               5 times
-              ▶rotate 0,1,time/5
-              ▶box 0.1,0.1,0.1
-              ▶move 0,0.1,0.1
+              ▶rotate 0, 1, time / 5
+              ▶box 0.1, 0.1, 0.1
+              ▶move 0, 0.1, 0.1
               ▶3 times
-              ▶▶rotate 0,1,1
-              ▶▶box 0.01,0.01,1
+              ▶▶rotate 0, 1, 1
+              ▶▶box 0.01, 0.01, 1
               """
     
       @programs.demos.webglturbineDemo =
         submenu: "WebGL"
         title: "WebGL: Turbine"
         code: """
-              background 155,55,255
+              background 155, 55, 255
               70 times
-              ▶rotate time/100,1,time/100
+              ▶rotate time / 100, 1, time / 100
               ▶box
               """
     
@@ -148,8 +148,8 @@ define [
               background orange
               scale 0.1
               10 times
-              ▶rotate 0,1,time
-              ▶move 1,1,1
+              ▶rotate 0, 1, time
+              ▶move 1, 1, 1
               ▶box
               """
     
@@ -157,14 +157,14 @@ define [
         submenu: "Basic"
         title: "Tentacle"
         code: """
-              background 155,255,155
+              background 155, 255, 155
               scale 0.15
               3 times
-              ▶rotate 0,1,1
+              ▶rotate 0, 1, 1
               ▶10 times
-              ▶▶rotate 0,1,time
+              ▶▶rotate 0, 1, time
               ▶▶scale 0.9
-              ▶▶move 1,1,1
+              ▶▶move 1, 1, 1
               ▶▶box
               """
     
@@ -173,16 +173,16 @@ define [
         title: "Lamp"
         code: """
               animationStyle motionBlur
-              simpleGradient red,yellow,color(255,0,255)
+              simpleGradient red, yellow, color(255, 0, 255)
               //animationStyle paintOver
               scale 2
-              rotate time/4, time/4,  time/4
+              rotate time / 4, time / 4,  time / 4
               90 times
-              ▶rotate time/200, time/200,  time/200
+              ▶rotate time / 200, time / 200,  time / 200
               ▶line
-              ▶move 0.5,0,0
+              ▶move 0.5, 0, 0
               ▶line
-              ▶move -0.5,0,0
+              ▶move -0.5, 0, 0
               ▶line
               """
     
@@ -191,14 +191,14 @@ define [
         title: "A trillion feathers"
         code: """
               animationStyle paintOver
-              move 2,0,0
+              move 2, 0, 0
               scale 2
               rotate
               20 times
               ▶rotate
-              ▶move 0.25,0,0
+              ▶move 0.25, 0, 0
               ▶line
-              ▶move -0.5,0,0
+              ▶move -0.5, 0, 0
               ▶line
               """
     
@@ -208,11 +208,11 @@ define [
         code: """
               ballDetail 6
               animationStyle motionBlur
-              rotate time/5
-              simpleGradient fuchsia,aqua,yellow
+              rotate time / 5
+              simpleGradient fuchsia, aqua, yellow
               5 times
-              ▶rotate 0,1,time/5
-              ▶move 0.2,0,0
+              ▶rotate 0, 1, time / 5
+              ▶move 0.2, 0, 0
               ▶3 times
               ▶▶rotate 1
               ▶▶ball -1
@@ -321,13 +321,13 @@ define [
         title: "Springy squares"
         code: """
               animationStyle motionBlur
-              simpleGradient fuchsia,color(100,200,200),yellow
+              simpleGradient fuchsia, color(100, 200, 200), yellow
               scale 0.3
               3 times
-              ▶move 0,0,0.5
+              ▶move 0, 0, 0.5
               ▶5 times
-              ▶▶rotate time/2
-              ▶▶move 0.7,0,0
+              ▶▶rotate time / 2
+              ▶▶move 0.7, 0, 0
               ▶▶rect
               """
     
@@ -336,16 +336,16 @@ define [
         title: "Dice"
         code: """
               animationStyle motionBlur
-              simpleGradient color(255),moccasin,peachpuff
-              stroke 255,100,100,255
-              fill red,155
-              move -0.5,0,0
+              simpleGradient color(255), moccasin, peachpuff
+              stroke 255, 100, 100, 255
+              fill red, 155
+              move -0.5, 0, 0
               scale 0.3
               3 times
-              ▶move 0,0,0.5
+              ▶move 0, 0, 0.5
               ▶1 times
               ▶▶rotate time
-              ▶▶move 2,0,0
+              ▶▶move 2, 0, 0
               ▶▶box
               """
     
@@ -355,7 +355,7 @@ define [
         code: """
               scale 10
               2 times
-              ▶rotate 0,1,time/10
+              ▶rotate 0, 1, time / 10
               ▶ball -1
               """
 
@@ -367,9 +367,9 @@ define [
               fill 0
               strokeSize 7
               5 times
-              ▶rotate 0,1,time/20
+              ▶rotate 0, 1, time / 20
               ▶ball
-              ▶rotate 0,1,1
+              ▶rotate 0, 1, 1
               ▶ball -1.01
               """
     
@@ -383,9 +383,9 @@ define [
               noFill
               strokeSize 7
               5 times
-              ▶rotate time/20
+              ▶rotate time / 20
               ▶ball
-              ▶rotate 0,1,1
+              ▶rotate 0, 1, 1
               ▶ball
               """
     
@@ -393,37 +393,41 @@ define [
         submenu: "WebGL"
         title: "WebGL: Ribbon"
         code: """
-              turns = 1 // 1 = Möbius strip
-              detail = 200 // try up to 400 or so
+              // 1 = Möbius strip
+              turns = 1
+              // try up to 400 or so
+              detail = 200
               speed = 0.5
-              ambientLight 255,0,0 // comment out to see the seam
+
+              // comment out to see the seam
+              ambientLight 255, 0, 0
 
               background black
-              rotate time /5
+              rotate time / 5
               scale 0.6
-              for i in [0...detail]
-              ▶rotate 0,0,2*Math.PI/(detail)
-              ▶move 2,0,0
-              ▶▶rotate 0,turns*i*Math.PI/(detail)+time*speed,0
-              ▶▶rect 1,0.04+1/detail
+              detail times with i
+              ▶rotate 0, 0, 2 * pi / (detail)
+              ▶move 2, 0, 0
+              ▶▶rotate 0, turns * i * pi / (detail) + time * speed, 0
+              ▶▶rect 1, 0.04 + 1 / detail
               """
 
       @programs.demos.theeye =
         submenu: "WebGL"
         title: "WebGL: The eye"
         code: """
-              turns = Math.floor(time/10)%6
+              turns = floor(time / 10) % 6
               detail = 100
               speed = 3
-              if time%10 < 5
-              ▶ambientLight 255,255,255
+              if time % 10 < 5
+              ▶ambientLight 255, 255, 255
 
               background black
-              rotate time /5
-              for i in [0...detail]
-              ▶rotate 0,0,2*Math.PI/(detail)
-              ▶move 2,0,0
-              ▶▶rotate turns*i*Math.PI/(detail)+time*speed,0,0
+              rotate time / 5
+              detail times with i
+              ▶rotate 0, 0, 2 * pi / detail
+              ▶move 2, 0, 0
+              ▶▶rotate turns * i * pi / detail + time * speed, 0, 0
               ▶▶rect 1
               """
     
@@ -431,25 +435,21 @@ define [
         submenu: "WebGL"
         title: "WebGL: Nuclear octopus"
         code: """
-              simpleGradient black,color(0,0,(time/.005)%255),black
+              simpleGradient black, color(0, 0, (time / 0.005) % 255), black
               scale 0.2
-              move 5,0,0
+              move 5, 0, 0
               animationStyle motionBlur
               //animationStyle paintOver
-              stroke 255,0,0,120
-              fill (time*1000)%255,0,0
-              pushMatrix
-              count = 0
-              3 times
-              ▶count++
-              ▶pushMatrix
-              ▶rotate count+3+time,2+count + time,4+count
-              ▶120 times
-              ▶▶scale 0.9
-              ▶▶move 1,1,0
-              ▶▶rotate time/.1
-              ▶▶box
-              ▶popMatrix
+              stroke 255, 0, 0, 120
+              fill (time * 1000) % 255, 0, 0
+
+              3 times with count
+              ▶rotate count + 3 + time, 2 + count + time, 4 + count
+              ▶▶120 times
+              ▶▶▶scale 0.9
+              ▶▶▶move 1, 1, 0
+              ▶▶▶rotate time / 0.1
+              ▶▶▶box
               """
     
       @programs.tutorials.introTutorial =
