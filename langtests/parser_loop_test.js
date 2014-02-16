@@ -74,6 +74,28 @@ exports.programdata = {
 
         test.deepEqual(ast, expected);
         test.done();
+    },
+
+    'times loop with variable number and loopvar': function (test) {
+
+        var program, ast, expected, processed;
+
+        program = "foo = 100\nfoo times with i\n\tbox(4)";
+        processed = preproc.process(program);
+        ast = parser.parse(processed);
+
+        expected = [
+            ['=', 'foo', 100], [
+                ['TIMES', 'foo',
+                    ['BLOCK', [
+                        ['FUNCTIONCALL', 'box', [4]]
+                    ]],
+                    'i']
+            ]
+        ];
+
+        test.deepEqual(ast, expected);
+        test.done();
     }
 
 };
