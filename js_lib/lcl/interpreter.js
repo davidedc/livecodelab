@@ -131,7 +131,7 @@ define([
 
 
         case 'IF':
-            output = this.evaluateFunctionCall(branch, scope);
+            output = this.evaluateIfBlock(branch, scope);
             break;
 
         case 'FUNCTIONCALL':

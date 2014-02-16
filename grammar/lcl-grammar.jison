@@ -240,9 +240,9 @@ FunctionArgValue
 
 IfStructure
     : t_if Expression Block
-        { $$ = [$1, $2, $3]; }
+        { $$ = ["IF", $2, $3]; }
     | t_if Expression Block t_else Block
-        { $$ = [$1, $2, $3, $4]; }
+        { $$ = ["IF", $2, $3, $4]; }
     ;
 
 FunctionDef
