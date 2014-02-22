@@ -247,9 +247,9 @@ IfStructure
 
 FunctionDef
     : t_function "(" FunctionArgNames ")" t_arrow Expression
-        { $$ = ["FUNCTIONDEF", $1, $4]; }
+        { $$ = ["FUNCTIONDEF", $3, $6]; }
     | t_function "(" FunctionArgNames ")" t_arrow Block
-        { $$ = ["FUNCTIONDEF", $1, $4]; }
+        { $$ = ["FUNCTIONDEF", $3, $6]; }
     ;
 
 FunctionArgNames
@@ -257,8 +257,8 @@ FunctionArgNames
         { $$ = []; }
     | Identifier
         { $$ = [$1]; }
-    | FunctionArgNames t_comma Identifier
-        { $$ = [$1, $2]; }
+    | Identifier t_comma FunctionArgNames
+        { $$ = [$1, $3]; }
     ;
 
 TimesLoop
