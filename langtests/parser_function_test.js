@@ -78,7 +78,31 @@ exports.programdata = {
 
         test.deepEqual(ast, expected);
         test.done();
-    }
+    },
+
+    'expression function is parsed then used': function (test) {
+
+        var program, processed, ast, expected;
+
+        program = "foo = function (a) -> a + 3\nbar = foo(1)";
+        processed = preproc.process(program);
+        ast = parser.parse(processed);
+
+        expected = [['=', 'foo',
+                       ['FUNCTIONDEF',
+                           ['a'],
+                           ['+', 'a', 3 ]
+                       ]
+                   ], [
+                       ['=', 'bar', [
+                           'FUNCTIONCALL', 'foo', [1]
+                       ]]
+                   ]];
+
+        test.deepEqual(ast, expected);
+        test.done();
+    },
+
 
 };
 

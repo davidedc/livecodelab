@@ -166,10 +166,9 @@ define([
     };
 
     Interpreter.evaluateFunctionDefinition = function (branch, scope) {
-        var name, argnames, block, func, self;
-        name = branch[1];
-        argnames = branch[2];
-        block = branch[3];
+        var argnames, block, func, self;
+        argnames = branch[1];
+        block = branch[2];
 
         self = this;
 
@@ -188,13 +187,16 @@ define([
 
         };
 
-        scope[name] = func;
+        // return a list containing the function so that when
+        // we come to evaluate this we can tell the difference between
+        // a user defined function and a normal javascript function
+        return [func];
 
     };
 
     Interpreter.evaluateFunctionCall = function (branch, scope) {
 
-        var func, funcname, args, evaledargs, output, i, block, self;
+        var func, barefunc, funcname, args, evaledargs, output, i, block, self;
 
         self = this;
 
@@ -221,12 +223,30 @@ define([
             });
         }
 
-        // TODO
-        // remember why the hell this piece of code is here
+        // functions written in javascript will be normal functions added to the scope
+        // user defined functions will be wrapped in a list so we unwrap them then call them
         if (typeof func === "function") {
-            output = scope[funcname].apply(scope, evaledargs);
+
+            // apply is a method of the JS function object. it takes a scope
+            // and then a list of arguments
+            // eg
+            //
+            // var foo = function (a, b) {
+            //     return a + b;
+            // }
+            //
+            // var bar = foo.apply(window, [2, 3]);
+            //
+            // bar will equal 5
+
+            output = func.apply(scope, evaledargs);
+        } else if (typeof func === "object") {
+            // functions defined by the user are wrapped in a list, so we need
+            // to unwrap them
+            barefunc = func[0];
+            output = barefunc(scope, evaledargs);
         } else {
-            output = scope[funcname](scope, evaledargs);
+            throw 'Error interpreting function: ' + funcname;
         }
 
         return output;
