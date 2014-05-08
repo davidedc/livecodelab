@@ -1,5 +1,4 @@
 
-
 %lex
 
 /* lexical grammar */
@@ -7,11 +6,14 @@
 comment               "//"
 letter                [a-zA-Z]
 digit                 [0-9]
+strchars              [\-_]
 whitespace            [ \t]+
 newline               [\n]+
+quote                 "\""
 
 identifier            {letter}({letter}|{digit})*
 number                (\-)?{digit}+("."{digit}+)?
+string                {quote}({letter}|{digit}|{strchars})*{quote}
 
 %%
 
@@ -52,6 +54,7 @@ number                (\-)?{digit}+("."{digit}+)?
 
 {number}              return "t_number"
 {identifier}          return "t_id"
+{string}              return "t_string"
 
 /* math operators */
 "*"                   return "*"
@@ -334,5 +337,10 @@ Number
 Identifier
     : t_id
         { $$ = yytext; }
+    ;
+
+String
+    : t_string
+        { $$ = yytext.substring(1, yytext.length-1); }
     ;
 
