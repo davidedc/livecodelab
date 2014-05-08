@@ -63,7 +63,11 @@ exports.programdata = {
         ast = parser.parse(processed);
 
         expected = [
-            ['FUNCTIONCALL', 'rotate', [2, [3]],
+            ['FUNCTIONCALL', 'rotate', [
+                ['NUMBER', 2], [
+                    ['NUMBER', 3]
+                ]
+            ],
                 ['BLOCK', [
                     ['FUNCTIONCALL', 'box', []]
                 ]]
@@ -83,7 +87,11 @@ exports.programdata = {
         ast = parser.parse(processed);
 
         expected = [
-            ['FUNCTIONCALL', 'rotate', [2, [3]],
+            ['FUNCTIONCALL', 'rotate', [
+                ['NUMBER', 2], [
+                    ['NUMBER', 3]
+                ]
+            ],
                 ['BLOCK', [
                     ['FUNCTIONCALL', 'box', []]
                 ]]
@@ -103,9 +111,13 @@ exports.programdata = {
         ast = parser.parse(processed);
 
         expected = [
-            ['FUNCTIONCALL', 'rotate', [2, [3]],
+            ['FUNCTIONCALL', 'rotate', [
+                ['NUMBER', 2], [
+                    ['NUMBER', 3]
+                ]
+            ],
                 ['BLOCK', [
-                    ['FUNCTIONCALL', 'fill', ['red'],
+                    ['FUNCTIONCALL', 'fill', [['IDENTIFIER', 'red']],
                         ['BLOCK', [
                             ['FUNCTIONCALL', 'box', []]
                         ]]
@@ -127,9 +139,13 @@ exports.programdata = {
         ast = parser.parse(processed);
 
         expected = [
-            ['FUNCTIONCALL', 'rotate', [2, [3]],
+            ['FUNCTIONCALL', 'rotate', [
+                ['NUMBER', 2], [
+                    ['NUMBER', 3]
+                ]
+            ],
                 ['BLOCK', [
-                    ['FUNCTIONCALL', 'fill', ['red'],
+                    ['FUNCTIONCALL', 'fill', [['IDENTIFIER', 'red']],
                         ['BLOCK', [
                             ['FUNCTIONCALL', 'box', []]
                         ]]

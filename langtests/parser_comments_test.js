@@ -44,7 +44,7 @@ exports.programdata = {
         program = '\n\n// this is a comment \n\n\n// parser should ignore\n\n\nbox 4';
         ast = parser.parse(program);
 
-        expected = [ ['FUNCTIONCALL', 'box', [4] ] ];
+        expected = [ ['FUNCTIONCALL', 'box', [['NUMBER', 4]] ] ];
 
         test.deepEqual(ast, expected);
         test.done();

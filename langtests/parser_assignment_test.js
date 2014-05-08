@@ -35,6 +35,10 @@ parser.yy.parseError = function () {
     console.log(arguments);
 };
 
+var n = function (num) {
+    return ['NUMBER', num];
+};
+
 exports.programdata = {
 
     'process function works': function (test) {
@@ -45,7 +49,7 @@ exports.programdata = {
         ast = parser.parse(program);
 
         expected = [
-            ['=', 'a', ['+', 3, 5]]
+            ['=', 'a', ['+', n(3), n(5)]]
         ];
 
         test.deepEqual(ast, expected);
@@ -60,7 +64,7 @@ exports.programdata = {
         ast = parser.parse(program);
 
         expected = [
-            ['=', 'number', 444]
+            ['=', 'number', n(444)]
         ];
 
         test.deepEqual(ast, expected);
@@ -75,7 +79,7 @@ exports.programdata = {
         ast = parser.parse(program);
 
         expected = [
-            ['=', 'number', -333]
+            ['=', 'number', n(-333)]
         ];
 
         test.deepEqual(ast, expected);
@@ -89,9 +93,9 @@ exports.programdata = {
         program = "numa = 55 + 44 * 2 - 321\n numb = numa * -33\n numc = numa + numb";
         ast = parser.parse(program);
 
-        numa = ['=', 'numa', ['-', ['+', 55, ['*', 44, 2]], 321]];
-        numb = ['=', 'numb', ['*', 'numa', -33]];
-        numc = ['=', 'numc', ['+', 'numa', 'numb']];
+        numa = ['=', 'numa', ['-', ['+', n(55), ['*', n(44), n(2)]], n(321)]];
+        numb = ['=', 'numb', ['*', ['IDENTIFIER', 'numa'], n(-33)]];
+        numc = ['=', 'numc', ['+', ['IDENTIFIER', 'numa'], ['IDENTIFIER', 'numb']]];
         expected = [numa, [numb, [numc]]];
 
         test.deepEqual(ast, expected);
@@ -106,7 +110,7 @@ exports.programdata = {
         ast = parser.parse(program);
 
         expected = [
-            ['=', 'number', ['*', ['+', 456, 33], 2]]
+            ['=', 'number', ['*', ['+', n(456), n(33)], n(2)]]
         ];
 
         test.deepEqual(ast, expected);

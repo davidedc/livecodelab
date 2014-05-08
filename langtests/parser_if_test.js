@@ -51,10 +51,10 @@ exports.programdata = {
         ast = parser.parse(processed);
 
         expected = [
-            ['=', 'a', 3],
+            ['=', 'a', ['NUMBER', 3]],
             [[
                 'IF',
-                ['==', 'a', 3],
+                ['==', ['IDENTIFIER', 'a'], ['NUMBER', 3]],
                 ['BLOCK', [['FUNCTIONCALL', 'box', []]]]
             ]]
         ];

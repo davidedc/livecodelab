@@ -309,9 +309,11 @@ Expression
     | ExprFunctionCall
         { $$ = $1; }
     | Number
-        { $$ = $1; }
+        { $$ = ["NUMBER", $1]; }
     | Identifier
-        { $$ = $1; }
+        { $$ = ["IDENTIFIER", $1]; }
+    | String
+        { $$ = ["STRING", $1]; }
     ;
 
 ShapeFunction

@@ -49,7 +49,7 @@ exports.programdata = {
         expected = [['=', 'foo',
                        ['FUNCTIONDEF',
                            ['a', ['b']],
-                           ['+', 'a', 'b' ]
+                           ['+', ['IDENTIFIER', 'a'], ['IDENTIFIER', 'b'] ]
                        ]
                    ]];
 
@@ -69,8 +69,8 @@ exports.programdata = {
                        ['FUNCTIONDEF',
                            ['a', ['b']],
                            ['BLOCK',
-                               [['=', 'c', ['+', 'a', 'b']],
-                                   [['FUNCTIONCALL', 'box', ['c', [3]]]
+                               [['=', 'c', ['+', ['IDENTIFIER', 'a'], ['IDENTIFIER', 'b']]],
+                                   [['FUNCTIONCALL', 'box', [['IDENTIFIER', 'c'], [['NUMBER', 3]]]]
                                ]
                            ]]
                        ]
@@ -91,11 +91,11 @@ exports.programdata = {
         expected = [['=', 'foo',
                        ['FUNCTIONDEF',
                            ['a'],
-                           ['+', 'a', 3 ]
+                           ['+', ['IDENTIFIER', 'a'], ['NUMBER', 3] ]
                        ]
                    ], [
                        ['=', 'bar', [
-                           'FUNCTIONCALL', 'foo', [1]
+                           'FUNCTIONCALL', 'foo', [['NUMBER', 1]]
                        ]]
                    ]];
 

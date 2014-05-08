@@ -49,7 +49,7 @@ exports.programdata = {
         expected = [
             ['TIMES', 4,
                 ['BLOCK', [
-                    ['FUNCTIONCALL', 'box', [4]]
+                    ['FUNCTIONCALL', 'box', [['NUMBER', 4]]]
                 ]]]
         ];
 
@@ -68,7 +68,7 @@ exports.programdata = {
         expected = [
             ['TIMES', 4,
                 ['BLOCK', [
-                    ['FUNCTIONCALL', 'box', [4]]
+                    ['FUNCTIONCALL', 'box', [['NUMBER', 4]]]
                 ]], 'i']
         ];
 
@@ -85,10 +85,10 @@ exports.programdata = {
         ast = parser.parse(processed);
 
         expected = [
-            ['=', 'foo', 100], [
+            ['=', 'foo', ['NUMBER', 100]], [
                 ['TIMES', 'foo',
                     ['BLOCK', [
-                        ['FUNCTIONCALL', 'box', [4]]
+                        ['FUNCTIONCALL', 'box', [['NUMBER', 4]]]
                     ]],
                     'i']
             ]

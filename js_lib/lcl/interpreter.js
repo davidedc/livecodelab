@@ -31,36 +31,7 @@ define([
         }
     };
 
-    Interpreter.evaluate = function (expression, scope) {
-
-        var output;
-
-        switch (typeof expression) {
-
-        case 'object':
-            output = this.evaluateBranch(expression, scope);
-            break;
-
-        case 'string':
-            output = scope[expression];
-            if (output === undefined) {
-                throw 'Undefined Variable: ' + expression;
-            }
-            break;
-
-        case 'number':
-            output = expression;
-            break;
-
-        default:
-            throw 'Unknown AST type: ' + typeof expression;
-        }
-
-        return output;
-
-    };
-
-    Interpreter.evaluateBranch = function (branch, scope) {
+    Interpreter.evaluate = function (branch, scope) {
 
         var symbol, output;
 
@@ -128,6 +99,21 @@ define([
             output = this.evaluate(branch[1], scope) || this.evaluate(branch[2], scope);
             break;
 
+
+        case 'IDENTIFIER':
+            output = scope[branch[1]];
+            if (output === undefined) {
+                throw 'Undefined Variable: ' + branch[1];
+            }
+            break;
+
+        case 'NUMBER':
+            output = branch[1];
+            break;
+
+        case 'STRING':
+            output = branch[1];
+            break;
 
 
         case 'IF':
