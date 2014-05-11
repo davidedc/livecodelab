@@ -2313,9 +2313,517 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          failsMootAppends: true
          failsMootPrepends: true
+        ,
+         notes:    """
+                   binding a variable to times 
+                   """
+         input:    """
+                   noFill wave*3 times with i rotate box i+1
+                   """
+         expected: """
+                   noFill -> (wave()*3).timesWithVariable -> (i) -> rotate -> box i+1
+                   """
+        ,
+         notes:    """
+                   An organic example,
+                   using times with binding
+                   """
+         input:    """
+                   5 times with i
+                   ▶rotate 0,time,time/5000
+                   ▶▶move i/5,0,0
+                   ▶▶3 times with j
+                   ▶▶▶rotate j
+                   ▶▶▶box
+                   """
+         expected: """
+                   5.timesWithVariable -> (i) ->
+                   ▶rotate 0,time,time/5000, ->
+                   ▶▶move i/5,0,0
+                   ▶▶3.timesWithVariable -> (j) ->
+                   ▶▶▶rotate j
+                   ▶▶▶box()
+                   """
+        ,
+         notes:    """
+                   Should give error as 'times'
+                   is missing how many times the
+                   loop has to go for
+                   """
+         input:    """
+                   // should give error
+                   peg
+                   times with i
+                   ▶box 2
+                   """
+         error: "how many times?"
+        ,
+         notes:    """
+                   Should give error as 'times'
+                   is missing how many times the
+                   loop has to go for
+                   """
+         input:    """
+                   // should give error
+                   times with i
+                   ▶box
+                   """
+         error: "how many times?"
+        ,
+         notes:    """
+                   Should give error as 'times'
+                   is missing how many times the
+                   loop has to go for
+                   """
+         input:    """
+                   // should give error
+                   peg times with i rotate box 2* wave
+                   """
+         error: "how many times?"
+        ,
+         notes:    """
+                   Should give error as 'times'
+                   is missing how many times the
+                   loop has to go for
+                   """
+         input:    """
+                   // should give error
+                   if true then  times with i do that
+                   """
+         error: "how many times?"
+        ,
+         notes:    """
+                   Should give error as 'times'
+                   is missing how many times the
+                   loop has to go for
+                   """
+         input:    """
+                   // should give error
+                   if random() > 0.5 then rotate box else times with i rotate peg true
+                   """
+         error: "how many times?"
+        ,
+         notes:    """
+                   Checking that times finds its "number of loops"
+                   expression correctly.
+                   """
+         input:    """
+                   a = 2
+                   box a + 3 times with i rotate peg
+                   """
+         expected: """
+                   a = 2
+                   box -> (a + 3).timesWithVariable -> (i) -> rotate -> peg()
+                   """
+        ,
+         notes:    """
+                   Checking "qualifying" rotate
+                   """
+         input:    """
+                   6 times with i: rotate box
+                   """
+         expected: """
+                   6.timesWithVariable -> (i) -> rotate -> box()
+                   """
+        ,
+         notes:    """
+                   Checking "qualifying" rotate and times within
+                   a function definition
+                   """
+         input:    """
+                   myFunc = -> 20 times with i rotate box
+                   """
+         expected: """
+                   myFunc = -> 20.timesWithVariable -> (i) -> rotate -> box()
+                   """
+        ,
+         notes:    """
+                   Checking "qualifying" rotate and times within
+                   if within a function definition with arguments
+                   """
+         input:    """
+                   myFunc = (a,b) -> if true then 20 times with i rotate box
+                   """
+         expected: """
+                   myFunc = (a,b) -> if true then 20.timesWithVariable -> (i) -> rotate -> box()
+                   """
+        ,
+         notes:    """
+                   Checking multiple times within if then statement
+                   """
+         input:    """
+                   if true then 2 times with i box 3 times with j line 2
+                   """
+         expected: """
+                   if true then 2.timesWithVariable -> (i) -> box -> 3.timesWithVariable -> (j) -> line 2
+                   """
+        ,
+         notes:    """
+                   Checking that separate rotate and primitive
+                   within a times body remain correctly separated.
+                   """
+         input:    """
+                   6 times with i: rotate box
+                   """
+         expected: """
+                   6.timesWithVariable -> (i) -> rotate -> box()
+                   """
+        ,
+         notes:    """
+                   Qualifying rotate within an indented "times" body
+                   """
+         input:    """
+                   6 times with i:
+                   ▶rotate box
+                   """
+         expected: """
+                   6.timesWithVariable -> (i) ->
+                   ▶rotate -> box()
+                   """
+        ,
+         input:    """
+                   1+1 times with i: rotate box
+                   """
+         expected: """
+                   (1+1).timesWithVariable -> (i) -> rotate -> box()
+                   """
+        ,
+         input:    """
+                   peg 2 times with i rotate box 2* wave
+                   """
+         expected: """
+                   peg -> 2.timesWithVariable -> (i) -> rotate -> box 2* wave()
+                   """
+        ,
+         input:    """
+                   n = 2 n times with i: rotate box
+                   """
+         expected: """
+                   n = 2; n.timesWithVariable -> (i) -> rotate -> box()
+                   """
+         notIdempotent: true # because of the semicolon
+        ,
+         input:    """
+                   n = 2 (n+0).times with i -> rotate() box()
+                   """
+         expected: """
+                   n = 2; (n+0).timesWithVariable -> (i) -> rotate(); box()
+                   """
+         notIdempotent: true # because of the semicolon
+        ,
+         input:    """
+                   box box   2 times with i: rotate peg 1.3
+                   """
+         expected: """
+                   box -> box -> 2.timesWithVariable -> (i) -> rotate -> peg 1.3
+                   """
+        ,
+         input:    """
+                   if random > 0.5 then 3 times with i: rotate box else 3 times with i rotate 2 times with k: peg 1
+                   """
+         expected: """
+                   if random() > 0.5 then 3.timesWithVariable -> (i) -> rotate -> box() else 3.timesWithVariable -> (i) -> rotate -> 2.timesWithVariable -> (k) -> peg 1
+                   """
+        ,
+         input:    """
+                   if true then 3 times with i rotate box
+                   """
+         expected: """
+                   if true then 3.timesWithVariable -> (i) -> rotate -> box()
+                   """
+        ,
+         input:    """
+                   (9+0).times with i -> rotate box
+                   """
+         expected: """
+                   (9+0).timesWithVariable -> (i) -> rotate -> box()
+                   """
+        ,
+         input:    """
+                   if random() > 0.5 then rotate box else 3 times with i rotate peg 1
+                   """
+         expected: """
+                   if random() > 0.5 then rotate -> box() else 3.timesWithVariable -> (i) -> rotate -> peg 1
+                   """
+        ,
+         input:    """
+                   if random() > 0.5 then rotate 1 + wave box else 3 times with i rotate peg 1
+                   """
+         expected: """
+                   if random() > 0.5 then rotate 1 + wave(), -> box() else 3.timesWithVariable -> (i) -> rotate -> peg 1
+                   """
+        ,
+         input:    """
+                   // testing whether mangled accross multiple lines
+                   if random() > 0.5 then box
+                   2 times with i: box
+                   2 times with i: rotate box
+                   """
+         expected: """
+                   
+                   if random() > 0.5 then box()
+                   2.timesWithVariable -> (i) -> box()
+                   2.timesWithVariable -> (i) -> rotate -> box()
+                   """
+        ,
+         input:    """
+                   // testing whether mangled accross multiple lines
+                   6 times with i: rotate box
+                   6 times with i:
+                   ▶rotate box
+                   """
+         expected: """
 
-
-
+                   6.timesWithVariable -> (i) -> rotate -> box()
+                   6.timesWithVariable -> (i) ->
+                   ▶rotate -> box()
+                   """
+        ,
+         input:    """
+                   2 times with i rotate box wave wave
+                   """
+         expected: """
+                   2.timesWithVariable -> (i) -> rotate -> box wave wave()
+                   """
+        ,
+         input:    """
+                   2 times with i: box
+                   """
+         expected: """
+                   2.timesWithVariable -> (i) -> box()
+                   """
+        ,
+         input:    """
+                   2 times with i: rotate box
+                   """
+         expected: """
+                   2.timesWithVariable -> (i) -> rotate -> box()
+                   """
+        ,
+         input:    """
+                   2 times with i rotate box wave
+                   """
+         expected: """
+                   2.timesWithVariable -> (i) -> rotate -> box wave()
+                   """
+        ,
+         input:    """
+                   2 times with i: rotate box wave
+                   """
+         expected: """
+                   2.timesWithVariable -> (i) -> rotate -> box wave()
+                   """
+        ,
+         input:    """
+                   2 times with i: move rotate wave box
+                   """
+         expected: """
+                   2.timesWithVariable -> (i) -> move -> rotate wave(), -> box()
+                   """
+        ,
+         input:    """
+                   rotate wave times with i box
+                   """
+         expected: """
+                   rotate -> (wave()).timesWithVariable -> (i) -> box()
+                   """
+        ,
+         input:    """
+                   rotate 10*wave times with i box
+                   """
+         expected: """
+                   rotate -> (10*wave()).timesWithVariable -> (i) -> box()
+                   """
+        ,
+         input:    """
+                   rotate 10 * wave times with i box
+                   """
+         expected: """
+                   rotate -> (10 * wave()).timesWithVariable -> (i) -> box()
+                   """
+        ,
+         input:    """
+                   rotate wave * wave times with i box
+                   """
+         expected: """
+                   rotate -> (wave() * wave()).timesWithVariable -> (i) -> box()
+                   """
+        ,
+         input:    """
+                   rotates waves * waves timess with i boxs
+                   """
+         expected: """
+                   rotates waves * waves timess with i boxs
+                   """
+        ,
+         input:    """
+                   rotate wave*wave times with i box
+                   """
+         expected: """
+                   rotate -> (wave()*wave()).timesWithVariable -> (i) -> box()
+                   """
+        ,
+         input:    """
+                   rotate 2 times with i box
+                   """
+         expected: """
+                   rotate -> 2.timesWithVariable -> (i) -> box()
+                   """
+        ,
+         notes:    """
+                   There are two ways to interpret this,
+                   we pick one
+                   """
+         input:    """
+                   rotate wave 2 times with i box
+                   """
+         expected: """
+                   rotate -> (wave 2).timesWithVariable -> (i) -> box()
+                   """
+        ,
+         input:    """
+                   rotate wave + 2 times with i box
+                   """
+         expected: """
+                   rotate -> (wave() + 2).timesWithVariable -> (i) -> box()
+                   """
+        ,
+         input:    """
+                   box 2 times with i box
+                   """
+         expected: """
+                   box -> 2.timesWithVariable -> (i) -> box()
+                   """
+        ,
+         input:    """
+                   2 times with i 3 times with k box
+                   """
+         expected: """
+                   2.timesWithVariable -> (i) -> 3.timesWithVariable -> (k) -> box()
+                   """
+        ,
+         input:    """
+                   2 times with i 3 times with j 4 times with k box
+                   """
+         expected: """
+                   2.timesWithVariable -> (i) -> 3.timesWithVariable -> (j) -> 4.timesWithVariable -> (k) -> box()
+                   """
+        ,
+         input:    """
+                   2 times with i box 3 times with j line 2
+                   """
+         expected: """
+                   2.timesWithVariable -> (i) -> box -> 3.timesWithVariable -> (j) -> line 2
+                   """
+        ,
+         input:    """
+                   2 times with i rotate box line 2
+                   """
+         expected: """
+                   2.timesWithVariable -> (i) -> rotate -> box -> line 2
+                   """
+        ,
+         input:    """
+                   10 times with i rotate scale box
+                   """
+         expected: """
+                   10.timesWithVariable -> (i) -> rotate -> scale -> box()
+                   """
+        ,
+         notes:    """
+                   Some times nested in ifs. The final js,
+                   consistently with coffeescript, is:
+                     if (true) {
+                       2..times(function() {
+                         box();
+                         return line();
+                       });
+                     } else {
+                       peg();
+                     }                   
+                   """
+         input:    """
+                   if true then 2 times with i box line else peg
+                   """
+         expected: """
+                   if true then 2.timesWithVariable -> (i) -> box -> line() else peg()
+                   """
+        ,
+         notes:    """
+                   Some more "times nested in ifs". The final js,
+                   consistently with coffeescript, is:
+                   if (true) {
+                     2..times(function() {
+                       box();
+                       if (true) {
+                         return 2..times(function() {
+                           return rect();
+                         });
+                       }
+                     });
+                   } else {
+                     2..times(function() {
+                       peg();
+                       return ball();
+                   """
+         input:    """
+                   if true then 2 times with i box if true then 2 times with j rect else 2 times with k peg ball
+                   """
+         expected: """
+                   if true then 2.timesWithVariable -> (i) -> box(); if true then 2.timesWithVariable -> (j) -> rect() else 2.timesWithVariable -> (k) -> peg -> ball()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   2 times with i if true then ball
+                   """
+         expected: """
+                   2.timesWithVariable -> (i) -> if true then ball()
+                   """
+        ,
+         notes:    """
+                   """
+         input:    """
+                   2 times with i if true then ball
+                   """
+         expected: """
+                   2.timesWithVariable -> (i) -> if true then ball()
+                   """
+        ,
+         notes:    """
+                   note that you cannot have anonymous
+                   functions in the test in coffeescript,
+                   i.e. pasting the "expected" below
+                   into coffeescript gives an error
+                   """
+         input:    """
+                   if 2 times with i a then ball
+                   """
+         expected: """
+                   if 2.timesWithVariable -> (i) -> a then ball()
+                   """
+        ,
+         notes:    """
+                   this example doesn't mean anything
+                   meaningful...
+                   """
+         input:    """
+                   if (2 times with i a) then ball
+                   """
+         expected: """
+                   if (2.timesWithVariable -> (i) -> a) then ball()
+                   """
+        ,
+         notes:    """
+                   times and qualifiers within an if-then-else
+                   """
+         input:    """
+                   if random < 0.5 then 2 times with i rotate box else 3 times with j move peg
+                   """
+         expected: """
+                   if random() < 0.5 then 2.timesWithVariable -> (i) -> rotate -> box() else 3.timesWithVariable -> (j) -> move -> peg()
+                   """
       ]
 
   CodePreprocessorTests

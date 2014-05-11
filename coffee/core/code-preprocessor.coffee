@@ -467,6 +467,8 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
+      code = code.replace(/\.times[\\t ]+with[\\t ]+/gm, ".times with ")
+      if detailedDebug then console.log "beautifyCode-0:\n" + code + " error: " + error
       code = code.replace(/->(?![ \t])/gm, "-> ")
       if detailedDebug then console.log "beautifyCode-1:\n" + code + " error: " + error
       code = code.replace(/->[\t ;]+/gm, "-> ")
@@ -715,6 +717,24 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "transformTimesSyntax-7\n" + code + " error: " + error
 
       code = code.replace(/;*[\t ]*else/g, " else")
+
+      return @normaliseCode(code, error)
+
+    # transforms the case where we are binding a variable
+    # e.g.
+    # 3 times with i box i
+    transformTimesWithVariableSyntax: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+
+      code = code.replace(/\.times[\t ]*with[\t ]*(\w+)[\t ]*(:|;|,[\t ]*->)?/g, ".timesWithVariable -> ($1) $2")
+
+      if detailedDebug then console.log "transformTimesWithVariableSyntax-1\n" + code + " error: " + error
+
+      code = code.replace(/\.times[\t ]*->[\t ]*with[\t ]*(\w+)[\t ]*(:|;|,[\t ]*->)?/g, ".timesWithVariable -> ($1) ->")
+
+      if detailedDebug then console.log "transformTimesWithVariableSyntax-2\n" + code + " error: " + error
 
       return @normaliseCode(code, error)
 
@@ -1430,6 +1450,8 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "preprocess-8.5\n" + code + " error: " + error
       [code, error] = @transformTimesSyntax(code, error)
       if detailedDebug then console.log "preprocess-9\n" + code + " error: " + error
+      [code, error] = @transformTimesWithVariableSyntax(code, error)
+      if detailedDebug then console.log "preprocess-9.2\n" + code + " error: " + error
       [code, error] = @unbindFunctionsToArguments(code, error)
       if detailedDebug then console.log "preprocess-9.5\n" + code + " error: " + error
       [code, error] = @findQualifiers(code, error)
