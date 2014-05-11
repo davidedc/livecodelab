@@ -5,6 +5,21 @@
 ## @param scope [optional]
 ###
 
+# Note that this also handles the
+# cases where user wants to
+# bind a variable e.g.
+#   3 times with i box
+# which is transformed into
+#
+#   3.times (i) -> box
+#
+# which coffeescript then transforms in the
+#
+# valid program:
+#  3..times(function(i) {
+#    return box;
+#  });
+
 Number::times = (func, scope) ->
   v = @valueOf()
   i = 0
@@ -13,15 +28,3 @@ Number::times = (func, scope) ->
     func.call scope or window, i
     i++
 
-# handles the cases where user wants to
-# bind a variable e.g.
-# 3 times with i 
-Number::timesWithVariable = (func, scope) ->
-  v = @valueOf()
-  i = 0
-
-  f = func.call scope or window, i
-
-  while i < v
-    f.call scope or window, i
-    i++

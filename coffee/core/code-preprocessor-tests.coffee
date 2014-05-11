@@ -2321,7 +2321,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    noFill wave*3 times with i rotate box i+1
                    """
          expected: """
-                   noFill -> (wave()*3).timesWithVariable -> (i) -> rotate -> box i+1
+                   noFill -> (wave()*3).times (i) -> rotate -> box i+1
                    """
         ,
          notes:    """
@@ -2337,10 +2337,10 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    ▶▶▶box
                    """
          expected: """
-                   5.timesWithVariable -> (i) ->
+                   5.times (i) ->
                    ▶rotate 0,time,time/5000, ->
                    ▶▶move i/5,0,0
-                   ▶▶3.timesWithVariable -> (j) ->
+                   ▶▶3.times (j) ->
                    ▶▶▶rotate j
                    ▶▶▶box()
                    """
@@ -2413,7 +2413,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    a = 2
-                   box -> (a + 3).timesWithVariable -> (i) -> rotate -> peg()
+                   box -> (a + 3).times (i) -> rotate -> peg()
                    """
         ,
          notes:    """
@@ -2423,7 +2423,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    6 times with i: rotate box
                    """
          expected: """
-                   6.timesWithVariable -> (i) -> rotate -> box()
+                   6.times (i) -> rotate -> box()
                    """
         ,
          notes:    """
@@ -2434,7 +2434,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    myFunc = -> 20 times with i rotate box
                    """
          expected: """
-                   myFunc = -> 20.timesWithVariable -> (i) -> rotate -> box()
+                   myFunc = -> 20.times (i) -> rotate -> box()
                    """
         ,
          notes:    """
@@ -2445,7 +2445,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    myFunc = (a,b) -> if true then 20 times with i rotate box
                    """
          expected: """
-                   myFunc = (a,b) -> if true then 20.timesWithVariable -> (i) -> rotate -> box()
+                   myFunc = (a,b) -> if true then 20.times (i) -> rotate -> box()
                    """
         ,
          notes:    """
@@ -2455,7 +2455,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if true then 2 times with i box 3 times with j line 2
                    """
          expected: """
-                   if true then 2.timesWithVariable -> (i) -> box -> 3.timesWithVariable -> (j) -> line 2
+                   if true then 2.times (i) -> box -> 3.times (j) -> line 2
                    """
         ,
          notes:    """
@@ -2466,7 +2466,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    6 times with i: rotate box
                    """
          expected: """
-                   6.timesWithVariable -> (i) -> rotate -> box()
+                   6.times (i) -> rotate -> box()
                    """
         ,
          notes:    """
@@ -2477,7 +2477,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    ▶rotate box
                    """
          expected: """
-                   6.timesWithVariable -> (i) ->
+                   6.times (i) ->
                    ▶rotate -> box()
                    """
         ,
@@ -2485,21 +2485,21 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    1+1 times with i: rotate box
                    """
          expected: """
-                   (1+1).timesWithVariable -> (i) -> rotate -> box()
+                   (1+1).times (i) -> rotate -> box()
                    """
         ,
          input:    """
                    peg 2 times with i rotate box 2* wave
                    """
          expected: """
-                   peg -> 2.timesWithVariable -> (i) -> rotate -> box 2* wave()
+                   peg -> 2.times (i) -> rotate -> box 2* wave()
                    """
         ,
          input:    """
                    n = 2 n times with i: rotate box
                    """
          expected: """
-                   n = 2; n.timesWithVariable -> (i) -> rotate -> box()
+                   n = 2; n.times (i) -> rotate -> box()
                    """
          notIdempotent: true # because of the semicolon
         ,
@@ -2507,7 +2507,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    n = 2 (n+0).times with i -> rotate() box()
                    """
          expected: """
-                   n = 2; (n+0).timesWithVariable -> (i) -> rotate(); box()
+                   n = 2; (n+0).times (i) -> rotate(); box()
                    """
          notIdempotent: true # because of the semicolon
         ,
@@ -2515,42 +2515,42 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    box box   2 times with i: rotate peg 1.3
                    """
          expected: """
-                   box -> box -> 2.timesWithVariable -> (i) -> rotate -> peg 1.3
+                   box -> box -> 2.times (i) -> rotate -> peg 1.3
                    """
         ,
          input:    """
                    if random > 0.5 then 3 times with i: rotate box else 3 times with i rotate 2 times with k: peg 1
                    """
          expected: """
-                   if random() > 0.5 then 3.timesWithVariable -> (i) -> rotate -> box() else 3.timesWithVariable -> (i) -> rotate -> 2.timesWithVariable -> (k) -> peg 1
+                   if random() > 0.5 then 3.times (i) -> rotate -> box() else 3.times (i) -> rotate -> 2.times (k) -> peg 1
                    """
         ,
          input:    """
                    if true then 3 times with i rotate box
                    """
          expected: """
-                   if true then 3.timesWithVariable -> (i) -> rotate -> box()
+                   if true then 3.times (i) -> rotate -> box()
                    """
         ,
          input:    """
                    (9+0).times with i -> rotate box
                    """
          expected: """
-                   (9+0).timesWithVariable -> (i) -> rotate -> box()
+                   (9+0).times (i) -> rotate -> box()
                    """
         ,
          input:    """
                    if random() > 0.5 then rotate box else 3 times with i rotate peg 1
                    """
          expected: """
-                   if random() > 0.5 then rotate -> box() else 3.timesWithVariable -> (i) -> rotate -> peg 1
+                   if random() > 0.5 then rotate -> box() else 3.times (i) -> rotate -> peg 1
                    """
         ,
          input:    """
                    if random() > 0.5 then rotate 1 + wave box else 3 times with i rotate peg 1
                    """
          expected: """
-                   if random() > 0.5 then rotate 1 + wave(), -> box() else 3.timesWithVariable -> (i) -> rotate -> peg 1
+                   if random() > 0.5 then rotate 1 + wave(), -> box() else 3.times (i) -> rotate -> peg 1
                    """
         ,
          input:    """
@@ -2562,8 +2562,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    
                    if random() > 0.5 then box()
-                   2.timesWithVariable -> (i) -> box()
-                   2.timesWithVariable -> (i) -> rotate -> box()
+                   2.times (i) -> box()
+                   2.times (i) -> rotate -> box()
                    """
         ,
          input:    """
@@ -2574,8 +2574,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
 
-                   6.timesWithVariable -> (i) -> rotate -> box()
-                   6.timesWithVariable -> (i) ->
+                   6.times (i) -> rotate -> box()
+                   6.times (i) ->
                    ▶rotate -> box()
                    """
         ,
@@ -2583,70 +2583,70 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    2 times with i rotate box wave wave
                    """
          expected: """
-                   2.timesWithVariable -> (i) -> rotate -> box wave wave()
+                   2.times (i) -> rotate -> box wave wave()
                    """
         ,
          input:    """
                    2 times with i: box
                    """
          expected: """
-                   2.timesWithVariable -> (i) -> box()
+                   2.times (i) -> box()
                    """
         ,
          input:    """
                    2 times with i: rotate box
                    """
          expected: """
-                   2.timesWithVariable -> (i) -> rotate -> box()
+                   2.times (i) -> rotate -> box()
                    """
         ,
          input:    """
                    2 times with i rotate box wave
                    """
          expected: """
-                   2.timesWithVariable -> (i) -> rotate -> box wave()
+                   2.times (i) -> rotate -> box wave()
                    """
         ,
          input:    """
                    2 times with i: rotate box wave
                    """
          expected: """
-                   2.timesWithVariable -> (i) -> rotate -> box wave()
+                   2.times (i) -> rotate -> box wave()
                    """
         ,
          input:    """
                    2 times with i: move rotate wave box
                    """
          expected: """
-                   2.timesWithVariable -> (i) -> move -> rotate wave(), -> box()
+                   2.times (i) -> move -> rotate wave(), -> box()
                    """
         ,
          input:    """
                    rotate wave times with i box
                    """
          expected: """
-                   rotate -> (wave()).timesWithVariable -> (i) -> box()
+                   rotate -> (wave()).times (i) -> box()
                    """
         ,
          input:    """
                    rotate 10*wave times with i box
                    """
          expected: """
-                   rotate -> (10*wave()).timesWithVariable -> (i) -> box()
+                   rotate -> (10*wave()).times (i) -> box()
                    """
         ,
          input:    """
                    rotate 10 * wave times with i box
                    """
          expected: """
-                   rotate -> (10 * wave()).timesWithVariable -> (i) -> box()
+                   rotate -> (10 * wave()).times (i) -> box()
                    """
         ,
          input:    """
                    rotate wave * wave times with i box
                    """
          expected: """
-                   rotate -> (wave() * wave()).timesWithVariable -> (i) -> box()
+                   rotate -> (wave() * wave()).times (i) -> box()
                    """
         ,
          input:    """
@@ -2660,14 +2660,14 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate wave*wave times with i box
                    """
          expected: """
-                   rotate -> (wave()*wave()).timesWithVariable -> (i) -> box()
+                   rotate -> (wave()*wave()).times (i) -> box()
                    """
         ,
          input:    """
                    rotate 2 times with i box
                    """
          expected: """
-                   rotate -> 2.timesWithVariable -> (i) -> box()
+                   rotate -> 2.times (i) -> box()
                    """
         ,
          notes:    """
@@ -2678,56 +2678,56 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate wave 2 times with i box
                    """
          expected: """
-                   rotate -> (wave 2).timesWithVariable -> (i) -> box()
+                   rotate -> (wave 2).times (i) -> box()
                    """
         ,
          input:    """
                    rotate wave + 2 times with i box
                    """
          expected: """
-                   rotate -> (wave() + 2).timesWithVariable -> (i) -> box()
+                   rotate -> (wave() + 2).times (i) -> box()
                    """
         ,
          input:    """
                    box 2 times with i box
                    """
          expected: """
-                   box -> 2.timesWithVariable -> (i) -> box()
+                   box -> 2.times (i) -> box()
                    """
         ,
          input:    """
                    2 times with i 3 times with k box
                    """
          expected: """
-                   2.timesWithVariable -> (i) -> 3.timesWithVariable -> (k) -> box()
+                   2.times (i) -> 3.times (k) -> box()
                    """
         ,
          input:    """
                    2 times with i 3 times with j 4 times with k box
                    """
          expected: """
-                   2.timesWithVariable -> (i) -> 3.timesWithVariable -> (j) -> 4.timesWithVariable -> (k) -> box()
+                   2.times (i) -> 3.times (j) -> 4.times (k) -> box()
                    """
         ,
          input:    """
                    2 times with i box 3 times with j line 2
                    """
          expected: """
-                   2.timesWithVariable -> (i) -> box -> 3.timesWithVariable -> (j) -> line 2
+                   2.times (i) -> box -> 3.times (j) -> line 2
                    """
         ,
          input:    """
                    2 times with i rotate box line 2
                    """
          expected: """
-                   2.timesWithVariable -> (i) -> rotate -> box -> line 2
+                   2.times (i) -> rotate -> box -> line 2
                    """
         ,
          input:    """
                    10 times with i rotate scale box
                    """
          expected: """
-                   10.timesWithVariable -> (i) -> rotate -> scale -> box()
+                   10.times (i) -> rotate -> scale -> box()
                    """
         ,
          notes:    """
@@ -2746,7 +2746,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if true then 2 times with i box line else peg
                    """
          expected: """
-                   if true then 2.timesWithVariable -> (i) -> box -> line() else peg()
+                   if true then 2.times (i) -> box -> line() else peg()
                    """
         ,
          notes:    """
@@ -2770,7 +2770,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if true then 2 times with i box if true then 2 times with j rect else 2 times with k peg ball
                    """
          expected: """
-                   if true then 2.timesWithVariable -> (i) -> box(); if true then 2.timesWithVariable -> (j) -> rect() else 2.timesWithVariable -> (k) -> peg -> ball()
+                   if true then 2.times (i) -> box(); if true then 2.times (j) -> rect() else 2.times (k) -> peg -> ball()
                    """
         ,
          notes:    """
@@ -2779,7 +2779,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    2 times with i if true then ball
                    """
          expected: """
-                   2.timesWithVariable -> (i) -> if true then ball()
+                   2.times (i) -> if true then ball()
                    """
         ,
          notes:    """
@@ -2788,7 +2788,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    2 times with i if true then ball
                    """
          expected: """
-                   2.timesWithVariable -> (i) -> if true then ball()
+                   2.times (i) -> if true then ball()
                    """
         ,
          notes:    """
@@ -2801,7 +2801,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if 2 times with i a then ball
                    """
          expected: """
-                   if 2.timesWithVariable -> (i) -> a then ball()
+                   if 2.times (i) -> a then ball()
                    """
         ,
          notes:    """
@@ -2812,7 +2812,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if (2 times with i a) then ball
                    """
          expected: """
-                   if (2.timesWithVariable -> (i) -> a) then ball()
+                   if (2.times (i) -> a) then ball()
                    """
         ,
          notes:    """
@@ -2822,7 +2822,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    if random < 0.5 then 2 times with i rotate box else 3 times with j move peg
                    """
          expected: """
-                   if random() < 0.5 then 2.timesWithVariable -> (i) -> rotate -> box() else 3.timesWithVariable -> (j) -> move -> peg()
+                   if random() < 0.5 then 2.times (i) -> rotate -> box() else 3.times (j) -> move -> peg()
                    """
         ,
          notes:    """

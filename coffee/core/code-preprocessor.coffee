@@ -656,11 +656,11 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "transformTimesSyntax-3.5\n" + code + " error: " + error
 
       # whatever is remaining should be turned into a normal form with semicolon before it.
-      code = code.replace(/\((([\d\w\.\(\)]+([\t ]*[\+\-*\/⨁%,][\t ]*))+[\d\w\.\(\)]+|[\d\w\.\(\)]+)\)[ \.]*times[:]?(?![\w\d])/g, ";($1).times ")
+      code = code.replace(/\((([\d\w\.\(\)]+([\t ]*[\+\-*\/⨁%,][\t ]*))+[\d\w\.\(\)]+|[\d\w\.\(\)]+)\)[ \.]*times[\\t ]*[:]?[\\t ]*(?![\w\d])/g, ";($1).times ")
       if detailedDebug then console.log "transformTimesSyntax-3.55\n" + code + " error: " + error
 
       # whatever is remaining should be turned into a normal form with semicolon before it.
-      code = code.replace(/[ ](([\d\w\.\(\)]+([\t ]*[\+\-*\/⨁%,][\t ]*))+[\d\w\.\(\)]+|[\d\w\.\(\)]+)\.times[:]?(?![\w\d])/g, "; $1.times ")
+      code = code.replace(/[ ](([\d\w\.\(\)]+([\t ]*[\+\-*\/⨁%,][\t ]*))+[\d\w\.\(\)]+|[\d\w\.\(\)]+)\.times[\t ]*[:]?[\t ]*(?![\w\d])/g, "; $1.times ")
       if detailedDebug then console.log "transformTimesSyntax-3.56\n" + code + " error: " + error
 
       # transformation above transforms ;(sin ⨁ 5).times  ->  into ;(sin ⨁; 5).times   ->
@@ -738,11 +738,24 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
 
     # transforms the case where we are binding a variable
     # e.g.
-    # 3 times with i box i
+    #   3 times with i box i
+    # first bring to intermediate form
+    #   3.timesWithVariable -> (i) -> box i
+    # then just to 
+    #   3.times (i) -> box i
+    # which is then handled correctly by
+    # coffeescript
+    # note that the parentheses around the i
+    # are needed!
+    #   3.times i -> box i
+    # is transformed by coffeescript in something
+    # that doesn't make sense.
+
     transformTimesWithVariableSyntax: (code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
+      # first to intermediate form
 
       code = code.replace(/\.times[\t ]*with[\t ]*(\w+)[\t ]*(:|;|,[\t ]*->)?/g, ".timesWithVariable -> ($1) $2")
 
@@ -751,6 +764,12 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       code = code.replace(/\.times[\t ]*->[\t ]*with[\t ]*(\w+)[\t ]*(:|;|,[\t ]*->)?/g, ".timesWithVariable -> ($1) ->")
 
       if detailedDebug then console.log "transformTimesWithVariableSyntax-2\n" + code + " error: " + error
+
+      # now from intermediate form to the form with just "times"
+
+      code = code.replace(/\.timesWithVariable[\t ]*->[\t ]*/g, ".times ")
+
+      if detailedDebug then console.log "transformTimesWithVariableSyntax-3\n" + code + " error: " + error
 
       return @normaliseCode(code, error)
 
