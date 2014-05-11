@@ -2850,6 +2850,20 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    2.times ->
                    ▶box 4
                    """
+        ,
+         notes:    """
+                   the specs supported chevrons for making
+                   user's life easier
+                   """
+         input:    """
+                   rotate 2, 3 >> box
+                   """
+         expected: """
+                   rotate 2, 3, -> box()
+                   """
+         failsMootPrepends: true
+         failsMootAppends: true
+
       ]
 
   CodePreprocessorTests

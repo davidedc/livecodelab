@@ -1142,6 +1142,20 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       code = code.replace(/\/\//g, "#")
       return [code, error]
 
+
+    # The specs proposed to have the double
+    # chevrons so to make the user
+    # life easier separating the
+    # commands.
+    # I suspect there is no need for them
+    # so this function removes them
+    removeDoubleChevrons: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      code = code.replace(/>>/g, " ")
+      return [code, error]
+
     ###
     Errors cases, subdivided by number of colors involved
 
@@ -1416,6 +1430,8 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       [code, error] = @checkBasicSyntax(code, codeWithoutStringsOrComments, error)
       if detailedDebug then console.log "preprocess-4\n" + code + " error: " + error
 
+      [code, error] = @removeDoubleChevrons(code, error)
+      if detailedDebug then console.log "preprocess-4.5\n" + code + " error: " + error
 
       [code, error] = @rearrangeColorCommands(code, error)
       if detailedDebug then console.log "preprocess-5\n" + code + " error: " + error
