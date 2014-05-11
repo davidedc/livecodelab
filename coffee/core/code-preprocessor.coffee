@@ -4,6 +4,10 @@
 ## coffeescript compiler.
 ## This pre-processing step can raise some errors - which are
 ## returned in a dedicated variable.
+##
+## In order to run the tests just open the
+## console and type
+##   testPreprocessor()
 ###
 
 detailedDebug = false

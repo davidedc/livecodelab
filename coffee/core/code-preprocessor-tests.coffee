@@ -1,5 +1,9 @@
 ###
 ## test cases for the CodePreprocessor
+##
+## In order to run the tests just open the
+## console and type
+##   testPreprocessor()
 ###
 
 define ['core/code-preprocessor-tests'], (foo) ->
