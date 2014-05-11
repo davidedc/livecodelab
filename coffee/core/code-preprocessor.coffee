@@ -147,7 +147,13 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       @colorsCommandsRegex = @colorCommands.join "|"
       # make the preprocessor tests easily accessible from
       # the debug console (just type testPreprocessor())
-      window.testPreprocessor = => @test()
+      window.testPreprocessor = =>
+        # there are far too many tests to
+        # keep the debug on
+        previousDetailedDebug = detailedDebug
+        detailedDebug = false
+        @test()
+        detailedDebug = previousDetailedDebug
 
     ###
     ## Stops ticked doOnce blocks from running
