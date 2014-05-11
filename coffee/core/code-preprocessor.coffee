@@ -528,6 +528,22 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
 
       return [code, error]
 
+
+    # the parser handles code like
+    #   2 times -> box
+    # i.e. times without dot but with the arrow
+    # so this transformation caters for that
+
+    removeArrowsAfterTimes:(code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      code = code.replace(/(^[\t ]*|[\t ]+)times[\t .]*->/gm, "$1times ")
+
+      if detailedDebug then console.log "removeArrowsAfterTimes-1:\n" + code + " error: " + error
+
+      return [code, error]
+
     checkBasicErrorsWithTimes:(code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
@@ -1411,6 +1427,9 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       #   black background
       #[code, error] = @adjustPostfixNotations(code, error)
       #if detailedDebug then console.log "preprocess-6\n" + code + " error: " + error
+
+      [code, error] = @removeArrowsAfterTimes(code, error)
+      if detailedDebug then console.log "preprocess-6.5\n" + code + " error: " + error
 
       [code, error] = @checkBasicErrorsWithTimes(code, error)
       if detailedDebug then console.log "preprocess-7\n" + code + " error: " + error

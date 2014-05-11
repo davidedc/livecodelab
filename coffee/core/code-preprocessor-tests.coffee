@@ -2824,6 +2824,32 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    if random() < 0.5 then 2.timesWithVariable -> (i) -> rotate -> box() else 3.timesWithVariable -> (j) -> move -> peg()
                    """
+        ,
+         notes:    """
+                   the parser implementation accepts the notation of times
+                   without the dot and with the arrow, so
+                   matching that
+                   """
+         input:    """
+                   2 times -> box 4
+                   """
+         expected: """
+                   2.times -> box 4
+                   """
+        ,
+         notes:    """
+                   the parser implementation accepts the notation of times
+                   without the dot and with the arrow, so
+                   matching that
+                   """
+         input:    """
+                   2 times ->
+                   ▶box 4
+                   """
+         expected: """
+                   2.times ->
+                   ▶box 4
+                   """
       ]
 
   CodePreprocessorTests
