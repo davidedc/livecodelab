@@ -2012,6 +2012,13 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    box fill red stroke box
                    """
          error: "missing color"
+        ,
+         notes:    """
+                   """
+         input:    """
+                   fill red stroke box
+                   """
+         error: "missing color"
 
         ,
          notes:    """
@@ -2035,23 +2042,69 @@ define ['core/code-preprocessor-tests'], (foo) ->
          input:    """
                    box red red box
                    """
-         error: "missing color command"
-
-        ,
-         notes:    """
-                   """
-         input:    """
-                   fill red red box
-                   """
          error: "redundant color"
 
         ,
          notes:    """
+                   it's a little silly to write this
+                   but we accept
+                     stroke red green box
+                   so we also accept this
+                   """
+         input:    """
+                   fill red red box
+                   """
+         expected: """
+                   fill red, -> fill -> fill red, -> box()
+                   """
+         failsMootAppends: true
+         failsMootPrepends: true
+        ,
+         notes:    """
+                   it's a little silly to write this
+                   but we accept
+                     stroke red green box
+                   so we also accept this
+                   """
+         input:    """
+                   rotate
+                   ▶fill red red box
+                   """
+         expected: """
+                   rotate ->
+                   ▶fill red, -> fill -> fill red, -> box()
+                   """
+         failsMootAppends: true
+         failsMootPrepends: true
+        ,
+         notes:    """
+                   although this code is weird, we do
+                   allow for users to write stuff like
+                     red green stroke box
+                   and
+                     box red peg
+                   so we also need to accept this
                    """
          input:    """
                    box red red fill
                    """
-         error: "missing color command"
+         expected: """
+                   box -> fill red, -> fill red
+                   """
+         failsMootAppends: true
+         failsMootPrepends: true
+        ,
+         notes:    """
+                   
+                   """
+         input:    """
+                   rotate stroke frame*100%255 red box
+                   """
+         expected: """
+                   rotate -> stroke frame*100%255, -> fill red, -> box()
+                   """
+         failsMootAppends: true
+         failsMootPrepends: true
 
         ,
          notes:    """
@@ -2204,6 +2257,59 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    background black
                    rotate -> noStroke -> fill lemonchiffon, -> box()
                    rotate 4, -> stroke red, -> rect()
+                   """
+         failsMootAppends: true
+         failsMootPrepends: true
+
+        ,
+         notes:    """
+                   colors can be on their own with their own
+                   indented scoping, just like "rotate" and
+                   alike
+                   """
+         input:    """
+                   red
+                   ▶box
+                   ▶ball
+                   peg
+                   """
+         expected: """
+                   fill red , ->
+                   ▶box()
+                   ▶ball()
+                   peg()
+                   """
+         failsMootAppends: true
+         failsMootPrepends: true
+        ,
+         notes:    """
+                   more color rejigging test of
+                   lines on their own
+                   """
+         input:    """
+                   red stroke
+                   ▶box
+                   peg
+                   """
+         expected: """
+                   stroke red , ->
+                   ▶box()
+                   peg()
+                   """
+         failsMootAppends: true
+         failsMootPrepends: true
+        ,
+         notes:    """
+                   more color rejigging test of
+                   lines starting with tabs
+                   """
+         input:    """
+                   rotate
+                   ▶red box
+                   """
+         expected: """
+                   rotate ->
+                   ▶fill red, -> box()
                    """
          failsMootAppends: true
          failsMootPrepends: true
