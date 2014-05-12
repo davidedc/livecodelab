@@ -525,6 +525,9 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       code = code.replace(rx, "$1")
       if detailedDebug then console.log "beautifyCode-23:\n" + code + " error: " + error
 
+      code = code.replace(/[ ]*then/g, " then")
+      if detailedDebug then console.log "beautifyCode-24:\n" + code + " error: " + error
+
 
       return [code, error]
 
@@ -773,6 +776,13 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
 
       return @normaliseCode(code, error)
 
+    # the need for "parametersForBracketedFunctions" is so that
+    # code such as
+    #    a = <fill red>
+    #    b= <box>
+    #    a b
+    # can work. Basically the function inside a needs to
+    # be able to accept further functions to be chained.
 
     adjustFunctionalReferences: (code, error, userDefinedFunctions) ->
       # if there is an error, just propagate it
@@ -795,14 +805,26 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       code = code.replace(rx, "($1♠)")
 
       rx = RegExp("<[\\s]*(("+allFunctionsRegex+")[^\\r\\n]*?)>",'gm')
-      code = code.replace(rx, "(->($1))")
+      code = code.replace(rx, "((parametersForBracketedFunctions)->($1, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))")
 
       code = code.replace(/→/g, "->")
 
       if detailedDebug then console.log "adjustFunctionalReferences-1\n" + code + " error: " + error
 
       return [code, error]
-    
+
+
+
+    fixParamPassingInBracketedFunctions: (code, error, userDefinedFunctions) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      code = code.replace(/\(\),? -> \(if parametersForBracketedFunctions/g, " -> (if parametersForBracketedFunctions")
+
+      if detailedDebug then console.log "fixParamPassingInBracketedFunctions-1\n" + code + " error: " + error
+
+      return [code, error]
+
     adjustImplicitCalls: (code, error, userDefinedFunctions, userDefinedFunctionsWithArguments) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
@@ -1524,6 +1546,8 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "preprocess-16\n" + code + " error: " + error
       [code, error] = @avoidLastArgumentInvocationOverflowing(code, error, userDefinedFunctionsWithArguments)
       if detailedDebug then console.log "preprocess-17\n" + code + " error: " + error
+      [code, error] = @fixParamPassingInBracketedFunctions(code, error, userDefinedFunctions)
+      if detailedDebug then console.log "preprocess-17.5\n" + code + " error: " + error
       [code, error] = @beautifyCode(code, error)
       if detailedDebug then console.log "preprocess-18\n" + code + " error: " + error
 

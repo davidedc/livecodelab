@@ -869,7 +869,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    either = (a,b) -> if random() > 0.5 then a() else b()
-                   either (-> (box 2)), (-> (peg 2))
+                   either ((parametersForBracketedFunctions) -> (box 2, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null))), ((parametersForBracketedFunctions) -> (peg 2, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))
                    """
          failsMootAppends: true
         ,
@@ -1340,7 +1340,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    localMaterial <box peg 1.1, time rotate ball>
                    """
          expected: """
-                   localMaterial (-> (box -> peg 1.1, time, -> rotate -> ball()))
+                   localMaterial ((parametersForBracketedFunctions) -> (box -> peg 1.1, time, -> rotate -> ball -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))
                    """
          failsMootAppends: true
         ,
@@ -1590,7 +1590,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    flickr = (code) -> if random() < 0.5 then code()
-                   flickr (-> (box -> peg 1.1, -> 2.times -> rotate -> ball()))
+                   flickr ((parametersForBracketedFunctions) -> (box -> peg 1.1, -> 2.times -> rotate -> ball -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))
                    """
          failsMootAppends: true
         ,
@@ -2226,7 +2226,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    a = (code) -> code()
-                   a (-> (ball wave()))
+                   a ((parametersForBracketedFunctions) -> (ball wave -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))
                    """
          failsMootAppends: true
 
@@ -2862,6 +2862,148 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    rotate 2, 3, -> box()
                    """
          failsMootPrepends: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   testing some more advanced higher-order-functions
+                   examples
+                   """
+         input:    """
+                   transforms = [<rotate>, <scale>, <fill blue>]
+                   randomTransforms = transforms.filter (x) -> random > 0.5
+                   drawThis = [<box>].concat randomTransforms
+                   drawThisFunction = drawThis.reduce (acc,x) -> -> x(acc)
+                   drawThisFunction()
+                   """
+         expected: """
+                   transforms = [rotate, scale, ((parametersForBracketedFunctions) -> (fill blue, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))]
+                   randomTransforms = transforms.filter (x) -> random() > 0.5
+                   drawThis = [box].concat randomTransforms
+                   drawThisFunction = drawThis.reduce (acc,x) -> -> x(acc)
+                   drawThisFunction()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   testing some more advanced higher-order-functions
+                   examples
+                   """
+         input:    """
+                   a = <box 1>
+                   b = <rotate ball>
+                   a b
+                   move
+                   b a
+                   """
+         expected: """
+                   a = ((parametersForBracketedFunctions) -> (box 1, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))
+                   b = ((parametersForBracketedFunctions) -> (rotate -> ball -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))
+                   a b
+                   move()
+                   b a
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   testing some more advanced higher-order-functions
+                   examples
+                   """
+         input:    """
+                   a = <fill red>
+                   b= <box>
+                   a b
+                   move
+                   b a
+                   """
+         expected: """
+                   a = ((parametersForBracketedFunctions) -> (fill red, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))
+                   b = box
+                   a b
+                   move()
+                   b a
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   testing some more advanced higher-order-functions
+                   examples
+                   """
+         input:    """
+                   a = <box 1>
+                   b = <rotate ball>
+                   a b
+                   move
+                   b a
+                   """
+         expected: """
+                   a = ((parametersForBracketedFunctions) -> (box 1, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))
+                   b = ((parametersForBracketedFunctions) -> (rotate -> ball -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))
+                   a b
+                   move()
+                   b a
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   testing some more advanced higher-order-functions
+                   examples
+                   """
+         input:    """
+                   noFill
+                   [1..2].map (i) -> box i
+                   """
+         expected: """
+                   noFill()
+                   [1..2].map (i) -> box i
+                   """
+        ,
+         notes:    """
+                   testing some more advanced higher-order-functions
+                   examples
+                   """
+         input:    """
+                   [<box>, <line>, <peg>].map (i) -> rotate i
+                   """
+         expected: """
+                   [box, line, peg].map (i) -> rotate i
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   testing some more advanced higher-order-functions
+                   examples
+                   """
+         input:    """
+                   primitives = [<box>, <line>, <peg>, <ball>]
+                   selected = primitives.filter (x) -> random > 0.5
+                   selected.map (i) -> i()
+                   """
+         expected: """
+                   primitives = [box, line, peg, ball]
+                   selected = primitives.filter (x) -> random() > 0.5
+                   selected.map (i) -> i()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   testing some more advanced higher-order-functions
+                   examples
+                   """
+         input:    """
+                   drawThis = [<box>, <scale>,<rotate>].reduce (acc,x) -> -> x(acc)
+                   drawThis()
+                   """
+         expected: """
+                   drawThis = [box, scale,rotate].reduce (acc,x) -> -> x(acc)
+                   drawThis()
+                   """
+         notIdempotent: true
          failsMootAppends: true
 
       ]
