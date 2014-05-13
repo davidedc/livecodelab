@@ -459,6 +459,23 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "normalise-3:\n" + code + " error: " + error
       return [code, error]
 
+    #   a -> b -> c()
+    # is just the same as
+    #   a -> b c
+    # and, similarly,
+    #   a -> b 2, -> c()
+    # is just the same as
+    #   a -> b 2, c
+    simplifyFunctionDoingSimpleInvocation:(code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      code = code.replace(/([\w\d]|,)[\t ]*->[\t ]*([\w\d]*)[\t ]*\([\t ]*\)/gm, "$1 $2")
+      if detailedDebug then console.log "simplifyFunctionDoingSimpleInvocation-1:\n" + code + " error: " + error
+      return [code, error]
+
+
+
     # these transformations are supposed to take as input
     # working coffeescript code and give as output
     # beautified and "normalised" coffeescript code
@@ -471,6 +488,8 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
+      code = code.replace(/\.times[\\t ]+/gm, ".times ")
+      if detailedDebug then console.log "beautifyCode--1:\n" + code + " error: " + error
       code = code.replace(/\.times[\\t ]+with[\\t ]+/gm, ".times with ")
       if detailedDebug then console.log "beautifyCode-0:\n" + code + " error: " + error
       code = code.replace(/->(?![ \t])/gm, "-> ")
@@ -536,20 +555,34 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       return [code, error]
 
 
-    # the parser handles code like
-    #   2 times -> box
-    # i.e. times without dot but with the arrow
-    # so this transformation caters for that
+    # we receive the times command
+    # in all sorts of ways. With binding, without
+    # binding, with colons, with extra arrows,
+    # with a dot before times...
+    # here we normalise to the following forms:
+    #   x times
+    # or
+    #   x times with var:
 
-    removeArrowsAfterTimes:(code, error) ->
+    normaliseTimesNotationFromInput:(code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
+      # remove dot and extra arrow in case of
+      # non-binding notation
+      code = code.replace(/\.times([^\w\d])/gm, " times$1")
       code = code.replace(/(^[\t ]*|[\t ]+)times[\t .]*->/gm, "$1times ")
 
-      if detailedDebug then console.log "removeArrowsAfterTimes-1:\n" + code + " error: " + error
+      # normalise the binding syntax
+      code = code.replace(/(^[\t ]*|[\t ]+)times[\t .]*\([\t .]*([\w]*)[\t .]*\)[\t .]*->/gm, "$1times with $2:")
+
+      # remove the arrow in the case of binding
+      code = code.replace(/(^[\t ]*|[\t ]+)times[\t .]*with[\t .]*([\w]*)[\t .]*:?[\t .]*->/gm, "$1times with $2:")
+
+      if detailedDebug then console.log "normaliseTimesNotationFromInput-1:\n" + code + " error: " + error
 
       return [code, error]
+
 
     checkBasicErrorsWithTimes:(code, error) ->
       # if there is an error, just propagate it
@@ -652,6 +685,10 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       # e.g. rotate 2,a+1+3*(a*2.32+Math.PI) 2 times box
       code = code.replace(/(([\d\w\.\(\)]+([\t ]*[\+\-*\/⨁%,][\t ]*))+[\d\w\.\(\)]+|[\d\w\.\(\)]+) times[:]?(?![\w\d])/g, "♦ ($1).times ->")
       if detailedDebug then console.log "transformTimesSyntax-3\n" + code + " error: " + error
+
+      # strip the out parens if there is one too many
+      code = code.replace(/\(\((([\d\w\.\(\)]+([\t ]*[\+\-*\/⨁%,][\t ]*))+[\d\w\.\(\)]+|[\d\w\.\(\)]+)\)\)\.times /g, "($1).times ")
+      if detailedDebug then console.log "transformTimesSyntax-3.2\n" + code + " error: " + error
 
       allFunctionsRegex = @allCommandsRegex + "|" + @expressionsRegex
 
@@ -774,7 +811,8 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
 
       # now from intermediate form to the form with just "times"
 
-      code = code.replace(/\.timesWithVariable[\t ]*->[\t ]*/g, ".times ")
+      #code = code.replace(/\.timesWithVariable[\t ]*->[\t ]*/g, ".times ")
+      code = code.replace(/\.timesWithVariable[\t ]*->[\t ]*/g, ".timesWithVariable ")
 
       if detailedDebug then console.log "transformTimesWithVariableSyntax-3\n" + code + " error: " + error
 
@@ -1489,7 +1527,8 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       #[code, error] = @adjustPostfixNotations(code, error)
       #if detailedDebug then console.log "preprocess-6\n" + code + " error: " + error
 
-      [code, error] = @removeArrowsAfterTimes(code, error)
+
+      [code, error] = @normaliseTimesNotationFromInput(code, error)
       if detailedDebug then console.log "preprocess-6.5\n" + code + " error: " + error
 
       [code, error] = @checkBasicErrorsWithTimes(code, error)
@@ -1554,6 +1593,18 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "preprocess-17.5\n" + code + " error: " + error
       [code, error] = @beautifyCode(code, error)
       if detailedDebug then console.log "preprocess-18\n" + code + " error: " + error
+      
+      # unfortunately some beautification depends on the () being there
+      # so we need to put this function here after the beautification step
+      # TODO perhaps the ()-dependant beautifications are not really
+      # beautifications and can be moved outside... BEFORE beautification
+      # so we can have
+      #  - parens-dep stuff beaut
+      #  - simplifyFunctionDoingSimpleInvocation
+      #  - other beautification
+      # it would be better to have beautification as the very last step
+      [code, error] = @simplifyFunctionDoingSimpleInvocation(code, error, userDefinedFunctions)
+      if detailedDebug then console.log "preprocess-19\n" + code + " error: " + error
 
 
       return [code, error, userDefinedFunctions]

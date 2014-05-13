@@ -20,11 +20,19 @@
 #    return box;
 #  });
 
-Number::times = (func, scope) ->
+Number::timesWithVariable = (func, scope) ->
   v = @valueOf()
   i = 0
 
   while i < v
     func.call scope or window, i
+    i++
+
+Number::times = (func, scope) ->
+  v = @valueOf()
+  i = 0
+
+  while i < v
+    func()
     i++
 
