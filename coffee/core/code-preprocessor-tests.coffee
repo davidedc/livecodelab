@@ -1011,8 +1011,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    box()
                    """
         ,
-         # note that the matrix operations do chain also this case
-         # just add a semicolon if you don't wand them to
+         # note that the matrix operations do chain also
+         # in this case
          input:    """
                    move peg 1.2 move box
                    """
@@ -1855,6 +1855,8 @@ define ['core/code-preprocessor-tests'], (foo) ->
          failsMootPrepends: true
         ,
          notes:    """
+                   solid red box even when you change
+                   the number
                    """
          input:    """
                    fill red,22 red box
