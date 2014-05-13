@@ -463,6 +463,10 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
     # working coffeescript code and give as output
     # beautified and "normalised" coffeescript code
     # with the same exact meaning.
+    # TODO Some of these beautification that depend on the () being
+    # there are actually critical for the transformed code to work.
+    # so they should be moved out of this function.
+
     beautifyCode:(code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
