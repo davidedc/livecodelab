@@ -125,7 +125,7 @@ require [
     #console.log('creating stats')
     ui = new Ui(eventRouter, stats, programLoader) # $
     # requires: ColourNames
-    autocoder = new Autocoder(eventRouter, editor, liveCodeLabCore.colourLiterals.colourNames) # McLexer
+    autocoder = new Autocoder(eventRouter, editor, liveCodeLabCore.colourLiterals.colourNames)
     # Setup Event Listeners
     eventRouter.addListener("reset", => autocoder.toggle(false))
     eventRouter.addListener("toggle-autocoder", => autocoder.toggle())
