@@ -776,7 +776,11 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       code = code.replace(/([\w\d])(.*?) times[:]?([^\w\d])/g, "($1$2).times -> $3")
       if detailedDebug then console.log "transformTimesSyntax-7\n" + code + " error: " + error
 
-      code = code.replace(/;*[\t ]*else/g, " else")
+      code = code.replace(/;+[\t ]*else/g, " else")
+      if detailedDebug then console.log "transformTimesSyntax-8\n" + code + " error: " + error
+
+      code = code.replace(/^(\t*) else/gm, "$1else")
+      if detailedDebug then console.log "transformTimesSyntax-9\n" + code + " error: " + error
 
       return @normaliseCode(code, error)
 
@@ -867,12 +871,12 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
 
       return [code, error]
 
-    adjustImplicitCalls: (code, error, userDefinedFunctions, userDefinedFunctionsWithArguments) ->
+    adjustImplicitCalls: (code, error, userDefinedFunctions, userDefinedFunctionsWithArguments, bracketsVariables) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
-      allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
+      expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions + bracketsVariables
+      allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex + bracketsVariables
 
       
       # adding () to single tokens on their own at the start of a line
@@ -914,7 +918,8 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       delimitersForCommands = ":|;|\\,|\\?|\\)|//|\\#|\\s+if|\\s+else|\\s+then"
       delimitersForExpressions = delimitersForCommands + "|" + "\\+|-|\\*|/|%|&|]|<|>|==|!=|>=|<=|!(?![=])|\\s+and\\s+|\\s+or\\s+|\\s+not\\s+|\\|"
 
-      rx = RegExp("([^\\w\\d\\r\\n])("+@allCommandsRegex+")[ \\t]*("+delimitersForCommands+")",'g')
+      if detailedDebug then console.log "adjustImplicitCalls-4 brackets vars:" + bracketsVariables
+      rx = RegExp("([^\\w\\d\\r\\n])("+@allCommandsRegex+bracketsVariables+")[ \\t]*("+delimitersForCommands+")",'g')
       for i in [1..2]
         code = code.replace(rx, "$1$2()$3")
       if detailedDebug then console.log "adjustImplicitCalls-4\n" + code + " error: " + error
@@ -971,7 +976,7 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
     # it easy to change qualities of some
     # primitives without affecting the
     # primitives that come afterwards.
-    findQualifiers: (code, error) ->
+    findQualifiers: (code, error, bracketsVariables) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
@@ -996,14 +1001,14 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       # making sure that the qualifiers can't span
       # a function definition
 
-      primitivesAndMatrixAndDiamondRegex = @primitivesAndMatrixRegex + '|♦'
+      primitivesAndMatrixAndDiamondRegex = @primitivesAndMatrixRegex + bracketsVariables + '|♦'
 
       previousCodeTransformations = ''
       code = code.replace(/->/g, "→")
       while code != previousCodeTransformations
         previousCodeTransformations = code
 
-        rx = RegExp("(^|[^\\w\\d\\r\\n])("+@primitivesAndMatrixRegex+")(?![\\w\\d\\(])([^\\r\\n;'♠→]*?)("+primitivesAndMatrixAndDiamondRegex+")([^\\w\\d\\r\\n]*)",'gm')
+        rx = RegExp("(^|[^\\w\\d\\r\\n])("+@primitivesAndMatrixRegex+bracketsVariables+")(?![\\w\\d\\(])([^\\r\\n;'♠→]*?)("+primitivesAndMatrixAndDiamondRegex+")([^\\w\\d\\r\\n]*)",'gm')
         replacement = '$1$2ing❤QUALIFIER$3$4$5'
         code = code.replace(rx,replacement)
 
@@ -1014,7 +1019,7 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
 
       return [code, error]
 
-    fleshOutQualifiers: (code, error) ->
+    fleshOutQualifiers: (code, error, bracketsVariables, bracketsVariablesArray) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
@@ -1032,6 +1037,10 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
         primtvsAndQualsRegex = primtvsAndQualsRegex + @qualifyingCommands[i] + '|' + @qualifyingCommands[i]+"ing❤QUALIFIER|"
       for i in [0...@primitives.length]
         primtvsAndQualsRegex = primtvsAndQualsRegex + @primitives[i] + '|' + @primitives[i]+"ing❤QUALIFIER|"
+      for i in [0...bracketsVariablesArray.length]
+        primtvsAndQualsRegex = primtvsAndQualsRegex + bracketsVariablesArray[i] + '|' + bracketsVariablesArray[i]+"ing❤QUALIFIER|"
+
+
       primtvsAndQualsRegex = primtvsAndQualsRegex + '♦'
 
       previousCodeTransformations = ''
@@ -1047,15 +1056,18 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       while code != previousCodeTransformations
         previousCodeTransformations = code
 
-        rx = RegExp("(^|[^\\w\\d\\r\\n])(("+@primitivesAndMatrixRegex+")ing❤QUALIFIER)(?![\\w\\d\\(])([^\\r\\n;→]*?)("+primtvsAndQualsRegex+")([^;\\r\\n]*)(.*)",'gm')
+        if detailedDebug then console.log "fleshOutQualifiers 0: @primitivesAndMatrixRegex: " + @primitivesAndMatrixRegex + " bracketsVariables: " + bracketsVariables + " primtvsAndQualsRegex: " + primtvsAndQualsRegex
+
+        rx = RegExp("(^|[^\\w\\d\\r\\n])(("+@primitivesAndMatrixRegex+bracketsVariables+")ing❤QUALIFIER)(?![\\w\\d\\(])([^\\r\\n;→]*?)("+primtvsAndQualsRegex+")([^;\\r\\n]*)(.*)",'gm')
         replacement = '$1$3$4→ $5$6;$7'
         code = code.replace(rx,replacement)
+        if detailedDebug then console.log "fleshOutQualifiers 1: " + code
 
-        rx = RegExp("(^|[^\\w\\d\\r\\n])(("+@primitivesAndMatrixRegex+")ing❤QUALIFIER)(?![\\w\\d\\(])([^\\r\\n;→♦❤]*?)♦",'g')
+        rx = RegExp("(^|[^\\w\\d\\r\\n])(("+@primitivesAndMatrixRegex+bracketsVariables+")ing❤QUALIFIER)(?![\\w\\d\\(])([^\\r\\n;→♦❤]*?)♦",'g')
         replacement = '$1$3$4 →'
         code = code.replace(rx,replacement)
 
-        if detailedDebug then console.log "fleshOutQualifiers 6: " + code
+        if detailedDebug then console.log "fleshOutQualifiers 2: " + code
 
       # the trasformations above creates
       # stuff like:
@@ -1066,7 +1078,8 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       # we don't need the diamond anymore
       code = code.replace(/♦[♦\t ]*/g, "; ")
 
-      code = code.replace(/;*[\t ]*else/gm, " else")
+      code = code.replace(/;+[\t ]*else/gm, " else")
+      code = code.replace(/^(\t*) else/gm, "$1else")
 
       # the trasformations above add lots of redundant
       # semicolons and spaces like so:
@@ -1079,7 +1092,7 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       code = code.replace(/→\s*->/g, "->")
       if detailedDebug then console.log "fleshOutQualifiers 7: " + code
 
-      rx = RegExp("(^|[^\\w\\d\\r\\n])("+@primitivesAndMatrixRegex+")(?![\\w\\d\\(])(\\s*\\(?→)",'gm')
+      rx = RegExp("(^|[^\\w\\d\\r\\n])("+@primitivesAndMatrixRegex+bracketsVariables+")(?![\\w\\d\\(])(\\s*\\(?→)",'gm')
       replacement = '$1$2 ->'
       code = code.replace(rx,replacement)
       if detailedDebug then console.log "fleshOutQualifiers 9: " + code
@@ -1093,7 +1106,8 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       code = code.replace(/→/g, "->")
       if detailedDebug then console.log "fleshOutQualifiers 11: " + code
 
-      code = code.replace(/;*[\t ]*else/g, " else")
+      code = code.replace(/;+[\t ]*else/g, " else")
+      code = code.replace(/^(\t*) else/gm, "$1else")
       code = code.replace(/;*[\t ]*then/g, " then")
 
       return [code, error]
@@ -1173,6 +1187,44 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
 
       #console.log "*****" + userDefinedFunctions
       return [code, error, userDefinedFunctions, userDefinedFunctionsWithArguments]
+
+    findBracketVariables: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      bracketsVariablesArray = []
+
+      # form a = <...
+      rx = RegExp("([a-zA-Z\\d]+)([ \\t]*)=[ \\t]*<",'gm')
+      while match = rx.exec code
+        bracketsVariablesArray.push(match[1])
+        #@primitives.push(match[1])
+        if detailedDebug then console.log "findbracketsVariables-1 pushing " + match[1]
+      if detailedDebug then console.log "findbracketsVariables-2\n" + code + " error: " + error
+
+
+      bracketsVariables = bracketsVariablesArray.join "|"
+      if bracketsVariables != ""
+        bracketsVariables = "|"+bracketsVariables
+
+      if detailedDebug then console.log "bracketsVariables: >" + bracketsVariables + "<"
+
+      rx = RegExp("([a-zA-Z\\d]+)([ \\t]*)=[ \\t]*<",'gm')
+      code = code.replace(rx, "BRACKETVAR$1BRACKETVAR = <")
+      if detailedDebug then console.log "findbracketsVariables-3\n" + code + " error: " + error
+
+      return [code, error, bracketsVariables, bracketsVariablesArray]
+
+    putBackBracketVarOriginalName: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+
+      rx = RegExp("BRACKETVAR([a-zA-Z\\d]+)BRACKETVAR",'gm')
+      code = code.replace(rx, "$1")
+      if detailedDebug then console.log "putBackBracketVarOriginalName-1\n" + code + " error: " + error
+
+      return [code, error]
 
 
     evaluateAllExpressions: (code, error, userDefinedFunctions) ->
@@ -1496,7 +1548,7 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       return [code, error]
 
 
-    preprocess: (code) ->
+    preprocess: (code, bracketsVariables) ->
       # we'll keep any errors in here as we transform the code
       # as soon as there is any error, all next stages of
       # transformation do nothing
@@ -1505,6 +1557,14 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "preprocess-0\n" + code + " error: " + error
       [code, error, userDefinedFunctions, userDefinedFunctionsWithArguments] = @findUserDefinedFunctions(code, error)
       if detailedDebug then console.log "preprocess-0.5\n" + code + " error: " + error
+
+      [code, error, bracketsVariables, bracketsVariablesArray] = @findBracketVariables(code, error)
+      if detailedDebug then console.log "preprocess-0.7\n" + code + " error: " + error
+
+      #@qualifyingCommandsRegex = @qualifyingCommands + bracketsVariables
+      #console.log "all commands plus bracket variables BEFORE: " + @primitivesAndMatrixRegex + bracketsVariables
+      #@allCommandsRegex = @allCommandsRegex + bracketsVariables
+      #console.log "all commands plus bracket variables: " + @primitivesAndMatrixRegex + bracketsVariables
 
       [code, error] = @removeTickedDoOnce(code, error)
       if detailedDebug then console.log "preprocess-2\n" + code + " error: " + error
@@ -1573,15 +1633,15 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "preprocess-9.2\n" + code + " error: " + error
       [code, error] = @unbindFunctionsToArguments(code, error)
       if detailedDebug then console.log "preprocess-9.5\n" + code + " error: " + error
-      [code, error] = @findQualifiers(code, error)
+      [code, error] = @findQualifiers(code, error,bracketsVariables)
       if detailedDebug then console.log "preprocess-10\n" + code + " error: " + error
-      [code, error] = @fleshOutQualifiers(code, error)
+      [code, error] = @fleshOutQualifiers(code, error,bracketsVariables, bracketsVariablesArray)
       if detailedDebug then console.log "preprocess-11\n" + code + " error: " + error
       [code, error] = @adjustFunctionalReferences(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-17\n" + code + " error: " + error
       [code, error] = @addCommandsSeparations(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-12\n" + code + " error: " + error
-      [code, error] = @adjustImplicitCalls(code, error, userDefinedFunctions, userDefinedFunctionsWithArguments)
+      [code, error] = @adjustImplicitCalls(code, error, userDefinedFunctions, userDefinedFunctionsWithArguments, bracketsVariables)
       if detailedDebug then console.log "preprocess-13\n" + code + " error: " + error
       [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
       if detailedDebug then console.log "preprocess-14\n" + code + " error: " + error
@@ -1591,6 +1651,8 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "preprocess-17\n" + code + " error: " + error
       [code, error] = @fixParamPassingInBracketedFunctions(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-17.5\n" + code + " error: " + error
+      [code, error] = @putBackBracketVarOriginalName(code, error)
+      if detailedDebug then console.log "preprocess-17.7\n" + code + " error: " + error
       [code, error] = @beautifyCode(code, error)
       if detailedDebug then console.log "preprocess-18\n" + code + " error: " + error
       

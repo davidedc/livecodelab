@@ -2213,7 +2213,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    a = box
                    noFill()
-                   rotate -> run a, -> scale 2, -> run a
+                   rotate -> run a -> scale 2, -> run a
                    """
          notIdempotent: true
          failsMootAppends: true
@@ -3007,6 +3007,95 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          notIdempotent: true
          failsMootAppends: true
+        ,
+         notes:    """
+                   testing some more advanced higher-order-functions
+                   examples
+                   """
+         input:    """
+                   drawPieces = [<box>, <move>,<ball>]
+                   if random > 0.5
+                   ▶drawThis = drawPieces.reduce (acc,x) -> -> x(acc)
+                   else
+                   ▶drawThis = drawPieces.reduceRight (acc,x) -> -> x(acc)
+                   drawThis()
+                   """
+         expected: """
+                   drawPieces = [box, move, ball]
+                   if random() > 0.5
+                   ▶drawThis = drawPieces.reduce (acc,x) -> -> x(acc)
+                   else
+                   ▶drawThis = drawPieces.reduceRight (acc,x) -> -> x(acc)
+                   drawThis()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+        ,
+         notes:    """
+                   testing some more advanced higher-order-functions
+                   examples
+                   """
+         input:    """
+                   drawPieces = [<box>, <move>,<ball>]
+                   rotate
+                   ▶if random > 0.5
+                   ▶▶drawThis = drawPieces.reduce (acc,x) -> -> x(acc)
+                   ▶else
+                   ▶▶drawThis = drawPieces.reduceRight (acc,x) -> -> x(acc)
+                   ▶drawThis()
+                   """
+         expected: """
+                   drawPieces = [box, move, ball]
+                   rotate ->
+                   ▶if random() > 0.5
+                   ▶▶drawThis = drawPieces.reduce (acc,x) -> -> x(acc)
+                   ▶else
+                   ▶▶drawThis = drawPieces.reduceRight (acc,x) -> -> x(acc)
+                   ▶drawThis()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+
+        ,
+         notes:    """
+                   testing some more advanced higher-order-functions
+                   examples
+                   """
+         input:    """
+                   rotate
+                   ▶box
+                   peg
+
+                   a = <move 1>
+                   box a ball
+                   """
+         expected: """
+                   rotate ->
+                   ▶box()
+                   peg()
+
+                   a = ((parametersForBracketedFunctions) -> (move 1, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))
+                   box a -> ball()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+
+        ,
+         notes:    """
+                   testing some more advanced higher-order-functions
+                   examples
+                   """
+         input:    """
+                   above  = <move 0,-0.5,0>
+                   box above ball above peg
+                   """
+         expected: """
+                   above = ((parametersForBracketedFunctions) -> (move 0,-0.5,0, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))
+                   box above -> ball above -> peg()
+                   """
+         notIdempotent: true
+         failsMootAppends: true
+
 
       ]
 
