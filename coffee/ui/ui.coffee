@@ -51,6 +51,7 @@ define [
 
       scale.x = (window.innerWidth + 40) / canvas.width()
       scale.y = (window.innerHeight + 40) / canvas.height()
+      #console.log "canvas width and height: " + canvas.width() + " " + canvas.height()
       scale = scale.x + ", " + scale.y
       
       # this code below is if one wants to keep the aspect ratio
@@ -332,7 +333,7 @@ define [
         document.body.appendChild @stats.getDomElement()
         $("#startingCourtainScreen").fadeOut()
         $("#formCode").css "opacity", 0
-        @fullscreenify "#backgroundDiv"
+        @fullscreenify "#backgroundCanvasOrDiv"
         @adjustCodeMirrorHeight()
 
   Ui

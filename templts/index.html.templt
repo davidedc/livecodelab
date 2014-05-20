@@ -114,7 +114,7 @@
 
         <div id="miao" style="position: fixed;  top: 30px; left: 0px; width: 100%; font-size: 3em;">
 
-            <canvas id="backgroundDiv" style="position: absolute; z-index:-3; top: 0px; left: 0px; width:100% height:100%"></canvas> 
+            <canvas id="backgroundCanvasOrDiv" style="position: absolute; z-index:-3; top: 0px; left: 0px; width:100%; height:100%"></canvas> 
             <canvas id="blendedThreeJsSceneCanvas" style="width:100%; height:100%; position: absolute;  z-index:-2; top: 0px; left: 0px;"></canvas> 
 
             <form action='' id="formCode">
