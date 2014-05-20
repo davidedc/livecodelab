@@ -103,6 +103,17 @@ define () ->
     simpleGradient: (a, b, c, d) ->
       @currentGradientStackValue =
         @currentGradientStackValue + " " + a + "" + b + "" + c + "" + d + "null "
+
+      # if all colors of a gradient are opaque then
+      # you can flush the command list.
+      if @liveCodeLabCoreInstance.colourFunctions.alpha(a) == 255 and \
+      @liveCodeLabCoreInstance.colourFunctions.alpha(b) == 255 and \
+      @liveCodeLabCoreInstance.colourFunctions.alpha(c) == 255 and \
+      @liveCodeLabCoreInstance.colourFunctions.alpha(d) == 255
+        @gradStack = []
+        @currentGradientStackValue = ""
+
+
       @gradStack.push
         gradStacka: @liveCodeLabCoreInstance.colourFunctions.color(a)
         gradStackb: @liveCodeLabCoreInstance.colourFunctions.color(b)
@@ -119,6 +130,14 @@ define () ->
       # the background command? (In processing it's not)
       a = @liveCodeLabCoreInstance.colourFunctions.color(
         arguments[0], arguments[1], arguments[2], arguments[3])
+
+      # if the fill color is opaque then
+      # you can flush the command list.
+      if @liveCodeLabCoreInstance.colourFunctions.alpha(a) == 255
+        @gradStack = []
+        @currentGradientStackValue = ""
+
+
       @currentGradientStackValue =
         @currentGradientStackValue + " null null null null " + a + " "
       @gradStack.push
