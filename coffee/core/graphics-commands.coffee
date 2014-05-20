@@ -230,6 +230,7 @@ define () ->
         new @liveCodeLabCore_three.Vector3(0, -0.5 * lineProportion, 0)
       @geometriesBank[@primitiveTypes.line].vertices.push \
         new @liveCodeLabCore_three.Vector3(0, 0.5 * lineProportion, 0)
+        @geometriesBank[@primitiveTypes.line].mergeVertices()
       @geometriesBank[@primitiveTypes.rect] = new @liveCodeLabCore_three.PlaneGeometry(1 * rectProportion, 1 * rectProportion)
       @geometriesBank[@primitiveTypes.box] = new @liveCodeLabCore_three.CubeGeometry(1 * boxProportion, 1 * boxProportion, 1 * boxProportion)
       @geometriesBank[@primitiveTypes.peg] =
@@ -389,8 +390,7 @@ define () ->
         # associating normal material to threejs' Object3D
         if @currentStrokeColor is @angleColor or @defaultNormalStroke
           theAngle =
-            pooledObjectWithMaterials.threejsObject3D.matrix.multiplyVector3(
-              new @liveCodeLabCore_three.Vector3(0, 1, 0)).normalize()
+            (new @liveCodeLabCore_three.Vector3(0, 1, 0)).applyProjection(pooledObjectWithMaterials.threejsObject3D.matrix).normalize()
           pooledObjectWithMaterials.lineMaterial.color.setHex(
             @liveCodeLabCoreInstance.colourFunctions.color(
               ((theAngle.x + 1) / 2) * 255,
