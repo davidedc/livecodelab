@@ -495,8 +495,7 @@ define () ->
         # by setting the scale to almost zero. The object will still go through
         # the rendering step, so the memory for the material is initialised
         # correctly.
-        pooledObjectWithMaterials.threejsObject3D.matrix.scale \
-          new @liveCodeLabCore_three.Vector3(0.0001, 0.0001, 0.0001)
+        pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeScale(0.0001, 0.0001, 0.0001))
       else if a isnt 1 or b isnt 1 or c isnt 1
         if strokeTime
           # wireframes are built via separate objects with geometries that are
@@ -506,15 +505,13 @@ define () ->
           # note that we avoid this on unitary box as it's a common
           # case that is simple to check where there is no need
           # of these 16 extra multiplications (of the scale)
-          pooledObjectWithMaterials.threejsObject3D.matrix.scale \
-            new @liveCodeLabCore_three.Vector3(a + 0.001, b + 0.001, c + 0.001)
+          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeScale(a + 0.001, b + 0.001, c + 0.001))
         else
           # odd things happen setting scale to zero
           a = 0.000000001  if a > -0.000000001 and a < 0.000000001
           b = 0.000000001  if b > -0.000000001 and b < 0.000000001
           c = 0.000000001  if c > -0.000000001 and c < 0.000000001
-          pooledObjectWithMaterials.threejsObject3D.matrix.scale \
-            new @liveCodeLabCore_three.Vector3(a, b, c)
+          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeScale(a, b, c))
 
 
       # exclusionPrincipleWobble doesn't apply in the
@@ -540,8 +537,10 @@ define () ->
           @numberOfOverlappingPrimitives[primitiveID]++
           overlapPrimtives = @numberOfOverlappingPrimitives[primitiveID]
           pert = sin(time*10) * sin(overlapPrimtives + time*10)/40
-          pooledObjectWithMaterials.threejsObject3D.matrix.rotateX(pert).rotateY(pert).rotateZ pert
-          pooledObjectWithMaterials.threejsObject3D.matrix.translate new @liveCodeLabCore_three.Vector3(pert, pert, pert)
+          #pooledObjectWithMaterials.threejsObject3D.matrix.makeRotationX(pert).makeRotationY(pert).makeRotationZ(pert)
+          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeRotationFromEuler(new @liveCodeLabCore_three.Vector3(pert,pert,pert),'XYZ'))
+
+          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeTranslation(pert, pert, pert))
         else
           #console.log "nothing here already - setting  " + primitiveID + " with " + pooledObjectWithMaterials.threejsObject3D.matrix
           @lastPositionOfPrimitiveType[primitiveID].copy \

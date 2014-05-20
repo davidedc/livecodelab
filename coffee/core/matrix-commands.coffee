@@ -75,7 +75,7 @@ define () ->
         appendedFunction = d
 
       @pushMatrix() if appendedFunction? 
-      @worldMatrix.translate new @liveCodeLabCore_three.Vector3(a, b, c)
+      @worldMatrix.multiply(new @liveCodeLabCore_three.Matrix4().makeTranslation(a, b, c))
       if appendedFunction?
         appendedFunction()
         @popMatrix()
@@ -101,8 +101,10 @@ define () ->
       else if isFunction d
         appendedFunction = d
 
-      @pushMatrix() if appendedFunction? 
-      @worldMatrix.rotateX(a).rotateY(b).rotateZ(c)
+      @pushMatrix() if appendedFunction?
+      #theAngle = new @liveCodeLabCore_three.EULER(a,b,c,'XYZ')
+      #@worldMatrix.makeRotationFromEuler theAngle
+      @worldMatrix.multiply(new @liveCodeLabCore_three.Matrix4().makeRotationFromEuler(new @liveCodeLabCore_three.Vector3(a,b,c),'XYZ'))
       if appendedFunction?
         appendedFunction()
         @popMatrix()
@@ -135,7 +137,7 @@ define () ->
       b = 0.000000001  if b > -0.000000001 and b < 0.000000001
       c = 0.000000001  if c > -0.000000001 and c < 0.000000001
 
-      @worldMatrix.scale new @liveCodeLabCore_three.Vector3(a, b, c)
+      @worldMatrix.multiply(new @liveCodeLabCore_three.Matrix4().makeScale(a, b, c))
       if appendedFunction?
         appendedFunction()
         @popMatrix()
