@@ -84,6 +84,12 @@ define [
           canvas: currentFrameThreeJsSceneCanvas
           antialias: true # to get smoother output
           preserveDrawingBuffer: testMode # to allow screenshot
+          # todo figure out why this works. this parameter shouldn't
+          # be necessary, as per https://github.com/mrdoob/three.js/issues/2833 and
+          # https://github.com/mrdoob/three.js/releases this parameter
+          # should not be needed. If we don't pass it, the canvas is all off, the
+          # unity box is painted centerd in the bottom right corner
+          devicePixelRatio: 1
         )
         
       @renderer.setSize @blendedThreeJsSceneCanvas.width, \
