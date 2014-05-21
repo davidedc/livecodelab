@@ -158,7 +158,7 @@ define [
         # to the UI elements that generated the events
         eventRouter = @eventRouter
         
-        $('<span >LiveCodeLab</span>').appendTo(
+        $('<span >LiveCodeLab 2.0</span>').appendTo(
           $('<li>').appendTo(
             $('#nav')
           )
