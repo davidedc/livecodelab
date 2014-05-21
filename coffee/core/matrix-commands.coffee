@@ -102,9 +102,7 @@ define () ->
         appendedFunction = d
 
       @pushMatrix() if appendedFunction?
-      #theAngle = new @liveCodeLabCore_three.EULER(a,b,c,'XYZ')
-      #@worldMatrix.makeRotationFromEuler theAngle
-      @worldMatrix.multiply(new @liveCodeLabCore_three.Matrix4().makeRotationFromEuler(new @liveCodeLabCore_three.Vector3(a,b,c),'XYZ'))
+      @worldMatrix.multiply(new @liveCodeLabCore_three.Matrix4().makeRotationFromEuler(new @liveCodeLabCore_three.Euler(a,b,c,'XYZ')))
       if appendedFunction?
         appendedFunction()
         @popMatrix()

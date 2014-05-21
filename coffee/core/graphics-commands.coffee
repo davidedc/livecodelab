@@ -538,7 +538,7 @@ define () ->
           overlapPrimtives = @numberOfOverlappingPrimitives[primitiveID]
           pert = sin(time*10) * sin(overlapPrimtives + time*10)/40
           #pooledObjectWithMaterials.threejsObject3D.matrix.makeRotationX(pert).makeRotationY(pert).makeRotationZ(pert)
-          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeRotationFromEuler(new @liveCodeLabCore_three.Vector3(pert,pert,pert),'XYZ'))
+          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeRotationFromEuler(new @liveCodeLabCore_three.Euler(pert,pert,pert,'XYZ')))
 
           pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeTranslation(pert, pert, pert))
         else
