@@ -85,5 +85,5 @@ require [
   lcl
 ) ->
 
-  console.log('Live Code Lab Loaded')
+  #console.log('Live Code Lab Loaded')
 
