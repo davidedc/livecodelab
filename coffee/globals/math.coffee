@@ -84,6 +84,7 @@ exp = Math.exp
 ###
 Calculates the closest int value that is less than or equal to the
 value of the parameter.
+Note that casting to an int will truncate toward zero.  floor() will truncate toward negative infinite. This will give you different values if bar were negative.
 
 @param {int|float} value        the value to floor
 
@@ -91,8 +92,21 @@ value of the parameter.
 
 @see ceil
 @see round
+@see int
 ###
 floor = Math.floor
+
+###
+Casting to an int. Will truncate toward zero.  (floor() will truncate toward negative infinite). This will give you different values if bar were negative.
+
+@param {int|float} value        the value to cast to integer
+
+@returns {int|float}
+
+@see ceil
+@see round
+###
+int = parseInt
 
 ###
 Calculates a number between two numbers at a specific increment. The amt
