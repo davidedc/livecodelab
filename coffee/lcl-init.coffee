@@ -297,6 +297,7 @@ require [
       canvasName = "blendedThreeJsSceneCanvas"
       document.getElementById(canvasName).width = window.innerWidth
       document.getElementById(canvasName).height = window.innerHeight
+      #console.log "setting canvas size to :" +  document.getElementById(canvasName).width + " x " + document.getElementById(canvasName).height
       startEnvironment
         blendedThreeJsSceneCanvas: document.getElementById(canvasName)
         canvasForBackground: document.getElementById("backgroundCanvasOrDiv")
