@@ -140,7 +140,16 @@ module.exports = function (grunt) {
                     'docs/how-tos/**/*.md'
                 ],
                 options: {
-                    output: 'dist/docs/how-to',
+                    output: 'dist/docs/how-tos',
+                    layout: 'linear'
+                }
+            },
+            intros: {
+                src: [
+                    'docs/intros/**/*.md'
+                ],
+                options: {
+                    output: 'dist/docs/intros',
                     layout: 'linear'
                 }
             },

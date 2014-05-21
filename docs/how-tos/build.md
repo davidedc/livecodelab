@@ -44,6 +44,7 @@ Documentation is available by first running the following:
 
  * `grunt docco:index`
  * `grunt docco:howtos`
+ * `grunt docco:intros`
  * `grunt docco:source`
 
 Then just open the file `dist/docs/index.html` (which will link to all the other docs).

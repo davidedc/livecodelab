@@ -13,7 +13,8 @@ If LiveCodeLab is not running at 60 fps there could be 3 limiting factors. Here 
 There are three possible solutions to the fill bottleneck:
  - confirm that the browser supports WebGl. Firefox and Chrome can support WebGL on many HW configurations, but even mainstream HW can sometimes lack support in some browser/OS versions. WebGL support on Linux systems is somewhat spotty, because of the point below:
  - confirm that your OS has drivers that support OpenGL ES > 2.0 hardware acceleration for your graphic card. Updating to recent OS versions and checking the site of your graphic card vendor for recent drivers might do the trick.
- -  reduce the number of pixels being drawn / surface extents in the scene. This can be achieved by either:
+ - reduce the number of pixels being drawn / surface extents in the scene. This can be achieved by either:
+     - on Retina Display macs, go to System Preferences -> Displays -> Scaled Resolution and set to "Larger Text"
      - reducing the size of the models being painted on screen
      - reducing the size of the browser window (and restarting livecodelab)
      - reducing the size of the browser window and "zoom-in" - this can be done on macs by doing CTRL + mouse-scroll-up
