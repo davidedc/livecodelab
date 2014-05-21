@@ -232,7 +232,7 @@ define () ->
         new @liveCodeLabCore_three.Vector3(0, 0.5 * lineProportion, 0)
         @geometriesBank[@primitiveTypes.line].mergeVertices()
       @geometriesBank[@primitiveTypes.rect] = new @liveCodeLabCore_three.PlaneGeometry(1 * rectProportion, 1 * rectProportion)
-      @geometriesBank[@primitiveTypes.box] = new @liveCodeLabCore_three.CubeGeometry(1 * boxProportion, 1 * boxProportion, 1 * boxProportion)
+      @geometriesBank[@primitiveTypes.box] = new @liveCodeLabCore_three.BoxGeometry(1 * boxProportion, 1 * boxProportion, 1 * boxProportion)
       @geometriesBank[@primitiveTypes.peg] =
         new @liveCodeLabCore_three.CylinderGeometry(0.5 * pegProportion, 0.5 * pegProportion, 1 * pegProportion, 32)
       
