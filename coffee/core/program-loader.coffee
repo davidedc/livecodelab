@@ -19,14 +19,6 @@ define [
       @programs =
         demos: {}
         tutorials: {}
-      setInterval(
-        ()=>
-          @pollHash()
-        , 100)
-      # Setup Event Listeners
-      eventRouter.addListener("url-hash-changed", (hash) =>
-        @loadAppropriateDemoOrTutorialBasedOnHash hash
-      )
       
       @programs.demos.roseDemo =
         submenu: "Basic"
@@ -798,7 +790,16 @@ define [
               // if you see that things got
               // boring down a particular path of changes.
               """
-    
+    kickOff: ->
+      setInterval(
+        ()=>
+          @pollHash()
+        , 100)
+      # Setup Event Listeners
+      @eventRouter.addListener("url-hash-changed", (hash) =>
+        @loadAppropriateDemoOrTutorialBasedOnHash hash
+      )
+
     loadDemoOrTutorial: (demoName) ->
       if (not Detector.webgl or @liveCodeLabCoreInstance.threeJsSystem.forceCanvasRenderer) \
           and not userWarnedAboutWebglExamples and demoName.indexOf("webgl") is 0

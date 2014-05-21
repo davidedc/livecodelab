@@ -285,8 +285,9 @@ require [
     # otherwise we do as usual.
     if !urlRouter.urlPointsToDemoOrTutorial()
       setTimeout (()=>liveCodeLabCore.playStartupSound()), 650
-    bigCursor.toggleBlink true
+      bigCursor.toggleBlink true
     ui.setup()
+    setTimeout (()=>programLoader.kickOff()), 650
 
   if setupForNormalLCLPage?
     $(document).ready ->
