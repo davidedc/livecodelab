@@ -266,9 +266,9 @@ FunctionArgNames
 
 TimesLoop
     : Identifier t_times Block
-        { $$ = ["TIMES", $1, $3]; }
+        { $$ = ["TIMES", ["IDENTIFIER", $1], $3]; }
     | Identifier t_times t_with Identifier Block
-        { $$ = ["TIMES", $1, $5, $4]; }
+        { $$ = ["TIMES", ["IDENTIFIER", $1], $5, $4]; }
     | Number t_times Block
         { $$ = ["TIMES", $1, $3]; }
     | Number t_times t_with Identifier Block
@@ -309,11 +309,11 @@ Expression
     | ExprFunctionCall
         { $$ = $1; }
     | Number
-        { $$ = ["NUMBER", $1]; }
+        { $$ = $1; }
     | Identifier
         { $$ = ["IDENTIFIER", $1]; }
     | String
-        { $$ = ["STRING", $1]; }
+        { $$ = $1; }
     ;
 
 ShapeFunction
@@ -333,7 +333,7 @@ StyleFunction
 
 Number
     : t_number
-        { $$ = Number(yytext); }
+        { $$ = ["NUMBER", Number(yytext)]; }
     ;
 
 Identifier
@@ -343,6 +343,6 @@ Identifier
 
 String
     : t_string
-        { $$ = yytext.substring(1, yytext.length-1); }
+        { $$ = ["STRING", yytext.substring(1, yytext.length-1)]; }
     ;
 
