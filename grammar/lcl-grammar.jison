@@ -13,7 +13,7 @@ quote                 "\""
 
 identifier            {letter}({letter}|{digit})*
 number                (\-)?{digit}+("."{digit}+)?
-string                {quote}({letter}|{digit}|{strchars})*{quote}
+string                ({letter}|{digit}|{strchars})*
 
 %%
 
@@ -54,7 +54,7 @@ string                {quote}({letter}|{digit}|{strchars})*{quote}
 
 {number}              return "t_number"
 {identifier}          return "t_id"
-{string}              return "t_string"
+{quote}               return "t_quote"
 
 /* math operators */
 "*"                   return "*"
@@ -342,7 +342,7 @@ Identifier
     ;
 
 String
-    : t_string
-        { $$ = ["STRING", yytext.substring(1, yytext.length-1)]; }
+    : t_quote t_id t_quote
+        { $$ = ["STRING", $2]; }
     ;
 
