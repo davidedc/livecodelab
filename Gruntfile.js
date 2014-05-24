@@ -227,6 +227,16 @@ module.exports = function (grunt) {
         'targethtml'
     ]);
 
+    grunt.registerTask('fastbuild', [
+        'clean:build',
+        'coffee:app',
+        'coffee:tests',
+        'copy:main',
+        'jison',
+        'recess:compile',
+        'targethtml'
+    ]);
+
     grunt.registerTask('langtest', [
         'copy:main',
         'jison',
