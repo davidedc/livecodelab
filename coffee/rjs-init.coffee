@@ -9,6 +9,7 @@ requirejs.config(
     'bowser': 'lib/bowser'
     'buzz': 'lib/buzz'
     'lowLag': 'lib/lowLag'
+    'coffeescript': 'lib/coffeescript'
     'codemirror': 'lib/codemirror'
     'codemirror-lcl-mode': 'lib/coffeescript-livecodelab-mode'
     'sooperfish-easing': 'lib/jquery.easing-sooper'
