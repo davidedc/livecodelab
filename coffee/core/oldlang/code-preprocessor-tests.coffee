@@ -3099,4 +3099,3 @@ define [], () ->
 
       ]
 
-  CodePreprocessorTests

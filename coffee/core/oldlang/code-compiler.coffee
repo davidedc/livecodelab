@@ -32,10 +32,10 @@ define ['core/oldlang/code-preprocessor', 'coffeescript'], (OldCodePreprocessor,
         @liveCodeLabCoreInstance.graphicsCommands.resetTheSpinThingy = true
         programHasBasicError = false
         @eventRouter.emit("clear-error")
-        @liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
+        @liveCodeLabCoreInstance.programRunner.consecutiveFramesWithoutRunTimeError = 0
         functionFromCompiledCode = new Function("")
-        @liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction null
-        @liveCodeLabCoreInstance.drawFunctionRunner.lastStableDrawFunction = null
+        @liveCodeLabCoreInstance.programRunner.setDrawFunction null
+        @liveCodeLabCoreInstance.programRunner.lastStableDrawFunction = null
         return functionFromCompiledCode
 
       [code, error] = @codePreprocessor.preprocess code
@@ -68,7 +68,7 @@ define ['core/oldlang/code-preprocessor', 'coffeescript'], (OldCodePreprocessor,
       programHasBasicError = false
       @eventRouter.emit("clear-error")
       
-      @liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
+      @liveCodeLabCoreInstance.programRunner.consecutiveFramesWithoutRunTimeError = 0
       
       # You might want to change the frame count from the program
       # just like you can in Processing, but it turns out that when
@@ -84,7 +84,7 @@ define ['core/oldlang/code-preprocessor', 'coffeescript'], (OldCodePreprocessor,
 
       # elegant way to not use eval
       functionFromCompiledCode = new Function(compiledOutput)
-      @liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction functionFromCompiledCode
+      @liveCodeLabCoreInstance.programRunner.setProgram functionFromCompiledCode
       functionFromCompiledCode
 
     # this function is used externally after the code has been
@@ -93,7 +93,7 @@ define ['core/oldlang/code-preprocessor', 'coffeescript'], (OldCodePreprocessor,
         (OldCodeCompiler, doOnceOccurrencesLineNumbers) ->
       elaboratedSource = undefined
       elaboratedSourceByLine = undefined
-      drawFunction = undefined
+      programRunner = undefined
       
       # if we are here, the following has happened: someone has added an element
       # to the doOnceOccurrencesLineNumbers array. This can only have happened
@@ -132,6 +132,6 @@ define ['core/oldlang/code-preprocessor', 'coffeescript'], (OldCodePreprocessor,
       # Also updateCode() may split the source code by line, so we can
       # avoid that since we've just split it, we could pass
       # the already split code.
-      drawFunction = @updateCode(elaboratedSource)
-      drawFunction
+      programRunner = @updateCode(elaboratedSource)
+      programRunner
 

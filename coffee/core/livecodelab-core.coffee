@@ -63,6 +63,7 @@ define [
   ,'core/background-painter'
   ,'core/blend-controls'
   ,'core/code-compiler'
+  ,'core/oldlang/code-compiler'
   ,'core/colour-functions'
   ,'core/colour-literals'
   ,'core/global-scope'
@@ -70,6 +71,7 @@ define [
   ,'core/lights-commands'
   ,'core/matrix-commands'
   ,'core/program-runner'
+  ,'core/oldlang/program-runner'
   ,'core/renderer'
   ,'core/threejs-system'
   ,'core/time-keeper'
@@ -93,6 +95,7 @@ define [
   ,BackgroundPainter
   ,BlendControls
   ,CodeCompiler
+  ,OldCodeCompiler
   ,ColourFunctions
   ,ColourLiterals
   ,GlobalScope
@@ -100,6 +103,7 @@ define [
   ,LightsCommands
   ,MatrixCommands
   ,ProgramRunner
+  ,OldProgramRunner
   ,Renderer
   ,ThreeJsSystem
   ,TimeKeeper
@@ -118,14 +122,14 @@ define [
   class LiveCodeLabCore
 
     constructor: (@paramsObject) ->
-      
+
       #//////////////////////////////////////////////
       #
       # ### Phase 1
       # initialise all the fields first
       #
       #//////////////////////////////////////////////
-      
+
       # three is a global defined in three.min.js and used in:
       # ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
       # The difference between three and the threeJsSystem is that
@@ -139,7 +143,7 @@ define [
       # fields/methods. So, threeJsSystem provides some abstraction without
       # attempting to be a complete abstraction layer.
       @three = THREE
-      
+
       #//////////////////////////////////////////////
       #
       # ### Phase 2
@@ -152,10 +156,10 @@ define [
       # function we are in.
       #
       #//////////////////////////////////////////////
-      
+
       @timeKeeper = new TimeKeeper()
-      
-      @globalscope = new GlobalScope()
+
+      @globalscope = new GlobalScope(true)
 
       # this one also interacts with threeJsSystem at runtime
       @blendControls = new BlendControls(@)
@@ -163,13 +167,13 @@ define [
       @colourLiterals = new ColourLiterals()
 
       @mathFunctions = new Math()
-      
+
       # this one also interacts with threeJsSystem and blendControls at runtime
       @renderer = new Renderer(@)
       @soundSystem =
         new SoundSystem(
           @paramsObject.eventRouter, @timeKeeper, buzz, lowLag, createBowser(), new SampleBank(buzz))
-      
+
       # this one also interacts with colourFunctions, backgroundSceneContext,
       # canvasForBackground at runtime
       @backgroundPainter = new BackgroundPainter(
@@ -177,15 +181,27 @@ define [
         @,
         @colourLiterals
       )
-      
+
       # this one also interacts with codeCompiler at runtime.
+      # new version of language
+      #@programRunner =
+      #  new ProgramRunner(@paramsObject.eventRouter, @, @globalscope)
+
+      # this one also interacts with codeCompiler at runtime.
+      # old version of language
       @programRunner =
-        new ProgramRunner(@paramsObject.eventRouter, @, @globalscope)
-      
+        new OldProgramRunner(@paramsObject.eventRouter, @, @globalscope)
+
       # compiles the user sketch to js so it's ready to run.
+      # new version of language
+      #@codeCompiler =
+      #  new CodeCompiler(@paramsObject.eventRouter, @)
+
+      # compiles the user sketch to js so it's ready to run.
+      # old version of language
       @codeCompiler =
-        new CodeCompiler(@paramsObject.eventRouter, @)
-      
+        new OldCodeCompiler(@paramsObject.eventRouter, @)
+
       # this one also interacts with timeKeeper, matrixCommands, blendControls,
       #    soundSystem,
       #    backgroundPainter, graphicsCommands, lightSystem, programRunner,
@@ -194,7 +210,7 @@ define [
       @animationLoop =
         new AnimationLoop(
           @paramsObject.eventRouter, @paramsObject.statsWidget, @)
-      
+
       #//////////////////////////////////////////////
       #
       # ### Phase 3
@@ -208,19 +224,19 @@ define [
       # is wrong.
       #
       #//////////////////////////////////////////////
-      
+
       # this one doesn't interact with any other part at runtime.
       @threeJsSystem =
         new ThreeJsSystem(
           Detector, THREEx, @paramsObject.blendedThreeJsSceneCanvas,
           @paramsObject.forceCanvasRenderer, @paramsObject.testMode,
           @three)
-      
+
       # this one interacts with timeKeeper at runtime
       @matrixCommands =
         new MatrixCommands(
           @three, @)
-      
+
       # this one also interacts with colourFunctions, lightSystem, matrixCommands
       # threeJsSystem at runtime
       @graphicsCommands =
@@ -230,7 +246,7 @@ define [
           @colourLiterals)
           # color, lightSystem, matrixCommands, threeJsSystem, colorModeA,
           # redF, greenF, blueF, alphaZeroToOne
-      
+
       # this one also interacts with three,
       # threeJsSystem, colourFunctions at runtime
       @lightSystem =
@@ -293,7 +309,7 @@ define [
       if updatedCode isnt "" and @dozingOff
         @dozingOff = false
         @animationLoop.animate()
-        
+
         # console.log('waking up');
         @paramsObject.eventRouter.emit("livecodelab-waking-up")
 
