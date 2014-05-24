@@ -159,103 +159,6 @@ define ['core/oldlang/code-preprocessor-tests', 'core/colour-literals'], (OldCod
         @test()
         detailedDebug = previousDetailedDebug
 
-    ###
-    ## Stops ticked doOnce blocks from running
-    ##
-    ## doOnce statements which have a tick mark next to them
-    ## are not run. This is achieved by replacing the line with
-    ## the "doOnce" with "if false" or "//" depending on whether
-    ## the doOnce is a multiline or an inline one, like so:
-    ##
-    ##      ✓doOnce
-    ##        background 255
-    ##        fill 255,0,0
-    ##      ✓doOnce ball
-    ##      becomes:
-    ##      if false
-    ##        background 255
-    ##        fill 255,0,0
-    ##      //doOnce ball
-    ##
-    ## @param {string} code    the code to re-write
-    ##
-    ## @returns {string}
-    ###
-    removeTickedDoOnce: (code, error) ->
-      # if there is an error, just propagate it
-      return [undefined, error] if error?
-
-      # doOnce multiline case
-      code = code.replace(/^(\s*)✓[ ]*doOnce[ \t]*$/gm, "$1if false")
-      # doOnce single-line case
-      code = code.replace(/^(\s*)✓([ ]*doOnce[ \t]+)/gm, "$1//$2")
-      if detailedDebug then console.log "removeTickedDoOnce\n" + code + " error: " + error
-      if code.indexOf("✓") != -1
-        return [undefined,"✓ must be next to a doOnce"]
-      return [code, error]
-
-    addTracingInstructionsToDoOnceBlocks: (code, error) ->
-      # if there is an error, just propagate it
-      return [undefined, error] if error?
-
-      # ADDING TRACING INSTRUCTION TO THE DOONCE BLOCKS
-      # each doOnce block is made to start with an instruction that traces whether
-      # the block has been run or not. This allows us to put back the tick where
-      # necessary, so the doOnce block is not run again.
-      # Example - let's say one pastes in this code:
-      #
-      #      doOnce
-      #        background 255
-      #        fill 255,0,0
-      #
-      #      doOnce ball
-      #
-      # it becomes:
-      #
-      #      1.times ->
-      #        addDoOnce(1); background 255
-      #        fill 255,0,0
-      #
-      #      ;addDoOnce(4);
-      #      1.times -> ball
-      #
-      # So: if there is at least one doOnce
-      #   split the source in lines
-      #   add line numbers tracing instructions so we can track which
-      #   ones have been run regroup the lines into a single string again
-      #
-      elaboratedSourceByLine = undefined
-      if code.indexOf("doOnce") > -1
-        
-        #alert("a doOnce is potentially executable")
-        elaboratedSourceByLine = code.split("\n")
-        
-        #alert('splitting: ' + elaboratedSourceByLine.length )
-        for eachLine in [0...elaboratedSourceByLine.length]
-          
-          #alert('iterating: ' + eachLine )
-          
-          # add the line number tracing instruction to inline case
-          elaboratedSourceByLine[eachLine] =
-            elaboratedSourceByLine[eachLine].replace(
-              /(^|\s+)doOnce[ \t]+(.+)$/g,
-              "$1;addDoOnce(" + eachLine + "); 1.times -> $2")
-          
-          # add the line number tracing instruction to multiline case
-          if /(^|\s+)doOnce[ \t]*$/g.test(elaboratedSourceByLine[eachLine])
-            
-            #alert('doOnce multiline!')
-            elaboratedSourceByLine[eachLine] =
-              elaboratedSourceByLine[eachLine].replace(
-                /(^|\s+)doOnce[ \t]*$/g, "$11.times ->")
-            elaboratedSourceByLine[eachLine + 1] =
-              elaboratedSourceByLine[eachLine + 1].replace(
-                /^(\s*)(.+)$/g, "$1addDoOnce(" + eachLine + "); $2")
-        code = elaboratedSourceByLine.join "\n"
-      
-      #alert('soon after replacing doOnces'+code)
-      return [code, error]
-
     doesProgramContainStringsOrComments: (code) ->
       characterBeingExamined = undefined
       nextCharacterBeingExamined = undefined
@@ -332,9 +235,7 @@ define ['core/oldlang/code-preprocessor-tests', 'core/colour-literals'], (OldCod
               return quoted  if quoted
               return aposed  if aposed
               
-              # preserve the line because
-              # the doOnce mechanism needs to retrieve
-              # the line where it was
+              # preserve the line
               return "\n"  if singleComment
               
               # eliminate multiline comments preserving the lines
@@ -902,7 +803,6 @@ define ['core/oldlang/code-preprocessor-tests', 'core/colour-literals'], (OldCod
       #   something;ball;
       #   something;ball;ball
       #   something;ball;ball;
-      #   ✓doOnce ball; background red
       #   if ball then ball else something
       #   box wave
       #   box wave(wave)
@@ -950,7 +850,6 @@ define ['core/oldlang/code-preprocessor-tests', 'core/colour-literals'], (OldCod
       
       # tokens at the end of the line (without final semicolon,
       # if there is a final semicolon it's handled by previous case)
-      # doOnce frame = 0; box
       # if random() > 0.5 then box
       # 2 times -> box
       # 2 times -> rotate; box
@@ -1566,8 +1465,6 @@ define ['core/oldlang/code-preprocessor-tests', 'core/colour-literals'], (OldCod
       #@allCommandsRegex = @allCommandsRegex + bracketsVariables
       #console.log "all commands plus bracket variables: " + @primitivesAndMatrixRegex + bracketsVariables
 
-      [code, error] = @removeTickedDoOnce(code, error)
-      if detailedDebug then console.log "preprocess-2\n" + code + " error: " + error
       [code, codeWithoutStringsOrComments, error] = @stripCommentsAndStrings(code, error)
       if detailedDebug then console.log "preprocess-3\n" + code + " error: " + error
       [code, error] = @checkBasicSyntax(code, codeWithoutStringsOrComments, error)
@@ -1612,14 +1509,6 @@ define ['core/oldlang/code-preprocessor-tests', 'core/colour-literals'], (OldCod
       # coffeescript takes the rotate as the second argument of scale
       # This doesn't seem to be a problem, but worth noting.
 
-
-      # Each doOnce block, when run, pushes its own line number to a particular
-      # array. It leaves traces of which doOnce block has been run and
-      # where exactly it is so that we can go back and mark it with a tick
-      # (which prevents a second run to happen, as the tickmarks expand into
-      # line comments).
-      if detailedDebug then console.log "preprocess-8\n" + code + " error: " + error
-      [code, error] = @addTracingInstructionsToDoOnceBlocks(code, error)
 
       [ignore,a,ignore] = @identifyBlockStarts code, error
       [code, error] = @completeImplicitFunctionPasses code, a, error, userDefinedFunctionsWithArguments
@@ -1708,7 +1597,7 @@ define ['core/oldlang/code-preprocessor-tests', 'core/colour-literals'], (OldCod
             [mootInput, ignore, errorMoot] = @beautifyCode(mootInput,errorMoot)
 
             if !errorMoot?
-              rx = RegExp("(("+allFunctionsRegex+"|times|doOnce)([^\\w\\d]|$))",'gm');
+              rx = RegExp("(("+allFunctionsRegex+"|times)([^\\w\\d]|$))",'gm');
               mootInputAppend = mootInput.replace(rx, "$2"+appendString+"$3")
               mootInputPrepend = mootInput.replace(rx, prependString+"$2$3")
 

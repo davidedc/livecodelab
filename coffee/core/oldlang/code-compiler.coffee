@@ -1,12 +1,6 @@
 ###
 ## CodeCompiler makes available the user sketch
 ## (written in simplified syntax) as a runnable javascript function.
-## Also note that CodeCompiler might return a program
-## that substituted the program passed as input.
-## This is because doOnce statements get transformed by pre-prending a
-## tick once they are run, which prevents them from being run again.
-## Note that CodeCompiler doesn't run the user sketch, it just
-## makes it available to the ProgramRunner.
 ###
 
 define ['core/oldlang/code-preprocessor', 'coffeescript'], (OldCodePreprocessor, CoffeescriptCompiler) ->
@@ -86,52 +80,4 @@ define ['core/oldlang/code-preprocessor', 'coffeescript'], (OldCodePreprocessor,
       functionFromCompiledCode = new Function(compiledOutput)
       @liveCodeLabCoreInstance.programRunner.setProgram functionFromCompiledCode
       functionFromCompiledCode
-
-    # this function is used externally after the code has been
-    # run, so we need to attach it to the CodeCompiler object.
-    addCheckMarksAndUpdateCodeAndNotifyChange: \
-        (OldCodeCompiler, doOnceOccurrencesLineNumbers) ->
-      elaboratedSource = undefined
-      elaboratedSourceByLine = undefined
-      programRunner = undefined
-      
-      # if we are here, the following has happened: someone has added an element
-      # to the doOnceOccurrencesLineNumbers array. This can only have happened
-      # when a doOnce block is run, because we manipulate each doOnce block
-      # so that in its first line the line number of the block is pushed into
-      # the doOnceOccurrencesLineNumbers array.
-      # So, the doOnceOccurrencesLineNumbers array contains all and only the lines
-      # of each doOnce block that has been run. Which could be more than one,
-      # because when we start the program we could have more than one
-      # doOnce that has to run.
-      elaboratedSource = @currentCodeString
-      
-      # we know the line number of each doOnce block that has been run
-      # so we go there and add a tick next to each doOnce to indicate
-      # that it has been run.
-      elaboratedSourceByLine = elaboratedSource.split("\n")
-      for eachLine in doOnceOccurrencesLineNumbers
-        elaboratedSourceByLine[eachLine] =
-          elaboratedSourceByLine[eachLine].replace(
-            /(^|\s+)doOnce([ \t]*.*)$/gm, "$1✓doOnce$2")
-      elaboratedSource = elaboratedSourceByLine.join("\n")
-      
-      # puts the new code (where the doOnce that have been executed have
-      # tickboxes put back) in the editor. Which will trigger a re-registration
-      # of the new code.
-      @eventRouter.emit("code-updated-by-livecodelab", elaboratedSource)
-      #alert elaboratedSource
-      # we want to avoid that another frame is run with the old
-      # code, as this would mean that the
-      # runOnce code is run more than once,
-      # so we need to register the new code.
-      # TODO: ideally we don't want to register the
-      # new code by getting the code from codemirror again
-      # because we don't know what that entails. We should
-      # just pass the code we already have.
-      # Also updateCode() may split the source code by line, so we can
-      # avoid that since we've just split it, we could pass
-      # the already split code.
-      programRunner = @updateCode(elaboratedSource)
-      programRunner
 

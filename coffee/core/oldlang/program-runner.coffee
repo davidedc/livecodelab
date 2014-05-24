@@ -13,16 +13,11 @@ isFunction = (functionToCheck) ->
 define () ->
 
   class OldProgramRunner
-    
-    # this array is used to keep track of all the instances of "doOnce" in the
-    # code we need to keep this so we can put the ticks next to doOnce once
-    # that doOnce block has run.
-    doOnceOccurrencesLineNumbers = []
-    
+
     # contains the draw function as a Function object. Never mind the
     # initialisation as an empty string.
     program = ""
-    
+
     consecutiveFramesWithoutRunTimeError = 0
 
     # contains the last stable draw function as a Function object. Never mind the
@@ -33,12 +28,11 @@ define () ->
     # note that it might be impossible to run it because of errors, in which case
     # LiveCodeLab might be running an older version.
     currentCodeString = ""
-    
+
     constructor: (@eventRouter, @liveCodeLabCoreInstance) ->
 
     addToScope: (scope) ->
 
-      scope.add('addDoOnce', (a) => @addDoOnce(a))
       scope.add('run', (a,b) => @run(a,b))
 
     # the run function is used so one can write
@@ -51,7 +45,7 @@ define () ->
     # after "run", so that
     #   run <box> 2
     # becomes
-    #   
+    #
     run: (functionToBeRun, chainedFunction) ->
       # in the case "run <box> 2" the box is
       # already painted here.
@@ -64,24 +58,8 @@ define () ->
       if isFunction chainedFunction
         chainedFunction()
 
-    # This is the function called from the compiled code to add the doOnce line
-    addDoOnce: (lineNum) ->
-      @doOnceOccurrencesLineNumbers.push lineNum
-
     setProgram: (program) ->
       @program = program
-
-    resetTrackingOfDoOnceOccurrences: ->
-      @doOnceOccurrencesLineNumbers = []
-
-    putTicksNextToDoOnceBlocksThatHaveBeenRun: ->
-      codeCompiler = @liveCodeLabCoreInstance.codeCompiler
-      if @doOnceOccurrencesLineNumbers.length
-        @setDrawFunction(
-          codeCompiler.addCheckMarksAndUpdateCodeAndNotifyChange(
-            codeCompiler, @doOnceOccurrencesLineNumbers
-          )
-        )
 
     runProgram: ->
       # this invokation below could be throwing an error,
@@ -90,7 +68,7 @@ define () ->
       # which is the main animation loop.
       #console.log "running runDrawFunction"
       @program()
-      
+
       # if we are here it means that the draw function didn't generate
       # any runtime errors, so we increment a counter that tells how long
       # this program has been stable for.
