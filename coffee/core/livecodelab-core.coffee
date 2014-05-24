@@ -182,25 +182,22 @@ define [
         @colourLiterals
       )
 
-      # this one also interacts with codeCompiler at runtime.
-      # new version of language
-      #@programRunner =
-      #  new ProgramRunner(@paramsObject.eventRouter, @, @globalscope)
-
-      # this one also interacts with codeCompiler at runtime.
-      # old version of language
-      @programRunner =
-        new OldProgramRunner(@paramsObject.eventRouter, @, @globalscope)
-
-      # compiles the user sketch to js so it's ready to run.
-      # new version of language
-      #@codeCompiler =
-      #  new CodeCompiler(@paramsObject.eventRouter, @)
-
-      # compiles the user sketch to js so it's ready to run.
-      # old version of language
-      @codeCompiler =
-        new OldCodeCompiler(@paramsObject.eventRouter, @)
+      switch @paramsObject.langVersion
+        when 'new'
+          @programRunner =
+            new ProgramRunner(@paramsObject.eventRouter, @, @globalscope)
+          @codeCompiler =
+            new CodeCompiler(@paramsObject.eventRouter, @)
+        when 'old'
+          @programRunner =
+            new OldProgramRunner(@paramsObject.eventRouter, @, @globalscope)
+          @codeCompiler =
+            new OldCodeCompiler(@paramsObject.eventRouter, @)
+        else
+          @programRunner =
+            new OldProgramRunner(@paramsObject.eventRouter, @, @globalscope)
+          @codeCompiler =
+            new OldCodeCompiler(@paramsObject.eventRouter, @)
 
       # this one also interacts with timeKeeper, matrixCommands, blendControls,
       #    soundSystem,

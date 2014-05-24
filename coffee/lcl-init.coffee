@@ -95,6 +95,7 @@ require [
       eventRouter: eventRouter
       statsWidget: stats
       testMode: paramsObject.testMode
+      langVersion: 'old'
     )
 
     #/////////////////////////////////////////////////////
