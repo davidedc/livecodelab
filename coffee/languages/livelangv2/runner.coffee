@@ -1,8 +1,8 @@
 ###
-## ProgramRunner manages the running function as it runs. E.g. this is not a
+## V2ProgramRunner manages interpretation of the AST. E.g. this is not a
 ## translation step, this is managing things such as the actually running of the
-## latest "stable" function and keeping track of when a function appears
-## to be stable, and reinstating the last stable function if the current one
+## latest "stable" program, keeping track of when a program appears
+## to be stable, and reinstating the last stable program if the current one
 ## throws a runtime error.
 ###
 
@@ -10,26 +10,28 @@ isFunction = (functionToCheck) ->
   getType = {}
   functionToCheck and getType.toString.call(functionToCheck) is "[object Function]"
 
-define () ->
+define [
+   'lib/lcl/interpreter'
+], (
+   Interpreter
+) ->
 
-  class OldProgramRunner
+  class V2ProgramRunner
 
-    # contains the draw function as a Function object. Never mind the
-    # initialisation as an empty string.
-    program = ""
+    # contains the program AST
+    program = []
 
     consecutiveFramesWithoutRunTimeError = 0
-
-    # contains the last stable draw function as a Function object. Never mind the
-    # initialisation as an empty string.
-    lastStableProgram = null
 
     # contains the code that is meant to be run, as a string.
     # note that it might be impossible to run it because of errors, in which case
     # LiveCodeLab might be running an older version.
     currentCodeString = ""
+    
+    # contains the last stable program AST
+    lastStableProgram = []
 
-    constructor: (@eventRouter, @liveCodeLabCoreInstance) ->
+    constructor: (@eventRouter, @liveCodeLabCoreInstance, @globalscope) ->
 
     addToScope: (scope) ->
 
@@ -45,7 +47,7 @@ define () ->
     # after "run", so that
     #   run <box> 2
     # becomes
-    #
+    #   
     run: (functionToBeRun, chainedFunction) ->
       # in the case "run <box> 2" the box is
       # already painted here.
@@ -58,19 +60,21 @@ define () ->
       if isFunction chainedFunction
         chainedFunction()
 
-    setProgram: (program) ->
-      @program = program
+    setProgram: (programAST) ->
+      @consecutiveFramesWithoutRunTimeError = 0
+      @program = programAST
+
 
     runProgram: ->
       # this invokation below could be throwing an error,
       # in which case the lines afterwards are not executed
       # and the exception is propagated to the callee of this function,
       # which is the main animation loop.
-      #console.log "running runDrawFunction"
-      @program()
+      scope = @globalscope.getScope()
+      Interpreter.run(@program, scope)
 
-      # if we are here it means that the draw function didn't generate
-      # any runtime errors, so we increment a counter that tells how long
+      # if we are here it means that the interpreter didn't throw
+      # any runtime errors, so we increment a counter that tracks how long
       # this program has been stable for.
       # Beyond 5 frames, we consider this program as "stable" and we save
       # it in a special variable.

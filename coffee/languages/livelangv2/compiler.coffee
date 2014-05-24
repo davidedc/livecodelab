@@ -1,5 +1,5 @@
 ###
-## CodeCompiler takes the user sketch and turns it into an AST.
+## V2CodeCompiler takes the user sketch and turns it into an AST.
 ## This is then run by the ProgramRunner.
 ###
 
@@ -11,7 +11,7 @@ define [
   ,Parser
 ) ->
 
-  class CodeCompiler
+  class V2CodeCompiler
 
     currentCodeString: null
     codePreprocessor: null

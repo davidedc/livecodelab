@@ -1,5 +1,5 @@
 ###
-## OldCodePreprocessor takes care of translating the simplified syntax
+## V1CodePreprocessor takes care of translating the simplified syntax
 ## of livecodelb to a coffeescript that is degestible by the
 ## coffeescript compiler.
 ## This pre-processing step can raise some errors - which are
@@ -12,9 +12,9 @@
 
 detailedDebug = false
 
-define ['core/oldlang/code-preprocessor-tests', 'core/colour-literals'], (OldCodePreprocessorTests, ColourLiterals) ->
+define ['languages/livelangv1/code-preprocessor-tests', 'core/colour-literals'], (V1CodePreprocessorTests, ColourLiterals) ->
 
-  class OldCodePreprocessor
+  class V1CodePreprocessor
 
     testCases: null
 
@@ -130,7 +130,7 @@ define ['core/oldlang/code-preprocessor-tests', 'core/colour-literals'], (OldCod
 
 
     constructor: ->
-      @testCases = (new OldCodePreprocessorTests()).testCases
+      @testCases = (new V1CodePreprocessorTests()).testCases
       @qualifyingCommandsRegex = @qualifyingCommands.join "|"
       @primitivesRegex = @primitives.join "|"
       @primitivesAndMatrixRegex = @qualifyingCommandsRegex + "|" + @primitivesRegex

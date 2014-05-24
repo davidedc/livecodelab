@@ -8,7 +8,7 @@
 
 define [], () ->
 
-  class OldCodePreprocessorTests
+  class V1CodePreprocessorTests
 
     testCases: null
 

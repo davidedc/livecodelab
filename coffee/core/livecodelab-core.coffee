@@ -59,19 +59,17 @@ children are accessed.
 ###
 
 define [
-  'core/animation-loop'
+   'core/animation-loop'
   ,'core/background-painter'
   ,'core/blend-controls'
-  ,'core/code-compiler'
-  ,'core/oldlang/code-compiler'
+  ,'languages/livelangv1/main'
+  ,'languages/livelangv2/main'
   ,'core/colour-functions'
   ,'core/colour-literals'
   ,'core/global-scope'
   ,'core/graphics-commands'
   ,'core/lights-commands'
   ,'core/matrix-commands'
-  ,'core/program-runner'
-  ,'core/oldlang/program-runner'
   ,'core/renderer'
   ,'core/threejs-system'
   ,'core/time-keeper'
@@ -91,19 +89,17 @@ define [
   ,'Three.SavePass'
   ,'Three.ShaderPass'
 ], (
-  AnimationLoop
+   AnimationLoop
   ,BackgroundPainter
   ,BlendControls
-  ,CodeCompiler
-  ,OldCodeCompiler
+  ,LiveLangV1
+  ,LiveLangV2
   ,ColourFunctions
   ,ColourLiterals
   ,GlobalScope
   ,GraphicsCommands
   ,LightsCommands
   ,MatrixCommands
-  ,ProgramRunner
-  ,OldProgramRunner
   ,Renderer
   ,ThreeJsSystem
   ,TimeKeeper
@@ -117,7 +113,6 @@ define [
   ,THREEx
   ,Detector
 ) ->
-
 
   class LiveCodeLabCore
 
@@ -185,19 +180,19 @@ define [
       switch @paramsObject.langVersion
         when 'new'
           @programRunner =
-            new ProgramRunner(@paramsObject.eventRouter, @, @globalscope)
+            new LiveLangV2.runner(@paramsObject.eventRouter, @, @globalscope)
           @codeCompiler =
-            new CodeCompiler(@paramsObject.eventRouter, @)
+            new LiveLangV2.compiler(@paramsObject.eventRouter, @)
         when 'old'
           @programRunner =
-            new OldProgramRunner(@paramsObject.eventRouter, @, @globalscope)
+            new LiveLangV1.runner(@paramsObject.eventRouter, @, @globalscope)
           @codeCompiler =
-            new OldCodeCompiler(@paramsObject.eventRouter, @)
+            new LiveLangV1.compiler(@paramsObject.eventRouter, @)
         else
           @programRunner =
-            new OldProgramRunner(@paramsObject.eventRouter, @, @globalscope)
+            new LiveLangV1.runner(@paramsObject.eventRouter, @, @globalscope)
           @codeCompiler =
-            new OldCodeCompiler(@paramsObject.eventRouter, @)
+            new LiveLangV1.compiler(@paramsObject.eventRouter, @)
 
       # this one also interacts with timeKeeper, matrixCommands, blendControls,
       #    soundSystem,

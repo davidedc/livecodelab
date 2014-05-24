@@ -3,9 +3,9 @@
 ## (written in simplified syntax) as a runnable javascript function.
 ###
 
-define ['core/oldlang/code-preprocessor', 'coffeescript'], (OldCodePreprocessor, CoffeescriptCompiler) ->
+define ['languages/livelangv1/code-preprocessor', 'coffeescript'], (V1CodePreprocessor, CoffeescriptCompiler) ->
 
-  class OldCodeCompiler
+  class V1CodeCompiler
     currentCodeString: null
     codePreprocessor: null
 
@@ -13,7 +13,7 @@ define ['core/oldlang/code-preprocessor', 'coffeescript'], (OldCodePreprocessor,
     constructor: (@eventRouter, @liveCodeLabCoreInstance) ->
       # the code compiler needs the CodePreprocessor
       
-      @codePreprocessor = new OldCodePreprocessor()
+      @codePreprocessor = new V1CodePreprocessor()
 
 
     updateCode: (code) ->
