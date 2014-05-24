@@ -12,7 +12,7 @@
 
 detailedDebug = false
 
-define ['languages/livelangv1/code-preprocessor-tests', 'core/colour-literals'], (V1CodePreprocessorTests, ColourLiterals) ->
+define ['LiveLangV1/code-preprocessor-tests', 'core/colour-literals'], (V1CodePreprocessorTests, ColourLiterals) ->
 
   class V1CodePreprocessor
 

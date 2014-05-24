@@ -1,7 +1,7 @@
 
-require [
-   'languages/livelangv1/compiler'
-  ,'languages/livelangv1/runner'
+define [
+   'LiveLangV1/compiler'
+  ,'LiveLangV1/runner'
 ], (
    compiler
   ,runner

@@ -3,7 +3,7 @@
 ## (written in simplified syntax) as a runnable javascript function.
 ###
 
-define ['languages/livelangv1/code-preprocessor', 'coffeescript'], (V1CodePreprocessor, CoffeescriptCompiler) ->
+define ['LiveLangV1/code-preprocessor', 'coffeescript'], (V1CodePreprocessor, CoffeescriptCompiler) ->
 
   class V1CodeCompiler
     currentCodeString: null

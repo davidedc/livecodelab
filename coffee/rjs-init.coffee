@@ -31,6 +31,12 @@ requirejs.config(
     'Three.ShaderPass': 'lib/three.js/postprocessing/ShaderPass'
 
     'three-resize': 'lib/threex/THREEx.WindowResize'
+    'LiveLangV1': 'languages/livelangv1'
+    'LiveLangV2': 'languages/livelangv2'
+  packages: [
+    'LiveLangV1'
+    'LiveLangV2'
+  ]
   shim:
     'bowser':
       deps: []
