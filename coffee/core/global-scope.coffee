@@ -10,11 +10,13 @@ define () ->
 
   class GlobalScope
 
-    constructor: () ->
+    constructor: (@toWindow) ->
       @scope = {}
 
     add: (name, value) ->
       @scope[name] = value
+      if @toWindow is true
+        window[name] = value
 
     getScope: () -> @scope
 
