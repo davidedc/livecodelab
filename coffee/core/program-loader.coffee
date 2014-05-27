@@ -231,6 +231,19 @@ define [
               play 'voltage'  ,'xzxz zxzz xzxx xzxx'
               play 'tranceKick'  ,'zxzx zzzx xzzz zzxx'
               """
+
+      @programs.demos.overScratch =
+        submenu: "Sound"
+        title: "Sound: Over-scratch"
+        code: """
+              bpm 108
+              play 'tranceKick'  ,'xzxz zx'
+              play 'tranceKick1'  ,'xzxzxzx'
+              play 'scratch' + int(random(14)) ,'x'
+              play 'scratch-med' + int(random(8)) ,'xz'
+              play 'scratch-high' + int(random(2)) ,'xzzz'
+              play 'scratch-rough' + int(random(4)) ,'xz'
+              """
     
       @programs.demos.trySoundsDemo =
         submenu: "Sound"
