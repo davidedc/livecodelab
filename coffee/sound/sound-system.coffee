@@ -199,7 +199,7 @@ define () ->
     
     # Called form the document ready block in init.js
     loadAndTestAllTheSounds: ->
-      @lowLag.init()
+      @lowLag.init({sm2url:"js/lib/sm2/swf/"})
       soundDef = undefined
       soundInfo = undefined
       preloadSounds = undefined

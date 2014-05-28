@@ -13,8 +13,8 @@ var lowLag = new function(){
 
 	this.soundUrl = "";
 
+	this.debug = "console";
 	//this.debug = "console";
-	this.debug = "";
 
 
 	this.init = function(config){
@@ -68,7 +68,7 @@ var lowLag = new function(){
 				this.play = this.playSoundSM2;
 				lowLag.msg("loading SM2 from "+lowLag.sm2url);
 				soundManager.setup({ url: lowLag.sm2url, useHighPerformance:true, 
-					onready:lowLag.sm2Ready , debugMode: true})
+					onready:lowLag.sm2Ready , debugMode: false})
 
 
 			break;
@@ -147,6 +147,7 @@ var lowLag = new function(){
 
 
 
+	this.webkitPendingRequest = {};
 
 
 	this.webkitAudioContext = undefined;
@@ -164,6 +165,10 @@ lowLag.msg('webkitAudio loading '+url+' as tag ' + tag);
 		request.onload = function() {
 		    lowLag.webkitAudioContext.decodeAudioData(request.response, function(buffer) {
 				lowLag.webkitAudioBuffers[tag] = buffer;
+				
+				if(lowLag.webkitPendingRequest[tag]){ //a request might have come in, try playing it now
+					lowLag.playSoundWebkitAudio(tag);
+				}
 			}, lowLag.errorLoadWebkitAudtioFile);
 		};
 		request.send();
@@ -176,6 +181,10 @@ lowLag.msg('webkitAudio loading '+url+' as tag ' + tag);
 	this.playSoundWebkitAudio= function(tag){
 		lowLag.msg("playSoundWebkitAudio "+tag);
 		var buffer = lowLag.webkitAudioBuffers[tag];
+		if(buffer == undefined) { //possibly not loaded; put in a request to play onload
+			lowLag.webkitPendingRequest[tag] = true;
+			return;
+		}
 		var context = lowLag.webkitAudioContext;
 		var source = context.createBufferSource(); // creates a sound source
 		source.buffer = buffer;                    // tell the source which sound to play
@@ -249,6 +258,7 @@ lowLag.msg(tag);
 
 
 	this.msg = function(m){
+		return; // too many debugs :-)
 		m = "-- lowLag "+m;
 		if(lowLag.debug == 'both' || lowLag.debug == 'console'){
 			console.log(m+"<br>");
@@ -257,5 +267,8 @@ lowLag.msg(tag);
 			$('#lowLag').append(m+"<br>");
 		}
 	}
+
+
+
 
 }

@@ -9,6 +9,7 @@ requirejs.config(
     'bowser': 'lib/bowser'
     'buzz': 'lib/buzz'
     'lowLag': 'lib/lowLag'
+    'soundmanager2': 'lib/sm2/js/soundmanager2-jsmin'
     'codemirror': 'lib/codemirror'
     'coffeescript': 'lib/coffee-script'
     'codemirror-lcl-mode': 'lib/coffeescript-livecodelab-mode'
@@ -39,7 +40,7 @@ requirejs.config(
       deps: []
       exports: 'buzz'
     'lowLag':
-      deps: []
+      deps: ['soundmanager2']
       exports: 'lowLag'
     'codemirror':
       deps: []
