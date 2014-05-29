@@ -38,12 +38,22 @@ require [
 ) ->
 
   # see http://stackoverflow.com/questions/2745432
-  isCanvasSupported = ->
-    elem = document.createElement("canvas")
-    
+  canvasIsSupportedAndNotIE9 = ->
+
+    # first check if we are IE 9
+    div = document.createElement("div");
+    div.innerHTML = "<!--[if IE 9 ]><i></i><![endif]-->";
+    isIE9 = (div.getElementsByTagName("i").length == 1);
+    if (isIE9)
+      return false
+
+
+    # now check is the canvas element is available
+    elem = document.createElement("canvas")  
     # One would think that doing the !! double negation below is
     # redundant but no, that's how Javascript rolls.
     !!(elem.getContext and elem.getContext("2d"))
+
 
   startEnvironment = (paramsObject) ->
     
@@ -51,7 +61,15 @@ require [
     # Phase 1 - Preliminary checks and initialisations
     # before LiveCodeCore.
     #/////////////////////////////////////////////////////
-    unless isCanvasSupported
+    
+    # We need to check that the browser supports canvas
+    # AND that we are not in IE9.
+    # IE9 supports canvas, but Three.js doesn't work on it
+    # because it uses typedArrays. There would be a shim
+    # but I tried it and it's way too slow. References:
+    #    https://github.com/mrdoob/three.js/issues/4452
+    #    http://caniuse.com/typedarrays
+    unless canvasIsSupportedAndNotIE9()
       $("#noCanvasMessage").modal onClose: ->
         $("#loading").text "sorry :-("
         $.modal.close()
