@@ -231,7 +231,7 @@ define () ->
       # In case we want to make each frame an actual
       # pure function then we need to seed "random" and "noise"
       # each frame...
-      # All the math functions ideally should be taken out of the
+      # [todo] All the math functions ideally should be taken out of the
       # global scope same as in the colour-functions.coffee file
       # but they are global now so here we go.
       # noiseSeed @frame
