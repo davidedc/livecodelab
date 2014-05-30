@@ -166,6 +166,13 @@ define () ->
     # Initialised in the constructor.
     lastPositionOfPrimitiveType: []
     numberOfOverlappingPrimitives: []
+
+    # we can avoid invoking render() is there are
+    # two consecutive frames where no object-drawing
+    # primitives are invoked so we use these to keep
+    # track of of that.
+    atLeastOneObjectIsDrawn: false
+    atLeastOneObjectWasDrawn: false
     
     constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance, @colourLiterals) ->
       
@@ -321,6 +328,11 @@ define () ->
     createObjectIfNeededAndDressWithCorrectMaterial: (
       a, b, c, primitiveProperties, strokeTime, colorToBeUsed,
       alphaToBeUsed, applyDefaultNormalColor) ->
+
+      # we can avoid invoking render() is there are
+      # no objects being drawn so let's keep track
+      # of that.
+      @atLeastOneObjectIsDrawn = true
 
       objectIsNew = false
       pooledObjectWithMaterials = undefined
@@ -630,6 +642,12 @@ define () ->
       return
 
     reset: ->
+
+      # we can avoid invoking render() is there are
+      # no objects being drawn so let's keep track
+      # of that.
+      @atLeastOneObjectIsDrawn = false
+
       @resetFillStack()
       @resetStrokeStack()
 

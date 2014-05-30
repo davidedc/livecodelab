@@ -194,13 +194,25 @@ define () ->
       @setFrame(@frame + 1)
       
       
-      # if livecodelab is dozing off, in that case you do
-      # want to do a render because it will clear the screen.
-      # otherwise the last frame of the sketch is going
-      # to remain painted in the background behind
-      # the big cursor.
-      if !@noDrawFrame or @liveCodeLabCoreInstance.dozingOff
+      # We want to avoid the rendering as soon as 2 consecutive
+      # invocations of the draw method issue no
+      # primitive-drawing commands
+      # This applies particularly as the user only does music
+      # and no graphics: with no 3d rendering the music
+      # plays much more regularly and laptops' fan is quiet
+      # and battery life is spared.
+      geometryOnScreenMightHaveChanged =  (@liveCodeLabCoreInstance.graphicsCommands.atLeastOneObjectWasDrawn or
+          @liveCodeLabCoreInstance.graphicsCommands.atLeastOneObjectIsDrawn)
+
+
+      if (!@noDrawFrame) and geometryOnScreenMightHaveChanged
+
         @liveCodeLabCoreInstance.renderer.render @liveCodeLabCoreInstance.graphicsCommands
+        
+        @liveCodeLabCoreInstance.graphicsCommands.atLeastOneObjectWasDrawn =
+            @liveCodeLabCoreInstance.graphicsCommands.atLeastOneObjectIsDrawn    
+
+        
         # keep the last 10 durations of when we actually
         # drew the frame. This is used for trying to
         # avoid collision between graphics and sound timers.
