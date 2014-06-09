@@ -194,6 +194,39 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
         return [undefined,"✓ must be next to a doOnce"]
       return [code, error]
 
+    # strings shouldn't undergo any transformation
+    # so we use replace all the strings with
+    # references to a table, which we'll replace back
+    # later with the original strings.
+    # This code is adapted from Processing.js
+    # (ref: "codeWoStrings" and "injectStrings")
+    removeStrings: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      stringsTable = []
+      codeWithoutStrings = code.replace(/("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')/g, (all, quoted, aposed) ->
+        index = stringsTable.length
+        stringsTable.push all
+        return "'STRINGS_TABLE>" + index + "<STRINGS_TABLE'"
+      )
+
+      return [codeWithoutStrings, stringsTable, error]
+
+    # replaces strings and regexs keyed by index with an array of strings
+    # see "removeStrings" function
+    injectStrings: (code, stringsTable, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      code = code.replace /'STRINGS_TABLE>(\d+)<STRINGS_TABLE'/g, (all, index) ->
+        val = stringsTable[index]
+        return val
+
+      return [code, error]
+
+
+
     addTracingInstructionsToDoOnceBlocks: (code, error) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
@@ -1555,6 +1588,10 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       error = undefined
 
       if detailedDebug then console.log "preprocess-0\n" + code + " error: " + error
+
+      [code, stringsTable, error] = @removeStrings(code, error)
+      if detailedDebug then console.log "preprocess-0\n" + code + " error: " + error
+
       [code, error, userDefinedFunctions, userDefinedFunctionsWithArguments] = @findUserDefinedFunctions(code, error)
       if detailedDebug then console.log "preprocess-0.5\n" + code + " error: " + error
 
@@ -1667,6 +1704,9 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       # it would be better to have beautification as the very last step
       [code, error] = @simplifyFunctionDoingSimpleInvocation(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-19\n" + code + " error: " + error
+
+      [code, error] = @injectStrings(code, stringsTable, error)
+      if detailedDebug then console.log "preprocess-20\n" + code + " error: " + error
 
 
       return [code, error, userDefinedFunctions]

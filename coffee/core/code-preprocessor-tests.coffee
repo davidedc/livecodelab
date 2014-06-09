@@ -3095,6 +3095,24 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          notIdempotent: true
          failsMootAppends: true
+        ,
+         notes:    """
+                   tests that nothing inside strings undergoes
+                   any processing
+                   """
+         input:    """
+                   F = -> box
+                   s = "F-"
+                   k = 'F'
+                   """
+         expected: """
+                   F = -> box()
+                   s = "F-"
+                   k = 'F'
+                   """
+         notIdempotent: false
+         failsMootAppends: false
+
 
 
       ]
