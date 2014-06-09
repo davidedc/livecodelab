@@ -1590,13 +1590,13 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "preprocess-0\n" + code + " error: " + error
 
       [code, stringsTable, error] = @removeStrings(code, error)
-      if detailedDebug then console.log "preprocess-0\n" + code + " error: " + error
+      if detailedDebug then console.log "preprocess-1\n" + code + " error: " + error
 
       [code, error, userDefinedFunctions, userDefinedFunctionsWithArguments] = @findUserDefinedFunctions(code, error)
-      if detailedDebug then console.log "preprocess-0.5\n" + code + " error: " + error
+      if detailedDebug then console.log "preprocess-2\n" + code + " error: " + error
 
       [code, error, bracketsVariables, bracketsVariablesArray] = @findBracketVariables(code, error)
-      if detailedDebug then console.log "preprocess-0.7\n" + code + " error: " + error
+      if detailedDebug then console.log "preprocess-3\n" + code + " error: " + error
 
       #@qualifyingCommandsRegex = @qualifyingCommands + bracketsVariables
       #console.log "all commands plus bracket variables BEFORE: " + @primitivesAndMatrixRegex + bracketsVariables
@@ -1604,17 +1604,17 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       #console.log "all commands plus bracket variables: " + @primitivesAndMatrixRegex + bracketsVariables
 
       [code, error] = @removeTickedDoOnce(code, error)
-      if detailedDebug then console.log "preprocess-2\n" + code + " error: " + error
-      [code, codeWithoutStringsOrComments, error] = @stripCommentsAndStrings(code, error)
-      if detailedDebug then console.log "preprocess-3\n" + code + " error: " + error
-      [code, error] = @checkBasicSyntax(code, codeWithoutStringsOrComments, error)
       if detailedDebug then console.log "preprocess-4\n" + code + " error: " + error
+      [code, codeWithoutStringsOrComments, error] = @stripCommentsAndStrings(code, error)
+      if detailedDebug then console.log "preprocess-5\n" + code + " error: " + error
+      [code, error] = @checkBasicSyntax(code, codeWithoutStringsOrComments, error)
+      if detailedDebug then console.log "preprocess-6\n" + code + " error: " + error
 
       [code, error] = @removeDoubleChevrons(code, error)
-      if detailedDebug then console.log "preprocess-4.5\n" + code + " error: " + error
+      if detailedDebug then console.log "preprocess-7\n" + code + " error: " + error
 
       [code, error] = @rearrangeColorCommands(code, error)
-      if detailedDebug then console.log "preprocess-5\n" + code + " error: " + error
+      if detailedDebug then console.log "preprocess-8\n" + code + " error: " + error
 
       # allow some common command forms can be used in postfix notation, e.g.
       #   60 bpm
@@ -1622,14 +1622,14 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       #   yellow stroke
       #   black background
       #[code, error] = @adjustPostfixNotations(code, error)
-      #if detailedDebug then console.log "preprocess-6\n" + code + " error: " + error
+      #if detailedDebug then console.log "preprocess-9\n" + code + " error: " + error
 
 
       [code, error] = @normaliseTimesNotationFromInput(code, error)
-      if detailedDebug then console.log "preprocess-6.5\n" + code + " error: " + error
+      if detailedDebug then console.log "preprocess-10\n" + code + " error: " + error
 
       [code, error] = @checkBasicErrorsWithTimes(code, error)
-      if detailedDebug then console.log "preprocess-7\n" + code + " error: " + error
+      if detailedDebug then console.log "preprocess-11\n" + code + " error: " + error
       
 
 
@@ -1655,7 +1655,7 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       # where exactly it is so that we can go back and mark it with a tick
       # (which prevents a second run to happen, as the tickmarks expand into
       # line comments).
-      if detailedDebug then console.log "preprocess-8\n" + code + " error: " + error
+      if detailedDebug then console.log "preprocess-12\n" + code + " error: " + error
       [code, error] = @addTracingInstructionsToDoOnceBlocks(code, error)
 
       [ignore,a,ignore] = @identifyBlockStarts code, error
@@ -1663,35 +1663,35 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "completeImplicitFunctionPasses:\n" + code + " error: " + error
 
       [code, error] = @bindFunctionsToArguments(code, error, userDefinedFunctionsWithArguments)
-      if detailedDebug then console.log "preprocess-8.5\n" + code + " error: " + error
-      [code, error] = @transformTimesSyntax(code, error)
-      if detailedDebug then console.log "preprocess-9\n" + code + " error: " + error
-      [code, error] = @transformTimesWithVariableSyntax(code, error)
-      if detailedDebug then console.log "preprocess-9.2\n" + code + " error: " + error
-      [code, error] = @unbindFunctionsToArguments(code, error)
-      if detailedDebug then console.log "preprocess-9.5\n" + code + " error: " + error
-      [code, error] = @findQualifiers(code, error,bracketsVariables)
-      if detailedDebug then console.log "preprocess-10\n" + code + " error: " + error
-      [code, error] = @fleshOutQualifiers(code, error,bracketsVariables, bracketsVariablesArray)
-      if detailedDebug then console.log "preprocess-11\n" + code + " error: " + error
-      [code, error] = @adjustFunctionalReferences(code, error, userDefinedFunctions)
-      if detailedDebug then console.log "preprocess-17\n" + code + " error: " + error
-      [code, error] = @addCommandsSeparations(code, error, userDefinedFunctions)
-      if detailedDebug then console.log "preprocess-12\n" + code + " error: " + error
-      [code, error] = @adjustImplicitCalls(code, error, userDefinedFunctions, userDefinedFunctionsWithArguments, bracketsVariables)
       if detailedDebug then console.log "preprocess-13\n" + code + " error: " + error
-      [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
+      [code, error] = @transformTimesSyntax(code, error)
       if detailedDebug then console.log "preprocess-14\n" + code + " error: " + error
-      [code, error] = @evaluateAllExpressions(code, error, userDefinedFunctions)
+      [code, error] = @transformTimesWithVariableSyntax(code, error)
+      if detailedDebug then console.log "preprocess-15\n" + code + " error: " + error
+      [code, error] = @unbindFunctionsToArguments(code, error)
       if detailedDebug then console.log "preprocess-16\n" + code + " error: " + error
-      [code, error] = @avoidLastArgumentInvocationOverflowing(code, error, userDefinedFunctionsWithArguments)
+      [code, error] = @findQualifiers(code, error,bracketsVariables)
       if detailedDebug then console.log "preprocess-17\n" + code + " error: " + error
-      [code, error] = @fixParamPassingInBracketedFunctions(code, error, userDefinedFunctions)
-      if detailedDebug then console.log "preprocess-17.5\n" + code + " error: " + error
-      [code, error] = @putBackBracketVarOriginalName(code, error)
-      if detailedDebug then console.log "preprocess-17.7\n" + code + " error: " + error
-      [code, error] = @beautifyCode(code, error)
+      [code, error] = @fleshOutQualifiers(code, error,bracketsVariables, bracketsVariablesArray)
       if detailedDebug then console.log "preprocess-18\n" + code + " error: " + error
+      [code, error] = @adjustFunctionalReferences(code, error, userDefinedFunctions)
+      if detailedDebug then console.log "preprocess-19\n" + code + " error: " + error
+      [code, error] = @addCommandsSeparations(code, error, userDefinedFunctions)
+      if detailedDebug then console.log "preprocess-20\n" + code + " error: " + error
+      [code, error] = @adjustImplicitCalls(code, error, userDefinedFunctions, userDefinedFunctionsWithArguments, bracketsVariables)
+      if detailedDebug then console.log "preprocess-21\n" + code + " error: " + error
+      [code, error] = @adjustDoubleSlashSyntaxForComments(code, error)
+      if detailedDebug then console.log "preprocess-22\n" + code + " error: " + error
+      [code, error] = @evaluateAllExpressions(code, error, userDefinedFunctions)
+      if detailedDebug then console.log "preprocess-23\n" + code + " error: " + error
+      [code, error] = @avoidLastArgumentInvocationOverflowing(code, error, userDefinedFunctionsWithArguments)
+      if detailedDebug then console.log "preprocess-24\n" + code + " error: " + error
+      [code, error] = @fixParamPassingInBracketedFunctions(code, error, userDefinedFunctions)
+      if detailedDebug then console.log "preprocess-25\n" + code + " error: " + error
+      [code, error] = @putBackBracketVarOriginalName(code, error)
+      if detailedDebug then console.log "preprocess-26\n" + code + " error: " + error
+      [code, error] = @beautifyCode(code, error)
+      if detailedDebug then console.log "preprocess-27\n" + code + " error: " + error
       
       # unfortunately some beautification depends on the () being there
       # so we need to put this function here after the beautification step
@@ -1703,10 +1703,10 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       #  - other beautification
       # it would be better to have beautification as the very last step
       [code, error] = @simplifyFunctionDoingSimpleInvocation(code, error, userDefinedFunctions)
-      if detailedDebug then console.log "preprocess-19\n" + code + " error: " + error
+      if detailedDebug then console.log "preprocess-29\n" + code + " error: " + error
 
       [code, error] = @injectStrings(code, stringsTable, error)
-      if detailedDebug then console.log "preprocess-20\n" + code + " error: " + error
+      if detailedDebug then console.log "preprocess-29\n" + code + " error: " + error
 
 
       return [code, error, userDefinedFunctions]
