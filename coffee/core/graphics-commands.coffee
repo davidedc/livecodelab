@@ -167,7 +167,7 @@ define () ->
     lastPositionOfPrimitiveType: []
     numberOfOverlappingPrimitives: []
 
-    # we can avoid invoking render() is there are
+    # we can avoid invoking render() if there are
     # two consecutive frames where no object-drawing
     # primitives are invoked so we use these to keep
     # track of of that.
@@ -329,7 +329,7 @@ define () ->
       a, b, c, primitiveProperties, strokeTime, colorToBeUsed,
       alphaToBeUsed, applyDefaultNormalColor) ->
 
-      # we can avoid invoking render() is there are
+      # we can avoid invoking render() if there are
       # no objects being drawn so let's keep track
       # of that.
       @atLeastOneObjectIsDrawn = true
@@ -643,7 +643,7 @@ define () ->
 
     reset: ->
 
-      # we can avoid invoking render() is there are
+      # we can avoid invoking render() if there are
       # no objects being drawn so let's keep track
       # of that.
       @atLeastOneObjectIsDrawn = false
