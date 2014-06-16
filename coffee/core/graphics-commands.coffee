@@ -225,7 +225,7 @@ define () ->
       ###
       
       # these set the relative size of the
-      # primitibes in respect to the box
+      # primitives in respect to the box
       boxProportion = 1
       lineProportion = 1.4
       rectProportion = 1.2
