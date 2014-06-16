@@ -3112,7 +3112,38 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          notIdempotent: false
          failsMootAppends: false
-
+        ,
+         notes:    """
+                   tests avoidLastArgumentInvocationOverflowing
+                   substitutions also work with a dangling
+                   functions
+                   """
+         input:    """
+                   scale 2, wave time peg
+                   ▶scale ball
+                   """
+         expected: """
+                   scale 2, wave(time), peg, ->
+                   ▶scale ball
+                   """
+         notIdempotent: false
+         failsMootAppends: false
+        ,
+         notes:    """
+                   tests avoidLastArgumentInvocationOverflowing
+                   substitutions also work with a dangling
+                   functions
+                   """
+         input:    """
+                   scale 2, wave 2 peg
+                   ▶scale 2, wave 2 ball
+                   """
+         expected: """
+                   scale 2, wave(2), peg, ->
+                   ▶scale 2, wave(2), ball
+                   """
+         notIdempotent: false
+         failsMootAppends: false
 
 
       ]

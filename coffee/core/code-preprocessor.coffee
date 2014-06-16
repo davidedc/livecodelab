@@ -1501,11 +1501,11 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
     # user functions accepting arguments followed by
     # a space, which
     # in this case is 1 (wave)
-    # 2) then 2 closing parens are added before the chaining:
+    # 2) then 1 closing parens is added before the chaining:
     #   rotate 3, wave pulse / 10), -> box 3, 4
     # 3) then an open parens replaces each
     # expression or user function followed by a space:
-    #   rotate 3, wave(pulse / 10)), -> box 3, 4
+    #   rotate 3, wave(pulse / 10), -> box 3, 4
     avoidLastArgumentInvocationOverflowing: (code, error, userDefinedFunctionsWithArguments) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
@@ -1521,12 +1521,16 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       rx = RegExp(",\\s*(\\()("+@primitivesRegex+")",'g')
       code = code.replace(rx, ", ->★$2")
 
+      rx = RegExp(", *->",'g')
+      code = code.replace(rx, "☆")
+
       while code != previousCodeTransformations
         previousCodeTransformations = code
 
+
         # find the code between the qualifier and the
         # arrow
-        rx = RegExp("("+qualifyingFunctionsRegex+")(.*)(, *->)",'')
+        rx = RegExp("("+qualifyingFunctionsRegex+")([^☆\\r\\n]*)(☆)",'')
         match = rx.exec code
         
         if not match
@@ -1559,13 +1563,16 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
         # Note that there might be more than one parens to be
         # added for example in
         #   rotate 3, wave wave 2 box 3, 4
-        for i in [0..numOfExpr]
-          rx = RegExp("("+qualifyingFunctionsRegex+")(.*)(("+expsAndUserFunctionsWithArgs+") +)(.*)(, *->)",'')
+        for i in [0...numOfExpr]
+          rx = RegExp("("+qualifyingFunctionsRegex+")([^☆]*)(("+expsAndUserFunctionsWithArgs+") +)([^☆\\r\\n]*)(☆)",'')
           if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-0 regex: " + rx
           if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-0 on: " + code
           
-          code = code.replace(rx, "$1$2$4($5, ->")
+          code = code.replace(rx, "$1$2$4($5☆")
 
+        rx = RegExp("("+qualifyingFunctionsRegex+")([^☆]*)(("+expsAndUserFunctionsWithArgs+") *)([^☆\\r\\n]*)(☆)",'')
+        if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-0.5 regex: " + rx
+        if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-0.5 on: " + code
         # finally, we change the arrow so that
         # we don't come back to this snippet of code again
         code = code.replace(rx, "$1$2$4$5, →")
@@ -1573,6 +1580,7 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
         if detailedDebug then console.log "avoidLastArgumentInvocationOverflowing-1\n" + code + " error: " + error
         #alert match2 + " num of expr " + numOfExpr + " code: " + code
 
+      code = code.replace(/☆/g, ", ->")
       code = code.replace(/→/g, "->")
       code = code.replace(/, ->★/g, ", (")
 
