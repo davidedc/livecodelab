@@ -6,8 +6,10 @@
 ## returned in a dedicated variable.
 ##
 ## In order to run the tests just open the
-## console and type
+## console and type:
 ##   testPreprocessor()
+## or, to run a subset:
+##   testPreprocessor(rangeMin, rangeMax)
 ###
 
 detailedDebug = false
@@ -151,12 +153,12 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       @colorsCommandsRegex = @colorCommands.join "|"
       # make the preprocessor tests easily accessible from
       # the debug console (just type testPreprocessor())
-      window.testPreprocessor = =>
+      window.testPreprocessor =  (rangeMin = undefined, rangeMax = undefined) =>
         # there are far too many tests to
         # keep the debug on
         previousDetailedDebug = detailedDebug
         detailedDebug = false
-        @test()
+        @test(rangeMin, rangeMax)
         detailedDebug = previousDetailedDebug
 
     ###
@@ -1713,10 +1715,18 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
 
 
     # to run the tests, just open the dev console
-    # and type: testPreprocessor()
-    test: ->
+    # and type:
+    #    testPreprocessor()
+    # or
+    #    testPreprocessor(rangeMin, rangeMax)
+    test: (rangeMin = undefined, rangeMax = undefined) ->
+        console.log "launching all tests"
         failedTests = successfulTest = knownIssues = failedIdempotency = failedMootAppends = failedMootPrepends = 0
-        for testCaseNumber in [0...@testCases.length]
+        unless rangeMin?
+          rangeMin = 0
+          rangeMax = @testCases.length
+        console.log "launching tests: " + [rangeMin...rangeMax]
+        for testCaseNumber in [rangeMin...rangeMax]
           testCase = @testCases[testCaseNumber]
 
           # just like in demos and tutorials, we use an
