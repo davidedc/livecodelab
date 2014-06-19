@@ -953,6 +953,10 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       delimitersForCommands = ":|;|\\,|\\?|\\)|//|\\#|\\s+if|\\s+else|\\s+then"
       delimitersForExpressions = delimitersForCommands + "|" + "\\+|-|\\*|/|%|&|]|<|>|==|!=|>=|<=|!(?![=])|\\s+and\\s+|\\s+or\\s+|\\s+not\\s+|\\|"
 
+      #we don't want the dash of the arrow to count as a minus, so
+      #replacing the arrow with one char
+      code = code.replace(/->/g, "→")
+
       if detailedDebug then console.log "adjustImplicitCalls-4 brackets vars:" + bracketsVariables
       rx = RegExp("([^\\w\\d\\r\\n])("+@allCommandsRegex+bracketsVariables+")[ \\t]*("+delimitersForCommands+")",'g')
       for i in [1..2]
@@ -991,6 +995,9 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       # 2 times -> rotate; box
       rx = RegExp("([^\\w\\d\\r\\n])("+allFunctionsRegex+")[ \\t]*$",'gm')
       code = code.replace(rx, "$1$2()")
+
+      code = code.replace(/→/g, "->")
+
       if detailedDebug then console.log "adjustImplicitCalls-7\n" + code + " error: " + error
       return [code, error]
 
@@ -1669,7 +1676,7 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       [code, error] = @addTracingInstructionsToDoOnceBlocks(code, error)
 
       [ignore,a,ignore] = @identifyBlockStarts code, error
-      [code, error] = @completeImplicitFunctionPasses code, a, error, userDefinedFunctionsWithArguments
+      [code, error] = @completeImplicitFunctionPasses code, a, error, userDefinedFunctionsWithArguments, bracketsVariables
       if detailedDebug then console.log "completeImplicitFunctionPasses:\n" + code + " error: " + error
 
       [code, error] = @bindFunctionsToArguments(code, error, userDefinedFunctionsWithArguments)
@@ -1885,11 +1892,11 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       bottomOfProgram = sourceByLine.length-1
       return bottomOfProgram
 
-    completeImplicitFunctionPasses: (code, linesWithBlockStart, error, userDefinedFunctionsWithArguments) ->
+    completeImplicitFunctionPasses: (code, linesWithBlockStart, error, userDefinedFunctionsWithArguments, bracketsVariables) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
-      qualifyingFunctions = @qualifyingCommandsRegex + userDefinedFunctionsWithArguments
+      qualifyingFunctions = @primitivesAndMatrixRegex + userDefinedFunctionsWithArguments + bracketsVariables
 
       sourceByLine = code.split("\n")
       transformedLines = []

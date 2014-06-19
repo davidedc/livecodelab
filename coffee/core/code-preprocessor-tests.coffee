@@ -2213,7 +2213,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
          expected: """
                    a = box
                    noFill()
-                   rotate -> run a -> scale 2, -> run a
+                   rotate -> run -> a -> scale 2, -> run a
                    """
          notIdempotent: true
          failsMootAppends: true
@@ -3075,7 +3075,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    peg()
 
                    a = ((parametersForBracketedFunctions) -> (move 1, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))
-                   box a -> ball()
+                   box -> a ball
                    """
          notIdempotent: true
          failsMootAppends: true
@@ -3091,7 +3091,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    above = ((parametersForBracketedFunctions) -> (move 0,-0.5,0, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))
-                   box above -> ball above -> peg()
+                   box -> above -> ball -> above peg
                    """
          notIdempotent: true
          failsMootAppends: true
@@ -3123,7 +3123,7 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    ▶scale ball
                    """
          expected: """
-                   scale 2, wave(time), peg, ->
+                   scale 2, wave(time), -> peg ->
                    ▶scale ball
                    """
          notIdempotent: false
@@ -3139,11 +3139,25 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    ▶scale 2, wave 2 ball
                    """
          expected: """
-                   scale 2, wave(2), peg, ->
+                   scale 2, wave(2), -> peg ->
                    ▶scale 2, wave(2), ball
                    """
          notIdempotent: false
          failsMootAppends: false
+        ,
+         notes:    """
+                   """
+         input:    """
+                   ball
+                   ▶box
+                   """
+         expected: """
+                   ball ->
+                   ▶box()
+                   """
+         notIdempotent: false
+         failsMootAppends: false
+
 
 
       ]
