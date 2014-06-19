@@ -3210,8 +3210,51 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          notIdempotent: false
          failsMootAppends: false
-
-
+        ,
+         notes:    """
+                   """
+         input:    """
+                   flashing = <if random < 0.5 then scale 0 else scale 2>
+                   flashing
+                   ball
+                   """
+         expected: """
+                   flashing = ifFunctional(random() < 0.5 ,((parametersForBracketedFunctions) -> (scale 0, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null))), ((parametersForBracketedFunctions) -> (scale 2, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null))))
+                   flashing()
+                   ball()
+                   """
+         notIdempotent: false
+         failsMootAppends: false
+        ,
+         notes:    """
+                   """
+         input:    """
+                   flashing = <if random < 0.5 then scale>
+                   flashing
+                   ball
+                   """
+         expected: """
+                   flashing = ifFunctional(random() < 0.5 ,scale)
+                   flashing()
+                   ball()
+                   """
+         notIdempotent: false
+         failsMootAppends: false
+        ,
+         notes:    """
+                   """
+         input:    """
+                   flashing = <if random < 0.5 then scale 0>
+                   flashing
+                   ball
+                   """
+         expected: """
+                   flashing = ifFunctional(random() < 0.5 ,((parametersForBracketedFunctions) -> (scale 0, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null))))
+                   flashing()
+                   ball()
+                   """
+         notIdempotent: false
+         failsMootAppends: false
       ]
 
   CodePreprocessorTests

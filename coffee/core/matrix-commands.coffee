@@ -17,12 +17,13 @@ define () ->
 
     addToScope: (scope) ->
 
-      scope.add('pushMatrix',  () => @pushMatrix())
-      scope.add('popMatrix',   () => @popMatrix())
-      scope.add('resetMatrix', () => @resetMatrix())
-      scope.add('move',        (theArguments...) => @move.apply(this,theArguments))
-      scope.add('rotate',      (theArguments...) => @rotate.apply(this,theArguments))
-      scope.add('scale',       (theArguments...) => @scale.apply(this,theArguments))
+      scope.add('pushMatrix',           () => @pushMatrix())
+      scope.add('discardPushedMatrix',  () => @discardPushedMatrix())
+      scope.add('popMatrix',            () => @popMatrix())
+      scope.add('resetMatrix',          () => @resetMatrix())
+      scope.add('move',                 (theArguments...) => @move.apply(this,theArguments))
+      scope.add('rotate',               (theArguments...) => @rotate.apply(this,theArguments))
+      scope.add('scale',                (theArguments...) => @scale.apply(this,theArguments))
 
     getWorldMatrix: ->
       @worldMatrix
@@ -37,6 +38,26 @@ define () ->
 
       @matrixStack.push @worldMatrix
       @worldMatrix = (new @liveCodeLabCore_three.Matrix4()).copy(@worldMatrix)
+
+    # in the following case:
+    #  flashing = <if random < 0.5 then scale 0>
+    #  flashing
+    #  ball
+    # it happens that because flashing is invoked
+    # without arguments, then scale is invoked with 0
+    # and a function that returns null
+    # in which case it means that scale has done a
+    # push matrix, it invokes the chained function
+    # and finds out that the transformation actually
+    # won't be popped. So we need a way to "undo"
+    # the push. This is like a pop but we
+    # discard the popped value.
+    discardPushedMatrix: ->
+      if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
+        return
+
+      if @matrixStack.length
+        @matrixStack.pop()
 
     popMatrix: ->
       if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
@@ -83,7 +104,12 @@ define () ->
       @worldMatrix.multiply(new @liveCodeLabCore_three.Matrix4().makeTranslation(arg_a, arg_b, arg_c))
       if appendedFunctionsStartIndex?
         while isFunction arguments[appendedFunctionsStartIndex]
-          arguments[appendedFunctionsStartIndex]()
+          result = arguments[appendedFunctionsStartIndex]()
+          # we find out that the function is actually
+          # a fake so we have to undo the push and leave
+          if result == null
+            discardPushedMatrix()
+            return;
           appendedFunctionsStartIndex++
         @popMatrix()
 
@@ -117,7 +143,12 @@ define () ->
       @worldMatrix.multiply(new @liveCodeLabCore_three.Matrix4().makeRotationFromEuler(new @liveCodeLabCore_three.Euler(arg_a,arg_b,arg_c,'XYZ')))
       if appendedFunctionsStartIndex?
         while isFunction arguments[appendedFunctionsStartIndex]
-          arguments[appendedFunctionsStartIndex]()
+          result = arguments[appendedFunctionsStartIndex]()
+          # we find out that the function is actually
+          # a fake so we have to undo the push and leave
+          if result == null
+            discardPushedMatrix()
+            return;
           appendedFunctionsStartIndex++
         @popMatrix()
 
@@ -157,7 +188,12 @@ define () ->
       @worldMatrix.multiply(new @liveCodeLabCore_three.Matrix4().makeScale(arg_a, arg_b, arg_c))
       if appendedFunctionsStartIndex?
         while isFunction arguments[appendedFunctionsStartIndex]
-          arguments[appendedFunctionsStartIndex]()
+          result = arguments[appendedFunctionsStartIndex]()
+          # we find out that the function is actually
+          # a fake so we have to undo the push and leave
+          if result == null
+            discardPushedMatrix()
+            return;
           appendedFunctionsStartIndex++
         @popMatrix()
 

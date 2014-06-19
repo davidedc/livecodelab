@@ -38,7 +38,11 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
         if elseCode?
           elseCode.apply this, afterBlocks
         else
-          afterBlocks[0]()
+          # in the example above, flickering might be
+          # called without an argument and without
+          # a block, so check that case
+          if afterBlocks[0]?
+            afterBlocks[0]()
 
 
   class CodePreprocessor
