@@ -16,6 +16,31 @@ detailedDebug = false
 
 define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocessorTests, ColourLiterals) ->
 
+  # we want to have the following snippet to work:
+  #   flickering = <if random > 0.5 then scale 0>
+  #   flickering
+  #     box
+  #     peg
+  # in order to do that, we need to have "scale 0" inside
+  # that if to take a function (the box/peg block)
+  # in order to do that, we transform the if into
+  #    flickering = ifFunctional(random() > 0.5, scale function taking the block as argument)
+  # so flickering is a function that can take the block as argument.
+  window.ifFunctional = (condition, thenCode, elseCode) ->
+    #console.log "outside: " + thenCode
+    (afterBlocks...) ->
+      #console.log "inside: " + thenCode
+      #console.log "afterBlocks: " + afterBlocks
+      #console.log "condition: " + condition
+      if condition
+        thenCode.apply this, afterBlocks
+      else
+        if elseCode?
+          elseCode.apply this, afterBlocks
+        else
+          afterBlocks[0]()
+
+
   class CodePreprocessor
 
     testCases: null
@@ -1598,6 +1623,22 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       return [code, error]
 
 
+    # see the comment next to ifFunctional definition
+    # to see what we are trying to achieve here.
+    substituteIfsInBracketsWithFunctionalVersion: (code, error) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      code = code.replace(/(\w+\s*=\s*<\s*if\s*.*)>(.*>)/g, "$1›$2")
+      code = code.replace(/(\w+)\s*=\s*<\s*if\s*(.*)(>)/g, "$1 = ifFunctional($2>)")
+      code = code.replace(/(\w+\s*=\s*ifFunctional\s*.*)then(.*>\))/g, "$1,<$2")
+      code = code.replace(/(\w+\s*=\s*ifFunctional\s*.*)else(.*>\))/g, "$1>, <$2")
+      code = code.replace(/›/g, ">")
+
+      if detailedDebug then console.log "substituteIfsInBracketsWithFunctionalVersion-1\n" + code + " error: " + error
+
+      return [code, error]
+
     preprocess: (code, bracketsVariables) ->
       # we'll keep any errors in here as we transform the code
       # as soon as there is any error, all next stages of
@@ -1626,6 +1667,9 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "preprocess-5\n" + code + " error: " + error
       [code, error] = @checkBasicSyntax(code, codeWithoutStringsOrComments, error)
       if detailedDebug then console.log "preprocess-6\n" + code + " error: " + error
+
+      [code, error] = @substituteIfsInBracketsWithFunctionalVersion(code, error)
+      if detailedDebug then console.log "preprocess-6.5\n" + code + " error: " + error
 
       [code, error] = @removeDoubleChevrons(code, error)
       if detailedDebug then console.log "preprocess-7\n" + code + " error: " + error
