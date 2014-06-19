@@ -579,7 +579,7 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "beautifyCode-22:\n" + code + " error: " + error
 
       allFunctionsRegex = @allCommandsRegex + "|" + @expressionsRegex
-      rx = RegExp("\\(("+allFunctionsRegex+")\\)",'g')
+      rx = RegExp("\\( *("+allFunctionsRegex+") *\\)",'g')
       code = code.replace(rx, "$1")
       if detailedDebug then console.log "beautifyCode-23:\n" + code + " error: " + error
 
