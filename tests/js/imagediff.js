@@ -293,7 +293,21 @@ toImageDiffEqual : function (expected, tolerance) {
           context = canvas.getContext('2d');
           context.putImageData(diff, 0, 0);
 
-          a.appendChild(toCanvas(this.actual));
+          // We'll show an image from this canvas
+          // (explained below)
+          // so we don't need to show the canvas.
+          // a.appendChild(toCanvas(this.actual));
+
+          // We show *an image* that
+          // we create given the canvas data.
+          // The reason is that the canvas can't be saved as
+          // an image in many browsers (e.g. Chrome), while
+          // the derived image can.
+          // Saving the image is going to be useful when
+          // replacing "expected images", e.g. updating
+          // the reference expected outcome, in case we
+          // accept a (subtle?) change in behaviour to
+          // be acceptable
           a.appendChild(img);
           img.src = toCanvas(this.actual).toDataURL();
           b.appendChild(toCanvas(expected));
