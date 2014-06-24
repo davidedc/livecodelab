@@ -14,6 +14,10 @@ The [source documentation](source/lcl-init.html) shows the actual code, together
 
 Yes there is a [doc](how-tos/build.html) for that.
 
+##How to test and ad tests to LiveCodeLab?
+
+[here](how-tos/test.html).
+
 ##Technical - How to upgrade to newer versions of Three.js
 
 Three.js is the backbone of LiveCodeLab, [this guide](how-tos/upgrade-Threejs-version.html) notes what one needs to do to keep up with new Three.js versions.
