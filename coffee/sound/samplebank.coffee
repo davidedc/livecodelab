@@ -73,6 +73,25 @@ define () ->
       @load "penta13", "./sound/audioFiles/toneMatrix-14"
       @load "penta14", "./sound/audioFiles/toneMatrix-15"
       @load "penta15", "./sound/audioFiles/toneMatrix-16"
+
+      @load "pianoLDChord", "./sound/audioFiles/pianoLDChordsA"
+      @load "pianoLDChord0", "./sound/audioFiles/pianoLDChordsA"
+      @load "pianoLDChord1", "./sound/audioFiles/pianoLDChordsB"
+      @load "pianoLDChord2", "./sound/audioFiles/pianoLDChordsC"
+      @load "pianoLDChord3", "./sound/audioFiles/pianoLDChordsE"
+
+      @load "pianoLHChord", "./sound/audioFiles/pianoLHChordsA"
+      @load "pianoLHChord0", "./sound/audioFiles/pianoLHChordsA"
+      @load "pianoLHChord1", "./sound/audioFiles/pianoLHChordsB"
+      @load "pianoLHChord2", "./sound/audioFiles/pianoLHChordsC"
+      @load "pianoLHChord3", "./sound/audioFiles/pianoLHChordsE"
+
+      @load "pianoRHChord", "./sound/audioFiles/pianoRHChordsA"
+      @load "pianoRHChord0", "./sound/audioFiles/pianoRHChordsA"
+      @load "pianoRHChord1", "./sound/audioFiles/pianoRHChordsB"
+      @load "pianoRHChord2", "./sound/audioFiles/pianoRHChordsC"
+      @load "pianoRHChord3", "./sound/audioFiles/pianoRHChordsE"
+
       @load "ride", "./sound/audioFiles/RIDE_1"
 
       # scratches of short length
