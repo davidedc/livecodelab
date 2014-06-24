@@ -8,7 +8,7 @@
 ## In order to run the tests just open the
 ## console and type:
 ##   testPreprocessor()
-## or, to run a subset:
+## or, to run a subset (useful for bisection in case something goes wrong):
 ##   testPreprocessor(rangeMin, rangeMax)
 ###
 
