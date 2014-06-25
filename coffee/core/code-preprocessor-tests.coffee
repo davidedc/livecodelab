@@ -3255,6 +3255,22 @@ define ['core/code-preprocessor-tests'], (foo) ->
                    """
          notIdempotent: false
          failsMootAppends: false
+        ,
+         notes:    """
+                   """
+         input:    """
+                   F = <box> 
+                   a = <F>
+                   run a
+                   """
+         expected: """
+                   F = box 
+                   a = F
+                   run a
+                   """
+         notIdempotent: false
+         failsMootAppends: false
+
       ]
 
   CodePreprocessorTests

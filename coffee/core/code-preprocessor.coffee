@@ -538,6 +538,25 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "simplifyFunctionDoingSimpleInvocation-1:\n" + code + " error: " + error
       return [code, error]
 
+    # sometimes you are left with something like
+    #   a = (F)
+    # where F is a function.
+    # simplify that to
+    #   a = F
+    simplifyFunctionsAloneInParens:(code, error, userDefinedFunctions, bracketsVariables) ->
+      # if there is an error, just propagate it
+      return [undefined, error] if error?
+
+      functionsRegex = @allCommandsRegex + userDefinedFunctions + bracketsVariables
+
+      rx = RegExp("\\([ \\t]*(" + functionsRegex + ")[ \\t]*\\)[ \\t]*$",'gm')
+      console.log rx
+      code = code.replace(rx, "$1")
+
+
+      if detailedDebug then console.log "simplifyFunctionsAloneInParens-1:\n" + code + " error: " + error
+      return [code, error]
+
 
 
     # these transformations are supposed to take as input
@@ -894,7 +913,7 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
     # can work. Basically the function inside a needs to
     # be able to accept further functions to be chained.
 
-    adjustFunctionalReferences: (code, error, userDefinedFunctions) ->
+    adjustFunctionalReferences: (code, error, userDefinedFunctions, bracketsVariables) ->
       # if there is an error, just propagate it
       return [undefined, error] if error?
 
@@ -908,7 +927,7 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       # into
       #  either (-> rotate -> box), (->peg)
       #  either (-> box 2), (->peg 2)
-      expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions
+      expressionsAndUserDefinedFunctionsRegex = @expressionsRegex + userDefinedFunctions + bracketsVariables
       allFunctionsRegex = @allCommandsRegex + "|" + expressionsAndUserDefinedFunctionsRegex
 
       rx = RegExp("<[\\s]*(("+allFunctionsRegex+")[\\t ]*)>",'gm')
@@ -1739,7 +1758,7 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       if detailedDebug then console.log "preprocess-17\n" + code + " error: " + error
       [code, error] = @fleshOutQualifiers(code, error,bracketsVariables, bracketsVariablesArray)
       if detailedDebug then console.log "preprocess-18\n" + code + " error: " + error
-      [code, error] = @adjustFunctionalReferences(code, error, userDefinedFunctions)
+      [code, error] = @adjustFunctionalReferences(code, error, userDefinedFunctions, bracketsVariables)
       if detailedDebug then console.log "preprocess-19\n" + code + " error: " + error
       [code, error] = @addCommandsSeparations(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-20\n" + code + " error: " + error
@@ -1769,6 +1788,9 @@ define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocess
       # it would be better to have beautification as the very last step
       [code, error] = @simplifyFunctionDoingSimpleInvocation(code, error, userDefinedFunctions)
       if detailedDebug then console.log "preprocess-29\n" + code + " error: " + error
+
+      [code, error] = @simplifyFunctionsAloneInParens(code, error, userDefinedFunctions, bracketsVariables)
+      if detailedDebug then console.log "preprocess-29.5\n" + code + " error: " + error
 
       [code, error] = @injectStrings(code, stringsTable, error)
       if detailedDebug then console.log "preprocess-29\n" + code + " error: " + error
