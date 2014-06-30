@@ -166,6 +166,22 @@ define () ->
       @load "tranceKick", "./sound/audioFiles/33325__laya__trance-kick01"
       @load "tranceKick0", "./sound/audioFiles/33325__laya__trance-kick01"
       @load "tranceKick1", "./sound/audioFiles/24004__laya__dance-kick3"
+
+      @load "tweet", "./sound/audioFiles/tweet1-shaped"
+      @load "tweet1", "./sound/audioFiles/tweet1-shaped"
+      @load "tweet2", "./sound/audioFiles/tweet2-shaped"
+      @load "tweet3", "./sound/audioFiles/tweet3-shaped"
+      @load "tweet4", "./sound/audioFiles/tweet4-shaped"
+      @load "tweet5", "./sound/audioFiles/tweet5-shaped"
+      @load "tweet6", "./sound/audioFiles/tweet6-shaped"
+      @load "tweet7", "./sound/audioFiles/tweet7-shaped"
+      @load "tweet8", "./sound/audioFiles/tweet8-shaped"
+      @load "tweet9", "./sound/audioFiles/tweet9-shaped"
+      @load "tweet10", "./sound/audioFiles/tweet10-shaped"
+      @load "tweet11", "./sound/audioFiles/tweet11-shaped"
+      @load "tweet12", "./sound/audioFiles/tweet12-shaped"
+      @load "tweet13", "./sound/audioFiles/tweet13-shaped"
+
       @load "voltage", "./sound/audioFiles/49255__keinzweiter__bonobob-funk"
       @load "warm", "./sound/audioFiles/warm"
     
