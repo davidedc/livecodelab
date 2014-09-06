@@ -14,7 +14,6 @@ var lowLag = new function(){
 	this.soundUrl = "";
 
 	this.debug = "console";
-	//this.debug = "console";
 
 
 	this.init = function(config){
@@ -189,7 +188,11 @@ lowLag.msg('webkitAudio loading '+url+' as tag ' + tag);
 		var source = context.createBufferSource(); // creates a sound source
 		source.buffer = buffer;                    // tell the source which sound to play
 		source.connect(context.destination);       // connect the source to the context's destination (the speakers)
-		source.noteOn(0);                          // play the source now
+		if (typeof(source.noteOn) == "function") {
+			source.noteOn(0);                          // play the source now, using noteOn
+		} else {
+			source.start();				// play the source now, using start
+		}
 	}
 
 
