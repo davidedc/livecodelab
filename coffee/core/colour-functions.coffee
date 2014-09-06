@@ -5,7 +5,7 @@
 ## values (it does it for everything it thinks it's a constant really).
 ###
 
-define () ->
+define ->
 
   class ColourFunctions
 
@@ -547,7 +547,7 @@ define () ->
     @see BlendColor
     @see Blend
     ###
-    modesFunction: () ->
+    modesFunction: ->
       ALPHA_MASK = @Constants.ALPHA_MASK
       RED_MASK = @Constants.RED_MASK
       GREEN_MASK = @Constants.GREEN_MASK

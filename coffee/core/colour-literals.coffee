@@ -5,7 +5,7 @@
 ## and also "angleColor", used to dress objects with the normal material.
 ###
 
-define () ->
+define ->
 
   class ColourLiterals
 
