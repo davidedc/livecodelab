@@ -77,11 +77,10 @@ define () ->
     putTicksNextToDoOnceBlocksThatHaveBeenRun: ->
       codeCompiler = @codeCompiler
       if @doOnceOccurrencesLineNumbers.length
-        @setProgram(
-          codeCompiler.addCheckMarksAndUpdateCodeAndNotifyChange(
-            codeCompiler, @doOnceOccurrencesLineNumbers
-          )
+        p = codeCompiler.addCheckMarksAndUpdateCodeAndNotifyChange(
+          codeCompiler, @doOnceOccurrencesLineNumbers
         )
+        @setProgram(p)
 
     runProgram: ->
       # this invokation below could be throwing an error,

@@ -125,6 +125,5 @@ define [
       # Also updateCode() may split the source code by line, so we can
       # avoid that since we've just split it, we could pass
       # the already split code.
-      drawFunction = @updateCode(elaboratedSource)
-      drawFunction
+      @updateCode(elaboratedSource).program
 
