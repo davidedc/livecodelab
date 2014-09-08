@@ -84,6 +84,7 @@ define () ->
         )
 
     runDrawFunction: ->
+      console.log('running v1')
       # this invokation below could be throwing an error,
       # in which case the lines afterwards are not executed
       # and the exception is propagated to the callee of this function,

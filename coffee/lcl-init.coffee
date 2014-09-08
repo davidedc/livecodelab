@@ -110,6 +110,7 @@ require [
        eventRouter
       ,stats
       ,{
+        languageVersion: 'lclv2'
         blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
         canvasForBackground: paramsObject.canvasForBackground
         forceCanvasRenderer: paramsObject.forceCanvasRenderer
@@ -127,6 +128,10 @@ require [
     # Setup Event Listeners
     eventRouter.addListener("big-cursor-show", => bigCursor.unshrinkBigCursor() )
     eventRouter.addListener("big-cursor-hide", => bigCursor.shrinkBigCursor() )
+    eventRouter.addListener("set-language", (langNameId) =>
+      langName = langNameId.split('-')[1]
+      liveCodeLabCore.setLanguage(langName)
+    )
 
     editor = new Editor(eventRouter, CodeMirror)
     attachMouseWheelHandler editor

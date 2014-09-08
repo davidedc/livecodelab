@@ -182,15 +182,14 @@ define [
 
       console.log(@globalscope)
       @languages = new Languages(@eventRouter, @globalscope)
-      langVersion = 'lclv2'
-      @setLanguage(langVersion)
+      @setLanguage(@paramsObject.languageVersion)
 
       # this one also interacts with timeKeeper, matrixCommands, blendControls,
       #    soundSystem,
       #    backgroundPainter, graphicsCommands, lightSystem, programRunner,
       #    codeCompiler, renderer
       # ...at runtime
-      doOnceActive = (langVersion == 'lclv1')
+      doOnceActive = (@paramsObject.languageVersion == 'lclv1')
       @animationLoop =
         new AnimationLoop(
           @eventRouter,

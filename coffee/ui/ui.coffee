@@ -272,6 +272,42 @@ define [
               $('#'+tutorialSubmenuNoSpaces)
             )
 
+
+
+        languageList = [
+          {
+            'name': 'LCL V1',
+            'value': 'lclv1'
+          },
+          {
+            'name': 'LCL V2',
+            'value': 'lclv2'
+          }
+        ]
+        # LANGUAGES
+        # insert all the languages in the menu
+        $('<span >Languages</span>').appendTo(
+          $('<li>')
+            .attr('id', 'languages')
+            .addClass('current')
+            .addClass('sf-parent')
+            .appendTo($('#nav'))
+        )
+
+        $("<ul id='ulForLanguages'></ul>").appendTo(
+          $('#languages')
+        )
+
+        for lang in languageList
+          l = """<li>
+                 <a id='language-#{lang.value}'>
+                 #{lang.name}
+                 </a>
+                 </li>"""
+          $(l).appendTo(
+            $('#ulForLanguages')
+          )
+
         
           # Now that all the menu items are in place in the DOM,
           # invoke sooperfish,
@@ -284,6 +320,10 @@ define [
 
         $("#tutorials li a").click ->
           eventRouter.emit("load-program", $(@).attr("id"))
+          false
+
+        $("#languages li a").click ->
+          eventRouter.emit("set-language", $(@).attr("id"))
           false
 
         $('<span >Autocode</span>').appendTo(
