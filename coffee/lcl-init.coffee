@@ -107,12 +107,14 @@ require [
     #  - renderer
     #  - animationLoop
     liveCodeLabCore = new LiveCodeLabCore(
-      blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
-      canvasForBackground: paramsObject.canvasForBackground
-      forceCanvasRenderer: paramsObject.forceCanvasRenderer
-      eventRouter: eventRouter
-      statsWidget: stats
-      testMode: paramsObject.testMode
+      {
+        blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
+        canvasForBackground: paramsObject.canvasForBackground
+        forceCanvasRenderer: paramsObject.forceCanvasRenderer
+        eventRouter: eventRouter
+        statsWidget: stats
+        testMode: paramsObject.testMode
+      }
     )
 
     #/////////////////////////////////////////////////////
