@@ -9,7 +9,10 @@
 ## makes it available to the ProgramRunner.
 ###
 
-define ['core/code-preprocessor', 'coffeescript'], (CodePreprocessor, CoffeescriptCompiler) ->
+define [
+  'LiveLangV1/code-preprocessor',
+  'coffeescript'
+], (CodePreprocessor, CoffeescriptCompiler) ->
 
   class CodeCompiler
     currentCodeString: null

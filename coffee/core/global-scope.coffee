@@ -15,7 +15,7 @@ define () ->
 
     add: (name, value) ->
       window[name] = value
-      #@scope[name] = value
+      @scope[name] = value
 
     getScope: () -> @scope
 

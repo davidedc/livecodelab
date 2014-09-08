@@ -11,7 +11,7 @@ A LiveCodeLabCore instance packs together the following parts:
 - backgroundPainter
 - graphicsCommands
 - lightSystem
-- drawFunctionRunner
+- programRunner
 - codeCompiler
 - renderer
 - animationLoop
@@ -62,13 +62,12 @@ define [
   'core/animation-loop'
   ,'core/background-painter'
   ,'core/blend-controls'
-  ,'core/code-compiler'
+  ,'core/languages'
   ,'core/colour-functions'
   ,'core/colour-literals'
   ,'core/graphics-commands'
   ,'core/lights-commands'
   ,'core/matrix-commands'
-  ,'core/program-runner'
   ,'core/renderer'
   ,'core/threejs-system'
   ,'core/time-keeper'
@@ -91,13 +90,12 @@ define [
   AnimationLoop
   ,BackgroundPainter
   ,BlendControls
-  ,CodeCompiler
+  ,Languages
   ,ColourFunctions
   ,ColourLiterals
   ,GraphicsCommands
   ,LightsCommands
   ,MatrixCommands
-  ,ProgramRunner
   ,Renderer
   ,ThreeJsSystem
   ,TimeKeeper
@@ -152,6 +150,8 @@ define [
       #//////////////////////////////////////////////
       
       @timeKeeper = new TimeKeeper()
+
+      @globalscope = new GlobalScope(true)
       
       # this one also interacts with threeJsSystem at runtime
       @blendControls = new BlendControls(@)
@@ -171,18 +171,14 @@ define [
         @,
         @colourLiterals
       )
-      
-      # this one also interacts with codeCompiler at runtime.
-      @drawFunctionRunner =
-        new ProgramRunner(@paramsObject.eventRouter, @)
-      
-      # compiles the user sketch to js so it's ready to run.
-      @codeCompiler =
-        new CodeCompiler(@paramsObject.eventRouter, @)
-      
+
+      console.log(@globalscope)
+      @languages = new Languages(@paramsObject.eventRouter, @globalscope)
+      @setLanguage('lclv2')
+
       # this one also interacts with timeKeeper, matrixCommands, blendControls,
       #    soundSystem,
-      #    backgroundPainter, graphicsCommands, lightSystem, drawFunctionRunner,
+      #    backgroundPainter, graphicsCommands, lightSystem, programRunner,
       #    codeCompiler, renderer
       # ...at runtime
       @animationLoop =
@@ -238,8 +234,6 @@ define [
       #
       #//////////////////////////////////////////////
 
-      @globalscope = new GlobalScope()
-
       @graphicsCommands.addToScope(@globalscope)
       @matrixCommands.addToScope(@globalscope)
       @lightSystem.addToScope(@globalscope)
@@ -250,8 +244,13 @@ define [
       @colourFunctions.addToScope(@globalscope)
       @animationLoop.addToScope(@globalscope)
       @timeKeeper.addToScope(@globalscope)
-      @drawFunctionRunner.addToScope(@globalscope)
+      @programRunner.addToScope(@globalscope)
 
+    setLanguage: (langName) ->
+
+      languageObjects = @languages.getLanguageObjects(langName)
+      @programRunner = languageObjects.runner
+      @codeCompiler = languageObjects.compiler
 
     #//////////////////////////////////////////////
     #
@@ -271,7 +270,7 @@ define [
       @animationLoop.animate()
 
     runLastWorkingDrawFunction: ->
-      @drawFunctionRunner.reinstateLastWorkingDrawFunction()
+      @programRunner.runLastWorkingProgram()
 
     loadAndTestAllTheSounds: ->
       @soundSystem.loadAndTestAllTheSounds()
@@ -283,12 +282,31 @@ define [
       @soundSystem.isAudioSupported()
 
     updateCode: (updatedCode) ->
-      # alert('updatedCode: ' + updatedCode);
-      @codeCompiler.updateCode updatedCode
-      if updatedCode isnt "" and @dozingOff
-        @dozingOff = false
+
+      console.log(updatedCode)
+
+      output = @codeCompiler.updateCode updatedCode
+
+      console.log(output)
+
+      switch output.status
+        when 'error'
+          @paramsObject.eventRouter.emit("compile-time-error-thrown", output.error)
+        when 'parsed'
+          @paramsObject.eventRouter.emit("clear-error")
+          @programRunner.setProgram output.program
+        when 'empty'
+          # we do a couple of special resets when
+          # the code is the empty string.
+          @animationLoop.sleeping = true
+          @graphicsCommands.resetTheSpinThingy = true
+          @paramsObject.eventRouter.emit("clear-error")
+          @programRunner.reset()
+
+      if updatedCode isnt "" and @animationLoop.sleeping
+        @animationLoop.sleeping = false
         @animationLoop.animate()
-        
+
         # console.log('waking up');
         @paramsObject.eventRouter.emit("livecodelab-waking-up")
 
