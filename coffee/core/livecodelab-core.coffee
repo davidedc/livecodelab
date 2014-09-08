@@ -71,6 +71,7 @@ define [
   ,'core/renderer'
   ,'core/threejs-system'
   ,'core/time-keeper'
+  ,'globals/math'
   ,'core/global-scope'
   ,'sound/samplebank'
   ,'sound/sound-system'
@@ -99,6 +100,7 @@ define [
   ,Renderer
   ,ThreeJsSystem
   ,TimeKeeper
+  ,Math
   ,GlobalScope
   ,SampleBank
   ,SoundSystem
@@ -157,6 +159,8 @@ define [
       @blendControls = new BlendControls(@)
       @colourFunctions = new ColourFunctions()
       @colourLiterals = new ColourLiterals()
+
+      @mathFunctions = new Math()
       
       # this one also interacts with threeJsSystem and blendControls at runtime
       @renderer = new Renderer(@)
@@ -245,6 +249,7 @@ define [
       @animationLoop.addToScope(@globalscope)
       @timeKeeper.addToScope(@globalscope)
       @programRunner.addToScope(@globalscope)
+      @mathFunctions.addToScope(@globalscope)
 
     setLanguage: (langName) ->
 
