@@ -110,7 +110,7 @@ require [
        eventRouter
       ,stats
       ,{
-        languageVersion: 'lclv2'
+        languageVersion: 'lclv1'
         blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
         canvasForBackground: paramsObject.canvasForBackground
         forceCanvasRenderer: paramsObject.forceCanvasRenderer

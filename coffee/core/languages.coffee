@@ -11,10 +11,12 @@ define([
 
     constructor: (eventRouter, globalScope) ->
 
+      v1Compiler =  new LiveLangV1.compiler(eventRouter)
+
       @languages = {
         'lclv1': {
-          'runner': new LiveLangV1.runner(eventRouter),
-          'compiler': new LiveLangV1.compiler(eventRouter)
+          'runner': new LiveLangV1.runner(eventRouter, v1Compiler),
+          'compiler': v1Compiler
         },
         'lclv2': {
           'runner': new LiveLangV2.runner(eventRouter, globalScope),

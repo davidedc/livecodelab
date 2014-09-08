@@ -34,7 +34,7 @@ define () ->
     # LiveCodeLab might be running an older version.
     currentCodeString = ""
     
-    constructor: (@eventRouter, @liveCodeLabCoreInstance) ->
+    constructor: (@eventRouter, @codeCompiler) ->
 
     addToScope: (scope) ->
 
@@ -75,7 +75,7 @@ define () ->
       @doOnceOccurrencesLineNumbers = []
 
     putTicksNextToDoOnceBlocksThatHaveBeenRun: ->
-      codeCompiler = @liveCodeLabCoreInstance.codeCompiler
+      codeCompiler = @codeCompiler
       if @doOnceOccurrencesLineNumbers.length
         @setProgram(
           codeCompiler.addCheckMarksAndUpdateCodeAndNotifyChange(
