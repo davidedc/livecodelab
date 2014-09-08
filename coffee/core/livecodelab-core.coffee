@@ -180,7 +180,7 @@ define [
         @colourLiterals
       )
 
-      @languages = new Languages(@, @eventRouter, @globalscope)
+      @languages = new Languages(@eventRouter, @globalscope)
       @setLanguage(@paramsObject.languageVersion)
 
       # this one also interacts with timeKeeper, matrixCommands, blendControls,

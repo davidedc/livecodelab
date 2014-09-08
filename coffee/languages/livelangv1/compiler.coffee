@@ -19,7 +19,7 @@ define [
     codePreprocessor: null
 
 
-    constructor: (@eventRouter, @liveCodeLabCoreInstance) ->
+    constructor: (@eventRouter) ->
       # the code compiler needs the CodePreprocessor
       
       @codePreprocessor = new CodePreprocessor()

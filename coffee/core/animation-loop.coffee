@@ -162,8 +162,8 @@ define () ->
         # So in that case we need to
         # 1. highlight the error
         # 2. run the previously known good program.
-        @lclCore.programRunner.runProgram()
         try
+          @lclCore.programRunner.runProgram()
         catch e
 
           #alert('runtime error');
