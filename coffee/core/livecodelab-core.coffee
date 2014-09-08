@@ -115,7 +115,11 @@ define [
 
   class LiveCodeLabCore
 
-    constructor: (@paramsObject) ->
+    constructor: (
+       @eventRouter
+      ,@statsWidget
+      ,@paramsObject
+    ) ->
       
       #//////////////////////////////////////////////
       #
@@ -166,7 +170,7 @@ define [
       @renderer = new Renderer(@)
       @soundSystem =
         new SoundSystem(
-          @paramsObject.eventRouter, @timeKeeper, buzz, lowLag, createBowser(), new SampleBank(buzz))
+          @eventRouter, @timeKeeper, buzz, lowLag, createBowser(), new SampleBank(buzz))
       
       # this one also interacts with colourFunctions, backgroundSceneContext,
       # canvasForBackground at runtime
@@ -177,7 +181,7 @@ define [
       )
 
       console.log(@globalscope)
-      @languages = new Languages(@paramsObject.eventRouter, @globalscope)
+      @languages = new Languages(@eventRouter, @globalscope)
       langVersion = 'lclv2'
       @setLanguage(langVersion)
 
@@ -189,8 +193,8 @@ define [
       doOnceActive = (langVersion == 'lclv1')
       @animationLoop =
         new AnimationLoop(
-          @paramsObject.eventRouter,
-          @paramsObject.statsWidget,
+          @eventRouter,
+          @statsWidget,
           @,
           doOnceActive
         )
@@ -302,16 +306,16 @@ define [
 
       switch output.status
         when 'error'
-          @paramsObject.eventRouter.emit("compile-time-error-thrown", output.error)
+          @eventRouter.emit("compile-time-error-thrown", output.error)
         when 'parsed'
-          @paramsObject.eventRouter.emit("clear-error")
+          @eventRouter.emit("clear-error")
           @programRunner.setProgram output.program
         when 'empty'
           # we do a couple of special resets when
           # the code is the empty string.
           @animationLoop.sleeping = true
           @graphicsCommands.resetTheSpinThingy = true
-          @paramsObject.eventRouter.emit("clear-error")
+          @eventRouter.emit("clear-error")
           @programRunner.reset()
 
       if updatedCode isnt "" and @animationLoop.sleeping
@@ -319,7 +323,7 @@ define [
         @animationLoop.animate()
 
         # console.log('waking up');
-        @paramsObject.eventRouter.emit("livecodelab-waking-up")
+        @eventRouter.emit("livecodelab-waking-up")
 
 
     # why do we leave the option to put a background?
