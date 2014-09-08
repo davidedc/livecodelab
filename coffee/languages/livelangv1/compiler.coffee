@@ -27,24 +27,18 @@ define [
 
 
     updateCode: (code) ->
+
       @currentCodeString = code
 
+      output = {}
 
       # we do a couple of special resets when
       # the code is the empty string.
       if code is ""
-        @liveCodeLabCoreInstance.graphicsCommands.resetTheSpinThingy = true
-        programHasBasicError = false
-        @eventRouter.emit("clear-error")
-        @liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
-        functionFromCompiledCode = new Function("")
-        @liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction null
-        @liveCodeLabCoreInstance.drawFunctionRunner.lastStableDrawFunction = null
-        return functionFromCompiledCode
+        output.status = 'empty'
+        return output
 
       [code, error] = @codePreprocessor.preprocess code
-      #console.log code
-
 
       # if 'error' is anything else then undefined then it
       # means that the process of translation has found
@@ -52,11 +46,9 @@ define [
       # we report the error and skip the coffeescript
       # to javascript translation step.
       if error?
-        @eventRouter.emit("compile-time-error-thrown", error)
-        return
-            
-      #console.log code
-      
+        output.status = 'error'
+        output.error = error
+        return output
 
       try
         compiledOutput = CoffeescriptCompiler.compile(code,
@@ -64,16 +56,10 @@ define [
         )
       catch e
         # coffescript compiler has caught a syntax error.
-        # we are going to display the error and we WON'T register
-        # the new code
-        @eventRouter.emit("compile-time-error-thrown", e)
-        return
-      #alert compiledOutput
-      programHasBasicError = false
-      @eventRouter.emit("clear-error")
-      
-      @liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
-      
+        output.status = 'error'
+        output.error = e
+        return output
+
       # You might want to change the frame count from the program
       # just like you can in Processing, but it turns out that when
       # you ASSIGN a value to the frame variable inside
@@ -88,8 +74,11 @@ define [
 
       # elegant way to not use eval
       functionFromCompiledCode = new Function(compiledOutput)
-      @liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction functionFromCompiledCode
-      functionFromCompiledCode
+
+      output.status = 'parsed'
+      output.program = functionFromCompiledCode
+
+      return output
 
     # this function is used externally after the code has been
     # run, so we need to attach it to the CodeCompiler object.

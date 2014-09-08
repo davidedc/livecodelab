@@ -180,8 +180,7 @@ define [
         @colourLiterals
       )
 
-      console.log(@globalscope)
-      @languages = new Languages(@eventRouter, @globalscope)
+      @languages = new Languages(@, @eventRouter, @globalscope)
       @setLanguage(@paramsObject.languageVersion)
 
       # this one also interacts with timeKeeper, matrixCommands, blendControls,
@@ -283,7 +282,7 @@ define [
       # for the next frame. Abstracting a bit though, it's clearer this way.
       @animationLoop.animate()
 
-    runLastWorkingDrawFunction: ->
+    runLastWorkingProgram: ->
       @programRunner.runLastWorkingProgram()
 
     loadAndTestAllTheSounds: ->
@@ -297,11 +296,7 @@ define [
 
     updateCode: (updatedCode) ->
 
-      console.log(updatedCode)
-
       output = @codeCompiler.updateCode updatedCode
-
-      console.log(output)
 
       switch output.status
         when 'error'
@@ -321,7 +316,6 @@ define [
         @animationLoop.sleeping = false
         @animationLoop.animate()
 
-        # console.log('waking up');
         @eventRouter.emit("livecodelab-waking-up")
 
 

@@ -162,8 +162,8 @@ define () ->
         # So in that case we need to
         # 1. highlight the error
         # 2. run the previously known good program.
+        @lclCore.programRunner.runProgram()
         try
-          @lclCore.programRunner.runProgram()
         catch e
 
           #alert('runtime error');
@@ -179,8 +179,6 @@ define () ->
         # the program is empty and so it's the screen. Effectively, the user
         # is starting from scratch, so the frame variable should be reset to zero.
         @setFrame(0)
-      
-      #console.log('dozing off');
       
       # we have to repeat this check because in the case
       # the user has set frame = 0,

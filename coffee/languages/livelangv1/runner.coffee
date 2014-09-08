@@ -27,7 +27,7 @@ define () ->
 
     # contains the last stable draw function as a Function object. Never mind the
     # initialisation as an empty string.
-    lastStableDrawFunction = null
+    lastStableProgram = null
 
     # contains the code that is meant to be run, as a string.
     # note that it might be impossible to run it because of errors, in which case
@@ -68,7 +68,7 @@ define () ->
     addDoOnce: (lineNum) ->
       @doOnceOccurrencesLineNumbers.push lineNum
 
-    setDrawFunction: (drawFunc) ->
+    setProgram: (drawFunc) ->
       @drawFunction = drawFunc
 
     resetTrackingOfDoOnceOccurrences: ->
@@ -77,19 +77,17 @@ define () ->
     putTicksNextToDoOnceBlocksThatHaveBeenRun: ->
       codeCompiler = @liveCodeLabCoreInstance.codeCompiler
       if @doOnceOccurrencesLineNumbers.length
-        @setDrawFunction(
+        @setProgram(
           codeCompiler.addCheckMarksAndUpdateCodeAndNotifyChange(
             codeCompiler, @doOnceOccurrencesLineNumbers
           )
         )
 
-    runDrawFunction: ->
-      console.log('running v1')
+    runProgram: ->
       # this invokation below could be throwing an error,
       # in which case the lines afterwards are not executed
       # and the exception is propagated to the callee of this function,
       # which is the main animation loop.
-      #console.log "running runDrawFunction"
       @drawFunction()
       
       # if we are here it means that the draw function didn't generate
@@ -101,13 +99,13 @@ define () ->
       # so the new version too gets an opportunity to be tested and saved.
       @consecutiveFramesWithoutRunTimeError += 1
       if @consecutiveFramesWithoutRunTimeError is 5
-        @lastStableDrawFunction = @drawFunction
+        @lastStableProgram = @drawFunction
         @eventRouter.emit("livecodelab-running-stably")
 
-    reinstateLastWorkingDrawFunction: ->
+    runLastWorkingProgram: ->
       # mark the program as flawed and register the previous stable one.
       @consecutiveFramesWithoutRunTimeError = 0
-      @drawFunction = @lastStableDrawFunction
+      @drawFunction = @lastStableProgram
 
   ProgramRunner
 

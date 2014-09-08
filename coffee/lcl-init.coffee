@@ -273,7 +273,7 @@ require [
       
       #alert('undoing');
       else
-        liveCodeLabCore.runLastWorkingDrawFunction()
+        liveCodeLabCore.runLastWorkingProgram()
       
       # re-throw the error so that the top-level debuggers
       # (firebug, built-in, whathaveyous) can properly
