@@ -32,7 +32,7 @@ define [
     #   program: the program, if the status is parsed
     #   error: the error if there is one
     # }
-    updateCode: (codeString) ->
+    compileCode: (codeString) ->
 
       code = @codePreprocessor.process codeString
 

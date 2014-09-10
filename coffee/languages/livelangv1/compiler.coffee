@@ -27,7 +27,7 @@ define [
       #@codePreprocessor = new CodePreprocessor()
 
 
-    updateCode: (code) ->
+    compileCode: (code) ->
 
       @currentCodeString = code
 
@@ -123,8 +123,8 @@ define [
       # new code by getting the code from codemirror again
       # because we don't know what that entails. We should
       # just pass the code we already have.
-      # Also updateCode() may split the source code by line, so we can
+      # Also compileCode() may split the source code by line, so we can
       # avoid that since we've just split it, we could pass
       # the already split code.
-      @updateCode(elaboratedSource).program
+      @compileCode(elaboratedSource).program
 

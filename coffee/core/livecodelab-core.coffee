@@ -292,9 +292,9 @@ define [
     isAudioSupported: ->
       @soundSystem.isAudioSupported()
 
-    updateCode: (updatedCode) ->
+    updateCode: (newCode) ->
 
-      output = @codeCompiler.updateCode updatedCode
+      output = @codeCompiler.compileCode newCode
 
       switch output.status
         when 'error'
@@ -310,7 +310,7 @@ define [
           @eventRouter.emit("clear-error")
           @programRunner.reset()
 
-      if updatedCode isnt "" and @animationLoop.sleeping
+      if newCode isnt "" and @animationLoop.sleeping
         @animationLoop.sleeping = false
         @animationLoop.animate()
 
