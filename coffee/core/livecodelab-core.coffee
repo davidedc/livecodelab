@@ -310,7 +310,7 @@ define [
           @eventRouter.emit("clear-error")
           @programRunner.reset()
 
-      if newCode isnt "" and @animationLoop.sleeping
+      if output.status is 'parsed' and @animationLoop.sleeping
         @animationLoop.sleeping = false
         @animationLoop.animate()
 
