@@ -15,7 +15,7 @@ define [
 
     codePreprocessor: null
 
-    whitespaceCheck: /^\s+$/
+    whitespaceCheck: /^\s*$/
 
     constructor: () ->
       # the code compiler needs the CodePreprocessor

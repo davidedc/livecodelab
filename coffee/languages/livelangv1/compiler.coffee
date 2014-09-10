@@ -18,7 +18,7 @@ define [
     currentCodeString: null
     codePreprocessor: null
 
-    whitespaceCheck: /^\s+$/
+    whitespaceCheck: /^\s*$/
 
     constructor: (@eventRouter) ->
       # the code compiler needs the CodePreprocessor
