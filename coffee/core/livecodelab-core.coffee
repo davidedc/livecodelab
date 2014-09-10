@@ -188,13 +188,11 @@ define [
       #    backgroundPainter, graphicsCommands, lightSystem, programRunner,
       #    codeCompiler, renderer
       # ...at runtime
-      doOnceActive = (@paramsObject.languageVersion == 'lclv1')
       @animationLoop =
         new AnimationLoop(
           @eventRouter,
           @statsWidget,
-          @,
-          doOnceActive
+          @
         )
       
       #//////////////////////////////////////////////

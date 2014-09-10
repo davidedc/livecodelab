@@ -67,7 +67,6 @@ define () ->
     constructor: (@eventRouter,
                   @stats,
                   @lclCore,
-                  @doOnceInUse = false
                   @forceUseOfTimeoutForScheduling = false) ->
       # Some basic initialisations and constant definitions
       @wantedFramesPerSecond = @AS_HIGH_FPS_AS_POSSIBLE
@@ -172,9 +171,8 @@ define () ->
           # then got an error, now you are re-running an old draw function.
           @eventRouter.emit("runtime-error-thrown", e)
           return
-        if @doOnceInUse
-          programRunner = @lclCore.programRunner
-          programRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun @lclCore.codeCompiler
+        programRunner = @lclCore.programRunner
+        programRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun @lclCore.codeCompiler
       else
         # the program is empty and so it's the screen. Effectively, the user
         # is starting from scratch, so the frame variable should be reset to zero.
@@ -220,8 +218,7 @@ define () ->
       # so that the user program can create its own from scratch
       @lclCore.soundSystem.resetLoops()
 
-      if @doOnceInUse
-        @lclCore.programRunner.resetTrackingOfDoOnceOccurrences()
+      @lclCore.programRunner.resetTrackingOfDoOnceOccurrences()
 
       @lclCore.lightSystem.noLights()
       @lclCore.graphicsCommands.reset()

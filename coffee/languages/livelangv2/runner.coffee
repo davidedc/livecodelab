@@ -88,3 +88,7 @@ define [
       @consecutiveFramesWithoutRunTimeError = 0
       @program = @lastStableProgram
 
+    putTicksNextToDoOnceBlocksThatHaveBeenRun: -> false
+
+    resetTrackingOfDoOnceOccurrences: -> false
+
