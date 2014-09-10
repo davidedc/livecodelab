@@ -18,6 +18,7 @@ define [
     currentCodeString: null
     codePreprocessor: null
 
+    whitespaceCheck: /^\s+$/
 
     constructor: (@eventRouter) ->
       # the code compiler needs the CodePreprocessor
@@ -34,7 +35,7 @@ define [
 
       # we do a couple of special resets when
       # the code is the empty string.
-      if code is ""
+      if @whitespaceCheck.test(code)
         output.status = 'empty'
         return output
 

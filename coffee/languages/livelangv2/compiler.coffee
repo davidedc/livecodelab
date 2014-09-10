@@ -15,6 +15,8 @@ define [
 
     codePreprocessor: null
 
+    whitespaceCheck: /^\s+$/
+
     constructor: () ->
       # the code compiler needs the CodePreprocessor
 
@@ -37,7 +39,7 @@ define [
       output = {}
 
       # we do a couple of special resets when the code is an empty string.
-      if code is ""
+      if @whitespaceCheck.test(code)
         output.status = 'empty'
         return output
 
