@@ -183,18 +183,7 @@ define [
       @languages = new Languages(@eventRouter, @globalscope)
       @setLanguage(@paramsObject.languageVersion)
 
-      # this one also interacts with timeKeeper, matrixCommands, blendControls,
-      #    soundSystem,
-      #    backgroundPainter, graphicsCommands, lightSystem, programRunner,
-      #    codeCompiler, renderer
-      # ...at runtime
-      @animationLoop =
-        new AnimationLoop(
-          @eventRouter,
-          @statsWidget,
-          @
-        )
-      
+
       #//////////////////////////////////////////////
       #
       # ### Phase 3
@@ -236,7 +225,19 @@ define [
       @lightSystem =
         new LightsCommands(@graphicsCommands, @)
 
-      #//////////////////////////////////////////////
+      # this one also interacts with timeKeeper, matrixCommands, blendControls,
+      #    soundSystem,
+      #    backgroundPainter, graphicsCommands, lightSystem, programRunner,
+      #    codeCompiler, renderer
+      # ...at runtime
+      @animationLoop =
+        new AnimationLoop(
+          @eventRouter,
+          @statsWidget,
+          @,
+          @graphicsCommands
+        )
+            #//////////////////////////////////////////////
       #
       # ### Phase 4
       # Setup the global scope object, and add all the

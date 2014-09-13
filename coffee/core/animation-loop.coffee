@@ -67,6 +67,7 @@ define () ->
     constructor: (@eventRouter,
                   @stats,
                   @lclCore,
+                  @graphicsCommands,
                   @forceUseOfTimeoutForScheduling = false) ->
       # Some basic initialisations and constant definitions
       @wantedFramesPerSecond = @AS_HIGH_FPS_AS_POSSIBLE
@@ -189,28 +190,30 @@ define () ->
       # "frame" starts at zero, so we increment after the first time the draw
       # function has been run.
       @setFrame(@frame + 1)
-      
-      
+
+      geometryOnScreenMightHaveChanged =  (@graphicsCommands.atLeastOneObjectWasDrawn or @graphicsCommands.atLeastOneObjectIsDrawn)
+
       # if livecodelab is dozing off, in that case you do
       # want to do a render because it will clear the screen.
       # otherwise the last frame of the sketch is going
       # to remain painted in the background behind
       # the big cursor.
-      if !@noDrawFrame or @sleeping
-        @lclCore.renderer.render @lclCore.graphicsCommands
+      if (!@noDrawFrame or @sleeping) and geometryOnScreenMightHaveChanged
+        @lclCore.renderer.render @graphicsCommands
         # keep the last 10 durations of when we actually
         # drew the frame. This is used for trying to
         # avoid collision between graphics and sound timers.
         @fpsHistory.push(new Date().getTime() - frameStartTime)
         if @fpsHistory.length > 60
           @fpsHistory.shift()
+        @graphicsCommands.atLeastOneObjectWasDrawn = @graphicsCommands.atLeastOneObjectIsDrawn
 
 
       # update stats
       if @stats then @stats.update()
 
     cleanStateBeforeRunningDrawAndRendering: ->
-      @lclCore.renderer.resetExclusionPrincipleWobbleDataIfNeeded @lclCore.graphicsCommands
+      @lclCore.renderer.resetExclusionPrincipleWobbleDataIfNeeded @graphicsCommands
 
       @lclCore.matrixCommands.resetMatrixStack()
       
@@ -221,7 +224,7 @@ define () ->
       @lclCore.programRunner.resetTrackingOfDoOnceOccurrences()
 
       @lclCore.lightSystem.noLights()
-      @lclCore.graphicsCommands.reset()
+      @graphicsCommands.reset()
       @lclCore.blendControls.animationStyle @lclCore.blendControls.animationStyles.normal
       @lclCore.backgroundPainter.resetGradientStack()
 
