@@ -68,6 +68,11 @@ define () ->
     addDoOnce: (lineNum) ->
       @doOnceOccurrencesLineNumbers.push lineNum
 
+    reset: () ->
+      @consecutiveFramesWithoutRunTimeError = 0
+      @drawFunction = () -> {}
+      @lastStableProgram = () -> {}
+
     setProgram: (drawFunc) ->
       @drawFunction = drawFunc
 
