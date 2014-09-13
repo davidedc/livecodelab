@@ -74,6 +74,7 @@ define () ->
       @lastStableProgram = () -> {}
 
     setProgram: (drawFunc) ->
+      @consecutiveFramesWithoutRunTimeError = 0
       @drawFunction = drawFunc
 
     resetTrackingOfDoOnceOccurrences: ->
