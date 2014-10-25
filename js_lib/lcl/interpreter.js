@@ -153,7 +153,7 @@ define([
 
     Interpreter.evaluateFunctionDefinition = function (branch, scope) {
         var argnames, block, func, self;
-        argnames = branch[1];
+        argnames = helpers.functionargs(branch[1]);
         block = branch[2];
 
         self = this;
