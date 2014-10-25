@@ -8,14 +8,25 @@ define([
 
     'use strict';
 
-    var Interpreter = {
+    var Interpreter,
+        interpreterState;
+
+    Interpreter = {};
+    interpreterState = {
+        doOnceTriggered: false
     };
 
     Interpreter.run = function (ast, globalscope) {
 
         var scope = helpers.createChildScope(globalscope);
 
+        interpreterState.doOnceTriggered = false;
+
         this.runAST(ast, scope);
+
+        return {
+            doOnceTriggered: interpreterState.doOnceTriggered
+        };
 
     };
 
@@ -134,6 +145,7 @@ define([
 
         case 'DOONCE':
             if (branch[1].length > 0) {
+                interpreterState.doOnceTriggered = true;
                 output = this.evaluateBlock(branch[1], scope);
             } else {
                 output = '';

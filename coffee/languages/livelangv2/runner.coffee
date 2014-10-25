@@ -69,7 +69,7 @@ define [
       # and the exception is propagated to the callee of this function,
       # which is the main animation loop.
       scope = @globalscope.getScope()
-      Interpreter.run(@program, scope)
+      interpreterState = Interpreter.run(@program, scope)
 
       # if we are here it means that the interpreter didn't throw
       # any runtime errors, so we increment a counter that tracks how long
