@@ -42,15 +42,31 @@ define () ->
       @load "dish2", "./sound/audioFiles/a-dish3"
       @load "downstairs", "./sound/audioFiles/downstairs"
       @load "glass", "./sound/audioFiles/glass"
+
+      @load "growl", "./sound/audioFiles/growl1"
+      @load "growl0", "./sound/audioFiles/growl1"
+      @load "growl1", "./sound/audioFiles/growl2"
+      @load "growl2", "./sound/audioFiles/growl3"
+      @load "growl3", "./sound/audioFiles/growl4"
+      @load "growl4", "./sound/audioFiles/growl5"
+      @load "growl5", "./sound/audioFiles/growl6"
+
       @load "highHatClosed", "./sound/audioFiles/AMB_HHCL"
       @load "highHatOpen", "./sound/audioFiles/AMB_HHOP"
+
       @load "hiss", "./sound/audioFiles/a-hiss1"
       @load "hiss0", "./sound/audioFiles/a-hiss1"
       @load "hiss1", "./sound/audioFiles/a-hiss2"
       @load "hiss2", "./sound/audioFiles/a-hiss3"
+
+      @load "hoover", "./sound/audioFiles/hoover1"
+      @load "hoover0", "./sound/audioFiles/hoover1"
+      @load "hoover1", "./sound/audioFiles/hoover2"
+
       @load "lowFlash", "./sound/audioFiles/9569__thanvannispen__industrial-low-flash04"
       @load "lowFlash0", "./sound/audioFiles/9569__thanvannispen__industrial-low-flash04"
       @load "lowFlash1", "./sound/audioFiles/9570__thanvannispen__industrial-low-flash07"
+
       @load "mouth", "./sound/audioFiles/a-mouth1"
       @load "mouth0", "./sound/audioFiles/a-mouth1"
       @load "mouth1", "./sound/audioFiles/a-mouth2"
@@ -93,6 +109,11 @@ define () ->
       @load "pianoRHChord3", "./sound/audioFiles/pianoRHChordsE"
 
       @load "ride", "./sound/audioFiles/RIDE_1"
+
+      @load "rust", "./sound/audioFiles/rust1"
+      @load "rust0", "./sound/audioFiles/rust1"
+      @load "rust1", "./sound/audioFiles/rust2"
+      @load "rust2", "./sound/audioFiles/rust3"
 
       # scratches of short length
       @load "scratch", "./sound/audioFiles/scratch1"
@@ -142,17 +163,26 @@ define () ->
       @load "scratch-rough2", "./sound/audioFiles/scratch34"
       @load "scratch-rough3", "./sound/audioFiles/scratch35"
 
+      @load "siren", "./sound/audioFiles/siren1"
+      @load "siren0", "./sound/audioFiles/siren1"
+      @load "siren1", "./sound/audioFiles/siren2"
+      @load "siren2", "./sound/audioFiles/siren3"
+      @load "siren3", "./sound/audioFiles/siren4"
+
       @load "snap", "./sound/audioFiles/snap"
       @load "snap0", "./sound/audioFiles/snap"
       @load "snap1", "./sound/audioFiles/a-snap2"
+
       @load "snare", "./sound/audioFiles/AMB_SN13"
       @load "snare0", "./sound/audioFiles/AMB_SN13"
       @load "snare1", "./sound/audioFiles/AMB_SN_5"
       @load "snare2", "./sound/audioFiles/a-snare2"
+
       @load "thump", "./sound/audioFiles/8938__patchen__piano-hits-hand-03v2"
       @load "thump0", "./sound/audioFiles/8938__patchen__piano-hits-hand-03v2"
       @load "thump1", "./sound/audioFiles/thump2"
       @load "thump2", "./sound/audioFiles/a-thump2"
+
       @load "tap", "./sound/audioFiles/tap6"
       @load "tap0", "./sound/audioFiles/tap6"
       @load "tap1", "./sound/audioFiles/tap3"
@@ -160,12 +190,22 @@ define () ->
       @load "tap3", "./sound/audioFiles/tap1"
       @load "tap4", "./sound/audioFiles/tap5"
       @load "tap5", "./sound/audioFiles/tap7"
+
+      @load "tense", "./sound/audioFiles/tense1"
+      @load "tense0", "./sound/audioFiles/tense1"
+      @load "tense1", "./sound/audioFiles/tense2"
+      @load "tense2", "./sound/audioFiles/tense3"
+      @load "tense3", "./sound/audioFiles/tense4"
+      @load "tense4", "./sound/audioFiles/tense5"
+      @load "tense5", "./sound/audioFiles/tense6"
+
       @load "toc", "./sound/audioFiles/AMB_LTM2"
       @load "toc0", "./sound/audioFiles/AMB_LTM2"
       @load "toc1", "./sound/audioFiles/AMB_RIM1"
       @load "tranceKick", "./sound/audioFiles/33325__laya__trance-kick01"
       @load "tranceKick0", "./sound/audioFiles/33325__laya__trance-kick01"
       @load "tranceKick1", "./sound/audioFiles/24004__laya__dance-kick3"
+      @load "tranceKick2", "./sound/audioFiles/anotherKick"
 
       @load "tweet", "./sound/audioFiles/tweet1-shaped"
       @load "tweet1", "./sound/audioFiles/tweet1-shaped"
