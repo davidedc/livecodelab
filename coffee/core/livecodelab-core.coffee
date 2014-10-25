@@ -302,7 +302,7 @@ define [
           @eventRouter.emit("compile-time-error-thrown", output.error)
         when 'parsed'
           @eventRouter.emit("clear-error")
-          @programRunner.setProgram output.program
+          @programRunner.setProgram(output.program, newCode)
         when 'empty'
           # we do a couple of special resets when
           # the code is the empty string.

@@ -19,9 +19,11 @@ define [
     constructor: (@eventRouter, @globalscope) ->
 
       # contains the program AST
-      @program = []
+      @programAST = []
+      @programText = ''
       # contains the last stable program AST
       @lastStableProgram = []
+      @lastStableText = ''
 
       @consecutiveFramesWithoutRunTimeError = 0
 
@@ -55,12 +57,14 @@ define [
 
     reset: () ->
       @consecutiveFramesWithoutRunTimeError = 0
-      @program = []
+      @programAST = []
+      @programText = ''
       @lastStableProgram = []
 
-    setProgram: (programAST) ->
+    setProgram: (programAST, programText) ->
       @consecutiveFramesWithoutRunTimeError = 0
-      @program = programAST
+      @programAST = programAST
+      @programText = programText
 
 
     runProgram: ->
@@ -69,7 +73,7 @@ define [
       # and the exception is propagated to the callee of this function,
       # which is the main animation loop.
       scope = @globalscope.getScope()
-      interpreterState = Interpreter.run(@program, scope)
+      interpreterState = Interpreter.run(@programAST, scope)
 
       # if we are here it means that the interpreter didn't throw
       # any runtime errors, so we increment a counter that tracks how long
@@ -80,13 +84,21 @@ define [
       # so the new version too gets an opportunity to be tested and saved.
       @consecutiveFramesWithoutRunTimeError += 1
       if @consecutiveFramesWithoutRunTimeError is 5
-        @lastStableProgram = @program
+        @lastStableProgram = @programAST
+        @lastStableText = @programText
         @eventRouter.emit("livecodelab-running-stably")
+
+      if (interpreterState.doOnceTriggered)
+
+        rewrittenSource = @programText.replace(/^(\s+)doOnce/g, "$1✓doOnce")
+
+        @eventRouter.emit("code-updated-by-livecodelab", rewrittenSource)
 
     runLastWorkingProgram: ->
       # mark the program as flawed and register the previous stable one.
       @consecutiveFramesWithoutRunTimeError = 0
-      @program = @lastStableProgram
+      @programAST = @lastStableProgram
+      @programText = @lastStableText
 
     putTicksNextToDoOnceBlocksThatHaveBeenRun: -> false
 

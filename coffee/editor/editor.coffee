@@ -12,6 +12,7 @@ define () ->
       @eventRouter.addListener("reset", => @codemirrorInstance.setValue "")
 
       @eventRouter.addListener("code-updated-by-livecodelab", ((elaboratedSource) =>
+          console.log('code has been updated', elaboratedSource)
           cursorPositionBeforeAddingCheckMark = @codemirrorInstance.getCursor()
           cursorPositionBeforeAddingCheckMark.ch = cursorPositionBeforeAddingCheckMark.ch + 1
           @setValue elaboratedSource
