@@ -167,7 +167,7 @@ define([
                 childScope[argnames[i]] = argvalues[i];
             }
 
-            output = self.evaluate(block, childScope);
+            output = self.evaluateBlock(block, childScope);
 
             return output;
 
