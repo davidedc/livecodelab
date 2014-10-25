@@ -26,6 +26,7 @@ string                ({letter}|{digit}|{strchars})*
 "with"                return "t_with"
 "function"            return "t_function"
 "return"              return "t_return"
+"doOnce"              return "t_doOnce"
 
 /* arrows */
 "->"                  return "t_arrow"
@@ -51,6 +52,8 @@ string                ({letter}|{digit}|{strchars})*
 "noFill"              return "t_style"
 "stroke"              return "t_style"
 "noStroke"            return "t_style"
+
+"✓"                   return "t_tick"
 
 {number}              return "t_number"
 {identifier}          return "t_id"
@@ -109,6 +112,7 @@ string                ({letter}|{digit}|{strchars})*
 %token                t_blockstart
 %token                t_blockend
 %token                t_comma
+%token                t_tick
 
 /* operator associations and precedence */
 
@@ -171,6 +175,8 @@ Statement
     | PrimitiveCall
     | IfStructure
     | TimesLoop
+    | DoOnce
+    | FinishedDoOnce
     ;
 
 Assignment
@@ -273,6 +279,20 @@ TimesLoop
         { $$ = ["TIMES", $1, $3]; }
     | Number t_times t_with Identifier Block
         { $$ = ["TIMES", $1, $5, $4]; }
+    ;
+
+DoOnce
+    : t_doOnce Block
+        { $$ = ["DOONCE", $2]; }
+    | t_doOnce Expression
+        { $$ = ["DOONCE", $2]; }
+    | t_doOnce PrimitiveCall
+        { $$ = ["DOONCE", $2]; }
+    ;
+
+FinishedDoOnce
+    : t_tick DoOnce
+        { $$ = ["DOONCE", []]; }
     ;
 
 Expression
