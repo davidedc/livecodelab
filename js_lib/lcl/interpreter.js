@@ -132,6 +132,14 @@ define([
             output = this.evaluateTimesLoop(branch, scope);
             break;
 
+        case 'DOONCE':
+            if (branch[1].length > 0) {
+                output = this.evaluateBlock(branch[1], scope);
+            } else {
+                output = '';
+            }
+            break;
+
         default:
             throw 'Unknown Symbol: ' + symbol;
         }
