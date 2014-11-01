@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*global define */
+/*global define, io */
 /*!
   * Pulse - beat tracking from MIDI Clock
   * v0.1.7
@@ -7,13 +7,17 @@
   * MIT License | (c) Thomas "noio" van den Berg 2013
   */
 
-define(
-    [],
-    function () {
+/*
+ * Further modifications Guy John for Live Code Lab
+ */
 
-    var io;
+define([
+], function (
+) {
 
-    function Pulse(address) {
+    'use strict';
+
+    var Pulse = function (address) {
         this.beats = [];
         this.bpm = 120;
         this.mspb = 600; 
