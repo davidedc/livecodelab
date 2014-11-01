@@ -4,11 +4,11 @@
 ## unnecessary invokation of the Date and getTime browser functions.
 ###
 
-define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
+define ['core/event-emitter'], (EventEmitter) ->
 
   class TimeKeeper extends EventEmitter
 
-    constructor: ->
+    constructor: (pulseClient) ->
       @time = undefined          # current time in SECONDS
       @millisAtStart = undefined # milliseconds at program start
       @milliseconds = undefined  # current time in MILLISECONDS
@@ -20,7 +20,7 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       @beatCount = 1             # last whole beat number
       @fraction = 0              # fraction of the beat we're at
 
-      @pulseClient = new Pulse()
+      @pulseClient = pulseClient
 
       super()
 

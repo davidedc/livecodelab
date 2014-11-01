@@ -72,6 +72,7 @@ define [
   ,'core/renderer'
   ,'core/threejs-system'
   ,'core/time-keeper'
+  ,'pulse'
   ,'globals/math'
   ,'core/global-scope'
   ,'sound/samplebank'
@@ -95,6 +96,7 @@ define [
   ,Renderer
   ,ThreeJsSystem
   ,TimeKeeper
+  ,Pulse
   ,Math
   ,GlobalScope
   ,SampleBank
@@ -131,8 +133,9 @@ define [
       # fields/methods. So, threeJsSystem provides some abstraction without
       # attempting to be a complete abstraction layer.
       @three = THREE
-
-      @timeKeeper = new TimeKeeper()
+      
+      pulseClient = new Pulse()
+      @timeKeeper = new TimeKeeper(pulseClient)
 
       @globalscope = new GlobalScope(true)
 
