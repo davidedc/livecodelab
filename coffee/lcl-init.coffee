@@ -8,6 +8,7 @@ require [
   ,'core/event-emitter'
   ,'core/livecodelab-core'
   ,'core/program-loader'
+  ,'pulse'
   ,'ui/url-router'
   ,'ui/big-cursor'
   ,'ui/text-dimming'
@@ -26,6 +27,7 @@ require [
   ,EventEmitter
   ,LiveCodeLabCore
   ,ProgramLoader
+  ,Pulse
   ,UrlRouter
   ,BigCursor
   ,EditorDimmer
@@ -91,6 +93,9 @@ require [
     # add Stats.js - https://github.com/mrdoob/stats.js
     stats = new Stats
 
+    # Client used to sync to a time pulse over websocket
+    syncClient = new Pulse()
+
     #//////////////////////////////////////////////////////
     # Phase 2 - Initialise the core of livecodelab.
     # LiveCodeLabCore consists of the following main parts:
@@ -113,6 +118,7 @@ require [
       threeJsCanvas,
       backgroundDiv,
       eventRouter,
+      syncClient,
       stats,
       usingWebGL,
       {

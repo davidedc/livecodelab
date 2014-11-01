@@ -115,6 +115,7 @@ define [
       @threeJsCanvas,
       @backgroundDiv,
       @eventRouter,
+      @syncClient,
       @statsWidget,
       @usingWebGL,
       @paramsObject
@@ -134,8 +135,8 @@ define [
       # attempting to be a complete abstraction layer.
       @three = THREE
       
-      pulseClient = new Pulse()
-      @timeKeeper = new TimeKeeper(pulseClient)
+      
+      @timeKeeper = new TimeKeeper(@syncClient)
 
       @globalscope = new GlobalScope(true)
 

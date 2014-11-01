@@ -8,7 +8,7 @@ define ['core/event-emitter'], (EventEmitter) ->
 
   class TimeKeeper extends EventEmitter
 
-    constructor: (pulseClient) ->
+    constructor: (syncClient) ->
       @time = undefined          # current time in SECONDS
       @millisAtStart = undefined # milliseconds at program start
       @milliseconds = undefined  # current time in MILLISECONDS
@@ -20,7 +20,7 @@ define ['core/event-emitter'], (EventEmitter) ->
       @beatCount = 1             # last whole beat number
       @fraction = 0              # fraction of the beat we're at
 
-      @pulseClient = pulseClient
+      @syncClient = syncClient
 
       super()
 
@@ -54,20 +54,14 @@ define ['core/event-emitter'], (EventEmitter) ->
         @fraction = 0
         @beatCount += 1
 
-        # Set the BPM and phase from pulse if it's connected
-        if @pulseClient.currentConnection() and @pulseClient.beats.length
-          @setBpm(@pulseClient.bpm)
-          if (
-            @pulseClient.count == 1 and
-            @lastBeat != @pulseClient.beats[@pulseClient.beats.length-1]
-          )
+        # Set the BPM and phase from the sync client if it's connected
+        if @syncClient.currentConnection() and @syncClient.beats.length
+          @setBpm(@syncClient.bpm)
+          if @syncClient.count == 1 and @lastBeat != @syncClient.beats[@syncClient.beats.length-1]
             @beatCount = 1
-            @lastBeat = @pulseClient.beats[@pulseClient.beats.length-1]
+            @lastBeat = @syncClient.beats[@syncClient.beats.length-1]
           else
-            @lastBeat = (
-              @pulseClient.beats[@pulseClient.beats.length-1] +
-              @mspb * (@beatCount - @pulseClient.count)
-            )
+            @lastBeat = @syncClient.beats[@syncClient.beats.length-1] + @mspb * (@beatCount - @syncClient.count)
         else
           @lastBeat += @mspb
 
@@ -100,8 +94,8 @@ define ['core/event-emitter'], (EventEmitter) ->
       if typeof bpmOrAddress == 'string'
         @connect(bpmOrAddress)
       else if bpmOrAddress != @bpm
-        if @pulseClient.currentConnection()
-          @pulseClient.disconnect()
+        if @syncClient.currentConnection()
+          @syncClient.disconnect()
         @setBpm(bpmOrAddress)
 
     setBpm: (bpm) ->
@@ -109,18 +103,12 @@ define ['core/event-emitter'], (EventEmitter) ->
       @mspb = 60000 / @bpm
 
     ###
-    Connects to a pulse server, and read the bpm/beat from there.
+    Connects to a sync server, and read the bpm/beat from there.
     ###
     connect: (address) ->
-      if (
-        address &&
-        !(
-          @pulseClient.connecting ||
-          @pulseClient.currentConnection() == @pulseClient.cleanAddress(address)
-        )
-      )
+      if address && !(@syncClient.connecting || @syncClient.currentConnection() == @syncClient.cleanAddress(address))
         console.log('Connecting to ' + address)
-        @pulseClient.connect(address)
+        @syncClient.connect(address)
       return
 
     beat: ->
