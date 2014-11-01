@@ -143,10 +143,14 @@ define([
             output = this.evaluateTimesLoop(branch, scope);
             break;
 
+        case 'BLOCK':
+            output = this.evaluateBlock(branch, scope);
+            break;
+
         case 'DOONCE':
             if (branch[1].length > 0) {
                 interpreterState.doOnceTriggered = true;
-                output = this.evaluateBlock(branch[1], scope);
+                output = this.evaluate(branch[1], scope);
             } else {
                 output = '';
             }

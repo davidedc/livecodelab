@@ -90,7 +90,7 @@ define [
 
       if (interpreterState.doOnceTriggered)
 
-        rewrittenSource = @programText.replace(/^(\s*)doOnce/g, "$1✓doOnce")
+        rewrittenSource = @programText.replace(/^(\s*)doOnce/gm, "$1✓doOnce")
 
         @eventRouter.emit("code-updated-by-livecodelab", rewrittenSource)
 
