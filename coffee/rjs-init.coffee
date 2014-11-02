@@ -6,12 +6,7 @@
 
 requirejs.config(
   paths:
-    'bowser': 'lib/bowser'
-    'soundJS': 'lib/soundjs-0.5.2.min'
-    'buzz': 'lib/buzz'
-    'lowLag': 'lib/lowLag'
-    'underscore': 'lib/underscore'
-    'soundmanager2': 'lib/sm2/js/soundmanager2-jsmin'
+    'underscore': 'lib/underscore.min'
     'codemirror': 'lib/codemirror'
     'coffeescript': 'lib/coffee-script'
     'codemirror-lcl-mode': 'lib/coffeescript-livecodelab-mode'
@@ -50,18 +45,6 @@ requirejs.config(
   ]
 
   shim:
-    'bowser':
-      deps: []
-      exports: 'bowser'
-    'soundJS':
-      deps: []
-      exports: 'createjs'
-    'buzz':
-      deps: []
-      exports: 'buzz'
-    'lowLag':
-      deps: ['soundmanager2']
-      exports: 'lowLag'
     'codemirror':
       deps: []
       exports: 'CodeMirror'

@@ -9,6 +9,7 @@ require [
   ,'core/livecodelab-core'
   ,'core/program-loader'
   ,'pulse'
+  ,'sound/audioAPI'
   ,'ui/url-router'
   ,'ui/big-cursor'
   ,'ui/text-dimming'
@@ -28,6 +29,7 @@ require [
   ,LiveCodeLabCore
   ,ProgramLoader
   ,Pulse
+  ,AudioAPI
   ,UrlRouter
   ,BigCursor
   ,EditorDimmer
@@ -96,6 +98,8 @@ require [
     # Client used to sync to a time pulse over websocket
     syncClient = new Pulse()
 
+    audioAPI = new AudioAPI()
+
     #//////////////////////////////////////////////////////
     # Phase 2 - Initialise the core of livecodelab.
     # LiveCodeLabCore consists of the following main parts:
@@ -119,6 +123,7 @@ require [
       backgroundDiv,
       eventRouter,
       syncClient,
+      audioAPI,
       stats,
       usingWebGL,
       {

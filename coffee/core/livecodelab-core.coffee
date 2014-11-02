@@ -77,10 +77,6 @@ define [
   ,'core/global-scope'
   ,'sound/samplebank'
   ,'sound/sound-system'
-  ,'bowser'
-  ,'soundJS'
-  ,'buzz'
-  ,'lowLag'
   ,'threejs'
 ], (
   AnimationLoop
@@ -101,10 +97,6 @@ define [
   ,GlobalScope
   ,SampleBank
   ,SoundSystem
-  ,bowser
-  ,createjs
-  ,buzz
-  ,lowLag
   ,THREE
 ) ->
 
@@ -116,6 +108,7 @@ define [
       @backgroundDiv,
       @eventRouter,
       @syncClient,
+      @audioAPI,
       @statsWidget,
       @usingWebGL,
       @paramsObject
@@ -145,17 +138,14 @@ define [
 
       @mathFunctions = new Math()
       @otherCommands = new OtherCommands()
-
+      
       @soundSystem = new SoundSystem(
         @eventRouter,
         @timeKeeper,
-        createjs,
-        buzz,
-        lowLag,
-        bowser,
-        new SampleBank(buzz)
+        @audioAPI,
+        new SampleBank(@audioAPI)
       )
-
+      
       @backgroundPainter = new BackgroundPainter(
         @backgroundDiv,
         @colourFunctions,

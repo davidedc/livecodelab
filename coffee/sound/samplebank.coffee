@@ -12,14 +12,8 @@ define () ->
     sounds: []
     soundsByName: {}
     fileType: undefined
-    constructor: (buzz) ->
-      @fileType = undefined
-      if buzz.isMP3Supported()
-        @fileType = "mp3"
-      else if buzz.isOGGSupported()
-        @fileType = "ogg"
-      else
-        return
+
+    constructor: (@audioAPI) ->
 
       @load "alienBeep", "./sound/audioFiles/132389__blackie666__alienbleep"
 
@@ -276,19 +270,7 @@ define () ->
     
     # Should be either mp3 or ogg
     load: (name, path) ->
-      soundNumber = @sounds.length
-      @sounds.push
-        name: name
-        path: path + "." + @fileType
-
-      @soundsByName[name] = soundNumber
-      soundNumber
-
-    getByName: (name) ->
-      @sounds[@soundsByName[name]]
-
-    getByNumber: (number) ->
-      @sounds[number]
+      @audioAPI.loadSample(name, path)
 
   SampleBank
 
