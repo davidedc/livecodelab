@@ -12,7 +12,7 @@ define () ->
     constructor: (
       @eventRouter,
       @timeKeeper,
-      @audioAPI,
+      @audioApi,
       @samplebank,
       @patternPlayer
     ) ->
@@ -26,17 +26,23 @@ define () ->
       @playPatterns = []
 
     playStartupSound: ->
-      @audioAPI.play('bing')
+      @audioApi.play('bing')
 
     # called from within patches
     play: (name, pattern) ->
-      @playPatterns.push({
-        name: name,
-        pattern: pattern
-      })
+      if (name && pattern)
+        @playPatterns.push({
+          name: name,
+          pattern: pattern
+        })
 
-    soundLoop: (beat) ->
-      null
+    soundLoop: (beat) =>
+      for p in @playPatterns
+        console.log(p)
+        if (@patternPlayer.runPattern(p.pattern, beat))
+          console.log(p)
+          @audioApi.play(p.name)
+      @clearPatterns()
 
   SoundSystem
 

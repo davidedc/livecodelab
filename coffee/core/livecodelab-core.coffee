@@ -131,7 +131,7 @@ define [
       @three = THREE
       
       
-      @timeKeeper = new TimeKeeper(@syncClient)
+      @timeKeeper = new TimeKeeper(@syncClient, @audioAPI)
 
       @globalscope = new GlobalScope(true)
 
