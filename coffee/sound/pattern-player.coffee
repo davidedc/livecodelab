@@ -19,7 +19,7 @@ define () ->
     # if it's an X, trigger a note
     runPattern: (pattern, beat) ->
       patternPos = int(((beat - 1) * 4) % pattern.length)
-      pattern[patternPos] == 'X'
+      pattern[patternPos] == 'x'
 
   PatternPlayer
 
