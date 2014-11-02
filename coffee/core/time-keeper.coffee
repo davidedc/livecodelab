@@ -80,7 +80,7 @@ define ['core/event-emitter'], (EventEmitter) ->
       quarterBeatMs = @mspb * 0.25
       # We subtract a few miliseconds so that this triggers ahead of time
       # This means we can schedule audio events in the future for higher precision
-      preemptMs = 5 # milliseconds
+      preemptMs = 20 # milliseconds
       newAimedForTime = aimedForTime + quarterBeatMs
 
       timeout = (quarterBeatMs + diffMs) - preemptMs
