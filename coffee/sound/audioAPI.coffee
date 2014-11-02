@@ -34,3 +34,7 @@ define () ->
       source.connect(@soundout)
       source.start(0)
 
+    # Return time in milliseconds
+    getTime: () =>
+      @context.currentTime * 1000
+
