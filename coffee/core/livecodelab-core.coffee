@@ -142,7 +142,6 @@ define [
       @otherCommands = new OtherCommands()
       
       @soundSystem = new SoundSystem(
-        @eventRouter,
         @timeKeeper,
         @audioAPI,
         new SampleBank(@audioAPI),

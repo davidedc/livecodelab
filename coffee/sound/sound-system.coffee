@@ -10,17 +10,16 @@ define () ->
   class SoundSystem
 
     constructor: (
-      @eventRouter,
       @timeKeeper,
       @audioApi,
       @samplebank,
       @patternPlayer
     ) ->
-      @timeKeeper.addListener('beat', (beat) => @soundLoop(beat) )
+      @timeKeeper.addListener('beat', (beat) => @playSounds(beat) )
       @playPatterns = []
 
     addToScope: (scope) ->
-      scope.add('play', (a,b) => @play(a,b))
+      scope.add('play', (soundName, pattern) => @play(soundName, pattern))
 
     clearPatterns: ->
       @playPatterns = []
@@ -36,11 +35,9 @@ define () ->
           pattern: pattern
         })
 
-    soundLoop: (beat) =>
+    playSounds: (beat) =>
       for p in @playPatterns
-        console.log(p)
         if (@patternPlayer.runPattern(p.pattern, beat))
-          console.log(p)
           @audioApi.play(p.name)
       @clearPatterns()
 
