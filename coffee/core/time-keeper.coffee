@@ -13,18 +13,16 @@ define ['core/event-emitter'], (EventEmitter) ->
 
       now = @audioApi.getTime()
 
-      @beatCount     = 1            # last whole beat number
-      @fraction      = 0            # fraction of the beat we're at
+      @beatCount      = 1            # last whole beat number
+      @beatFraction   = 0            # fraction of the beat we're at
 
-      @bpm           = 100
-      @newBpm        = 100
-      @mspb          = 60000 / @bpm # milliseconds per beat
+      @bpm            = 100
+      @newBpm         = 100
+      @mspb           = 60000 / @bpm # milliseconds per beat
 
-      @lastBeat      = now          # milliseconds at last whole beat
-      @timeAtStart   = now          # milliseconds at loop start
-      @time          = now / 1000   # current time in SECONDS
-
-      @nextQuarterBeat = 0       # timestamp at which next quarter beat runs
+      @lastBeatLoopMs = now          # milliseconds at last beat loop
+      @timeAtStart    = now          # milliseconds at loop start
+      @time           = now / 1000   # current time in SECONDS
 
       @resetTime()
       @beatLoop(now)
@@ -54,29 +52,30 @@ define ['core/event-emitter'], (EventEmitter) ->
     ###
     beatLoop: (aimedForTime) =>
 
-      @emit('beat', @beatCount + @fraction)
+      @emit('beat', @beatCount + @beatFraction)
 
-      if @fraction >= 1
-        @fraction = 0
+      if @beatFraction >= 1
+        @beatFraction = 0
 
         @beatCount += 1
 
-        if (@syncClient.currentConnection() and @syncClient.beats.length)
+        #if (@syncClient.currentConnection() and @syncClient.beats.length)
+        #
+        #  @setBpm(@syncClient.bpm)
+        #
+        #  if (@syncClient.count == 1 and @lastBeat != @syncClient.beats[@syncClient.beats.length-1])
+        #    @beatCount = 1
+        #    @lastBeat = @syncClient.beats[@syncClient.beats.length-1]
+        #  else
+        #    @lastBeat = @syncClient.beats[@syncClient.beats.length-1] + @mspb * (@beatCount - @syncClient.count)
+      
+      now = @audioApi.getTime()
 
-          @setBpm(@syncClient.bpm)
+      @beatFraction += 0.25
 
-          if (@syncClient.count == 1 and @lastBeat != @syncClient.beats[@syncClient.beats.length-1])
-            @beatCount = 1
-            @lastBeat = @syncClient.beats[@syncClient.beats.length-1]
-          else
-            @lastBeat = @syncClient.beats[@syncClient.beats.length-1] + @mspb * (@beatCount - @syncClient.count)
-        else
-          @lastBeat += @mspb
-
-      @fraction += 0.25
+      @lastBeatLoopMs = now
 
       # next call should be in 1/4 of a beat time
-      now = @audioApi.getTime()
       diffMs = aimedForTime - now
       quarterBeatMs = @mspb * 0.25
       # We subtract a few miliseconds so that this triggers ahead of time
@@ -107,11 +106,13 @@ define ['core/event-emitter'], (EventEmitter) ->
       if address && !(@syncClient.connecting || @syncClient.currentConnection() == @syncClient.cleanAddress(address))
         console.log('Connecting to ' + address)
         @syncClient.connect(address)
-      return
 
     beat: ->
-      passed = new Date().getTime() - @lastBeat
-      return @beatCount + passed / @mspb;
+      now = @audioApi.getTime()
+      msSinceLastQuarter = now - @lastBeatLoopMs
+      quarterNoteMs = @mspb / 4
+      beatValue = @beatCount + @beatFraction + ((msSinceLastQuarter / quarterNoteMs) / 4);
+      return beatValue
 
     pulse: (frequency) ->
       if typeof frequency != "number"
