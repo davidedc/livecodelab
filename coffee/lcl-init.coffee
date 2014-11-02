@@ -335,7 +335,6 @@ require [
     # animation loop. Events will start
     # being triggered from here on.
     #/////////////////////////////////////////////////////
-    liveCodeLabCore.loadAndTestAllTheSounds()
     liveCodeLabCore.paintARandomBackground()
     liveCodeLabCore.startAnimationLoop()
     if not Detector.webgl or paramsObject.forceCanvasRenderer

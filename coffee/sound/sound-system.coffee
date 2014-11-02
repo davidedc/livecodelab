@@ -9,31 +9,34 @@ define () ->
 
   class SoundSystem
 
-    constructor: (@eventRouter, @timeKeeper, @audioAPI, @samplebank) ->
+    constructor: (
+      @eventRouter,
+      @timeKeeper,
+      @audioAPI,
+      @samplebank,
+      @patternPlayer
+    ) ->
       @timeKeeper.addListener('beat', (beat) => @soundLoop(beat) )
-
-      @playSound = (name) => @audioAPI.play(name)
+      @playPatterns = []
 
     addToScope: (scope) ->
-      scope.add('bpm',  (a) => @bpm(a))
       scope.add('play', (a,b) => @play(a,b))
 
-    resetLoops: ->
-      true
+    clearPatterns: ->
+      @playPatterns = []
 
     playStartupSound: ->
       @audioAPI.play('bing')
 
     # called from within patches
-    play: (soundID, beatString) ->
-      console.log('play soundID')
+    play: (name, pattern) ->
+      @playPatterns.push({
+        name: name,
+        pattern: pattern
+      })
 
     soundLoop: (beat) ->
       null
-
-    isAudioSupported: -> true
-
-    loadAndTestAllTheSounds: -> true
 
   SoundSystem
 

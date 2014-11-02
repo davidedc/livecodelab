@@ -77,6 +77,7 @@ define [
   ,'core/global-scope'
   ,'sound/samplebank'
   ,'sound/sound-system'
+  ,'sound/pattern-player'
   ,'threejs'
 ], (
   AnimationLoop
@@ -97,6 +98,7 @@ define [
   ,GlobalScope
   ,SampleBank
   ,SoundSystem
+  ,PatternPlayer
   ,THREE
 ) ->
 
@@ -143,7 +145,8 @@ define [
         @eventRouter,
         @timeKeeper,
         @audioAPI,
-        new SampleBank(@audioAPI)
+        new SampleBank(@audioAPI),
+        new PatternPlayer()
       )
       
       @backgroundPainter = new BackgroundPainter(
@@ -232,9 +235,6 @@ define [
 
     runLastWorkingProgram: ->
       @programRunner.runLastWorkingProgram()
-
-    loadAndTestAllTheSounds: ->
-      @soundSystem.loadAndTestAllTheSounds()
 
     playStartupSound: ->
       @soundSystem.playStartupSound()

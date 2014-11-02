@@ -232,7 +232,7 @@ define () ->
 
       # the sound list needs to be cleaned
       # so that the user program can create its own from scratch
-      @soundSystem.resetLoops()
+      @lclCore.soundSystem.clearPatterns()
 
       @lclCore.programRunner.resetTrackingOfDoOnceOccurrences()
 
