@@ -1,17 +1,10 @@
 ###
-## The SampleBank is responsible for holding the filepaths to any audio that
-## needs to be loaded by the browser.
-##
-## It automatically handles returning the ogg or mp3 file path.
+## The SampleBank is responsible for loading the audio files into buffers
 ###
 
 define () ->
 
   class SampleBank
-
-    sounds: []
-    soundsByName: {}
-    fileType: undefined
 
     constructor: (@audioAPI) ->
 
