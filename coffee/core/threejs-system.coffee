@@ -4,16 +4,158 @@
 ###
 
 define [
+  'ui/ui'
 ], (
+  Ui
 ) ->
 
   class ThreeJsSystem
 
     @isWebGLUsed: false
-    @composer: {}
+    @composer: null
+    @timesInvoked: false
+
+    @doTheThing: (liveCodeLabCore_three,blendedThreeJsSceneCanvas, renderTargetParameters, renderer, scene, camera ) ->
+      #debugger
+      multiplier = 1
+
+
+      sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasScale)
+      sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasScale)
+
+
+      # dimension on screen
+      blendedThreeJsSceneCanvas.style.width = sx + "px"
+      blendedThreeJsSceneCanvas.style.height = sy + "px"
+
+      # buffer size
+      blendedThreeJsSceneCanvas.width = 2 * sx
+      blendedThreeJsSceneCanvas.height = 2 * sy
+      #debugger
+
+
+      multiplier = 2
+      renderTarget = new liveCodeLabCore_three.WebGLRenderTarget(
+        sx * multiplier,
+        sy * multiplier,
+        renderTargetParameters)
+
+
+      console.log "renderTarget width: " + renderTarget.width
+
+      effectSaveTarget = new liveCodeLabCore_three.SavePass(
+        new liveCodeLabCore_three.WebGLRenderTarget(
+          sx * multiplier,
+          sy * multiplier,
+          renderTargetParameters
+        )
+      )
+
+      console.log "effectSaveTarget width: " + effectSaveTarget.width
+
+      effectSaveTarget.clear = false
+      
+      # Uncomment the three lines containing "fxaaPass" below to try a fast
+      # antialiasing filter. Commented below because of two reasons:
+      # a) it's slow
+      # b) it blends in some black pixels, so it only looks good
+      #     in dark backgrounds
+      # The problem of blending with black pixels is the same problem of the
+      # motionBlur leaving a black trail - tracked in github with
+      # https://github.com/davidedc/livecodelab/issues/22
+      
+      #fxaaPass = new liveCodeLabCore_three.ShaderPass(liveCodeLabCore_three.ShaderExtras.fxaa);
+      #fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);
+
+      # this is the place where everything is mixed together
+      composer = new liveCodeLabCore_three.EffectComposer(
+        renderer, renderTarget)
+
+
+      # this is the effect that blends two buffers together
+      # for motion blur.
+      # it's going to blend the previous buffer that went to
+      # screen and the new rendered buffer
+      effectBlend = new liveCodeLabCore_three.ShaderPass(
+        liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1")
+      effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
+      effectBlend.uniforms.mixRatio.value = 0
+
+      screenPass = new liveCodeLabCore_three.ShaderPass(
+        liveCodeLabCore_three.ShaderExtras.screen)
+      
+      renderModel = new liveCodeLabCore_three.RenderPass(
+        scene, camera)
+
+
+      # first thing, render the model
+      composer.addPass renderModel
+      # then apply some fake post-processed antialiasing      
+      #composer.addPass(fxaaPass);
+      # then blend using the previously saved buffer and a mixRatio
+      composer.addPass effectBlend
+      # the result is saved in a copy: @effectSaveTarget.renderTarget
+      composer.addPass effectSaveTarget
+      # last pass is the one that is put to screen
+      composer.addPass screenPass
+      screenPass.renderToScreen = true
+      #debugger
+      ThreeJsSystem.timesInvoked = true
+
+
+      return [renderTarget, effectSaveTarget, composer]
+
+
+    @windowResize: (thrsystem, renderer, camera, scale) ->
+      callback = =>        
+        # notify the renderer of the size change
+        console.log "windowResize called scale: " + scale + " @composer: " + @composerinner
+
+        # update the camera
+        camera.aspect = (window.innerWidth+40) / (window.innerHeight+40)
+        camera.updateProjectionMatrix()
+
+        renderer.setSize Math.floor((window.innerWidth+40) / scale), Math.floor((window.innerHeight+40) / scale)
+        console.log "renderer new context width: " + renderer.context.drawingBufferWidth
+
+        ###
+        #thrsystem.composer.renderer.setSize Math.floor((window.innerWidth+40) / scale), Math.floor((window.innerHeight+40) / scale)
+
+        #thrsystem.renderTarget.setSize Math.floor((window.innerWidth+40) / scale), Math.floor((window.innerHeight+40) / scale)
+
+        console.log "new renderTarget width: " + thrsystem.renderTarget.width
+
+
+        #thrsystem.effectSaveTarget.renderTarget.setSize Math.floor((window.innerWidth+40) /2 ), Math.floor((window.innerHeight+40)/2 )
+
+
+        #thrsystem.composer = new thrsystem.liveCodeLabCore_three.EffectComposer(
+        #  renderer, thrsystem.renderTarget)
+        ###
+
+        [thrsystem.renderTarget, thrsystem.effectSaveTarget, thrsystem.composer] = ThreeJsSystem.doTheThing(thrsystem.liveCodeLabCore_three,thrsystem.blendedThreeJsSceneCanvas, thrsystem.renderTargetParameters , renderer, thrsystem.scene, thrsystem.camera)
+        
+        return
+
+      
+      # bind the resize event
+      window.addEventListener "resize", callback, false
+      
+      # return .stop() the function to stop watching window resize
+      
+      ###*
+      Stop watching window resize
+      ###
+      stop: ->
+        window.removeEventListener "resize", callback
+        return
+
+    @bind: (thrsystem, renderer, camera) ->
+      @windowResize thrsystem, renderer, camera, Ui.foregroundCanvasScale
+
     constructor: ( \
       Detector, \
-        THREEx, \
+        # THREEx, \
         @blendedThreeJsSceneCanvas, \
         @forceCanvasRenderer, \
         testMode, \
@@ -37,9 +179,10 @@ define [
           @blendedThreeJsSceneCanvas.getContext("experimental-webgl")
         
         # see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/WebGLRenderer
+        @liveCodeLabCore_three = liveCodeLabCore_three
         @renderer = new liveCodeLabCore_three.WebGLRenderer(
           canvas: @blendedThreeJsSceneCanvas
-          preserveDrawingBuffer: testMode # to allow screenshot
+          #preserveDrawingBuffer: testMode # to allow screenshot
           antialias: false
           premultipliedAlpha: false
         )
@@ -60,7 +203,8 @@ define [
         
         currentFrameThreeJsSceneCanvas.width = @blendedThreeJsSceneCanvas.width
         currentFrameThreeJsSceneCanvas.height = @blendedThreeJsSceneCanvas.height
-        
+
+
         @currentFrameThreeJsSceneCanvasContext =
           currentFrameThreeJsSceneCanvas.getContext("2d")
         
@@ -82,7 +226,7 @@ define [
         # see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/CanvasRenderer
         @renderer = new liveCodeLabCore_three.CanvasRenderer(
           canvas: currentFrameThreeJsSceneCanvas
-          antialias: true # to get smoother output
+          antialias: false # to get smoother output
           preserveDrawingBuffer: testMode # to allow screenshot
           # todo figure out why this works. this parameter shouldn't
           # be necessary, as per https://github.com/mrdoob/three.js/issues/2833 and
@@ -94,6 +238,9 @@ define [
         
       @renderer.setSize @blendedThreeJsSceneCanvas.width, \
         @blendedThreeJsSceneCanvas.height
+      #@renderer.setViewport( 0, 0, @blendedThreeJsSceneCanvas.width, @blendedThreeJsSceneCanvas.height )
+
+      console.log "renderer width: " + @renderer.width + " context width: " + @renderer.context.drawingBufferWidth
       @scene = new liveCodeLabCore_three.Scene()
       @scene.matrixAutoUpdate = false
       
@@ -101,82 +248,28 @@ define [
       @camera = new liveCodeLabCore_three.PerspectiveCamera(35, \
         @blendedThreeJsSceneCanvas.width / \
         @blendedThreeJsSceneCanvas.height, 1, 10000)
+      console.log "camera width: " + @camera.width
       @camera.position.set 0, 0, 5
       @scene.add @camera
       
       # transparently support window resize
-      THREEx.WindowResize.bind @renderer, @camera
+      @constructor.bind @, @renderer, @camera
       
       if @isWebGLUsed
-        renderTargetParameters = undefined
-        renderTarget = undefined
-        effectSaveTarget = undefined
+        @renderTargetParameters = undefined
+        @renderTarget = undefined
+        @effectSaveTarget = undefined
         fxaaPass = undefined
         screenPass = undefined
         renderModel = undefined
-        renderTargetParameters =
+        @renderTargetParameters =
           format: liveCodeLabCore_three.RGBAFormat
           stencilBuffer: true
       
         # these are the two buffers.
-
-        renderTarget = new liveCodeLabCore_three.WebGLRenderTarget(
-          @blendedThreeJsSceneCanvas.width,
-          @blendedThreeJsSceneCanvas.height,
-          renderTargetParameters)
-
-        effectSaveTarget = new liveCodeLabCore_three.SavePass(
-          new liveCodeLabCore_three.WebGLRenderTarget(
-            @blendedThreeJsSceneCanvas.width,
-            @blendedThreeJsSceneCanvas.height,
-            renderTargetParameters
-          )
-        )
-        effectSaveTarget.clear = false
-        
-        # Uncomment the three lines containing "fxaaPass" below to try a fast
-        # antialiasing filter. Commented below because of two reasons:
-        # a) it's slow
-        # b) it blends in some black pixels, so it only looks good
-        #     in dark backgrounds
-        # The problem of blending with black pixels is the same problem of the
-        # motionBlur leaving a black trail - tracked in github with
-        # https://github.com/davidedc/livecodelab/issues/22
-        
-        #fxaaPass = new liveCodeLabCore_three.ShaderPass(liveCodeLabCore_three.ShaderExtras.fxaa);
-        #fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);
-
-        # this is the place where everything is mixed together
-        @composer = new liveCodeLabCore_three.EffectComposer(
-          @renderer, renderTarget)
-
-        # this is the effect that blends two buffers together
-        # for motion blur.
-        # it's going to blend the previous buffer that went to
-        # screen and the new rendered buffer
-        @effectBlend = new liveCodeLabCore_three.ShaderPass(
-          liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1")
-        @effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
-        @effectBlend.uniforms.mixRatio.value = 0
-
-        screenPass = new liveCodeLabCore_three.ShaderPass(
-          liveCodeLabCore_three.ShaderExtras.screen)
-        
-        renderModel = new liveCodeLabCore_three.RenderPass(
-          @scene, @camera)
+        [@renderTarget, @effectSaveTarget, @composer] = @constructor.doTheThing(liveCodeLabCore_three,@blendedThreeJsSceneCanvas, @renderTargetParameters , @renderer, @scene, @camera)
 
 
-        # first thing, render the model
-        @composer.addPass renderModel
-        # then apply some fake post-processed antialiasing      
-        #@composer.addPass(fxaaPass);
-        # then blend using the previously saved buffer and a mixRatio
-        @composer.addPass @effectBlend
-        # the result is saved in a copy: effectSaveTarget.renderTarget
-        @composer.addPass effectSaveTarget
-        # last pass is the one that is put to screen
-        @composer.addPass screenPass
-        screenPass.renderToScreen = true
 
   ThreeJsSystem
 

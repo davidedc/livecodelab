@@ -31,7 +31,7 @@ requirejs.config(
     'Three.SavePass': 'lib/three.js/postprocessing/SavePass'
     'Three.ShaderPass': 'lib/three.js/postprocessing/ShaderPass'
 
-    'three-resize': 'lib/threex/THREEx.WindowResize'
+    #'three-resize': 'lib/threex/THREEx.WindowResize'
   shim:
     'bowser':
       deps: []
@@ -74,9 +74,9 @@ requirejs.config(
     'Three.RenderPass': ['threejs']
     'Three.SavePass': ['threejs']
     'Three.ShaderPass': ['threejs']
-    'three-resize':
-      deps: ['threejs']
-      exports: 'THREEx'
+    #'three-resize':
+    #  deps: ['threejs']
+    #  exports: 'THREEx'
 )
 
 
