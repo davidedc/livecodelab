@@ -66,7 +66,7 @@ define ['core/event-emitter'], (EventEmitter) ->
           @setBpm(@syncClient.bpm)
 
           syncClientLastBeatLoopMs = @syncClient.beats[@syncClient.beats.length - 1]
-          if (@syncClient.count === 1)
+          if (@syncClient.count == 1)
             @beatCount = 1
 
           # The sync client last beat loop ms will be the time of
