@@ -9,39 +9,37 @@
 ## makes it available to the ProgramRunner.
 ###
 
-define ['core/code-preprocessor', 'coffeescript'], (CodePreprocessor, CoffeescriptCompiler) ->
+define [
+  'LiveLangV1/code-preprocessor',
+  'coffeescript'
+], (CodePreprocessor, CoffeescriptCompiler) ->
 
   class CodeCompiler
     currentCodeString: null
     codePreprocessor: null
 
+    whitespaceCheck: /^\s*$/
 
-    constructor: (@eventRouter, @liveCodeLabCoreInstance) ->
+    constructor: (@eventRouter) ->
       # the code compiler needs the CodePreprocessor
       
       @codePreprocessor = new CodePreprocessor()
       #@codePreprocessor = new CodePreprocessor()
 
 
-    updateCode: (code) ->
+    compileCode: (code) ->
+
       @currentCodeString = code
 
+      output = {}
 
       # we do a couple of special resets when
       # the code is the empty string.
-      if code is ""
-        @liveCodeLabCoreInstance.graphicsCommands.resetTheSpinThingy = true
-        programHasBasicError = false
-        @eventRouter.emit("clear-error")
-        @liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
-        functionFromCompiledCode = new Function("")
-        @liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction null
-        @liveCodeLabCoreInstance.drawFunctionRunner.lastStableDrawFunction = null
-        return functionFromCompiledCode
+      if @whitespaceCheck.test(code)
+        output.status = 'empty'
+        return output
 
       [code, error] = @codePreprocessor.preprocess code
-      #console.log code
-
 
       # if 'error' is anything else then undefined then it
       # means that the process of translation has found
@@ -49,11 +47,9 @@ define ['core/code-preprocessor', 'coffeescript'], (CodePreprocessor, Coffeescri
       # we report the error and skip the coffeescript
       # to javascript translation step.
       if error?
-        @eventRouter.emit("compile-time-error-thrown", error)
-        return
-            
-      #console.log code
-      
+        output.status = 'error'
+        output.error = error
+        return output
 
       try
         compiledOutput = CoffeescriptCompiler.compile(code,
@@ -61,16 +57,10 @@ define ['core/code-preprocessor', 'coffeescript'], (CodePreprocessor, Coffeescri
         )
       catch e
         # coffescript compiler has caught a syntax error.
-        # we are going to display the error and we WON'T register
-        # the new code
-        @eventRouter.emit("compile-time-error-thrown", e)
-        return
-      #alert compiledOutput
-      programHasBasicError = false
-      @eventRouter.emit("clear-error")
-      
-      @liveCodeLabCoreInstance.drawFunctionRunner.consecutiveFramesWithoutRunTimeError = 0
-      
+        output.status = 'error'
+        output.error = e
+        return output
+
       # You might want to change the frame count from the program
       # just like you can in Processing, but it turns out that when
       # you ASSIGN a value to the frame variable inside
@@ -85,8 +75,11 @@ define ['core/code-preprocessor', 'coffeescript'], (CodePreprocessor, Coffeescri
 
       # elegant way to not use eval
       functionFromCompiledCode = new Function(compiledOutput)
-      @liveCodeLabCoreInstance.drawFunctionRunner.setDrawFunction functionFromCompiledCode
-      functionFromCompiledCode
+
+      output.status = 'parsed'
+      output.program = functionFromCompiledCode
+
+      return output
 
     # this function is used externally after the code has been
     # run, so we need to attach it to the CodeCompiler object.
@@ -130,9 +123,8 @@ define ['core/code-preprocessor', 'coffeescript'], (CodePreprocessor, Coffeescri
       # new code by getting the code from codemirror again
       # because we don't know what that entails. We should
       # just pass the code we already have.
-      # Also updateCode() may split the source code by line, so we can
+      # Also compileCode() may split the source code by line, so we can
       # avoid that since we've just split it, we could pass
       # the already split code.
-      drawFunction = @updateCode(elaboratedSource)
-      drawFunction
+      @compileCode(elaboratedSource).program
 

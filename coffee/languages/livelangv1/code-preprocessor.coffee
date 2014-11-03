@@ -14,7 +14,10 @@
 
 detailedDebug = false
 
-define ['core/code-preprocessor-tests', 'core/colour-literals'], (CodePreprocessorTests, ColourLiterals) ->
+define [
+  'LiveLangV1/code-preprocessor-tests',
+  'core/colour-literals'
+], (CodePreprocessorTests, ColourLiterals) ->
 
   # we want to have the following snippet to work:
   #   flickering = <if random > 0.5 then scale 0>

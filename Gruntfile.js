@@ -7,6 +7,11 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
 
+        nodeunit: {
+            files: ['langtests/**/*_test.js']
+        },
+
+
         copy: {
             main: {
                 files: [{
@@ -98,7 +103,15 @@ module.exports = function (grunt) {
         watch: {
             scripts: {
                 files: ['coffee/**/*.coffee', 'tests/js/*.js', 'tests/testsSource/*.coffee', 'templts/tests.html.templt', 'tests/htmlsWithTests/images/*.png'],
-                tasks: ['coffee:app','coffee:tests', 'copy']
+                tasks: ['coffee:app', 'coffee:tests', 'copy']
+            },
+            lcllang: {
+                files: ['grammar/**/*.jison', 'langtests/**/*.js'],
+                tasks: ['langtest']
+            },
+            interpreter: {
+                files: ['js_lib/lcl/**/*.js', 'langtests/**/*.js'],
+                tasks: ['copy:main', 'langtest']
             }
         },
         coffeelint: {
@@ -181,6 +194,15 @@ module.exports = function (grunt) {
                     out: 'dist/js/lcl.min.js'
                 }
             }
+        },
+        jison: {
+            main: {
+                options: {
+                    moduleType: 'amd'
+                },
+                src: 'grammar/lcl-grammar.jison',
+                dest: 'dist/js/lib/lcl/parser.js'
+            }
         }
     });
 
@@ -199,9 +221,26 @@ module.exports = function (grunt) {
         'coffee:app',
         'coffee:tests',
         'copy:main',
+        'jison',
         'recess:compile',
         'requirejs',
         'targethtml'
+    ]);
+
+    grunt.registerTask('fastbuild', [
+        'clean:build',
+        'coffee:app',
+        'coffee:tests',
+        'copy:main',
+        'jison',
+        'recess:compile',
+        'targethtml'
+    ]);
+
+    grunt.registerTask('langtest', [
+        'copy:main',
+        'jison',
+        'nodeunit'
     ]);
 
     // Load NPM Task modules
@@ -215,5 +254,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-docco');
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-nodeunit');
+    grunt.loadNpmTasks('grunt-jison');
 
 };

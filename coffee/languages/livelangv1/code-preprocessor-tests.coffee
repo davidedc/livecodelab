@@ -6,7 +6,7 @@
 ##   testPreprocessor()
 ###
 
-define ['core/code-preprocessor-tests'], (foo) ->
+define ['LiveLangV1/code-preprocessor-tests'], (foo) ->
 
   class CodePreprocessorTests
 

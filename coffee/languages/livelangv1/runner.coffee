@@ -27,14 +27,14 @@ define () ->
 
     # contains the last stable draw function as a Function object. Never mind the
     # initialisation as an empty string.
-    lastStableDrawFunction = null
+    lastStableProgram = null
 
     # contains the code that is meant to be run, as a string.
     # note that it might be impossible to run it because of errors, in which case
     # LiveCodeLab might be running an older version.
     currentCodeString = ""
     
-    constructor: (@eventRouter, @liveCodeLabCoreInstance) ->
+    constructor: (@eventRouter, @codeCompiler) ->
 
     addToScope: (scope) ->
 
@@ -68,27 +68,31 @@ define () ->
     addDoOnce: (lineNum) ->
       @doOnceOccurrencesLineNumbers.push lineNum
 
-    setDrawFunction: (drawFunc) ->
+    reset: () ->
+      @consecutiveFramesWithoutRunTimeError = 0
+      @drawFunction = () -> {}
+      @lastStableProgram = () -> {}
+
+    setProgram: (drawFunc) ->
+      @consecutiveFramesWithoutRunTimeError = 0
       @drawFunction = drawFunc
 
     resetTrackingOfDoOnceOccurrences: ->
       @doOnceOccurrencesLineNumbers = []
 
     putTicksNextToDoOnceBlocksThatHaveBeenRun: ->
-      codeCompiler = @liveCodeLabCoreInstance.codeCompiler
+      codeCompiler = @codeCompiler
       if @doOnceOccurrencesLineNumbers.length
-        @setDrawFunction(
-          codeCompiler.addCheckMarksAndUpdateCodeAndNotifyChange(
-            codeCompiler, @doOnceOccurrencesLineNumbers
-          )
+        p = codeCompiler.addCheckMarksAndUpdateCodeAndNotifyChange(
+          codeCompiler, @doOnceOccurrencesLineNumbers
         )
+        @setProgram(p)
 
-    runDrawFunction: ->
+    runProgram: ->
       # this invokation below could be throwing an error,
       # in which case the lines afterwards are not executed
       # and the exception is propagated to the callee of this function,
       # which is the main animation loop.
-      #console.log "running runDrawFunction"
       @drawFunction()
       
       # if we are here it means that the draw function didn't generate
@@ -100,13 +104,13 @@ define () ->
       # so the new version too gets an opportunity to be tested and saved.
       @consecutiveFramesWithoutRunTimeError += 1
       if @consecutiveFramesWithoutRunTimeError is 5
-        @lastStableDrawFunction = @drawFunction
+        @lastStableProgram = @drawFunction
         @eventRouter.emit("livecodelab-running-stably")
 
-    reinstateLastWorkingDrawFunction: ->
+    runLastWorkingProgram: ->
       # mark the program as flawed and register the previous stable one.
       @consecutiveFramesWithoutRunTimeError = 0
-      @drawFunction = @lastStableDrawFunction
+      @drawFunction = @lastStableProgram
 
   ProgramRunner
 

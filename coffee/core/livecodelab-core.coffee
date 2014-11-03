@@ -11,7 +11,7 @@ A LiveCodeLabCore instance packs together the following parts:
 - backgroundPainter
 - graphicsCommands
 - lightSystem
-- drawFunctionRunner
+- programRunner
 - codeCompiler
 - renderer
 - animationLoop
@@ -62,16 +62,16 @@ define [
   'core/animation-loop'
   ,'core/background-painter'
   ,'core/blend-controls'
-  ,'core/code-compiler'
+  ,'core/languages'
   ,'core/colour-functions'
   ,'core/colour-literals'
   ,'core/graphics-commands'
   ,'core/lights-commands'
   ,'core/matrix-commands'
-  ,'core/program-runner'
   ,'core/renderer'
   ,'core/threejs-system'
   ,'core/time-keeper'
+  ,'globals/math'
   ,'core/global-scope'
   ,'sound/samplebank'
   ,'sound/sound-system'
@@ -91,16 +91,16 @@ define [
   AnimationLoop
   ,BackgroundPainter
   ,BlendControls
-  ,CodeCompiler
+  ,Languages
   ,ColourFunctions
   ,ColourLiterals
   ,GraphicsCommands
   ,LightsCommands
   ,MatrixCommands
-  ,ProgramRunner
   ,Renderer
   ,ThreeJsSystem
   ,TimeKeeper
+  ,Math
   ,GlobalScope
   ,SampleBank
   ,SoundSystem
@@ -115,7 +115,11 @@ define [
 
   class LiveCodeLabCore
 
-    constructor: (@paramsObject) ->
+    constructor: (
+       @eventRouter
+      ,@statsWidget
+      ,@paramsObject
+    ) ->
       
       #//////////////////////////////////////////////
       #
@@ -152,17 +156,21 @@ define [
       #//////////////////////////////////////////////
       
       @timeKeeper = new TimeKeeper()
+
+      @globalscope = new GlobalScope(true)
       
       # this one also interacts with threeJsSystem at runtime
       @blendControls = new BlendControls(@)
       @colourFunctions = new ColourFunctions()
       @colourLiterals = new ColourLiterals()
+
+      @mathFunctions = new Math()
       
       # this one also interacts with threeJsSystem and blendControls at runtime
       @renderer = new Renderer(@)
       @soundSystem =
         new SoundSystem(
-          @paramsObject.eventRouter, @timeKeeper, buzz, lowLag, createBowser(), new SampleBank(buzz))
+          @eventRouter, @timeKeeper, buzz, lowLag, createBowser(), new SampleBank(buzz))
       
       # this one also interacts with colourFunctions, backgroundSceneContext,
       # canvasForBackground at runtime
@@ -171,24 +179,11 @@ define [
         @,
         @colourLiterals
       )
-      
-      # this one also interacts with codeCompiler at runtime.
-      @drawFunctionRunner =
-        new ProgramRunner(@paramsObject.eventRouter, @)
-      
-      # compiles the user sketch to js so it's ready to run.
-      @codeCompiler =
-        new CodeCompiler(@paramsObject.eventRouter, @)
-      
-      # this one also interacts with timeKeeper, matrixCommands, blendControls,
-      #    soundSystem,
-      #    backgroundPainter, graphicsCommands, lightSystem, drawFunctionRunner,
-      #    codeCompiler, renderer
-      # ...at runtime
-      @animationLoop =
-        new AnimationLoop(
-          @paramsObject.eventRouter, @paramsObject.statsWidget, @)
-      
+
+      @languages = new Languages(@eventRouter, @globalscope)
+      @setLanguage(@paramsObject.languageVersion)
+
+
       #//////////////////////////////////////////////
       #
       # ### Phase 3
@@ -230,15 +225,25 @@ define [
       @lightSystem =
         new LightsCommands(@graphicsCommands, @)
 
-      #//////////////////////////////////////////////
+      # this one also interacts with timeKeeper, matrixCommands, blendControls,
+      #    soundSystem,
+      #    backgroundPainter, graphicsCommands, lightSystem, programRunner,
+      #    codeCompiler, renderer
+      # ...at runtime
+      @animationLoop =
+        new AnimationLoop(
+          @eventRouter,
+          @statsWidget,
+          @,
+          @graphicsCommands
+        )
+            #//////////////////////////////////////////////
       #
       # ### Phase 4
       # Setup the global scope object, and add all the
       # necessary global functions/values to it
       #
       #//////////////////////////////////////////////
-
-      @globalscope = new GlobalScope()
 
       @graphicsCommands.addToScope(@globalscope)
       @matrixCommands.addToScope(@globalscope)
@@ -250,8 +255,14 @@ define [
       @colourFunctions.addToScope(@globalscope)
       @animationLoop.addToScope(@globalscope)
       @timeKeeper.addToScope(@globalscope)
-      @drawFunctionRunner.addToScope(@globalscope)
+      @programRunner.addToScope(@globalscope)
+      @mathFunctions.addToScope(@globalscope)
 
+    setLanguage: (langName) ->
+
+      languageObjects = @languages.getLanguageObjects(langName)
+      @programRunner = languageObjects.runner
+      @codeCompiler = languageObjects.compiler
 
     #//////////////////////////////////////////////
     #
@@ -270,8 +281,8 @@ define [
       # for the next frame. Abstracting a bit though, it's clearer this way.
       @animationLoop.animate()
 
-    runLastWorkingDrawFunction: ->
-      @drawFunctionRunner.reinstateLastWorkingDrawFunction()
+    runLastWorkingProgram: ->
+      @programRunner.runLastWorkingProgram()
 
     loadAndTestAllTheSounds: ->
       @soundSystem.loadAndTestAllTheSounds()
@@ -282,15 +293,29 @@ define [
     isAudioSupported: ->
       @soundSystem.isAudioSupported()
 
-    updateCode: (updatedCode) ->
-      # alert('updatedCode: ' + updatedCode);
-      @codeCompiler.updateCode updatedCode
-      if updatedCode isnt "" and @dozingOff
-        @dozingOff = false
+    updateCode: (newCode) ->
+
+      output = @codeCompiler.compileCode newCode
+
+      switch output.status
+        when 'error'
+          @eventRouter.emit("compile-time-error-thrown", output.error)
+        when 'parsed'
+          @eventRouter.emit("clear-error")
+          @programRunner.setProgram(output.program, newCode)
+        when 'empty'
+          # we do a couple of special resets when
+          # the code is the empty string.
+          @animationLoop.sleeping = true
+          @graphicsCommands.resetTheSpinThingy = true
+          @eventRouter.emit("clear-error")
+          @programRunner.reset()
+
+      if output.status is 'parsed' and @animationLoop.sleeping
+        @animationLoop.sleeping = false
         @animationLoop.animate()
-        
-        # console.log('waking up');
-        @paramsObject.eventRouter.emit("livecodelab-waking-up")
+
+        @eventRouter.emit("livecodelab-waking-up")
 
 
     # why do we leave the option to put a background?
