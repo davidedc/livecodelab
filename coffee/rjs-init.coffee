@@ -34,9 +34,16 @@ requirejs.config(
 
     'three-resize': 'lib/threex/THREEx.WindowResize'
 
-    'LiveLangV1': 'languages/livelangv1'
-    'LiveLangV2': 'languages/livelangv2'
 
+  packages: [
+      name: 'LiveLangV1'
+      location: 'languages/livelangv1'
+      main: "main"
+    ,
+      name: 'LiveLangV2'
+      location: 'languages/livelangv2'
+      main: "main"
+  ]
 
   shim:
     'bowser':
