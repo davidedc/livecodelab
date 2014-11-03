@@ -36,7 +36,7 @@ define([
         if (address){
             this.connect(address);
         }
-    }
+    };
 
     // Static properties
     Pulse.MIDI_CLOCK = 248;

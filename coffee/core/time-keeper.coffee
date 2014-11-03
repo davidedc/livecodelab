@@ -54,26 +54,29 @@ define ['core/event-emitter'], (EventEmitter) ->
 
       @emit('beat', @beatCount + @beatFraction)
 
-      if @beatFraction >= 1
+      now = @audioApi.getTime()
+
+      if (@beatFraction >= 1)
         @beatFraction = 0
 
         @beatCount += 1
 
-        #if (@syncClient.currentConnection() and @syncClient.beats.length)
-        #
-        #  @setBpm(@syncClient.bpm)
-        #
-        #  if (@syncClient.count == 1 and @lastBeat != @syncClient.beats[@syncClient.beats.length-1])
-        #    @beatCount = 1
-        #    @lastBeat = @syncClient.beats[@syncClient.beats.length-1]
-        #  else
-        #    @lastBeat = @syncClient.beats[@syncClient.beats.length-1] + @mspb * (@beatCount - @syncClient.count)
-      
-      now = @audioApi.getTime()
+        if (@syncClient.currentConnection() and @syncClient.beats.length)
+
+          @setBpm(@syncClient.bpm)
+
+          syncClientLastBeatLoopMs = @syncClient.beats[@syncClient.beats.length - 1]
+          if (@syncClient.count === 1)
+            @beatCount = 1
+
+          # The sync client last beat loop ms will be the time of
+          # the last quarter note the client knew about
+          @lastBeatLoopMs = syncClientLastBeatLoopMs
+
+        else
+          @lastBeatLoopMs = now
 
       @beatFraction += 0.25
-
-      @lastBeatLoopMs = now
 
       # next call should be in 1/4 of a beat time
       diffMs = aimedForTime - now
@@ -103,7 +106,9 @@ define ['core/event-emitter'], (EventEmitter) ->
     Connects to a sync server, and read the bpm/beat from there.
     ###
     connect: (address) ->
-      if address && !(@syncClient.connecting || @syncClient.currentConnection() == @syncClient.cleanAddress(address))
+      if address && !(
+        @syncClient.connecting || @syncClient.currentConnection() == @syncClient.cleanAddress(address)
+      )
         console.log('Connecting to ' + address)
         @syncClient.connect(address)
 
