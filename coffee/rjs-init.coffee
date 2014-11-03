@@ -36,10 +36,7 @@ requirejs.config(
 
     'LiveLangV1': 'languages/livelangv1'
     'LiveLangV2': 'languages/livelangv2'
-  packages: [
-    'LiveLangV1'
-    'LiveLangV2'
-  ]
+
 
   shim:
     'bowser':

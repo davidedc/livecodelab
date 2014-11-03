@@ -1,7 +1,7 @@
 
 define([
-  'LiveLangV1',
-  'LiveLangV2'
+  'languages/livelangv1/main',
+  'languages/livelangv2/main'
 ], (
   LiveLangV1,
   LiveLangV2
