@@ -37,6 +37,14 @@ There are two modes of building: one for creating the fully-fledged minified ver
    LiveCodeLab load up. Browsing to [localhost:8000/index-dev.html](http://localhost:8000/index-dev.html)
    will give you the un-minified version, which will be more useful for development.
 
+Building for a particular language
+--------------
+
+In case the user wants to use a specific language implementation, she can specify so:
+ * `grunt build --language=v1` builds with v1 language only
+ * `grunt build --language=v2` builds with v2 language only
+ * `grunt build --language=both` (same as `grunt build`) builds leaving the option for both languages selectable from menu.
+
 Documentation
 -------------
 

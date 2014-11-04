@@ -21,6 +21,7 @@ require [
   ,'globals/browsercontrols'
   ,'globals/numbertimes'
   ,'globals/requestAnimFrame'
+  ,'globals/languages-build-option'
 ], (
   Stats
   ,EventEmitter
@@ -110,7 +111,6 @@ require [
        eventRouter
       ,stats
       ,{
-        languageVersion: 'lclv1'
         blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
         canvasForBackground: paramsObject.canvasForBackground
         forceCanvasRenderer: paramsObject.forceCanvasRenderer

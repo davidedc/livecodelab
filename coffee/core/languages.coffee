@@ -23,7 +23,11 @@ define([
           'compiler': new LiveLangV2.compiler()
         }
       }
-      @languages.default = @languages.lclv1
+
+      if languagesBuildOption == 'v2'
+        @languages.default = @languages.lclv2
+      else
+        @languages.default = @languages.lclv1
 
     getLanguageObjects: (name) ->
       if @languages[name]

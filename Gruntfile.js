@@ -13,6 +13,15 @@ module.exports = function (grunt) {
 
 
         copy: {
+            buildTimeOptions: {
+                src: 'build-time-options/languages-build-option.js',
+                dest: 'dist/js/globals/languages-build-option.js',
+                options: {
+                  processContent: function (content, srcpath) {
+                    return content.replace(/SET_AT_BUILD_TIME/mgi,"'"+(grunt.option('language') || 'both')+"'");
+                  }
+                }
+            },
             main: {
                 files: [{
                     expand: true,
@@ -221,6 +230,7 @@ module.exports = function (grunt) {
         'coffee:app',
         'coffee:tests',
         'copy:main',
+        'copy:buildTimeOptions',
         'jison',
         'recess:compile',
         'requirejs',
@@ -232,6 +242,7 @@ module.exports = function (grunt) {
         'coffee:app',
         'coffee:tests',
         'copy:main',
+        'copy:buildTimeOptions',
         'jison',
         'recess:compile',
         'targethtml'
