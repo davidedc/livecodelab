@@ -110,12 +110,11 @@ require [
     liveCodeLabCore = new LiveCodeLabCore(
        eventRouter
       ,stats
-      ,{
-        blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
-        canvasForBackground: paramsObject.canvasForBackground
-        forceCanvasRenderer: paramsObject.forceCanvasRenderer
-        testMode: paramsObject.testMode
-      }
+      ,
+       blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
+       canvasForBackground: paramsObject.canvasForBackground
+       forceCanvasRenderer: paramsObject.forceCanvasRenderer
+       testMode: paramsObject.testMode
     )
 
     #/////////////////////////////////////////////////////

@@ -13,16 +13,13 @@ define([
 
       v1Compiler =  new LiveLangV1.compiler(eventRouter)
 
-      @languages = {
-        'lclv1': {
+      @languages =
+        'lclv1':
           'runner': new LiveLangV1.runner(eventRouter, v1Compiler),
           'compiler': v1Compiler
-        },
-        'lclv2': {
+        'lclv2':
           'runner': new LiveLangV2.runner(eventRouter, globalScope),
           'compiler': new LiveLangV2.compiler()
-        }
-      }
 
       if languagesBuildOption == 'v2'
         @languages.default = @languages.lclv2

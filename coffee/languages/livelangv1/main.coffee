@@ -7,5 +7,6 @@ define [
   ,runner
 ) ->
 
-  {compiler: compiler, runner: runner}
+  compiler: compiler,
+  runner: runner
 

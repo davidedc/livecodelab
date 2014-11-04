@@ -276,14 +276,11 @@ define [
 
         if languagesBuildOption == 'both'
           languageList = [
-            {
               'name': 'LCL V1',
               'value': 'lclv1'
-            },
-            {
+            ,
               'name': 'LCL V2',
               'value': 'lclv2'
-            }
           ]
           # LANGUAGES
           # insert all the languages in the menu
