@@ -12,6 +12,7 @@ requirejs.config(
     'codemirror-lcl-mode': 'lib/coffeescript-livecodelab-mode'
     'sooperfish-easing': 'lib/jquery.easing-sooper'
     'jquery': 'lib/jquery.min'
+    'buzz': 'lib/buzz'
     'simplemodal': 'lib/jquery.simplemodal.min'
     'sooperfish': 'lib/jquery.sooperfish'
     'mousewheel': 'lib/mousewheel'
@@ -58,6 +59,9 @@ requirejs.config(
     'mousewheel':
       deps: []
       exports: 'attachMouseWheelHandler'
+    'buzz':
+      deps: []
+      exports: 'buzz'
     'pulse':
       deps: []
       exports: 'pulse'
