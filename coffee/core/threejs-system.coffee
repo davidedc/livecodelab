@@ -15,7 +15,7 @@ define [
     @composer: null
     @timesInvoked: false
 
-    @doTheThing: (liveCodeLabCore_three,blendedThreeJsSceneCanvas, renderTargetParameters, renderer, scene, camera ) ->
+    @attachEffectsAndSizeTheirBuffers: (liveCodeLabCore_three,blendedThreeJsSceneCanvas, renderTargetParameters, renderer, scene, camera ) ->
       #debugger
       multiplier = 1
 
@@ -105,37 +105,23 @@ define [
 
       return [renderTarget, effectSaveTarget, composer]
 
+    @sizeTheForegroundCanvas: (renderer, camera, scale) ->
+      # notify the renderer of the size change
+      console.log "windowResize called scale: " + scale + " @composer: " + @composerinner
+
+      # update the camera
+      camera.aspect = (window.innerWidth+40) / (window.innerHeight+40)
+      camera.updateProjectionMatrix()
+
+      renderer.setSize Math.floor((window.innerWidth+40) / scale), Math.floor((window.innerHeight+40) / scale)
+      console.log "renderer new context width: " + renderer.context.drawingBufferWidth
+
+        
 
     @windowResize: (thrsystem, renderer, camera, scale) ->
-      callback = =>        
-        # notify the renderer of the size change
-        console.log "windowResize called scale: " + scale + " @composer: " + @composerinner
-
-        # update the camera
-        camera.aspect = (window.innerWidth+40) / (window.innerHeight+40)
-        camera.updateProjectionMatrix()
-
-        renderer.setSize Math.floor((window.innerWidth+40) / scale), Math.floor((window.innerHeight+40) / scale)
-        console.log "renderer new context width: " + renderer.context.drawingBufferWidth
-
-        ###
-        #thrsystem.composer.renderer.setSize Math.floor((window.innerWidth+40) / scale), Math.floor((window.innerHeight+40) / scale)
-
-        #thrsystem.renderTarget.setSize Math.floor((window.innerWidth+40) / scale), Math.floor((window.innerHeight+40) / scale)
-
-        console.log "new renderTarget width: " + thrsystem.renderTarget.width
-
-
-        #thrsystem.effectSaveTarget.renderTarget.setSize Math.floor((window.innerWidth+40) /2 ), Math.floor((window.innerHeight+40)/2 )
-
-
-        #thrsystem.composer = new thrsystem.liveCodeLabCore_three.EffectComposer(
-        #  renderer, thrsystem.renderTarget)
-        ###
-
-        [thrsystem.renderTarget, thrsystem.effectSaveTarget, thrsystem.composer] = ThreeJsSystem.doTheThing(thrsystem.liveCodeLabCore_three,thrsystem.blendedThreeJsSceneCanvas, thrsystem.renderTargetParameters , renderer, thrsystem.scene, thrsystem.camera)
-        
-        return
+      callback = =>
+        @sizeTheForegroundCanvas(renderer, camera, scale)
+        [thrsystem.renderTarget, thrsystem.effectSaveTarget, thrsystem.composer] = ThreeJsSystem.attachEffectsAndSizeTheirBuffers(thrsystem.liveCodeLabCore_three,thrsystem.blendedThreeJsSceneCanvas, thrsystem.renderTargetParameters , renderer, thrsystem.scene, thrsystem.camera)
 
       
       # bind the resize event
@@ -236,8 +222,8 @@ define [
           devicePixelRatio: 1
         )
         
-      @renderer.setSize @blendedThreeJsSceneCanvas.width, \
-        @blendedThreeJsSceneCanvas.height
+      #@renderer.setSize @blendedThreeJsSceneCanvas.width, \
+      #  @blendedThreeJsSceneCanvas.height
       #@renderer.setViewport( 0, 0, @blendedThreeJsSceneCanvas.width, @blendedThreeJsSceneCanvas.height )
 
       console.log "renderer width: " + @renderer.width + " context width: " + @renderer.context.drawingBufferWidth
@@ -252,6 +238,7 @@ define [
       @camera.position.set 0, 0, 5
       @scene.add @camera
       
+
       # transparently support window resize
       @constructor.bind @, @renderer, @camera
       
@@ -267,7 +254,9 @@ define [
           stencilBuffer: true
       
         # these are the two buffers.
-        [@renderTarget, @effectSaveTarget, @composer] = @constructor.doTheThing(liveCodeLabCore_three,@blendedThreeJsSceneCanvas, @renderTargetParameters , @renderer, @scene, @camera)
+        @constructor.sizeTheForegroundCanvas(@renderer, @camera, Ui.foregroundCanvasScale)
+
+        [@renderTarget, @effectSaveTarget, @composer] = @constructor.attachEffectsAndSizeTheirBuffers(liveCodeLabCore_three,@blendedThreeJsSceneCanvas, @renderTargetParameters , @renderer, @scene, @camera)
 
 
 
