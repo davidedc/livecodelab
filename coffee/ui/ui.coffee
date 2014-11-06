@@ -46,7 +46,7 @@ define [
           $("#dimCodeButtonContainer").html "Hide Code: off"
       )
 
-    @resizeCanvas2: (canvas, scale = {x:1,y:1}) ->
+    @sizeForegroundCanvas: (canvas, scale = {x:1,y:1}) ->
 
       # set the buffer size
       canvas.width = (window.innerWidth + 40) / scale.x

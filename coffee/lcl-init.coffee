@@ -324,7 +324,7 @@ require [
       theCanvas.style.position = "absolute"
       theCanvas.style.zIndex = "-2"
       document.getElementById("miao").appendChild(theCanvas)
-      Ui.resizeCanvas2 theCanvas, {x:Ui.foregroundCanvasScale,y:Ui.foregroundCanvasScale}
+      Ui.sizeForegroundCanvas theCanvas, {x:Ui.foregroundCanvasScale,y:Ui.foregroundCanvasScale}
 
       # create the background canvas where the
       # background gradients go
