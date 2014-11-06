@@ -1,22 +1,25 @@
 ###
-## The AudioAPI is responsible for the actual management and playback
-## of the sounds
+## The WebAudioApi uses the Web Audio Api for audio functionality
+## It supports more stuff than the Buzz Api
 ###
 
 define () ->
 
-  class AudioApi
+  class WebAudioApi
 
     constructor: () ->
-      @context = new AudioContext();
+      @context = new AudioContext()
       @soundout = @context.destination
       @samples = {}
+
+    getTime: () =>
+      @context.currentTime * 1000
 
     loadSample: (name, path) =>
       url = path + '.mp3'
       request = new XMLHttpRequest()
       request.open('GET', url, true)
-      request.responseType = 'arraybuffer';
+      request.responseType = 'arraybuffer'
 
       request.onload = () =>
         @context.decodeAudioData(
@@ -34,7 +37,5 @@ define () ->
       source.connect(@soundout)
       source.start(0)
 
-    # Return time in milliseconds
-    getTime: () =>
-      @context.currentTime * 1000
+  WebAudioApi
 

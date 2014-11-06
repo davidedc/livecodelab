@@ -9,7 +9,8 @@ require [
   ,'core/livecodelab-core'
   ,'core/program-loader'
   ,'pulse'
-  ,'sound/audioAPI'
+  ,'sound/webAudioApi'
+  ,'sound/buzzAudioApi'
   ,'ui/url-router'
   ,'ui/big-cursor'
   ,'ui/text-dimming'
@@ -29,7 +30,8 @@ require [
   ,LiveCodeLabCore
   ,ProgramLoader
   ,Pulse
-  ,AudioAPI
+  ,WebAudioAPI
+  ,BuzzAudioAPI
   ,UrlRouter
   ,BigCursor
   ,EditorDimmer
@@ -98,7 +100,13 @@ require [
     # Client used to sync to a time pulse over websocket
     syncClient = new Pulse()
 
-    audioAPI = new AudioAPI()
+    # If the WebAudioApi AudioContext class is available then we
+    # can use that API. Otherwise we fall back to Buzz
+    if (AudioContext)
+      audioAPI = new WebAudioAPI()
+      audioAPI = new BuzzAudioAPI()
+    else
+      audioAPI = new BuzzAudioAPI()
 
     #//////////////////////////////////////////////////////
     # Phase 2 - Initialise the core of livecodelab.
