@@ -103,7 +103,7 @@ define [
       ThreeJsSystem.timesInvoked = true
 
 
-      return [renderTarget, effectSaveTarget, composer]
+      return [renderTarget, effectSaveTarget, effectBlend, composer]
 
     @sizeTheForegroundCanvas: (renderer, camera, scale) ->
       # notify the renderer of the size change
@@ -121,7 +121,7 @@ define [
     @windowResize: (thrsystem, renderer, camera, scale) ->
       callback = =>
         @sizeTheForegroundCanvas(renderer, camera, scale)
-        [thrsystem.renderTarget, thrsystem.effectSaveTarget, thrsystem.composer] = ThreeJsSystem.attachEffectsAndSizeTheirBuffers(thrsystem.liveCodeLabCore_three,thrsystem.blendedThreeJsSceneCanvas, thrsystem.renderTargetParameters , renderer, thrsystem.scene, thrsystem.camera)
+        [thrsystem.renderTarget, thrsystem.effectSaveTarget, thrsystem.effectBlend, thrsystem.composer] = ThreeJsSystem.attachEffectsAndSizeTheirBuffers(thrsystem.liveCodeLabCore_three,thrsystem.blendedThreeJsSceneCanvas, thrsystem.renderTargetParameters , renderer, thrsystem.scene, thrsystem.camera)
 
       
       # bind the resize event
@@ -256,7 +256,7 @@ define [
         # these are the two buffers.
         @constructor.sizeTheForegroundCanvas(@renderer, @camera, Ui.foregroundCanvasScale)
 
-        [@renderTarget, @effectSaveTarget, @composer] = @constructor.attachEffectsAndSizeTheirBuffers(liveCodeLabCore_three,@blendedThreeJsSceneCanvas, @renderTargetParameters , @renderer, @scene, @camera)
+        [@renderTarget, @effectSaveTarget, @effectBlend, @composer] = @constructor.attachEffectsAndSizeTheirBuffers(liveCodeLabCore_three,@blendedThreeJsSceneCanvas, @renderTargetParameters , @renderer, @scene, @camera)
 
 
 
