@@ -6,10 +6,11 @@
 comment               "//"
 letter                [a-zA-Z]
 digit                 [0-9]
-strchars              [\-_]
 whitespace            [ \t]+
+strchars              [a-zA-Z0-9\-_ \t]*
 newline               [\n]+
-quote                 "\""
+dquote                "\""
+squote                "'"
 
 identifier            {letter}({letter}|{digit})*
 number                (\-)?{digit}+("."{digit}+)?
@@ -35,6 +36,9 @@ string                ({letter}|{digit}|{strchars})*
 /* comments */
 {comment}.*{newline}  /* skip comments */
 
+/* strings */
+{dquote}{strchars}{dquote} yytext = yytext.substr(1,yyleng-2); return "t_string"
+
 /* primitives */
 "line"                return "t_shape"
 "rect"                return "t_shape"
@@ -57,7 +61,6 @@ string                ({letter}|{digit}|{strchars})*
 
 {number}              return "t_number"
 {identifier}          return "t_id"
-{quote}               return "t_quote"
 
 /* math operators */
 "*"                   return "*"
@@ -362,7 +365,7 @@ Identifier
     ;
 
 String
-    : t_quote t_id t_quote
-        { $$ = ["STRING", $2]; }
+    : t_string
+        { $$ = ["STRING", yytext]; }
     ;
 
