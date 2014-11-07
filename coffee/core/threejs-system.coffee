@@ -15,7 +15,14 @@ define [
     @composer: null
     @timesInvoked: false
 
-    @attachEffectsAndSizeTheirBuffers: (liveCodeLabCore_three,blendedThreeJsSceneCanvas, renderTargetParameters, renderer, scene, camera ) ->
+    @attachEffectsAndSizeTheirBuffers: (thrsystem, renderer) ->
+
+      liveCodeLabCore_three = thrsystem.liveCodeLabCore_three
+      blendedThreeJsSceneCanvas = thrsystem.blendedThreeJsSceneCanvas
+      renderTargetParameters = thrsystem.renderTargetParameters
+      camera = thrsystem.camera
+      scene = thrsystem.scene
+
       #debugger
       multiplier = 1
 
@@ -76,10 +83,13 @@ define [
       # for motion blur.
       # it's going to blend the previous buffer that went to
       # screen and the new rendered buffer
-      effectBlend = new liveCodeLabCore_three.ShaderPass(
-        liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1")
-      effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
-      effectBlend.uniforms.mixRatio.value = 0
+      if !thrsystem.effectBlend?
+        effectBlend = new liveCodeLabCore_three.ShaderPass(
+          liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1")
+        effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
+        effectBlend.uniforms.mixRatio.value = 0
+      else
+        effectBlend.setSize sx * multiplier, sy * multiplier,
 
       screenPass = new liveCodeLabCore_three.ShaderPass(
         liveCodeLabCore_three.ShaderExtras.screen)
@@ -121,7 +131,7 @@ define [
     @windowResize: (thrsystem, renderer, camera, scale) ->
       callback = =>
         @sizeTheForegroundCanvas(renderer, camera, scale)
-        [thrsystem.renderTarget, thrsystem.effectSaveTarget, thrsystem.effectBlend, thrsystem.composer] = ThreeJsSystem.attachEffectsAndSizeTheirBuffers(thrsystem.liveCodeLabCore_three,thrsystem.blendedThreeJsSceneCanvas, thrsystem.renderTargetParameters , renderer, thrsystem.scene, thrsystem.camera)
+        [thrsystem.renderTarget, thrsystem.effectSaveTarget, thrsystem.effectBlend, thrsystem.composer] = ThreeJsSystem.attachEffectsAndSizeTheirBuffers(thrsystem, renderer)
 
       
       # bind the resize event
@@ -256,7 +266,7 @@ define [
         # these are the two buffers.
         @constructor.sizeTheForegroundCanvas(@renderer, @camera, Ui.foregroundCanvasScale)
 
-        [@renderTarget, @effectSaveTarget, @effectBlend, @composer] = @constructor.attachEffectsAndSizeTheirBuffers(liveCodeLabCore_three,@blendedThreeJsSceneCanvas, @renderTargetParameters , @renderer, @scene, @camera)
+        [@renderTarget, @effectSaveTarget, @effectBlend, @composer] = @constructor.attachEffectsAndSizeTheirBuffers(@, @renderer)
 
 
 
