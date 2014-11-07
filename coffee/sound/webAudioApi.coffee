@@ -31,12 +31,13 @@ define () ->
       request.send()
 
     play: (name) =>
-      console.log('play: ', name)
-      buffer = @samples[name]
-      source = @context.createBufferSource()
-      source.buffer = buffer
-      source.connect(@soundout)
-      source.start(0)
+      if (@samples[name])
+        console.log('play: ', name)
+        buffer = @samples[name]
+        source = @context.createBufferSource()
+        source.buffer = buffer
+        source.connect(@soundout)
+        source.start(0)
 
   WebAudioApi
 
