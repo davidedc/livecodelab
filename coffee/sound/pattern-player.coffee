@@ -20,6 +20,7 @@ define () ->
     runPattern: (pattern, beat) ->
       compressedPattern = pattern.replace(/\s+/g, '')
       patternPos = int(((beat - 1) * 4) % compressedPattern.length)
+      console.log(compressedPattern, patternPos)
       compressedPattern[patternPos] == 'x'
 
   PatternPlayer

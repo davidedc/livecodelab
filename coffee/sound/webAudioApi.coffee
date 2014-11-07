@@ -31,6 +31,7 @@ define () ->
       request.send()
 
     play: (name) =>
+      console.log('play: ', name)
       buffer = @samples[name]
       source = @context.createBufferSource()
       source.buffer = buffer

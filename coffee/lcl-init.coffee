@@ -104,7 +104,6 @@ require [
     # can use that API. Otherwise we fall back to Buzz
     if (AudioContext)
       audioAPI = new WebAudioAPI()
-      audioAPI = new BuzzAudioAPI()
     else
       audioAPI = new BuzzAudioAPI()
 
