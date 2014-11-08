@@ -38,6 +38,7 @@ string                ({letter}|{digit}|{strchars})*
 
 /* strings */
 {dquote}{strchars}{dquote} yytext = yytext.substr(1,yyleng-2); return "t_string"
+{squote}{strchars}{squote} yytext = yytext.substr(1,yyleng-2); return "t_string"
 
 /* primitives */
 "line"                return "t_shape"
