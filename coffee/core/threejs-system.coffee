@@ -42,6 +42,10 @@ define [
 
 
       multiplier = 2
+
+      if thrsystem.renderTarget?
+        thrsystem.renderTarget.dispose()
+
       renderTarget = new liveCodeLabCore_three.WebGLRenderTarget(
         sx * multiplier,
         sy * multiplier,
@@ -49,6 +53,9 @@ define [
 
 
       console.log "renderTarget width: " + renderTarget.width
+
+      if thrsystem.effectSaveTarget?
+        thrsystem.effectSaveTarget.renderTarget.dispose()
 
       effectSaveTarget = new liveCodeLabCore_three.SavePass(
         new liveCodeLabCore_three.WebGLRenderTarget(
@@ -60,7 +67,7 @@ define [
 
       console.log "effectSaveTarget width: " + effectSaveTarget.width
 
-      effectSaveTarget.clear = true
+      effectSaveTarget.clear = false
       
       # Uncomment the three lines containing "fxaaPass" below to try a fast
       # antialiasing filter. Commented below because of two reasons:
