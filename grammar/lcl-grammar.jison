@@ -3,12 +3,9 @@
 
 /* lexical grammar */
 
-comment               "//"
 letter                [a-zA-Z]
 digit                 [0-9]
-whitespace            [ \t]+
 strchars              [a-zA-Z0-9\-_ \t]*
-newline               [\n]+
 dquote                "\""
 squote                "'"
 
@@ -17,7 +14,6 @@ number                (\-)?{digit}+("."{digit}+)?
 string                ({letter}|{digit}|{strchars})*
 
 %%
-
 
 /* control structures */
 "if"                  return "t_if"
@@ -34,7 +30,7 @@ string                ({letter}|{digit}|{strchars})*
 ">>"                  return "t_inlined"
 
 /* comments */
-{comment}.*{newline}  /* skip comments */
+"//".*\n              return "t_newline"
 
 /* strings */
 {dquote}{strchars}{dquote} yytext = yytext.substr(1,yyleng-2); return "t_string"
@@ -91,10 +87,10 @@ string                ({letter}|{digit}|{strchars})*
 "="                   return "="
 
 /* misc */
-\n+                   return "t_newline"
+\n                    return "t_newline"
 ","                   return "t_comma"
 <<EOF>>               return "t_eof"
-{whitespace}          /* skip whitespace */
+[ \t]+                /* skip whitespace */
 .                     return "INVALID"
 
 
@@ -140,31 +136,36 @@ Program
 
 ProgramStart
     :
-    | t_newline
+    | NewLine
     ;
 
 ProgramEnd
     : t_eof
     ;
 
+NewLine
+    : t_newline
+    | t_newline NewLine
+    ;
+
 SourceElements
     : Statement
         { $$ = [$1]; }
-    | Statement t_newline SourceElements
+    | Statement NewLine SourceElements
         { $$ = [$1, $3]; }
-    | Statement t_newline
+    | Statement NewLine
         { $$ = [$1]; }
     ;
 
 Block
-    : t_blockstart t_newline BlockElements t_blockend
+    : t_blockstart NewLine BlockElements t_blockend
         {$$ = ["BLOCK", $3]; }
     ;
 
 BlockElements
-    : BlockStatement t_newline
+    : BlockStatement NewLine
         { $$ = [$1]; }
-    | BlockStatement t_newline BlockElements
+    | BlockStatement NewLine BlockElements
         { $$ = [$1, $3]; }
     ;
 
