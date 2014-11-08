@@ -54,13 +54,13 @@ define [
         new liveCodeLabCore_three.WebGLRenderTarget(
           sx * multiplier,
           sy * multiplier,
-          renderTargetParameters
+          { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat, stencilBuffer: true }
         )
       )
 
       console.log "effectSaveTarget width: " + effectSaveTarget.width
 
-      effectSaveTarget.clear = false
+      effectSaveTarget.clear = true
       
       # Uncomment the three lines containing "fxaaPass" below to try a fast
       # antialiasing filter. Commented below because of two reasons:
@@ -83,13 +83,16 @@ define [
       # for motion blur.
       # it's going to blend the previous buffer that went to
       # screen and the new rendered buffer
-      if !thrsystem.effectBlend?
-        effectBlend = new liveCodeLabCore_three.ShaderPass(
-          liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1")
-        effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
-        effectBlend.uniforms.mixRatio.value = 0
+      if thrsystem.effectBlend?
+        mixR = thrsystem.effectBlend.uniforms.mixRatio.value
       else
-        effectBlend.setSize sx * multiplier, sy * multiplier,
+        mixR = 0
+
+      effectBlend = new liveCodeLabCore_three.ShaderPass(
+        liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1")
+      effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
+      effectBlend.uniforms.mixRatio.value = 0
+      setTimeout (()=>thrsystem.effectBlend.uniforms.mixRatio.value = mixR), 1
 
       screenPass = new liveCodeLabCore_three.ShaderPass(
         liveCodeLabCore_three.ShaderExtras.screen)

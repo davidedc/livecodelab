@@ -1,6 +1,7 @@
 /**
  * @author alteredq / http://alteredqualia.com/
  * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author davidedc / http://www.sketchpatch.net/
  *
  * ShaderExtras currently contains:
  *
@@ -257,7 +258,7 @@ THREE.ShaderExtras = {
 				focus:    { type: "f", value: 1.0 },
 				aspect:   { type: "f", value: 1.0 },
 				aperture: { type: "f", value: 0.025 },
-				maxblur:  { type: "f", value: 1.0 },
+				maxblur:  { type: "f", value: 1.0 }
 			  },
 
 	vertexShader: [
@@ -707,7 +708,7 @@ THREE.ShaderExtras = {
 				"vec2 vin;",
 				"vec2 uv = vUv;",
 
-				"add += color = org = texture2D( tDiffuse, uv );",
+				"add = color = org = texture2D( tDiffuse, uv );",
 
 				"vin = ( uv - vec2( 0.5 ) ) * vec2( 1.4 );",
 				"sample_dist = dot( vin, vin ) * 2.0;",
@@ -1091,8 +1092,27 @@ THREE.ShaderExtras = {
 
 	},
 
+
 	/* -------------------------------------------------------------------------
 	//	Blend two textures
+	//  [Davide Della Casa] modified so that is mixRatio is 1 then
+	//  an overlap is done in the way
+	//    "anymationStyle paintOver"
+	//  wants it.
+	//  It took around two years to find a solution of having both
+	//  the paintOver AND a nice motion blur.
+	//  This shader is very messy and could do with a bit of cleaning
+	//  Also it would be nice to just create our own 'motionBlurORPaintOver'
+	//  rather than hijaking the already existing 'blend' shader.
+	//  Note that this is a combination of the classic pre-existing
+	//  blend shader (when mixRatio != 1.0) and my previously custom
+	//  made shader.
+	//  The branching isn't too bad because it's done on a uniform,
+	//  so the compiler probably optimises that as a
+	//  simple combination of the
+	//  two branches (both branches are executed).
+	//  Luckily the original 'blend' branch is very fast, and the other
+	//  one can be simplified further.
 	 ------------------------------------------------------------------------- */
 
 	'blend': {
@@ -1133,27 +1153,27 @@ THREE.ShaderExtras = {
 
 				"vec4 texel1 = texture2D( tDiffuse1, vUv );",
 				"vec4 texel2 = texture2D( tDiffuse2, vUv );",
+
+				"if (mixRatio == 1.0) {",
+
 				"vec3 ca = vec3(texel1.x,texel1.y,texel1.z);",
 				"vec3 cb = vec3(texel2.x,texel2.y,texel2.z);",
-				// correct the colors so that the "shadows"
-				// left by the opaque remains of the previous
-				// frames are a bit
-				// brighter
-				//"cb.x = cb.x + cb.x / 2.5;",
-				//"cb.y = cb.y + cb.y / 2.5;",
-				//"cb.z = cb.z + cb.z / 2.5;",
+
 				"float alphaa = texel1.w ;",
 				"float alphab = texel2.w*mixRatio;",
 				"float alphao = (alphaa + alphab * (1.0-alphaa));",
 				"vec3 co = (1.0/alphao) * (ca * alphaa + cb*alphab*(1.0-alphaa));",
 				"vec4 mixxx = vec4(co, alphao );",
-				//"gl_FragColor =  mix( texel1, texel1, opop );",
-				//"gl_FragColor =  mixxx;",
-				//"if (frameC == 0.0) {gl_FragColor =  vec4(0.0); return;}",
-				//"float damp = ((1.0-mixRatio)/10.0 + 1.0);",
-				//"if (texel1.w == 0.0) { texel2.w = texel2.w * mixRatio; gl_FragColor =  vec4(texel2.x,texel2.y,texel2.z, texel2.w); return;}",
-				//"if (texel2.w == 0.0) {gl_FragColor =  texel1; return;}",
+
 				"gl_FragColor =  mixxx;",
+
+				"}",
+
+				"else {",
+
+				"gl_FragColor = opacity * mix( texel1, texel2, mixRatio );",
+
+				"}",
 
 			"}"
 
@@ -1255,7 +1275,7 @@ THREE.ShaderExtras = {
 
 			"}",
 
-		].join("\n"),
+		].join("\n")
 
 	},
 
@@ -1432,7 +1452,9 @@ THREE.ShaderExtras = {
 			"fogNear":		{ type: "f", value: 5 },
 			"fogFar":		{ type: "f", value: 100 },
 			"fogEnabled":	{ type: "i", value: 0 },
-			"aoClamp":		{ type: "f", value: 0.3 }
+			"onlyAO":		{ type: "i", value: 0 },
+			"aoClamp":		{ type: "f", value: 0.3 },
+			"lumInfluence":	{ type: "f", value: 0.9 }
 
 		},
 
@@ -1458,10 +1480,13 @@ THREE.ShaderExtras = {
 			"uniform float fogNear;",
 			"uniform float fogFar;",
 
-			"uniform bool fogEnabled;",
+			"uniform bool fogEnabled;",		// attenuate AO with linear fog
+			"uniform bool onlyAO;", 		// use only ambient occlusion pass?
 
-			"uniform vec2 size;",		// texture width, height
-			"uniform float aoClamp;", 	// depth clamp - reduces haloing at screen edges
+			"uniform vec2 size;",			// texture width, height
+			"uniform float aoClamp;", 		// depth clamp - reduces haloing at screen edges
+
+			"uniform float lumInfluence;",  // how much luminance affects occlusion
 
 			"uniform sampler2D tDiffuse;",
 			"uniform sampler2D tDepth;",
@@ -1487,13 +1512,14 @@ THREE.ShaderExtras = {
 			"const float radius = 5.0;", 	// ao radius
 
 			"const bool useNoise = false;", 		 // use noise instead of pattern for sample dithering
-			"const float noiseAmount = 0.0002;", // dithering amount
+			"const float noiseAmount = 0.0003;", // dithering amount
 
 			"const float diffArea = 0.4;", 		// self-shadowing reduction
 			"const float gDisplace = 0.4;", 	// gauss bell center
 
-			"const bool onlyAO = false;", 		// use only ambient occlusion pass?
-			"const float lumInfluence = 0.3;",  // how much luminance affects occlusion
+			"const vec3 onlyAOColor = vec3( 1.0, 0.7, 0.5 );",
+			//"const vec3 onlyAOColor = vec3( 1.0, 1.0, 1.0 );",
+
 
 			// RGBA depth
 
@@ -1648,7 +1674,7 @@ THREE.ShaderExtras = {
 
 				"if ( onlyAO ) {",
 
-					"final = vec3( mix( vec3( ao ), vec3( 1.0 ), luminance * lumInfluence ) );", // ambient occlusion only
+					"final = onlyAOColor * vec3( mix( vec3( ao ), vec3( 1.0 ), luminance * lumInfluence ) );", // ambient occlusion only
 
 				"}",
 
@@ -1779,7 +1805,7 @@ THREE.ShaderExtras = {
 		var i, values, sum, halfWidth, kMaxKernelSize = 25, kernelSize = 2 * Math.ceil( sigma * 3.0 ) + 1;
 
 		if ( kernelSize > kMaxKernelSize ) kernelSize = kMaxKernelSize;
-		halfWidth = ( kernelSize - 1 ) * 0.5
+		halfWidth = ( kernelSize - 1 ) * 0.5;
 
 		values = new Array( kernelSize );
 		sum = 0.0;
