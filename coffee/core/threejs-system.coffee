@@ -4,7 +4,8 @@
 ###
 
 define [
-  'ui/ui'
+  'ui/ui',
+  'globals/debounce'
 ], (
   Ui
 ) ->
@@ -142,9 +143,16 @@ define [
         @sizeRendererAndCamera renderer, camera, scale
         [thrsystem.renderTarget, thrsystem.effectSaveTarget, thrsystem.effectBlend, thrsystem.composer] = ThreeJsSystem.attachEffectsAndSizeTheirBuffers(thrsystem, renderer)
 
+      # it's not healthy to rebuild/resize the
+      # rendering pipeline in realtime as the
+      # window is resized, it bothers the browser.
+      # So giving it some slack and doing it when "at rest"
+      # rather than multiple times consecutively during the
+      # resizing.
+      debouncedCallback = debounce callback, 250
       
       # bind the resize event
-      window.addEventListener "resize", callback, false
+      window.addEventListener "resize", debouncedCallback, false
       
       # return .stop() the function to stop watching window resize
       
