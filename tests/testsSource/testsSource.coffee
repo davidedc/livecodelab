@@ -20,13 +20,16 @@ require ['core/event-emitter','core/colour-literals','core/livecodelab-core'], (
       testCanvas.height = 300
       eventRouter = new EventEmitter()
       colourNames = new ColourLiterals()
+      statsWidget = null
       liveCodeLabCoreInstance = new LiveCodeLabCore(
-        blendedThreeJsSceneCanvas: testCanvas
-        canvasForBackground: null
-        forceCanvasRenderer: true
-        eventRouter: eventRouter
-        statsWidget: null
-        testMode: true
+        eventRouter,
+        statsWidget,
+        {
+          blendedThreeJsSceneCanvas: testCanvas
+          canvasForBackground: null
+          forceCanvasRenderer: true
+          testMode: true
+        }
       )
 
       waits 10
@@ -59,13 +62,14 @@ require ['core/event-emitter','core/colour-literals','core/livecodelab-core'], (
       testCanvas.height = 300
       eventRouter = new EventEmitter()
       colourNames = new ColourLiterals()
+      statsWidget = null
       liveCodeLabCoreInstance = new LiveCodeLabCore(
-        blendedThreeJsSceneCanvas: testCanvas
-        canvasForBackground: null
-        forceCanvasRenderer: true
-        eventRouter: eventRouter
-        statsWidget: null
-        testMode: true
+        eventRouter, statsWidget, {
+          blendedThreeJsSceneCanvas: testCanvas
+          canvasForBackground: null
+          forceCanvasRenderer: true
+          testMode: true
+        }
       )
 
       waits 10
