@@ -29,7 +29,8 @@ number                (\-)?{digit}+("."{digit}+)?
 ">>"                  return "t_inlined"
 
 /* comments */
-"//".*\n              return "t_newline"
+"//".*\n              /* skip comments */
+"//".*<<EOF>>         /* skip comments */
 
 /* strings */
 {dquote}{strchars}{dquote} yytext = yytext.substr(1,yyleng-2); return "t_string"

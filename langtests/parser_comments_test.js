@@ -61,6 +61,19 @@ exports.programdata = {
 
         test.deepEqual(ast, expected);
         test.done();
+    },
+
+    'comments at the end of the program are ignored': function (test) {
+
+        var program, ast, expected;
+
+        program = '\n\nbox 4 // this is a comment';
+        ast = parser.parse(program);
+
+        expected = [ ['FUNCTIONCALL', 'box', [['NUMBER', 4]] ] ];
+
+        test.deepEqual(ast, expected);
+        test.done();
     }
 
 };
