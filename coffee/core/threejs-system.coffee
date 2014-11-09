@@ -137,7 +137,8 @@ define [
 
         
 
-    @windowResize: (thrsystem, renderer, camera, scale) ->
+    @attachResizingBehaviourToResizeEvent: (thrsystem, renderer, camera) ->
+      scale = Ui.foregroundCanvasScale
       callback = =>
         @sizeTheForegroundCanvas thrsystem.blendedThreeJsSceneCanvas
         @sizeRendererAndCamera renderer, camera, scale
@@ -162,9 +163,6 @@ define [
       stop: ->
         window.removeEventListener "resize", callback
         return
-
-    @bind: (thrsystem, renderer, camera) ->
-      @windowResize thrsystem, renderer, camera, Ui.foregroundCanvasScale
 
     constructor: ( \
       Detector, \
@@ -267,7 +265,7 @@ define [
       
 
       # transparently support window resize
-      @constructor.bind @, @renderer, @camera
+      @constructor.attachResizingBehaviourToResizeEvent @, @renderer, @camera
       
       if @isWebGLUsed
         @renderTargetParameters = undefined
