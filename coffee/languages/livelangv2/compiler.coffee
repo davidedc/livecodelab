@@ -4,18 +4,14 @@
 ###
 
 define [
-   'lib/lcl/preprocessor'
+  'lib/lcl/preprocessor'
   ,'lib/lcl/parser'
 ], (
-   Preprocessor
+  Preprocessor
   ,Parser
 ) ->
 
   class V2CodeCompiler
-
-    codePreprocessor: null
-
-    whitespaceCheck: /^\s*$/
 
     constructor: () ->
       # the code compiler needs the CodePreprocessor
@@ -38,11 +34,6 @@ define [
 
       output = {}
 
-      # we do a couple of special resets when the code is an empty string.
-      if @whitespaceCheck.test(code)
-        output.status = 'empty'
-        return output
-
       # TODO
       # Currently the PreProcessor doesn't throw any meaningful errors
       # Will add all this back in when it does
@@ -63,7 +54,10 @@ define [
         output.error = e
         return output
 
-      output.status = 'parsed'
-      output.program = programAST
+      if (programAST.length == 0)
+        output.status = 'empty'
+      else
+        output.status = 'parsed'
+        output.program = programAST
       return output
 

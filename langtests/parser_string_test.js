@@ -34,6 +34,24 @@ exports.programdata = {
 
         test.deepEqual(ast, expected);
         test.done();
+    },
+
+    'string with whitespace passes': function (test) {
+
+        var program, ast, expected, processed;
+
+        program = [
+            "a = \"string  sdf\tasdf\"",
+        ].join('\n');
+        processed = preproc.process(program);
+        ast = parser.parse(processed);
+
+        expected = [
+            ['=', 'a', ["STRING", "string  sdf\tasdf"]]
+        ];
+
+        test.deepEqual(ast, expected);
+        test.done();
     }
 
 };

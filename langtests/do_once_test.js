@@ -65,7 +65,7 @@ exports.programdata = {
         ast = parser.parse(processed);
 
         expected = [
-            ['DOONCE']
+            ['DOONCE', []]
         ];
 
         test.deepEqual(ast, expected);
@@ -105,7 +105,7 @@ exports.programdata = {
         ast = parser.parse(processed);
 
         expected = [
-            ['DOONCE']
+            ['DOONCE', []]
         ];
 
         test.deepEqual(ast, expected);
