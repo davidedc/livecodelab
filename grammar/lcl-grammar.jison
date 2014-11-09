@@ -11,7 +11,6 @@ squote                "'"
 
 identifier            {letter}({letter}|{digit})*
 number                (\-)?{digit}+("."{digit}+)?
-string                ({letter}|{digit}|{strchars})*
 
 %%
 
