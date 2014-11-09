@@ -15,18 +15,8 @@ define [
     @composer: null
     @timesInvoked: false
 
-    @attachEffectsAndSizeTheirBuffers: (thrsystem, renderer) ->
-
-      liveCodeLabCore_three = thrsystem.liveCodeLabCore_three
-      blendedThreeJsSceneCanvas = thrsystem.blendedThreeJsSceneCanvas
-      renderTargetParameters = thrsystem.renderTargetParameters
-      camera = thrsystem.camera
-      scene = thrsystem.scene
-
-      #debugger
-      multiplier = 1
-
-
+    @sizeTheForegroundCanvas: (blendedThreeJsSceneCanvas) ->
+      multiplier = 2
       sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasScale)
       sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasScale)
 
@@ -36,12 +26,20 @@ define [
       blendedThreeJsSceneCanvas.style.height = sy + "px"
 
       # buffer size
-      blendedThreeJsSceneCanvas.width = 2 * sx
-      blendedThreeJsSceneCanvas.height = 2 * sy
-      #debugger
+      blendedThreeJsSceneCanvas.width = multiplier * sx
+      blendedThreeJsSceneCanvas.height = multiplier * sy
 
+    @attachEffectsAndSizeTheirBuffers: (thrsystem, renderer) ->
+
+      liveCodeLabCore_three = thrsystem.liveCodeLabCore_three
+      renderTargetParameters = thrsystem.renderTargetParameters
+      camera = thrsystem.camera
+      scene = thrsystem.scene
 
       multiplier = 2
+      sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasScale)
+      sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasScale)
+
 
       if thrsystem.renderTarget?
         thrsystem.renderTarget.dispose()
@@ -125,7 +123,7 @@ define [
 
       return [renderTarget, effectSaveTarget, effectBlend, composer]
 
-    @sizeTheForegroundCanvas: (renderer, camera, scale) ->
+    @sizeRendererAndCamera: (renderer, camera, scale) ->
       # notify the renderer of the size change
       console.log "windowResize called scale: " + scale + " @composer: " + @composerinner
 
@@ -140,7 +138,8 @@ define [
 
     @windowResize: (thrsystem, renderer, camera, scale) ->
       callback = =>
-        @sizeTheForegroundCanvas(renderer, camera, scale)
+        @sizeTheForegroundCanvas thrsystem.blendedThreeJsSceneCanvas
+        @sizeRendererAndCamera renderer, camera, scale
         [thrsystem.renderTarget, thrsystem.effectSaveTarget, thrsystem.effectBlend, thrsystem.composer] = ThreeJsSystem.attachEffectsAndSizeTheirBuffers(thrsystem, renderer)
 
       
@@ -274,8 +273,9 @@ define [
           stencilBuffer: true
       
         # these are the two buffers.
-        @constructor.sizeTheForegroundCanvas(@renderer, @camera, Ui.foregroundCanvasScale)
 
+        @constructor.sizeTheForegroundCanvas @blendedThreeJsSceneCanvas
+        @constructor.sizeRendererAndCamera @renderer, @camera, Ui.foregroundCanvasScale
         [@renderTarget, @effectSaveTarget, @effectBlend, @composer] = @constructor.attachEffectsAndSizeTheirBuffers(@, @renderer)
 
 
