@@ -1,5 +1,16 @@
-require ['core/event-emitter','core/colour-literals','core/livecodelab-core'], (EventEmitter, ColourLiterals, LiveCodeLabCore) ->
+
+require [
+  'core/event-emitter',
+  'core/colour-literals',
+  'core/livecodelab-core'
+], (
+  EventEmitter,
+  ColourLiterals,
+  LiveCodeLabCore
+) ->
+
   describe "ImageTest", ->
+
     beforeEach ->
       @addMatchers imagediff.jasmine
 
@@ -14,6 +25,7 @@ require ['core/event-emitter','core/colour-literals','core/livecodelab-core'], (
       else
         if Bowser.chrome
           b.src = "test-page-files/images/ballCanvasChrome.png"
+
       console.log b.src
       testCanvas = document.createElement("canvas")
       testCanvas.width = 300
@@ -56,6 +68,7 @@ require ['core/event-emitter','core/colour-literals','core/livecodelab-core'], (
       else
         if Bowser.chrome
           b.src = "test-page-files/images/ballCanvasChrome.png"
+
       console.log b.src
       testCanvas = document.createElement("canvas")
       testCanvas.width = 300
@@ -84,3 +97,4 @@ require ['core/event-emitter','core/colour-literals','core/livecodelab-core'], (
       waits 200
       runs ->
         expect(a).toImageDiffEqual b, 0
+
