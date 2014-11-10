@@ -17,7 +17,7 @@ define [
     @timesInvoked: false
 
     @sizeTheForegroundCanvas: (blendedThreeJsSceneCanvas) ->
-      multiplier = 2
+      multiplier = 1
       sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasScale)
       sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasScale)
 
@@ -37,7 +37,7 @@ define [
       camera = thrsystem.camera
       scene = thrsystem.scene
 
-      multiplier = 2
+      multiplier = 1
       sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasScale)
       sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasScale)
 

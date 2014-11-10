@@ -15,7 +15,7 @@ define [
   class Ui
 
     @backgroundCanvasScale: 10
-    @foregroundCanvasScale: 3
+    @foregroundCanvasScale: 1.5
 
     constructor: (@eventRouter, @stats, @programLoader) ->
       # Setup Event Listeners
