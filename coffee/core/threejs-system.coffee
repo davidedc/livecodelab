@@ -189,13 +189,23 @@ define [
         @blendedThreeJsSceneCanvasContext =
           @blendedThreeJsSceneCanvas.getContext("experimental-webgl")
         
-        # see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/WebGLRenderer
+        # see:
+        #  http://mrdoob.github.io/three.js/docs/#Reference/Renderers/WebGLRenderer
         @liveCodeLabCore_three = liveCodeLabCore_three
         @renderer = new liveCodeLabCore_three.WebGLRenderer(
           canvas: @blendedThreeJsSceneCanvas
           #preserveDrawingBuffer: testMode # to allow screenshot
           antialias: false
           premultipliedAlpha: false
+          # note how we don't need to set the devicePixelRatio
+          # the device pixel ratio is only used if we use
+          # setSize AND we let THREE.js to change the CSS size
+          # of the canvas (there is a flag for that in setSize)
+          # but since we don't do any of that we just pass
+          # THREE.js the canvas. THREE looks into the canvas
+          # buffer width and height (NOT the CSS properties!)
+          # to allocate its buffers.
+
         )
         @isWebGLUsed = true
 
