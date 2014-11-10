@@ -257,9 +257,6 @@ define [
           devicePixelRatio: 1
         )
         
-      #@renderer.setSize @blendedThreeJsSceneCanvas.width, \
-      #  @blendedThreeJsSceneCanvas.height
-      #@renderer.setViewport( 0, 0, @blendedThreeJsSceneCanvas.width, @blendedThreeJsSceneCanvas.height )
 
       console.log "renderer width: " + @renderer.width + " context width: " + @renderer.context.drawingBufferWidth
       @scene = new liveCodeLabCore_three.Scene()
