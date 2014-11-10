@@ -132,7 +132,17 @@ define [
       camera.aspect = (window.innerWidth+40) / (window.innerHeight+40)
       camera.updateProjectionMatrix()
 
-      renderer.setSize Math.floor((window.innerWidth+40) / scale), Math.floor((window.innerHeight+40) / scale)
+      multiplier = 1
+      sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasScale)
+      sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasScale)
+
+      console.log "renderer previous context width: " + renderer.context.drawingBufferWidth
+      # resizes canvas buffer and sets the viewport to
+      # exactly the dimension passed. No multilications going
+      # on due to devicePixelRatio because we set that to 1
+      # when we created the renderer
+      renderer.setSize sx * multiplier, sy * multiplier, false
+      console.log "renderer setting size to: " + sx * multiplier + " , " + sy * multiplier, false
       console.log "renderer new context width: " + renderer.context.drawingBufferWidth
 
         
@@ -197,14 +207,13 @@ define [
           #preserveDrawingBuffer: testMode # to allow screenshot
           antialias: false
           premultipliedAlpha: false
-          # note how we don't need to set the devicePixelRatio
-          # the device pixel ratio is only used if we use
-          # setSize AND we let THREE.js to change the CSS size
-          # of the canvas (there is a flag for that in setSize)
-          # but since we don't do any of that we just pass
-          # THREE.js the canvas. THREE looks into the canvas
-          # buffer width and height (NOT the CSS properties!)
-          # to allocate its buffers.
+          # we need to force the devicePixelRatio to 1
+          # here because we find it useful to use the
+          # setSize method of the renderer.
+          # BUT setSize would duplicate the canvas
+          # buffer on retina displays which is
+          # somehing we want to control manually.
+          devicePixelRatio: 1
 
         )
         @isWebGLUsed = true
