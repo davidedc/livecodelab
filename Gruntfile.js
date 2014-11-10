@@ -17,7 +17,7 @@ module.exports = function (grunt) {
                 src: 'build-time-options/languages-build-option.js',
                 dest: 'dist/js/globals/languages-build-option.js',
                 options: {
-                  processContent: function (content, srcpath) {
+                  process: function (content, srcpath) {
                     return content.replace(/SET_AT_BUILD_TIME/mgi,"'"+(grunt.option('language') || 'both')+"'");
                   }
                 }
