@@ -18,8 +18,8 @@ define [
 
     @sizeTheForegroundCanvas: (blendedThreeJsSceneCanvas) ->
       multiplier = 1
-      sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasScale)
-      sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasScale)
+      sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasFractionOfWindowSize)
+      sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasFractionOfWindowSize)
 
 
       # dimension on screen
@@ -38,8 +38,8 @@ define [
       scene = thrsystem.scene
 
       multiplier = 1
-      sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasScale)
-      sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasScale)
+      sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasFractionOfWindowSize)
+      sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasFractionOfWindowSize)
 
 
       if thrsystem.renderTarget?
@@ -133,8 +133,8 @@ define [
       camera.updateProjectionMatrix()
 
       multiplier = 1
-      sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasScale)
-      sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasScale)
+      sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasFractionOfWindowSize)
+      sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasFractionOfWindowSize)
 
       console.log "renderer previous context width: " + renderer.context.drawingBufferWidth
       # resizes canvas buffer and sets the viewport to
@@ -148,7 +148,7 @@ define [
         
 
     @attachResizingBehaviourToResizeEvent: (thrsystem, renderer, camera) ->
-      scale = Ui.foregroundCanvasScale
+      scale = Ui.foregroundCanvasFractionOfWindowSize
       callback = =>
         @sizeTheForegroundCanvas thrsystem.blendedThreeJsSceneCanvas
         @sizeRendererAndCamera renderer, camera, scale
@@ -297,7 +297,7 @@ define [
         # these are the two buffers.
 
         @constructor.sizeTheForegroundCanvas @blendedThreeJsSceneCanvas
-        @constructor.sizeRendererAndCamera @renderer, @camera, Ui.foregroundCanvasScale
+        @constructor.sizeRendererAndCamera @renderer, @camera, Ui.foregroundCanvasFractionOfWindowSize
         [@renderTarget, @effectSaveTarget, @effectBlend, @composer] = @constructor.attachEffectsAndSizeTheirBuffers(@, @renderer)
 
 

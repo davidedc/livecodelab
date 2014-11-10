@@ -324,7 +324,7 @@ require [
       theCanvas.style.position = "absolute"
       theCanvas.style.zIndex = "-2"
       document.getElementById("miao").appendChild(theCanvas)
-      Ui.sizeForegroundCanvas theCanvas, {x:Ui.foregroundCanvasScale,y:Ui.foregroundCanvasScale}
+      Ui.sizeForegroundCanvas theCanvas, {x:Ui.foregroundCanvasFractionOfWindowSize,y:Ui.foregroundCanvasFractionOfWindowSize}
 
       # create the background canvas where the
       # background gradients go
@@ -335,7 +335,7 @@ require [
       theCanvas2.style.position = "absolute"
       theCanvas2.style.zIndex = "-3"
       document.getElementById("miao").appendChild(theCanvas2)
-      Ui.fullscreenify theCanvas2, {x:Ui.backgroundCanvasScale,y:Ui.backgroundCanvasScale}
+      Ui.fullscreenify theCanvas2, {x:Ui.backgroundCanvasFractionOfWindowSize,y:Ui.backgroundCanvasFractionOfWindowSize}
 
 
       setTimeout (()=>
