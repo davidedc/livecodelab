@@ -83,7 +83,7 @@ define [
 
 
     @resizeCanvas: (canvas, scale = {x:1,y:1}) ->
-      console.log("adjusting " + canvas + " to " + window.innerWidth + " " + window.innerHeight + " with scale: " + scale.x + " " + scale.y)
+      #console.log("adjusting " + canvas + " to " + window.innerWidth + " " + window.innerHeight + " with scale: " + scale.x + " " + scale.y)
       sx = (window.innerWidth + 40) / 10
       sy = (window.innerHeight + 40) / 10 
       canvas.style.width = sx + "px"

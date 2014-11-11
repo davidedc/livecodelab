@@ -51,7 +51,7 @@ define [
         renderTargetParameters)
 
 
-      console.log "renderTarget width: " + renderTarget.width
+      #console.log "renderTarget width: " + renderTarget.width
 
       if thrsystem.effectSaveTarget?
         thrsystem.effectSaveTarget.renderTarget.dispose()
@@ -64,7 +64,7 @@ define [
         )
       )
 
-      console.log "effectSaveTarget width: " + effectSaveTarget.width
+      #console.log "effectSaveTarget width: " + effectSaveTarget.width
 
       effectSaveTarget.clear = false
       
@@ -141,7 +141,7 @@ define [
 
     @sizeRendererAndCamera: (renderer, camera, scale) ->
       # notify the renderer of the size change
-      console.log "windowResize called scale: " + scale + " @composer: " + @composerinner
+      #console.log "windowResize called scale: " + scale + " @composer: " + @composerinner
 
       # update the camera
       camera.aspect = (window.innerWidth+40) / (window.innerHeight+40)
@@ -151,14 +151,14 @@ define [
       sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasFractionOfWindowSize)
       sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasFractionOfWindowSize)
 
-      console.log "renderer previous context width: " + renderer.context.drawingBufferWidth
+      #console.log "renderer previous context width: " + renderer.context.drawingBufferWidth
       # resizes canvas buffer and sets the viewport to
       # exactly the dimension passed. No multilications going
       # on due to devicePixelRatio because we set that to 1
       # when we created the renderer
       renderer.setSize sx * multiplier, sy * multiplier, false
-      console.log "renderer setting size to: " + sx * multiplier + " , " + sy * multiplier, false
-      console.log "renderer new context width: " + renderer.context.drawingBufferWidth
+      #console.log "renderer setting size to: " + sx * multiplier + " , " + sy * multiplier, false
+      #console.log "renderer new context width: " + renderer.context.drawingBufferWidth
 
         
 
@@ -282,7 +282,7 @@ define [
         )
         
 
-      console.log "renderer width: " + @renderer.width + " context width: " + @renderer.context.drawingBufferWidth
+      #console.log "renderer width: " + @renderer.width + " context width: " + @renderer.context.drawingBufferWidth
       @scene = new liveCodeLabCore_three.Scene()
       @scene.matrixAutoUpdate = false
       
@@ -290,7 +290,7 @@ define [
       @camera = new liveCodeLabCore_three.PerspectiveCamera(35, \
         @blendedThreeJsSceneCanvas.width / \
         @blendedThreeJsSceneCanvas.height, 1, 10000)
-      console.log "camera width: " + @camera.width
+      #console.log "camera width: " + @camera.width
       @camera.position.set 0, 0, 5
       @scene.add @camera
       

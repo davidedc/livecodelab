@@ -19,7 +19,6 @@ debounce = (func, threshold, execAsap) ->
   (args...) ->
     obj = this
     delayed = ->
-      console.log 'calling debounced func'
       func.apply(obj, args) unless execAsap
       timeout = null
     if timeout
