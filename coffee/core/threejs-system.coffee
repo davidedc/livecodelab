@@ -94,11 +94,26 @@ define [
       else
         mixR = 0
 
+      
       effectBlend = new liveCodeLabCore_three.ShaderPass(
         liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1")
       effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
       effectBlend.uniforms.mixRatio.value = 0
-      setTimeout (()=>thrsystem.effectBlend.uniforms.mixRatio.value = mixR), 1
+
+      # one of those weird things, it appears that we
+      # temporarily need to set this blending value to
+      # zero, and only afterwards we can set to the proper
+      # value, otherwise the background gets painted
+      # all black. Unclear why. Maybe it needs to render
+      # once with value zero, then it can render with
+      # the proper value? But why?
+
+      setTimeout (()=>
+        thrsystem.effectBlend.uniforms.mixRatio.value = 0
+      ), 1
+      setTimeout (()=>
+        thrsystem.effectBlend.uniforms.mixRatio.value = mixR
+      ), 90
 
       screenPass = new liveCodeLabCore_three.ShaderPass(
         liveCodeLabCore_three.ShaderExtras.screen)
