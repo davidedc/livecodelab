@@ -5,6 +5,8 @@
 
 define [
   'ui/ui',
+  'Three.CanvasRenderer', # needed for the CanvasRenderer
+  'Three.Projector',      # needed for the CanvasRenderer
   'globals/debounce'
 ], (
   Ui
@@ -42,102 +44,112 @@ define [
       sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasFractionOfWindowSize)
 
 
-      if thrsystem.renderTarget?
-        thrsystem.renderTarget.dispose()
+      #debugger
+      if thrsystem.isWebGLUsed
+        if thrsystem.renderTarget?
+          thrsystem.renderTarget.dispose()
 
-      renderTarget = new liveCodeLabCore_three.WebGLRenderTarget(
-        sx * multiplier,
-        sy * multiplier,
-        renderTargetParameters)
-
-
-      #console.log "renderTarget width: " + renderTarget.width
-
-      if thrsystem.effectSaveTarget?
-        thrsystem.effectSaveTarget.renderTarget.dispose()
-
-      effectSaveTarget = new liveCodeLabCore_three.SavePass(
-        new liveCodeLabCore_three.WebGLRenderTarget(
+        renderTarget = new liveCodeLabCore_three.WebGLRenderTarget(
           sx * multiplier,
           sy * multiplier,
-          { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat, stencilBuffer: true }
+          renderTargetParameters)
+
+
+        #console.log "renderTarget width: " + renderTarget.width
+
+        if thrsystem.effectSaveTarget?
+          thrsystem.effectSaveTarget.renderTarget.dispose()
+
+        effectSaveTarget = new liveCodeLabCore_three.SavePass(
+          new liveCodeLabCore_three.WebGLRenderTarget(
+            sx * multiplier,
+            sy * multiplier,
+            { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat, stencilBuffer: true }
+          )
         )
-      )
 
-      #console.log "effectSaveTarget width: " + effectSaveTarget.width
+        #console.log "effectSaveTarget width: " + effectSaveTarget.width
 
-      effectSaveTarget.clear = false
-      
-      # Uncomment the three lines containing "fxaaPass" below to try a fast
-      # antialiasing filter. Commented below because of two reasons:
-      # a) it's slow
-      # b) it blends in some black pixels, so it only looks good
-      #     in dark backgrounds
-      # The problem of blending with black pixels is the same problem of the
-      # motionBlur leaving a black trail - tracked in github with
-      # https://github.com/davidedc/livecodelab/issues/22
-      
-      #fxaaPass = new liveCodeLabCore_three.ShaderPass(liveCodeLabCore_three.ShaderExtras.fxaa);
-      #fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);
+        effectSaveTarget.clear = false
+        
+        # Uncomment the three lines containing "fxaaPass" below to try a fast
+        # antialiasing filter. Commented below because of two reasons:
+        # a) it's slow
+        # b) it blends in some black pixels, so it only looks good
+        #     in dark backgrounds
+        # The problem of blending with black pixels is the same problem of the
+        # motionBlur leaving a black trail - tracked in github with
+        # https://github.com/davidedc/livecodelab/issues/22
+        
+        #fxaaPass = new liveCodeLabCore_three.ShaderPass(liveCodeLabCore_three.ShaderExtras.fxaa);
+        #fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);
 
-      # this is the place where everything is mixed together
-      composer = new liveCodeLabCore_three.EffectComposer(
-        renderer, renderTarget)
-
-
-      # this is the effect that blends two buffers together
-      # for motion blur.
-      # it's going to blend the previous buffer that went to
-      # screen and the new rendered buffer
-      if thrsystem.effectBlend?
-        mixR = thrsystem.effectBlend.uniforms.mixRatio.value
-      else
-        mixR = 0
-
-      
-      effectBlend = new liveCodeLabCore_three.ShaderPass(
-        liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1")
-      effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
-      effectBlend.uniforms.mixRatio.value = 0
-
-      # one of those weird things, it appears that we
-      # temporarily need to set this blending value to
-      # zero, and only afterwards we can set to the proper
-      # value, otherwise the background gets painted
-      # all black. Unclear why. Maybe it needs to render
-      # once with value zero, then it can render with
-      # the proper value? But why?
-
-      setTimeout (()=>
-        thrsystem.effectBlend.uniforms.mixRatio.value = 0
-      ), 1
-      setTimeout (()=>
-        thrsystem.effectBlend.uniforms.mixRatio.value = mixR
-      ), 90
-
-      screenPass = new liveCodeLabCore_three.ShaderPass(
-        liveCodeLabCore_three.ShaderExtras.screen)
-      
-      renderModel = new liveCodeLabCore_three.RenderPass(
-        scene, camera)
+        # this is the place where everything is mixed together
+        composer = new liveCodeLabCore_three.EffectComposer(
+          renderer, renderTarget)
 
 
-      # first thing, render the model
-      composer.addPass renderModel
-      # then apply some fake post-processed antialiasing      
-      #composer.addPass(fxaaPass);
-      # then blend using the previously saved buffer and a mixRatio
-      composer.addPass effectBlend
-      # the result is saved in a copy: @effectSaveTarget.renderTarget
-      composer.addPass effectSaveTarget
-      # last pass is the one that is put to screen
-      composer.addPass screenPass
-      screenPass.renderToScreen = true
-      #debugger
-      ThreeJsSystem.timesInvoked = true
+        # this is the effect that blends two buffers together
+        # for motion blur.
+        # it's going to blend the previous buffer that went to
+        # screen and the new rendered buffer
+        if thrsystem.effectBlend?
+          mixR = thrsystem.effectBlend.uniforms.mixRatio.value
+        else
+          mixR = 0
+
+        
+        effectBlend = new liveCodeLabCore_three.ShaderPass(
+          liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1")
+        effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
+        effectBlend.uniforms.mixRatio.value = 0
+
+        # one of those weird things, it appears that we
+        # temporarily need to set this blending value to
+        # zero, and only afterwards we can set to the proper
+        # value, otherwise the background gets painted
+        # all black. Unclear why. Maybe it needs to render
+        # once with value zero, then it can render with
+        # the proper value? But why?
+
+        setTimeout (()=>
+          thrsystem.effectBlend.uniforms.mixRatio.value = 0
+        ), 1
+        setTimeout (()=>
+          thrsystem.effectBlend.uniforms.mixRatio.value = mixR
+        ), 90
+
+        screenPass = new liveCodeLabCore_three.ShaderPass(
+          liveCodeLabCore_three.ShaderExtras.screen)
+        
+        renderModel = new liveCodeLabCore_three.RenderPass(
+          scene, camera)
 
 
-      return [renderTarget, effectSaveTarget, effectBlend, composer]
+        # first thing, render the model
+        composer.addPass renderModel
+        # then apply some fake post-processed antialiasing      
+        #composer.addPass(fxaaPass);
+        # then blend using the previously saved buffer and a mixRatio
+        composer.addPass effectBlend
+        # the result is saved in a copy: @effectSaveTarget.renderTarget
+        composer.addPass effectSaveTarget
+        # last pass is the one that is put to screen
+        composer.addPass screenPass
+        screenPass.renderToScreen = true
+        #debugger
+        ThreeJsSystem.timesInvoked = true
+
+        return [renderTarget, effectSaveTarget, effectBlend, composer]
+
+      else # if !@isWebGLUsed
+        thrsystem.currentFrameThreeJsSceneCanvas.width = multiplier * sx
+        thrsystem.currentFrameThreeJsSceneCanvas.height = multiplier * sy
+
+        thrsystem.previousFrameThreeJSSceneRenderForBlendingCanvas.width = multiplier * sx
+        thrsystem.previousFrameThreeJSSceneRenderForBlendingCanvas.height = multiplier * sy
+
+
 
     @sizeRendererAndCamera: (renderer, camera, scale) ->
       # notify the renderer of the size change
@@ -205,6 +217,7 @@ define [
         @blendedThreeJsSceneCanvas.height = window.innerHeight
     
     
+      @liveCodeLabCore_three = liveCodeLabCore_three
       if not @forceCanvasRenderer and Detector.webgl
         # Webgl init.
         # We allow for a bigger ball detail.
@@ -216,7 +229,6 @@ define [
         
         # see:
         #  http://mrdoob.github.io/three.js/docs/#Reference/Renderers/WebGLRenderer
-        @liveCodeLabCore_three = liveCodeLabCore_three
         @renderer = new liveCodeLabCore_three.WebGLRenderer(
           canvas: @blendedThreeJsSceneCanvas
           #preserveDrawingBuffer: testMode # to allow screenshot
@@ -269,7 +281,8 @@ define [
           @blendedThreeJsSceneCanvas.getContext("2d")
         
         # see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/CanvasRenderer
-        @renderer = new liveCodeLabCore_three.CanvasRenderer(
+        #debugger
+        @renderer = new THREE.CanvasRenderer(
           canvas: currentFrameThreeJsSceneCanvas
           antialias: false # to get smoother output
           preserveDrawingBuffer: testMode # to allow screenshot
@@ -298,6 +311,8 @@ define [
       # transparently support window resize
       @constructor.attachResizingBehaviourToResizeEvent @, @renderer, @camera
       
+      @constructor.sizeTheForegroundCanvas @blendedThreeJsSceneCanvas
+      @constructor.sizeRendererAndCamera @renderer, @camera, Ui.foregroundCanvasFractionOfWindowSize
       if @isWebGLUsed
         @renderTargetParameters = undefined
         @renderTarget = undefined
@@ -309,10 +324,6 @@ define [
           format: liveCodeLabCore_three.RGBAFormat
           stencilBuffer: true
       
-        # these are the two buffers.
-
-        @constructor.sizeTheForegroundCanvas @blendedThreeJsSceneCanvas
-        @constructor.sizeRendererAndCamera @renderer, @camera, Ui.foregroundCanvasFractionOfWindowSize
         [@renderTarget, @effectSaveTarget, @effectBlend, @composer] = @constructor.attachEffectsAndSizeTheirBuffers(@, @renderer)
 
 

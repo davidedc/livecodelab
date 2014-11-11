@@ -25,6 +25,10 @@ requirejs.config(
     'Three.ShaderExtras': 'lib/three.js/ShaderExtras'
     'Three.Stats': 'lib/three.js/Stats'
 
+    # these two needed for the CanvasRenderer
+    'Three.CanvasRenderer': 'lib/three.js/CanvasRenderer'
+    'Three.Projector': 'lib/three.js/Projector'
+
     'Three.EffectComposer': 'lib/three.js/postprocessing/EffectComposer'
     'Three.MaskPass': 'lib/three.js/postprocessing/MaskPass'
     'Three.RenderPass': 'lib/three.js/postprocessing/RenderPass'
@@ -68,6 +72,10 @@ requirejs.config(
       deps: ['threejs']
       exports: 'Stats'
     'Three.ShaderExtras': ['threejs']
+
+    # these two needed for the CanvasRenderer
+    'Three.CanvasRenderer': ['threejs']
+    'Three.Projector': ['threejs']
 
     'Three.EffectComposer': ['threejs']
     'Three.MaskPass': ['threejs']
