@@ -347,7 +347,8 @@ module.exports = function (grunt) {
 
         'targethtml:main',
         'copy:sounds',
-        'copy:release'
+        'copy:release',
+        'gitinfo'
     ]);
 
     grunt.registerTask('devbuild', [
