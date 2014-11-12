@@ -216,9 +216,18 @@ define () ->
             Math.pow(@canvasForBackground.height / 2, 2))
           #console.log "canvas width and height in simpleGradientUpdateIfChanged: " + @canvasForBackground.width + " " + @canvasForBackground.height
         else
-          cssStringPreamble = 'position: absolute; z-index:-3; top: 0px; left: 0px; width:10%; height:10%; '+@gradientPrefix+'transform-origin: 0% 0%; '+@gradientPrefix+'transform: scale(10,10);'
-          cssStringPreamble = cssStringPreamble + 'background:'
-          cssString = ''
+          sx = Math.floor((window.innerWidth + 40) / 10)
+          sy = Math.floor((window.innerHeight + 40) / 10)
+          cssStringPreamble = "position: absolute; z-index:-3; top: 0px; left: 0px; width:#{sx}px; height:#{sy}px; "+@gradientPrefix+"transform-origin: 0% 0%; "+@gradientPrefix+"transform: scale(10,10);"
+          cssStringPreamble = cssStringPreamble + "background:"
+          cssString = ""
+
+        # dimension on screen
+        #sx = Math.floor((window.innerWidth + 40) / 10)
+        #sy = Math.floor((window.innerHeight + 40) / 10)
+        #document.getElementById("backgroundCanvasOrDiv").style.width = sx + "px"
+        #document.getElementById("backgroundCanvasOrDiv").style.height = sy + "px"
+
 
         for scanningGradStack in @gradStack
           if scanningGradStack.gradStacka?

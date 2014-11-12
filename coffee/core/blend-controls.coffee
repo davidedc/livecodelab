@@ -46,12 +46,12 @@ define () ->
       @animationStyles = @animationStyles
 
       if isWebGLUsed and @animationStyleValue is @animationStyles.motionBlur
-        @liveCodeLabCoreInstance.threeJsSystem.effectBlend.uniforms.mixRatio.value = 0.7
+        @liveCodeLabCoreInstance.threeJsSystem.effectBlend.uniforms.mixRatio.value = 0.4
       else if not isWebGLUsed and @animationStyleValue is @animationStyles.motionBlur
         @blendAmount = 0.6
 
       if isWebGLUsed and @animationStyleValue is @animationStyles.paintOver
-        @liveCodeLabCoreInstance.threeJsSystem.effectBlend.uniforms.mixRatio.value = 1
+        @liveCodeLabCoreInstance.threeJsSystem.effectBlend.uniforms.mixRatio.value = 1.0
       else if not isWebGLUsed and @animationStyleValue is @animationStyles.paintOver
         @blendAmount = 1
 

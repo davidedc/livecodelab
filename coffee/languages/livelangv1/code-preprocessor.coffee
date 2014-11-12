@@ -553,7 +553,7 @@ define [
       functionsRegex = @allCommandsRegex + userDefinedFunctions + bracketsVariables
 
       rx = RegExp("\\([ \\t]*(" + functionsRegex + ")[ \\t]*\\)[ \\t]*$",'gm')
-      console.log rx
+      #console.log rx
       code = code.replace(rx, "$1")
 
 

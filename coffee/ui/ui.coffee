@@ -14,6 +14,9 @@ define [
 
   class Ui
 
+    @backgroundCanvasFractionOfWindowSize: 10
+    @foregroundCanvasFractionOfWindowSize: 1.5
+
     constructor: (@eventRouter, @stats, @programLoader) ->
       # Setup Event Listeners
       @eventRouter.addListener(
@@ -43,16 +46,17 @@ define [
           $("#dimCodeButtonContainer").html "Hide Code: off"
       )
 
-    resizeCanvas: (canvasId) ->
-      canvas = $(canvasId)
-      scale =
-        x: 1
-        y: 1
+    @sizeForegroundCanvas: (canvas, scale = {x:1,y:1}) ->
 
-      scale.x = (window.innerWidth + 40) / canvas.width()
-      scale.y = (window.innerHeight + 40) / canvas.height()
-      #console.log "canvas width and height: " + canvas.width() + " " + canvas.height()
-      scale = scale.x + ", " + scale.y
+      # set the buffer size
+      canvas.width = (window.innerWidth + 40) / scale.x
+      canvas.height = (window.innerHeight + 40) / scale.y
+
+      #canvas.setAttribute('width', "0")
+      #canvas.setAttribute('height', "0")
+
+      #console.log "canvas width and height: " + canvas.width + " " + canvas.height
+      scaleString = scale.x + ", " + scale.y
       
       # this code below is if one wants to keep the aspect ratio
       # but I mean one doesn't necessarily resize the window
@@ -65,23 +69,59 @@ define [
       # } else {
       #     scale = scale.y + ', ' + scale.y;
       # }
-      canvas.css("-ms-transform-origin", "left top")
-            .css("-webkit-transform-origin", "left top")
-            .css("-moz-transform-origin", "left top")
-            .css("-o-transform-origin", "left top")
-            .css("transform-origin", "left top")
-            .css("-ms-transform", "scale(" + scale + ")")
-            .css("-webkit-transform", "scale3d(" + scale + ", 1)")
-            .css("-moz-transform", "scale(" + scale + ")")
-            .css("-o-transform", "scale(" + scale + ")")
-            .css "transform", "scale(" + scale + ")"
+      #debugger
+      $(canvas).css("-ms-transform-origin", "0% 0%")
+              .css("-webkit-transform-origin", "0% 0%")
+              .css("-moz-transform-origin", "0% 0%")
+              .css("-o-transform-origin", "0% 0%")
+              .css("transform-origin", "0% 0%")
+              .css("-ms-transform", "scale(" + scaleString + ")")
+              .css("-webkit-transform", "scale3d(" + scaleString + ", 1)")
+              .css("-moz-transform", "scale(" + scaleString + ")")
+              .css("-o-transform", "scale(" + scaleString + ")")
+              .css "transform", "scale(" + scaleString + ")"
+
+
+    @resizeCanvas: (canvas, scale = {x:1,y:1}) ->
+      #console.log("adjusting " + canvas + " to " + window.innerWidth + " " + window.innerHeight + " with scale: " + scale.x + " " + scale.y)
+      sx = (window.innerWidth + 40) / 10
+      sy = (window.innerHeight + 40) / 10 
+      canvas.style.width = sx + "px"
+      canvas.style.height = sy + "px"
+
+
+      #console.log "canvas width and height: " + canvas.width + " " + canvas.height
+      scaleString = 10 + ", " + 10
+      
+      # this code below is if one wants to keep the aspect ratio
+      # but I mean one doesn't necessarily resize the window
+      # keeping the same aspect ratio.
+      
+      # if (scale.x < 1 || scale.y < 1) {
+      #     scale = '1, 1';
+      # } else if (scale.x < scale.y) {
+      #     scale = scale.x + ', ' + scale.x;
+      # } else {
+      #     scale = scale.y + ', ' + scale.y;
+      # }
+      #debugger
+      $(canvas).css("-ms-transform-origin", "0% 0%")
+              .css("-webkit-transform-origin", "0% 0%")
+              .css("-moz-transform-origin", "0% 0%")
+              .css("-o-transform-origin", "0% 0%")
+              .css("transform-origin", "0% 0%")
+              .css("-ms-transform", "scale(" + scaleString + ")")
+              .css("-webkit-transform", "scale3d(" + scaleString + ", 1)")
+              .css("-moz-transform", "scale(" + scaleString + ")")
+              .css("-o-transform", "scale(" + scaleString + ")")
+              .css "transform", "scale(" + scaleString + ")"
 
     
     # TODO In theory we want to re-draw the background because the
     # aspect ration might have changed.
     # But for the time being we only have vertical
     # gradients so that's not going to be a problem.
-    adjustCodeMirrorHeight: ->
+    @adjustCodeMirrorHeight: ->
       $(".CodeMirror-scroll").css(
         "height", window.innerHeight - $("#theMenu").height()
       )
@@ -95,12 +135,12 @@ define [
     # the menu disappears
     # so we have to resize it at launch and also every time the window
     # is resized.
-    fullscreenify: (canvasId) ->
+    @fullscreenify: (canvas, scale = {x:1,y:1}) ->
+      @resizeCanvas canvas, scale
       window.addEventListener "resize", (=>
         @adjustCodeMirrorHeight()
-        @resizeCanvas canvasId
+        @resizeCanvas canvas, scale
       ), false
-      @resizeCanvas canvasId
 
     checkErrorAndReport: (e) ->
       $("#errorMessageDiv").css "color", "red"
@@ -372,8 +412,7 @@ define [
         document.body.appendChild @stats.getDomElement()
         $("#startingCourtainScreen").fadeOut()
         $("#formCode").css "opacity", 0
-        @fullscreenify "#backgroundCanvasOrDiv"
-        @adjustCodeMirrorHeight()
+        @constructor.adjustCodeMirrorHeight()
 
   Ui
 

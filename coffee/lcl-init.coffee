@@ -147,6 +147,10 @@ require [
 
     #console.log('creating stats')
     ui = new Ui(eventRouter, stats, programLoader) # $
+
+
+    #console.log "setting canvas size to :" +  document.getElementById("blendedThreeJsSceneCanvas").width + " x " + document.getElementById("blendedThreeJsSceneCanvas").height
+
     # requires: ColourNames
     autocoder = new Autocoder(eventRouter, editor, liveCodeLabCore.colourLiterals.colourNames)
     # Setup Event Listeners
@@ -314,22 +318,42 @@ require [
 
   if setupForNormalLCLPage?
     $(document).ready ->
-      # The div containing this canvas is supposed to be 100% width and height,
-      # so this canvas in theory should be of the right size already. But it
-      # isn't, so we are setting the width and height here again.
+
+      # create the foreground canvas where the
+      # foreground 3d graphics goes
       canvasName = "blendedThreeJsSceneCanvas"
-      document.getElementById(canvasName).width = window.innerWidth
-      document.getElementById(canvasName).height = window.innerHeight
-      #console.log "setting canvas size to :" +  document.getElementById(canvasName).width + " x " + document.getElementById(canvasName).height
-      startEnvironment
-        blendedThreeJsSceneCanvas: document.getElementById(canvasName)
-        canvasForBackground: document.getElementById("backgroundCanvasOrDiv")
-        forceCanvasRenderer: false
-        bubbleUpErrorsForDebugging: false
-        
-        # testMode enables the webgl flag "preserverDrawingBuffer",
-        # see https://github.com/mrdoob/three.js/pull/421
-        testMode: false
+      theCanvas = document.createElement('canvas')
+      theCanvas.id = "blendedThreeJsSceneCanvas"
+      theCanvas.style.left = "0px"
+      theCanvas.style.top = "0px"
+      theCanvas.style.position = "absolute"
+      theCanvas.style.zIndex = "-2"
+      document.getElementById("miao").appendChild(theCanvas)
+      Ui.sizeForegroundCanvas theCanvas, {x:Ui.foregroundCanvasFractionOfWindowSize,y:Ui.foregroundCanvasFractionOfWindowSize}
+
+      # create the background canvas where the
+      # background gradients go
+      theCanvas2 = document.createElement('canvas')
+      theCanvas2.id = "backgroundCanvasOrDiv"
+      theCanvas2.style.left = "0px"
+      theCanvas2.style.top = "0px"
+      theCanvas2.style.position = "absolute"
+      theCanvas2.style.zIndex = "-3"
+      document.getElementById("miao").appendChild(theCanvas2)
+      Ui.fullscreenify theCanvas2, {x:Ui.backgroundCanvasFractionOfWindowSize,y:Ui.backgroundCanvasFractionOfWindowSize}
+
+
+      setTimeout (()=>
+        startEnvironment
+          blendedThreeJsSceneCanvas: document.getElementById("blendedThreeJsSceneCanvas")
+          canvasForBackground: document.getElementById("backgroundCanvasOrDiv")
+          forceCanvasRenderer: false
+          bubbleUpErrorsForDebugging: false
+          
+          # testMode enables the webgl flag "preserverDrawingBuffer",
+          # see https://github.com/mrdoob/three.js/pull/421
+          testMode: false
+      ), 100
 
   if setupForTestPage?
     $(document).ready ->

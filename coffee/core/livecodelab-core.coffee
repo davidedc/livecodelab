@@ -79,7 +79,7 @@ define [
   ,'buzz'
   ,'lowLag'
   ,'threejs'
-  ,'three-resize'
+  #,'three-resize'
   ,'Three.Detector'
   ,'Three.ShaderExtras'
   ,'Three.EffectComposer'
@@ -104,11 +104,11 @@ define [
   ,GlobalScope
   ,SampleBank
   ,SoundSystem
-  ,createBowser
+  ,bowser
   ,buzz
   ,lowLag
   ,THREE
-  ,THREEx
+  #,THREEx
   ,Detector
 ) ->
 
@@ -170,7 +170,7 @@ define [
       @renderer = new Renderer(@)
       @soundSystem =
         new SoundSystem(
-          @eventRouter, @timeKeeper, buzz, lowLag, createBowser(), new SampleBank(buzz))
+          @eventRouter, @timeKeeper, buzz, lowLag, bowser, new SampleBank(buzz))
       
       # this one also interacts with colourFunctions, backgroundSceneContext,
       # canvasForBackground at runtime
@@ -201,7 +201,7 @@ define [
       # this one doesn't interact with any other part at runtime.
       @threeJsSystem =
         new ThreeJsSystem(
-          Detector, THREEx, @paramsObject.blendedThreeJsSceneCanvas,
+          Detector, @paramsObject.blendedThreeJsSceneCanvas,
           @paramsObject.forceCanvasRenderer, @paramsObject.testMode,
           @three)
       

@@ -26,14 +26,17 @@ requirejs.config(
     'Three.ShaderExtras': 'lib/three.js/ShaderExtras'
     'Three.Stats': 'lib/three.js/Stats'
 
+    # these two needed for the CanvasRenderer
+    'Three.CanvasRenderer': 'lib/three.js/CanvasRenderer'
+    'Three.Projector': 'lib/three.js/Projector'
+
     'Three.EffectComposer': 'lib/three.js/postprocessing/EffectComposer'
     'Three.MaskPass': 'lib/three.js/postprocessing/MaskPass'
     'Three.RenderPass': 'lib/three.js/postprocessing/RenderPass'
     'Three.SavePass': 'lib/three.js/postprocessing/SavePass'
     'Three.ShaderPass': 'lib/three.js/postprocessing/ShaderPass'
 
-    'three-resize': 'lib/threex/THREEx.WindowResize'
-
+    #'three-resize': 'lib/threex/THREEx.WindowResize'
 
   packages: [
       name: 'LiveLangV1'
@@ -48,7 +51,7 @@ requirejs.config(
   shim:
     'bowser':
       deps: []
-      exports: 'createBowser'
+      exports: 'bowser'
     'buzz':
       deps: []
       exports: 'buzz'
@@ -82,14 +85,18 @@ requirejs.config(
       exports: 'Stats'
     'Three.ShaderExtras': ['threejs']
 
+    # these two needed for the CanvasRenderer
+    'Three.CanvasRenderer': ['threejs']
+    'Three.Projector': ['threejs']
+
     'Three.EffectComposer': ['threejs']
     'Three.MaskPass': ['threejs']
     'Three.RenderPass': ['threejs']
     'Three.SavePass': ['threejs']
     'Three.ShaderPass': ['threejs']
-    'three-resize':
-      deps: ['threejs']
-      exports: 'THREEx'
+    #'three-resize':
+    #  deps: ['threejs']
+    #  exports: 'THREEx'
 )
 
 
