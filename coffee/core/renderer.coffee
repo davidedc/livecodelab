@@ -11,7 +11,6 @@ define () ->
     
     render: (graphics) ->
       
-      #console.log "rendering"
       # some shorthands
       threeJsSystem = @liveCodeLabCoreInstance.threeJsSystem
       renderer = threeJsSystem.renderer

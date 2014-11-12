@@ -58,14 +58,16 @@ define () ->
 
     loopInterval: null
     wantedFramesPerSecond: null
-    liveCodeLabCoreInstance: undefined
     AS_HIGH_FPS_AS_POSSIBLE: -1
     noDrawFrame: false
     fpsHistory: [10]
 
+    sleeping: true
+
     constructor: (@eventRouter,
                   @stats,
-                  @liveCodeLabCoreInstance,
+                  @lclCore,
+                  @graphicsCommands,
                   @forceUseOfTimeoutForScheduling = false) ->
       # Some basic initialisations and constant definitions
       @wantedFramesPerSecond = @AS_HIGH_FPS_AS_POSSIBLE
@@ -123,18 +125,18 @@ define () ->
     animate: ->
 
       if @frame is 0
-        @liveCodeLabCoreInstance.timeKeeper.resetTime()
+        @lclCore.timeKeeper.resetTime()
       else
-        @liveCodeLabCoreInstance.timeKeeper.updateTime()
+        @lclCore.timeKeeper.updateTime()
 
-      frameStartTime = @liveCodeLabCoreInstance.timeKeeper.milliseconds
+      frameStartTime = @lclCore.timeKeeper.milliseconds
 
       # do the render ONLY if we are some ms away from the next
       # scheduled beat. In other words, stay well clear of the
       # sound timer!
       
       forbiddenZone = Math.min(Math.max.apply(Math, @fpsHistory), 1000/30)
-      if @liveCodeLabCoreInstance.timeKeeper.nextQuarterBeat - frameStartTime < forbiddenZone
+      if @lclCore.timeKeeper.nextQuarterBeat - frameStartTime < forbiddenZone
         @noDrawFrame = true
       else
         @noDrawFrame = false
@@ -146,7 +148,7 @@ define () ->
       # We'll re-start the animation when the editor content
       # changes. Note that this frame goes to completion anyways, because
       # we actually do want to render one "empty screen" frame.
-      if @liveCodeLabCoreInstance.drawFunctionRunner.drawFunction
+      if not @sleeping
         @scheduleNextFrame()
         
         # Now here there is another try/catch check when the draw function is ran.
@@ -161,84 +163,70 @@ define () ->
         # 1. highlight the error
         # 2. run the previously known good program.
         try
-          @liveCodeLabCoreInstance.drawFunctionRunner.runDrawFunction()
+          @lclCore.programRunner.runProgram()
         catch e
-          
+
           #alert('runtime error');
           # note that this causes the running of the last stable function
           # so you could have executed half of the original draw function,
           # then got an error, now you are re-running an old draw function.
           @eventRouter.emit("runtime-error-thrown", e)
           return
-        drawFunctionRunner = @liveCodeLabCoreInstance.drawFunctionRunner
-        drawFunctionRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun \
-          @liveCodeLabCoreInstance.codeCompiler
+        programRunner = @lclCore.programRunner
+        programRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun @lclCore.codeCompiler
       else
-        @liveCodeLabCoreInstance.dozingOff = true
         # the program is empty and so it's the screen. Effectively, the user
         # is starting from scratch, so the frame variable should be reset to zero.
         @setFrame(0)
-      
-      #console.log('dozing off');
       
       # we have to repeat this check because in the case
       # the user has set frame = 0,
       # then we have to catch that case here
       # after the program has executed
-      @liveCodeLabCoreInstance.timeKeeper.resetTime()  if @frame is 0
-      @liveCodeLabCoreInstance.blendControls.animationStyleUpdateIfChanged()
-      @liveCodeLabCoreInstance.backgroundPainter.simpleGradientUpdateIfChanged()
+      @lclCore.timeKeeper.resetTime()  if @frame is 0
+      @lclCore.blendControls.animationStyleUpdateIfChanged()
+      @lclCore.backgroundPainter.simpleGradientUpdateIfChanged()
       
       # "frame" starts at zero, so we increment after the first time the draw
       # function has been run.
       @setFrame(@frame + 1)
-      
-      
-      # We want to avoid the rendering as soon as 2 consecutive
-      # invocations of the draw method issue no
-      # primitive-drawing commands
-      # This applies particularly as the user only does music
-      # and no graphics: with no 3d rendering the music
-      # plays much more regularly and laptops' fan is quiet
-      # and battery life is spared.
-      geometryOnScreenMightHaveChanged =  (@liveCodeLabCoreInstance.graphicsCommands.atLeastOneObjectWasDrawn or
-          @liveCodeLabCoreInstance.graphicsCommands.atLeastOneObjectIsDrawn)
 
+      geometryOnScreenMightHaveChanged =  (@graphicsCommands.atLeastOneObjectWasDrawn or @graphicsCommands.atLeastOneObjectIsDrawn)
 
-      if (!@noDrawFrame) and geometryOnScreenMightHaveChanged
-
-        @liveCodeLabCoreInstance.renderer.render @liveCodeLabCoreInstance.graphicsCommands
-        
-        @liveCodeLabCoreInstance.graphicsCommands.atLeastOneObjectWasDrawn =
-            @liveCodeLabCoreInstance.graphicsCommands.atLeastOneObjectIsDrawn    
-
-        
+      # if livecodelab is dozing off, in that case you do
+      # want to do a render because it will clear the screen.
+      # otherwise the last frame of the sketch is going
+      # to remain painted in the background behind
+      # the big cursor.
+      if (!@noDrawFrame or @sleeping) and geometryOnScreenMightHaveChanged
+        @lclCore.renderer.render @graphicsCommands
         # keep the last 10 durations of when we actually
         # drew the frame. This is used for trying to
         # avoid collision between graphics and sound timers.
         @fpsHistory.push(new Date().getTime() - frameStartTime)
         if @fpsHistory.length > 60
           @fpsHistory.shift()
-      
+        @graphicsCommands.atLeastOneObjectWasDrawn = @graphicsCommands.atLeastOneObjectIsDrawn
+
+
       # update stats
       if @stats then @stats.update()
 
     cleanStateBeforeRunningDrawAndRendering: ->
-      @liveCodeLabCoreInstance.renderer.resetExclusionPrincipleWobbleDataIfNeeded @liveCodeLabCoreInstance.graphicsCommands
+      @lclCore.renderer.resetExclusionPrincipleWobbleDataIfNeeded @graphicsCommands
 
-      @liveCodeLabCoreInstance.matrixCommands.resetMatrixStack()
+      @lclCore.matrixCommands.resetMatrixStack()
       
       # the sound list needs to be cleaned
       # so that the user program can create its own from scratch
-      @liveCodeLabCoreInstance.soundSystem.resetLoops()
+      @lclCore.soundSystem.resetLoops()
 
-      @liveCodeLabCoreInstance.drawFunctionRunner.resetTrackingOfDoOnceOccurrences()
+      @lclCore.programRunner.resetTrackingOfDoOnceOccurrences()
 
-      @liveCodeLabCoreInstance.lightSystem.noLights()
-      @liveCodeLabCoreInstance.graphicsCommands.reset()
-      @liveCodeLabCoreInstance.blendControls.animationStyle \
-        @liveCodeLabCoreInstance.blendControls.animationStyles.normal
-      @liveCodeLabCoreInstance.backgroundPainter.resetGradientStack()
+      @lclCore.lightSystem.noLights()
+      @graphicsCommands.reset()
+      @lclCore.blendControls.animationStyle @lclCore.blendControls.animationStyles.normal
+      @lclCore.backgroundPainter.resetGradientStack()
 
       # In case we want to make each frame an actual
       # pure function then we need to seed "random" and "noise"

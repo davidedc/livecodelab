@@ -19,9 +19,9 @@ require [
   ,'mousewheel'
   ,'codemirror-lcl-mode'
   ,'globals/browsercontrols'
-  ,'globals/math'
   ,'globals/numbertimes'
   ,'globals/requestAnimFrame'
+  ,'globals/languages-build-option'
 ], (
   Stats
   ,EventEmitter
@@ -108,12 +108,13 @@ require [
     #  - renderer
     #  - animationLoop
     liveCodeLabCore = new LiveCodeLabCore(
-      blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
-      canvasForBackground: paramsObject.canvasForBackground
-      forceCanvasRenderer: paramsObject.forceCanvasRenderer
-      eventRouter: eventRouter
-      statsWidget: stats
-      testMode: paramsObject.testMode
+       eventRouter
+      ,stats
+      ,
+       blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
+       canvasForBackground: paramsObject.canvasForBackground
+       forceCanvasRenderer: paramsObject.forceCanvasRenderer
+       testMode: paramsObject.testMode
     )
 
     #/////////////////////////////////////////////////////
@@ -126,6 +127,10 @@ require [
     # Setup Event Listeners
     eventRouter.addListener("big-cursor-show", => bigCursor.unshrinkBigCursor() )
     eventRouter.addListener("big-cursor-hide", => bigCursor.shrinkBigCursor() )
+    eventRouter.addListener("set-language", (langNameId) =>
+      langName = langNameId.split('-')[1]
+      liveCodeLabCore.setLanguage(langName)
+    )
 
     editor = new Editor(eventRouter, CodeMirror)
     attachMouseWheelHandler editor
@@ -271,7 +276,7 @@ require [
       
       #alert('undoing');
       else
-        liveCodeLabCore.runLastWorkingDrawFunction()
+        liveCodeLabCore.runLastWorkingProgram()
       
       # re-throw the error so that the top-level debuggers
       # (firebug, built-in, whathaveyous) can properly

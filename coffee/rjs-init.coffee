@@ -9,6 +9,7 @@ requirejs.config(
     'bowser': 'lib/bowser'
     'buzz': 'lib/buzz'
     'lowLag': 'lib/lowLag'
+    'underscore': 'lib/underscore.min'
     'soundmanager2': 'lib/sm2/js/soundmanager2-jsmin'
     'codemirror': 'lib/codemirror'
     'coffeescript': 'lib/coffee-script'
@@ -36,6 +37,17 @@ requirejs.config(
     'Three.ShaderPass': 'lib/three.js/postprocessing/ShaderPass'
 
     #'three-resize': 'lib/threex/THREEx.WindowResize'
+
+  packages: [
+      name: 'LiveLangV1'
+      location: 'languages/livelangv1'
+      main: "main"
+    ,
+      name: 'LiveLangV2'
+      location: 'languages/livelangv2'
+      main: "main"
+  ]
+
   shim:
     'bowser':
       deps: []
