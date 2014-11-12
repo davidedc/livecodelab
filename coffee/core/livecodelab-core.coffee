@@ -104,7 +104,7 @@ define [
   ,GlobalScope
   ,SampleBank
   ,SoundSystem
-  ,createBowser
+  ,bowser
   ,buzz
   ,lowLag
   ,THREE
@@ -162,7 +162,7 @@ define [
       @renderer = new Renderer(@)
       @soundSystem =
         new SoundSystem(
-          @paramsObject.eventRouter, @timeKeeper, buzz, lowLag, createBowser(), new SampleBank(buzz))
+          @paramsObject.eventRouter, @timeKeeper, buzz, lowLag, bowser, new SampleBank(buzz))
       
       # this one also interacts with colourFunctions, backgroundSceneContext,
       # canvasForBackground at runtime
