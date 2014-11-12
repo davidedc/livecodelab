@@ -7,63 +7,147 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
 
-        nodeunit: {
-            files: ['langtests/**/*_test.js']
+        clean: {
+            docs: [
+                'dist/docs/'
+            ],
+            tests: [
+                'dist/tests/js/testLiveCodeLab.js'
+            ],
+            build: [
+                'dist/*',
+                'build/',
+            ]
         },
 
 
         copy: {
-            buildTimeOptions: {
-                src: 'build-time-options/languages-build-option.js',
-                dest: 'dist/js/globals/languages-build-option.js',
-                options: {
-                  process: function (content, srcpath) {
-                    return content.replace(/SET_AT_BUILD_TIME/mgi,"'"+(grunt.option('language') || 'both')+"'");
-                  }
-                }
-            },
-            main: {
+
+            // js libs get put into build/ so they
+            // can be pulled in and minified by r.js
+            preBuild: {
                 files: [{
+                    src: ['**'],
+                    expand: true,
+                    cwd: 'js_lib/',
+                    dest: 'build/js/lib'
+                },{
+                    src: ['**'],
+                    expand: true,
+                    cwd: 'coffee/',
+                    dest: 'build/js'
+                },{
+                    src: ['**'],
                     expand: true,
                     cwd: 'css/',
-                    src: ['**'],
-                    dest: 'dist/css'
-                }, {
-                    expand: true,
-                    cwd: 'sound/',
-                    src: ['**'],
-                    dest: 'dist/sound'
-                }, {
-                    expand: false,
-                    src: ['templts/tests.html.templt'],
-                    dest: 'dist/tests.html'
-                }, {
+                    dest: 'build/css'
+                }]
+            },
+
+            // test files need to be copied into build dir
+            // before coffee script is compiled
+            tests: {
+                files: [{
                     expand: true,
                     cwd: 'tests/lib/jasmine-1.3.1/',
                     src: ['**'],
-                    dest: 'dist/test-page-files/jasmine/'
+                    dest: 'build/test-page-files/jasmine/'
                 }, {
                     expand: true,
                     cwd: 'tests/css/',
                     src: ['**'],
-                    dest: 'dist/test-page-files/css/'
+                    dest: 'build/test-page-files/css/'
                 }, {
                     expand: true,
                     cwd: 'tests/htmlsWithTests/images/',
                     src: ['**'],
-                    dest: 'dist/test-page-files/images/'
+                    dest: 'build/test-page-files/images/'
                 }, {
                     expand: true,
                     cwd: 'tests/js/',
                     src: ['**'],
-                    dest: 'dist/test-page-files/js/'
+                    dest: 'build/test-page-files/js/'
+                }]
+            },
+
+            // Apparently this needs to be on its own to work properlly
+            buildTimeOptions: {
+                src: 'build-time-options/languages-build-option.js',
+                dest: 'build/js/globals/languages-build-option.js',
+                options: {
+                  process: function (content, srcpath) {
+                    var setting = (grunt.option('language') || 'both');
+                    return content.replace(
+                        /language_setting/mgi,
+                        setting
+                    );
+                  }
+                }
+            },
+            // development build puts in dist :-
+            // unminified js files
+            // original coffeescript files
+            // js -> coffee map files
+            // all the css
+            // all the tests
+            development: {
+                files: [{
+                    src: ['**'],
+                    expand: true,
+                    cwd: 'build/css/',
+                    dest: 'dist/css'
+                }, {
+                    src: ['**'],
+                    expand: true,
+                    cwd: 'build/js',
+                    dest: 'dist/js'
+                }, {
+                    src: ['**'],
+                    expand: true,
+                    cwd: 'build/test-page-files',
+                    dest: 'dist/test-page-files'
+                }]
+            },
+
+            // release build only puts minified files into dist
+            release: {
+                files: [{
+                    expand: true,
+                    cwd: 'build/css/',
+                    src: ['lcl.min.css'],
+                    dest: 'dist/css'
                 }, {
                     expand: true,
-                    cwd: 'js_lib/',
-                    src: ['**'],
+                    cwd: 'build/css/',
+                    src: ['**', '**/!*.css'],
+                    dest: 'dist/css'
+                }, {
+                    expand: true,
+                    cwd: 'build/js/',
+                    src: ['lcl.min.js'],
+                    dest: 'dist/js'
+                }, {
+                    expand: true,
+                    cwd: 'build/js/lib',
+                    src: ['require.js'],
                     dest: 'dist/js/lib'
                 }]
+            },
+
+            testHtml: {
+                expand: false,
+                src: ['templts/tests.html.templt'],
+                dest: 'dist/tests.html'
+            },
+
+            sounds: {
+                src: ['**'],
+                expand: true,
+                cwd: 'sound/',
+                dest: 'dist/sound'
             }
+
+
         },
         recess: {
             lint: {
@@ -78,7 +162,7 @@ module.exports = function (grunt) {
             },
             compile: {
                 src: ['css/**/*.css'],
-                dest: 'dist/css/lcl.min.css',
+                dest: 'build/css/lcl.min.css',
                 options: {
                     compile: true,
                     compress: true
@@ -90,7 +174,7 @@ module.exports = function (grunt) {
                 expand: true,
                 cwd: 'coffee/',
                 src: ['**/*.coffee'],
-                dest: 'dist/js/',
+                dest: 'build/js/',
                 ext: '.js',
                 options: {
                     sourceMap: true,
@@ -101,41 +185,13 @@ module.exports = function (grunt) {
                 expand: true,
                 cwd: 'tests/testsSource/',
                 src: ['*.coffee'],
-                dest: 'dist/test-page-files/testsSource/',
+                dest: 'build/test-page-files/testsSource/',
                 ext: '.js',
                 options: {
                     bare: true,
                     preserve_dirs: true
                 }
             }
-        },
-        watch: {
-            scripts: {
-                files: ['coffee/**/*.coffee', 'tests/js/*.js', 'tests/testsSource/*.coffee', 'templts/tests.html.templt', 'tests/htmlsWithTests/images/*.png'],
-                tasks: ['coffee:app', 'coffee:tests', 'copy']
-            },
-            lcllang: {
-                files: ['grammar/**/*.jison', 'langtests/**/*.js'],
-                tasks: ['langtest']
-            },
-            interpreter: {
-                files: ['js_lib/lcl/**/*.js', 'langtests/**/*.js'],
-                tasks: ['copy:main', 'langtest']
-            }
-        },
-        coffeelint: {
-            lcl: ['coffee/*.coffee']
-        },
-        clean: {
-            docs: [
-                'dist/docs/'
-            ],
-            tests: [
-                'dist/tests/js/testLiveCodeLab.js'
-            ],
-            build: [
-                'dist/*'
-            ]
         },
         targethtml: {
             main: {
@@ -144,9 +200,35 @@ module.exports = function (grunt) {
             },
             dev: {
                 src: 'templts/index.html.templt',
-                dest: 'dist/index-dev.html'
+                dest: 'dist/index.html'
             }
         },
+        requirejs: {
+            compile: {
+                options: {
+                    name: 'lcl-init',
+                    baseUrl: 'build/js/',
+                    mainConfigFile: 'build/js/rjs-init.js',
+                    out: 'build/js/lcl.min.js'
+                }
+            }
+        },
+        jison: {
+            main: {
+                options: {
+                    moduleType: 'amd'
+                },
+                src: 'grammar/lcl-grammar.jison',
+                dest: 'build/js/lib/lcl/parser.js'
+            }
+        },
+
+        // Testing tasks
+        nodeunit: {
+            files: ['langtests/**/*_test.js']
+        },
+
+        // Docs tasks
         docco: {
             index: {
                 src: [
@@ -184,6 +266,31 @@ module.exports = function (grunt) {
                 }
             }
         },
+
+        // Misc useful tasks
+        coffeelint: {
+            lcl: ['coffee/*.coffee']
+        },
+        watch: {
+            scripts: {
+                files: [
+                    'coffee/**/*.coffee',
+                    'tests/js/*.js',
+                    'tests/testsSource/*.coffee',
+                    'templts/tests.html.templt',
+                    'tests/htmlsWithTests/images/*.png'
+                ],
+                tasks: ['coffee:app', 'coffee:tests', 'copy']
+            },
+            lcllang: {
+                files: ['grammar/**/*.jison', 'langtests/**/*.js'],
+                tasks: ['langtest']
+            },
+            interpreter: {
+                files: ['js_lib/lcl/**/*.js', 'langtests/**/*.js'],
+                tasks: ['copy:main', 'langtest']
+            }
+        },
         connect: {
             server: {
                 options: {
@@ -192,25 +299,6 @@ module.exports = function (grunt) {
                     keepalive: true,
                     hostname: '*'
                 }
-            }
-        },
-        requirejs: {
-            compile: {
-                options: {
-                    name: 'lcl-init',
-                    baseUrl: 'dist/js/',
-                    mainConfigFile: 'dist/js/rjs-init.js',
-                    out: 'dist/js/lcl.min.js'
-                }
-            }
-        },
-        jison: {
-            main: {
-                options: {
-                    moduleType: 'amd'
-                },
-                src: 'grammar/lcl-grammar.jison',
-                dest: 'dist/js/lib/lcl/parser.js'
             }
         }
     });
@@ -225,27 +313,38 @@ module.exports = function (grunt) {
     ]);
 
 
-    grunt.registerTask('build', [
+    grunt.registerTask('releasebuild', [
         'clean:build',
-        'coffee:app',
-        'coffee:tests',
-        'copy:main',
+        'copy:preBuild',
         'copy:buildTimeOptions',
+
         'jison',
+
+        'coffee:app',
+
         'recess:compile',
         'requirejs',
-        'targethtml'
+
+        'targethtml:main',
+        'copy:sounds',
+        'copy:release'
     ]);
 
-    grunt.registerTask('fastbuild', [
+    grunt.registerTask('devbuild', [
         'clean:build',
+        'copy:preBuild',
+        'copy:tests',
+        'copy:buildTimeOptions',
+
+        'jison',
+
         'coffee:app',
         'coffee:tests',
-        'copy:main',
-        'copy:buildTimeOptions',
-        'jison',
-        'recess:compile',
-        'targethtml'
+
+        'targethtml:dev',
+        'copy:sounds',
+        'copy:development',
+        'copy:testHtml'
     ]);
 
     grunt.registerTask('langtest', [
