@@ -271,6 +271,14 @@ module.exports = function (grunt) {
         coffeelint: {
             lcl: ['coffee/*.coffee']
         },
+        "git-describe": {
+            "options": {
+                template: "Current commit: {%=object%}{%=dirty%}"
+            },
+            "your_target": {
+                // Target-specific file lists and/or options go here.
+            },
+        },
         watch: {
             scripts: {
                 files: [
@@ -303,6 +311,7 @@ module.exports = function (grunt) {
         }
     });
 
+
     // Default task.
     grunt.registerTask('default', 'coffeelint');
     grunt.registerTask('lint', ['coffeelint', 'recess:lint']);
@@ -312,6 +321,17 @@ module.exports = function (grunt) {
         'docco'
     ]);
 
+    grunt.registerTask('gitinfo', function () {
+        grunt.event.once('git-describe', function (rev) {
+
+            grunt.file.write('dist/version.json', JSON.stringify({
+                revision: [rev.object, rev.dirty].join(''),
+                date: grunt.template.today()
+            }));
+
+        });
+        grunt.task.run('git-describe');
+    });
 
     grunt.registerTask('releasebuild', [
         'clean:build',
@@ -366,5 +386,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-nodeunit');
     grunt.loadNpmTasks('grunt-jison');
+    grunt.loadNpmTasks('grunt-git-describe');
 
 };
