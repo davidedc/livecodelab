@@ -348,7 +348,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('langtest', [
-        'copy:main',
+        'copy:preBuild',
         'jison',
         'nodeunit'
     ]);
