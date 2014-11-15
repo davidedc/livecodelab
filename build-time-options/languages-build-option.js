@@ -1,2 +1,3 @@
 
-var languagesBuildOption = SET_AT_BUILD_TIME
+var languagesBuildOption = 'language_setting';
+

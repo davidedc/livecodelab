@@ -9,7 +9,7 @@ requirejs.config(
     'bowser': 'lib/bowser'
     'buzz': 'lib/buzz'
     'lowLag': 'lib/lowLag'
-    'underscore': 'lib/underscore.min'
+    'underscore': 'lib/underscore'
     'soundmanager2': 'lib/sm2/js/soundmanager2-jsmin'
     'codemirror': 'lib/codemirror'
     'coffeescript': 'lib/coffee-script'

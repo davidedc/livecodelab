@@ -5,7 +5,7 @@
 var requirejs = require('requirejs');
 
 requirejs.config({
-    baseUrl: 'dist/js',
+    baseUrl: 'build/js',
     nodeRequire: require
 });
 
