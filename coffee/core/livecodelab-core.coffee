@@ -76,6 +76,7 @@ define [
   ,'sound/samplebank'
   ,'sound/sound-system'
   ,'bowser'
+  ,'soundJS'
   ,'buzz'
   ,'lowLag'
   ,'threejs'
@@ -105,6 +106,7 @@ define [
   ,SampleBank
   ,SoundSystem
   ,bowser
+  ,createjs
   ,buzz
   ,lowLag
   ,THREE
@@ -170,7 +172,7 @@ define [
       @renderer = new Renderer(@)
       @soundSystem =
         new SoundSystem(
-          @eventRouter, @timeKeeper, buzz, lowLag, bowser, new SampleBank(buzz))
+          @eventRouter, @timeKeeper, createjs, buzz, lowLag, bowser, new SampleBank(buzz))
       
       # this one also interacts with colourFunctions, backgroundSceneContext,
       # canvasForBackground at runtime

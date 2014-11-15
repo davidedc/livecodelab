@@ -7,6 +7,7 @@
 requirejs.config(
   paths:
     'bowser': 'lib/bowser'
+    'soundJS': 'lib/soundjs-0.5.2.min'
     'buzz': 'lib/buzz'
     'lowLag': 'lib/lowLag'
     'underscore': 'lib/underscore'
@@ -52,6 +53,9 @@ requirejs.config(
     'bowser':
       deps: []
       exports: 'bowser'
+    'soundJS':
+      deps: []
+      exports: 'createjs'
     'buzz':
       deps: []
       exports: 'buzz'

@@ -18,8 +18,13 @@ define () ->
     buzzObjectsPool: []
     soundFilesPaths: {}
     soundLoops: []
+
+    useBuzzPooled: false
+    useBuzzFireAndForget: false
+    useLowLag: false
+    useSoundsJS: false
     
-    constructor: (@eventRouter, @timeKeeper, @buzz, @lowLag, @Bowser, @samplebank) ->
+    constructor: (@eventRouter, @timeKeeper, @createjs, @buzz, @lowLag, @Bowser, @samplebank) ->
       @soundLoops.soundIDs = []
       @soundLoops.beatStrings = []
 
@@ -33,7 +38,17 @@ define () ->
 
       @timeKeeper.addListener('beat', (beat) => @soundLoop(beat) );
 
-      @playSound = (a,b,c) => @play_using_LOWLAGJS(a,b,c)
+      if @Bowser.msie
+        @useSoundsJS = true
+        @playSound = (a,b,c) => @play_using_SOUNDJS(a,b,c)
+
+        #@playSound = (a,b,c) => @play_using_BUZZ_JS_FIRE_AND_FORGET(a,b,c)
+
+        #@useBuzzPooled = true
+        #@playSound = (a,b,c) => @play_using_BUZZJS_WITH_ONE_POOL_PER_SOUND(a,b,c)
+        
+      else
+        @playSound = (a,b,c) => @play_using_LOWLAGJS(a,b,c)
 
     addToScope: (scope) ->
 
@@ -94,6 +109,9 @@ define () ->
       availableBuzzObject = new @buzz.sound(soundFilePath)
       availableBuzzObject.play()
 
+    play_using_SOUNDJS: (soundFilesPaths,loopedSoundID,@buzzObjectsPool) ->
+      @createjs.Sound.play(loopedSoundID)
+
     play_using_DYNAMICALLY_CREATED_AUDIO_TAG: (soundFilesPaths,loopedSoundID,@buzzObjectsPool) ->
       audioElement = undefined
       source1 = undefined
@@ -133,7 +151,7 @@ define () ->
         # create a new one
         # OR there are already too many, so simply put the sound system
         # is mangled.
-        if @totalCreatedSoundObjects > 31
+        if @totalCreatedSoundObjects > 91
           @soundSystemIsMangled = true
           $("#soundSystemIsMangledMessage").modal()
           $("#simplemodal-container").height 250
@@ -204,9 +222,22 @@ define () ->
       soundInfo = undefined
       preloadSounds = undefined
       soundDef = @samplebank
+
+      if @useSoundsJS
+        loadHandler = (event, theSound) ->        
+          # This is fired for each sound that is registered.
+          instance = createjs.Sound.play(event.src) # play using id.  Could also use full source path or event.src.
+          instance.volume = 0.001
+          return
+        createjs.Sound.addEventListener "fileload", createjs.proxy(loadHandler, @);
+
       for cycleSoundDefs in [0...soundDef.sounds.length]
+
         soundInfo = soundDef.getByNumber(cycleSoundDefs)
-        #@buzzObjectsPool[soundInfo.name] = []
+        if @useSoundsJS
+          createjs.Sound.registerSound soundInfo.path, soundInfo.name, 30
+        if @useBuzzPooled
+          @buzzObjectsPool[soundInfo.name] = []
         @soundFilesPaths[soundInfo.name] = soundInfo.path
         @lowLag.load(soundInfo.path,soundInfo.name)
         
