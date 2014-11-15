@@ -18,19 +18,85 @@ define [
     @composer: null
     @timesInvoked: false
 
+    @sizeIsLessThan: (sizeX, sizeY, comparisonSizeX,comparisonSizeY) ->
+      if sizeX <= comparisonSizeX and sizeY <= comparisonSizeY
+        return true
+      else
+        return false
+
+    @getBestBufferSize: ->
+      multiplier = 1
+      
+      correction = -0.1
+      blendedThreeJsSceneCanvasWidth = 0
+      blendedThreeJsSceneCanvasHeight = 0
+
+      previousCorrection = 0
+
+      # this is the minimum size of the buffer that we'd accept to use
+      # given the size of this screen. Basically this is the buffer that
+      # would give us the maximum blurryness that we can accept.
+      # if this buffer is below a certain size though, we'll increase it.
+      sx = Math.floor((window.innerWidth + 40) / (Ui.foregroundCanvasMinimumFractionOfWindowSize))
+      sy = Math.floor((window.innerHeight + 40) / (Ui.foregroundCanvasMinimumFractionOfWindowSize))
+
+      # it's useful to be conservative and use a blurry buffer when the screen or window
+      # are big, but when the screen / window are small we can afford to fill them
+      # a bit better: there is no point in using for the buffer a fraction of the
+      # window size when the window size is small and we can afford to fill all of it
+      # (or a good fraction of it).
+      # So here we proceed to correct for this, basically we incrementally increase
+      # the buffer size until it's within a threshold we decide, and
+      # at the same time we tweak the 2d scaling applied
+      # to the foreground canvas so it still fits the window.
+      # So: in little steps, we increase the buffer and we fit in into the window.
+      while @sizeIsLessThan blendedThreeJsSceneCanvasWidth, blendedThreeJsSceneCanvasHeight, 880,720
+
+        previousCorrection = correction
+        previousSx = sx
+        previousSy = sy
+
+        correction += 0.1
+        # calculate the size of the buffer at the maximum blur we can accept
+        sx = Math.floor((window.innerWidth + 40) / (Ui.foregroundCanvasMinimumFractionOfWindowSize - correction))
+        sy = Math.floor((window.innerHeight + 40) / (Ui.foregroundCanvasMinimumFractionOfWindowSize - correction))
+
+        # buffer size
+        blendedThreeJsSceneCanvasWidth = multiplier * sx
+        blendedThreeJsSceneCanvasHeight = multiplier * sy
+        console.log 'Ui.foregroundCanvasMinimumFractionOfWindowSize: ' + Ui.foregroundCanvasMinimumFractionOfWindowSize + ' correction: ' + correction + " blendedThreeJsSceneCanvasWidth " + blendedThreeJsSceneCanvasWidth + " blendedThreeJsSceneCanvasHeight " + blendedThreeJsSceneCanvasHeight + " previousSx " + previousSx + " previousSy " + previousSy
+
+      console.log " buffer size after correction: " + (multiplier * previousSx) + " , " + multiplier * previousSy
+      console.log " would have been: " + (multiplier * Math.floor((window.innerWidth + 40) / (Ui.foregroundCanvasMinimumFractionOfWindowSize))) + " , " + multiplier * Math.floor((window.innerHeight + 40) / (Ui.foregroundCanvasMinimumFractionOfWindowSize ))
+
+      return [previousSx, previousSy, previousCorrection]
+
+    @bufferSizeAtFullDpiCapability: (blendedThreeJsSceneCanvas) ->
+      multiplier = window.devicePixelRatio
+      sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasMinimumFractionOfWindowSize)
+      sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasMinimumFractionOfWindowSize)
+      return [sx * multiplier,sy * multiplier]
+
+
     @sizeTheForegroundCanvas: (blendedThreeJsSceneCanvas) ->
       multiplier = 1
-      sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasFractionOfWindowSize)
-      sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasFractionOfWindowSize)
+      [sx,sy,correction] = @getBestBufferSize()
+      #correction = 0
+      #sx = Math.floor((window.innerWidth + 40) / (Ui.foregroundCanvasMinimumFractionOfWindowSize - correction))
+      #sy = Math.floor((window.innerHeight + 40) / (Ui.foregroundCanvasMinimumFractionOfWindowSize - correction))
+
+      
+      Ui.sizeForegroundCanvas blendedThreeJsSceneCanvas, {x:Ui.foregroundCanvasMinimumFractionOfWindowSize - correction,y:Ui.foregroundCanvasMinimumFractionOfWindowSize - correction}
+
+
+      blendedThreeJsSceneCanvas.width = multiplier * sx
+      blendedThreeJsSceneCanvas.height = multiplier * sy
 
 
       # dimension on screen
       blendedThreeJsSceneCanvas.style.width = sx + "px"
       blendedThreeJsSceneCanvas.style.height = sy + "px"
 
-      # buffer size
-      blendedThreeJsSceneCanvas.width = multiplier * sx
-      blendedThreeJsSceneCanvas.height = multiplier * sy
 
     @attachEffectsAndSizeTheirBuffers: (thrsystem, renderer) ->
 
@@ -40,9 +106,7 @@ define [
       scene = thrsystem.scene
 
       multiplier = 1
-      sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasFractionOfWindowSize)
-      sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasFractionOfWindowSize)
-
+      [sx,sy,unused] = @getBestBufferSize()
 
       #debugger
       if thrsystem.isWebGLUsed
@@ -160,8 +224,7 @@ define [
       camera.updateProjectionMatrix()
 
       multiplier = 1
-      sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasFractionOfWindowSize)
-      sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasFractionOfWindowSize)
+      [sx,sy,unused] = @getBestBufferSize()
 
       #console.log "renderer previous context width: " + renderer.context.drawingBufferWidth
       # resizes canvas buffer and sets the viewport to
@@ -175,7 +238,7 @@ define [
         
 
     @attachResizingBehaviourToResizeEvent: (thrsystem, renderer, camera) ->
-      scale = Ui.foregroundCanvasFractionOfWindowSize
+      scale = Ui.foregroundCanvasMinimumFractionOfWindowSize
       callback = =>
         @sizeTheForegroundCanvas thrsystem.blendedThreeJsSceneCanvas
         @sizeRendererAndCamera renderer, camera, scale
@@ -312,7 +375,7 @@ define [
       @constructor.attachResizingBehaviourToResizeEvent @, @renderer, @camera
       
       @constructor.sizeTheForegroundCanvas @blendedThreeJsSceneCanvas
-      @constructor.sizeRendererAndCamera @renderer, @camera, Ui.foregroundCanvasFractionOfWindowSize
+      @constructor.sizeRendererAndCamera @renderer, @camera, Ui.foregroundCanvasMinimumFractionOfWindowSize
       if @isWebGLUsed
         @renderTargetParameters = undefined
         @renderTarget = undefined

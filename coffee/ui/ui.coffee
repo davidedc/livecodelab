@@ -15,7 +15,7 @@ define [
   class Ui
 
     @backgroundCanvasFractionOfWindowSize: 10
-    @foregroundCanvasFractionOfWindowSize: 1.5
+    @foregroundCanvasMinimumFractionOfWindowSize: 1.5
 
     constructor: (@eventRouter, @stats, @programLoader) ->
       # Setup Event Listeners

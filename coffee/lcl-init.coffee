@@ -329,7 +329,7 @@ require [
       theCanvas.style.position = "absolute"
       theCanvas.style.zIndex = "-2"
       document.getElementById("miao").appendChild(theCanvas)
-      Ui.sizeForegroundCanvas theCanvas, {x:Ui.foregroundCanvasFractionOfWindowSize,y:Ui.foregroundCanvasFractionOfWindowSize}
+      Ui.sizeForegroundCanvas theCanvas, {x:Ui.foregroundCanvasMinimumFractionOfWindowSize,y:Ui.foregroundCanvasMinimumFractionOfWindowSize}
 
       # create the background canvas where the
       # background gradients go
