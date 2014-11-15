@@ -18,7 +18,9 @@ define [
     @composer: null
     @timesInvoked: false
 
-    @sizeIsLessThan: (sizeX, sizeY, comparisonSizeX,comparisonSizeY) ->
+    @sizeIsLessThan: (sizeX, sizeY, comparisonSize) ->
+      comparisonSizeX = comparisonSize[0]
+      comparisonSizeY = comparisonSize[1]
       if sizeX <= comparisonSizeX and sizeY <= comparisonSizeY
         return true
       else
@@ -40,22 +42,43 @@ define [
       sx = Math.floor((window.innerWidth + 40) / (Ui.foregroundCanvasMinimumFractionOfWindowSize))
       sy = Math.floor((window.innerHeight + 40) / (Ui.foregroundCanvasMinimumFractionOfWindowSize))
 
-      # it's useful to be conservative and use a blurry buffer when the screen or window
-      # are big, but when the screen / window are small we can afford to fill them
+      # it's useful to be conservative and use a small buffer when the screen or window
+      # are big (i.e. buffer will have to show as somewhat blurry),
+      # but when the screen / window are small we can afford to fill them
       # a bit better: there is no point in using for the buffer a fraction of the
       # window size when the window size is small and we can afford to fill all of it
       # (or a good fraction of it).
-      # So here we proceed to correct for this, basically we incrementally increase
-      # the buffer size until it's within a threshold we decide, and
-      # at the same time we tweak the 2d scaling applied
-      # to the foreground canvas so it still fits the window.
-      # So: in little steps, we increase the buffer and we fit in into the window.
-      while @sizeIsLessThan blendedThreeJsSceneCanvasWidth, blendedThreeJsSceneCanvasHeight, 880,720
+
+      # there is no point showing blurry buffers if they are less than
+      # 880x720. That size is easily managed by modern graphic cards
+      # (the PS Vita can). So below 880x720 we show graphics as more
+      # crisp instead of scaling it. At the same time, we don't want to use
+      # buffers bigger than the maximum size we need for the window,
+      # so we curtail the buffer to the maximum we need. This is so
+      # we don't waste buffer in case of small windows.
+      maximumBufferSizeBelowConstraintWorthShowing = @sizeMinimums [880,720], @maximumBufferSizeAtFullDpiCapability()
+      console.log " maximumBufferSizeBelowConstraintWorthShowing: " + maximumBufferSizeBelowConstraintWorthShowing[0] + " " + maximumBufferSizeBelowConstraintWorthShowing[1]
+
+
+      # So here we proceed to optimally size the buffers and scale the canvas.
+      # If we see that the buffer needed to achieve the maximum acceptable scaling
+      # (so we are within a maximum acceptable blurryness)
+      # exceeds our allowance for crisp buffer, then we exit the loop and
+      # we'll have to settle for having a bigger canvas than ideal in order
+      # to satisfy the maximum acceptable blurryness.
+      # Otherwise, it means that we can use our allowance for crisp buffer:
+      # we just correct the scale of the canvas until we fall below that
+      # allowance.
+      # So basically: we decrease our "maximum scaling" of the canvas until the buffer
+      # size falls within our allowance.
+      while @sizeIsLessThan blendedThreeJsSceneCanvasWidth, blendedThreeJsSceneCanvasHeight, maximumBufferSizeBelowConstraintWorthShowing
 
         previousCorrection = correction
         previousSx = sx
         previousSy = sy
 
+        # if we are here it means we can get away with scale-up
+        # the canvas a bit less
         correction += 0.1
         # calculate the size of the buffer at the maximum blur we can accept
         sx = Math.floor((window.innerWidth + 40) / (Ui.foregroundCanvasMinimumFractionOfWindowSize - correction))
@@ -71,11 +94,14 @@ define [
 
       return [previousSx, previousSy, previousCorrection]
 
-    @bufferSizeAtFullDpiCapability: (blendedThreeJsSceneCanvas) ->
+    @maximumBufferSizeAtFullDpiCapability: ->
       multiplier = window.devicePixelRatio
-      sx = Math.floor((window.innerWidth + 40) / Ui.foregroundCanvasMinimumFractionOfWindowSize)
-      sy = Math.floor((window.innerHeight + 40) / Ui.foregroundCanvasMinimumFractionOfWindowSize)
+      sx = Math.floor(window.innerWidth + 40)
+      sy = Math.floor(window.innerHeight + 40)
       return [sx * multiplier,sy * multiplier]
+
+    @sizeMinimums: (a, b) ->
+      return [Math.min(a[0],b[0]), Math.min(a[1],b[1])]
 
 
     @sizeTheForegroundCanvas: (blendedThreeJsSceneCanvas) ->
