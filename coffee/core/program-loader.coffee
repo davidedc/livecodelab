@@ -38,46 +38,7 @@ define [
                   box
                   """
       
-      @programs.demos.cheeseAndOlivesDemo =
-        submenu: "Basic"
-        title: "Cheese and olives"
-        code: """
-              // 'Cheese and olives' by
-              // Davina Tirvengadum
-              // Mozilla festival 2012
-              
-              background white
-              scale .3
-              move 0,-1
-              fill yellow
-              stroke black
-              rotate
-              strokeSize 3
-              line 4
-              box
-              
-              rotate 2,3
-              move 0,3
-              scale .3
-              fill black
-              stroke black
-              ball
-              
-              rotate 3
-              move 5
-              scale 1
-              fill green
-              stroke green
-              ball
-              
-              rotate 1
-              move -3
-              scale 1
-              fill yellow
-              stroke yellow
-              ball
-              """
-    
+
       @programs.demos.simpleCubeDemo =
         submenu: "Basic"
         title: "Simple cube"
@@ -90,15 +51,6 @@ define [
               box
               """
     
-      @programs.demos.webgltwocubesDemo =
-        submenu: "WebGL"
-        title: "WebGL: Two cubes"
-        code: """
-              background 155,255,255
-              2 times
-              ▶rotate 0, 1, time/2
-              ▶box
-              """
     
       @programs.demos.cubesAndSpikes =
         submenu: "Basic"
@@ -114,6 +66,124 @@ define [
               ▶▶rotate 0,1,1
               ▶▶box 0.01,0.01,1
               """
+
+      @programs.demos.redthreadsDemo =
+        submenu: "Basic"
+        title: "Red threads"
+        code: """
+              scale 4.5
+              background black
+              stroke red
+              noFill
+              strokeSize 7
+              2 times
+              ▶rotate time/20
+              ▶ball
+              ▶rotate 0,1,1
+              ▶ball
+              """
+
+
+      @programs.demos.ringBall =
+        submenu: "Complex"
+        title: "Ring ball"
+        code: """
+              ringDetail = 45
+              ambientLight 255
+              noStroke
+              fill orange
+              background black
+              rotate time /5
+              scale 0.7
+              9 times with i
+              ▶rotate time/5 + i
+              ▶for i in [0...ringDetail]
+              ▶▶rotate 0,0,2*Math.PI/(ringDetail)
+              ▶▶move 2,0,0
+              ▶▶▶rect 1,0.3+1/ringDetail
+              """
+
+      @programs.demos.crazyRibbon =
+        submenu: "Complex"
+        title: "Crazy ribbon"
+        code: """
+              noStroke
+              fill red
+              background black
+              rotate time
+              200 times with i
+              ▶rotate time * 2 + sin i
+              ▶▶move 2,0,0
+              ▶▶▶box 1,0.4, 0.07
+              """
+
+      @programs.demos.acidTown =
+        submenu: "Complex"
+        title: "Acid town"
+        code: """
+              absin = (x) -> 255*abs sin time*x
+              animationStyle paintOver
+              scale 3.5
+              background black
+              stroke (absin 1),(absin 2),(absin 3)
+              noFill
+              strokeSize 7
+              2 times
+              ▶rotate time/20
+              ▶box
+              """
+
+      @programs.demos.theGrid =
+        submenu: "Complex"
+        title: "The grid"
+        code: """
+              background magenta
+              gridSize = 4 * abs(wave 0.05)
+              scale 1/(abs(gridSize)+2) // fit the screen
+              pad = 1+abs(2*wave 0.5)
+              ambientLight
+              fill yellow,230
+              rotate time
+              // center everything
+              move -(pad*gridSize/2)
+              gridSize times with rows
+              ▶gridSize times with columns
+              ▶▶gridSize times with slices
+              ▶▶▶move pad*rows, pad*columns, pad*slices
+              ▶▶▶▶box
+              """
+
+      @programs.demos.tube =
+        submenu: "Complex"
+        title: "Tube"
+        code: """
+              background black
+              rotate time/10
+              move 0,-1.2,-1
+              rotate 3.14/2,0,0
+              scale 0.5
+              noStroke
+              8 times with j
+              ▶move 0,0.5,0
+              ▶31 times with i
+              ▶▶rotate 0,0.2,0
+              ▶▶r = ((i  * 3) + time*12)%255
+              ▶▶g = ((i * 7) + (time*30+20)*7)%255
+              ▶▶b= ((j * 17) + (time*30+40)*3)%255
+              ▶▶fill r,g,b
+              ▶▶rect 0.3,0.3
+              ▶▶move 0.5,0,0
+              """
+
+      @programs.demos.webgltwocubesDemo =
+        submenu: "WebGL"
+        title: "WebGL: Two cubes"
+        code: """
+              background 155,255,255
+              2 times
+              ▶rotate 0, 1, time/2
+              ▶box
+              """
     
       @programs.demos.webglturbineDemo =
         submenu: "WebGL"
@@ -124,7 +194,20 @@ define [
               ▶rotate time/100,1,time/100
               ▶box
               """
-    
+
+      @programs.demos.webgllavaDemo =
+        submenu: "WebGL"
+        title: "WebGL: Lava"
+        code: """
+              scale 4.5
+              noStroke
+              10 times with i
+              ▶rotate 1,time/400,2
+              ▶fill 255,0,200*abs(sin((i)))
+              ▶ball    
+              """
+
+
       @programs.demos.webglzfightartDemo =
         submenu: "WebGL"
         title: "WebGL: Z-fight!"
@@ -133,12 +216,49 @@ define [
               // of your GPU!
               // Go Z-fighting, go!
               scale 5
+              noStroke
               rotate
               fill red
               box
               rotate 0.000001
               fill yellow
               box
+              """
+
+      @programs.demos.webglaKnot =
+        submenu: "WebGL"
+        title: "WebGL: A knot"
+        code: """
+              turns = 2
+              detail = 400
+              speed = 0.4
+              background black
+              scale 0.9
+              rotate 15,3,1
+              for i in [0...detail]
+              ▶rotate 0,0,2*Math.PI/(detail)
+              ▶move 0.65
+              ▶▶rotate turns*i*Math.PI/(detail)+time*speed,0,0
+              ▶▶▶rect 1
+              """
+
+      @programs.demos.seaweeds =
+        submenu: "Complex"
+        title: "Seaweeds"
+        code: """
+              turns = 2
+              detail = 100
+              speed = 2
+              background black
+              scale 2
+              rotate time/5
+              4 times
+              ▶rotate 0,2,0
+              ▶for i in [0...detail]
+              ▶▶rotate 0,0,2*Math.PI/(detail)
+              ▶▶move 2,5,1
+              ▶▶▶rotate turns*i*Math.PI/(detail)+time*speed,0,0
+              ▶▶▶rect 1
               """
     
       @programs.demos.littleSpiralOfCubes =
@@ -385,26 +505,10 @@ define [
               ▶rotate 0,1,1
               ▶ball -1.01
               """
-    
-      @programs.demos.webglredthreadsDemo =
-        submenu: "WebGL"
-        title: "WebGL: Red threads"
-        code: """
-              scale 10.5
-              background black
-              stroke red
-              noFill
-              strokeSize 7
-              5 times
-              ▶rotate time/20
-              ▶ball
-              ▶rotate 0,1,1
-              ▶ball
-              """
-    
-      @programs.demos.webglribbon =
-        submenu: "WebGL"
-        title: "WebGL: Ribbon"
+        
+      @programs.demos.ribbon =
+        submenu: "Complex"
+        title: "Ribbon"
         code: """
               turns = 1 // 1 = Möbius strip
               detail = 200 // try up to 400 or so
@@ -422,8 +526,8 @@ define [
               """
 
       @programs.demos.theeye =
-        submenu: "WebGL"
-        title: "WebGL: The eye"
+        submenu: "Complex"
+        title: "The eye"
         code: """
               turns = Math.floor(time/10)%6
               detail = 100
@@ -440,30 +544,6 @@ define [
               ▶▶rect 1
               """
     
-      @programs.demos.webglnuclearOctopusDemo =
-        submenu: "WebGL"
-        title: "WebGL: Nuclear octopus"
-        code: """
-              simpleGradient black,color(0,0,(time/.005)%255),black
-              scale 0.2
-              move 5,0,0
-              animationStyle motionBlur
-              //animationStyle paintOver
-              stroke 255,0,0,120
-              fill (time*1000)%255,0,0
-              pushMatrix
-              count = 0
-              3 times
-              ▶count++
-              ▶pushMatrix
-              ▶rotate count+3+time,2+count + time,4+count
-              ▶120 times
-              ▶▶scale 0.9
-              ▶▶move 1,1,0
-              ▶▶rotate time/.1
-              ▶▶box
-              ▶popMatrix
-              """
     
       @programs.tutorials.introTutorial =
         submenu: "Intro"
