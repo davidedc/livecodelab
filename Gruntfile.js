@@ -330,7 +330,19 @@ module.exports = function (grunt) {
             }));
 
         });
-        grunt.task.run('git-describe');
+        try {
+          grunt.task.run('git-describe');
+        }
+        // if user downloaded the release from github
+        // using the shiny button instead of cloning,
+        // like I often do, then git-describe would
+        // fail, we catch that case here.
+        catch (err) {
+            grunt.file.write('dist/version.json', JSON.stringify({
+                revision: 'no revision given',
+                date: 'no date given'
+            }));
+        }
     });
 
     grunt.registerTask('releasebuild', [
