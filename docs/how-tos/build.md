@@ -23,19 +23,23 @@ More in general, to setup the build system:
    `npm install -g grunt-cli`
  * You need to run a full-build at this point (first bullet point in the "Building" section below).
 
-Building, serving and finally running LCL
+Building
 --------------
 
-There are two modes of building: one for creating the fully-fledged minified version (first point below), and one for quickly creating a non-minified version for quickly checking changes (second point below).
+There are few options for building:
 
- * Full build: run the grunt build task to compile all the coffee script files and templates into the dist folder.
-   `grunt build`
- * Quick dev build (after you run the full-build once, this just recompiles the changes as soon as they are saved): run `grunt watch`.
- * You can now use the grunt connect task to serve the contents of the dist folder.
-   `grunt connect`
+ * Full release build: run the grunt build task to compile all the coffee script files and templates into the dist folder. Does a whole lot of consolidation and minification of files.
+   `grunt releasebuild`
+ * Quicker: dev build (doesn't do as much consolidation and minification): run `grunt devbuild`.
+ * Quickest: "on the fly" dev build (after you run the full-build once, this just recompiles the changes as soon as they are saved): run `grunt watch`.
+
+Serving and running LCL
+--------------
+
+ * Once you have a build you can now use the grunt connect task to serve the contents of the dist folder.
+   `grunt connect`. (but you could use any webserver).
  * Browse to [localhost:8000](http://localhost:8000/) in your browser and you should have
-   LiveCodeLab load up. Browsing to [localhost:8000/index-dev.html](http://localhost:8000/index-dev.html)
-   will give you the un-minified version, which will be more useful for development.
+   LiveCodeLab load up.
 
 Building for a particular language
 --------------
