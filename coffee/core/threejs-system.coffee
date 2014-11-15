@@ -57,7 +57,7 @@ define [
       # so we curtail the buffer to the maximum we need. This is so
       # we don't waste buffer in case of small windows.
       maximumBufferSizeBelowConstraintWorthShowing = @sizeMinimums [880,720], @maximumBufferSizeAtFullDpiCapability()
-      console.log " maximumBufferSizeBelowConstraintWorthShowing: " + maximumBufferSizeBelowConstraintWorthShowing[0] + " " + maximumBufferSizeBelowConstraintWorthShowing[1]
+      #console.log " maximumBufferSizeBelowConstraintWorthShowing: " + maximumBufferSizeBelowConstraintWorthShowing[0] + " " + maximumBufferSizeBelowConstraintWorthShowing[1]
 
 
       # So here we proceed to optimally size the buffers and scale the canvas.
@@ -87,10 +87,10 @@ define [
         # buffer size
         blendedThreeJsSceneCanvasWidth = multiplier * sx
         blendedThreeJsSceneCanvasHeight = multiplier * sy
-        console.log 'Ui.foregroundCanvasMaxScaleUpFactor: ' + Ui.foregroundCanvasMaxScaleUpFactor + ' correction: ' + correction + " blendedThreeJsSceneCanvasWidth " + blendedThreeJsSceneCanvasWidth + " blendedThreeJsSceneCanvasHeight " + blendedThreeJsSceneCanvasHeight + " previousSx " + previousSx + " previousSy " + previousSy
+        #console.log 'Ui.foregroundCanvasMaxScaleUpFactor: ' + Ui.foregroundCanvasMaxScaleUpFactor + ' correction: ' + correction + " blendedThreeJsSceneCanvasWidth " + blendedThreeJsSceneCanvasWidth + " blendedThreeJsSceneCanvasHeight " + blendedThreeJsSceneCanvasHeight + " previousSx " + previousSx + " previousSy " + previousSy
 
-      console.log " buffer size after correction: " + (multiplier * previousSx) + " , " + multiplier * previousSy
-      console.log " would have been: " + (multiplier * Math.floor((window.innerWidth + 40) / (Ui.foregroundCanvasMaxScaleUpFactor))) + " , " + multiplier * Math.floor((window.innerHeight + 40) / (Ui.foregroundCanvasMaxScaleUpFactor ))
+      #console.log " buffer size after correction: " + (multiplier * previousSx) + " , " + multiplier * previousSy
+      #console.log " would have been: " + (multiplier * Math.floor((window.innerWidth + 40) / (Ui.foregroundCanvasMaxScaleUpFactor))) + " , " + multiplier * Math.floor((window.innerHeight + 40) / (Ui.foregroundCanvasMaxScaleUpFactor ))
 
       return [previousSx, previousSy, previousCorrection]
 
