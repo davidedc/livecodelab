@@ -52,29 +52,30 @@ define ['core/event-emitter'], (EventEmitter) ->
     ###
     beatLoop: (aimedForTime) =>
 
-      @emit('beat', @beatCount + @beatFraction)
-
       now = @audioApi.getTime()
+
+      @emit('beat', @beatCount + @beatFraction)
 
       if (@beatFraction >= 1)
         @beatFraction = 0
 
         @beatCount += 1
 
-        if (@syncClient.currentConnection() and @syncClient.beats.length)
+      if (@syncClient.currentConnection() and @syncClient.beats.length)
 
-          @setBpm(@syncClient.bpm)
+        @setBpm(@syncClient.bpm)
 
-          syncClientLastBeatLoopMs = @syncClient.beats[@syncClient.beats.length - 1]
-          if (@syncClient.count == 1)
-            @beatCount = 1
+        c = @syncClient.beats.length -1
+        syncClientLastBeatLoopMs = @syncClient.beats[c]
+        if (@syncClient.count == 1)
+          @beatCount = 1
 
-          # The sync client last beat loop ms will be the time of
-          # the last quarter note the client knew about
-          @lastBeatLoopMs = syncClientLastBeatLoopMs
+        # The sync client last beat loop ms will be the time of
+        # the last quarter note the client knew about
+        @lastBeatLoopMs = syncClientLastBeatLoopMs
 
-        else
-          @lastBeatLoopMs = now
+      else
+        @lastBeatLoopMs = now
 
       @beatFraction += 0.25
 
@@ -82,7 +83,7 @@ define ['core/event-emitter'], (EventEmitter) ->
       diffMs = aimedForTime - now
       quarterBeatMs = @mspb * 0.25
       # We subtract a few miliseconds so that this triggers ahead of time
-      # This means we can schedule audio events in the future for higher precision
+      # This means we can schedule events in the future for higher precision
       preemptMs = 20 # milliseconds
       newAimedForTime = aimedForTime + quarterBeatMs
 
@@ -107,7 +108,9 @@ define ['core/event-emitter'], (EventEmitter) ->
     ###
     connect: (address) ->
       if address && !(
-        @syncClient.connecting || @syncClient.currentConnection() == @syncClient.cleanAddress(address)
+        @syncClient.connecting || (
+          @syncClient.currentConnection() == @syncClient.cleanAddress(address)
+        )
       )
         console.log('Connecting to ' + address)
         @syncClient.connect(address)
@@ -115,8 +118,8 @@ define ['core/event-emitter'], (EventEmitter) ->
     beat: ->
       now = @audioApi.getTime()
       msSinceLastQuarter = now - @lastBeatLoopMs
-      quarterNoteMs = @mspb / 4
-      beatValue = @beatCount + @beatFraction + ((msSinceLastQuarter / quarterNoteMs) / 4);
+      msFrac = (msSinceLastQuarter / @mspb)
+      beatValue = @beatCount + @beatFraction + msFrac
       return beatValue
 
     pulse: (frequency) ->
