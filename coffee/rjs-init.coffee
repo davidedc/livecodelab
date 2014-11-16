@@ -6,7 +6,7 @@
 
 requirejs.config(
   paths:
-    'underscore': 'lib/underscore.min'
+    'underscore': 'lib/underscore'
     'codemirror': 'lib/codemirror'
     'coffeescript': 'lib/coffee-script'
     'codemirror-lcl-mode': 'lib/coffeescript-livecodelab-mode'
