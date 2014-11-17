@@ -1002,7 +1002,13 @@ define [
       #   box -1
       # to turn into box() -1
       delimitersForCommands = ":|;|\\,|\\?|\\)|//|\\#|\\s+if|\\s+else|\\s+then"
-      delimitersForExpressions = delimitersForCommands + "|" + "\\+|-|\\*|/|%|&|]|<|>|==|!=|>=|<=|!(?![=])|\\s+and\\s+|\\s+or\\s+|\\s+not\\s+|\\|"
+      # note how + and - need a space afterwards. This is because
+      # "wave +1" is different from "wave + 1" (and same with -)
+      delimitersForExpressionsWithSpaces = delimitersForCommands + "|" + "\\+[\\s|;]|-[\\s|;]|\\*|/|%|&|]|<|>|==|!=|>=|<=|!(?![=])|\\s+and\\s+|\\s+or\\s+|\\s+not\\s+|\\|"
+
+      # [todo] you should ideally derive this coming regexp
+      # from the one above
+      delimitersForExpressionsWithoutSpaces = delimitersForCommands + "|" + "\\+|-|\\*|/|%|&|]|<|>|==|!=|>=|<=|!(?![=])|\\s+and\\s+|\\s+or\\s+|\\s+not\\s+|\\|"
 
       #we don't want the dash of the arrow to count as a minus, so
       #replacing the arrow with one char
@@ -1014,22 +1020,19 @@ define [
         code = code.replace(rx, "$1$2()$3")
       if detailedDebug then console.log "adjustImplicitCalls-4\n" + code + " error: " + error
 
-      rx = RegExp("([^\\w\\d\\r\\n])("+expressionsAndUserDefinedFunctionsRegex+")([ \\t]*)("+delimitersForExpressions+")",'g')
+      rx = RegExp("([^\\w\\d\\r\\n])("+expressionsAndUserDefinedFunctionsRegex+")([ \\t]*)("+delimitersForExpressionsWithSpaces+")",'g')
+      if detailedDebug then console.log rx
       for i in [1..2]
         code = code.replace(rx, "$1$2()$3$4")
       if detailedDebug then console.log "adjustImplicitCalls-5\n" + code + " error: " + error
 
-      # user functions that take an argument can't be
-      # in the form myF()
-      # so myF() -4 should really be myF -4
-      userDefinedFunctionsWithArguments = userDefinedFunctionsWithArguments.substring(1)
-      if userDefinedFunctionsWithArguments != ""
-        rx = RegExp("([^\\w\\d\\r\\n])("+userDefinedFunctionsWithArguments+")\\(\\)",'g')
-        for i in [1..2]
-          #console.log "userDefinedFunctionsWithArguments " + userDefinedFunctionsWithArguments
-          code = code.replace(rx, "$1$2")
-        if detailedDebug then console.log "adjustImplicitCalls-6\n" + code + " error: " + error
-
+      # handles case of tightly-packed keywords such as in
+      # a = wave+wave+wave
+      rx = RegExp("([^\\w\\d\\r\\n])("+expressionsAndUserDefinedFunctionsRegex+")("+delimitersForExpressionsWithoutSpaces+")",'g')
+      if detailedDebug then console.log rx
+      for i in [1..2]
+        code = code.replace(rx, "$1$2()$3")
+      if detailedDebug then console.log "adjustImplicitCalls-5.5\n" + code + " error: " + error
 
 
       #box 0.5,2

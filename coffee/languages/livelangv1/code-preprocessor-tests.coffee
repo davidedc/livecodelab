@@ -517,17 +517,78 @@ define ['LiveLangV1/code-preprocessor-tests'], (foo) ->
                    """
         ,
          input:    """
-                   a = wave -1
-                   """
-         expected: """
-                   a = wave() -1
-                   """
-        ,
-         input:    """
                    a = wave - 1
                    """
          expected: """
                    a = wave() - 1
+                   """
+        ,
+         input:    """
+                   box wave + 1
+                   """
+         expected: """
+                   box wave() + 1
+                   """
+        ,
+         input:    """
+                   box wave +1
+                   """
+         expected: """
+                   box wave +1
+                   """
+        ,
+         input:    """
+                   box wave -1
+                   """
+         expected: """
+                   box wave -1
+                   """
+        ,
+         input:    """
+                   box wave *1
+                   """
+         expected: """
+                   box wave() *1
+                   """
+        ,
+         input:    """
+                   box wave /1
+                   """
+         expected: """
+                   box wave() /1
+                   """
+        ,
+         input:    """
+                   box wave * 1
+                   """
+         expected: """
+                   box wave() * 1
+                   """
+        ,
+         input:    """
+                   box wave / 1
+                   """
+         expected: """
+                   box wave() / 1
+                   """
+        ,
+         # this is correct interpretation, as
+         # in coffeescript
+         #   a b +c
+         # is translated to
+         #   a(b(+c));
+         input:    """
+                   box wave +wave
+                   """
+         expected: """
+                   box wave +wave()
+                   """
+        ,
+         input:    """
+                   box wave+wave
+                   """
+         expected: """
+                   box wave()+wave()
                    """
         ,
          input:    """
@@ -1697,6 +1758,10 @@ define ['LiveLangV1/code-preprocessor-tests'], (foo) ->
                    """
         ,
          notes:    """
+                   note that this example would translate
+                   correctly but it wouldn't work. the translation
+                   is exactly the same that one would get with
+                   coffeescript
                    """
          input:    """
                    myF = ()-> sin time*2
@@ -1704,10 +1769,15 @@ define ['LiveLangV1/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    myF = () -> sin time*2
-                   b = myF() -4
+                   b = myF -4
                    """
         ,
          notes:    """
+                   note that this example would translate
+                   correctly but it wouldn't work. the translation
+                   is exactly the same that one would get with
+                   coffeescript. See example below for a program
+                   that indeed would work.
                    """
          input:    """
                    myF = -> sin time*2
@@ -1715,7 +1785,16 @@ define ['LiveLangV1/code-preprocessor-tests'], (foo) ->
                    """
          expected: """
                    myF = -> sin time*2
-                   b = myF() -4
+                   b = myF -4
+                   """
+        ,
+         input:    """
+                   myF = -> sin time*2
+                   b = myF - 4
+                   """
+         expected: """
+                   myF = -> sin time*2
+                   b = myF() - 4
                    """
         ,
          notes:    """
