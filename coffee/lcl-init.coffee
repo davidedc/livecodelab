@@ -252,7 +252,7 @@ require [
     # eventually do some silly things on its own, for example
     # it might do an out-of bounds array reference as the frame
     # count is incremented. Since at the moment we keep
-    # track of only one stable function at the time (rather than
+    # track of only one stable function at a time (rather than
     # a stack of the) in general one cannot guarantee
     # that the animation will keep going no matter what. It probably
     # will in most normal cases though.
