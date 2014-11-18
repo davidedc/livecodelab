@@ -175,6 +175,56 @@ define [
               ▶▶move 0.5,0,0
               """
 
+      @programs.demos.movingBlocks =
+        submenu: "Complex"
+        title: "Moving blocks"
+        code: """
+              background white
+              noStroke
+              stackN = 10
+              numStacks = 40
+              scale 0.5
+              spread = 18
+              thinness = 0.08
+              colorSpeed = 4
+              movmentSpeed = 0.002
+              noiseMov = (x,y,j,z) -> spread*(noise(((x*abs(sin((time+y)*movmentSpeed))))/(j+z))-0.5)
+              move 1,1,0
+              rotate 3,0.6,time/10
+              numStacks times with j
+              ▶move 0
+              ▶▶move noiseMov(200,100,j,20),noiseMov(209,200,j,2),noiseMov(100,300,j,40)/4
+              ▶▶stackN times with i
+              ▶▶▶move 0,0,i*thinness
+              ▶▶▶▶fill 255,(time*3*j*colorSpeed+i*255/stackN)%255, (time*1*j*colorSpeed+i*255/stackN)%255
+              ▶▶▶▶rect
+              """
+
+      @programs.demos.infoway =
+        submenu: "Complex"
+        title: "Infoway"
+        code: """
+              background black
+              noStroke
+              stackN = 1
+              numStacks = 400
+              spread = 48
+              scale 0.5
+              thinness = 0.08
+              colorSpeed = 4
+              movmentSpeed = 0.003
+              noiseMov = (x,y,j,z) -> spread*(noise(((x*abs(sin((time+y)*movmentSpeed))))/(j+z))-0.5)
+              move 1,1,0
+              rotate time/10
+              numStacks times with j
+              ▶move 0
+              ▶▶move noiseMov(501,300,j,20),noiseMov(703,400,j,2),noiseMov(604,500,j,40)/4
+              ▶▶move 0,0,thinness
+              ▶▶▶fill 0,0, (time*1*j*colorSpeed+255/stackN)%255
+              ▶▶▶rect 0.24
+              """
+
+
       @programs.demos.webgltwocubesDemo =
         submenu: "WebGL"
         title: "WebGL: Two cubes"
@@ -506,9 +556,9 @@ define [
               ▶ball -1.01
               """
         
-      @programs.demos.ribbon =
+      @programs.demos.möbius =
         submenu: "Complex"
-        title: "Ribbon"
+        title: "Möbius"
         code: """
               turns = 1 // 1 = Möbius strip
               detail = 200 // try up to 400 or so
