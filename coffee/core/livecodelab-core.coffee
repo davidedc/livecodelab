@@ -66,6 +66,7 @@ define [
   ,'core/colour-functions'
   ,'core/colour-literals'
   ,'core/graphics-commands'
+  ,'core/other-commands'
   ,'core/lights-commands'
   ,'core/matrix-commands'
   ,'core/renderer'
@@ -96,6 +97,7 @@ define [
   ,ColourFunctions
   ,ColourLiterals
   ,GraphicsCommands
+  ,OtherCommands
   ,LightsCommands
   ,MatrixCommands
   ,Renderer
@@ -167,6 +169,7 @@ define [
       @colourLiterals = new ColourLiterals()
 
       @mathFunctions = new Math()
+      @otherCommands = new OtherCommands()
       
       # this one also interacts with threeJsSystem and blendControls at runtime
       @renderer = new Renderer(@)
@@ -259,6 +262,7 @@ define [
       @timeKeeper.addToScope(@globalscope)
       @programRunner.addToScope(@globalscope)
       @mathFunctions.addToScope(@globalscope)
+      @otherCommands.addToScope(@globalscope)
 
     setLanguage: (langName) ->
 

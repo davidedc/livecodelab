@@ -222,7 +222,10 @@ define [
       # doOnce multiline case
       code = code.replace(/^(\s*)✓[ ]*doOnce[ \t]*$/gm, "$1if false")
       # doOnce single-line case
-      code = code.replace(/^(\s*)✓[ ]*doOnce[ \t]+.*$/gm, "$1")
+      # note that you can't just delete the line because it might be
+      # hanging below an if statement so you need a fake command
+      # there.
+      code = code.replace(/^(\s*)✓[ ]*doOnce[ \t]+.*$/gm, "$1noOperation")
 
       if detailedDebug then console.log "removeTickedDoOnce\n" + code + " error: " + error
       if code.indexOf("✓") != -1
