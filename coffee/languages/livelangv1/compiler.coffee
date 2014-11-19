@@ -17,6 +17,7 @@ define [
   class CodeCompiler
     currentCodeString: null
     codePreprocessor: null
+    lastCorrectOutput: null
 
     whitespaceCheck: /^\s*$/
 
@@ -78,6 +79,7 @@ define [
 
       output.status = 'parsed'
       output.program = functionFromCompiledCode
+      @lastCorrectOutput = output
 
       return output
 
@@ -115,16 +117,11 @@ define [
       # of the new code.
       @eventRouter.emit("code-updated-by-livecodelab", elaboratedSource)
       #alert elaboratedSource
-      # we want to avoid that another frame is run with the old
-      # code, as this would mean that the
-      # runOnce code is run more than once,
-      # so we need to register the new code.
-      # TODO: ideally we don't want to register the
-      # new code by getting the code from codemirror again
-      # because we don't know what that entails. We should
-      # just pass the code we already have.
-      # Also compileCode() may split the source code by line, so we can
-      # avoid that since we've just split it, we could pass
-      # the already split code.
-      @compileCode(elaboratedSource).program
-
+      
+      # no need to recompile the code here
+      # because it's already recompiled with the "emit" done just
+      # above. The editor update triggers an updateCode and a
+      # compileCode. So no need to do anything here, just
+      # return the output program produced by the last compilation
+      # cause it's up to date.
+      return @lastCorrectOutput.program
