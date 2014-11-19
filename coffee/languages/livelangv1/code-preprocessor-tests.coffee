@@ -1051,10 +1051,49 @@ define ['LiveLangV1/code-preprocessor-tests'], (foo) ->
                    if false
                    ▶background 255
                    ▶fill 255,0,0
-
+                   
                    box()
                    """
         ,
+         input:    """
+                   line
+                   ✓doOnce
+                   ▶box 1
+
+                   line
+                   ✓doOnce //
+                   ▶box 1
+                   """
+         expected: """
+                   line()
+                   if false
+                   ▶box 1
+
+                   line()
+                   if false
+                   ▶box 1
+                   """
+        ,
+         input:    """
+                   line
+                   ✓doOnce
+                   ▶box 1
+
+                   line
+                   ✓doOnce//
+                   ▶box 1
+                   """
+         expected: """
+                   line()
+                   if false
+                   ▶box 1
+
+                   line()
+                   if false
+                   ▶box 1
+                   """
+        ,
+
          input:    """
                    rotate time/1000
                    doOnce

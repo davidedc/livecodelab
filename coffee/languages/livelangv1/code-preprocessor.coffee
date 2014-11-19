@@ -222,7 +222,8 @@ define [
       # doOnce multiline case
       code = code.replace(/^(\s*)✓[ ]*doOnce[ \t]*$/gm, "$1if false")
       # doOnce single-line case
-      code = code.replace(/^(\s*)✓([ ]*doOnce[ \t]+)/gm, "$1//$2")
+      code = code.replace(/^(\s*)✓[ ]*doOnce[ \t]+.*$/gm, "$1")
+
       if detailedDebug then console.log "removeTickedDoOnce\n" + code + " error: " + error
       if code.indexOf("✓") != -1
         return [undefined,"✓ must be next to a doOnce"]
@@ -1690,9 +1691,9 @@ define [
       #@allCommandsRegex = @allCommandsRegex + bracketsVariables
       #console.log "all commands plus bracket variables: " + @primitivesAndMatrixRegex + bracketsVariables
 
-      [code, error] = @removeTickedDoOnce(code, error)
-      if detailedDebug then console.log "preprocess-4\n" + code + " error: " + error
       [code, codeWithoutStringsOrComments, error] = @stripCommentsAndStrings(code, error)
+      if detailedDebug then console.log "preprocess-4\n" + code + " error: " + error
+      [code, error] = @removeTickedDoOnce(code, error)
       if detailedDebug then console.log "preprocess-5\n" + code + " error: " + error
       [code, error] = @checkBasicSyntax(code, codeWithoutStringsOrComments, error)
       if detailedDebug then console.log "preprocess-6\n" + code + " error: " + error
