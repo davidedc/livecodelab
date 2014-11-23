@@ -1112,7 +1112,6 @@ define ['LiveLangV1/code-preprocessor-tests'], (foo) ->
                    box()
                    """
         ,
-
          input:    """
                    rotate time/1000
                    doOnce
@@ -1127,6 +1126,25 @@ define ['LiveLangV1/code-preprocessor-tests'], (foo) ->
                    ▶addDoOnce(1); background 255
                    ▶fill 255,0,0
                    addDoOnce(4); 1.times ball
+                   box()
+                   """
+        ,
+         input:    """
+                   rotate time/1000
+                   doOnce
+                   ▶// test
+                   ▶background 255
+                   ▶fill 255,0,0
+                   ✓doOnce -> ball
+                   box
+                   """
+         expected: """
+                   rotate time/1000
+                   1.times ->
+                   ▶addDoOnce(1)
+                   ▶background 255
+                   ▶fill 255,0,0
+                   noOperation
                    box()
                    """
         ,
