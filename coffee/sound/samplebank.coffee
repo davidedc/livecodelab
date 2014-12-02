@@ -20,27 +20,37 @@ define () ->
         @fileType = "ogg"
       else
         return
+
       @load "alienBeep", "./sound/audioFiles/132389__blackie666__alienbleep"
+
       @load "beep", "./sound/audioFiles/100708__steveygos93__bleep_a"
       @load "beep0", "./sound/audioFiles/100708__steveygos93__bleep_a"
       @load "beep1", "./sound/audioFiles/100708__steveygos93__bleep_b"
       @load "beep2", "./sound/audioFiles/100708__steveygos93__bleep_c"
       @load "beep3", "./sound/audioFiles/100708__steveygos93__bleep_d"
+
       @load "bing", "./sound/audioFiles/start_bing"
+
       @load "ciack", "./sound/audioFiles/ciack"
       @load "ciack0", "./sound/audioFiles/ciack"
       @load "ciack1", "./sound/audioFiles/a-ciack2"
+
       @load "cosmos", "./sound/audioFiles/cosmos"
+
       @load "crash", "./sound/audioFiles/CRASH_1"
       @load "crash0", "./sound/audioFiles/CRASH_1"
       @load "crash1", "./sound/audioFiles/CRASH_5"
       @load "crash2", "./sound/audioFiles/CRASH_6"
+
       @load "detune", "./sound/audioFiles/detune"
+
       @load "dish", "./sound/audioFiles/dish"
       @load "dish0", "./sound/audioFiles/dish"
       @load "dish1", "./sound/audioFiles/a-dish2"
       @load "dish2", "./sound/audioFiles/a-dish3"
+
       @load "downstairs", "./sound/audioFiles/downstairs"
+
       @load "glass", "./sound/audioFiles/glass"
 
       @load "growl", "./sound/audioFiles/growl1"
@@ -73,6 +83,7 @@ define () ->
       @load "mouth2", "./sound/audioFiles/a-mouth3"
       @load "mouth3", "./sound/audioFiles/a-mouth4"
       @load "mouth4", "./sound/audioFiles/a-mouth5"
+
       @load "penta0", "./sound/audioFiles/toneMatrix-1"
       @load "penta1", "./sound/audioFiles/toneMatrix-2"
       @load "penta2", "./sound/audioFiles/toneMatrix-3"
@@ -156,7 +167,7 @@ define () ->
       @load "scratch-med7", "./sound/audioFiles/scratch25"
       @load "scratch-med8", "./sound/audioFiles/scratch31"
 
-      # "rough"-sounding sketches
+      # "rough"-sounding scratches
       @load "scratch-rough", "./sound/audioFiles/scratch32"
       @load "scratch-rough0", "./sound/audioFiles/scratch32"
       @load "scratch-rough1", "./sound/audioFiles/scratch33"
@@ -199,13 +210,22 @@ define () ->
       @load "tense4", "./sound/audioFiles/tense5"
       @load "tense5", "./sound/audioFiles/tense6"
 
+      @load "tic", "./sound/audioFiles/nit1"
+      @load "tic0", "./sound/audioFiles/nit1"
+      @load "tic1", "./sound/audioFiles/nit2"
+      @load "tic2", "./sound/audioFiles/nit3"
+      @load "tic3", "./sound/audioFiles/nit4"
+      @load "tic4", "./sound/audioFiles/nit5"
+
       @load "toc", "./sound/audioFiles/AMB_LTM2"
       @load "toc0", "./sound/audioFiles/AMB_LTM2"
       @load "toc1", "./sound/audioFiles/AMB_RIM1"
+
       @load "tranceKick", "./sound/audioFiles/33325__laya__trance-kick01"
       @load "tranceKick0", "./sound/audioFiles/33325__laya__trance-kick01"
       @load "tranceKick1", "./sound/audioFiles/24004__laya__dance-kick3"
       @load "tranceKick2", "./sound/audioFiles/anotherKick"
+      @load "tranceKick3", "./sound/audioFiles/anotherThump"
 
       @load "tweet", "./sound/audioFiles/tweet1-shaped"
       @load "tweet1", "./sound/audioFiles/tweet1-shaped"
@@ -223,6 +243,7 @@ define () ->
       @load "tweet13", "./sound/audioFiles/tweet13-shaped"
 
       @load "voltage", "./sound/audioFiles/49255__keinzweiter__bonobob-funk"
+
       @load "warm", "./sound/audioFiles/warm"
     
     # Should be either mp3 or ogg
