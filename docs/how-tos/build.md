@@ -45,9 +45,9 @@ Building for a particular language
 --------------
 
 In case the user wants to use a specific language implementation, she can specify so:
- * `grunt build --language=v1` builds with v1 language only
- * `grunt build --language=v2` builds with v2 language only
- * `grunt build --language=both` (same as `grunt build`) builds leaving the option for both languages selectable from menu.
+ * `grunt releasebuild --language=v1` builds with v1 language only
+ * `grunt releasebuild --language=v2` builds with v2 language only
+ * `grunt releasebuild --language=both` (same as `grunt releasebuild`) builds leaving the option for both languages selectable from menu.
 
 Documentation
 -------------
