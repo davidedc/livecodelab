@@ -14,6 +14,7 @@ define () ->
       @ceil = Math.ceil
       @exp = Math.exp
       @floor = Math.floor
+      @int = int
       @log = Math.log
       @max = max
       @min = min
@@ -41,6 +42,7 @@ define () ->
       scope.add('ceil',    @ceil)
       scope.add('exp',     @exp)
       scope.add('floor',   @floor)
+      scope.add('int',     @int)
 
       scope.add('log',     @log)
       scope.add('max',     @max)
