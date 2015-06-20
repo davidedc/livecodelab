@@ -81,14 +81,7 @@ define [
   ,'buzz'
   ,'lowLag'
   ,'threejs'
-  #,'three-resize'
   ,'Three.Detector'
-  ,'Three.ShaderExtras'
-  ,'Three.EffectComposer'
-  ,'Three.MaskPass'
-  ,'Three.RenderPass'
-  ,'Three.SavePass'
-  ,'Three.ShaderPass'
 ], (
   AnimationLoop
   ,BackgroundPainter
@@ -112,7 +105,6 @@ define [
   ,buzz
   ,lowLag
   ,THREE
-  #,THREEx
   ,Detector
 ) ->
 
@@ -120,18 +112,20 @@ define [
   class LiveCodeLabCore
 
     constructor: (
-       @eventRouter
-      ,@statsWidget
-      ,@paramsObject
+      @eventRouter,
+      @statsWidget,
+      @paramsObject
     ) ->
-      
+
       #//////////////////////////////////////////////
       #
       # ### Phase 1
       # initialise all the fields first
       #
       #//////////////////////////////////////////////
-      
+
+      @renderWithWebGL = (Detector.webgl && !@paramsObject.forceCanvasRenderer)
+
       # three is a global defined in three.min.js and used in:
       # ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
       # The difference between three and the threeJsSystem is that
@@ -139,13 +133,13 @@ define [
       # b) threeJsSystem contains some convenience fields and abstractions,
       #    for example it keeps the renderer (whether it's canvas-based or WebGL
       #    based) in a "renderer" field.
-      # Several fields/methids in threeJsSystem are just conveniency mappings into
+      # Several fields/methods in threeJsSystem are just conveniency mappings into
       # the raw three object.
       # But often in LiveCodeLab there are direct reference to three
       # fields/methods. So, threeJsSystem provides some abstraction without
       # attempting to be a complete abstraction layer.
       @three = THREE
-      
+
       #//////////////////////////////////////////////
       #
       # ### Phase 2
@@ -158,11 +152,11 @@ define [
       # function we are in.
       #
       #//////////////////////////////////////////////
-      
+
       @timeKeeper = new TimeKeeper()
 
       @globalscope = new GlobalScope(true)
-      
+
       # this one also interacts with threeJsSystem at runtime
       @blendControls = new BlendControls(@)
       @colourFunctions = new ColourFunctions()
@@ -170,13 +164,13 @@ define [
 
       @mathFunctions = new Math()
       @otherCommands = new OtherCommands()
-      
+
       # this one also interacts with threeJsSystem and blendControls at runtime
       @renderer = new Renderer(@)
       @soundSystem =
         new SoundSystem(
           @eventRouter, @timeKeeper, createjs, buzz, lowLag, bowser, new SampleBank(buzz))
-      
+
       # this one also interacts with colourFunctions, backgroundSceneContext,
       # canvasForBackground at runtime
       @backgroundPainter = new BackgroundPainter(
@@ -202,19 +196,20 @@ define [
       # is wrong.
       #
       #//////////////////////////////////////////////
-      
+
       # this one doesn't interact with any other part at runtime.
-      @threeJsSystem =
-        new ThreeJsSystem(
-          Detector, @paramsObject.blendedThreeJsSceneCanvas,
-          @paramsObject.forceCanvasRenderer, @paramsObject.testMode,
-          @three)
-      
+      @threeJsSystem = new ThreeJsSystem(
+        @renderWithWebGL
+        @paramsObject.blendedThreeJsSceneCanvas,
+        @paramsObject.testMode,
+        @three
+      )
+
       # this one interacts with timeKeeper at runtime
       @matrixCommands =
         new MatrixCommands(
           @three, @)
-      
+
       # this one also interacts with colourFunctions, lightSystem, matrixCommands
       # threeJsSystem at runtime
       @graphicsCommands =
@@ -224,7 +219,7 @@ define [
           @colourLiterals)
           # color, lightSystem, matrixCommands, threeJsSystem, colorModeA,
           # redF, greenF, blueF, alphaZeroToOne
-      
+
       # this one also interacts with three,
       # threeJsSystem, colourFunctions at runtime
       @lightSystem =
