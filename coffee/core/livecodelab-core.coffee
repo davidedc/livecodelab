@@ -117,13 +117,6 @@ define [
       @paramsObject
     ) ->
 
-      #//////////////////////////////////////////////
-      #
-      # ### Phase 1
-      # initialise all the fields first
-      #
-      #//////////////////////////////////////////////
-
       @renderWithWebGL = (Detector.webgl && !@paramsObject.forceCanvasRenderer)
 
       # three is a global defined in three.min.js and used in:
@@ -140,39 +133,26 @@ define [
       # attempting to be a complete abstraction layer.
       @three = THREE
 
-      #//////////////////////////////////////////////
-      #
-      # ### Phase 2
-      # initialise all the parts that don't
-      # have any dependencies for construction
-      # note that the "liveCodeLabCoreInstance" doesn't
-      # count because it's only used for interactions at
-      # runtime. Same for the arguments that come
-      # directly from the caller of this createLiveCodeLabCore
-      # function we are in.
-      #
-      #//////////////////////////////////////////////
-
       @timeKeeper = new TimeKeeper()
 
       @globalscope = new GlobalScope(true)
 
-      # this one also interacts with threeJsSystem at runtime
-      @blendControls = new BlendControls(@)
       @colourFunctions = new ColourFunctions()
       @colourLiterals = new ColourLiterals()
 
       @mathFunctions = new Math()
       @otherCommands = new OtherCommands()
 
-      # this one also interacts with threeJsSystem and blendControls at runtime
-      @renderer = new Renderer(@)
-      @soundSystem =
-        new SoundSystem(
-          @eventRouter, @timeKeeper, createjs, buzz, lowLag, bowser, new SampleBank(buzz))
+      @soundSystem = new SoundSystem(
+        @eventRouter,
+        @timeKeeper,
+        createjs,
+        buzz,
+        lowLag,
+        bowser,
+        new SampleBank(buzz)
+      )
 
-      # this one also interacts with colourFunctions, backgroundSceneContext,
-      # canvasForBackground at runtime
       @backgroundPainter = new BackgroundPainter(
         @paramsObject.canvasForBackground,
         @colourFunctions,
@@ -180,24 +160,12 @@ define [
       )
 
       @languages = new Languages(@eventRouter, @globalscope)
-      @setLanguage(@paramsObject.languageVersion)
+      languageObjects = @languages.getLanguageObjects(
+        @paramsObject.languageVersion
+      )
+      @programRunner = languageObjects.runner
+      @codeCompiler = languageObjects.compiler
 
-
-      #//////////////////////////////////////////////
-      #
-      # ### Phase 3
-      # initialise all the parts that do
-      # have dependencies with other parts
-      # for their construction.
-      # Note again that the "liveCodeLabCoreInstance" doesn't
-      # count because it's only used for interactions at
-      # runtime.
-      # If the other dependencies forms a cycle, something
-      # is wrong.
-      #
-      #//////////////////////////////////////////////
-
-      # this one doesn't interact with any other part at runtime.
       @threeJsSystem = new ThreeJsSystem(
         @renderWithWebGL
         @paramsObject.blendedThreeJsSceneCanvas,
@@ -205,41 +173,52 @@ define [
         @three
       )
 
-      # this one interacts with timeKeeper at runtime
-      @matrixCommands =
-        new MatrixCommands(
-          @three, @)
+      @blendControls = new BlendControls(@threeJsSystem)
 
-      # this one also interacts with colourFunctions, lightSystem, matrixCommands
-      # threeJsSystem at runtime
-      @graphicsCommands =
-        new GraphicsCommands(
-          @three,
-          @,
-          @colourLiterals)
-          # color, lightSystem, matrixCommands, threeJsSystem, colorModeA,
-          # redF, greenF, blueF, alphaZeroToOne
+      @renderer = new Renderer(@threeJsSystem, @blendControls)
 
-      # this one also interacts with three,
-      # threeJsSystem, colourFunctions at runtime
-      @lightSystem =
-        new LightsCommands(@graphicsCommands, @)
+      @matrixCommands = new MatrixCommands(
+        @three,
+        @timeKeeper,
+        @ # for AnimationLoop
+      )
+
+      @graphicsCommands = new GraphicsCommands(
+        @three,
+        @threeJsSystem,
+        @colourFunctions,
+        @matrixCommands,
+        @colourLiterals,
+        @ #lightSystem, animationLoop
+      )
+
+      @lightSystem = new LightsCommands(
+        @graphicsCommands,
+        @three,
+        @threeJsSystem,
+        @colourFunctions
+      )
 
       # this one also interacts with timeKeeper, matrixCommands, blendControls,
       #    soundSystem,
       #    backgroundPainter, graphicsCommands, lightSystem, programRunner,
       #    codeCompiler, renderer
       # ...at runtime
-      @animationLoop =
-        new AnimationLoop(
-          @eventRouter,
-          @statsWidget,
-          @,
-          @graphicsCommands
-        )
-            #//////////////////////////////////////////////
+      @animationLoop = new AnimationLoop(
+        @,
+        @eventRouter,
+        @statsWidget,
+        @timeKeeper,
+        @blendControls,
+        @backgroundPainter,
+        @renderer,
+        @matrixCommands,
+        @soundSystem,
+        @lightSystem,
+        @graphicsCommands
+      )
+      #//////////////////////////////////////////////
       #
-      # ### Phase 4
       # Setup the global scope object, and add all the
       # necessary global functions/values to it
       #
@@ -267,7 +246,6 @@ define [
 
     #//////////////////////////////////////////////
     #
-    # ### Phase 5
     # Grouped together here all the
     # methods. Most of the time they just delegate
     # to another part.

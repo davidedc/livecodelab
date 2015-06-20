@@ -7,12 +7,12 @@ define () ->
 
   class Renderer
 
-    constructor: (@liveCodeLabCoreInstance) ->
+    constructor: (@threeJsSystem, @blendControls) ->
     
     render: (graphics) ->
       
       # some shorthands
-      threeJsSystem = @liveCodeLabCoreInstance.threeJsSystem
+      threeJsSystem = @threeJsSystem
       renderer = threeJsSystem.renderer
       blendedThreeJsSceneCanvasContext = threeJsSystem.blendedThreeJsSceneCanvasContext
       previousFrameThreeJSSceneRenderForBlendingCanvasContext =
@@ -42,7 +42,7 @@ define () ->
         # motionBlur and no paintOver, because we don't need to keep and blend
         # with the previous frame in that case.
         blendedThreeJsSceneCanvasContext.globalAlpha =
-          @liveCodeLabCoreInstance.blendControls.blendAmount
+          @blendControls.blendAmount
         blendedThreeJsSceneCanvasContext.drawImage \
           threeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, 0, 0
         blendedThreeJsSceneCanvasContext.globalAlpha = 1.0
@@ -94,7 +94,7 @@ define () ->
       primitiveType = undefined
       
       # some shorthands
-      threeJsSystem = @liveCodeLabCoreInstance.threeJsSystem
+      threeJsSystem = @threeJsSystem
       objectsUsedInFrameCounts = graphics.objectsUsedInFrameCounts
       
       # scan all the objects in the display list

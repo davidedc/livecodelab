@@ -12,8 +12,8 @@ define () ->
 
     matrixStack: []
 
-    constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance) ->
-      @worldMatrix = new @liveCodeLabCore_three.Matrix4()
+    constructor: (@three, @timekeeper, @liveCodeLabCoreInstance) ->
+      @worldMatrix = new @three.Matrix4()
 
     addToScope: (scope) ->
 
@@ -37,7 +37,7 @@ define () ->
         return
 
       @matrixStack.push @worldMatrix
-      @worldMatrix = (new @liveCodeLabCore_three.Matrix4()).copy(@worldMatrix)
+      @worldMatrix = (new @three.Matrix4()).copy(@worldMatrix)
 
     # in the following case:
     #  flashing = <if random < 0.5 then scale 0>
@@ -87,8 +87,8 @@ define () ->
 
       if typeof arg_a isnt "number"
         if isFunction arg_a then appendedFunctionsStartIndex = 0
-        arg_a = Math.sin(@liveCodeLabCoreInstance.timeKeeper.beat() / 2 * Math.PI)
-        arg_b = Math.cos(@liveCodeLabCoreInstance.timeKeeper.beat() / 2 * Math.PI)
+        arg_a = Math.sin(@timeKeeper.beat() / 2 * Math.PI)
+        arg_b = Math.cos(@timeKeeper.beat() / 2 * Math.PI)
         arg_c = arg_a
       else if typeof arg_b isnt "number"
         if isFunction arg_b then appendedFunctionsStartIndex = 1
@@ -101,7 +101,7 @@ define () ->
         appendedFunctionsStartIndex = 3
 
       @pushMatrix() if appendedFunctionsStartIndex? 
-      @worldMatrix.multiply(new @liveCodeLabCore_three.Matrix4().makeTranslation(arg_a, arg_b, arg_c))
+      @worldMatrix.multiply(new @three.Matrix4().makeTranslation(arg_a, arg_b, arg_c))
       if appendedFunctionsStartIndex?
         while isFunction arguments[appendedFunctionsStartIndex]
           result = arguments[appendedFunctionsStartIndex]()
@@ -126,7 +126,7 @@ define () ->
 
       if typeof arg_a isnt "number"
         if isFunction arg_a then appendedFunctionsStartIndex = 0
-        arg_a = @liveCodeLabCoreInstance.timeKeeper.beat() / 4 * Math.PI
+        arg_a = @timeKeeper.beat() / 4 * Math.PI
         arg_b = arg_a
         arg_c = 0
       else if typeof arg_b isnt "number"
@@ -140,7 +140,7 @@ define () ->
         appendedFunctionsStartIndex = 3
 
       @pushMatrix() if appendedFunctionsStartIndex?
-      @worldMatrix.multiply(new @liveCodeLabCore_three.Matrix4().makeRotationFromEuler(new @liveCodeLabCore_three.Euler(arg_a,arg_b,arg_c,'XYZ')))
+      @worldMatrix.multiply(new @three.Matrix4().makeRotationFromEuler(new @three.Euler(arg_a,arg_b,arg_c,'XYZ')))
       if appendedFunctionsStartIndex?
         while isFunction arguments[appendedFunctionsStartIndex]
           result = arguments[appendedFunctionsStartIndex]()
@@ -165,7 +165,7 @@ define () ->
 
       if typeof arg_a isnt "number"
         if isFunction arg_a then appendedFunctionsStartIndex = 0
-        arg_a = 0.5 + @liveCodeLabCoreInstance.timeKeeper.pulse()
+        arg_a = 0.5 + @timeKeeper.pulse()
         arg_b = arg_a
         arg_c = arg_a
       else if typeof arg_b isnt "number"
@@ -185,7 +185,7 @@ define () ->
       arg_b = 0.000000001  if arg_b > -0.000000001 and arg_b < 0.000000001
       arg_c = 0.000000001  if arg_c > -0.000000001 and arg_c < 0.000000001
 
-      @worldMatrix.multiply(new @liveCodeLabCore_three.Matrix4().makeScale(arg_a, arg_b, arg_c))
+      @worldMatrix.multiply(new @three.Matrix4().makeScale(arg_a, arg_b, arg_c))
       if appendedFunctionsStartIndex?
         while isFunction arguments[appendedFunctionsStartIndex]
           result = arguments[appendedFunctionsStartIndex]()

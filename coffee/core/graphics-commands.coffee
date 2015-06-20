@@ -174,7 +174,14 @@ define () ->
     atLeastOneObjectIsDrawn: false
     atLeastOneObjectWasDrawn: false
     
-    constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance, @colourLiterals) ->
+    constructor: (
+      @threeJs,
+      @threeJsSystem,
+      @colourFunctions,
+      @matrixCommands,
+      @colourLiterals,
+      @liveCodeLabCoreInstance
+    ) ->
       
       numberOfPrimitives = 0
       @primitiveTypes.ambientLight = numberOfPrimitives++
@@ -232,28 +239,28 @@ define () ->
       pegProportion = 1.1
       ballProportion = 0.64
 
-      @geometriesBank[@primitiveTypes.line] = new @liveCodeLabCore_three.Geometry()
+      @geometriesBank[@primitiveTypes.line] = new @threeJs.Geometry()
       @geometriesBank[@primitiveTypes.line].vertices.push \
-        new @liveCodeLabCore_three.Vector3(0, -0.5 * lineProportion, 0)
+        new @threeJs.Vector3(0, -0.5 * lineProportion, 0)
       @geometriesBank[@primitiveTypes.line].vertices.push \
-        new @liveCodeLabCore_three.Vector3(0, 0.5 * lineProportion, 0)
+        new @threeJs.Vector3(0, 0.5 * lineProportion, 0)
         @geometriesBank[@primitiveTypes.line].mergeVertices()
-      @geometriesBank[@primitiveTypes.rect] = new @liveCodeLabCore_three.PlaneGeometry(1 * rectProportion, 1 * rectProportion)
-      @geometriesBank[@primitiveTypes.box] = new @liveCodeLabCore_three.BoxGeometry(1 * boxProportion, 1 * boxProportion, 1 * boxProportion)
+      @geometriesBank[@primitiveTypes.rect] = new @threeJs.PlaneGeometry(1 * rectProportion, 1 * rectProportion)
+      @geometriesBank[@primitiveTypes.box] = new @threeJs.BoxGeometry(1 * boxProportion, 1 * boxProportion, 1 * boxProportion)
       @geometriesBank[@primitiveTypes.peg] =
-        new @liveCodeLabCore_three.CylinderGeometry(0.5 * pegProportion, 0.5 * pegProportion, 1 * pegProportion, 32)
+        new @threeJs.CylinderGeometry(0.5 * pegProportion, 0.5 * pegProportion, 1 * pegProportion, 32)
       
       # creating ball geometries
       for i in [0...(@maximumBallDetail - @minimumBallDetail + 1)]
         @geometriesBank[@primitiveTypes.ball + i] =
-          new @liveCodeLabCore_three.SphereGeometry(
+          new @threeJs.SphereGeometry(
             1 * ballProportion, @minimumBallDetail + i, @minimumBallDetail + i)
       
       # creating a place to remember where
       # each primitive was placed last and how
       # many of them are overlapping so far
       for i in [0..numberOfPrimitives + (@maximumBallDetail - @minimumBallDetail + 1)]
-        @lastPositionOfPrimitiveType[i] = new @liveCodeLabCore_three.Matrix4()
+        @lastPositionOfPrimitiveType[i] = new @threeJs.Matrix4()
         @numberOfOverlappingPrimitives[i] = 0
 
     resetFillStack: ->
@@ -397,14 +404,14 @@ define () ->
       if primitiveProperties.primitiveType is @primitiveTypes.line
         if not pooledObjectWithMaterials.lineMaterial?
           pooledObjectWithMaterials.lineMaterial =
-            new @liveCodeLabCore_three.LineBasicMaterial()
+            new @threeJs.LineBasicMaterial()
         
         # associating normal material to threejs' Object3D
         if @currentStrokeColor is @angleColor or @defaultNormalStroke
           theAngle =
-            (new @liveCodeLabCore_three.Vector3(0, 1, 0)).applyProjection(pooledObjectWithMaterials.threejsObject3D.matrix).normalize()
+            (new @threeJs.Vector3(0, 1, 0)).applyProjection(pooledObjectWithMaterials.threejsObject3D.matrix).normalize()
           pooledObjectWithMaterials.lineMaterial.color.setHex(
-            @liveCodeLabCoreInstance.colourFunctions.color(
+            @colourFunctions.color(
               ((theAngle.x + 1) / 2) * 255,
               ((theAngle.y + 1) / 2) * 255,
               ((theAngle.z + 1) / 2) * 255
@@ -428,13 +435,13 @@ define () ->
         # for each different type of material.
         if not pooledObjectWithMaterials.normalMaterial?
           pooledObjectWithMaterials.normalMaterial =
-            new @liveCodeLabCore_three.MeshNormalMaterial()
+            new @threeJs.MeshNormalMaterial()
         pooledObjectWithMaterials.threejsObject3D.material =
           pooledObjectWithMaterials.normalMaterial
       else unless @liveCodeLabCoreInstance.lightSystem.lightsAreOn
         if not pooledObjectWithMaterials.basicMaterial?
           pooledObjectWithMaterials.basicMaterial =
-            new @liveCodeLabCore_three.MeshBasicMaterial()
+            new @threeJs.MeshBasicMaterial()
         pooledObjectWithMaterials.basicMaterial.color.setHex colorToBeUsed
         pooledObjectWithMaterials.threejsObject3D.material =
           pooledObjectWithMaterials.basicMaterial
@@ -443,7 +450,7 @@ define () ->
         # lights are on
         if not pooledObjectWithMaterials.lambertMaterial?
           pooledObjectWithMaterials.lambertMaterial =
-            new @liveCodeLabCore_three.MeshLambertMaterial()
+            new @threeJs.MeshLambertMaterial()
         pooledObjectWithMaterials.lambertMaterial.color.setHex colorToBeUsed
         pooledObjectWithMaterials.threejsObject3D.material =
           pooledObjectWithMaterials.lambertMaterial
@@ -477,8 +484,8 @@ define () ->
       @objectsUsedInFrameCounts[primitiveID] += 1
       if @doTheSpinThingy and
           pooledObjectWithMaterials.initialSpinCountdown > 0
-        @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
-        @liveCodeLabCoreInstance.matrixCommands.rotate \
+        @matrixCommands.pushMatrix()
+        @matrixCommands.rotate \
           pooledObjectWithMaterials.initialSpinCountdown / 50
 
       
@@ -491,13 +498,13 @@ define () ->
       ###
       pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = false
       pooledObjectWithMaterials.threejsObject3D.matrix.copy \
-        @liveCodeLabCoreInstance.matrixCommands.getWorldMatrix()
+        @matrixCommands.getWorldMatrix()
 
       pooledObjectWithMaterials.threejsObject3D.matrixWorldNeedsUpdate = true
 
       if @doTheSpinThingy and
           pooledObjectWithMaterials.initialSpinCountdown > 0
-        @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+        @matrixCommands.popMatrix()
 
       if objectIsNew        
         # if the object is new it means that the normal material
@@ -507,7 +514,7 @@ define () ->
         # by setting the scale to almost zero. The object will still go through
         # the rendering step, so the memory for the material is initialised
         # correctly.
-        pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeScale(0.0001, 0.0001, 0.0001))
+        pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @threeJs.Matrix4().makeScale(0.0001, 0.0001, 0.0001))
       else if a isnt 1 or b isnt 1 or c isnt 1
         if strokeTime
           # wireframes are built via separate objects with geometries that are
@@ -517,13 +524,13 @@ define () ->
           # note that we avoid this on unitary box as it's a common
           # case that is simple to check where there is no need
           # of these 16 extra multiplications (of the scale)
-          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeScale(a + 0.001, b + 0.001, c + 0.001))
+          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @threeJs.Matrix4().makeScale(a + 0.001, b + 0.001, c + 0.001))
         else
           # odd things happen setting scale to zero
           a = 0.000000001  if a > -0.000000001 and a < 0.000000001
           b = 0.000000001  if b > -0.000000001 and b < 0.000000001
           c = 0.000000001  if c > -0.000000001 and c < 0.000000001
-          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeScale(a, b, c))
+          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @threeJs.Matrix4().makeScale(a, b, c))
 
 
       # exclusionPrincipleWobble doesn't apply in the
@@ -550,17 +557,17 @@ define () ->
           overlapPrimtives = @numberOfOverlappingPrimitives[primitiveID]
           pert = sin(time*10) * sin(overlapPrimtives + time*10)/40
           #pooledObjectWithMaterials.threejsObject3D.matrix.makeRotationX(pert).makeRotationY(pert).makeRotationZ(pert)
-          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeRotationFromEuler(new @liveCodeLabCore_three.Euler(pert,pert,pert,'XYZ')))
+          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @threeJs.Matrix4().makeRotationFromEuler(new @threeJs.Euler(pert,pert,pert,'XYZ')))
 
-          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeTranslation(pert, pert, pert))
+          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @threeJs.Matrix4().makeTranslation(pert, pert, pert))
         else
           #console.log "nothing here already - setting  " + primitiveID + " with " + pooledObjectWithMaterials.threejsObject3D.matrix
           @lastPositionOfPrimitiveType[primitiveID].copy \
             pooledObjectWithMaterials.threejsObject3D.matrix
 
 
-      @liveCodeLabCoreInstance.threeJsSystem.scene.add \
-        pooledObjectWithMaterials.threejsObject3D  if objectIsNew
+      if objectIsNew
+        @threeJsSystem.scene.add(pooledObjectWithMaterials.threejsObject3D)
 
     commonPrimitiveDrawingLogic: (a, b, c, d, primitiveProperties) ->
 
@@ -652,10 +659,8 @@ define () ->
       @resetStrokeStack()
 
       @currentStrokeSize = 1
-      @ballDetLevel =
-        @liveCodeLabCoreInstance.threeJsSystem.ballDefaultDetLevel
-      @objectsUsedInFrameCounts\
-        [@primitiveTypes.ambientLight] = 0
+      @ballDetLevel = @threeJsSystem.ballDefaultDetLevel
+      @objectsUsedInFrameCounts[@primitiveTypes.ambientLight] = 0
       @objectsUsedInFrameCounts[@primitiveTypes.line] = 0
       @objectsUsedInFrameCounts[@primitiveTypes.rect] = 0
       @objectsUsedInFrameCounts[@primitiveTypes.box] = 0
@@ -698,8 +703,8 @@ define () ->
       primitiveProperties =
         canFill: false
         primitiveType: @primitiveTypes.line
-        sidedness: @liveCodeLabCore_three.FrontSide
-        threeObjectConstructor: @liveCodeLabCore_three.Line
+        sidedness: @threeJs.FrontSide
+        threeObjectConstructor: @threeJs.Line
         detailLevel: 0
 
       
@@ -711,8 +716,8 @@ define () ->
       primitiveProperties =
         canFill: true
         primitiveType: @primitiveTypes.rect
-        sidedness: @liveCodeLabCore_three.DoubleSide
-        threeObjectConstructor: @liveCodeLabCore_three.Mesh
+        sidedness: @threeJs.DoubleSide
+        threeObjectConstructor: @threeJs.Mesh
         detailLevel: 0
 
       
@@ -724,8 +729,8 @@ define () ->
       primitiveProperties =
         canFill: true
         primitiveType: @primitiveTypes.box
-        sidedness: @liveCodeLabCore_three.FrontSide
-        threeObjectConstructor: @liveCodeLabCore_three.Mesh
+        sidedness: @threeJs.FrontSide
+        threeObjectConstructor: @threeJs.Mesh
         detailLevel: 0
       
       # end of primitive-specific initialisations:
@@ -736,8 +741,8 @@ define () ->
       primitiveProperties =
         canFill: true
         primitiveType: @primitiveTypes.peg
-        sidedness: @liveCodeLabCore_three.FrontSide
-        threeObjectConstructor: @liveCodeLabCore_three.Mesh
+        sidedness: @threeJs.FrontSide
+        threeObjectConstructor: @threeJs.Mesh
         detailLevel: 0
 
       
@@ -755,8 +760,8 @@ define () ->
       primitiveProperties =
         canFill: true
         primitiveType: @primitiveTypes.ball
-        sidedness: @liveCodeLabCore_three.FrontSide
-        threeObjectConstructor: @liveCodeLabCore_three.Mesh
+        sidedness: @threeJs.FrontSide
+        threeObjectConstructor: @threeJs.Mesh
         detailLevel: @ballDetLevel - @minimumBallDetail
 
       
@@ -810,8 +815,8 @@ define () ->
       @doFill = true
       if r isnt @angleColor
         @defaultNormalFill = false
-        @currentFillColor = @liveCodeLabCoreInstance.colourFunctions.color(r, g, b)
-        @currentFillAlpha = @liveCodeLabCoreInstance.colourFunctions.alphaZeroToOne(@liveCodeLabCoreInstance.colourFunctions.color(r, g, b, a))
+        @currentFillColor = @colourFunctions.color(r, g, b)
+        @currentFillAlpha = @colourFunctions.alphaZeroToOne(@colourFunctions.color(r, g, b, a))
       else
         
         # we keep track of the "normal fill" flag and the fill color
@@ -822,7 +827,7 @@ define () ->
         @defaultNormalFill = true
         @currentFillColor = @angleColor
         if not b? and not g?
-          @currentFillAlpha = g / @liveCodeLabCoreInstance.colourFunctions.colorModeA
+          @currentFillAlpha = g / @colourFunctions.colorModeA
         else
           @currentFillAlpha = 1
 
@@ -913,8 +918,8 @@ define () ->
       @doStroke = true
       if r isnt @angleColor
         @defaultNormalStroke = false
-        @currentStrokeColor = @liveCodeLabCoreInstance.colourFunctions.color(r, g, b)
-        @currentStrokeAlpha = @liveCodeLabCoreInstance.colourFunctions.alphaZeroToOne(@liveCodeLabCoreInstance.colourFunctions.color(r, g, b, a))
+        @currentStrokeColor = @colourFunctions.color(r, g, b)
+        @currentStrokeAlpha = @colourFunctions.alphaZeroToOne(@colourFunctions.color(r, g, b, a))
       else
         
         # we keep track of the "normal stroke" flag and the stroke color
@@ -925,7 +930,7 @@ define () ->
         @defaultNormalStroke = true
         @currentStrokeColor = @angleColor
         if not b? and not g?
-          @currentStrokeAlpha = g / @liveCodeLabCoreInstance.colourFunctions.colorModeA
+          @currentStrokeAlpha = g / @colourFunctions.colorModeA
         else
           @currentStrokeAlpha = 1
 
