@@ -335,8 +335,8 @@ Expression
         { $$ = $1; }
     | Number
         { $$ = $1; }
-    | Identifier
-        { $$ = ["IDENTIFIER", $1]; }
+    | Variable
+        { $$ = $1; }
     | String
         { $$ = $1; }
     ;
@@ -361,13 +361,18 @@ Number
         { $$ = ["NUMBER", Number(yytext)]; }
     ;
 
-Identifier
-    : t_id
-        { $$ = yytext; }
+Variable
+    : Identifier
+        { $$ = ["VARIABLE", $1]; }
     ;
 
 String
     : t_string
         { $$ = ["STRING", yytext]; }
+    ;
+
+Identifier
+    : t_id
+        { $$ = yytext; }
     ;
 

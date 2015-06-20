@@ -111,7 +111,7 @@ define([
             break;
 
 
-        case 'IDENTIFIER':
+        case 'VARIABLE':
             output = scope[branch[1]];
             if (output === undefined) {
                 throw 'Undefined Variable: ' + branch[1];
