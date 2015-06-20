@@ -18,7 +18,6 @@ require [
   ,'jquery'
   ,'mousewheel'
   ,'codemirror-lcl-mode'
-  ,'globals/browsercontrols'
   ,'globals/numbertimes'
   ,'globals/requestAnimFrame'
   ,'globals/languages-build-option'
