@@ -122,12 +122,12 @@ define [
       # three is a global defined in three.min.js and used in:
       # ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
       # The difference between three and the threeJsSystem is that
-      # a) three is the raw Three.js system without for example the blend options.
+      # a) three is the raw Three.js system without some bits
       # b) threeJsSystem contains some convenience fields and abstractions,
       #    for example it keeps the renderer (whether it's canvas-based or WebGL
       #    based) in a "renderer" field.
-      # Several fields/methods in threeJsSystem are just conveniency mappings into
-      # the raw three object.
+      # Several fields/methods in threeJsSystem are just conveniency
+      # mappings into the raw three object.
       # But often in LiveCodeLab there are direct reference to three
       # fields/methods. So, threeJsSystem provides some abstraction without
       # attempting to be a complete abstraction layer.
@@ -199,13 +199,8 @@ define [
         @colourFunctions
       )
 
-      # this one also interacts with timeKeeper, matrixCommands, blendControls,
-      #    soundSystem,
-      #    backgroundPainter, graphicsCommands, lightSystem, programRunner,
-      #    codeCompiler, renderer
-      # ...at runtime
       @animationLoop = new AnimationLoop(
-        @,
+        @, # programRunner and codeCompiler
         @eventRouter,
         @statsWidget,
         @timeKeeper,
@@ -217,12 +212,6 @@ define [
         @lightSystem,
         @graphicsCommands
       )
-      #//////////////////////////////////////////////
-      #
-      # Setup the global scope object, and add all the
-      # necessary global functions/values to it
-      #
-      #//////////////////////////////////////////////
 
       @graphicsCommands.addToScope(@globalscope)
       @matrixCommands.addToScope(@globalscope)
@@ -244,20 +233,10 @@ define [
       @programRunner = languageObjects.runner
       @codeCompiler = languageObjects.compiler
 
-    #//////////////////////////////////////////////
-    #
-    # Grouped together here all the
-    # methods. Most of the time they just delegate
-    # to another part.
-    #
-    #//////////////////////////////////////////////
     paintARandomBackground: ->
       @backgroundPainter.paintARandomBackground()
 
     startAnimationLoop: ->
-      # there is nothing special about starting the animation loop,
-      # it's just a call to animate(), which then creates its own request
-      # for the next frame. Abstracting a bit though, it's clearer this way.
       @animationLoop.animate()
 
     runLastWorkingProgram: ->
@@ -300,11 +279,12 @@ define [
     # why do we leave the option to put a background?
     # For two reasons:
     #  a) leaving the transparent background makes it very
-    #     difficult to save a reference "expected" image. The way to do that would
-    #     be to save the image that appears in the failing test case. And when one
-    #     does it, the correct image with the transparent background gets saved.
-    #     But still, the expected image is slightly different from the generated
-    #     image. This is really weird as the two should be absolutely identical,
+    #     difficult to save a reference "expected" image. The way to do
+    #     that would be to save the image that appears in the failing test
+    #     case. And when one does it, the correct image with the transparent
+    #     background gets saved. But still, the expected image is slightly
+    #     different from the generated image.
+    #     This is really weird as the two should be absolutely identical,
     #     and yet (maybe because of compression artifacts reasons?) they are
     #     different enough that it makes the testing unusable.
     #  b) In theory one could get Three.js to directly render on an opaque
@@ -329,7 +309,9 @@ define [
         ctxContext.globalCompositeOperation = "destination-over"
         ctxContext.fillStyle = backgroundColor
         ctxContext.fillRect \
-          0, 0, blendedThreeJsSceneCanvas.width, blendedThreeJsSceneCanvas.height
+          0, 0,
+          blendedThreeJsSceneCanvas.width,
+          blendedThreeJsSceneCanvas.height
         img = new Image
         img.src = ctx.toDataURL()
       img
