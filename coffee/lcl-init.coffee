@@ -20,7 +20,6 @@ require [
   ,'codemirror-lcl-mode'
   ,'globals/numbertimes'
   ,'globals/requestAnimFrame'
-  ,'globals/languages-build-option'
 ], (
   Stats
   ,EventEmitter

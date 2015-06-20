@@ -21,10 +21,7 @@ define([
           'runner': new LiveLangV2.runner(eventRouter, globalScope),
           'compiler': new LiveLangV2.compiler()
 
-      if languagesBuildOption == 'v2'
-        @languages.default = @languages.lclv2
-      else
-        @languages.default = @languages.lclv1
+      @languages.default = @languages.lclv1
 
     getLanguageObjects: (name) ->
       if @languages[name]
