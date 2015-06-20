@@ -402,9 +402,6 @@ define [
         @renderTargetParameters = undefined
         @renderTarget = undefined
         @effectSaveTarget = undefined
-        fxaaPass = undefined
-        screenPass = undefined
-        renderModel = undefined
         @renderTargetParameters =
           format: @threejs.RGBAFormat
           stencilBuffer: true
