@@ -124,10 +124,10 @@ define () ->
             @animate()
         else
           if loopInterval?
-            loopInterval = setInterval(=>
-              window.requestAnimationFrame ->
-                @animate()
-            , 1000 / @wantedFramesPerSecond)
+            loopInterval = setInterval(
+              () => window.requestAnimationFrame(() => @animate()),
+              1000 / @wantedFramesPerSecond
+            )
 
 
     # animation loop
@@ -160,7 +160,7 @@ define () ->
       if not @sleeping
         @scheduleNextFrame()
 
-        # Now here there is another try/catch check when the draw function is ran.
+        # Now here is another try/catch check.
         # The reason is that there might be references to uninitialised
         # or inexistent variables. For example:
         #   box
@@ -175,17 +175,17 @@ define () ->
           @lclCore.programRunner.runProgram()
         catch e
 
-          #alert('runtime error');
           # note that this causes the running of the last stable function
           # so you could have executed half of the original draw function,
           # then got an error, now you are re-running an old draw function.
           @eventRouter.emit("runtime-error-thrown", e)
           return
-        programRunner = @lclCore.programRunner
-        programRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun @lclCore.codeCompiler
+        @lclCore.programRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(
+          @lclCore.codeCompiler
+        )
       else
-        # the program is empty and so it's the screen. Effectively, the user
-        # is starting from scratch, so the frame variable should be reset to zero.
+        # the program is empty and so is the screen. Effectively, the user
+        # is starting from scratch, so the frame should be reset to zero.
         @setFrame(0)
 
       # we have to repeat this check because in the case
@@ -200,7 +200,10 @@ define () ->
       # function has been run.
       @setFrame(@frame + 1)
 
-      geometryOnScreenMightHaveChanged =  (@graphicsCommands.atLeastOneObjectWasDrawn or @graphicsCommands.atLeastOneObjectIsDrawn)
+      geometryOnScreenMightHaveChanged = (
+        @graphicsCommands.atLeastOneObjectWasDrawn ||
+        @graphicsCommands.atLeastOneObjectIsDrawn
+      )
 
       # if livecodelab is dozing off, in that case you do
       # want to do a render because it will clear the screen.
@@ -215,7 +218,8 @@ define () ->
         @fpsHistory.push(new Date().getTime() - frameStartTime)
         if @fpsHistory.length > 60
           @fpsHistory.shift()
-        @graphicsCommands.atLeastOneObjectWasDrawn = @graphicsCommands.atLeastOneObjectIsDrawn
+        @graphicsCommands.atLeastOneObjectWasDrawn =
+          @graphicsCommands.atLeastOneObjectIsDrawn
 
 
       # update stats
