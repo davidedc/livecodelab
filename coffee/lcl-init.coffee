@@ -41,27 +41,27 @@ require [
   canvasIsSupportedAndNotIE9 = ->
 
     # first check if we are IE 9
-    div = document.createElement("div");
-    div.innerHTML = "<!--[if IE 9 ]><i></i><![endif]-->";
-    isIE9 = (div.getElementsByTagName("i").length == 1);
+    div = document.createElement("div")
+    div.innerHTML = "<!--[if IE 9 ]><i></i><![endif]-->"
+    isIE9 = (div.getElementsByTagName("i").length == 1)
     if (isIE9)
       return false
 
 
     # now check is the canvas element is available
-    elem = document.createElement("canvas")  
+    elem = document.createElement("canvas")
     # One would think that doing the !! double negation below is
     # redundant but no, that's how Javascript rolls.
     !!(elem.getContext and elem.getContext("2d"))
 
 
   startEnvironment = (paramsObject) ->
-    
+
     #/////////////////////////////////////////////////////
     # Phase 1 - Preliminary checks and initialisations
     # before LiveCodeCore.
     #/////////////////////////////////////////////////////
-    
+
     # We need to check that the browser supports canvas
     # AND that we are not in IE9.
     # IE9 supports canvas, but Three.js doesn't work on it
@@ -76,7 +76,7 @@ require [
 
       $("#simplemodal-container").height 200
       return
-    
+
     # EventRouter manages all the events/callbacks across the whole
     # of livecodelab.
     # For "heavy fire" callbacks one might want to use a classic
@@ -84,7 +84,7 @@ require [
     # triggering of events using this. (to be tested. just throwing
     # it out there.)
     eventRouter = new EventEmitter()
-    
+
     # Stats are updated in the animationLoop
     # add Stats.js - https://github.com/mrdoob/stats.js
     stats = new Stats
@@ -108,33 +108,41 @@ require [
     #  - renderer
     #  - animationLoop
     liveCodeLabCore = new LiveCodeLabCore(
-       eventRouter
-      ,stats
-      ,
-       blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
-       canvasForBackground: paramsObject.canvasForBackground
-       forceCanvasRenderer: paramsObject.forceCanvasRenderer
-       testMode: paramsObject.testMode
+      eventRouter,
+      stats,
+      {
+        blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
+        canvasForBackground: paramsObject.canvasForBackground
+        forceCanvasRenderer: paramsObject.forceCanvasRenderer
+        testMode: paramsObject.testMode
+      }
     )
 
     #/////////////////////////////////////////////////////
     # Phase 3 - Other satellite parts
     #/////////////////////////////////////////////////////
     urlRouter = new UrlRouter(eventRouter)
-    # eventRouter.addListener("set-url-hash", => urlRouter.setHash()))
-    
+
     bigCursor = new BigCursor eventRouter # $
-    # Setup Event Listeners
-    eventRouter.addListener("big-cursor-show", => bigCursor.unshrinkBigCursor() )
-    eventRouter.addListener("big-cursor-hide", => bigCursor.shrinkBigCursor() )
-    eventRouter.addListener("set-language", (langNameId) =>
-      langName = langNameId.split('-')[1]
-      liveCodeLabCore.setLanguage(langName)
+
+    eventRouter.addListener(
+      'big-cursor-show',
+      () -> bigCursor.unshrinkBigCursor()
+    )
+    eventRouter.addListener(
+      'big-cursor-hide',
+      () -> bigCursor.shrinkBigCursor()
+    )
+    eventRouter.addListener(
+      'set-language',
+      (langNameId) ->
+        langName = langNameId.split('-')[1]
+        liveCodeLabCore.setLanguage(langName)
     )
 
     editor = new Editor(eventRouter, CodeMirror)
     attachMouseWheelHandler editor
-    
+
     # requires threeJsSystem, blendControls, graphicsCommands, renderer
     # note that the programLoader variable below is never used. Leaving it
     # in for consistency.
@@ -142,21 +150,22 @@ require [
       eventRouter, editor, liveCodeLabCore
     )
     eventRouter.addListener(
-      "load-program", (demoName) => programLoader.loadDemoOrTutorial(demoName)
+      "load-program",
+      (demoName) -> programLoader.loadDemoOrTutorial(demoName)
     )
 
-    #console.log('creating stats')
     ui = new Ui(eventRouter, stats, programLoader) # $
 
-
-    #console.log "setting canvas size to :" +  document.getElementById("blendedThreeJsSceneCanvas").width + " x " + document.getElementById("blendedThreeJsSceneCanvas").height
-
     # requires: ColourNames
-    autocoder = new Autocoder(eventRouter, editor, liveCodeLabCore.colourLiterals.colourNames)
+    autocoder = new Autocoder(
+      eventRouter,
+      editor,
+      liveCodeLabCore.colourLiterals.colourNames
+    )
     # Setup Event Listeners
-    eventRouter.addListener("reset", => autocoder.toggle(false))
-    eventRouter.addListener("toggle-autocoder", => autocoder.toggle())
-    
+    eventRouter.addListener("reset", -> autocoder.toggle(false))
+    eventRouter.addListener("toggle-autocoder", -> autocoder.toggle())
+
     # EditorDimmer functions should probablly be rolled into the editor itself
     # note that the editorDimmer variable below is never used. Leaving it
     # in for consistency.
@@ -164,39 +173,50 @@ require [
     # Setup Event Listeners
     eventRouter.addListener(
       "editor-dim",
-      () => editorDimmer.dimEditor()
+      () -> editorDimmer.dimEditor()
     )
     eventRouter.addListener(
       "editor-undim",
-      () => editorDimmer.undimEditor()
+      () -> editorDimmer.undimEditor()
     )
     eventRouter.addListener(
       "editor-toggle-dim",
-      (autoDim) => editorDimmer.toggleDimCode(autoDim)
+      (autoDim) -> editorDimmer.toggleDimCode(autoDim)
     )
-    
-    
+
+
     #/////////////////////////////////////////////////////
     # Phase 4 - Setup Of Event Listeners, including handling of
     # compile time and runtime errors.
     #/////////////////////////////////////////////////////
-    eventRouter.addListener("reset", => liveCodeLabCore.paintARandomBackground())
-    eventRouter.emit("editor-toggle-dim", false)
-    eventRouter.addListener("livecodelab-running-stably", => ui.showStatsWidget())
-    eventRouter.addListener("code-changed", (updatedCodeAsString) ->
-      if updatedCodeAsString isnt ""
-        eventRouter.emit("big-cursor-hide")
-      else
-        # clearing history, otherwise the user can undo her way
-        # into a previous example but the hash in the URL would be misaligned.
-        setTimeout((()=>editor.clearHistory()),30)
-        eventRouter.emit("set-url-hash", "")
-        eventRouter.emit("big-cursor-show")
-        ui.hideStatsWidget()
-      liveCodeLabCore.updateCode updatedCodeAsString
+    eventRouter.addListener(
+      'reset',
+      () -> liveCodeLabCore.paintARandomBackground()
+    )
+    eventRouter.emit('editor-toggle-dim', false)
+    eventRouter.addListener(
+      'livecodelab-running-stably',
+      () -> ui.showStatsWidget()
+    )
+    eventRouter.addListener(
+      'code-changed',
+      (updatedCodeAsString) ->
+        if updatedCodeAsString isnt ""
+          eventRouter.emit('big-cursor-hide')
+        else
+          # clearing history, otherwise the user can undo her way
+          # into a previous example but the hash in the URL would be misaligned.
+          setTimeout(
+            () -> editor.clearHistory(),
+            30
+          )
+          eventRouter.emit("set-url-hash", "")
+          eventRouter.emit("big-cursor-show")
+          ui.hideStatsWidget()
+        liveCodeLabCore.updateCode updatedCodeAsString
     )
 
-    
+
     # runtime and compile-time error management //////////
     #/////////////////////////////////////////////////////
     # Two different types of errors are managed in
@@ -270,14 +290,10 @@ require [
     eventRouter.addListener("runtime-error-thrown", (e) ->
       eventRouter.emit("report-runtime-or-compile-time-error", e)
       if autocoder.active
-        
-        #alert('editor: ' + editor);
         editor.undo()
-      
-      #alert('undoing');
       else
         liveCodeLabCore.runLastWorkingProgram()
-      
+
       # re-throw the error so that the top-level debuggers
       # (firebug, built-in, whathaveyous) can properly
       # catch the error and let the user inspect things.
@@ -289,11 +305,14 @@ require [
       editor.undo()  if autocoder.active
     )
 
-    eventRouter.addListener("clear-error", => ui.clearError())
-    
+    eventRouter.addListener('clear-error', () -> ui.clearError())
+
     # create this binding before the sounds are loaded
-    eventRouter.addListener("all-sounds-loaded-and tested", => ui.soundSystemOk())
-    
+    eventRouter.addListener(
+      'all-sounds-loaded-and tested',
+      () -> ui.soundSystemOk()
+    )
+
     #/////////////////////////////////////////////////////
     # Phase 5- Kick-off the system and start of the
     # animation loop. Events will start
@@ -306,15 +325,22 @@ require [
       $("#noWebGLMessage").modal onClose: $.modal.close
       $("#simplemodal-container").height 200
     editor.focus()
-    
+
     # check if the url points to a particular demo,
     # in which case we load the demo directly.
     # otherwise we do as usual.
     if !urlRouter.urlPointsToDemoOrTutorial()
-      setTimeout (()=>liveCodeLabCore.playStartupSound()), 650
+      setTimeout(
+        () -> liveCodeLabCore.playStartupSound(),
+        650
+      )
       bigCursor.toggleBlink true
     ui.setup()
-    setTimeout (()=>programLoader.kickOff()), 650
+    setTimeout(
+      () -> programLoader.kickOff(),
+      650
+    )
+
 
   if setupForNormalLCLPage?
     $(document).ready ->
@@ -329,7 +355,13 @@ require [
       theCanvas.style.position = "absolute"
       theCanvas.style.zIndex = "-2"
       document.getElementById("miao").appendChild(theCanvas)
-      Ui.sizeForegroundCanvas theCanvas, {x:Ui.foregroundCanvasMaxScaleUpFactor,y:Ui.foregroundCanvasMaxScaleUpFactor}
+      Ui.sizeForegroundCanvas(
+        theCanvas,
+        {
+          x: Ui.foregroundCanvasMaxScaleUpFactor,
+          y: Ui.foregroundCanvasMaxScaleUpFactor
+        }
+      )
 
       # create the background canvas where the
       # background gradients go
@@ -340,20 +372,31 @@ require [
       theCanvas2.style.position = "absolute"
       theCanvas2.style.zIndex = "-3"
       document.getElementById("miao").appendChild(theCanvas2)
-      Ui.fullscreenify theCanvas2, {x:Ui.backgroundCanvasFractionOfWindowSize,y:Ui.backgroundCanvasFractionOfWindowSize}
+      Ui.fullscreenify(
+        theCanvas2,
+        {
+          x: Ui.backgroundCanvasFractionOfWindowSize,
+          y: Ui.backgroundCanvasFractionOfWindowSize
+        }
+      )
 
 
-      setTimeout (()=>
-        startEnvironment
-          blendedThreeJsSceneCanvas: document.getElementById("blendedThreeJsSceneCanvas")
-          canvasForBackground: document.getElementById("backgroundCanvasOrDiv")
-          forceCanvasRenderer: false
-          bubbleUpErrorsForDebugging: false
-          
-          # testMode enables the webgl flag "preserverDrawingBuffer",
-          # see https://github.com/mrdoob/three.js/pull/421
-          testMode: false
-      ), 100
+      setTimeout(
+        () ->
+          startEnvironment(
+            {
+              blendedThreeJsSceneCanvas: theCanvas
+              canvasForBackground: theCanvas2
+              forceCanvasRenderer: false
+              bubbleUpErrorsForDebugging: false
+
+              # testMode enables the webgl flag "preserverDrawingBuffer",
+              # see https://github.com/mrdoob/three.js/pull/421
+              testMode: false
+            }
+          )
+        , 100
+      )
 
   if setupForTestPage?
     $(document).ready ->
