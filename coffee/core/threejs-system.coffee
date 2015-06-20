@@ -18,6 +18,130 @@ define [
     @composer: null
     @timesInvoked: false
 
+    constructor: (
+      Detector,
+      @blendedThreeJsSceneCanvas,
+      @forceCanvasRenderer,
+      @testMode,
+      @liveCodeLabCore_three
+    ) ->
+
+      # if we've not been passed a canvas, then create a new one and make it
+      # as big as the browser window content.
+      unless @blendedThreeJsSceneCanvas
+        @blendedThreeJsSceneCanvas = document.createElement("canvas")
+        @blendedThreeJsSceneCanvas.width = window.innerWidth
+        @blendedThreeJsSceneCanvas.height = window.innerHeight
+
+
+      if not @forceCanvasRenderer and Detector.webgl
+        # Webgl init.
+        # We allow for a bigger ball detail.
+        # Also the WebGL context allows us to use the Three JS composer and the
+        # postprocessing effects, which use shaders.
+        @ballDefaultDetLevel = 16
+        @blendedThreeJsSceneCanvasContext =
+          @blendedThreeJsSceneCanvas.getContext("experimental-webgl")
+
+        # see:
+        #  http://mrdoob.github.io/three.js/docs/#Reference/Renderers/WebGLRenderer
+        @renderer = new liveCodeLabCore_three.WebGLRenderer(
+          canvas: @blendedThreeJsSceneCanvas
+          antialias: false
+          premultipliedAlpha: false
+          # we need to force the devicePixelRatio to 1
+          # here because we find it useful to use the
+          # setSize method of the renderer.
+          # BUT setSize would duplicate the canvas
+          # buffer on retina displays which is
+          # somehing we want to control manually.
+          devicePixelRatio: 1
+
+        )
+        @isWebGLUsed = true
+
+      else
+        # Canvas init.
+        # Note that the canvas init requires two extra canvases in
+        # order to achieve the motion blur (as we need to keep the
+        # previous frame). Basically we have to do manually what the
+        # WebGL solution achieves through the Three.js composer
+        # and postprocessing/shaders.
+        @ballDefaultDetLevel = 6
+        @currentFrameThreeJsSceneCanvas = document.createElement("canvas")
+
+        # some shorthands
+        currentFrameThreeJsSceneCanvas = @currentFrameThreeJsSceneCanvas
+
+        currentFrameThreeJsSceneCanvas.width = @blendedThreeJsSceneCanvas.width
+        currentFrameThreeJsSceneCanvas.height = @blendedThreeJsSceneCanvas.height
+
+
+        @currentFrameThreeJsSceneCanvasContext =
+          currentFrameThreeJsSceneCanvas.getContext("2d")
+
+        @previousFrameThreeJSSceneRenderForBlendingCanvas =
+          document.createElement("canvas")
+        # some shorthands
+        previousFrameThreeJSSceneRenderForBlendingCanvas =
+          @previousFrameThreeJSSceneRenderForBlendingCanvas
+        previousFrameThreeJSSceneRenderForBlendingCanvas.width =
+          @blendedThreeJsSceneCanvas.width
+        previousFrameThreeJSSceneRenderForBlendingCanvas.height =
+          @blendedThreeJsSceneCanvas.height
+
+        @previousFrameThreeJSSceneRenderForBlendingCanvasContext =
+          @previousFrameThreeJSSceneRenderForBlendingCanvas.getContext("2d")
+        @blendedThreeJsSceneCanvasContext =
+          @blendedThreeJsSceneCanvas.getContext("2d")
+
+        # see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/CanvasRenderer
+        #debugger
+        @renderer = new liveCodeLabCore_three.CanvasRenderer(
+          canvas: currentFrameThreeJsSceneCanvas
+          antialias: false # to get smoother output
+          preserveDrawingBuffer: @testMode # to allow screenshot
+          # todo figure out why this works. this parameter shouldn't
+          # be necessary, as per https://github.com/mrdoob/three.js/issues/2833 and
+          # https://github.com/mrdoob/three.js/releases this parameter
+          # should not be needed. If we don't pass it, the canvas is all off, the
+          # unity box is painted centerd in the bottom right corner
+          devicePixelRatio: 1
+        )
+
+
+      #console.log "renderer width: " + @renderer.width + " context width: " + @renderer.context.drawingBufferWidth
+      @scene = new liveCodeLabCore_three.Scene()
+      @scene.matrixAutoUpdate = false
+
+      # put a camera in the scene
+      @camera = new liveCodeLabCore_three.PerspectiveCamera(35, \
+        @blendedThreeJsSceneCanvas.width / \
+        @blendedThreeJsSceneCanvas.height, 1, 10000)
+      #console.log "camera width: " + @camera.width
+      @camera.position.set 0, 0, 5
+      @scene.add @camera
+
+
+      # transparently support window resize
+      @constructor.attachResizingBehaviourToResizeEvent @, @renderer, @camera
+
+      @constructor.sizeTheForegroundCanvas @blendedThreeJsSceneCanvas
+      @constructor.sizeRendererAndCamera @renderer, @camera, Ui.foregroundCanvasMaxScaleUpFactor
+      if @isWebGLUsed
+        @renderTargetParameters = undefined
+        @renderTarget = undefined
+        @effectSaveTarget = undefined
+        fxaaPass = undefined
+        screenPass = undefined
+        renderModel = undefined
+        @renderTargetParameters =
+          format: liveCodeLabCore_three.RGBAFormat
+          stencilBuffer: true
+
+        [@renderTarget, @effectSaveTarget, @effectBlend, @composer] = @constructor.attachEffectsAndSizeTheirBuffers(@, @renderer)
+
+
     @sizeIsLessThan: (sizeX, sizeY, comparisonSize) ->
       comparisonSizeX = comparisonSize[0]
       comparisonSizeY = comparisonSize[1]
@@ -28,7 +152,7 @@ define [
 
     @getBestBufferSize: ->
       multiplier = 1
-      
+
       correction = -0.1
       blendedThreeJsSceneCanvasWidth = 0
       blendedThreeJsSceneCanvasHeight = 0
@@ -111,7 +235,7 @@ define [
       #sx = Math.floor((window.innerWidth + 40) / (Ui.foregroundCanvasMaxScaleUpFactor - correction))
       #sy = Math.floor((window.innerHeight + 40) / (Ui.foregroundCanvasMaxScaleUpFactor - correction))
 
-      
+
       Ui.sizeForegroundCanvas blendedThreeJsSceneCanvas, {x:Ui.foregroundCanvasMaxScaleUpFactor - correction,y:Ui.foregroundCanvasMaxScaleUpFactor - correction}
 
 
@@ -161,7 +285,7 @@ define [
         #console.log "effectSaveTarget width: " + effectSaveTarget.width
 
         effectSaveTarget.clear = false
-        
+
         # Uncomment the three lines containing "fxaaPass" below to try a fast
         # antialiasing filter. Commented below because of two reasons:
         # a) it's slow
@@ -170,7 +294,7 @@ define [
         # The problem of blending with black pixels is the same problem of the
         # motionBlur leaving a black trail - tracked in github with
         # https://github.com/davidedc/livecodelab/issues/22
-        
+
         #fxaaPass = new liveCodeLabCore_three.ShaderPass(liveCodeLabCore_three.ShaderExtras.fxaa);
         #fxaaPass.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);
 
@@ -188,7 +312,7 @@ define [
         else
           mixR = 0
 
-        
+
         effectBlend = new liveCodeLabCore_three.ShaderPass(
           liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1")
         effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
@@ -211,14 +335,14 @@ define [
 
         screenPass = new liveCodeLabCore_three.ShaderPass(
           liveCodeLabCore_three.ShaderExtras.screen)
-        
+
         renderModel = new liveCodeLabCore_three.RenderPass(
           scene, camera)
 
 
         # first thing, render the model
         composer.addPass renderModel
-        # then apply some fake post-processed antialiasing      
+        # then apply some fake post-processed antialiasing
         #composer.addPass(fxaaPass);
         # then blend using the previously saved buffer and a mixRatio
         composer.addPass effectBlend
@@ -261,7 +385,7 @@ define [
       #console.log "renderer setting size to: " + sx * multiplier + " , " + sy * multiplier, false
       #console.log "renderer new context width: " + renderer.context.drawingBufferWidth
 
-        
+
 
     @attachResizingBehaviourToResizeEvent: (thrsystem, renderer, camera) ->
       scale = Ui.foregroundCanvasMaxScaleUpFactor
@@ -277,141 +401,18 @@ define [
       # rather than multiple times consecutively during the
       # resizing.
       debouncedCallback = debounce callback, 250
-      
+
       # bind the resize event
       window.addEventListener "resize", debouncedCallback, false
-      
+
       # return .stop() the function to stop watching window resize
-      
+
       ###*
       Stop watching window resize
       ###
       stop: ->
         window.removeEventListener "resize", callback
         return
-
-    constructor: (
-      Detector,
-      @blendedThreeJsSceneCanvas,
-      @forceCanvasRenderer,
-      @testMode,
-      @liveCodeLabCore_three
-    ) ->
-
-      # if we've not been passed a canvas, then create a new one and make it
-      # as big as the browser window content.
-      unless @blendedThreeJsSceneCanvas
-        @blendedThreeJsSceneCanvas = document.createElement("canvas")
-        @blendedThreeJsSceneCanvas.width = window.innerWidth
-        @blendedThreeJsSceneCanvas.height = window.innerHeight
-    
-    
-      if not @forceCanvasRenderer and Detector.webgl
-        # Webgl init.
-        # We allow for a bigger ball detail.
-        # Also the WebGL context allows us to use the Three JS composer and the
-        # postprocessing effects, which use shaders.
-        @ballDefaultDetLevel = 16
-        @blendedThreeJsSceneCanvasContext =
-          @blendedThreeJsSceneCanvas.getContext("experimental-webgl")
-        
-        # see:
-        #  http://mrdoob.github.io/three.js/docs/#Reference/Renderers/WebGLRenderer
-        @renderer = new liveCodeLabCore_three.WebGLRenderer(
-          canvas: @blendedThreeJsSceneCanvas
-          antialias: false
-          premultipliedAlpha: false
-          # we need to force the devicePixelRatio to 1
-          # here because we find it useful to use the
-          # setSize method of the renderer.
-          # BUT setSize would duplicate the canvas
-          # buffer on retina displays which is
-          # somehing we want to control manually.
-          devicePixelRatio: 1
-
-        )
-        @isWebGLUsed = true
-
-      else
-        # Canvas init.
-        # Note that the canvas init requires two extra canvases in
-        # order to achieve the motion blur (as we need to keep the
-        # previous frame). Basically we have to do manually what the
-        # WebGL solution achieves through the Three.js composer
-        # and postprocessing/shaders.
-        @ballDefaultDetLevel = 6
-        @currentFrameThreeJsSceneCanvas = document.createElement("canvas")
-        
-        # some shorthands
-        currentFrameThreeJsSceneCanvas = @currentFrameThreeJsSceneCanvas
-        
-        currentFrameThreeJsSceneCanvas.width = @blendedThreeJsSceneCanvas.width
-        currentFrameThreeJsSceneCanvas.height = @blendedThreeJsSceneCanvas.height
-
-
-        @currentFrameThreeJsSceneCanvasContext =
-          currentFrameThreeJsSceneCanvas.getContext("2d")
-        
-        @previousFrameThreeJSSceneRenderForBlendingCanvas =
-          document.createElement("canvas")
-        # some shorthands
-        previousFrameThreeJSSceneRenderForBlendingCanvas =
-          @previousFrameThreeJSSceneRenderForBlendingCanvas
-        previousFrameThreeJSSceneRenderForBlendingCanvas.width =
-          @blendedThreeJsSceneCanvas.width
-        previousFrameThreeJSSceneRenderForBlendingCanvas.height =
-          @blendedThreeJsSceneCanvas.height
-        
-        @previousFrameThreeJSSceneRenderForBlendingCanvasContext =
-          @previousFrameThreeJSSceneRenderForBlendingCanvas.getContext("2d")
-        @blendedThreeJsSceneCanvasContext =
-          @blendedThreeJsSceneCanvas.getContext("2d")
-        
-        # see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/CanvasRenderer
-        #debugger
-        @renderer = new liveCodeLabCore_three.CanvasRenderer(
-          canvas: currentFrameThreeJsSceneCanvas
-          antialias: false # to get smoother output
-          preserveDrawingBuffer: @testMode # to allow screenshot
-          # todo figure out why this works. this parameter shouldn't
-          # be necessary, as per https://github.com/mrdoob/three.js/issues/2833 and
-          # https://github.com/mrdoob/three.js/releases this parameter
-          # should not be needed. If we don't pass it, the canvas is all off, the
-          # unity box is painted centerd in the bottom right corner
-          devicePixelRatio: 1
-        )
-        
-
-      #console.log "renderer width: " + @renderer.width + " context width: " + @renderer.context.drawingBufferWidth
-      @scene = new liveCodeLabCore_three.Scene()
-      @scene.matrixAutoUpdate = false
-      
-      # put a camera in the scene
-      @camera = new liveCodeLabCore_three.PerspectiveCamera(35, \
-        @blendedThreeJsSceneCanvas.width / \
-        @blendedThreeJsSceneCanvas.height, 1, 10000)
-      #console.log "camera width: " + @camera.width
-      @camera.position.set 0, 0, 5
-      @scene.add @camera
-      
-
-      # transparently support window resize
-      @constructor.attachResizingBehaviourToResizeEvent @, @renderer, @camera
-      
-      @constructor.sizeTheForegroundCanvas @blendedThreeJsSceneCanvas
-      @constructor.sizeRendererAndCamera @renderer, @camera, Ui.foregroundCanvasMaxScaleUpFactor
-      if @isWebGLUsed
-        @renderTargetParameters = undefined
-        @renderTarget = undefined
-        @effectSaveTarget = undefined
-        fxaaPass = undefined
-        screenPass = undefined
-        renderModel = undefined
-        @renderTargetParameters =
-          format: liveCodeLabCore_three.RGBAFormat
-          stencilBuffer: true
-      
-        [@renderTarget, @effectSaveTarget, @effectBlend, @composer] = @constructor.attachEffectsAndSizeTheirBuffers(@, @renderer)
 
 
 
