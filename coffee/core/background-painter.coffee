@@ -66,14 +66,10 @@ define () ->
 
   class BackgroundPainter
 
-    @canvasForBackground: null
-    @backgroundViaCanvas: false
-
     constructor: (
-      @backgroundCanvasOrDiv,
+      @backgroundDiv,
       @colourFunctions,
       @colourLiterals,
-      @backgroundViaCanvas = false
     ) ->
       @gradStack = []
       @defaultGradientColor1 = 0
@@ -82,21 +78,9 @@ define () ->
       @whichDefaultBackground = undefined
       @currentGradientStackValue = ""
       @previousGradientStackValue = 0
-      if @backgroundViaCanvas
-        @canvasForBackground = @backgroundCanvasOrDiv
-        # the canvas background for the time being is only going to contain
-        # gradients, so we can get away with creating a really tiny canvas and
-        # stretch it. The advantage is that the fill operations are a lot faster.
-        # We should try to use CSS instead of canvas, as in some browsers canvas
-        # is not accelerated just as well as CSS.
-        # backGroundFraction specifies what fraction of the window the
-        # background canvas is going to be.
-        backGroundFraction = 1 / 100
-        @canvasForBackground.width = Math.floor(window.innerWidth * backGroundFraction)
-        @canvasForBackground.height = Math.floor(window.innerHeight * backGroundFraction)
-        @backgroundSceneContext = @canvasForBackground.getContext("2d")
-      else
-        @gradientPrefix = getCssValuePrefix 'background', 'linear-gradient(left, #fff, #fff)'
+      @gradientPrefix = getCssValuePrefix(
+        'background', 'linear-gradient(left, #fff, #fff)'
+      )
 
 
     addToScope: (scope) ->
@@ -111,10 +95,11 @@ define () ->
 
       # if all colors of a gradient are opaque then
       # you can flush the command list.
-      if @colourFunctions.alpha(a) == 255 and \
-      @colourFunctions.alpha(b) == 255 and \
-      @colourFunctions.alpha(c) == 255 and \
-      @colourFunctions.alpha(d) == 255
+      if (@colourFunctions.alpha(a) == 255 and
+        @colourFunctions.alpha(b) == 255 and
+        @colourFunctions.alpha(c) == 255 and
+        @colourFunctions.alpha(d) == 255
+      )
         @gradStack = []
         @currentGradientStackValue = ""
 
@@ -203,8 +188,11 @@ define () ->
       # reuse the previous stack elements
       # but I don't think it matters here
       @gradStack = []
-      @simpleGradient \
-        @defaultGradientColor1, @defaultGradientColor2, @defaultGradientColor3
+      @simpleGradient(
+        @defaultGradientColor1,
+        @defaultGradientColor2,
+        @defaultGradientColor3
+      )
 
     simpleGradientUpdateIfChanged: ->
 
@@ -214,50 +202,21 @@ define () ->
       if @currentGradientStackValue isnt @previousGradientStackValue
         @previousGradientStackValue = @currentGradientStackValue
 
-        if @backgroundViaCanvas
-          diagonal =
-            Math.sqrt(Math.pow(@canvasForBackground.width / 2, 2) +
-            Math.pow(@canvasForBackground.height / 2, 2))
-          #console.log "canvas width and height in simpleGradientUpdateIfChanged: " + @canvasForBackground.width + " " + @canvasForBackground.height
-        else
-          sx = Math.floor((window.innerWidth + 40) / 10)
-          sy = Math.floor((window.innerHeight + 40) / 10)
-          cssStringPreamble = "position: absolute; z-index:-3; top: 0px; left: 0px; width:#{sx}px; height:#{sy}px; "+@gradientPrefix+"transform-origin: 0% 0%; "+@gradientPrefix+"transform: scale(10,10);"
-          cssStringPreamble = cssStringPreamble + "background:"
-          cssString = ""
+        sx = Math.floor((window.innerWidth + 40) / 10)
+        sy = Math.floor((window.innerHeight + 40) / 10)
+        cssStringPreamble = "position: absolute; z-index:-3; top: 0px; left: 0px; width:#{sx}px; height:#{sy}px; "+@gradientPrefix+"transform-origin: 0% 0%; "+@gradientPrefix+"transform: scale(10,10);"
+        cssStringPreamble = cssStringPreamble + "background:"
+        cssString = ""
 
         for scanningGradStack in @gradStack
           if scanningGradStack.gradStacka?
-            if @backgroundViaCanvas
-              radgrad = @backgroundSceneContext.createLinearGradient(
-                @canvasForBackground.width / 2,
-                0,
-                @canvasForBackground.width / 2,
-                @canvasForBackground.height)
-              radgrad.addColorStop 0, color.toString(scanningGradStack.gradStacka)
-              radgrad.addColorStop 0.5,color.toString(scanningGradStack.gradStackb)
-              radgrad.addColorStop 1, color.toString(scanningGradStack.gradStackc)
-              @backgroundSceneContext.globalAlpha = 1.0
-              @backgroundSceneContext.fillStyle = radgrad
-              @backgroundSceneContext.fillRect \
-                0, 0, @canvasForBackground.width, @canvasForBackground.height
-            else
-              cssString = @gradientPrefix+"linear-gradient(top,  "+color.toString(scanningGradStack.gradStacka)+" 0%,"+color.toString(scanningGradStack.gradStackb)+" 50%,"+color.toString(scanningGradStack.gradStackc)+" 100%)," + cssString
+            cssString = @gradientPrefix+"linear-gradient(top,  "+color.toString(scanningGradStack.gradStacka)+" 0%,"+color.toString(scanningGradStack.gradStackb)+" 50%,"+color.toString(scanningGradStack.gradStackc)+" 100%)," + cssString
           else
-            if @backgroundViaCanvas
-              @backgroundSceneContext.globalAlpha = 1.0
-              @backgroundSceneContext.fillStyle =
-                color.toString(scanningGradStack.solid)
-              @backgroundSceneContext.fillRect \
-                0, 0, @canvasForBackground.width , @canvasForBackground.height 
-            else
-              cssString = @gradientPrefix + "linear-gradient(top,  "+color.toString(scanningGradStack.solid)+" 0%,"+color.toString(scanningGradStack.solid)+" 100%)," + cssString
+            cssString = @gradientPrefix + "linear-gradient(top,  "+color.toString(scanningGradStack.solid)+" 0%,"+color.toString(scanningGradStack.solid)+" 100%)," + cssString
 
-        if !@backgroundViaCanvas
-          cssString = cssString.substring(0, cssString.length - 1);
-          cssString = cssStringPreamble + cssString + ";"
-          if (@backgroundCanvasOrDiv)
-            @backgroundCanvasOrDiv.style.cssText = cssString
+        cssString = cssString.substring(0, cssString.length - 1);
+        cssString = cssStringPreamble + cssString + ";"
+        @backgroundDiv.style.cssText = cssString
 
   BackgroundPainter
 

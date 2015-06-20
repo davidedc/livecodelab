@@ -111,7 +111,7 @@ define [
 
     constructor: (
       @threeJsCanvas,
-      @backgroundCanvas,
+      @backgroundDiv,
       @eventRouter,
       @statsWidget,
       @usingWebGL,
@@ -153,7 +153,7 @@ define [
       )
 
       @backgroundPainter = new BackgroundPainter(
-        @backgroundCanvas,
+        @backgroundDiv,
         @colourFunctions,
         @colourLiterals
       )

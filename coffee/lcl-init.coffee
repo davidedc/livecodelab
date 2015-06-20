@@ -55,7 +55,7 @@ require [
     !!(elem.getContext and elem.getContext("2d"))
 
 
-  startEnvironment = (threeJsCanvas, backgroundCanvas, paramsObject) ->
+  startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
 
     #/////////////////////////////////////////////////////
     # Phase 1 - Preliminary checks and initialisations
@@ -111,7 +111,7 @@ require [
     #  - animationLoop
     liveCodeLabCore = new LiveCodeLabCore(
       threeJsCanvas,
-      backgroundCanvas,
+      backgroundDiv,
       eventRouter,
       stats,
       usingWebGL,
@@ -359,10 +359,9 @@ require [
         }
       )
 
-      # background gradients go
-      backgroundCanvas = document.getElementById('backgroundCanvas')
+      backgroundDiv = document.getElementById('backgroundDiv')
       Ui.fullscreenify(
-        backgroundCanvas,
+        backgroundDiv,
         {
           x: Ui.backgroundCanvasFractionOfWindowSize,
           y: Ui.backgroundCanvasFractionOfWindowSize
@@ -374,7 +373,7 @@ require [
         () ->
           startEnvironment(
             threeJsCanvas,
-            backgroundCanvas,
+            backgroundDiv,
             {
               forceCanvasRenderer: false
               bubbleUpErrorsForDebugging: false

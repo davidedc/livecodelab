@@ -154,7 +154,7 @@
             </form>
 
             <canvas id='threeJsCanvas'></canvas>
-            <canvas id='backgroundCanvas'></canvas>
+            <div id='backgroundDiv'></div>
 
         </div>
 
