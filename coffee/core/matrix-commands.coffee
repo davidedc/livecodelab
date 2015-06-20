@@ -21,9 +21,9 @@ define [
       scope.add('discardPushedMatrix',  () => @discardPushedMatrix())
       scope.add('popMatrix',            () => @popMatrix())
       scope.add('resetMatrix',          () => @resetMatrix())
-      scope.add('move',                 (theArguments...) => @move.apply(this,theArguments))
-      scope.add('rotate',               (theArguments...) => @rotate.apply(this,theArguments))
-      scope.add('scale',                (theArguments...) => @scale.apply(this,theArguments))
+      scope.add('move',                 (args...) => @move.apply(this,args))
+      scope.add('rotate',               (args...) => @rotate.apply(this,args))
+      scope.add('scale',                (args...) => @scale.apply(this,args))
 
     getWorldMatrix: ->
       @worldMatrix
@@ -100,8 +100,10 @@ define [
       else if _.isFunction arg_d
         appendedFunctionsStartIndex = 3
 
-      @pushMatrix() if appendedFunctionsStartIndex? 
-      @worldMatrix.multiply(new @three.Matrix4().makeTranslation(arg_a, arg_b, arg_c))
+      @pushMatrix() if appendedFunctionsStartIndex?
+      @worldMatrix.multiply(
+        new @three.Matrix4().makeTranslation(arg_a, arg_b, arg_c)
+      )
       if appendedFunctionsStartIndex?
         while _.isFunction arguments[appendedFunctionsStartIndex]
           result = arguments[appendedFunctionsStartIndex]()
@@ -109,7 +111,7 @@ define [
           # a fake so we have to undo the push and leave
           if result == null
             discardPushedMatrix()
-            return;
+            return
           appendedFunctionsStartIndex++
         @popMatrix()
 
@@ -140,7 +142,11 @@ define [
         appendedFunctionsStartIndex = 3
 
       @pushMatrix() if appendedFunctionsStartIndex?
-      @worldMatrix.multiply(new @three.Matrix4().makeRotationFromEuler(new @three.Euler(arg_a,arg_b,arg_c,'XYZ')))
+      @worldMatrix.multiply(
+        new @three.Matrix4().makeRotationFromEuler(
+          new @three.Euler(arg_a,arg_b,arg_c,'XYZ')
+        )
+      )
       if appendedFunctionsStartIndex?
         while _.isFunction arguments[appendedFunctionsStartIndex]
           result = arguments[appendedFunctionsStartIndex]()
@@ -148,7 +154,7 @@ define [
           # a fake so we have to undo the push and leave
           if result == null
             discardPushedMatrix()
-            return;
+            return
           appendedFunctionsStartIndex++
         @popMatrix()
 
@@ -177,8 +183,8 @@ define [
         arg_c = 1
       else if _.isFunction arg_d
         appendedFunctionsStartIndex = 3
-      
-      @pushMatrix() if appendedFunctionsStartIndex? 
+
+      @pushMatrix() if appendedFunctionsStartIndex?
 
       # odd things happen setting scale to zero
       arg_a = 0.000000001  if arg_a > -0.000000001 and arg_a < 0.000000001
@@ -193,7 +199,7 @@ define [
           # a fake so we have to undo the push and leave
           if result == null
             discardPushedMatrix()
-            return;
+            return
           appendedFunctionsStartIndex++
         @popMatrix()
 
