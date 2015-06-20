@@ -41,6 +41,41 @@
         <!--  menu -->
         <div class="menubar">
           <ul class="sf-menu" id="nav">
+              <li id='logo'>
+                  <span>LiveCodeLab 2.0</span>
+              </li>
+
+              <li id='demos' class='current sf-parent'>
+                  <span>Demos</span>
+                  <ul id='ulForDemos'></ul>
+              </li>
+
+              <li id='tutorials' class='current sf-parent'>
+                  <span>Tutorials</span>
+                  <ul id='ulForTutorials'></ul>
+              </li>
+
+              <li id='languages' class='current sf-parent'>
+                  <span>Languages</span>
+                  <ul id='ulForLanguages'></ul>
+              </li>
+
+              <li id='autocodeIndicator'>
+                  <span>Autocoder</span>
+              </li>
+
+              <li id='dimCodeButton'>
+                  <span>Hide Code: off</span>
+              </li>
+
+              <li id='resetButton'>
+                  <span>Reset</span>
+              </li>
+
+              <li>
+                  <span id='errorMessageDisplay'></span>
+              </li>
+
           </ul>
         </div>
         <!-- end of menu -->

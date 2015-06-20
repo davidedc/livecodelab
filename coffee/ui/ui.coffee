@@ -26,25 +26,25 @@ define [
       @eventRouter.addListener("clear-error", => @clearError() )
       @eventRouter.addListener("autocoder-button-pressed", (state) ->
         if state is true
-          $("#autocodeIndicatorContainer").html("Autocode: on").css(
+          $("#autocodeIndicator span").html("Autocode: on").css(
             "background-color", "#FF0000"
           )
         else
-          $("#autocodeIndicatorContainer").html("Autocode").css(
+          $("#autocodeIndicator span").html("Autocode").css(
             "background-color", ""
           )
       )
 
       @eventRouter.addListener("autocoderbutton-flash", ->
-        $("#autocodeIndicatorContainer").fadeOut(100).fadeIn 100
+        $("#autocodeIndicator").fadeOut(100).fadeIn 100
       )
 
       @eventRouter.addListener("auto-hide-code-button-pressed",
         (autoDimmingIsOn) ->
           if autoDimmingIsOn
-            $("#dimCodeButtonContainer").html "Hide Code: on"
+            $("#dimCodeButton span").html("Hide Code: on")
           else
-            $("#dimCodeButtonContainer").html "Hide Code: off"
+            $("#dimCodeButton span").html("Hide Code: off")
       )
 
     @sizeForegroundCanvas: (canvas, scale = {x: 1, y: 1}) ->
@@ -113,7 +113,7 @@ define [
       ), false
 
     checkErrorAndReport: (e) ->
-      $("#errorMessageDiv").css "color", "red"
+      $("#errorMessageDisplay").css "color", "red"
 
       # if the object is an exception then get the message
       # otherwise e should just be a string
@@ -138,11 +138,11 @@ define [
         errorMessage = errorMessage.replace(/ReferenceError:\s/g, "") if(
           errorMessage.indexOf("ReferenceError") > -1
         )
-      $("#errorMessageDiv").text errorMessage
+      $("#errorMessageDisplay").text errorMessage
 
     clearError: ->
-      $("#errorMessageDiv").css "color", "#000000"
-      $("#errorMessageDiv").text ""
+      $("#errorMessageDisplay").css "color", "#000000"
+      $("#errorMessageDisplay").text ""
 
     soundSystemOk: ->
       $("#soundSystemStatus").text("Sound System On").removeClass("off")
@@ -166,31 +166,11 @@ define [
       # to the UI elements that generated the events
       eventRouter = @eventRouter
 
-      $('<span >LiveCodeLab 2.0</span>').appendTo(
-        $('<li>').appendTo(
-          $('#nav')
-        )
-      ).click(
+      $('#logo').click(
         () ->
           $("#aboutWindow").modal()
           $("#simplemodal-container").height 250
           false
-      )
-
-      # DEMOS
-      # (note that the code for the tutorials is the same,
-      # just with "tutorial" instead of "demo")
-      # insert all the demos in the menu
-      $('<span >Demos</span>').appendTo(
-        $('<li>')
-          .attr('id', 'demos')
-          .addClass('current')
-          .addClass('sf-parent')
-          .appendTo($('#nav'))
-      )
-
-      $("<ul id='ulForDemos'></ul>").appendTo(
-        $('#demos')
       )
 
       allDemos = @programLoader.programs.demos
@@ -228,22 +208,6 @@ define [
           $(a).appendTo(
             $('#'+demoSubmenuNoSpaces)
           )
-
-      # TUTORIALS
-      # (note that the code for the demos is the same,
-      # just with "demo" instead of "tutorial")
-      # insert all the tutorials in the menu
-      $('<span >Tutorials</span>').appendTo(
-        $('<li>')
-          .attr('id', 'tutorials')
-          .addClass('current')
-          .addClass('sf-parent')
-          .appendTo($('#nav'))
-      )
-
-      $("<ul id='ulForTutorials'></ul>").appendTo(
-        $('#tutorials')
-      )
 
       allTutorials = @programLoader.programs.tutorials
 
@@ -289,19 +253,6 @@ define [
           'name': 'LCL V2',
           'value': 'lclv2'
       ]
-      # LANGUAGES
-      # insert all the languages in the menu
-      $('<span >Languages</span>').appendTo(
-        $('<li>')
-          .attr('id', 'languages')
-          .addClass('current')
-          .addClass('sf-parent')
-          .appendTo($('#nav'))
-      )
-
-      $("<ul id='ulForLanguages'></ul>").appendTo(
-        $('#languages')
-      )
 
       for lang in languageList
         l = """<li>
@@ -327,62 +278,35 @@ define [
         eventRouter.emit("load-program", $(@).attr("id"))
         false
 
-      if languagesBuildOption == 'both'
-        $("#languages li a").click ->
-          eventRouter.emit("set-language", $(@).attr("id"))
-          false
+      $("#languages li a").click ->
+        eventRouter.emit("set-language", $(@).attr("id"))
+        false
 
-      $('<span >Autocode</span>').appendTo(
-        $('<li>').appendTo(
-          $('#nav')
-        )
-      ).attr('id', 'autocodeIndicatorContainer')
-      $("#autocodeIndicatorContainer").click(
+      $("#autocodeIndicator").click(
         () ->
           eventRouter.emit("toggle-autocoder")
           false
       )
 
-      # this is set at start by a call
-      # from trigger "editor-toggle-dim",
-      # but this setup method is run
-      # afterwards :-) so we actually have to
-      # care about what this says.
-      $('<span >Hide Code: off</span>').appendTo(
-        $('<li>').appendTo(
-          $('#nav')
-        )
-      ).attr('id', 'dimCodeButtonContainer')
-      $("#dimCodeButtonContainer").click(
+      $("#dimCodeButton").click(
         () ->
           eventRouter.emit("editor-toggle-dim")
           false
       )
 
-      $('<span >Reset</span>').appendTo(
-        $('<li>').appendTo(
-          $('#nav')
-        )
-      ).click(
-        () =>
+      $('#resetButton').click(
+        () ->
           eventRouter.emit("reset")
           $(@).stop().fadeOut(100).fadeIn 100
           false
       )
-
-      # the error message will go in here
-      $('<span id="errorMessageDiv"></span>').appendTo(
-        $('<li>').appendTo(
-          $('#nav')
-        )
-      )
-
 
       # Align bottom-left
       @stats.getDomElement().style.position = "absolute"
       @stats.getDomElement().style.right = "0px"
       @stats.getDomElement().style.top = "0px"
       document.body.appendChild @stats.getDomElement()
+
       $("#startingCurtainScreen").fadeOut()
       $("#formCode").css "opacity", 0
       @constructor.adjustCodeMirrorHeight()
