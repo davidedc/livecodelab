@@ -2,10 +2,14 @@
 ## Autocoder takes care of making random variations to the code.
 ###
 
-define ['core/colour-literals'], (ColourLiterals) ->
+define [
+  'core/colour-literals'
+], (
+  ColourLiterals
+) ->
 
   class Autocoder
-    
+
     active: false
     autocoderMutateTimeout: undefined
     numberOfResults: 0
@@ -13,7 +17,7 @@ define ['core/colour-literals'], (ColourLiterals) ->
     colorsRegex: ""
     numberOfColors: 0
     mutationInterval: 1000
-    
+
     constructor: (@eventRouter, @editor, @colourNames) ->
       # TODO this code is duplicated in the code-preprocessor
       @colorsRegex = ""
@@ -24,6 +28,14 @@ define ['core/colour-literals'], (ColourLiterals) ->
           @colorsRegex = @colorsRegex + "|"+key
       # delete the pre-pended pipe character
       @colorsRegex = @colorsRegex.substring(1, @colorsRegex.length)
+      @colorsRe = RegExp(
+        "(^[\\t ]*|;| |,)([\\t ]*)("+@colorsRegex+")(?![\\w\\d])",
+        'gm'
+      )
+      @matrixRe = RegExp(
+        "(^[\\t ]*|;| |,)([\\t ]*)(scale|rotate|move)(?![\\w\\d])",
+        'gm'
+      )
 
 
     mutate : ->
@@ -46,31 +58,30 @@ define ['core/colour-literals'], (ColourLiterals) ->
       matrixTransforms = ["scale","rotate","move"]
       editorContent = @editor.getValue()
 
-      rePattern = RegExp("(^[\\t ]*|;| |,)([\\t ]*)(scale|rotate|move)(?![\\w\\d])",'gm')
-      allMatches = editorContent.match(rePattern)
+      allMatches = editorContent.match(@matrixRe)
       if allMatches is null
         numberOfResults = 0
       else
         numberOfResults = allMatches.length
       whichOneToChange = Math.floor(Math.random() * numberOfResults) + 1
-      whichColorToReplaceWith = Math.floor(Math.random() * matrixTransforms.length)
+      whichColorToReplaceWith = Math.floor(
+        Math.random() * matrixTransforms.length
+      )
       countWhichOneToSwap = 0
-      editorContent = editorContent.replace(rePattern, (match, p1, p2) =>
+      editorContent = editorContent.replace(@matrixRe, (match, p1, p2) ->
         countWhichOneToSwap++
         if countWhichOneToSwap is whichOneToChange
-          #console.log "replacing in " + match + " with number " + (whichColorToReplaceWith + 1) + " " + @colourNames
           return p1+p2+ matrixTransforms[whichColorToReplaceWith]
         match
       )
       @editor.setValue editorContent
       return
-      
+
 
     replaceAColorWithAnotherColor : ->
       editorContent = @editor.getValue()
 
-      rePattern = RegExp("(^[\\t ]*|;| |,)([\\t ]*)("+@colorsRegex+")(?![\\w\\d])",'gm')
-      allMatches = editorContent.match(rePattern)
+      allMatches = editorContent.match(@colorsRe)
       if allMatches is null
         numberOfResults = 0
       else
@@ -78,10 +89,9 @@ define ['core/colour-literals'], (ColourLiterals) ->
       whichOneToChange = Math.floor(Math.random() * numberOfResults) + 1
       whichColorToReplaceWith = Math.floor(Math.random() * @numberOfColors)
       countWhichOneToSwap = 0
-      editorContent = editorContent.replace(rePattern, (match, p1, p2) =>
+      editorContent = editorContent.replace(@colorsRe, (match, p1, p2) =>
         countWhichOneToSwap++
         if countWhichOneToSwap is whichOneToChange
-          #console.log "replacing in " + match + " with number " + (whichColorToReplaceWith + 1) + " " + @colourNames
           return p1+p2+ @colourNames[whichColorToReplaceWith]
         match
       )
@@ -100,7 +110,7 @@ define ['core/colour-literals'], (ColourLiterals) ->
         numberOfResults = allMatches.length
       whichOneToChange = Math.floor(Math.random() * numberOfResults) + 1
       countWhichOneToSwap = 0
-      editorContent = editorContent.replace(rePattern, (match, text, urlId) =>
+      editorContent = editorContent.replace(rePattern, (match, text, urlId) ->
         countWhichOneToSwap++
         if countWhichOneToSwap is whichOneToChange
           return "box"
@@ -119,7 +129,7 @@ define ['core/colour-literals'], (ColourLiterals) ->
         numberOfResults = allMatches.length
       whichOneToChange = Math.floor(Math.random() * numberOfResults) + 1
       countWhichOneToSwap = 0
-      editorContent = editorContent.replace(rePattern, (match, p1, p2) =>
+      editorContent = editorContent.replace(rePattern, (match, p1, p2) ->
         countWhichOneToSwap++
         if countWhichOneToSwap is whichOneToChange
           whichOp = Math.floor(Math.random() * 7)
@@ -172,7 +182,7 @@ define ['core/colour-literals'], (ColourLiterals) ->
         numberOfResults = allMatches.length
       whichOneToChange = Math.floor(Math.random() * numberOfResults) + 1
       countWhichOneToSwap = 0
-      editorContent = editorContent.replace(rePattern, (match, text, urlId) =>
+      editorContent = editorContent.replace(rePattern, (match, text, urlId) ->
         countWhichOneToSwap++
         if countWhichOneToSwap is whichOneToChange
           return "ball"
@@ -191,7 +201,7 @@ define ['core/colour-literals'], (ColourLiterals) ->
         numberOfResults = allMatches.length
       whichOneToChange = Math.floor(Math.random() * numberOfResults) + 1
       countWhichOneToSwap = 0
-      editorContent = editorContent.replace(rePattern, (match, text, urlId) =>
+      editorContent = editorContent.replace(rePattern, (match, text, urlId) ->
         countWhichOneToSwap++
         if countWhichOneToSwap is whichOneToChange
           whichOp = Math.floor(Math.random() * 12)
@@ -229,13 +239,16 @@ define ['core/colour-literals'], (ColourLiterals) ->
       @mutate()
 
     toggle: (forcedState) ->
-      if forcedState is `undefined`
-        @active = not @active
-      else
+      if forcedState?
         @active = forcedState
-      
+      else
+        @active = not @active
+
       if @active
-        @autocoderMutateTimeout = setInterval((()=>@autocoderMutate()), @mutationInterval)
+        @autocoderMutateTimeout = setInterval(
+          ()=>@autocoderMutate(),
+          @mutationInterval
+        )
         if @editor.getValue() is "" or
             ((window.location.hash.indexOf("bookmark") isnt -1) and
             (window.location.hash.indexOf("autocodeTutorial") isnt -1))
@@ -243,7 +256,6 @@ define ['core/colour-literals'], (ColourLiterals) ->
       else
         clearInterval @autocoderMutateTimeout
       @eventRouter.emit("autocoder-button-pressed", @active)
-
 
 
   Autocoder
