@@ -7,6 +7,12 @@ define [
   'ui/ui',
   'Three.CanvasRenderer', # needed for the CanvasRenderer
   'Three.Projector',      # needed for the CanvasRenderer
+  'Three.ShaderExtras',
+  'Three.EffectComposer',
+  'Three.MaskPass',
+  'Three.RenderPass',
+  'Three.SavePass',
+  'Three.ShaderPass',
   'globals/debounce'
 ], (
   Ui

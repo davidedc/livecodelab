@@ -81,14 +81,7 @@ define [
   ,'buzz'
   ,'lowLag'
   ,'threejs'
-  #,'three-resize'
   ,'Three.Detector'
-  ,'Three.ShaderExtras'
-  ,'Three.EffectComposer'
-  ,'Three.MaskPass'
-  ,'Three.RenderPass'
-  ,'Three.SavePass'
-  ,'Three.ShaderPass'
 ], (
   AnimationLoop
   ,BackgroundPainter
@@ -119,9 +112,9 @@ define [
   class LiveCodeLabCore
 
     constructor: (
-       @eventRouter
-      ,@statsWidget
-      ,@paramsObject
+      @eventRouter,
+      @statsWidget,
+      @paramsObject
     ) ->
 
       #//////////////////////////////////////////////
