@@ -120,11 +120,12 @@
 ## helpful for example in
 ##   20 times rotate box
 
-isFunction = (functionToCheck) ->
-  getType = {}
-  functionToCheck and getType.toString.call(functionToCheck) is "[object Function]"
 
-define () ->
+define [
+  'underscore'
+], (
+  _
+) ->
 
   class GraphicsCommands
 
@@ -579,18 +580,18 @@ define () ->
       # primitives, but we handle them here in all cases
       # to make the code uniform and unifiable
       if typeof a isnt "number"
-        if isFunction a then appendedFunction = a
+        if _.isFunction a then appendedFunction = a
         a = 1
         b = 1
         c = 1
       else if typeof b isnt "number"
-        if isFunction b then appendedFunction = b
+        if _.isFunction b then appendedFunction = b
         b = a
         c = a
       else if typeof c isnt "number"
-        if isFunction c then appendedFunction = c
+        if _.isFunction c then appendedFunction = c
         c = 1
-      else if isFunction d
+      else if _.isFunction d
         appendedFunction = d
       
       # Simple case - if there is no fill and
@@ -775,19 +776,19 @@ define () ->
       #console.log "fill-1 " + r + " " + g + " " + b + " " + a + " "  
 
       if typeof r isnt "number"
-        if isFunction r then appendedFunction = r
+        if _.isFunction r then appendedFunction = r
         r = undefined; g = undefined; b = undefined; a = undefined; f = undefined
       else if typeof g isnt "number"
-        if isFunction g then appendedFunction = g
+        if _.isFunction g then appendedFunction = g
         g = undefined; b = undefined; a = undefined; f = undefined
       else if typeof b isnt "number"
-        if isFunction b then appendedFunction = b
+        if _.isFunction b then appendedFunction = b
         b = undefined; a = undefined; f = undefined
       else if typeof a isnt "number"
-        if isFunction a then appendedFunction = a
+        if _.isFunction a then appendedFunction = a
         a = undefined; f = undefined
       else if typeof f isnt "number"
-        if isFunction f then appendedFunction = f
+        if _.isFunction f then appendedFunction = f
         f = undefined
       else
         appendedFunction = undefined
@@ -845,7 +846,7 @@ define () ->
     @see #fill()
     ###
     noFill: (a)->
-      if isFunction a then appendedFunction = a
+      if _.isFunction a then appendedFunction = a
 
       if appendedFunction?
         @pushFill @defaultNormalFill,@currentFillColor,@currentFillAlpha,@doFill
@@ -893,19 +894,19 @@ define () ->
     ###
     stroke: (r, g, b, a, f) ->
       if typeof r isnt "number"
-        if isFunction r then appendedFunction = r
+        if _.isFunction r then appendedFunction = r
         r = undefined; g = undefined; b = undefined; a = undefined; f = undefined
       else if typeof g isnt "number"
-        if isFunction g then appendedFunction = g
+        if _.isFunction g then appendedFunction = g
         g = undefined; b = undefined; a = undefined; f = undefined
       else if typeof b isnt "number"
-        if isFunction b then appendedFunction = b
+        if _.isFunction b then appendedFunction = b
         b = undefined; a = undefined; f = undefined
       else if typeof a isnt "number"
-        if isFunction a then appendedFunction = a
+        if _.isFunction a then appendedFunction = a
         a = undefined; f = undefined
       else if typeof f isnt "number"
-        if isFunction f then appendedFunction = f
+        if _.isFunction f then appendedFunction = f
         f = undefined
       else
         appendedFunction = undefined
@@ -947,7 +948,7 @@ define () ->
     ###
     noStroke: (a)->
 
-      if isFunction a then appendedFunction = a
+      if _.isFunction a then appendedFunction = a
 
       if appendedFunction?
         @pushStroke @defaultNormalStroke,@currentStrokeColor,@currentStrokeAlpha,@doStroke

@@ -6,11 +6,11 @@
 ## throws a runtime error.
 ###
 
-isFunction = (functionToCheck) ->
-  getType = {}
-  functionToCheck and getType.toString.call(functionToCheck) is "[object Function]"
-
-define () ->
+define [
+  'underscore'
+], (
+  _
+) ->
 
   class ProgramRunner
     
@@ -58,10 +58,10 @@ define () ->
 
       # in the case "run <box>"
       # we have to paint it now
-      if isFunction functionToBeRun
+      if _.isFunction functionToBeRun
         functionToBeRun()
 
-      if isFunction chainedFunction
+      if _.isFunction chainedFunction
         chainedFunction()
 
     # This is the function called from the compiled code to add the doOnce line
