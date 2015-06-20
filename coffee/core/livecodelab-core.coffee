@@ -112,7 +112,6 @@ define [
   ,buzz
   ,lowLag
   ,THREE
-  #,THREEx
   ,Detector
 ) ->
 
@@ -139,7 +138,7 @@ define [
       # b) threeJsSystem contains some convenience fields and abstractions,
       #    for example it keeps the renderer (whether it's canvas-based or WebGL
       #    based) in a "renderer" field.
-      # Several fields/methids in threeJsSystem are just conveniency mappings into
+      # Several fields/methods in threeJsSystem are just conveniency mappings into
       # the raw three object.
       # But often in LiveCodeLab there are direct reference to three
       # fields/methods. So, threeJsSystem provides some abstraction without

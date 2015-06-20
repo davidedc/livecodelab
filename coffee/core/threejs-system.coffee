@@ -154,7 +154,7 @@ define [
           new liveCodeLabCore_three.WebGLRenderTarget(
             sx * multiplier,
             sy * multiplier,
-            { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat, stencilBuffer: true }
+            { minFilter: liveCodeLabCore_three.LinearFilter, magFilter: liveCodeLabCore_three.LinearFilter, format: liveCodeLabCore_three.RGBAFormat, stencilBuffer: true }
           )
         )
 
@@ -290,13 +290,13 @@ define [
         window.removeEventListener "resize", callback
         return
 
-    constructor: ( \
-      Detector, \
-        # THREEx, \
-        @blendedThreeJsSceneCanvas, \
-        @forceCanvasRenderer, \
-        testMode, \
-        liveCodeLabCore_three ) ->
+    constructor: (
+      Detector,
+      @blendedThreeJsSceneCanvas,
+      @forceCanvasRenderer,
+      @testMode,
+      @liveCodeLabCore_three
+    ) ->
 
       # if we've not been passed a canvas, then create a new one and make it
       # as big as the browser window content.
@@ -306,7 +306,6 @@ define [
         @blendedThreeJsSceneCanvas.height = window.innerHeight
     
     
-      @liveCodeLabCore_three = liveCodeLabCore_three
       if not @forceCanvasRenderer and Detector.webgl
         # Webgl init.
         # We allow for a bigger ball detail.
@@ -320,7 +319,6 @@ define [
         #  http://mrdoob.github.io/three.js/docs/#Reference/Renderers/WebGLRenderer
         @renderer = new liveCodeLabCore_three.WebGLRenderer(
           canvas: @blendedThreeJsSceneCanvas
-          #preserveDrawingBuffer: testMode # to allow screenshot
           antialias: false
           premultipliedAlpha: false
           # we need to force the devicePixelRatio to 1
@@ -371,10 +369,10 @@ define [
         
         # see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/CanvasRenderer
         #debugger
-        @renderer = new THREE.CanvasRenderer(
+        @renderer = new liveCodeLabCore_three.CanvasRenderer(
           canvas: currentFrameThreeJsSceneCanvas
           antialias: false # to get smoother output
-          preserveDrawingBuffer: testMode # to allow screenshot
+          preserveDrawingBuffer: @testMode # to allow screenshot
           # todo figure out why this works. this parameter shouldn't
           # be necessary, as per https://github.com/mrdoob/three.js/issues/2833 and
           # https://github.com/mrdoob/three.js/releases this parameter
