@@ -20,10 +20,10 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       @beatCount = 1             # last whole beat number
       @fraction = 0              # fraction of the beat we're at
 
-      @pulseClient = new Pulse();      
+      @pulseClient = new Pulse()
 
       super()
-      
+
       @resetTime()
       @beatLoop()
 
@@ -57,14 +57,20 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
         # Set the BPM and phase from pulse if it's connected
         if @pulseClient.currentConnection() and @pulseClient.beats.length
           @setBpm(@pulseClient.bpm)
-          if @pulseClient.count == 1 and @lastBeat != @pulseClient.beats[@pulseClient.beats.length-1]
+          if (
+            @pulseClient.count == 1 and
+            @lastBeat != @pulseClient.beats[@pulseClient.beats.length-1]
+          )
             @beatCount = 1
             @lastBeat = @pulseClient.beats[@pulseClient.beats.length-1]
           else
-            @lastBeat = @pulseClient.beats[@pulseClient.beats.length-1] + @mspb * (@beatCount - @pulseClient.count)
+            @lastBeat = (
+              @pulseClient.beats[@pulseClient.beats.length-1] +
+              @mspb * (@beatCount - @pulseClient.count)
+            )
         else
           @lastBeat += @mspb
-      
+
       @fraction += 0.25
 
       # Set a timeout for the next (quarter) beat
@@ -106,7 +112,13 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
     Connects to a pulse server, and read the bpm/beat from there.
     ###
     connect: (address) ->
-      if address && !(@pulseClient.connecting || @pulseClient.currentConnection() == @pulseClient.cleanAddress(address))
+      if (
+        address &&
+        !(
+          @pulseClient.connecting ||
+          @pulseClient.currentConnection() == @pulseClient.cleanAddress(address)
+        )
+      )
         console.log('Connecting to ' + address)
         @pulseClient.connect(address)
       return
@@ -118,14 +130,18 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
     pulse: (frequency) ->
       if typeof frequency != "number"
         frequency = 1
-      return Math.exp(-Math.pow( Math.pow((@beat() * frequency) % 1, 0.3) - 0.5, 2) / 0.05)
+      return Math.exp(
+        -Math.pow(
+          Math.pow((@beat() * frequency) % 1, 0.3) - 0.5,
+          2
+        ) / 0.05
+      )
 
     # Wave: simple harmonic motion where a is period in milliseconds
     wave: (frequency) ->
       if typeof frequency != "number"
         frequency = 1
       sin((@beat() * frequency) * Math.PI)
-
 
 
   TimeKeeper

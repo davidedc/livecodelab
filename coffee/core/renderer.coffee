@@ -123,7 +123,9 @@ define () ->
       # each type of primitive was placed last
       if graphics.exclusionPrincipleWobble
         for i in [0...graphics.lastPositionOfPrimitiveType.length]
-          graphics.lastPositionOfPrimitiveType[i].set 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          graphics.lastPositionOfPrimitiveType[i].set(
+            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          )
           graphics.numberOfOverlappingPrimitives[i] = 0
 
   Renderer

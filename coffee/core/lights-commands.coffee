@@ -55,14 +55,15 @@ define () ->
       # used by graphic-primitives
       @graphicsCommands.defaultNormalStroke = false
       ambientLightsPool = @objectPools[@primitiveTypes.ambientLight]
-      pooledAmbientLight = ambientLightsPool[@objectsUsedInFrameCounts[@primitiveTypes.ambientLight]]
+      objsUsed = @objectsUsedInFrameCounts[@primitiveTypes.ambientLight]
+      pooledAmbientLight = ambientLightsPool[objsUsed]
 
       if not pooledAmbientLight?
         # So here is the thing, the command is currently called AmbientLight but
         # in reality we are creating a PointLight in a specific position.
         # AmbientLight just fills the whole scene,
-        # so the faces of the cube would all be of the same
-        # exact color. Note that in Three.js versions before r50 the AmbientLight
+        # so the faces of the cube would all be of the same exact color.
+        # Note that in Three.js versions before r50 the AmbientLight
         # would work like a PointLight does now.
         pooledAmbientLight = new @three.PointLight(colorToBeUsed)
         pooledAmbientLight.position.set 10, 50, 130
