@@ -12,7 +12,7 @@ define [
 
     matrixStack: []
 
-    constructor: (@three, @timekeeper, @liveCodeLabCoreInstance) ->
+    constructor: (@three, @timeKeeper, @liveCodeLabCoreInstance) ->
       @worldMatrix = new @three.Matrix4()
 
     addToScope: (scope) ->
