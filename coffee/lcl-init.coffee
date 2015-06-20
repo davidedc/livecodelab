@@ -146,7 +146,11 @@ require [
     # note that the programLoader variable below is never used. Leaving it
     # in for consistency.
     programLoader = new ProgramLoader(
-      eventRouter, editor, liveCodeLabCore
+      eventRouter,
+      editor,
+      liveCodeLabCore,
+      Detector.webgl,
+      paramsObject.forceCanvasRenderer
     )
     eventRouter.addListener(
       "load-program",
