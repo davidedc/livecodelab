@@ -6,15 +6,15 @@ define () ->
 
   class UrlRouter
 
-    constructor: (@eventRouter) ->
+    constructor: (@eventRouter, @location) ->
       @eventRouter.addListener("set-url-hash", (hash) => @setHash(hash) )
-    
+
     getHash: ->
-      match = window.location.href.match(/#(.*)$/)
+      match = @location.href.match(/#(.*)$/)
       (if match then match[1] else "")
 
     setHash: (hash) ->
-      window.location.hash = hash
+      @location.hash = hash
 
     urlPointsToDemoOrTutorial: ->
       found = false

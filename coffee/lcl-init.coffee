@@ -119,7 +119,7 @@ require [
     #/////////////////////////////////////////////////////
     # Phase 3 - Other satellite parts
     #/////////////////////////////////////////////////////
-    urlRouter = new UrlRouter(eventRouter)
+    urlRouter = new UrlRouter(eventRouter, window.location)
 
     bigCursor = new BigCursor eventRouter # $
 
