@@ -77,6 +77,12 @@ class CodePreprocessor
     "stroke"
     "noFill"
     "noStroke"
+    "forward"
+    "back"
+    "turnRight"
+    "turnLeft"
+    "turnUp"
+    "turnDown"
   ]
   primitives: [
     # Geometry
@@ -85,6 +91,8 @@ class CodePreprocessor
     "box"
     "ball"
     "peg"
+    "turtle"
+    "axes"
     # Others
     "run"
   ]

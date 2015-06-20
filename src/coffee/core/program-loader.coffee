@@ -224,6 +224,53 @@ class ProgramLoader
             ▶▶▶rect 0.24
             """
 
+    @programs.demos.turtleGraphicstreeDemo =
+      submenu: "TurtleGraphics"
+      title: "Tree"
+      code: """
+            scale 0.3
+            move 0,-2,0
+
+            drawTree = (depth) ->
+            ▶if depth <= 0 then return
+            ▶forward
+            ▶scale 1
+            ▶▶turnRight 30
+            ▶▶▶drawTree depth-1
+            ▶▶turnLeft 30 * sin time
+            ▶▶▶drawTree depth-1
+
+            drawTree 9
+            """
+
+    @programs.demos.turtleGraphicsrandomGridDemo =
+      submenu: "TurtleGraphics"
+      title: "Random grid"
+      code: """
+            background black
+            animationStyle paintOver
+            rotate 0,0,time
+            scale 0.9
+            fill frame%255,0,0
+            10 times
+            ▶if random > 0.5
+            ▶▶turnRight
+            ▶else
+            ▶▶turnLeft
+            ▶forward random
+            """
+
+    @programs.demos.turtleGraphicsturtleSpiralDemo =
+      submenu: "TurtleGraphics"
+      title: "Turtle spiral"
+      code: """
+            rotate 6
+            scale 0.3
+            frame%550 times with i
+            ▶turnLeft 18
+            ▶forward 0.2 + i/300
+            turtle
+            """
 
     @programs.demos.webgltwocubesDemo =
       submenu: "WebGL"

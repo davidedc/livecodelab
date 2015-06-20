@@ -334,6 +334,14 @@ class GraphicsCommands
     scope.add('ball',       (a,b,c,d) => @ball(a,b,c,d))
     scope.add('ballDetail', (a) => @ballDetail(a))
     scope.add('fill',       (a,b,c,d,e) => @fill(a,b,c,d,e))
+    scope.add('turtle',     (a) => @turtle(a))
+    scope.add('forward',    (a,b) => @forward(a,b))
+    scope.add('back',       (a,b) => @back(a,b))
+    scope.add('turnRight',  (a,b) => @turnRight(a,b))
+    scope.add('turnLeft',   (a,b) => @turnLeft(a,b))
+    scope.add('turnUp',     (a,b) => @turnUp(a,b))
+    scope.add('turnDown',   (a,b) => @turnDown(a,b))
+    scope.add('axes',       (a) => @axes(a))
     scope.add('noFill',     (a) => @noFill(a))
     scope.add('stroke',     (a,b,c,d,e) => @stroke(a,b,c,d,e))
     scope.add('noStroke',   (a) => @noStroke(a))
@@ -630,50 +638,222 @@ class GraphicsCommands
       if appendedFunction? then appendedFunction()
       return
 
-    # if we are under the influence of a noFill command OR
-    # the wireframe is not going to be visible on top of the
-    # fill then don't draw the stroke, only draw the fill
-    if (
-      primitiveProperties.canFill and @doFill and
-      (@currentStrokeSize is 0 or not @doStroke or
-        (@currentStrokeSize <= 1 and
-         not @defaultNormalFill and
-         not @defaultNormalStroke and
-         @currentStrokeColor is @currentFillColor and
-         @currentFillAlpha is 1 and @currentStrokeAlpha is 1)
-      )
-    ) or (
-      @currentStrokeSize <= 1 and @defaultNormalFill and @defaultNormalStroke
-    )
-      @createObjectIfNeededAndDressWithCorrectMaterial(
-        a, b, c, primitiveProperties,
-        false, @currentFillColor, @currentFillAlpha,
-        @defaultNormalFill
-      )
-    else if (not @doFill or not primitiveProperties.canFill) and @doStroke
+  turtle: (a) ->
 
-      # only doing the stroke
-      @createObjectIfNeededAndDressWithCorrectMaterial(
-        a, b, c, primitiveProperties, true,
-        @currentStrokeColor, @currentStrokeAlpha,
-        @defaultNormalStroke
-      )
+    if _.isFunction a then appendedFunction = a
 
-    # doing both the fill and the stroke
+    if appendedFunction?
+      @pushStroke @defaultNormalStroke,@currentStrokeColor,@currentStrokeAlpha,@doStroke
+
+    # primitive-specific initialisations:
+    @noStroke()
+    @fill red
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.move 0,0.7,0
+    @ball 0.1,1,0.1
+    @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+    if appendedFunction?
+      appendedFunction()
+      @popStroke()
+
+  axes: (a) ->
+
+    if _.isFunction a then appendedFunction = a
+
+    @pushStroke @defaultNormalStroke,@currentStrokeColor,@currentStrokeAlpha,@doStroke
+
+    @stroke green
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.move 0,0.7,0
+    @line()
+    @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+    @stroke red
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.rotate Math.PI/2,0,0
+    @liveCodeLabCoreInstance.matrixCommands.move 0,0.7,0
+    @line()
+    @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+    @stroke blue
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.rotate 0,0,-Math.PI/2
+    @liveCodeLabCoreInstance.matrixCommands.move 0,0.7,0
+    @line()
+    @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+    @popStroke()
+
+    if appendedFunction?
+      appendedFunction()
+
+  forward: (a, f) ->
+
+    if typeof a isnt "number"
+      if _.isFunction a then appendedFunction = a
+      a = undefined; f = undefined;
+    else if typeof f isnt "number"
+      if _.isFunction f then appendedFunction = f
+      f = undefined
     else
-      @createObjectIfNeededAndDressWithCorrectMaterial(
-        a, b, c, primitiveProperties, true,
-        @currentStrokeColor, @currentStrokeAlpha,
-        @defaultNormalStroke
-      )
-      @createObjectIfNeededAndDressWithCorrectMaterial(
-        a, b, c, primitiveProperties, false,
-        @currentFillColor, @currentFillAlpha,
-        @defaultNormalFill
-      )
+      appendedFunction = undefined
 
-    if appendedFunction? then appendedFunction()
-    return
+    if a == undefined then a = 1
+
+    if appendedFunction?
+      @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+
+    @pushStroke @defaultNormalStroke,@currentStrokeColor,@currentStrokeAlpha,@doStroke
+
+    @noStroke()
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.move 0,a/2,0
+    @rect 0.1,a-0.15,0.1
+    @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.move 0,a,0
+
+    @popStroke()
+
+
+    if appendedFunction?
+      appendedFunction()
+      @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+
+  back: (a, f) ->
+    if typeof a isnt "number"
+      if _.isFunction a then appendedFunction = a
+      a = undefined; f = undefined;
+    else if typeof f isnt "number"
+      if _.isFunction f then appendedFunction = f
+      f = undefined
+    else
+      appendedFunction = undefined
+
+    if a == undefined then a = 1
+
+    @forward -a, appendedFunction
+
+  turnRight: (a,f) ->
+
+    if typeof a isnt "number"
+      if _.isFunction a then appendedFunction = a
+      a = undefined; f = undefined;
+    else if typeof f isnt "number"
+      if _.isFunction f then appendedFunction = f
+      f = undefined
+    else
+      appendedFunction = undefined
+
+    if a == undefined then a = 90
+
+    if appendedFunction?
+      @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+
+    @liveCodeLabCoreInstance.matrixCommands.rotate 0,0,-a/180 * Math.PI
+
+    if appendedFunction?
+      appendedFunction()
+      @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+  turnLeft: (a,f) ->
+    if typeof a isnt "number"
+      if _.isFunction a then appendedFunction = a
+      a = undefined; f = undefined;
+    else if typeof f isnt "number"
+      if _.isFunction f then appendedFunction = f
+      f = undefined
+    else
+      appendedFunction = undefined
+
+    if a == undefined then a = 90
+
+    @turnRight -a, appendedFunction
+
+
+  turnUp: (a,f) ->
+
+    if typeof a isnt "number"
+      if _.isFunction a then appendedFunction = a
+      a = undefined; f = undefined;
+    else if typeof f isnt "number"
+      if _.isFunction f then appendedFunction = f
+      f = undefined
+    else
+      appendedFunction = undefined
+
+    if a == undefined then a = 90
+
+    if appendedFunction?
+      @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+
+    @liveCodeLabCoreInstance.matrixCommands.rotate a/180 * Math.PI,0,0
+
+    if appendedFunction?
+      appendedFunction()
+      @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+
+
+  turnDown: (a,f) ->
+    if typeof a isnt "number"
+      if _.isFunction a then appendedFunction = a
+      a = undefined; f = undefined;
+    else if typeof f isnt "number"
+      if _.isFunction f then appendedFunction = f
+      f = undefined
+    else
+      appendedFunction = undefined
+
+    if a == undefined then a = 90
+
+    @turnUp -a, appendedFunction
+
+  # if we are under the influence of a noFill command OR
+  # the wireframe is not going to be visible on top of the
+  # fill then don't draw the stroke, only draw the fill
+  if (
+    primitiveProperties.canFill and @doFill and
+    (@currentStrokeSize is 0 or not @doStroke or
+      (@currentStrokeSize <= 1 and
+       not @defaultNormalFill and
+       not @defaultNormalStroke and
+       @currentStrokeColor is @currentFillColor and
+       @currentFillAlpha is 1 and @currentStrokeAlpha is 1)
+    )
+  ) or (
+    @currentStrokeSize <= 1 and @defaultNormalFill and @defaultNormalStroke
+  )
+    @createObjectIfNeededAndDressWithCorrectMaterial(
+      a, b, c, primitiveProperties,
+      false, @currentFillColor, @currentFillAlpha,
+      @defaultNormalFill
+    )
+  else if (not @doFill or not primitiveProperties.canFill) and @doStroke
+
+    # only doing the stroke
+    @createObjectIfNeededAndDressWithCorrectMaterial(
+      a, b, c, primitiveProperties, true,
+      @currentStrokeColor, @currentStrokeAlpha,
+      @defaultNormalStroke
+    )
+
+  # doing both the fill and the stroke
+  else
+    @createObjectIfNeededAndDressWithCorrectMaterial(
+      a, b, c, primitiveProperties, true,
+      @currentStrokeColor, @currentStrokeAlpha,
+      @defaultNormalStroke
+    )
+    @createObjectIfNeededAndDressWithCorrectMaterial(
+      a, b, c, primitiveProperties, false,
+      @currentFillColor, @currentFillAlpha,
+      @defaultNormalFill
+    )
+
+  if appendedFunction? then appendedFunction()
+  return
 
   reset: ->
 
