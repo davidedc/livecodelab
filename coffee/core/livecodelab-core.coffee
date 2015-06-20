@@ -172,7 +172,7 @@ define [
 
       @blendControls = new BlendControls(@usingWebGL, @threeJsSystem)
 
-      @renderer = new Renderer(@threeJsSystem, @blendControls)
+      @renderer = new Renderer(@threeJsSystem, @usingWebGL, @blendControls)
 
       @matrixCommands = new MatrixCommands(
         @three,
