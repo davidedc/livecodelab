@@ -55,7 +55,7 @@ require [
     !!(elem.getContext and elem.getContext("2d"))
 
 
-  startEnvironment = (paramsObject) ->
+  startEnvironment = (threeJsCanvas, backgroundCanvas, paramsObject) ->
 
     #/////////////////////////////////////////////////////
     # Phase 1 - Preliminary checks and initialisations
@@ -110,12 +110,12 @@ require [
     #  - renderer
     #  - animationLoop
     liveCodeLabCore = new LiveCodeLabCore(
+      threeJsCanvas,
+      backgroundCanvas,
       eventRouter,
       stats,
       usingWebGL,
       {
-        blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
-        canvasForBackground: paramsObject.canvasForBackground
         testMode: paramsObject.testMode
       }
     )
@@ -373,9 +373,9 @@ require [
       setTimeout(
         () ->
           startEnvironment(
+            threeJsCanvas,
+            backgroundCanvas,
             {
-              blendedThreeJsSceneCanvas: threeJsCanvas
-              canvasForBackground: backgroundCanvas
               forceCanvasRenderer: false
               bubbleUpErrorsForDebugging: false
 

@@ -110,6 +110,8 @@ define [
   class LiveCodeLabCore
 
     constructor: (
+      @threeJsCanvas,
+      @backgroundCanvas,
       @eventRouter,
       @statsWidget,
       @usingWebGL,
@@ -151,7 +153,7 @@ define [
       )
 
       @backgroundPainter = new BackgroundPainter(
-        @paramsObject.canvasForBackground,
+        @backgroundCanvas,
         @colourFunctions,
         @colourLiterals
       )
@@ -163,7 +165,7 @@ define [
 
       @threeJsSystem = new ThreeJsSystem(
         @usingWebGL
-        @paramsObject.blendedThreeJsSceneCanvas,
+        @threeJsCanvas,
         @paramsObject.testMode,
         @three
       )
