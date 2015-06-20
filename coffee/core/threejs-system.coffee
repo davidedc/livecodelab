@@ -19,14 +19,13 @@ define [
     @timesInvoked: false
 
     constructor: (
-      Detector,
+      @renderWithWebGL,
       @canvas,
-      @forceCanvasRenderer,
       @testMode,
       @liveCodeLabCore_three
     ) ->
 
-      if not @forceCanvasRenderer and Detector.webgl
+      if @renderWithWebGL
         # Webgl init.
         # We allow for a bigger ball detail.
         # Also the WebGL context allows us to use the Three JS composer and the
