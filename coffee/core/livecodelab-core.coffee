@@ -175,7 +175,7 @@ define [
       # canvasForBackground at runtime
       @backgroundPainter = new BackgroundPainter(
         @paramsObject.canvasForBackground,
-        @,
+        @colourFunctions,
         @colourLiterals
       )
 

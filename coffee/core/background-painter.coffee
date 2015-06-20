@@ -69,7 +69,12 @@ define () ->
     @canvasForBackground: null
     @backgroundViaCanvas: false
 
-    constructor: (@backgroundCanvasOrDiv, @liveCodeLabCoreInstance, @colourLiterals, @backgroundViaCanvas = false) ->
+    constructor: (
+      @backgroundCanvasOrDiv,
+      @colourFunctions,
+      @colourLiterals,
+      @backgroundViaCanvas = false
+    ) ->
       @gradStack = []
       @defaultGradientColor1 = 0
       @defaultGradientColor2 = 0
@@ -106,19 +111,19 @@ define () ->
 
       # if all colors of a gradient are opaque then
       # you can flush the command list.
-      if @liveCodeLabCoreInstance.colourFunctions.alpha(a) == 255 and \
-      @liveCodeLabCoreInstance.colourFunctions.alpha(b) == 255 and \
-      @liveCodeLabCoreInstance.colourFunctions.alpha(c) == 255 and \
-      @liveCodeLabCoreInstance.colourFunctions.alpha(d) == 255
+      if @colourFunctions.alpha(a) == 255 and \
+      @colourFunctions.alpha(b) == 255 and \
+      @colourFunctions.alpha(c) == 255 and \
+      @colourFunctions.alpha(d) == 255
         @gradStack = []
         @currentGradientStackValue = ""
 
 
       @gradStack.push
-        gradStacka: @liveCodeLabCoreInstance.colourFunctions.color(a)
-        gradStackb: @liveCodeLabCoreInstance.colourFunctions.color(b)
-        gradStackc: @liveCodeLabCoreInstance.colourFunctions.color(c)
-        gradStackd: @liveCodeLabCoreInstance.colourFunctions.color(d)
+        gradStacka: @colourFunctions.color(a)
+        gradStackb: @colourFunctions.color(b)
+        gradStackc: @colourFunctions.color(c)
+        gradStackd: @colourFunctions.color(d)
         solid: null
 
 
@@ -128,12 +133,12 @@ define () ->
       
       # [todo] should the screen be cleared when you invoke
       # the background command? (In processing it's not)
-      a = @liveCodeLabCoreInstance.colourFunctions.color(
+      a = @colourFunctions.color(
         arguments[0], arguments[1], arguments[2], arguments[3])
 
       # if the fill color is opaque then
       # you can flush the command list.
-      if @liveCodeLabCoreInstance.colourFunctions.alpha(a) == 255
+      if @colourFunctions.alpha(a) == 255
         @gradStack = []
         @currentGradientStackValue = ""
 
@@ -175,9 +180,9 @@ define () ->
           @defaultGradientColor3 = @colourLiterals.getColour('gainsboro')
           $("#fakeStartingBlinkingCursor").css "color", "white"
         when 4
-          @defaultGradientColor1 = @liveCodeLabCoreInstance.colourFunctions.color(155,255,155)
-          @defaultGradientColor2 = @liveCodeLabCoreInstance.colourFunctions.color(155,255,155)
-          @defaultGradientColor3 = @liveCodeLabCoreInstance.colourFunctions.color(155,255,155)
+          @defaultGradientColor1 = @colourFunctions.color(155,255,155)
+          @defaultGradientColor2 = @colourFunctions.color(155,255,155)
+          @defaultGradientColor3 = @colourFunctions.color(155,255,155)
           $("#fakeStartingBlinkingCursor").css "color", "DarkOliveGreen"
       
       # in theory we should wait for the next frame to repaing the background,
@@ -204,7 +209,7 @@ define () ->
     simpleGradientUpdateIfChanged: ->
 
       # some shorthands
-      color = @liveCodeLabCoreInstance.colourFunctions.color
+      color = @colourFunctions.color
 
       if @currentGradientStackValue isnt @previousGradientStackValue
         @previousGradientStackValue = @currentGradientStackValue
