@@ -124,7 +124,7 @@ define [
 
   helpers.attachEffectsAndSizeTheirBuffers = (thrsystem, renderer) ->
 
-    liveCodeLabCore_three = thrsystem.liveCodeLabCore_three
+    liveCodeLabCore_three = thrsystem.threejs
     renderTargetParameters = thrsystem.renderTargetParameters
     camera = thrsystem.camera
     scene = thrsystem.scene
@@ -301,7 +301,7 @@ define [
       @renderWithWebGL,
       @canvas,
       @testMode,
-      @liveCodeLabCore_three
+      @threejs
     ) ->
 
       if @renderWithWebGL
@@ -314,7 +314,7 @@ define [
 
         # see:
         #  http://mrdoob.github.io/three.js/docs/#Reference/Renderers/WebGLRenderer
-        @renderer = new liveCodeLabCore_three.WebGLRenderer(
+        @renderer = new @threejs.WebGLRenderer(
           canvas: @canvas
           antialias: false
           premultipliedAlpha: false
@@ -363,7 +363,7 @@ define [
           @previousFrameThreeJSSceneRenderForBlendingCanvas.getContext("2d")
         @canvasContext = @canvas.getContext("2d")
 
-        @renderer = new liveCodeLabCore_three.CanvasRenderer(
+        @renderer = new @threejs.CanvasRenderer(
           canvas: currentFrameThreeJsSceneCanvas
           antialias: false # to get smoother output
           preserveDrawingBuffer: @testMode # to allow screenshot
@@ -377,21 +377,21 @@ define [
           devicePixelRatio: 1
         )
 
-      @scene = new liveCodeLabCore_three.Scene()
+      @scene = new @threejs.Scene()
       @scene.matrixAutoUpdate = false
 
       # put a camera in the scene
-      @camera = new liveCodeLabCore_three.PerspectiveCamera(
+      @camera = new @threejs.PerspectiveCamera(
         35,
         @canvas.width / @canvas.height, 1, 10000
       )
       @camera.position.set 0, 0, 5
       @scene.add @camera
 
-      # transparently support window resize
       helpers.attachResizingBehaviourToResizeEvent @, @renderer, @camera
 
       helpers.sizeTheForegroundCanvas @canvas
+
       helpers.sizeRendererAndCamera(
         @renderer,
         @camera,
@@ -406,7 +406,7 @@ define [
         screenPass = undefined
         renderModel = undefined
         @renderTargetParameters =
-          format: liveCodeLabCore_three.RGBAFormat
+          format: @threejs.RGBAFormat
           stencilBuffer: true
 
         [
