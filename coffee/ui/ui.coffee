@@ -383,7 +383,7 @@ define [
       @stats.getDomElement().style.right = "0px"
       @stats.getDomElement().style.top = "0px"
       document.body.appendChild @stats.getDomElement()
-      $("#startingCourtainScreen").fadeOut()
+      $("#startingCurtainScreen").fadeOut()
       $("#formCode").css "opacity", 0
       @constructor.adjustCodeMirrorHeight()
 

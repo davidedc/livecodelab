@@ -39,25 +39,25 @@
     <body>
 
         <!--  menu -->
-        <div class="menubar" style="background-color:black; position: fixed;  z-index:4; top: 0px; left: 0px; width:100%">
+        <div class="menubar">
           <ul class="sf-menu" id="nav">
           </ul>
         </div>
         <!-- end of menu -->
 
-        <div class="verticalMiddleOfScreen" id="toMove" style="font-size:30em;">
+        <div class="verticalMiddleOfScreen" id="toMove">
             <div class="fakeAnimationContent">
                 <p id="caption"></p>
             </div>
         </div>
-        <div class="verticalMiddleOfScreen" id="justForFakeCursor" style="font-size:30em;">
+        <div class="verticalMiddleOfScreen" id="justForFakeCursor">
             <div class="fakeAnimationContent">
                 <p id="fakeStartingBlinkingCursor">|</p>
             </div>
         </div>
 
-        <div id='startingCourtainScreen' style='width:100%; height:100%; background-color:white; position: absolute;  z-index:4; top: 0px; left: 0px;'>
-            <div class="verticalMiddleOfScreen" id="loading" style="font-size:3em; color: red">
+        <div id='startingCurtainScreen'>
+            <div class="verticalMiddleOfScreen" id="loading">
                 loading
             </div>
         </div>
@@ -112,10 +112,10 @@
         </div>
 
 
-        <div id="miao" style="position: fixed;  top: 30px; left: 0px; width: 100%; font-size: 3em;">
+        <div id="miao">
 
             <form action='' id="formCode">
-                <textarea id="code" name="code" style="z-index:1;"></textarea>
+                <textarea id="code" name="code"></textarea>
             </form>
 
         </div>
