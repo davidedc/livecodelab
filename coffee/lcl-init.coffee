@@ -341,39 +341,22 @@ require [
       650
     )
 
-
   if setupForNormalLCLPage?
     $(document).ready ->
 
-      # create the foreground canvas where the
-      # foreground 3d graphics goes
-      canvasName = "blendedThreeJsSceneCanvas"
-      theCanvas = document.createElement('canvas')
-      theCanvas.id = "blendedThreeJsSceneCanvas"
-      theCanvas.style.left = "0px"
-      theCanvas.style.top = "0px"
-      theCanvas.style.position = "absolute"
-      theCanvas.style.zIndex = "-2"
-      document.getElementById("miao").appendChild(theCanvas)
+      threeJsCanvas = document.getElementById('threeJsCanvas')
       Ui.sizeForegroundCanvas(
-        theCanvas,
+        threeJsCanvas,
         {
           x: Ui.foregroundCanvasMaxScaleUpFactor,
           y: Ui.foregroundCanvasMaxScaleUpFactor
         }
       )
 
-      # create the background canvas where the
       # background gradients go
-      theCanvas2 = document.createElement('canvas')
-      theCanvas2.id = "backgroundCanvasOrDiv"
-      theCanvas2.style.left = "0px"
-      theCanvas2.style.top = "0px"
-      theCanvas2.style.position = "absolute"
-      theCanvas2.style.zIndex = "-3"
-      document.getElementById("miao").appendChild(theCanvas2)
+      backgroundCanvas = document.getElementById('backgroundCanvas')
       Ui.fullscreenify(
-        theCanvas2,
+        backgroundCanvas,
         {
           x: Ui.backgroundCanvasFractionOfWindowSize,
           y: Ui.backgroundCanvasFractionOfWindowSize
@@ -385,8 +368,8 @@ require [
         () ->
           startEnvironment(
             {
-              blendedThreeJsSceneCanvas: theCanvas
-              canvasForBackground: theCanvas2
+              blendedThreeJsSceneCanvas: threeJsCanvas
+              canvasForBackground: backgroundCanvas
               forceCanvasRenderer: false
               bubbleUpErrorsForDebugging: false
 

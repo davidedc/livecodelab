@@ -207,7 +207,6 @@ define () ->
       color = @liveCodeLabCoreInstance.colourFunctions.color
 
       if @currentGradientStackValue isnt @previousGradientStackValue
-        #alert('repainting the background');
         @previousGradientStackValue = @currentGradientStackValue
 
         if @backgroundViaCanvas
@@ -221,13 +220,6 @@ define () ->
           cssStringPreamble = "position: absolute; z-index:-3; top: 0px; left: 0px; width:#{sx}px; height:#{sy}px; "+@gradientPrefix+"transform-origin: 0% 0%; "+@gradientPrefix+"transform: scale(10,10);"
           cssStringPreamble = cssStringPreamble + "background:"
           cssString = ""
-
-        # dimension on screen
-        #sx = Math.floor((window.innerWidth + 40) / 10)
-        #sy = Math.floor((window.innerHeight + 40) / 10)
-        #document.getElementById("backgroundCanvasOrDiv").style.width = sx + "px"
-        #document.getElementById("backgroundCanvasOrDiv").style.height = sy + "px"
-
 
         for scanningGradStack in @gradStack
           if scanningGradStack.gradStacka?
@@ -259,9 +251,8 @@ define () ->
         if !@backgroundViaCanvas
           cssString = cssString.substring(0, cssString.length - 1);
           cssString = cssStringPreamble + cssString + ";"
-          if (document.getElementById("backgroundCanvasOrDiv"))
-            document.getElementById("backgroundCanvasOrDiv").style.cssText = cssString
-          #console.log cssString
+          if (@backgroundCanvasOrDiv)
+            @backgroundCanvasOrDiv.style.cssText = cssString
 
   BackgroundPainter
 

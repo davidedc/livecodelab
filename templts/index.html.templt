@@ -118,6 +118,9 @@
                 <textarea id="code" name="code"></textarea>
             </form>
 
+            <canvas id='threeJsCanvas'></canvas>
+            <canvas id='backgroundCanvas'></canvas>
+
         </div>
 
     </body>
