@@ -138,7 +138,8 @@ require [
         liveCodeLabCore.setLanguage(langName)
     )
 
-    editor = new Editor(eventRouter, CodeMirror)
+    codeTextArea = document.getElementById('code')
+    editor = new Editor(eventRouter, CodeMirror, codeTextArea)
     attachMouseWheelHandler editor
 
     # requires threeJsSystem, blendControls, graphicsCommands, renderer
