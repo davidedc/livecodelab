@@ -20,19 +20,11 @@ define [
 
     constructor: (
       Detector,
-      @blendedThreeJsSceneCanvas,
+      @canvas,
       @forceCanvasRenderer,
       @testMode,
       @liveCodeLabCore_three
     ) ->
-
-      # if we've not been passed a canvas, then create a new one and make it
-      # as big as the browser window content.
-      unless @blendedThreeJsSceneCanvas
-        @blendedThreeJsSceneCanvas = document.createElement("canvas")
-        @blendedThreeJsSceneCanvas.width = window.innerWidth
-        @blendedThreeJsSceneCanvas.height = window.innerHeight
-
 
       if not @forceCanvasRenderer and Detector.webgl
         # Webgl init.
@@ -40,13 +32,12 @@ define [
         # Also the WebGL context allows us to use the Three JS composer and the
         # postprocessing effects, which use shaders.
         @ballDefaultDetLevel = 16
-        @blendedThreeJsSceneCanvasContext =
-          @blendedThreeJsSceneCanvas.getContext("experimental-webgl")
+        @canvasContext = @canvas.getContext("experimental-webgl")
 
         # see:
         #  http://mrdoob.github.io/three.js/docs/#Reference/Renderers/WebGLRenderer
         @renderer = new liveCodeLabCore_three.WebGLRenderer(
-          canvas: @blendedThreeJsSceneCanvas
+          canvas: @canvas
           antialias: false
           premultipliedAlpha: false
           # we need to force the devicePixelRatio to 1
@@ -73,8 +64,8 @@ define [
         # some shorthands
         currentFrameThreeJsSceneCanvas = @currentFrameThreeJsSceneCanvas
 
-        currentFrameThreeJsSceneCanvas.width = @blendedThreeJsSceneCanvas.width
-        currentFrameThreeJsSceneCanvas.height = @blendedThreeJsSceneCanvas.height
+        currentFrameThreeJsSceneCanvas.width = @canvas.width
+        currentFrameThreeJsSceneCanvas.height = @canvas.height
 
 
         @currentFrameThreeJsSceneCanvasContext =
@@ -86,14 +77,13 @@ define [
         previousFrameThreeJSSceneRenderForBlendingCanvas =
           @previousFrameThreeJSSceneRenderForBlendingCanvas
         previousFrameThreeJSSceneRenderForBlendingCanvas.width =
-          @blendedThreeJsSceneCanvas.width
+          @canvas.width
         previousFrameThreeJSSceneRenderForBlendingCanvas.height =
-          @blendedThreeJsSceneCanvas.height
+          @canvas.height
 
         @previousFrameThreeJSSceneRenderForBlendingCanvasContext =
           @previousFrameThreeJSSceneRenderForBlendingCanvas.getContext("2d")
-        @blendedThreeJsSceneCanvasContext =
-          @blendedThreeJsSceneCanvas.getContext("2d")
+        @canvasContext = @canvas.getContext("2d")
 
         # see http://mrdoob.github.com/three.js/docs/53/#Reference/Renderers/CanvasRenderer
         #debugger
@@ -116,8 +106,8 @@ define [
 
       # put a camera in the scene
       @camera = new liveCodeLabCore_three.PerspectiveCamera(35, \
-        @blendedThreeJsSceneCanvas.width / \
-        @blendedThreeJsSceneCanvas.height, 1, 10000)
+        @canvas.width / \
+        @canvas.height, 1, 10000)
       #console.log "camera width: " + @camera.width
       @camera.position.set 0, 0, 5
       @scene.add @camera
@@ -126,7 +116,7 @@ define [
       # transparently support window resize
       @constructor.attachResizingBehaviourToResizeEvent @, @renderer, @camera
 
-      @constructor.sizeTheForegroundCanvas @blendedThreeJsSceneCanvas
+      @constructor.sizeTheForegroundCanvas @canvas
       @constructor.sizeRendererAndCamera @renderer, @camera, Ui.foregroundCanvasMaxScaleUpFactor
       if @isWebGLUsed
         @renderTargetParameters = undefined
@@ -228,7 +218,7 @@ define [
       return [Math.min(a[0],b[0]), Math.min(a[1],b[1])]
 
 
-    @sizeTheForegroundCanvas: (blendedThreeJsSceneCanvas) ->
+    @sizeTheForegroundCanvas: (canvas) ->
       multiplier = 1
       [sx,sy,correction] = @getBestBufferSize()
       #correction = 0
@@ -236,16 +226,16 @@ define [
       #sy = Math.floor((window.innerHeight + 40) / (Ui.foregroundCanvasMaxScaleUpFactor - correction))
 
 
-      Ui.sizeForegroundCanvas blendedThreeJsSceneCanvas, {x:Ui.foregroundCanvasMaxScaleUpFactor - correction,y:Ui.foregroundCanvasMaxScaleUpFactor - correction}
+      Ui.sizeForegroundCanvas canvas, {x:Ui.foregroundCanvasMaxScaleUpFactor - correction,y:Ui.foregroundCanvasMaxScaleUpFactor - correction}
 
 
-      blendedThreeJsSceneCanvas.width = multiplier * sx
-      blendedThreeJsSceneCanvas.height = multiplier * sy
+      canvas.width = multiplier * sx
+      canvas.height = multiplier * sy
 
 
       # dimension on screen
-      blendedThreeJsSceneCanvas.style.width = sx + "px"
-      blendedThreeJsSceneCanvas.style.height = sy + "px"
+      canvas.style.width = sx + "px"
+      canvas.style.height = sy + "px"
 
 
     @attachEffectsAndSizeTheirBuffers: (thrsystem, renderer) ->
@@ -390,7 +380,7 @@ define [
     @attachResizingBehaviourToResizeEvent: (thrsystem, renderer, camera) ->
       scale = Ui.foregroundCanvasMaxScaleUpFactor
       callback = =>
-        @sizeTheForegroundCanvas thrsystem.blendedThreeJsSceneCanvas
+        @sizeTheForegroundCanvas thrsystem.canvas
         @sizeRendererAndCamera renderer, camera, scale
         [thrsystem.renderTarget, thrsystem.effectSaveTarget, thrsystem.effectBlend, thrsystem.composer] = ThreeJsSystem.attachEffectsAndSizeTheirBuffers(thrsystem, renderer)
 
