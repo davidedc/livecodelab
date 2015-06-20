@@ -16,6 +16,7 @@ require [
   ,'autocoder/autocoder'
   ,'codemirror'
   ,'jquery'
+  ,'Three.Detector'
   ,'mousewheel'
   ,'codemirror-lcl-mode'
   ,'globals/numbertimes'
@@ -33,6 +34,7 @@ require [
   ,Autocoder
   ,CodeMirror
   ,$
+  ,Detector
 ) ->
 
   # see http://stackoverflow.com/questions/2745432
@@ -75,6 +77,8 @@ require [
       $("#simplemodal-container").height 200
       return
 
+    usingWebGL = (Detector.webgl and not paramsObject.forceCanvasRenderer)
+
     # EventRouter manages all the events/callbacks across the whole
     # of livecodelab.
     # For "heavy fire" callbacks one might want to use a classic
@@ -108,10 +112,10 @@ require [
     liveCodeLabCore = new LiveCodeLabCore(
       eventRouter,
       stats,
+      usingWebGL,
       {
         blendedThreeJsSceneCanvas: paramsObject.blendedThreeJsSceneCanvas
         canvasForBackground: paramsObject.canvasForBackground
-        forceCanvasRenderer: paramsObject.forceCanvasRenderer
         testMode: paramsObject.testMode
       }
     )
@@ -149,8 +153,7 @@ require [
       eventRouter,
       editor,
       liveCodeLabCore,
-      Detector.webgl,
-      paramsObject.forceCanvasRenderer
+      usingWebGL
     )
     eventRouter.addListener(
       "load-program",

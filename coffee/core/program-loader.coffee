@@ -5,11 +5,7 @@
 ## landing on a URL with a hashtag.
 ###
 
-define [
-  'Three.Detector'
-], (
-  Detector
-) ->
+define () ->
 
   class ProgramLoader
 
@@ -17,8 +13,7 @@ define [
       @eventRouter,
       @texteditor,
       @liveCodeLabCoreInstance,
-      @webGlAvailable,
-      @forcedCanvasRenderer
+      @usingWebGL,
     ) ->
       @lastHash = ""
       userWarnedAboutWebglExamples = false
@@ -1016,9 +1011,8 @@ define [
       )
 
     loadDemoOrTutorial: (demoName) ->
-      webGlOk = (@webGlAvailable and not @forcedCanvasRenderer)
       if (
-        not webGlOk and
+        not @usingWebGL and
         not userWarnedAboutWebglExamples and
         demoName.indexOf("webgl") is 0
       )
@@ -1034,7 +1028,7 @@ define [
       @eventRouter.emit("editor-undim")
       @liveCodeLabCoreInstance.graphicsCommands.doTheSpinThingy = false
       prependMessage = ""
-      if webGlOk and demoName.indexOf("webgl") is 0
+      if not @usingWebGL and demoName.indexOf("webgl") is 0
         prependMessage =
         """
         // This drawing makes much more sense

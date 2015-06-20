@@ -8,33 +8,33 @@ define () ->
   class Renderer
 
     constructor: (@threeJsSystem, @blendControls) ->
-    
+
     render: (graphics) ->
-      
+
       # some shorthands
       threeJsSystem = @threeJsSystem
       renderer = threeJsSystem.renderer
       blendedThreeJsSceneCanvasContext = threeJsSystem.blendedThreeJsSceneCanvasContext
       previousFrameThreeJSSceneRenderForBlendingCanvasContext =
         threeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext
-      
+
       @combDisplayList graphics
 
 
-      if threeJsSystem.isWebGLUsed
+      if threeJsSystem.usingWebGL
         threeJsSystem.composer.render()
       else
-        
+
         # the renderer draws into an offscreen
         # canvas called currentFrameThreeJsSceneCanvas
         renderer.render threeJsSystem.scene, threeJsSystem.camera
-        
+
         # clear the final render context
         blendedThreeJsSceneCanvasContext.globalAlpha = 1.0
         blendedThreeJsSceneCanvasContext.clearRect(
           0, 0, window.innerWidth, window.innerHeight
         )
-        
+
         # draw the rendering of the scene on the blendedThreeJsSceneCanvasContext
         # this needs a few steps so we can get the motionBlur or the paintOver
         # effects right
@@ -52,12 +52,12 @@ define () ->
           "copy"
         previousFrameThreeJSSceneRenderForBlendingCanvasContext.drawImage \
           threeJsSystem.blendedThreeJsSceneCanvas, 0, 0
-        
+
         # clear the renderer's canvas to transparent black
         threeJsSystem.currentFrameThreeJsSceneCanvasContext.clearRect \
           0, 0, window.innerWidth, window.innerHeight
 
-    
+
     # By doing some profiling it is apparent that
     # adding and removing objects has a big cost.
     # So instead of adding/removing objects every frame,
@@ -92,24 +92,24 @@ define () ->
       i = undefined
       sceneObject = undefined
       primitiveType = undefined
-      
+
       # some shorthands
       threeJsSystem = @threeJsSystem
       objectsUsedInFrameCounts = graphics.objectsUsedInFrameCounts
-      
+
       # scan all the objects in the display list
       for sceneObject in threeJsSystem.scene.children
         # check the type of object. Each type has one pool. Go through each
         # object in the pool and set to visible the number of used objects in
         # this frame, set the others to hidden.
         # Only tiny exception is that the ball has one pool for each detail level.
-        
+
         # set the first "used*****" objects to visible...
         if objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] > 0
           sceneObject.visible = true
           objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] -= 1
         else
-          
+
           # ... and the others to invisible
           sceneObject.visible = false
 

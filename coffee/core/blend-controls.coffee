@@ -19,7 +19,7 @@ define () ->
     # Used for setting how much blending there is between frames
     blendAmount: 0
     
-    constructor: (@threeJsSystem) ->
+    constructor: (@usingWebGL, @threeJsSystem) ->
       @animationStyles.normal = 0
       @animationStyles.paintOver = 1
       @animationStyles.motionBlur = 2
@@ -42,22 +42,21 @@ define () ->
       @previousanimationStyleValue = @animationStyleValue
 
       # defining a couple of shorthands to avoid super-long lines
-      isWebGLUsed = @threeJsSystem.isWebGLUsed
       @animationStyles = @animationStyles
 
-      if isWebGLUsed and @animationStyleValue is @animationStyles.motionBlur
+      if @usingWebGL and @animationStyleValue is @animationStyles.motionBlur
         @threeJsSystem.effectBlend.uniforms.mixRatio.value = 0.4
-      else if not isWebGLUsed and @animationStyleValue is @animationStyles.motionBlur
+      else if not @usingWebGL and @animationStyleValue is @animationStyles.motionBlur
         @blendAmount = 0.6
 
-      if isWebGLUsed and @animationStyleValue is @animationStyles.paintOver
+      if @usingWebGL and @animationStyleValue is @animationStyles.paintOver
         @threeJsSystem.effectBlend.uniforms.mixRatio.value = 1.0
-      else if not isWebGLUsed and @animationStyleValue is @animationStyles.paintOver
+      else if not @usingWebGL and @animationStyleValue is @animationStyles.paintOver
         @blendAmount = 1
 
-      if isWebGLUsed and @animationStyleValue is @animationStyles.normal
+      if @usingWebGL and @animationStyleValue is @animationStyles.normal
         @threeJsSystem.effectBlend.uniforms.mixRatio.value = 0
-      else if not isWebGLUsed and @animationStyleValue is @animationStyles.normal
+      else if not @usingWebGL and @animationStyleValue is @animationStyles.normal
         @blendAmount = 0
 
   BlendControls

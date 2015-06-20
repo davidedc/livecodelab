@@ -81,7 +81,6 @@ define [
   ,'buzz'
   ,'lowLag'
   ,'threejs'
-  ,'Three.Detector'
 ], (
   AnimationLoop
   ,BackgroundPainter
@@ -105,7 +104,6 @@ define [
   ,buzz
   ,lowLag
   ,THREE
-  ,Detector
 ) ->
 
 
@@ -114,10 +112,9 @@ define [
     constructor: (
       @eventRouter,
       @statsWidget,
+      @usingWebGL,
       @paramsObject
     ) ->
-
-      @renderWithWebGL = (Detector.webgl && !@paramsObject.forceCanvasRenderer)
 
       # three is a global defined in three.min.js and used in:
       # ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
@@ -160,20 +157,18 @@ define [
       )
 
       @languages = new Languages(@eventRouter, @globalscope)
-      languageObjects = @languages.getLanguageObjects(
-        @paramsObject.languageVersion
-      )
+      languageObjects = @languages.getLanguageObjects()
       @programRunner = languageObjects.runner
       @codeCompiler = languageObjects.compiler
 
       @threeJsSystem = new ThreeJsSystem(
-        @renderWithWebGL
+        @usingWebGL
         @paramsObject.blendedThreeJsSceneCanvas,
         @paramsObject.testMode,
         @three
       )
 
-      @blendControls = new BlendControls(@threeJsSystem)
+      @blendControls = new BlendControls(@usingWebGL, @threeJsSystem)
 
       @renderer = new Renderer(@threeJsSystem, @blendControls)
 

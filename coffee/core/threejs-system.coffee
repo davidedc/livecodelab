@@ -140,7 +140,7 @@ define [
     [sx,sy,unused] = helpers.getBestBufferSize()
 
     #debugger
-    if thrsystem.isWebGLUsed
+    if thrsystem.usingWebGL
       if thrsystem.renderTarget?
         thrsystem.renderTarget.dispose()
 
@@ -242,7 +242,7 @@ define [
 
       return [renderTarget, effectSaveTarget, effectBlend, composer]
 
-    else # if !@isWebGLUsed
+    else # if !@usingWebGL
       thrsystem.currentFrameThreeJsSceneCanvas.width = multiplier * sx
       thrsystem.currentFrameThreeJsSceneCanvas.height = multiplier * sy
 
@@ -300,18 +300,17 @@ define [
 
   class ThreeJsSystem
 
-    @isWebGLUsed: false
     @composer: null
     @timesInvoked: false
 
     constructor: (
-      @renderWithWebGL,
+      @usingWebGL,
       @canvas,
       @testMode,
       @threejs
     ) ->
 
-      if @renderWithWebGL
+      if @usingWebGL
         # Webgl init.
         # We allow for a bigger ball detail.
         # Also the WebGL context allows us to use the Three JS composer and the
@@ -334,7 +333,6 @@ define [
           devicePixelRatio: 1
 
         )
-        @isWebGLUsed = true
 
       else
         # Canvas init.
@@ -405,7 +403,7 @@ define [
         Ui.foregroundCanvasMaxScaleUpFactor
       )
 
-      if @isWebGLUsed
+      if @usingWebGL
         @renderTargetParameters = undefined
         @renderTarget = undefined
         @effectSaveTarget = undefined
