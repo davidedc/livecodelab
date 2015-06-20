@@ -5,6 +5,7 @@
 
 define [
   'ui/ui',
+  'underscore',
   'Three.CanvasRenderer', # needed for the CanvasRenderer
   'Three.Projector',      # needed for the CanvasRenderer
   'Three.ShaderExtras',
@@ -13,9 +14,9 @@ define [
   'Three.RenderPass',
   'Three.SavePass',
   'Three.ShaderPass',
-  'globals/debounce'
 ], (
-  Ui
+  Ui,
+  _
 ) ->
 
   helpers = {}
@@ -282,7 +283,7 @@ define [
     # So giving it some slack and doing it when "at rest"
     # rather than multiple times consecutively during the
     # resizing.
-    debouncedCallback = debounce callback, 250
+    debouncedCallback = _.debounce(callback, 250)
 
     # bind the resize event
     window.addEventListener "resize", debouncedCallback, false
