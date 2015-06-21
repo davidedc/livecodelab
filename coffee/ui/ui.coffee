@@ -166,7 +166,7 @@ define [
       # to the UI elements that generated the events
       eventRouter = @eventRouter
 
-      $('#logo').click(
+      $('#logo span').click(
         () ->
           $("#aboutWindow").modal()
           $("#simplemodal-container").height 250
