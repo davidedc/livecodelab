@@ -173,6 +173,9 @@ define () ->
         # the program is empty and so is the screen. Effectively, the user
         # is starting from scratch, so the frame should be reset to zero.
         @setFrame(0)
+        @blendControls.animationStyle(@blendControls.animationStyles.normal)
+        @blendControls.animationStyleUpdateIfChanged()
+        @renderer.render(@graphicsCommands)
 
       # we have to repeat this check because in the case
       # the user has set frame = 0,
