@@ -64,11 +64,20 @@ define () ->
 
     sleeping: true
 
-    constructor: (@eventRouter,
-                  @stats,
-                  @lclCore,
-                  @graphicsCommands,
-                  @forceUseOfTimeoutForScheduling = false) ->
+    constructor: (
+      @lclCore,
+      @eventRouter,
+      @stats,
+      @timeKeeper,
+      @blendControls,
+      @backgroundPainter,
+      @renderer,
+      @matrixCommands,
+      @soundSystem,
+      @lightSystem,
+      @graphicsCommands,
+      @forceUseOfTimeoutForScheduling = false
+    ) ->
       # Some basic initialisations and constant definitions
       @wantedFramesPerSecond = @AS_HIGH_FPS_AS_POSSIBLE
 
@@ -115,34 +124,34 @@ define () ->
             @animate()
         else
           if loopInterval?
-            loopInterval = setInterval(=>
-              window.requestAnimationFrame ->
-                @animate()
-            , 1000 / @wantedFramesPerSecond)
+            loopInterval = setInterval(
+              () => window.requestAnimationFrame(() => @animate()),
+              1000 / @wantedFramesPerSecond
+            )
 
-    
+
     # animation loop
     animate: ->
 
       if @frame is 0
-        @lclCore.timeKeeper.resetTime()
+        @timeKeeper.resetTime()
       else
-        @lclCore.timeKeeper.updateTime()
+        @timeKeeper.updateTime()
 
-      frameStartTime = @lclCore.timeKeeper.milliseconds
+      frameStartTime = @timeKeeper.milliseconds
 
       # do the render ONLY if we are some ms away from the next
       # scheduled beat. In other words, stay well clear of the
       # sound timer!
-      
+
       forbiddenZone = Math.min(Math.max.apply(Math, @fpsHistory), 1000/30)
-      if @lclCore.timeKeeper.nextQuarterBeat - frameStartTime < forbiddenZone
+      if @timeKeeper.nextQuarterBeat - frameStartTime < forbiddenZone
         @noDrawFrame = true
       else
         @noDrawFrame = false
 
       @cleanStateBeforeRunningDrawAndRendering()
-      
+
       # if the draw function is empty, then don't schedule the
       # next animation frame and set a "I'm sleeping" flag.
       # We'll re-start the animation when the editor content
@@ -150,8 +159,8 @@ define () ->
       # we actually do want to render one "empty screen" frame.
       if not @sleeping
         @scheduleNextFrame()
-        
-        # Now here there is another try/catch check when the draw function is ran.
+
+        # Now here is another try/catch check.
         # The reason is that there might be references to uninitialised
         # or inexistent variables. For example:
         #   box
@@ -166,32 +175,35 @@ define () ->
           @lclCore.programRunner.runProgram()
         catch e
 
-          #alert('runtime error');
           # note that this causes the running of the last stable function
           # so you could have executed half of the original draw function,
           # then got an error, now you are re-running an old draw function.
           @eventRouter.emit("runtime-error-thrown", e)
           return
-        programRunner = @lclCore.programRunner
-        programRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun @lclCore.codeCompiler
+        @lclCore.programRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(
+          @lclCore.codeCompiler
+        )
       else
-        # the program is empty and so it's the screen. Effectively, the user
-        # is starting from scratch, so the frame variable should be reset to zero.
+        # the program is empty and so is the screen. Effectively, the user
+        # is starting from scratch, so the frame should be reset to zero.
         @setFrame(0)
-      
+
       # we have to repeat this check because in the case
       # the user has set frame = 0,
       # then we have to catch that case here
       # after the program has executed
-      @lclCore.timeKeeper.resetTime()  if @frame is 0
-      @lclCore.blendControls.animationStyleUpdateIfChanged()
-      @lclCore.backgroundPainter.simpleGradientUpdateIfChanged()
-      
+      @timeKeeper.resetTime()  if @frame is 0
+      @blendControls.animationStyleUpdateIfChanged()
+      @backgroundPainter.simpleGradientUpdateIfChanged()
+
       # "frame" starts at zero, so we increment after the first time the draw
       # function has been run.
       @setFrame(@frame + 1)
 
-      geometryOnScreenMightHaveChanged =  (@graphicsCommands.atLeastOneObjectWasDrawn or @graphicsCommands.atLeastOneObjectIsDrawn)
+      geometryOnScreenMightHaveChanged = (
+        @graphicsCommands.atLeastOneObjectWasDrawn ||
+        @graphicsCommands.atLeastOneObjectIsDrawn
+      )
 
       # if livecodelab is dozing off, in that case you do
       # want to do a render because it will clear the screen.
@@ -199,34 +211,35 @@ define () ->
       # to remain painted in the background behind
       # the big cursor.
       if (!@noDrawFrame or @sleeping) and geometryOnScreenMightHaveChanged
-        @lclCore.renderer.render @graphicsCommands
+        @renderer.render @graphicsCommands
         # keep the last 10 durations of when we actually
         # drew the frame. This is used for trying to
         # avoid collision between graphics and sound timers.
         @fpsHistory.push(new Date().getTime() - frameStartTime)
         if @fpsHistory.length > 60
           @fpsHistory.shift()
-        @graphicsCommands.atLeastOneObjectWasDrawn = @graphicsCommands.atLeastOneObjectIsDrawn
+        @graphicsCommands.atLeastOneObjectWasDrawn =
+          @graphicsCommands.atLeastOneObjectIsDrawn
 
 
       # update stats
       if @stats then @stats.update()
 
     cleanStateBeforeRunningDrawAndRendering: ->
-      @lclCore.renderer.resetExclusionPrincipleWobbleDataIfNeeded @graphicsCommands
+      @renderer.resetExclusionPrincipleWobbleDataIfNeeded @graphicsCommands
 
-      @lclCore.matrixCommands.resetMatrixStack()
-      
+      @matrixCommands.resetMatrixStack()
+
       # the sound list needs to be cleaned
       # so that the user program can create its own from scratch
-      @lclCore.soundSystem.resetLoops()
+      @soundSystem.resetLoops()
 
       @lclCore.programRunner.resetTrackingOfDoOnceOccurrences()
 
-      @lclCore.lightSystem.noLights()
+      @lightSystem.noLights()
       @graphicsCommands.reset()
-      @lclCore.blendControls.animationStyle @lclCore.blendControls.animationStyles.normal
-      @lclCore.backgroundPainter.resetGradientStack()
+      @blendControls.animationStyle @blendControls.animationStyles.normal
+      @backgroundPainter.resetGradientStack()
 
       # In case we want to make each frame an actual
       # pure function then we need to seed "random" and "noise"

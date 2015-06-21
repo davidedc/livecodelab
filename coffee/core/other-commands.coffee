@@ -1,18 +1,14 @@
 
-
 define () ->
 
   class OtherCommands
-    
-    constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance, @colourLiterals) ->
-      
+
+    constructor: () ->
 
     addToScope: (scope) ->
-
-      scope.add('noOperation',       () => @noOperation())
+      scope.add('noOperation', () => @noOperation())
 
     noOperation: () ->
-
 
   OtherCommands
 

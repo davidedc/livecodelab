@@ -4,8 +4,8 @@
 ###
 
 define [
-  'lib/lcl/preprocessor'
-  ,'lib/lcl/parser'
+  'lib/lcl/preprocessor',
+  'lib/lcl/parser'
 ], (
   Preprocessor
   ,Parser

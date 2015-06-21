@@ -12,15 +12,56 @@ define () ->
     constructor: ->
       @abs = Math.abs
       @ceil = Math.ceil
+      @exp = Math.exp
       @floor = Math.floor
+      @int = int
+      @log = Math.log
+      @max = max
+      @min = min
+      @pow = Math.pow
+      @round = Math.round
+      @sqrt = Math.sqrt
+      @acos = Math.acos
+      @asin = Math.asin
+      @atan = Math.atan
+      @atan2 = Math.atan2
+
+      @cos = Math.cos
+      @sin = Math.sin
+      @tan = Math.tan
+      @degrees = degrees
+      @radians = radians
+
+      @random = random
+      @noise = noise
 
       @pi = Math.PI
 
     addToScope: (scope) ->
-      scope.add('abs',   @abs)
-      scope.add('ceil',  @ceil)
-      scope.add('floor', @floor)
-      scope.add('pi',    @pi)
+      scope.add('abs',     @abs)
+      scope.add('ceil',    @ceil)
+      scope.add('exp',     @exp)
+      scope.add('floor',   @floor)
+      scope.add('int',     @int)
+
+      scope.add('log',     @log)
+      scope.add('max',     @max)
+      scope.add('min',     @min)
+      scope.add('pow',     @pow)
+      scope.add('round',   @round)
+      scope.add('sqrt',    @sqrt)
+      scope.add('acos',    @acos)
+      scope.add('asin',    @asin)
+      scope.add('atan',    @atan)
+      scope.add('atan2',   @atan2)
+      scope.add('cos',     @cos)
+      scope.add('sin',     @sin)
+      scope.add('tan',     @tan)
+      scope.add('degrees', @degrees)
+      scope.add('radians', @radians)
+      scope.add('random',  @random)
+      scope.add('noise',   @noise)
+      scope.add('pi',      @pi)
 
 
 # Calculation

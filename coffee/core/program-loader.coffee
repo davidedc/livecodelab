@@ -5,21 +5,22 @@
 ## landing on a URL with a hashtag.
 ###
 
-define [
-  'Three.Detector'
-], (
-  Detector
-) ->
+define () ->
 
   class ProgramLoader
 
-    constructor: (@eventRouter, @texteditor, @liveCodeLabCoreInstance) ->
+    constructor: (
+      @eventRouter,
+      @texteditor,
+      @liveCodeLabCoreInstance,
+      @usingWebGL,
+    ) ->
       @lastHash = ""
       userWarnedAboutWebglExamples = false
       @programs =
         demos: {}
         tutorials: {}
-      
+
       @programs.demos.roseDemo =
         submenu: "Basic"
         title: "Rose"
@@ -27,17 +28,18 @@ define [
                   // 'B rose' by Guy John (@rumblesan)
                   // Mozilla Festival 2012
                   // adapted from 'A rose' by Lib4tech
-                  
+
                   background red
                   scale 1.5
                   animationStyle paintOver
-                  rotate frame/100
-                  fill 255-((frame/2)%255),0,0
-                  stroke 255-((frame/2)%255),0,0
-                  scale 1-((frame/2)%255) / 255
+                  rotate frame / 100
+                  v = (frame / 2) % 255
+                  fill 255 - v, 0, 0
+                  stroke 255 - v, 0, 0
+                  scale 1 - (v / 255)
                   box
                   """
-      
+
 
       @programs.demos.simpleCubeDemo =
         submenu: "Basic"
@@ -45,26 +47,26 @@ define [
         code: """
               // there you go!
               // a simple cube!
-              
+
               background yellow
-              rotate 0,time/2,time/2
+              rotate 0, time / 2, time / 2
               box
               """
-    
-    
+
+
       @programs.demos.cubesAndSpikes =
         submenu: "Basic"
         title: "Cubes and spikes"
         code: """
-              simpleGradient fuchsia,color(100,200,200),yellow
+              simpleGradient fuchsia, color(100, 200, 200), yellow
               scale 2.1
               5 times
-              ▶rotate 0,1,time/5
-              ▶box 0.1,0.1,0.1
-              ▶move 0,0.1,0.1
+              ▶rotate 0, 1, time / 5
+              ▶box 0.1, 0.1, 0.1
+              ▶move 0, 0.1, 0.1
               ▶3 times
-              ▶▶rotate 0,1,1
-              ▶▶box 0.01,0.01,1
+              ▶▶rotate 0, 1, 1
+              ▶▶box 0.01, 0.01, 1
               """
 
       @programs.demos.redthreadsDemo =
@@ -77,9 +79,9 @@ define [
               noFill
               strokeSize 7
               2 times
-              ▶rotate time/20
+              ▶rotate time / 20
               ▶ball
-              ▶rotate 0,1,1
+              ▶rotate 0, 1, 1
               ▶ball
               """
 
@@ -93,14 +95,14 @@ define [
               noStroke
               fill orange
               background black
-              rotate time /5
+              rotate time / 5
               scale 0.7
               9 times with i
-              ▶rotate time/5 + i
-              ▶for i in [0...ringDetail]
-              ▶▶rotate 0,0,2*Math.PI/(ringDetail)
-              ▶▶move 2,0,0
-              ▶▶▶rect 1,0.3+1/ringDetail
+              ▶rotate (time / 5) + i
+              ▶ringDetail times
+              ▶▶rotate 0, 0, (2 * pi) / ringDetail
+              ▶▶move 2, 0, 0
+              ▶▶▶rect 1, 0.3 + (1 / ringDetail)
               """
 
       @programs.demos.crazyRibbon =
@@ -112,24 +114,24 @@ define [
               background black
               rotate time
               200 times with i
-              ▶rotate time * 2 + sin i
-              ▶▶move 2,0,0
-              ▶▶▶box 1,0.4, 0.07
+              ▶rotate time * 2 + sin(i)
+              ▶▶move 2, 0, 0
+              ▶▶▶box 1, 0.4, 0.07
               """
 
       @programs.demos.acidTown =
         submenu: "Complex"
         title: "Acid town"
         code: """
-              absin = (x) -> 255*abs sin time*x
+              absin = (x) -> 255 * abs(sin(time * x))
               animationStyle paintOver
               scale 3.5
               background black
-              stroke (absin 1),(absin 2),(absin 3)
+              stroke absin(1), absin(2), absin(3)
               noFill
               strokeSize 7
               2 times
-              ▶rotate time/20
+              ▶rotate time / 20
               ▶box
               """
 
@@ -138,18 +140,18 @@ define [
         title: "The grid"
         code: """
               background magenta
-              gridSize = 4 * abs(wave 0.05)
-              scale 1/(abs(gridSize)+2) // fit the screen
-              pad = 1+abs(2*wave 0.5)
+              gridSize = 4 * abs(wave(0.05))
+              scale 1 / (abs(gridSize) + 2) // fit the screen
+              pad = 1 + abs(2 * wave(0.5))
               ambientLight
-              fill yellow,230
+              fill yellow, 230
               rotate time
               // center everything
-              move -(pad*gridSize/2)
+              move -(pad * gridSize / 2)
               gridSize times with rows
               ▶gridSize times with columns
               ▶▶gridSize times with slices
-              ▶▶▶move pad*rows, pad*columns, pad*slices
+              ▶▶▶move pad * rows, pad * columns, pad * slices
               ▶▶▶▶box
               """
 
@@ -158,21 +160,21 @@ define [
         title: "Tube"
         code: """
               background black
-              rotate time/10
-              move 0,-1.2,-1
-              rotate 3.14/2,0,0
+              rotate time / 10
+              move 0, -1.2, -1
+              rotate pi / 2, 0, 0
               scale 0.5
               noStroke
               8 times with j
-              ▶move 0,0.5,0
+              ▶move 0, 0.5, 0
               ▶31 times with i
-              ▶▶rotate 0,0.2,0
-              ▶▶r = ((i  * 3) + time*12)%255
-              ▶▶g = ((i * 7) + (time*30+20)*7)%255
-              ▶▶b= ((j * 17) + (time*30+40)*3)%255
-              ▶▶fill r,g,b
-              ▶▶rect 0.3,0.3
-              ▶▶move 0.5,0,0
+              ▶▶rotate 0, 0.2, 0
+              ▶▶r = ((i  * 3) + (time * 12)) % 255
+              ▶▶g = ((i * 7) + (time * 30 + 20) * 7) % 255
+              ▶▶b = ((j * 17) + (time * 30 + 40) * 3) % 255
+              ▶▶fill r, g, b
+              ▶▶rect 0.3, 0.3
+              ▶▶move 0.5, 0, 0
               """
 
       @programs.demos.movingBlocks =
@@ -188,15 +190,15 @@ define [
               thinness = 0.08
               colorSpeed = 4
               movmentSpeed = 0.002
-              noiseMov = (x,y,j,z) -> spread*(noise(((x*abs(sin((time+y)*movmentSpeed))))/(j+z))-0.5)
-              move 1,1,0
-              rotate 3,0.6,time/10
+              noiseMov = (x, y, j, z) -> spread * (noise(((x*abs(sin((time+y)*movmentSpeed))))/(j+z))-0.5)
+              move 1, 1, 0
+              rotate 3, 0.6, time / 10
               numStacks times with j
               ▶move 0
               ▶▶move noiseMov(200,100,j,20),noiseMov(209,200,j,2),noiseMov(100,300,j,40)/4
               ▶▶stackN times with i
-              ▶▶▶move 0,0,i*thinness
-              ▶▶▶▶fill 255,(time*3*j*colorSpeed+i*255/stackN)%255, (time*1*j*colorSpeed+i*255/stackN)%255
+              ▶▶▶move 0, 0, i * thinness
+              ▶▶▶▶fill 255, (time*3*j*colorSpeed+i*255/stackN)%255, (time*1*j*colorSpeed+i*255/stackN)%255
               ▶▶▶▶rect
               """
 
@@ -229,19 +231,19 @@ define [
         submenu: "WebGL"
         title: "WebGL: Two cubes"
         code: """
-              background 155,255,255
+              background 155, 255, 255
               2 times
-              ▶rotate 0, 1, time/2
+              ▶rotate 0, 1, time / 2
               ▶box
               """
-    
+
       @programs.demos.webglturbineDemo =
         submenu: "WebGL"
         title: "WebGL: Turbine"
         code: """
-              background 155,55,255
+              background 155, 55, 255
               70 times
-              ▶rotate time/100,1,time/100
+              ▶rotate time / 100, 1, time / 100
               ▶box
               """
 
@@ -252,9 +254,9 @@ define [
               scale 4.5
               noStroke
               10 times with i
-              ▶rotate 1,time/400,2
-              ▶fill 255,0,200*abs(sin((i)))
-              ▶ball    
+              ▶rotate 1, time / 400, 2
+              ▶fill 255, 0, 200 * abs(sin(i))
+              ▶ball
               """
 
 
@@ -285,10 +287,10 @@ define [
               background black
               scale 0.9
               rotate 15,3,1
-              for i in [0...detail]
-              ▶rotate 0,0,2*Math.PI/(detail)
+              detail times with i
+              ▶rotate 0, 0, (2 * pi) / detail
               ▶move 0.65
-              ▶▶rotate turns*i*Math.PI/(detail)+time*speed,0,0
+              ▶▶rotate (turns * i * pi) / detail + (time * speed), 0, 0
               ▶▶▶rect 1
               """
 
@@ -301,16 +303,16 @@ define [
               speed = 2
               background black
               scale 2
-              rotate time/5
+              rotate time / 5
               4 times
-              ▶rotate 0,2,0
-              ▶for i in [0...detail]
-              ▶▶rotate 0,0,2*Math.PI/(detail)
-              ▶▶move 2,5,1
-              ▶▶▶rotate turns*i*Math.PI/(detail)+time*speed,0,0
+              ▶rotate 0, 2, 0
+              ▶detail times with i
+              ▶▶rotate 0, 0, 2 * pi / detail
+              ▶▶move 2, 5, 1
+              ▶▶▶rotate (turns * i * pi) / detail + (time * speed), 0, 0
               ▶▶▶rect 1
               """
-    
+
       @programs.demos.littleSpiralOfCubes =
         submenu: "Basic"
         title: "Little spiral"
@@ -318,88 +320,88 @@ define [
               background orange
               scale 0.1
               10 times
-              ▶rotate 0,1,time
-              ▶move 1,1,1
+              ▶rotate 0, 1, time
+              ▶move 1, 1, 1
               ▶box
               """
-    
+
       @programs.demos.tentacleDemo =
         submenu: "Basic"
         title: "Tentacle"
         code: """
-              background 155,255,155
+              background 155, 255, 155
               scale 0.15
               3 times
-              ▶rotate 0,1,1
+              ▶rotate 0, 1, 1
               ▶10 times
-              ▶▶rotate 0,1,time
+              ▶▶rotate 0, 1, time
               ▶▶scale 0.9
-              ▶▶move 1,1,1
+              ▶▶move 1, 1, 1
               ▶▶box
               """
-    
+
       @programs.demos.lampDemo =
         submenu: "Basic"
         title: "Lamp"
         code: """
               animationStyle motionBlur
-              simpleGradient red,yellow,color(255,0,255)
+              simpleGradient red, yellow, color(255, 0, 255)
               //animationStyle paintOver
               scale 2
-              rotate time/4, time/4,  time/4
+              rotate time / 4, time / 4, time / 4
               90 times
-              ▶rotate time/200, time/200,  time/200
+              ▶rotate time / 200, time / 200,  time / 200
               ▶line
-              ▶move 0.5,0,0
+              ▶move 0.5, 0, 0
               ▶line
-              ▶move -0.5,0,0
+              ▶move -0.5, 0, 0
               ▶line
               """
-    
+
       @programs.demos.trillionfeathersDemo =
         submenu: "Basic"
         title: "A trillion feathers"
         code: """
               animationStyle paintOver
-              move 2,0,0
+              move 2, 0, 0
               scale 2
               rotate
               20 times
               ▶rotate
-              ▶move 0.25,0,0
+              ▶move 0.25, 0, 0
               ▶line
-              ▶move -0.5,0,0
+              ▶move -0.5, 0, 0
               ▶line
               """
-    
+
       @programs.demos.monsterblobDemo =
         submenu: "Basic"
         title: "Monster blob"
         code: """
               ballDetail 6
               animationStyle motionBlur
-              rotate time/5
-              simpleGradient fuchsia,aqua,yellow
+              rotate time / 5
+              simpleGradient fuchsia, aqua, yellow
               5 times
-              ▶rotate 0,1,time/5
-              ▶move 0.2,0,0
+              ▶rotate 0, 1, time / 5
+              ▶move 0.2, 0, 0
               ▶3 times
               ▶▶rotate 1
               ▶▶ball -1
               """
-    
+
       @programs.demos.industrialMusicDemo =
         submenu: "Sound"
         title: "Sound: Industrial"
         code: """
               bpm 88
-              play 'alienBeep'  ,'--x- ---- --x- ----'
-              play 'beepC'  ,'-x-- ---- x--x xxx-'
-              play 'beepA'  ,'--x- ---- --x- ----'
-              play 'lowFlash'  ,'--x- ---- ---- ----'
-              play 'beepB'  ,'x--x ---- -x-- -x--'
-              play 'voltage'  ,'x-x- -x-- x-xx x-xx'
-              play 'tranceKick'  ,'-x-x ---x x--- --xx'
+              play 'alienBeep',  '--x- ---- --x- ----'
+              play 'beepC',      '-x-- ---- x--x xxx-'
+              play 'beepA',      '--x- ---- --x- ----'
+              play 'lowFlash',   '--x- ---- ---- ----'
+              play 'beepB',      'x--x ---- -x-- -x--'
+              play 'voltage',    'x-x- -x-- x-xx x-xx'
+              play 'tranceKick', '-x-x ---x x--- --xx'
               """
 
       @programs.demos.overScratch =
@@ -407,14 +409,14 @@ define [
         title: "Sound: Over-scratch"
         code: """
               bpm 108
-              play 'tranceKick'  ,'x-x- -x'
-              play 'tranceKick1'  ,'x-x-x-x'
+              play 'tranceKick',  'x-x- -x'
+              play 'tranceKick1', 'x-x-x-x'
               play 'scratch' + int(random(14)) ,'x'
               play 'scratch-med' + int(random(8)) ,'x-'
               play 'scratch-high' + int(random(2)) ,'x---'
               play 'scratch-rough' + int(random(4)) ,'x-'
               """
-    
+
       @programs.demos.trySoundsDemo =
         submenu: "Sound"
         title: "Sound: Try them all"
@@ -422,7 +424,7 @@ define [
               bpm 88
               // leave this one as base
               play 'tranceKick'  ,'-x-x ---x x--- --xx'
-              
+
               //play 'alienBeep'  ,'--x- ---- --x- ----'
               //play "beep" + int(random 4) ,'x'
               //play "bing"  ,'--x- ---- --x- ----'
@@ -490,7 +492,7 @@ define [
 
               background black
               rotate
-              rect 2 + 2* pulse 4
+              rect 2 + 2 * pulse(4)
 
               bpm 102
               vowelSmpl= [1, 2, 3, 8, 9, 10, 11, 12, 14]
@@ -521,47 +523,47 @@ define [
               if beat % 12 > 8 and beat % 12 < 11
               ▶play 'DJCastro23'   ,'x'
               """
-    
+
       @programs.demos.springysquaresDemo =
         submenu: "Basic"
         title: "Springy squares"
         code: """
               animationStyle motionBlur
-              simpleGradient fuchsia,color(100,200,200),yellow
+              simpleGradient fuchsia, color(100, 200, 200), yellow
               scale 0.3
               3 times
-              ▶move 0,0,0.5
+              ▶move 0, 0, 0.5
               ▶5 times
-              ▶▶rotate time/2
-              ▶▶move 0.7,0,0
+              ▶▶rotate time / 2
+              ▶▶move 0.7, 0, 0
               ▶▶rect
               """
-    
+
       @programs.demos.diceDemo =
         submenu: "Basic"
         title: "Dice"
         code: """
               animationStyle motionBlur
-              simpleGradient color(255),moccasin,peachpuff
-              stroke 255,100,100,255
-              fill red,155
-              move -0.5,0,0
+              simpleGradient color(255), moccasin, peachpuff
+              stroke 255, 100, 100, 255
+              fill red, 155
+              move -0.5, 0, 0
               scale 0.3
               3 times
-              ▶move 0,0,0.5
+              ▶move 0, 0, 0.5
               ▶1 times
               ▶▶rotate time
-              ▶▶move 2,0,0
+              ▶▶move 2, 0, 0
               ▶▶box
               """
-    
+
       @programs.demos.webglalmostvoronoiDemo =
         submenu: "WebGL"
         title: "WebGL: Almost Voronoi"
         code: """
               scale 10
               2 times
-              ▶rotate 0,1,time/10
+              ▶rotate 0, 1, time / 10
               ▶ball -1
               """
 
@@ -573,12 +575,12 @@ define [
               fill 0
               strokeSize 7
               5 times
-              ▶rotate 0,1,time/20
+              ▶rotate 0, 1, time / 20
               ▶ball
-              ▶rotate 0,1,1
+              ▶rotate 0, 1, 1
               ▶ball -1.01
               """
-        
+
       @programs.demos.möbius =
         submenu: "Complex"
         title: "Möbius"
@@ -586,54 +588,54 @@ define [
               turns = 1 // 1 = Möbius strip
               detail = 200 // try up to 400 or so
               speed = 0.5
-              ambientLight 255,0,0 // comment out to see the seam
+              ambientLight 255, 0, 0 // comment out to see the seam
 
               background black
-              rotate time /5
+              rotate time / 5
               scale 0.6
-              for i in [0...detail]
-              ▶rotate 0,0,2*Math.PI/(detail)
-              ▶move 2,0,0
-              ▶▶rotate 0,turns*i*Math.PI/(detail)+time*speed,0
-              ▶▶rect 1,0.04+1/detail
+              detail times with i
+              ▶rotate 0, 0, (2 * pi) / detail
+              ▶move 2, 0, 0
+              ▶▶rotate 0, (turns * i * pi) / detail + (time * speed), 0
+              ▶▶rect 1, 0.04 + (1 / detail)
               """
 
       @programs.demos.theeye =
         submenu: "Complex"
         title: "The eye"
         code: """
-              turns = Math.floor(time/10)%6
+              turns = floor(time / 10) % 6
               detail = 100
               speed = 3
-              if time%10 < 5
-              ▶ambientLight 255,255,255
+              if time % 10 < 5
+              ▶ambientLight 255, 255, 255
 
               background black
-              rotate time /5
-              for i in [0...detail]
-              ▶rotate 0,0,2*Math.PI/(detail)
-              ▶move 2,0,0
-              ▶▶rotate turns*i*Math.PI/(detail)+time*speed,0,0
+              rotate time / 5
+              detail times with i
+              ▶rotate 0, 0, (2 * pi) / detail
+              ▶move 2, 0, 0
+              ▶▶rotate (turns * i * pi) / detail + (time * speed), 0, 0
               ▶▶rect 1
               """
-    
-    
+
+
       @programs.tutorials.introTutorial =
         submenu: "Intro"
         title: "intro"
         code: """
               // Lines beginning with two
               // slashes (like these) are just comments.
-              
+
               // Everything else is run
               // about 30 to 60 times per second
               // in order to create an animation.
-              
+
               // Click the link below to start the tutorial.
-              
+
               // next-tutorial:hello_world
               """
-    
+
       @programs.tutorials.helloworldTutorial =
         submenu: "Intro"
         title: "hello world"
@@ -641,14 +643,14 @@ define [
               // type these three letters
               // in one of these empty lines below:
               // 'b' and 'o' and 'x'
-              
-              
-              
+
+
+
               // (you should then see a box facing you)
               // click below for the next tutorial
               // next-tutorial:some_notes
               """
-    
+
       @programs.tutorials.somenotesTutorial =
         submenu: "Intro"
         title: "some notes"
@@ -657,13 +659,13 @@ define [
               // the syntax is similar to Coffeescript
               // and the commands are almost
               // like Processing.
-              
+
               // If this doesn't make sense to you
               // don't worry.
-              
+
               // next-tutorial:rotate
               """
-    
+
       @programs.tutorials.rotateTutorial =
         submenu: "Intro"
         title: "a taste of animation"
@@ -672,43 +674,43 @@ define [
               // let's rotate it:
               // type 'rotate 1' in the
               // line before the 'box'
-              
-              
+
+
               box
-              
+
               // click for the next tutorial:
               // next-tutorial:frame
               """
-    
+
       @programs.tutorials.frameTutorial =
         submenu: "Animation"
         title: "frame"
         code: """
               // make the box spin
               // by replacing '1' with 'frame'
-              
+
               rotate 1
               box
-              
+
               // 'frame' contains a number
               // always incrementing as
               // the screen is re-drawn.
-              // (use 'frame/100' to slow it down)
+              // (use 'frame / 100' to slow it down)
               // next-tutorial:time
               """
-    
+
       @programs.tutorials.timeTutorial =
         submenu: "Animation"
         title: "time"
         code: """
-              // 'frame/100' has one problem:
+              // 'frame / 100' has one problem:
               // faster computers will make
               // the cube spin too fast.
-              // Replace it with 'time/2'.
-              
-              rotate frame/100
+              // Replace it with 'time / 2'.
+
+              rotate frame / 100
               box
-              
+
               // 'time' counts the
               // number of seconds since
               // the program started, so it's
@@ -716,43 +718,43 @@ define [
               // the computer is at drawing.
               // next-tutorial:move
               """
-    
+
       @programs.tutorials.moveTutorial =
         submenu: "Placing things"
         title: "move"
         code: """
               // you can move any object
               // by using 'move'
-              
+
               box
-              move 1,1,0
+              move 1, 1, 0
               box
-              
+
               // try to use a rotate before
               // the first box to see how the
               // scene changes.
               // next-tutorial:scale
               """
-    
+
       @programs.tutorials.scaleTutorial =
         submenu: "Placing things"
         title: "scale"
         code: """
               // you can make an object bigger
               // or smaller by using 'scale'
-              
+
               rotate 3
               box
               move 1
               scale 2
               box
-              
+
               // try to use scale or move before
               // the first box to see how the
               // scene changes.
               // next-tutorial:times
               """
-    
+
       @programs.tutorials.timesTutorial =
         submenu: "Repeating stuff"
         title: "times"
@@ -760,29 +762,29 @@ define [
               // 'times' (not to be confused with
               // 'time'!) can be used to
               // repeat operations like so:
-              
+
               rotate 1
               3 times
-              ▶move 0.2,0.2,0.2
+              ▶move 0.2, 0.2, 0.2
               ▶box
-              
+
               // note how the tabs indicate
               // exactly the block of code
               // to be repeated.
               // next-tutorial:fill
               """
-    
+
       @programs.tutorials.fillTutorial =
         submenu: "Graphics"
         title: "fill"
         code: """
               // 'fill' changes the
               // color of all the faces:
-              
+
               rotate 1
-              fill 255,255,0
+              fill 255, 255, 0
               box
-              
+
               // the three numbers indicate
               // red green and blue values.
               // You can also use color names such as 'indigo'
@@ -790,19 +792,19 @@ define [
               // 'angleColor'
               // next-tutorial:stroke
               """
-    
+
       @programs.tutorials.strokeTutorial =
         submenu: "Graphics"
         title: "stroke"
         code: """
               // 'stroke' changes all the
               // edges:
-              
+
               rotate 1
               strokeSize 5
-              stroke 255,255,255
+              stroke 255, 255, 255
               box
-              
+
               // the three numbers are RGB
               // but you can also use the color names
               // or the special color 'angleColor'
@@ -810,7 +812,7 @@ define [
               // to specify the thickness.
               // next-tutorial:color_names
               """
-    
+
       @programs.tutorials.colornamesTutorial =
         submenu: "Graphics"
         title: "color by name"
@@ -820,16 +822,16 @@ define [
               //fill greenyellow
               //fill indigo
               //fill lemonchiffon // whaaaat?
-              
+
               rotate 1
               box
-              
+
               // more color names here:
               // http://html-color-codes.info/color-names/
               // (just use them in lower case)
               // next-tutorial:lights
               """
-    
+
       @programs.tutorials.lightsTutorial =
         submenu: "Graphics"
         title: "lights"
@@ -837,73 +839,73 @@ define [
               // 'ambientLight' creates an
               // ambient light so things have
               // some sort of shading:
-              
-              ambientLight 0,255,255
+
+              ambientLight 0, 255, 255
               rotate time
               box
-              
+
               // you can turn that light on and
               // off while you build the scene
               // by using 'lights' and 'noLights'
               // next-tutorial:background
               """
-    
+
       @programs.tutorials.backgroundTutorial =
         submenu: "Graphics"
         title: "background"
         code: """
               // 'background' creates a
               // solid background:
-              
-              background 0,0,255
+
+              background 0, 0, 255
               rotate time
               box
-              
+
               // next-tutorial:gradient
               """
-    
+
       @programs.tutorials.gradientTutorial =
         submenu: "Graphics"
         title: "gradient"
         code: """
               // even nicer, you can paint a
               // background gradient:
-              
-              simpleGradient color(190,10,10),color(30,90,100),color(0)
+
+              simpleGradient color(190, 10, 10), color(30, 90, 100), color(0)
               rotate time
               box
-              
+
               // next-tutorial:line
               """
-    
+
       @programs.tutorials.lineTutorial =
         submenu: "Graphics"
         title: "line"
         code: """
               // draw lines like this:
-              
+
               20 times
-              ▶rotate time/9
+              ▶rotate time / 9
               ▶line
-              
+
               // next-tutorial:ball
               """
-    
+
       @programs.tutorials.ballTutorial =
         submenu: "Graphics"
         title: "ball"
         code: """
               // draw balls like this:
-              
+
               ballDetail 10
               3 times
-              ▶move 0.2,0.2,0.2
+              ▶move 0.2, 0.2, 0.2
               ▶ball
-              
+
               // ('ballDetail' is optional)
               // next-tutorial:pushpopMatrix
               """
-    
+
       @programs.tutorials.pushpopMatrixTutorial =
         submenu: "Graphics"
         title: "push and pop"
@@ -912,49 +914,49 @@ define [
               // the position, which you can
               // return to later by using popMatrix.
               // You can reset using 'resetMatrix'.
-              
+
               rotate time
               pushMatrix // bookmark the position after the rotation
               line
-              move 0.5,0,0
+              move 0.5, 0, 0
               line
               popMatrix // go back to the bookmarked position
-              move -0.5,0,0
+              move -0.5, 0, 0
               line
               resetMatrix // resets the position
               line // not affected by initial rotation
               // next-tutorial:animation_style
               """
-    
+
       @programs.tutorials.animationstyleTutorial =
         submenu: "Graphics"
         title: "animation style"
         code: """
               // try uncommenting either line
               // with the animationStyle
-              
+
               background 255
               //animationStyle motionBlur
               //animationStyle paintOver
-              rotate frame/10
+              rotate frame / 10
               box
-              
+
               // next-tutorial:do_once
               """
-    
+
       @programs.tutorials.doonceTutorial =
         submenu: "Controlling flow"
         title: "do once"
         code: """
               // delete either check mark below
-              
+
               rotate time
               ✓doOnce
               ▶background 255
-              ▶fill 255,0,0
+              ▶fill 255, 0, 0
               ✓doOnce ball
               box
-              
+
               // ...the line or block of code
               // are ran one time only, after that the
               // check marks immediately re-appear
@@ -962,7 +964,7 @@ define [
               // on that first check mark for seizures.
               // next-tutorial:conditionals
               """
-    
+
       @programs.tutorials.conditionalsTutorial =
         submenu: "Controlling flow"
         title: "conditionals"
@@ -971,25 +973,25 @@ define [
               // (or in general do different things)
               // based on any
               // test condition you want:
-              
+
               rotate
-              if frame%3 == 0
+              if frame % 3 == 0
               ▶box
-              else if frame%3 == 1
+              else if frame % 3 == 1
               ▶ball
               else
               ▶peg
-              
+
               // next-tutorial:autocode
               """
-    
+
       @programs.tutorials.autocodeTutorial =
         submenu: "Others"
         title: "autocode"
         code: """
               // the Autocode button invents random
               // variations for you.
-              
+
               // You can interrupt the Autocoder at
               // any time by pressing the button again,
               // or you can press CTRL-Z
@@ -1000,20 +1002,24 @@ define [
               """
     kickOff: ->
       setInterval(
-        ()=>
-          @pollHash()
-        , 100)
+        () => @pollHash(),
+        100
+      )
       # Setup Event Listeners
       @eventRouter.addListener("url-hash-changed", (hash) =>
         @loadAppropriateDemoOrTutorialBasedOnHash hash
       )
 
     loadDemoOrTutorial: (demoName) ->
-      if (not Detector.webgl or @liveCodeLabCoreInstance.threeJsSystem.forceCanvasRenderer) \
-          and not userWarnedAboutWebglExamples and demoName.indexOf("webgl") is 0
+      if (
+        not @usingWebGL and
+        not userWarnedAboutWebglExamples and
+        demoName.indexOf("webgl") is 0
+      )
         userWarnedAboutWebglExamples = true
         $("#exampleNeedsWebgl").modal()
         $("#simplemodal-container").height 200
+
       # set the demo as a hash state
       # so that ideally people can link directly to
       # a specific demo they like.
@@ -1022,17 +1028,16 @@ define [
       @eventRouter.emit("editor-undim")
       @liveCodeLabCoreInstance.graphicsCommands.doTheSpinThingy = false
       prependMessage = ""
-      if (not Detector.webgl or @liveCodeLabCoreInstance.threeJsSystem.forceCanvasRenderer) \
-          and demoName.indexOf("webgl") is 0
+      if not @usingWebGL and demoName.indexOf("webgl") is 0
         prependMessage =
         """
         // This drawing makes much more sense
         // in a WebGL-enabled browser.
-        
-        
+
+
         """
 
-      # Note that setting the value of the texteditor (texteditor.setValue below)
+      # Note, setting the value of the texteditor (texteditor.setValue below)
       # triggers the codeMirror onChange callback, which registers the new
       # code - so the next draw() will run the new demo code. But before doing
       # that will happen (when the timer for the next frame triggers), we'll
@@ -1049,12 +1054,12 @@ define [
         # clear history. Why? Because we want to avoid the follwing:
         # user opens an example. User opens another example.
         # User performs undo. Result: previous example is open, but the hashtag
-        # doesn't match the example. It's just confusing - we assume here that is
-        # the user selects another tutorial and example then she is not expecting
+        # doesn't match the example. It's just confusing - we assume here that
+        # the user selects another tutorial and example then is not expecting
         # the undo history to bring her back to previous demos/examples.
         # Note that, again, this is quite common in CodeMirror, the clearHistory
-        # invokation below only works if slightly postponed. Not sure why.
-        setTimeout((()=>@texteditor.clearHistory()),30)
+        # invocation below only works if slightly postponed. Not sure why.
+        setTimeout((() => @texteditor.clearHistory()), 30)
 
       # bring the cursor to the top
       @texteditor.setCursor 0, 0
@@ -1069,19 +1074,21 @@ define [
       blendControls = @liveCodeLabCoreInstance.blendControls
       blendControls.animationStyle blendControls.animationStyles.normal
       blendControls.animationStyleUpdateIfChanged()
-      @liveCodeLabCoreInstance.renderer.render @liveCodeLabCoreInstance.graphicsCommands
+      @liveCodeLabCoreInstance.renderer.render(
+        @liveCodeLabCoreInstance.graphicsCommands
+      )
 
     loadAppropriateDemoOrTutorialBasedOnHash: (hash) ->
       matched = hash.match(/bookmark=(.*)/)
-      
+
       if matched
         @loadDemoOrTutorial matched[1]
       else
         # user in on the root page without any hashes
         @texteditor.setValue ""
         # reset undo history
-        setTimeout((()=>@texteditor.clearHistory()),30)
-    
+        setTimeout((()=>@texteditor.clearHistory()), 30)
+
     # this paragraph from http://stackoverflow.com/a/629817
     # there are more elegant ways to track back/forward history
     # but they are more complex than this. I don't mind having a bit of
@@ -1089,7 +1096,7 @@ define [
     pollHash: ->
       if @lastHash isnt location.hash
         @lastHash = location.hash
-        
+
         # hash has changed, so do stuff:
         @loadAppropriateDemoOrTutorialBasedOnHash @lastHash
 

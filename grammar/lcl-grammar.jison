@@ -276,10 +276,10 @@ FunctionArgNames
     ;
 
 TimesLoop
-    : Identifier t_times Block
-        { $$ = ["TIMES", ["IDENTIFIER", $1], $3]; }
-    | Identifier t_times t_with Identifier Block
-        { $$ = ["TIMES", ["IDENTIFIER", $1], $5, $4]; }
+    : Variable t_times Block
+        { $$ = ["TIMES", $1, $3]; }
+    | Variable t_times t_with Identifier Block
+        { $$ = ["TIMES", $1, $5, $4]; }
     | Number t_times Block
         { $$ = ["TIMES", $1, $3]; }
     | Number t_times t_with Identifier Block
@@ -335,8 +335,8 @@ Expression
         { $$ = $1; }
     | Number
         { $$ = $1; }
-    | Identifier
-        { $$ = ["IDENTIFIER", $1]; }
+    | Variable
+        { $$ = $1; }
     | String
         { $$ = $1; }
     ;
@@ -361,13 +361,18 @@ Number
         { $$ = ["NUMBER", Number(yytext)]; }
     ;
 
-Identifier
-    : t_id
-        { $$ = yytext; }
+Variable
+    : Identifier
+        { $$ = ["VARIABLE", $1]; }
     ;
 
 String
     : t_string
         { $$ = ["STRING", yytext]; }
+    ;
+
+Identifier
+    : t_id
+        { $$ = yytext; }
     ;
 

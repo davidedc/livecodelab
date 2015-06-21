@@ -70,20 +70,6 @@ module.exports = function (grunt) {
                 }]
             },
 
-            // Apparently this needs to be on its own to work properlly
-            buildTimeOptions: {
-                src: 'build-time-options/languages-build-option.js',
-                dest: 'build/js/globals/languages-build-option.js',
-                options: {
-                  process: function (content, srcpath) {
-                    var setting = (grunt.option('language') || 'both');
-                    return content.replace(
-                        /language_setting/mgi,
-                        setting
-                    );
-                  }
-                }
-            },
             // development build puts in dist :-
             // unminified js files
             // original coffeescript files
@@ -337,7 +323,6 @@ module.exports = function (grunt) {
     grunt.registerTask('releasebuild', [
         'clean:build',
         'copy:preBuild',
-        'copy:buildTimeOptions',
 
         'jison',
 
@@ -356,7 +341,6 @@ module.exports = function (grunt) {
         'clean:build',
         'copy:preBuild',
         'copy:tests',
-        'copy:buildTimeOptions',
 
         'jison',
 

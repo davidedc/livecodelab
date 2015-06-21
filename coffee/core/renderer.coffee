@@ -7,57 +7,60 @@ define () ->
 
   class Renderer
 
-    constructor: (@liveCodeLabCoreInstance) ->
-    
+    constructor: (@threeJsSystem, @usingWebGL, @blendControls) ->
+
     render: (graphics) ->
-      
+
       # some shorthands
-      threeJsSystem = @liveCodeLabCoreInstance.threeJsSystem
-      renderer = threeJsSystem.renderer
-      blendedThreeJsSceneCanvasContext = threeJsSystem.blendedThreeJsSceneCanvasContext
+      renderer = @threeJsSystem.renderer
+      blendedThreeJsSceneCanvasContext =
+        @threeJsSystem.blendedThreeJsSceneCanvasContext
       previousFrameThreeJSSceneRenderForBlendingCanvasContext =
-        threeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext
-      
+        @threeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext
+
       @combDisplayList graphics
 
 
-      if threeJsSystem.isWebGLUsed
-        threeJsSystem.composer.render()
+      if @usingWebGL
+        @threeJsSystem.composer.render()
       else
-        
+
         # the renderer draws into an offscreen
         # canvas called currentFrameThreeJsSceneCanvas
-        renderer.render threeJsSystem.scene, threeJsSystem.camera
-        
+        renderer.render @threeJsSystem.scene, @threeJsSystem.camera
+
         # clear the final render context
         blendedThreeJsSceneCanvasContext.globalAlpha = 1.0
         blendedThreeJsSceneCanvasContext.clearRect(
           0, 0, window.innerWidth, window.innerHeight
         )
-        
-        # draw the rendering of the scene on the blendedThreeJsSceneCanvasContext
+
+        # draw the rendering on the blendedThreeJsSceneCanvasContext
         # this needs a few steps so we can get the motionBlur or the paintOver
         # effects right
-        # TODO: I'm sure that this can be optimised for the case where there is no
+        # TODO: I'm sure that this can be optimised when there is no
         # motionBlur and no paintOver, because we don't need to keep and blend
         # with the previous frame in that case.
         blendedThreeJsSceneCanvasContext.globalAlpha =
-          @liveCodeLabCoreInstance.blendControls.blendAmount
-        blendedThreeJsSceneCanvasContext.drawImage \
-          threeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, 0, 0
+          @blendControls.blendAmount
+        blendedThreeJsSceneCanvasContext.drawImage(
+          @threeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, 0, 0
+        )
         blendedThreeJsSceneCanvasContext.globalAlpha = 1.0
-        blendedThreeJsSceneCanvasContext.drawImage \
-          threeJsSystem.currentFrameThreeJsSceneCanvas, 0, 0
-        previousFrameThreeJSSceneRenderForBlendingCanvasContext.globalCompositeOperation =
-          "copy"
-        previousFrameThreeJSSceneRenderForBlendingCanvasContext.drawImage \
-          threeJsSystem.blendedThreeJsSceneCanvas, 0, 0
-        
-        # clear the renderer's canvas to transparent black
-        threeJsSystem.currentFrameThreeJsSceneCanvasContext.clearRect \
-          0, 0, window.innerWidth, window.innerHeight
+        blendedThreeJsSceneCanvasContext.drawImage(
+          @threeJsSystem.currentFrameThreeJsSceneCanvas, 0, 0
+        )
+        previousFrameThreeJSSceneRenderForBlendingCanvasContext.globalCompositeOperation = "copy"
+        previousFrameThreeJSSceneRenderForBlendingCanvasContext.drawImage(
+          @threeJsSystem.blendedThreeJsSceneCanvas, 0, 0
+        )
 
-    
+        # clear the renderer's canvas to transparent black
+        @threeJsSystem.currentFrameThreeJsSceneCanvasContext.clearRect(
+          0, 0, window.innerWidth, window.innerHeight
+        )
+
+
     # By doing some profiling it is apparent that
     # adding and removing objects has a big cost.
     # So instead of adding/removing objects every frame,
@@ -67,21 +70,21 @@ define () ->
     # scene and finds the objects that need to be visible and
     # those that need to be hidden.
     # This is a scenario of how it works:
-    #   frame 1: 3 boxes invoked. effect: 3 cubes are created and put in the scene
+    #   frame 1: 3 boxes invoked. effect: 3 cubes are created in the scene
     #   frame 2: 1 box invoked. effect: 1st cube is updated with new
     #            scale/matrix/material and the other 2 boxes are set to hidden
     # So there is a pool of objects for each primitive. It starts empty, new
     # objects are added to the scene only if the ones available from previous
     # draws are not sufficient.
-    # Note that in theory we could be smarter, instead of combing the whole scene
-    # we could pack all the similar primitives together (because the order in the
+    # In theory we could be smarter, instead of combing the whole scene
+    # we could pack all the similar primitives together (the order in the
     # display list doesn't matter, because there are no "matrix" nodes, each
-    # primitive contains a fully calculated matrix) and keep indexes of where each
-    # group is, so we could for example have 100 boxes and 100 balls, and we could
-    # scan the first two boxes and set those two visible, then jump to the balls
-    # avoiding to scan all the other 98 boxes, and set the correct amount of balls
-    # visible. In practice, it's not clear whether a lot of time is spend in this
-    # function, so that should be determined first.
+    # primitive contains a fully calculated matrix) and keep indexes for each
+    # group, so we could for example have 100 boxes and 100 balls, and we could
+    # scan the first two boxes and set those visible, then jump to the balls to
+    # avoid scaning all the other 98 boxes, and set the correct amount of balls
+    # visible. In practice, it's not clear whether a lot of time is spent in
+    # this function, so that should be determined first.
     # TODO a way to shrink the scene and delete from the scene objects that have
     # not been used for a long time.
     # Note: Mr Doob said that the new scene destruction/creation primitives of
@@ -92,24 +95,23 @@ define () ->
       i = undefined
       sceneObject = undefined
       primitiveType = undefined
-      
+
       # some shorthands
-      threeJsSystem = @liveCodeLabCoreInstance.threeJsSystem
       objectsUsedInFrameCounts = graphics.objectsUsedInFrameCounts
-      
+
       # scan all the objects in the display list
-      for sceneObject in threeJsSystem.scene.children
+      for sceneObject in @threeJsSystem.scene.children
         # check the type of object. Each type has one pool. Go through each
         # object in the pool and set to visible the number of used objects in
         # this frame, set the others to hidden.
-        # Only tiny exception is that the ball has one pool for each detail level.
-        
+        # Only tiny exception is that the ball has one pool per detail level.
+
         # set the first "used*****" objects to visible...
         if objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] > 0
           sceneObject.visible = true
           objectsUsedInFrameCounts[sceneObject.primitiveType + sceneObject.detailLevel] -= 1
         else
-          
+
           # ... and the others to invisible
           sceneObject.visible = false
 
@@ -121,7 +123,9 @@ define () ->
       # each type of primitive was placed last
       if graphics.exclusionPrincipleWobble
         for i in [0...graphics.lastPositionOfPrimitiveType.length]
-          graphics.lastPositionOfPrimitiveType[i].set 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          graphics.lastPositionOfPrimitiveType[i].set(
+            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          )
           graphics.numberOfOverlappingPrimitives[i] = 0
 
   Renderer

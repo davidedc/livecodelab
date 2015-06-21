@@ -7,11 +7,11 @@
 ###
 
 define [
-   'lib/lcl/interpreter',
-   'underscore'
+  'lib/lcl/interpreter',
+  'underscore'
 ], (
-   Interpreter,
-   _
+  Interpreter,
+  _
 ) ->
 
   class V2ProgramRunner
@@ -80,8 +80,9 @@ define [
       # this program has been stable for.
       # Beyond 5 frames, we consider this program as "stable" and we save
       # it in a special variable.
-      # This "stability" counter is obviously reset anytime the program is changed
-      # so the new version too gets an opportunity to be tested and saved.
+      # This "stability" counter is obviously reset anytime the program is
+      # changed so the new version too gets an opportunity to be
+      # tested and saved.
       @consecutiveFramesWithoutRunTimeError += 1
       if @consecutiveFramesWithoutRunTimeError is 5
         @lastStableProgram = @programAST

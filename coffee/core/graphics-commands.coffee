@@ -120,11 +120,12 @@
 ## helpful for example in
 ##   20 times rotate box
 
-isFunction = (functionToCheck) ->
-  getType = {}
-  functionToCheck and getType.toString.call(functionToCheck) is "[object Function]"
 
-define () ->
+define [
+  'underscore'
+], (
+  _
+) ->
 
   class GraphicsCommands
 
@@ -173,9 +174,16 @@ define () ->
     # track of of that.
     atLeastOneObjectIsDrawn: false
     atLeastOneObjectWasDrawn: false
-    
-    constructor: (@liveCodeLabCore_three, @liveCodeLabCoreInstance, @colourLiterals) ->
-      
+
+    constructor: (
+      @threeJs,
+      @threeJsSystem,
+      @colourFunctions,
+      @matrixCommands,
+      @colourLiterals,
+      @liveCodeLabCoreInstance
+    ) ->
+
       numberOfPrimitives = 0
       @primitiveTypes.ambientLight = numberOfPrimitives++
       @primitiveTypes.line = numberOfPrimitives++
@@ -190,20 +198,20 @@ define () ->
       @primitiveTypes.ball = numberOfPrimitives++
 
       @angleColor = @colourLiterals.getColour('angleColor')
-      
+
       # apparently in Coffeescript I can't initialise fields in the section
       # before the constructor, so initialising them here in the constructor
       @objectPools[@primitiveTypes.line] = []
       @objectPools[@primitiveTypes.rect] = []
       @objectPools[@primitiveTypes.box] = []
       @objectPools[@primitiveTypes.peg] = []
-      
+
       # creating ball pools
       for i in [0...(@maximumBallDetail - @minimumBallDetail + 1)]
         @objectPools[@primitiveTypes.ball + i] = []
-      
+
       ###
-      Since you can't change the geometry of an object once it's created, we keep
+      Since you can't change the geometry of an object once created, we keep
       around a pool of objects for each mesh type. There is one pool for lines,
       one for rectangles, one for boxes. There is one pool for each detail level
       of balls (since they are different) meshes. For the time being there is
@@ -223,7 +231,7 @@ define () ->
       be used in a session) then one could leave all these arrays undefined
       and define them at runtime only when needed.
       ###
-      
+
       # these set the relative size of the
       # primitives in respect to the box
       boxProportion = 1
@@ -232,28 +240,35 @@ define () ->
       pegProportion = 1.1
       ballProportion = 0.64
 
-      @geometriesBank[@primitiveTypes.line] = new @liveCodeLabCore_three.Geometry()
+      @geometriesBank[@primitiveTypes.line] = new @threeJs.Geometry()
       @geometriesBank[@primitiveTypes.line].vertices.push \
-        new @liveCodeLabCore_three.Vector3(0, -0.5 * lineProportion, 0)
+        new @threeJs.Vector3(0, -0.5 * lineProportion, 0)
       @geometriesBank[@primitiveTypes.line].vertices.push \
-        new @liveCodeLabCore_three.Vector3(0, 0.5 * lineProportion, 0)
+        new @threeJs.Vector3(0, 0.5 * lineProportion, 0)
         @geometriesBank[@primitiveTypes.line].mergeVertices()
-      @geometriesBank[@primitiveTypes.rect] = new @liveCodeLabCore_three.PlaneGeometry(1 * rectProportion, 1 * rectProportion)
-      @geometriesBank[@primitiveTypes.box] = new @liveCodeLabCore_three.BoxGeometry(1 * boxProportion, 1 * boxProportion, 1 * boxProportion)
+      @geometriesBank[@primitiveTypes.rect] = new @threeJs.PlaneGeometry(
+        1 * rectProportion, 1 * rectProportion
+      )
+      @geometriesBank[@primitiveTypes.box] = new @threeJs.BoxGeometry(
+        1 * boxProportion, 1 * boxProportion, 1 * boxProportion
+      )
       @geometriesBank[@primitiveTypes.peg] =
-        new @liveCodeLabCore_three.CylinderGeometry(0.5 * pegProportion, 0.5 * pegProportion, 1 * pegProportion, 32)
-      
+        new @threeJs.CylinderGeometry(
+          0.5 * pegProportion, 0.5 * pegProportion, 1 * pegProportion, 32
+        )
+
       # creating ball geometries
       for i in [0...(@maximumBallDetail - @minimumBallDetail + 1)]
         @geometriesBank[@primitiveTypes.ball + i] =
-          new @liveCodeLabCore_three.SphereGeometry(
+          new @threeJs.SphereGeometry(
             1 * ballProportion, @minimumBallDetail + i, @minimumBallDetail + i)
-      
+
       # creating a place to remember where
       # each primitive was placed last and how
       # many of them are overlapping so far
-      for i in [0..numberOfPrimitives + (@maximumBallDetail - @minimumBallDetail + 1)]
-        @lastPositionOfPrimitiveType[i] = new @liveCodeLabCore_three.Matrix4()
+      ballsNum = (@maximumBallDetail - @minimumBallDetail + 1)
+      for i in [0..numberOfPrimitives + ballsNum]
+        @lastPositionOfPrimitiveType[i] = new @threeJs.Matrix4()
         @numberOfOverlappingPrimitives[i] = 0
 
     resetFillStack: ->
@@ -275,9 +290,14 @@ define () ->
       @fillStack.push currentFillColor
       @fillStack.push currentFillAlpha
       @fillStack.push doFill
-      
 
-    pushStroke: (defaultNormalStroke,currentStrokeColor,currentStrokeAlpha, doStroke)->
+
+    pushStroke: (
+      defaultNormalStroke,
+      currentStrokeColor,
+      currentStrokeAlpha,
+      doStroke
+    )->
       if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
         return
 
@@ -295,7 +315,6 @@ define () ->
         @currentFillAlpha = @fillStack.pop()
         @currentFillColor = @fillStack.pop()
         @defaultNormalFill = @fillStack.pop()
-        #console.log "just popped: " + @currentFillAlpha + " " + @currentFillColor + " " + @defaultNormalFill
       else
         @resetFillStack()
 
@@ -337,7 +356,7 @@ define () ->
       objectIsNew = false
       pooledObjectWithMaterials = undefined
       theAngle = undefined
-      
+
       # the primitiveID is used to index three arrays:
       #   array of caches (pools) of objects
       #   array of caches (pools) of geometries
@@ -346,15 +365,17 @@ define () ->
       # Note that primitives that have an associated detail
       # level span across multiple IDs, because geometries at
       # different details levels are different.
-      primitiveID = primitiveProperties.primitiveType + primitiveProperties.detailLevel
+      primitiveID = primitiveProperties.primitiveType +
+                    primitiveProperties.detailLevel
       objectPool = @objectPools[primitiveID]
-      pooledObjectWithMaterials = objectPool[@objectsUsedInFrameCounts[primitiveID]]
+      objsUsed = @objectsUsedInFrameCounts[primitiveID]
+      pooledObjectWithMaterials = objectPool[objsUsed]
       if not pooledObjectWithMaterials?
-        
+
         # each pooled object contains a geometry, and all the materials it could
         # ever need.
         pooledObjectWithMaterials =
-          
+
           # The line material is specifically made for lines. So for lines
           # we have to simulate manually the effect that the other materials
           # have on the solids.
@@ -364,13 +385,13 @@ define () ->
           # won't ever have the lineMaterial, but this initialisation costs
           # nothing and makes the code cleaner.
           lineMaterial: undefined
-          
+
           # The basic material is for simple solid fill without lighting
           basicMaterial: undefined
-          
+
           # The Lambert material is for fill with lighting
           lambertMaterial: undefined
-          
+
           # The normalMaterial is the trippy fill with each side of the cube
           # being a bright color (the default one).
           # Note that the first time we render an object we need to
@@ -397,21 +418,26 @@ define () ->
       if primitiveProperties.primitiveType is @primitiveTypes.line
         if not pooledObjectWithMaterials.lineMaterial?
           pooledObjectWithMaterials.lineMaterial =
-            new @liveCodeLabCore_three.LineBasicMaterial()
-        
+            new @threeJs.LineBasicMaterial()
+
         # associating normal material to threejs' Object3D
         if @currentStrokeColor is @angleColor or @defaultNormalStroke
-          theAngle =
-            (new @liveCodeLabCore_three.Vector3(0, 1, 0)).applyProjection(pooledObjectWithMaterials.threejsObject3D.matrix).normalize()
+          theAngle = (
+            new @threeJs.Vector3(0, 1, 0)
+          ).applyProjection(
+            pooledObjectWithMaterials.threejsObject3D.matrix
+          ).normalize()
           pooledObjectWithMaterials.lineMaterial.color.setHex(
-            @liveCodeLabCoreInstance.colourFunctions.color(
+            @colourFunctions.color(
               ((theAngle.x + 1) / 2) * 255,
               ((theAngle.y + 1) / 2) * 255,
               ((theAngle.z + 1) / 2) * 255
             )
           )
         else
-          pooledObjectWithMaterials.lineMaterial.color.setHex @currentStrokeColor
+          pooledObjectWithMaterials.lineMaterial.color.setHex(
+            @currentStrokeColor
+          )
         pooledObjectWithMaterials.lineMaterial.linewidth =
           @currentStrokeSize
         pooledObjectWithMaterials.threejsObject3D.material =
@@ -419,7 +445,7 @@ define () ->
       else if objectIsNew or (
         colorToBeUsed is @angleColor or applyDefaultNormalColor
       )
-        
+
         # the first time we render a an object we need to
         # render it with the material that takes the
         # bigger buffer space, see:
@@ -428,26 +454,26 @@ define () ->
         # for each different type of material.
         if not pooledObjectWithMaterials.normalMaterial?
           pooledObjectWithMaterials.normalMaterial =
-            new @liveCodeLabCore_three.MeshNormalMaterial()
+            new @threeJs.MeshNormalMaterial()
         pooledObjectWithMaterials.threejsObject3D.material =
           pooledObjectWithMaterials.normalMaterial
       else unless @liveCodeLabCoreInstance.lightSystem.lightsAreOn
         if not pooledObjectWithMaterials.basicMaterial?
           pooledObjectWithMaterials.basicMaterial =
-            new @liveCodeLabCore_three.MeshBasicMaterial()
+            new @threeJs.MeshBasicMaterial()
         pooledObjectWithMaterials.basicMaterial.color.setHex colorToBeUsed
         pooledObjectWithMaterials.threejsObject3D.material =
           pooledObjectWithMaterials.basicMaterial
       else
-        
+
         # lights are on
         if not pooledObjectWithMaterials.lambertMaterial?
           pooledObjectWithMaterials.lambertMaterial =
-            new @liveCodeLabCore_three.MeshLambertMaterial()
+            new @threeJs.MeshLambertMaterial()
         pooledObjectWithMaterials.lambertMaterial.color.setHex colorToBeUsed
         pooledObjectWithMaterials.threejsObject3D.material =
           pooledObjectWithMaterials.lambertMaterial
-      
+
       # not all of these properties apply in all cases (for example sidedness
       # doesn't apply to lines), but setting these properties in those cases
       # has no ill effect and we are factoring out here as many initialisations
@@ -477,11 +503,11 @@ define () ->
       @objectsUsedInFrameCounts[primitiveID] += 1
       if @doTheSpinThingy and
           pooledObjectWithMaterials.initialSpinCountdown > 0
-        @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
-        @liveCodeLabCoreInstance.matrixCommands.rotate \
+        @matrixCommands.pushMatrix()
+        @matrixCommands.rotate \
           pooledObjectWithMaterials.initialSpinCountdown / 50
 
-      
+
       ###
       see
       https://github.com/mrdoob/three.js/wiki/Using-Matrices-&-Object3Ds-in-THREE
@@ -491,15 +517,15 @@ define () ->
       ###
       pooledObjectWithMaterials.threejsObject3D.matrixAutoUpdate = false
       pooledObjectWithMaterials.threejsObject3D.matrix.copy \
-        @liveCodeLabCoreInstance.matrixCommands.getWorldMatrix()
+        @matrixCommands.getWorldMatrix()
 
       pooledObjectWithMaterials.threejsObject3D.matrixWorldNeedsUpdate = true
 
       if @doTheSpinThingy and
           pooledObjectWithMaterials.initialSpinCountdown > 0
-        @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+        @matrixCommands.popMatrix()
 
-      if objectIsNew        
+      if objectIsNew
         # if the object is new it means that the normal material
         # is applied to it, no matter what the current settings of fill
         # and lights are. So we make objects invisible in their very first
@@ -507,7 +533,9 @@ define () ->
         # by setting the scale to almost zero. The object will still go through
         # the rendering step, so the memory for the material is initialised
         # correctly.
-        pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeScale(0.0001, 0.0001, 0.0001))
+        pooledObjectWithMaterials.threejsObject3D.matrix.multiply(
+          new @threeJs.Matrix4().makeScale(0.0001, 0.0001, 0.0001)
+        )
       else if a isnt 1 or b isnt 1 or c isnt 1
         if strokeTime
           # wireframes are built via separate objects with geometries that are
@@ -517,13 +545,17 @@ define () ->
           # note that we avoid this on unitary box as it's a common
           # case that is simple to check where there is no need
           # of these 16 extra multiplications (of the scale)
-          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeScale(a + 0.001, b + 0.001, c + 0.001))
+          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(
+            new @threeJs.Matrix4().makeScale(a + 0.001, b + 0.001, c + 0.001)
+          )
         else
           # odd things happen setting scale to zero
           a = 0.000000001  if a > -0.000000001 and a < 0.000000001
           b = 0.000000001  if b > -0.000000001 and b < 0.000000001
           c = 0.000000001  if c > -0.000000001 and c < 0.000000001
-          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeScale(a, b, c))
+          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(
+            new @threeJs.Matrix4().makeScale(a, b, c)
+          )
 
 
       # exclusionPrincipleWobble doesn't apply in the
@@ -545,22 +577,25 @@ define () ->
           pooledObjectWithMaterials.threejsObject3D.matrix.elements,
           @lastPositionOfPrimitiveType[primitiveID].elements
           )
-          #console.log "something here already at  " + primitiveID
           @numberOfOverlappingPrimitives[primitiveID]++
           overlapPrimtives = @numberOfOverlappingPrimitives[primitiveID]
           pert = sin(time*10) * sin(overlapPrimtives + time*10)/40
-          #pooledObjectWithMaterials.threejsObject3D.matrix.makeRotationX(pert).makeRotationY(pert).makeRotationZ(pert)
-          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeRotationFromEuler(new @liveCodeLabCore_three.Euler(pert,pert,pert,'XYZ')))
+          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(
+            new @threeJs.Matrix4().makeRotationFromEuler(
+              new @threeJs.Euler(pert,pert,pert,'XYZ')
+            )
+          )
 
-          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(new @liveCodeLabCore_three.Matrix4().makeTranslation(pert, pert, pert))
+          pooledObjectWithMaterials.threejsObject3D.matrix.multiply(
+            new @threeJs.Matrix4().makeTranslation(pert, pert, pert)
+          )
         else
-          #console.log "nothing here already - setting  " + primitiveID + " with " + pooledObjectWithMaterials.threejsObject3D.matrix
           @lastPositionOfPrimitiveType[primitiveID].copy \
             pooledObjectWithMaterials.threejsObject3D.matrix
 
 
-      @liveCodeLabCoreInstance.threeJsSystem.scene.add \
-        pooledObjectWithMaterials.threejsObject3D  if objectIsNew
+      if objectIsNew
+        @threeJsSystem.scene.add(pooledObjectWithMaterials.threejsObject3D)
 
     commonPrimitiveDrawingLogic: (a, b, c, d, primitiveProperties) ->
 
@@ -572,20 +607,20 @@ define () ->
       # primitives, but we handle them here in all cases
       # to make the code uniform and unifiable
       if typeof a isnt "number"
-        if isFunction a then appendedFunction = a
+        if _.isFunction a then appendedFunction = a
         a = 1
         b = 1
         c = 1
       else if typeof b isnt "number"
-        if isFunction b then appendedFunction = b
+        if _.isFunction b then appendedFunction = b
         b = a
         c = a
       else if typeof c isnt "number"
-        if isFunction c then appendedFunction = c
+        if _.isFunction c then appendedFunction = c
         c = 1
-      else if isFunction d
+      else if _.isFunction d
         appendedFunction = d
-      
+
       # Simple case - if there is no fill and
       # no stroke then there is nothing to do.
       # Also, even if we aren'd under a noFill command spell, some geometries
@@ -617,14 +652,14 @@ define () ->
           @defaultNormalFill
         )
       else if (not @doFill or not primitiveProperties.canFill) and @doStroke
-        
+
         # only doing the stroke
         @createObjectIfNeededAndDressWithCorrectMaterial(
           a, b, c, primitiveProperties, true,
           @currentStrokeColor, @currentStrokeAlpha,
           @defaultNormalStroke
         )
-      
+
       # doing both the fill and the stroke
       else
         @createObjectIfNeededAndDressWithCorrectMaterial(
@@ -652,20 +687,18 @@ define () ->
       @resetStrokeStack()
 
       @currentStrokeSize = 1
-      @ballDetLevel =
-        @liveCodeLabCoreInstance.threeJsSystem.ballDefaultDetLevel
-      @objectsUsedInFrameCounts\
-        [@primitiveTypes.ambientLight] = 0
+      @ballDetLevel = @threeJsSystem.ballDefaultDetLevel
+      @objectsUsedInFrameCounts[@primitiveTypes.ambientLight] = 0
       @objectsUsedInFrameCounts[@primitiveTypes.line] = 0
       @objectsUsedInFrameCounts[@primitiveTypes.rect] = 0
       @objectsUsedInFrameCounts[@primitiveTypes.box] = 0
       @objectsUsedInFrameCounts[@primitiveTypes.peg] = 0
-      
+
       # initialising ball counts
       for i in [0...(@maximumBallDetail - @minimumBallDetail + 1)]
         @objectsUsedInFrameCounts[@primitiveTypes.ball + i] = 0
 
-    
+
     # TODO Note that lines have a "solid fill" mode
     # and something similar to the normalMaterial mode
     # but there is no equivalent to the lambert material
@@ -675,14 +708,14 @@ define () ->
     # (although which ambient light do you pick if there
     # is more than one?)
     line: (a, b, c, d = null) ->
-      
+
       # lines can only have one material, which is LineBasicMaterial
       # which doesn't react to lights (as opposed to MeshLambertMaterial, which
       # only applies to meshes).
       # So in order to get lights to react to light we have to actually draw the
       # wireframe of a rectangle with one of the sides being zero length.
-      # Since the stroke and the fill are drawn with two different objects and the
-      # fill is not needed, we temporarily switch off the fill and then
+      # Since the stroke and the fill are drawn with two different objects and
+      # the fill is not needed, we temporarily switch off the fill and then
       # put it back to whichever value it was.
       if @liveCodeLabCoreInstance.lightSystem.lightsAreOn
         rememberIfThereWasAFill = @doFill
@@ -693,16 +726,16 @@ define () ->
         @doFill = rememberIfThereWasAFill
         @currentStrokeSize = rememberPreviousStrokeSize
         return
-      
+
       # primitive-specific initialisations:
       primitiveProperties =
         canFill: false
         primitiveType: @primitiveTypes.line
-        sidedness: @liveCodeLabCore_three.FrontSide
-        threeObjectConstructor: @liveCodeLabCore_three.Line
+        sidedness: @threeJs.FrontSide
+        threeObjectConstructor: @threeJs.Line
         detailLevel: 0
 
-      
+
       # end of primitive-specific initialisations:
       @commonPrimitiveDrawingLogic a, b, c, d, primitiveProperties
 
@@ -711,11 +744,11 @@ define () ->
       primitiveProperties =
         canFill: true
         primitiveType: @primitiveTypes.rect
-        sidedness: @liveCodeLabCore_three.DoubleSide
-        threeObjectConstructor: @liveCodeLabCore_three.Mesh
+        sidedness: @threeJs.DoubleSide
+        threeObjectConstructor: @threeJs.Mesh
         detailLevel: 0
 
-      
+
       # end of primitive-specific initialisations:
       @commonPrimitiveDrawingLogic a, b, c, d, primitiveProperties
 
@@ -724,10 +757,10 @@ define () ->
       primitiveProperties =
         canFill: true
         primitiveType: @primitiveTypes.box
-        sidedness: @liveCodeLabCore_three.FrontSide
-        threeObjectConstructor: @liveCodeLabCore_three.Mesh
+        sidedness: @threeJs.FrontSide
+        threeObjectConstructor: @threeJs.Mesh
         detailLevel: 0
-      
+
       # end of primitive-specific initialisations:
       @commonPrimitiveDrawingLogic a, b, c, d, primitiveProperties
 
@@ -736,11 +769,11 @@ define () ->
       primitiveProperties =
         canFill: true
         primitiveType: @primitiveTypes.peg
-        sidedness: @liveCodeLabCore_three.FrontSide
-        threeObjectConstructor: @liveCodeLabCore_three.Mesh
+        sidedness: @threeJs.FrontSide
+        threeObjectConstructor: @threeJs.Mesh
         detailLevel: 0
 
-      
+
       # end of primitive-specific initialisations:
       @commonPrimitiveDrawingLogic a, b, c, d, primitiveProperties
 
@@ -755,44 +788,51 @@ define () ->
       primitiveProperties =
         canFill: true
         primitiveType: @primitiveTypes.ball
-        sidedness: @liveCodeLabCore_three.FrontSide
-        threeObjectConstructor: @liveCodeLabCore_three.Mesh
+        sidedness: @threeJs.FrontSide
+        threeObjectConstructor: @threeJs.Mesh
         detailLevel: @ballDetLevel - @minimumBallDetail
 
-      
+
       # end of primitive-specific initialisations:
       @commonPrimitiveDrawingLogic a, b, c, d, primitiveProperties
 
-    
+
     # Modified from Processing.js
     fill: (r, g, b, a, f) ->
 
-      #console.log "fill-1 " + r + " " + g + " " + b + " " + a + " "  
-
       if typeof r isnt "number"
-        if isFunction r then appendedFunction = r
-        r = undefined; g = undefined; b = undefined; a = undefined; f = undefined
+        if _.isFunction r then appendedFunction = r
+        r = undefined
+        g = undefined
+        b = undefined
+        a = undefined
+        f = undefined
       else if typeof g isnt "number"
-        if isFunction g then appendedFunction = g
-        g = undefined; b = undefined; a = undefined; f = undefined
+        if _.isFunction g then appendedFunction = g
+        g = undefined
+        b = undefined
+        a = undefined
+        f = undefined
       else if typeof b isnt "number"
-        if isFunction b then appendedFunction = b
-        b = undefined; a = undefined; f = undefined
+        if _.isFunction b then appendedFunction = b
+        b = undefined
+        a = undefined
+        f = undefined
       else if typeof a isnt "number"
-        if isFunction a then appendedFunction = a
-        a = undefined; f = undefined
+        if _.isFunction a then appendedFunction = a
+        a = undefined
+        f = undefined
       else if typeof f isnt "number"
-        if isFunction f then appendedFunction = f
+        if _.isFunction f then appendedFunction = f
         f = undefined
       else
         appendedFunction = undefined
 
-      #console.log "fill-2 " + r + " " + g + " " + b + " " + a + " appendedFunction: " + appendedFunction
-
       if appendedFunction?
         @pushFill @defaultNormalFill,@currentFillColor,@currentFillAlpha,@doFill
 
-      # Three.js needs two integers to define an RGBA: the rgb as a 24 bit integer
+      # Three.js needs two integers to define an RGBA:
+      #       the rgb as a 24 bit integer
       # and the alpha (from zero to one).
       # Now the thing is that the color gan be given in different
       # shapes:
@@ -800,20 +840,23 @@ define () ->
       #   integerOfColor, alpha
       #   integerForGreyScale, alpha
       #   the three abobe without the alpha
-      # So the helper functions color and alphaZeroToOne, taken from Processing.js
-      # take care of that disambiguation.
+      # So the helper functions color and alphaZeroToOne,
+      # taken from Processing.js, take care of that disambiguation.
       # The only complication is that there is a special color called
-      # angleColor that is used to dress the geometries with the normal material.
+      # angleColor that is used to dress the geometries
+      # with the normal material.
       # So in that case, again, there are two forms of invokation
       #   angleColor
       #   angleColor, alpha
       @doFill = true
       if r isnt @angleColor
         @defaultNormalFill = false
-        @currentFillColor = @liveCodeLabCoreInstance.colourFunctions.color(r, g, b)
-        @currentFillAlpha = @liveCodeLabCoreInstance.colourFunctions.alphaZeroToOne(@liveCodeLabCoreInstance.colourFunctions.color(r, g, b, a))
+        @currentFillColor = @colourFunctions.color(r, g, b)
+        @currentFillAlpha = @colourFunctions.alphaZeroToOne(
+          @colourFunctions.color(r, g, b, a)
+        )
       else
-        
+
         # we keep track of the "normal fill" flag and the fill color
         # separately because
         # we can do some smart optimisation later
@@ -822,7 +865,7 @@ define () ->
         @defaultNormalFill = true
         @currentFillColor = @angleColor
         if not b? and not g?
-          @currentFillAlpha = g / @liveCodeLabCoreInstance.colourFunctions.colorModeA
+          @currentFillAlpha = g / @colourFunctions.colorModeA
         else
           @currentFillAlpha = 1
 
@@ -836,11 +879,11 @@ define () ->
     The noFill() function disables filling geometry.
     If both <b>noStroke()</b> and <b>noFill()</b>
     are called, no shapes will be drawn to the screen.
-    
+
     @see #fill()
     ###
     noFill: (a)->
-      if isFunction a then appendedFunction = a
+      if _.isFunction a then appendedFunction = a
 
       if appendedFunction?
         @pushFill @defaultNormalFill,@currentFillColor,@currentFillAlpha,@doFill
@@ -850,9 +893,9 @@ define () ->
 
       if appendedFunction?
         appendedFunction()
-        @popFill()    
+        @popFill()
 
-    
+
     ###
     The stroke() function sets the color used to
     draw lines and borders around shapes.
@@ -870,7 +913,7 @@ define () ->
     <br><br>The value for the parameter "gray" must be less than or equal
     to the current maximum value as specified by <b>colorMode()</b>.
     The default maximum value is 255.
-    
+
     @param {int|float} gray    number specifying value between white and black
     @param {int|float} value1  red or hue value
     @param {int|float} value2  green or saturation value
@@ -879,7 +922,7 @@ define () ->
     @param {Color} color       any value of the color datatype
     @param {int} hex           color value in hex notation
                                (i.e. #FFCC00 or 0xFFFFCC00)
-    
+
     @see #fill()
     @see #noStroke()
     @see #tint()
@@ -888,35 +931,52 @@ define () ->
     ###
     stroke: (r, g, b, a, f) ->
       if typeof r isnt "number"
-        if isFunction r then appendedFunction = r
-        r = undefined; g = undefined; b = undefined; a = undefined; f = undefined
+        if _.isFunction r then appendedFunction = r
+        r = undefined
+        g = undefined
+        b = undefined
+        a = undefined
+        f = undefined
       else if typeof g isnt "number"
-        if isFunction g then appendedFunction = g
-        g = undefined; b = undefined; a = undefined; f = undefined
+        if _.isFunction g then appendedFunction = g
+        g = undefined
+        b = undefined
+        a = undefined
+        f = undefined
       else if typeof b isnt "number"
-        if isFunction b then appendedFunction = b
-        b = undefined; a = undefined; f = undefined
+        if _.isFunction b then appendedFunction = b
+        b = undefined
+        a = undefined
+        f = undefined
       else if typeof a isnt "number"
-        if isFunction a then appendedFunction = a
-        a = undefined; f = undefined
+        if _.isFunction a then appendedFunction = a
+        a = undefined
+        f = undefined
       else if typeof f isnt "number"
-        if isFunction f then appendedFunction = f
+        if _.isFunction f then appendedFunction = f
         f = undefined
       else
         appendedFunction = undefined
 
       if appendedFunction?
-        @pushStroke @defaultNormalStroke,@currentStrokeColor,@currentStrokeAlpha,@doStroke
+        @pushStroke(
+          @defaultNormalStroke,
+          @currentStrokeColor,
+          @currentStrokeAlpha,
+          @doStroke
+        )
 
       # see comment on fill method above
       # for some comments on how this method works.
       @doStroke = true
       if r isnt @angleColor
         @defaultNormalStroke = false
-        @currentStrokeColor = @liveCodeLabCoreInstance.colourFunctions.color(r, g, b)
-        @currentStrokeAlpha = @liveCodeLabCoreInstance.colourFunctions.alphaZeroToOne(@liveCodeLabCoreInstance.colourFunctions.color(r, g, b, a))
+        @currentStrokeColor = @colourFunctions.color(r, g, b)
+        @currentStrokeAlpha = @colourFunctions.alphaZeroToOne(
+          @colourFunctions.color(r, g, b, a)
+        )
       else
-        
+
         # we keep track of the "normal stroke" flag and the stroke color
         # separately because
         # we can do some smart optimisation later
@@ -925,27 +985,32 @@ define () ->
         @defaultNormalStroke = true
         @currentStrokeColor = @angleColor
         if not b? and not g?
-          @currentStrokeAlpha = g / @liveCodeLabCoreInstance.colourFunctions.colorModeA
+          @currentStrokeAlpha = g / @colourFunctions.colorModeA
         else
           @currentStrokeAlpha = 1
 
       if appendedFunction?
         appendedFunction()
         @popStroke()
-    
+
     ###
     The noStroke() function disables drawing the stroke (outline).
     If both <b>noStroke()</b> and <b>noFill()</b> are called, no shapes
     will be drawn to the screen.
-    
+
     @see #stroke()
     ###
     noStroke: (a)->
 
-      if isFunction a then appendedFunction = a
+      if _.isFunction a then appendedFunction = a
 
       if appendedFunction?
-        @pushStroke @defaultNormalStroke,@currentStrokeColor,@currentStrokeAlpha,@doStroke
+        @pushStroke(
+          @defaultNormalStroke,
+          @currentStrokeColor,
+          @currentStrokeAlpha,
+          @doStroke
+        )
 
       @doStroke = false
 
