@@ -72,14 +72,12 @@ define [
   ,'core/renderer'
   ,'core/threejs-system'
   ,'core/time-keeper'
+  ,'pulse'
   ,'globals/math'
   ,'core/global-scope'
   ,'sound/samplebank'
   ,'sound/sound-system'
-  ,'bowser'
-  ,'soundJS'
-  ,'buzz'
-  ,'lowLag'
+  ,'sound/pattern-player'
   ,'threejs'
 ], (
   AnimationLoop
@@ -95,14 +93,12 @@ define [
   ,Renderer
   ,ThreeJsSystem
   ,TimeKeeper
+  ,Pulse
   ,Math
   ,GlobalScope
   ,SampleBank
   ,SoundSystem
-  ,bowser
-  ,createjs
-  ,buzz
-  ,lowLag
+  ,PatternPlayer
   ,THREE
 ) ->
 
@@ -113,6 +109,8 @@ define [
       @threeJsCanvas,
       @backgroundDiv,
       @eventRouter,
+      @syncClient,
+      @audioAPI,
       @statsWidget,
       @usingWebGL,
       @paramsObject
@@ -131,8 +129,9 @@ define [
       # fields/methods. So, threeJsSystem provides some abstraction without
       # attempting to be a complete abstraction layer.
       @three = THREE
-
-      @timeKeeper = new TimeKeeper()
+      
+      
+      @timeKeeper = new TimeKeeper(@syncClient, @audioAPI)
 
       @globalscope = new GlobalScope(true)
 
@@ -141,17 +140,14 @@ define [
 
       @mathFunctions = new Math()
       @otherCommands = new OtherCommands()
-
+      
       @soundSystem = new SoundSystem(
-        @eventRouter,
         @timeKeeper,
-        createjs,
-        buzz,
-        lowLag,
-        bowser,
-        new SampleBank(buzz)
+        @audioAPI,
+        new SampleBank(@audioAPI),
+        new PatternPlayer()
       )
-
+      
       @backgroundPainter = new BackgroundPainter(
         @backgroundDiv,
         @colourFunctions,
@@ -238,9 +234,6 @@ define [
 
     runLastWorkingProgram: ->
       @programRunner.runLastWorkingProgram()
-
-    loadAndTestAllTheSounds: ->
-      @soundSystem.loadAndTestAllTheSounds()
 
     playStartupSound: ->
       @soundSystem.playStartupSound()

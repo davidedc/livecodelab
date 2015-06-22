@@ -4,39 +4,39 @@
 ## unnecessary invokation of the Date and getTime browser functions.
 ###
 
-define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
+define ['core/event-emitter'], (EventEmitter) ->
 
   class TimeKeeper extends EventEmitter
 
-    constructor: ->
-      @time = undefined          # current time in SECONDS
-      @millisAtStart = undefined # milliseconds at program start
-      @milliseconds = undefined  # current time in MILLISECONDS
-      @bpm = 100
-      @newBpm = undefined
-      @mspb = 60000 / @bpm       # milliseconds per beat
-      @lastBeat = undefined      # milliseconds at last whole beat
-      @nextQuarterBeat = 0       # timestamp at which next quarter beat runs
-      @beatCount = 1             # last whole beat number
-      @fraction = 0              # fraction of the beat we're at
+    constructor: (@syncClient, @audioApi) ->
+      super()                       # call EventEmitter constructor
 
-      @pulseClient = new Pulse()
+      now = @audioApi.getTime()
 
-      super()
+      @beatCount      = 1            # last whole beat number
+      @beatFraction   = 0            # fraction of the beat we're at
+
+      @bpm            = 100
+      @newBpm         = 100
+      @mspb           = 60000 / @bpm # milliseconds per beat
+
+      @lastBeatLoopMs = now          # milliseconds at last beat loop
+      @timeAtStart    = now          # milliseconds at loop start
+      @time           = now / 1000   # current time in SECONDS
 
       @resetTime()
-      @beatLoop()
+      @beatLoop(now)
 
     addToScope: (scope) ->
 
       @scope = scope
-      scope.add('bpm',   (bpm) => @setBpmLater(bpm))
+      scope.add('bpm',   (bpm) => @setBpm(bpm))
       scope.add('beat',  () => @beat())
       scope.add('pulse', (frequency) => @pulse(frequency))
       scope.add('wave',  (frequency) => @wave(frequency))
-      scope.add('time', @time)
+      scope.add('time',  @time)
 
-    setTime: (value) ->
+    setTime: (value) =>
       @time = value
       if @scope
         @scope.add('time', @time)
@@ -45,95 +45,89 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
     This is the beat loop that runs at 4 quarters to the beat, emitting
     an event for every quarter. It uses setTimeout in stead of setInterval
     because the BPM could change.
-    ###
-    beatLoop: ->
-      now = new Date().getTime()
-      @emit('beat', @beatCount + @fraction)
 
-      if @fraction == 1
-        @fraction = 0
+    The argument passed in is the time the beat should really be happening.
+    This means that we can account for jitter but increasing/decreasing the
+    timeout we use for triggering the next call
+    ###
+    beatLoop: (aimedForTime) =>
+
+      now = @audioApi.getTime()
+
+      @emit('beat', @beatCount + @beatFraction)
+
+      if (@beatFraction >= 1)
+        @beatFraction = 0
+
         @beatCount += 1
 
-        # Set the BPM and phase from pulse if it's connected
-        if @pulseClient.currentConnection() and @pulseClient.beats.length
-          @setBpm(@pulseClient.bpm)
-          if (
-            @pulseClient.count == 1 and
-            @lastBeat != @pulseClient.beats[@pulseClient.beats.length-1]
-          )
-            @beatCount = 1
-            @lastBeat = @pulseClient.beats[@pulseClient.beats.length-1]
-          else
-            @lastBeat = (
-              @pulseClient.beats[@pulseClient.beats.length-1] +
-              @mspb * (@beatCount - @pulseClient.count)
-            )
-        else
-          @lastBeat += @mspb
+      if (@syncClient.currentConnection() and @syncClient.beats.length)
 
-      @fraction += 0.25
+        @setBpm(@syncClient.bpm)
 
-      # Set a timeout for the next (quarter) beat
-      @nextQuarterBeat = @lastBeat + @mspb * @fraction
-      delta = @nextQuarterBeat - new Date().getTime()
-      setTimeout( (=> @beatLoop()) , delta)
+        c = @syncClient.beats.length -1
+        syncClientLastBeatLoopMs = @syncClient.beats[c]
+        if (@syncClient.count == 1)
+          @beatCount = 1
 
-    resetTime: ->
-      @lastBeat = @millisAtStart = new Date().getTime()
+        # The sync client last beat loop ms will be the time of
+        # the last quarter note the client knew about
+        @lastBeatLoopMs = syncClientLastBeatLoopMs
+
+      else
+        @lastBeatLoopMs = now
+
+      @beatFraction += 0.25
+
+      # next call should be in 1/4 of a beat time
+      diffMs = aimedForTime - now
+      quarterBeatMs = @mspb * 0.25
+      # We subtract a few miliseconds so that this triggers ahead of time
+      # This means we can schedule events in the future for higher precision
+      preemptMs = 20 # milliseconds
+      newAimedForTime = aimedForTime + quarterBeatMs
+
+      timeout = (quarterBeatMs + diffMs) - preemptMs
+
+      setTimeout((() => @beatLoop(newAimedForTime)), timeout)
+
+    resetTime: =>
+      @lastBeat = @millisAtStart = @audioApi.getTime()
       @updateTime()
 
-    updateTime: ->
-      @milliseconds = new Date().getTime()
-      @setTime((@milliseconds - @millisAtStart) / 1000)
-
-    setBpmLater: (bpm) ->
-      if (bpm != @newBpm)
-        clearTimeout(@setBpmTimeout)
-        @newBpm = bpm
-        @setBpmTimeout = setTimeout( (=> @setBpmOrConnect(bpm)) , 1000)
-
-    setBpmOrConnect: (bpmOrAddress) ->
-      if not bpmOrAddress?
-        return
-
-      # Any string supplied is interpreted as the address
-      if typeof bpmOrAddress == 'string'
-        @connect(bpmOrAddress)
-      else if bpmOrAddress != @bpm
-        if @pulseClient.currentConnection()
-          @pulseClient.disconnect()
-        @setBpm(bpmOrAddress)
+    updateTime: =>
+      @setTime((@audioApi.getTime() - @millisAtStart) / 1000)
 
     setBpm: (bpm) ->
-      @bpm = Math.max(20, Math.min(bpm, 250))
-      @mspb = 60000 / @bpm
+      if (@bpm != bpm)
+        @bpm = Math.max(20, Math.min(bpm, 250))
+        @mspb = 60000 / @bpm
 
     ###
-    Connects to a pulse server, and read the bpm/beat from there.
+    Connects to a sync server, and read the bpm/beat from there.
     ###
     connect: (address) ->
-      if (
-        address &&
-        !(
-          @pulseClient.connecting ||
-          @pulseClient.currentConnection() == @pulseClient.cleanAddress(address)
+      if address && !(
+        @syncClient.connecting || (
+          @syncClient.currentConnection() == @syncClient.cleanAddress(address)
         )
       )
         console.log('Connecting to ' + address)
-        @pulseClient.connect(address)
-      return
+        @syncClient.connect(address)
 
     beat: ->
-      passed = new Date().getTime() - @lastBeat
-      return @beatCount + passed / @mspb;
+      now = @audioApi.getTime()
+      msSinceLastQuarter = now - @lastBeatLoopMs
+      msFrac = (msSinceLastQuarter / @mspb)
+      beatValue = @beatCount + @beatFraction + msFrac
+      return beatValue
 
     pulse: (frequency) ->
       if typeof frequency != "number"
         frequency = 1
       return Math.exp(
         -Math.pow(
-          Math.pow((@beat() * frequency) % 1, 0.3) - 0.5,
-          2
+          Math.pow((@beat() * frequency) % 1, 0.3) - 0.5, 2
         ) / 0.05
       )
 
@@ -142,7 +136,6 @@ define ['core/event-emitter', 'pulse'], (EventEmitter, PulseEmpty) ->
       if typeof frequency != "number"
         frequency = 1
       sin((@beat() * frequency) * Math.PI)
-
 
   TimeKeeper
 

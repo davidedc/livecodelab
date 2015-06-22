@@ -59,8 +59,6 @@ define () ->
     loopInterval: null
     wantedFramesPerSecond: null
     AS_HIGH_FPS_AS_POSSIBLE: -1
-    noDrawFrame: false
-    fpsHistory: [10]
 
     sleeping: true
 
@@ -138,18 +136,6 @@ define () ->
       else
         @timeKeeper.updateTime()
 
-      frameStartTime = @timeKeeper.milliseconds
-
-      # do the render ONLY if we are some ms away from the next
-      # scheduled beat. In other words, stay well clear of the
-      # sound timer!
-
-      forbiddenZone = Math.min(Math.max.apply(Math, @fpsHistory), 1000/30)
-      if @timeKeeper.nextQuarterBeat - frameStartTime < forbiddenZone
-        @noDrawFrame = true
-      else
-        @noDrawFrame = false
-
       @cleanStateBeforeRunningDrawAndRendering()
 
       # if the draw function is empty, then don't schedule the
@@ -187,6 +173,9 @@ define () ->
         # the program is empty and so is the screen. Effectively, the user
         # is starting from scratch, so the frame should be reset to zero.
         @setFrame(0)
+        @blendControls.animationStyle(@blendControls.animationStyles.normal)
+        @blendControls.animationStyleUpdateIfChanged()
+        @renderer.render(@graphicsCommands)
 
       # we have to repeat this check because in the case
       # the user has set frame = 0,
@@ -210,16 +199,9 @@ define () ->
       # otherwise the last frame of the sketch is going
       # to remain painted in the background behind
       # the big cursor.
-      if (!@noDrawFrame or @sleeping) and geometryOnScreenMightHaveChanged
+      if !@sleeping and geometryOnScreenMightHaveChanged
         @renderer.render @graphicsCommands
-        # keep the last 10 durations of when we actually
-        # drew the frame. This is used for trying to
-        # avoid collision between graphics and sound timers.
-        @fpsHistory.push(new Date().getTime() - frameStartTime)
-        if @fpsHistory.length > 60
-          @fpsHistory.shift()
-        @graphicsCommands.atLeastOneObjectWasDrawn =
-          @graphicsCommands.atLeastOneObjectIsDrawn
+        @graphicsCommands.atLeastOneObjectWasDrawn = @graphicsCommands.atLeastOneObjectIsDrawn
 
 
       # update stats
@@ -232,7 +214,7 @@ define () ->
 
       # the sound list needs to be cleaned
       # so that the user program can create its own from scratch
-      @soundSystem.resetLoops()
+      @lclCore.soundSystem.clearPatterns()
 
       @lclCore.programRunner.resetTrackingOfDoOnceOccurrences()
 

@@ -8,6 +8,9 @@ require [
   ,'core/event-emitter'
   ,'core/livecodelab-core'
   ,'core/program-loader'
+  ,'pulse'
+  ,'sound/webAudioApi'
+  ,'sound/buzzAudioApi'
   ,'ui/url-router'
   ,'ui/big-cursor'
   ,'ui/text-dimming'
@@ -26,6 +29,9 @@ require [
   ,EventEmitter
   ,LiveCodeLabCore
   ,ProgramLoader
+  ,Pulse
+  ,WebAudioAPI
+  ,BuzzAudioAPI
   ,UrlRouter
   ,BigCursor
   ,EditorDimmer
@@ -91,6 +97,16 @@ require [
     # add Stats.js - https://github.com/mrdoob/stats.js
     stats = new Stats
 
+    # Client used to sync to a time pulse over websocket
+    syncClient = new Pulse()
+
+    # If the WebAudioApi AudioContext class is available then we
+    # can use that API. Otherwise we fall back to Buzz
+    if (AudioContext)
+      audioAPI = new WebAudioAPI()
+    else
+      audioAPI = new BuzzAudioAPI()
+
     #//////////////////////////////////////////////////////
     # Phase 2 - Initialise the core of livecodelab.
     # LiveCodeLabCore consists of the following main parts:
@@ -113,6 +129,8 @@ require [
       threeJsCanvas,
       backgroundDiv,
       eventRouter,
+      syncClient,
+      audioAPI,
       stats,
       usingWebGL,
       {
@@ -324,7 +342,6 @@ require [
     # animation loop. Events will start
     # being triggered from here on.
     #/////////////////////////////////////////////////////
-    liveCodeLabCore.loadAndTestAllTheSounds()
     liveCodeLabCore.paintARandomBackground()
     liveCodeLabCore.startAnimationLoop()
     if not Detector.webgl or paramsObject.forceCanvasRenderer
