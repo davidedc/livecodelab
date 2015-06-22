@@ -335,6 +335,7 @@ class GraphicsCommands
     scope.add('ballDetail', (a) => @ballDetail(a))
     scope.add('fill',       (a,b,c,d,e) => @fill(a,b,c,d,e))
     scope.add('noFill',     (a) => @noFill(a))
+    scope.add('label',      (a,f) => @label(a,f))
     scope.add('stroke',     (a,b,c,d,e) => @stroke(a,b,c,d,e))
     scope.add('noStroke',   (a) => @noStroke(a))
     scope.add('strokeSize', (a) => @strokeSize(a))
@@ -893,6 +894,47 @@ class GraphicsCommands
     if appendedFunction?
       appendedFunction()
       @popFill()
+
+  ###
+  Displays text always facing the user just
+  where the current world matrix is at.
+  Solution taken from
+  http://stackoverflow.com/a/15257807
+  ###
+  label: (a,f)->
+
+    if _.isFunction a
+      appendedFunction = a
+      a = undefined
+    else if _.isFunction f
+      appendedFunction = f
+    else
+      appendedFunction = undefined
+
+    if a?
+      worldMatrix = @matrixCommands.getWorldMatrix()
+
+      widthHalf = window.innerWidth / 2
+      heightHalf = window.innerHeight / 2
+      vector = new THREE.Vector3(0,0,0)
+      vector.setFromMatrixPosition(worldMatrix)
+      vector.project(@threeJsSystem.camera)
+      posx = ( vector.x * widthHalf ) + widthHalf
+      posy = - ( vector.y * heightHalf ) + heightHalf
+
+
+      labelDiv = document.createElement('div')
+      labelDiv.style.position = 'absolute'
+      labelDiv.style.width = 100
+      labelDiv.style.height = 100
+      labelDiv.innerHTML = "" + a
+      labelDiv.style.top = posy + 'px'
+      labelDiv.style.left = posx + 'px'
+      holdingDiv = document.getElementById("labels")
+      holdingDiv.appendChild labelDiv
+
+    if appendedFunction?
+      appendedFunction()
 
 
   ###

@@ -221,6 +221,12 @@ class AnimationLoop
     @blendControls.animationStyle @blendControls.animationStyles.normal
     @backgroundPainter.resetGradientStack()
 
+    # if the user used labels in previous frame, they are in this div
+    # and they must be cleared.
+    labelsDiv = document.getElementById("labels")
+    if labelsDiv.firstChild
+      document.getElementById("labels").innerHTML = ""
+
     # In case we want to make each frame an actual
     # pure function then we need to seed "random" and "noise"
     # each frame...

@@ -85,6 +85,7 @@ class CodePreprocessor
     "box"
     "ball"
     "peg"
+    "label"
     # Others
     "run"
   ]
