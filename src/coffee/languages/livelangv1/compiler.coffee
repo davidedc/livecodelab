@@ -51,7 +51,7 @@ class CodeCompiler
       return output
 
     try
-      compiledOutput = CoffeescriptCompiler.compile(code,
+      compiledOutput = CoffeeScriptCompiler.compile(code,
         bare: "on"
       )
     catch e
