@@ -272,6 +272,39 @@ class ProgramLoader
             turtle
             """
 
+    @programs.demos.turtleGraphicssnowflakeDemo =
+      submenu: "TurtleGraphics"
+      title: "Snowflake"
+      code: """
+            simpleGradient orange, red, red
+            scale 1/3
+            angle = 60
+
+            KochCurve= (depth, size)->
+            ▶if depth < 1
+            ▶▶fill 100*random,255*random,255
+            ▶▶forward size
+            ▶▶return
+            ▶size /= 3
+            ▶depth--
+            ▶KochCurve depth, size
+            ▶turnLeft angle
+            ▶KochCurve depth, size
+            ▶turnRight 2*angle
+            ▶KochCurve depth, size
+            ▶turnLeft angle
+            ▶KochCurve depth, size
+
+            move 0,0.5,0
+            rotate 0,0,time/10
+            move -2,-3.5,0
+            iters = time%5
+            3 times
+            ▶KochCurve iters, 7
+            ▶turnRight 2*angle
+            """
+
+
     @programs.demos.webgltwocubesDemo =
       submenu: "WebGL"
       title: "WebGL: Two cubes"
