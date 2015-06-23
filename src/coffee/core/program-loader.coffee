@@ -266,7 +266,7 @@ class ProgramLoader
       code: """
             rotate 6
             scale 0.3
-            frame%550 times with i
+            frame*10%550 times with i
             ▶turnLeft 18
             ▶forward 0.2 + i/300
             turtle
