@@ -226,6 +226,7 @@ class AnimationLoop
     labelsDiv = document.getElementById("labels")
     if labelsDiv.firstChild
       document.getElementById("labels").innerHTML = ""
+      @graphicsCommands.numberOfLabels = 0
 
     # In case we want to make each frame an actual
     # pure function then we need to seed "random" and "noise"
