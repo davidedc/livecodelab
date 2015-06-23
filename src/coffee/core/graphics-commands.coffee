@@ -931,32 +931,40 @@ class GraphicsCommands
     posx = ( vector.x * widthHalf ) + widthHalf
     posy = - ( vector.y * heightHalf ) + heightHalf
 
+    # don't even try to add the divs that are clearly
+    # out of sight (more than 10% off the screen)
+    # as it just clutters he DOM and it seems
+    # to thrash the performance of the layout
+    if !(posx > widthHalf*2 + widthHalf*2/10 or
+    posy > heightHalf*2 + heightHalf*2/10 or
+    posx < -widthHalf*2/10 or
+    posx < -heightHalf*2/10)
 
-    labelDiv = document.createElement('div')
-    labelDiv.style.position = 'absolute'
-    labelDiv.style.width = 100
-    labelDiv.style.height = 100
-    redComponent = redF(@currentFillColor)
-    greenComponent = greenF(@currentFillColor)
-    blueComponent = blueF(@currentFillColor)
+      labelDiv = document.createElement('div')
+      labelDiv.style.position = 'absolute'
+      labelDiv.style.width = 100
+      labelDiv.style.height = 100
+      redComponent = redF(@currentFillColor)
+      greenComponent = greenF(@currentFillColor)
+      blueComponent = blueF(@currentFillColor)
 
-    # clamp the color so it doesn't go too bright
-    # the reason is that the contour of the label
-    # is always white (it's set in the container of the labels)
-    # so we don't want the label to be white as that
-    # looks very messy when the labels overlap, and also
-    # in case of a bright background
-    if redComponent > 150 and greenComponent > 150 and blueComponent > 150
-      if redComponent > 150 then redComponent = 150
-      if greenComponent > 150 then greenComponent = 150
-      if blueComponent > 150 then blueComponent = 150
+      # clamp the color so it doesn't go too bright
+      # the reason is that the contour of the label
+      # is always white (it's set in the container of the labels)
+      # so we don't want the label to be white as that
+      # looks very messy when the labels overlap, and also
+      # in case of a bright background
+      if redComponent > 150 and greenComponent > 150 and blueComponent > 150
+        if redComponent > 150 then redComponent = 150
+        if greenComponent > 150 then greenComponent = 150
+        if blueComponent > 150 then blueComponent = 150
 
-    labelDiv.style.color = "rgb("+redComponent+","+greenComponent+","+blueComponent+")"
-    labelDiv.innerHTML = "" + a
-    labelDiv.style.top = posy + 'px'
-    labelDiv.style.left = posx + 'px'
-    holdingDiv = document.getElementById("labels")
-    holdingDiv.appendChild labelDiv
+      labelDiv.style.color = "rgb("+redComponent+","+greenComponent+","+blueComponent+")"
+      labelDiv.innerHTML = "" + a
+      labelDiv.style.top = posy + 'px'
+      labelDiv.style.left = posx + 'px'
+      holdingDiv = document.getElementById("labels")
+      holdingDiv.appendChild labelDiv
 
     if appendedFunction?
       appendedFunction()
