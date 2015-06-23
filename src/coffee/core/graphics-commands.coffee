@@ -936,7 +936,22 @@ class GraphicsCommands
     labelDiv.style.position = 'absolute'
     labelDiv.style.width = 100
     labelDiv.style.height = 100
-    labelDiv.style.color = "rgb("+redF(@currentFillColor)+","+greenF(@currentFillColor)+","+blueF(@currentFillColor)+")"
+    redComponent = redF(@currentFillColor)
+    greenComponent = greenF(@currentFillColor)
+    blueComponent = blueF(@currentFillColor)
+
+    # clamp the color so it doesn't go too bright
+    # the reason is that the contour of the label
+    # is always white (it's set in the container of the labels)
+    # so we don't want the label to be white as that
+    # looks very messy when the labels overlap, and also
+    # in case of a bright background
+    if redComponent > 150 and greenComponent > 150 and blueComponent > 150
+      if redComponent > 150 then redComponent = 150
+      if greenComponent > 150 then greenComponent = 150
+      if blueComponent > 150 then blueComponent = 150
+
+    labelDiv.style.color = "rgb("+redComponent+","+greenComponent+","+blueComponent+")"
     labelDiv.innerHTML = "" + a
     labelDiv.style.top = posy + 'px'
     labelDiv.style.left = posx + 'px'
