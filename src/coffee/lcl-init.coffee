@@ -18,7 +18,9 @@ Editor          = require './editor/editor'
 Autocoder       = require './autocoder/autocoder'
 CodeMirror      = require '../js/codemirror'
 window.CodeMirror = CodeMirror
-$               = require '../js/jquery.min'
+$               = require '../js/jquery'
+window.$ = $
+window.jQuery = $
 Detector        = require '../js/three.js/Detector'
 
 require '../js/mousewheel'
