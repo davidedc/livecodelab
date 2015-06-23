@@ -97,5 +97,5 @@ class Editor
     return if @codemirrorInstance.getValue() is ""
     @eventRouter.emit("editor-undim")
 
-modue.exports = Editor
+module.exports = Editor
 

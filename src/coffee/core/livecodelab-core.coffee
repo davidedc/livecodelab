@@ -69,7 +69,6 @@ OtherCommands     = require './other-commands'
 LightsCommands    = require './lights-commands'
 MatrixCommands    = require './matrix-commands'
 Renderer          = require './renderer'
-ThreeJsSystem     = require './threejs-system'
 TimeKeeper        = require './time-keeper'
 Pulse             = require '../../js/pulse'
 Math              = require '../globals/math'
@@ -78,6 +77,8 @@ SampleBank        = require '../sound/samplebank'
 SoundSystem       = require '../sound/sound-system'
 PatternPlayer     = require '../sound/pattern-player'
 ThreeJs           = require '../../js/three.min'
+window.THREE = ThreeJs
+ThreeJsSystem     = require './threejs-system'
 
 class LiveCodeLabCore
 

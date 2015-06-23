@@ -17,6 +17,7 @@ Ui              = require './ui/ui'
 Editor          = require './editor/editor'
 Autocoder       = require './autocoder/autocoder'
 CodeMirror      = require '../js/codemirror'
+window.CodeMirror = CodeMirror
 $               = require '../js/jquery.min'
 Detector        = require '../js/three.js/Detector'
 
