@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "description": "A live coding environment for the browser",
   "scripts": {
+    "jison": "jison ./src/grammar/lcl-grammar.jison -m commonjs -o ./src/generated/parser.js",
+    "compile": "browserify -t coffeeify --extension='.coffee' ./src/coffee/lcl-init.coffee -o ./dist/app.js"
   },
   "devDependencies": {
     "browserify": "^10.2.4",
@@ -10,5 +12,9 @@
     "grunt-git-describe": "^2.3.2",
     "jison": "^0.4.15",
     "recess": "^1.1.9"
+  },
+  "dependencies": {
+    "coffee-script": "^1.9.3",
+    "underscore": "^1.8.3"
   }
 }

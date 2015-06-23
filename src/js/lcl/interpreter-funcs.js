@@ -1,41 +1,35 @@
 /*global define */
 
-define([], function () {
+var funcs = {};
 
-    'use strict';
+// takes a nested tree structure of function
+// args and turns it into a flat list
+funcs.functionargs = function (argtree) {
 
-    var funcs = {};
+    var arg, tree, output;
 
-    // takes a nested tree structure of function
-    // args and turns it into a flat list
-    funcs.functionargs = function (argtree) {
+    output = [];
+    tree = argtree;
 
-        var arg, tree, output;
-
-        output = [];
-        tree = argtree;
-
-        while (true) {
-            arg = tree[0];
-            if (arg === undefined) {
-                break;
-            }
-            output.push(arg);
-            if (tree[1] === undefined) {
-                break;
-            }
-            tree = tree[1];
+    while (true) {
+        arg = tree[0];
+        if (arg === undefined) {
+            break;
         }
+        output.push(arg);
+        if (tree[1] === undefined) {
+            break;
+        }
+        tree = tree[1];
+    }
 
-        return output;
+    return output;
 
-    };
+};
 
-    funcs.createChildScope = function (parentScope) {
-        return Object.create(parentScope);
-    };
+funcs.createChildScope = function (parentScope) {
+    return Object.create(parentScope);
+};
 
-    return funcs;
-
-});
+module.exports = funcs;
 

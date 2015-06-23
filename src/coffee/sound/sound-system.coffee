@@ -5,41 +5,39 @@
 ## state, we are trying to make do here.
 ###
 
-define () ->
+class SoundSystem
 
-  class SoundSystem
+  constructor: (
+    @timeKeeper,
+    @audioApi,
+    @samplebank,
+    @patternPlayer
+  ) ->
+    @timeKeeper.addListener('beat', (beat) => @playSounds(beat) )
+    @playPatterns = []
 
-    constructor: (
-      @timeKeeper,
-      @audioApi,
-      @samplebank,
-      @patternPlayer
-    ) ->
-      @timeKeeper.addListener('beat', (beat) => @playSounds(beat) )
-      @playPatterns = []
+  addToScope: (scope) ->
+    scope.add('play', (soundName, pattern) => @play(soundName, pattern))
 
-    addToScope: (scope) ->
-      scope.add('play', (soundName, pattern) => @play(soundName, pattern))
+  clearPatterns: ->
+    @playPatterns = []
 
-    clearPatterns: ->
-      @playPatterns = []
+  playStartupSound: ->
+    @audioApi.play('bing')
 
-    playStartupSound: ->
-      @audioApi.play('bing')
+  # called from within patches
+  play: (name, pattern) ->
+    if (name && pattern)
+      @playPatterns.push({
+        name: name,
+        pattern: pattern
+      })
 
-    # called from within patches
-    play: (name, pattern) ->
-      if (name && pattern)
-        @playPatterns.push({
-          name: name,
-          pattern: pattern
-        })
+  playSounds: (beat) =>
+    for p in @playPatterns
+      if (@patternPlayer.runPattern(p.pattern, beat))
+        @audioApi.play(p.name)
+    @clearPatterns()
 
-    playSounds: (beat) =>
-      for p in @playPatterns
-        if (@patternPlayer.runPattern(p.pattern, beat))
-          @audioApi.play(p.name)
-      @clearPatterns()
-
-  SoundSystem
+module.exports = SoundSystem
 

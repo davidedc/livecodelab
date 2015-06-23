@@ -3,61 +3,58 @@
 ## This is then run by the ProgramRunner.
 ###
 
-define [
-  'lib/lcl/preprocessor',
-  'lib/lcl/parser'
-], (
-  Preprocessor
-  ,Parser
-) ->
+Preprocessor = require '../../../js/lcl/preprocessor'
+Parser       = require '../../../generated/parser'
 
-  class V2CodeCompiler
+class V2CodeCompiler
 
-    constructor: () ->
-      # the code compiler needs the CodePreprocessor
+  constructor: () ->
+    # the code compiler needs the CodePreprocessor
 
-      @codePreprocessor = Preprocessor
+    @codePreprocessor = Preprocessor
 
-      @parser = Parser
-      @parser.yy.parseError = (message, details) ->
-        throw message
+    @parser = Parser
+    @parser.yy.parseError = (message, details) ->
+      throw message
 
-    # returns an object
-    # {
-    #   status: 'empty', 'error' or 'parsed'
-    #   program: the program, if the status is parsed
-    #   error: the error if there is one
-    # }
-    compileCode: (codeString) ->
+  # returns an object
+  # {
+  #   status: 'empty', 'error' or 'parsed'
+  #   program: the program, if the status is parsed
+  #   error: the error if there is one
+  # }
+  compileCode: (codeString) ->
 
-      code = @codePreprocessor.process codeString
+    code = @codePreprocessor.process codeString
 
-      output = {}
+    output = {}
 
-      # TODO
-      # Currently the PreProcessor doesn't throw any meaningful errors
-      # Will add all this back in when it does
-      #
-      # If 'error' is not null then it means that the preprocessing has
-      # found an error. In which case, we report the error and skip the parsing.
-      #if error?
-      #  output.status = 'error'
-      #  output.error = e
-      #  return output
+    # TODO
+    # Currently the PreProcessor doesn't throw any meaningful errors
+    # Will add all this back in when it does
+    #
+    # If 'error' is not null then it means that the preprocessing has
+    # found an error. In which case, we report the error and skip the parsing.
+    #if error?
+    #  output.status = 'error'
+    #  output.error = e
+    #  return output
 
-      try
-        programAST = @parser.parse(code)
-      catch e
-        # parser has caught a syntax error.
-        # we are going to display the error and we WON'T register the new code
-        output.status = 'error'
-        output.error = e
-        return output
-
-      if (programAST.length == 0)
-        output.status = 'empty'
-      else
-        output.status = 'parsed'
-        output.program = programAST
+    try
+      programAST = @parser.parse(code)
+    catch e
+      # parser has caught a syntax error.
+      # we are going to display the error and we WON'T register the new code
+      output.status = 'error'
+      output.error = e
       return output
+
+    if (programAST.length == 0)
+      output.status = 'empty'
+    else
+      output.status = 'parsed'
+      output.program = programAST
+    return output
+
+module.exports = V2CodeCompiler
 

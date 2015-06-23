@@ -4,64 +4,61 @@
 # Math functions
 #//////////////////////////////////////////////////////////////////////////
 
+class MathFunctions
 
-define () ->
+  constructor: ->
+    @abs = Math.abs
+    @ceil = Math.ceil
+    @exp = Math.exp
+    @floor = Math.floor
+    @int = int
+    @log = Math.log
+    @max = max
+    @min = min
+    @pow = Math.pow
+    @round = Math.round
+    @sqrt = Math.sqrt
+    @acos = Math.acos
+    @asin = Math.asin
+    @atan = Math.atan
+    @atan2 = Math.atan2
 
-  class MathFunctions
+    @cos = Math.cos
+    @sin = Math.sin
+    @tan = Math.tan
+    @degrees = degrees
+    @radians = radians
 
-    constructor: ->
-      @abs = Math.abs
-      @ceil = Math.ceil
-      @exp = Math.exp
-      @floor = Math.floor
-      @int = int
-      @log = Math.log
-      @max = max
-      @min = min
-      @pow = Math.pow
-      @round = Math.round
-      @sqrt = Math.sqrt
-      @acos = Math.acos
-      @asin = Math.asin
-      @atan = Math.atan
-      @atan2 = Math.atan2
+    @random = random
+    @noise = noise
 
-      @cos = Math.cos
-      @sin = Math.sin
-      @tan = Math.tan
-      @degrees = degrees
-      @radians = radians
+    @pi = Math.PI
 
-      @random = random
-      @noise = noise
+  addToScope: (scope) ->
+    scope.add('abs',     @abs)
+    scope.add('ceil',    @ceil)
+    scope.add('exp',     @exp)
+    scope.add('floor',   @floor)
+    scope.add('int',     @int)
 
-      @pi = Math.PI
-
-    addToScope: (scope) ->
-      scope.add('abs',     @abs)
-      scope.add('ceil',    @ceil)
-      scope.add('exp',     @exp)
-      scope.add('floor',   @floor)
-      scope.add('int',     @int)
-
-      scope.add('log',     @log)
-      scope.add('max',     @max)
-      scope.add('min',     @min)
-      scope.add('pow',     @pow)
-      scope.add('round',   @round)
-      scope.add('sqrt',    @sqrt)
-      scope.add('acos',    @acos)
-      scope.add('asin',    @asin)
-      scope.add('atan',    @atan)
-      scope.add('atan2',   @atan2)
-      scope.add('cos',     @cos)
-      scope.add('sin',     @sin)
-      scope.add('tan',     @tan)
-      scope.add('degrees', @degrees)
-      scope.add('radians', @radians)
-      scope.add('random',  @random)
-      scope.add('noise',   @noise)
-      scope.add('pi',      @pi)
+    scope.add('log',     @log)
+    scope.add('max',     @max)
+    scope.add('min',     @min)
+    scope.add('pow',     @pow)
+    scope.add('round',   @round)
+    scope.add('sqrt',    @sqrt)
+    scope.add('acos',    @acos)
+    scope.add('asin',    @asin)
+    scope.add('atan',    @atan)
+    scope.add('atan2',   @atan2)
+    scope.add('cos',     @cos)
+    scope.add('sin',     @sin)
+    scope.add('tan',     @tan)
+    scope.add('degrees', @degrees)
+    scope.add('radians', @radians)
+    scope.add('random',  @random)
+    scope.add('noise',   @noise)
+    scope.add('pi',      @pi)
 
 
 # Calculation
@@ -101,7 +98,7 @@ Constrains a value to not exceed a maximum and minimum value.
 @see min
 ###
 constrain = (aNumber, aMin, aMax) ->
-  (if aNumber > aMax then aMax else (if aNumber < aMin then aMin else aNumber))
+(if aNumber > aMax then aMax else (if aNumber < aMin then aMin else aNumber))
 
 
 ###
@@ -117,18 +114,18 @@ Calculates the distance between two points.
 @returns {float}
 ###
 dist = ->
-  dx = undefined
-  dy = undefined
-  dz = undefined
-  if arguments.length is 4
-    dx = arguments[0] - arguments[2]
-    dy = arguments[1] - arguments[3]
-    return Math.sqrt(dx * dx + dy * dy)
-  if arguments.length is 6
-    dx = arguments[0] - arguments[3]
-    dy = arguments[1] - arguments[4]
-    dz = arguments[2] - arguments[5]
-    Math.sqrt dx * dx + dy * dy + dz * dz
+dx = undefined
+dy = undefined
+dz = undefined
+if arguments.length is 4
+  dx = arguments[0] - arguments[2]
+  dy = arguments[1] - arguments[3]
+  return Math.sqrt(dx * dx + dy * dy)
+if arguments.length is 6
+  dx = arguments[0] - arguments[3]
+  dy = arguments[1] - arguments[4]
+  dz = arguments[2] - arguments[5]
+  Math.sqrt dx * dx + dy * dy + dz * dz
 
 
 ###
@@ -185,7 +182,7 @@ straight path and for drawing dotted lines.
 @see bezierPoint
 ###
 lerp = (value1, value2, amt) ->
-  ((value2 - value1) * amt) + value1
+((value2 - value1) * amt) + value1
 
 
 ###
@@ -214,8 +211,8 @@ shortcut for writing "dist(0, 0, x, y)".
 @see dist
 ###
 mag = (a, b, c) ->
-  return Math.sqrt(a * a + b * b + c * c)  if c
-  Math.sqrt a * a + b * b
+return Math.sqrt(a * a + b * b + c * c)  if c
+Math.sqrt a * a + b * b
 
 
 ###
@@ -237,7 +234,7 @@ are often intentional and useful.
 @see lerp
 ###
 map = (value, istart, istop, ostart, ostop) ->
-  ostart + (ostop - ostart) * ((value - istart) / (istop - istart))
+ostart + (ostop - ostart) * ((value - istart) / (istop - istart))
 
 
 ###
@@ -253,22 +250,22 @@ Determines the largest value in a sequence of numbers.
 @see min
 ###
 max = ->
-  return (
-    if arguments[0] < arguments[1] then arguments[1] else arguments[0]
-  ) if arguments.length is 2
-  # if single argument, array is used
-  numbers = (if arguments.length is 1 then arguments[0] else arguments)
-  throw new Error("Non-empty array is expected") unless(
-    "length" of numbers and numbers.length
-  )
-  max = numbers[0]
-  count = numbers.length
-  i = 1
+return (
+  if arguments[0] < arguments[1] then arguments[1] else arguments[0]
+) if arguments.length is 2
+# if single argument, array is used
+numbers = (if arguments.length is 1 then arguments[0] else arguments)
+throw new Error("Non-empty array is expected") unless(
+  "length" of numbers and numbers.length
+)
+max = numbers[0]
+count = numbers.length
+i = 1
 
-  while i < count
-    max = numbers[i]  if max < numbers[i]
-    ++i
-  max
+while i < count
+  max = numbers[i]  if max < numbers[i]
+  ++i
+max
 
 
 ###
@@ -284,22 +281,22 @@ Determines the smallest value in a sequence of numbers.
 @see max
 ###
 min = ->
-  return (
-    if arguments[0] < arguments[1] then arguments[0] else arguments[1]
-  )  if arguments.length is 2
-  # if single argument, array is used
-  numbers = (if arguments.length is 1 then arguments[0] else arguments)
-  throw new Error("Non-empty array is expected") unless(
-    "length" of numbers and numbers.length
-  )
-  min = numbers[0]
-  count = numbers.length
-  i = 1
+return (
+  if arguments[0] < arguments[1] then arguments[0] else arguments[1]
+)  if arguments.length is 2
+# if single argument, array is used
+numbers = (if arguments.length is 1 then arguments[0] else arguments)
+throw new Error("Non-empty array is expected") unless(
+  "length" of numbers and numbers.length
+)
+min = numbers[0]
+count = numbers.length
+i = 1
 
-  while i < count
-    min = numbers[i]  if min > numbers[i]
-    ++i
-  min
+while i < count
+  min = numbers[i]  if min > numbers[i]
+  ++i
+min
 
 
 ###
@@ -318,7 +315,7 @@ values are often intentional and useful.
 @see lerp
 ###
 norm = (aNumber, low, high) ->
-  (aNumber - low) / (high - low)
+(aNumber - low) / (high - low)
 
 
 ###
@@ -362,7 +359,7 @@ positive result. For example, -1 * -1 = 1.
 @see sqrt
 ###
 sq = (aNumber) ->
-  aNumber * aNumber
+aNumber * aNumber
 
 
 ###
@@ -473,7 +470,7 @@ in Processing require their parameters to be specified in radians.
 @see radians
 ###
 degrees = (aAngle) ->
-  (aAngle * 180) / Math.PI
+(aAngle * 180) / Math.PI
 
 
 ###
@@ -488,7 +485,7 @@ measuring the same thing. There are 360 degrees in a circle and 2*PI radians in 
 @see degrees
 ###
 radians = (aAngle) ->
-  (aAngle / 180) * Math.PI
+(aAngle / 180) * Math.PI
 
 
 ###
@@ -536,35 +533,35 @@ To convert a floating-point random number to an integer, use the int() function.
 @see noise
 ###
 random = ->
-  return currentRandom()  if !arguments.length
-  return currentRandom() * arguments[0]  if arguments.length is 1
-  aMin = arguments[0]
-  aMax = arguments[1]
-  currentRandom() * (aMax - aMin) + aMin
+return currentRandom()  if !arguments.length
+return currentRandom() * arguments[0]  if arguments.length is 1
+aMin = arguments[0]
+aMax = arguments[1]
+currentRandom() * (aMax - aMin) + aMin
 
 
 # Pseudo-random generator
 class Marsaglia
-  z:0
-  w:0
+z:0
+w:0
 
-  constructor:(i1, i2) ->
-    # from http://www.math.uni-bielefeld.de/~sillke/ALGORITHMS/random/marsaglia-c
-    z = i1 or 362436069
-    w = i2 or 521288629
+constructor:(i1, i2) ->
+  # from http://www.math.uni-bielefeld.de/~sillke/ALGORITHMS/random/marsaglia-c
+  z = i1 or 362436069
+  w = i2 or 521288629
 
-  @createRandomized: ->
-    now = new Date()
-    new Marsaglia((now / 60000) & 0xFFFFFFFF, now & 0xFFFFFFFF)
+createRandomized: ->
+  now = new Date()
+  new Marsaglia((now / 60000) & 0xFFFFFFFF, now & 0xFFFFFFFF)
 
-  nextInt: ->
-    z = (36969 * (z & 65535) + (z >>> 16)) & 0xFFFFFFFF
-    w = (18000 * (w & 65535) + (w >>> 16)) & 0xFFFFFFFF
-    (((z & 0xFFFF) << 16) | (w & 0xFFFF)) & 0xFFFFFFFF
+nextInt: ->
+  z = (36969 * (z & 65535) + (z >>> 16)) & 0xFFFFFFFF
+  w = (18000 * (w & 65535) + (w >>> 16)) & 0xFFFFFFFF
+  (((z & 0xFFFF) << 16) | (w & 0xFFFF)) & 0xFFFFFFFF
 
-  nextDouble: ->
-    i = @nextInt() / 4294967296
-    (if i < 0 then 1 + i else i)
+nextDouble: ->
+  i = @nextInt() / 4294967296
+  (if i < 0 then 1 + i else i)
 
 
 
@@ -580,35 +577,35 @@ each time the software is run.
 @see noiseSeed
 ###
 randomSeed = (seed) ->
-  currentRandom = (new Marsaglia(seed)).nextDouble
+currentRandom = (new Marsaglia(seed)).nextDouble
 
 
 # Random
 # We have two random()'s in the code... what does this do ? and which one is current ?
 Random = (seed) ->
-  haveNextNextGaussian = false
-  nextNextGaussian = undefined
-  random = undefined
-  @nextGaussian = ->
-    if haveNextNextGaussian
-      haveNextNextGaussian = false
-      return nextNextGaussian
-    v1 = undefined
-    v2 = undefined
-    s = undefined
-    loop
-      v1 = 2 * random() - 1 # between -1.0 and 1.0
-      v2 = 2 * random() - 1 # between -1.0 and 1.0
-      s = v1 * v1 + v2 * v2
-      break unless s >= 1 or s is 0
-    multiplier = Math.sqrt(-2 * Math.log(s) / s)
-    nextNextGaussian = v2 * multiplier
-    haveNextNextGaussian = true
-    v1 * multiplier
+haveNextNextGaussian = false
+nextNextGaussian = undefined
+random = undefined
+@nextGaussian = ->
+  if haveNextNextGaussian
+    haveNextNextGaussian = false
+    return nextNextGaussian
+  v1 = undefined
+  v2 = undefined
+  s = undefined
+  loop
+    v1 = 2 * random() - 1 # between -1.0 and 1.0
+    v2 = 2 * random() - 1 # between -1.0 and 1.0
+    s = v1 * v1 + v2 * v2
+    break unless s >= 1 or s is 0
+  multiplier = Math.sqrt(-2 * Math.log(s) / s)
+  nextNextGaussian = v2 * multiplier
+  haveNextNextGaussian = true
+  v1 * multiplier
 
-  
-  # by default use standard random, otherwise seeded
-  random = (if (seed is undefined) then Math.random else (new Marsaglia(seed)).nextDouble)
+
+# by default use standard random, otherwise seeded
+random = (if (seed is undefined) then Math.random else (new Marsaglia(seed)).nextDouble)
 
 
 # Noise functions and helpers
@@ -618,90 +615,90 @@ Random = (seed) ->
 
 class PerlinNoise
 
-  seed:0
-  perm: null
+seed:0
+perm: null
 
-  constructor:(@seed) ->
-    rnd = (if @seed isnt undefined then new Marsaglia(@seed) else Marsaglia.createRandomized())
-    i = undefined
-    j = undefined
-    @perm = new Uint8Array(512)
-    i = 0
-    while i < 256
-      @perm[i] = i
-      ++i
-    i = 0
-    while i < 256
-      t = @perm[j = rnd.nextInt() & 0xFF]
-      @perm[j] = @perm[i]
-      @perm[i] = t
-      ++i
-    i = 0
-    while i < 256
-      @perm[i + 256] = @perm[i]
-      ++i
+constructor:(@seed) ->
+  rnd = (if @seed isnt undefined then new Marsaglia(@seed) else Marsaglia.createRandomized())
+  i = undefined
+  j = undefined
+  @perm = new Uint8Array(512)
+  i = 0
+  while i < 256
+    @perm[i] = i
+    ++i
+  i = 0
+  while i < 256
+    t = @perm[j = rnd.nextInt() & 0xFF]
+    @perm[j] = @perm[i]
+    @perm[i] = t
+    ++i
+  i = 0
+  while i < 256
+    @perm[i + 256] = @perm[i]
+    ++i
 
-  
-  # copy to avoid taking mod in @perm[0];
-  grad3d: (i, x, y, z) ->
-    h = i & 15 # convert into 12 gradient directions
-    u = (if h < 8 then x else y)
-    v = (if h < 4 then y else (if h is 12 or h is 14 then x else z))
-    ((if (h & 1) is 0 then u else -u)) + ((if (h & 2) is 0 then v else -v))
-  grad2d: (i, x, y) ->
-    v = (if (i & 1) is 0 then x else y)
-    (if (i & 2) is 0 then -v else v)
-  grad1d: (i, x) ->
-    (if (i & 1) is 0 then -x else x)
 
-  # there is a lerp defined already, with same
-  # behaviour, but I guess it makes sense to have
-  # one here to make things self-contained.
-  lerp: (t, a, b) ->
-    a + t * (b - a)
+# copy to avoid taking mod in @perm[0];
+grad3d: (i, x, y, z) ->
+  h = i & 15 # convert into 12 gradient directions
+  u = (if h < 8 then x else y)
+  v = (if h < 4 then y else (if h is 12 or h is 14 then x else z))
+  ((if (h & 1) is 0 then u else -u)) + ((if (h & 2) is 0 then v else -v))
+grad2d: (i, x, y) ->
+  v = (if (i & 1) is 0 then x else y)
+  (if (i & 2) is 0 then -v else v)
+grad1d: (i, x) ->
+  (if (i & 1) is 0 then -x else x)
 
-  noise3d: (x, y, z) ->
-    X = Math.floor(x) & 255
-    Y = Math.floor(y) & 255
-    Z = Math.floor(z) & 255
-    x -= Math.floor(x)
-    y -= Math.floor(y)
-    z -= Math.floor(z)
-    fx = (3 - 2 * x) * x * x
-    fy = (3 - 2 * y) * y * y
-    fz = (3 - 2 * z) * z * z
-    p0 = @perm[X] + Y
-    p00 = @perm[p0] + Z
-    p01 = @perm[p0 + 1] + Z
-    p1 = @perm[X + 1] + Y
-    p10 = @perm[p1] + Z
-    p11 = @perm[p1 + 1] + Z
-    @lerp fz, @lerp(fy, @lerp(fx, @grad3d(@perm[p00], x, y, z), @grad3d(@perm[p10], x - 1, y, z)), @lerp(fx, @grad3d(@perm[p01], x, y - 1, z), @grad3d(@perm[p11], x - 1, y - 1, z))), @lerp(fy, @lerp(fx, @grad3d(@perm[p00 + 1], x, y, z - 1), @grad3d(@perm[p10 + 1], x - 1, y, z - 1)), @lerp(fx, @grad3d(@perm[p01 + 1], x, y - 1, z - 1), @grad3d(@perm[p11 + 1], x - 1, y - 1, z - 1)))
+# there is a lerp defined already, with same
+# behaviour, but I guess it makes sense to have
+# one here to make things self-contained.
+lerp: (t, a, b) ->
+  a + t * (b - a)
 
-  noise2d: (x, y) ->
-    X = Math.floor(x) & 255
-    Y = Math.floor(y) & 255
-    x -= Math.floor(x)
-    y -= Math.floor(y)
-    fx = (3 - 2 * x) * x * x
-    fy = (3 - 2 * y) * y * y
-    p0 = @perm[X] + Y
-    p1 = @perm[X + 1] + Y
-    @lerp fy, @lerp(fx, @grad2d(@perm[p0], x, y), @grad2d(@perm[p1], x - 1, y)), @lerp(fx, @grad2d(@perm[p0 + 1], x, y - 1), @grad2d(@perm[p1 + 1], x - 1, y - 1))
+noise3d: (x, y, z) ->
+  X = Math.floor(x) & 255
+  Y = Math.floor(y) & 255
+  Z = Math.floor(z) & 255
+  x -= Math.floor(x)
+  y -= Math.floor(y)
+  z -= Math.floor(z)
+  fx = (3 - 2 * x) * x * x
+  fy = (3 - 2 * y) * y * y
+  fz = (3 - 2 * z) * z * z
+  p0 = @perm[X] + Y
+  p00 = @perm[p0] + Z
+  p01 = @perm[p0 + 1] + Z
+  p1 = @perm[X + 1] + Y
+  p10 = @perm[p1] + Z
+  p11 = @perm[p1 + 1] + Z
+  @lerp fz, @lerp(fy, @lerp(fx, @grad3d(@perm[p00], x, y, z), @grad3d(@perm[p10], x - 1, y, z)), @lerp(fx, @grad3d(@perm[p01], x, y - 1, z), @grad3d(@perm[p11], x - 1, y - 1, z))), @lerp(fy, @lerp(fx, @grad3d(@perm[p00 + 1], x, y, z - 1), @grad3d(@perm[p10 + 1], x - 1, y, z - 1)), @lerp(fx, @grad3d(@perm[p01 + 1], x, y - 1, z - 1), @grad3d(@perm[p11 + 1], x - 1, y - 1, z - 1)))
 
-  noise1d: (x) ->
-    X = Math.floor(x) & 255
-    x -= Math.floor(x)
-    fx = (3 - 2 * x) * x * x
-    @lerp fx, @grad1d(@perm[X], x), @grad1d(@perm[X + 1], x - 1)
+noise2d: (x, y) ->
+  X = Math.floor(x) & 255
+  Y = Math.floor(y) & 255
+  x -= Math.floor(x)
+  y -= Math.floor(y)
+  fx = (3 - 2 * x) * x * x
+  fy = (3 - 2 * y) * y * y
+  p0 = @perm[X] + Y
+  p1 = @perm[X + 1] + Y
+  @lerp fy, @lerp(fx, @grad2d(@perm[p0], x, y), @grad2d(@perm[p1], x - 1, y)), @lerp(fx, @grad2d(@perm[p0 + 1], x, y - 1), @grad2d(@perm[p1 + 1], x - 1, y - 1))
+
+noise1d: (x) ->
+  X = Math.floor(x) & 255
+  x -= Math.floor(x)
+  fx = (3 - 2 * x) * x * x
+  @lerp fx, @grad1d(@perm[X], x), @grad1d(@perm[X + 1], x - 1)
 
 
 # processing defaults
 noiseProfile =
-  generator: undefined
-  octaves: 4
-  fallout: 0.5
-  seed: undefined
+generator: undefined
+octaves: 4
+fallout: 0.5
+seed: undefined
 
 
 ###
@@ -735,27 +732,27 @@ but this will differ depending on use.
 @see noiseDetail
 ###
 noise = (x, y, z) ->
-  
-  # caching
-  noiseProfile.generator = new PerlinNoise(noiseProfile.seed)  if noiseProfile.generator is undefined
-  generator = noiseProfile.generator
-  effect = 1
-  k = 1
-  sum = 0
-  i = 0
 
-  while i < noiseProfile.octaves
-    effect *= noiseProfile.fallout
-    switch arguments.length
-      when 1
-        sum += effect * (1 + generator.noise1d(k * x)) / 2
-      when 2
-        sum += effect * (1 + generator.noise2d(k * x, k * y)) / 2
-      when 3
-        sum += effect * (1 + generator.noise3d(k * x, k * y, k * z)) / 2
-    k *= 2
-    ++i
-  sum
+# caching
+noiseProfile.generator = new PerlinNoise(noiseProfile.seed)  if noiseProfile.generator is undefined
+generator = noiseProfile.generator
+effect = 1
+k = 1
+sum = 0
+i = 0
+
+while i < noiseProfile.octaves
+  effect *= noiseProfile.fallout
+  switch arguments.length
+    when 1
+      sum += effect * (1 + generator.noise1d(k * x)) / 2
+    when 2
+      sum += effect * (1 + generator.noise2d(k * x, k * y)) / 2
+    when 3
+      sum += effect * (1 + generator.noise3d(k * x, k * y, k * z)) / 2
+  k *= 2
+  ++i
+sum
 
 
 ###
@@ -777,8 +774,8 @@ created by the noise() function can be adapted to fit very specific needs and ch
 @see noise
 ###
 noiseDetail = (octaves, fallout) ->
-  noiseProfile.octaves = octaves
-  noiseProfile.fallout = fallout  if fallout isnt undefined
+noiseProfile.octaves = octaves
+noiseProfile.fallout = fallout  if fallout isnt undefined
 
 
 ###
@@ -796,5 +793,7 @@ pseudo-random numbers each time the software is run.
 @see noiseDetail
 ###
 noiseSeed = (seed) ->
-  noiseProfile.seed = seed
-  noiseProfile.generator = undefined
+noiseProfile.seed = seed
+noiseProfile.generator = undefined
+
+module.exports = MathFunctions

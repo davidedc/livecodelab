@@ -3,24 +3,22 @@
 ## It only supports sample playback and uses a less accurate clock
 ###
 
-define [
-  'buzz'
-], (buzz) ->
+buzz = require '../../js/buzz'
 
-  class BuzzAudioApi
+class BuzzAudioApi
 
-    constructor: () ->
-      @samples = {}
+  constructor: () ->
+    @samples = {}
 
-    getTime: () -> new Date().getTime()
+  getTime: () -> new Date().getTime()
 
-    loadSample: (name, path) =>
-      @samples[name] = new buzz.sound(path, {
-        formats: ['ogg', 'mp3']
-      }).load()
+  loadSample: (name, path) =>
+    @samples[name] = new buzz.sound(path, {
+      formats: ['ogg', 'mp3']
+    }).load()
 
-    play: (name) =>
-      @samples[name].play()
+  play: (name) =>
+    @samples[name].play()
 
-  BuzzAudioApi
+module.exports = BuzzAudioApi
 

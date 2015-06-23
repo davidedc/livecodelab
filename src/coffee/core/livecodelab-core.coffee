@@ -58,253 +58,229 @@ look for all "liveCodeLabCoreInstance" occurrences and see which of its
 children are accessed.
 ###
 
-define [
-  'core/animation-loop'
-  ,'core/background-painter'
-  ,'core/blend-controls'
-  ,'core/languages'
-  ,'core/colour-functions'
-  ,'core/colour-literals'
-  ,'core/graphics-commands'
-  ,'core/other-commands'
-  ,'core/lights-commands'
-  ,'core/matrix-commands'
-  ,'core/renderer'
-  ,'core/threejs-system'
-  ,'core/time-keeper'
-  ,'pulse'
-  ,'globals/math'
-  ,'core/global-scope'
-  ,'sound/samplebank'
-  ,'sound/sound-system'
-  ,'sound/pattern-player'
-  ,'threejs'
-], (
-  AnimationLoop
-  ,BackgroundPainter
-  ,BlendControls
-  ,Languages
-  ,ColourFunctions
-  ,ColourLiterals
-  ,GraphicsCommands
-  ,OtherCommands
-  ,LightsCommands
-  ,MatrixCommands
-  ,Renderer
-  ,ThreeJsSystem
-  ,TimeKeeper
-  ,Pulse
-  ,Math
-  ,GlobalScope
-  ,SampleBank
-  ,SoundSystem
-  ,PatternPlayer
-  ,THREE
-) ->
+AnimationLoop     = require './animation-loop'
+BackgroundPainter = require './background-painter'
+BlendControls     = require './blend-controls'
+Languages         = require './languages'
+ColourFunctions   = require './colour-functions'
+ColourLiterals    = require './colour-literals'
+GraphicsCommands  = require './graphics-commands'
+OtherCommands     = require './other-commands'
+LightsCommands    = require './lights-commands'
+MatrixCommands    = require './matrix-commands'
+Renderer          = require './renderer'
+ThreeJsSystem     = require './threejs-system'
+TimeKeeper        = require './time-keeper'
+Pulse             = require '../../js/pulse'
+Math              = require '../globals/math'
+GlobalScope       = require './global-scope'
+SampleBank        = require '../sound/samplebank'
+SoundSystem       = require '../sound/sound-system'
+PatternPlayer     = require '../sound/pattern-player'
+ThreeJs           = require '../../js/three.min'
 
+class LiveCodeLabCore
 
-  class LiveCodeLabCore
+  constructor: (
+    @threeJsCanvas,
+    @backgroundDiv,
+    @eventRouter,
+    @syncClient,
+    @audioAPI,
+    @statsWidget,
+    @usingWebGL,
+    @paramsObject
+  ) ->
 
-    constructor: (
-      @threeJsCanvas,
-      @backgroundDiv,
-      @eventRouter,
-      @syncClient,
+    # three is a global defined in three.min.js and used in:
+    # ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
+    # The difference between three and the threeJsSystem is that
+    # a) three is the raw Three.js system without some bits
+    # b) threeJsSystem contains some convenience fields and abstractions,
+    #    for example it keeps the renderer (whether it's canvas-based or WebGL
+    #    based) in a "renderer" field.
+    # Several fields/methods in threeJsSystem are just conveniency
+    # mappings into the raw three object.
+    # But often in LiveCodeLab there are direct reference to three
+    # fields/methods. So, threeJsSystem provides some abstraction without
+    # attempting to be a complete abstraction layer.
+    @three = ThreeJs
+    
+    
+    @timeKeeper = new TimeKeeper(@syncClient, @audioAPI)
+
+    @globalscope = new GlobalScope(true)
+
+    @colourFunctions = new ColourFunctions()
+    @colourLiterals = new ColourLiterals()
+
+    @mathFunctions = new Math()
+    @otherCommands = new OtherCommands()
+    
+    @soundSystem = new SoundSystem(
+      @timeKeeper,
       @audioAPI,
+      new SampleBank(@audioAPI),
+      new PatternPlayer()
+    )
+    
+    @backgroundPainter = new BackgroundPainter(
+      @backgroundDiv,
+      @colourFunctions,
+      @colourLiterals
+    )
+
+    @languages = new Languages(@eventRouter, @globalscope)
+    languageObjects = @languages.getLanguageObjects()
+    @programRunner = languageObjects.runner
+    @codeCompiler = languageObjects.compiler
+
+    @threeJsSystem = new ThreeJsSystem(
+      @usingWebGL
+      @threeJsCanvas,
+      @paramsObject.testMode,
+      @three
+    )
+
+    @blendControls = new BlendControls(@usingWebGL, @threeJsSystem)
+
+    @renderer = new Renderer(@threeJsSystem, @usingWebGL, @blendControls)
+
+    @matrixCommands = new MatrixCommands(
+      @three,
+      @timeKeeper,
+      @ # for AnimationLoop
+    )
+
+    @graphicsCommands = new GraphicsCommands(
+      @three,
+      @threeJsSystem,
+      @colourFunctions,
+      @matrixCommands,
+      @colourLiterals,
+      @ #lightSystem, animationLoop
+    )
+
+    @lightSystem = new LightsCommands(
+      @graphicsCommands,
+      @three,
+      @threeJsSystem,
+      @colourFunctions
+    )
+
+    @animationLoop = new AnimationLoop(
+      @, # programRunner and codeCompiler
+      @eventRouter,
       @statsWidget,
-      @usingWebGL,
-      @paramsObject
-    ) ->
+      @timeKeeper,
+      @blendControls,
+      @backgroundPainter,
+      @renderer,
+      @matrixCommands,
+      @soundSystem,
+      @lightSystem,
+      @graphicsCommands
+    )
 
-      # three is a global defined in three.min.js and used in:
-      # ShaderPass, ShaderExtras, SavePass, RenderPass, MaskPass
-      # The difference between three and the threeJsSystem is that
-      # a) three is the raw Three.js system without some bits
-      # b) threeJsSystem contains some convenience fields and abstractions,
-      #    for example it keeps the renderer (whether it's canvas-based or WebGL
-      #    based) in a "renderer" field.
-      # Several fields/methods in threeJsSystem are just conveniency
-      # mappings into the raw three object.
-      # But often in LiveCodeLab there are direct reference to three
-      # fields/methods. So, threeJsSystem provides some abstraction without
-      # attempting to be a complete abstraction layer.
-      @three = THREE
-      
-      
-      @timeKeeper = new TimeKeeper(@syncClient, @audioAPI)
+    @graphicsCommands.addToScope(@globalscope)
+    @matrixCommands.addToScope(@globalscope)
+    @lightSystem.addToScope(@globalscope)
+    @colourLiterals.addToScope(@globalscope)
+    @backgroundPainter.addToScope(@globalscope)
+    @blendControls.addToScope(@globalscope)
+    @soundSystem.addToScope(@globalscope)
+    @colourFunctions.addToScope(@globalscope)
+    @animationLoop.addToScope(@globalscope)
+    @timeKeeper.addToScope(@globalscope)
+    @programRunner.addToScope(@globalscope)
+    @mathFunctions.addToScope(@globalscope)
+    @otherCommands.addToScope(@globalscope)
 
-      @globalscope = new GlobalScope(true)
+  setLanguage: (langName) ->
 
-      @colourFunctions = new ColourFunctions()
-      @colourLiterals = new ColourLiterals()
+    languageObjects = @languages.getLanguageObjects(langName)
+    @programRunner = languageObjects.runner
+    @codeCompiler = languageObjects.compiler
 
-      @mathFunctions = new Math()
-      @otherCommands = new OtherCommands()
-      
-      @soundSystem = new SoundSystem(
-        @timeKeeper,
-        @audioAPI,
-        new SampleBank(@audioAPI),
-        new PatternPlayer()
-      )
-      
-      @backgroundPainter = new BackgroundPainter(
-        @backgroundDiv,
-        @colourFunctions,
-        @colourLiterals
-      )
+  paintARandomBackground: ->
+    @backgroundPainter.paintARandomBackground()
 
-      @languages = new Languages(@eventRouter, @globalscope)
-      languageObjects = @languages.getLanguageObjects()
-      @programRunner = languageObjects.runner
-      @codeCompiler = languageObjects.compiler
+  startAnimationLoop: ->
+    @animationLoop.animate()
 
-      @threeJsSystem = new ThreeJsSystem(
-        @usingWebGL
-        @threeJsCanvas,
-        @paramsObject.testMode,
-        @three
-      )
+  runLastWorkingProgram: ->
+    @programRunner.runLastWorkingProgram()
 
-      @blendControls = new BlendControls(@usingWebGL, @threeJsSystem)
+  playStartupSound: ->
+    @soundSystem.playStartupSound()
 
-      @renderer = new Renderer(@threeJsSystem, @usingWebGL, @blendControls)
+  isAudioSupported: ->
+    @soundSystem.isAudioSupported()
 
-      @matrixCommands = new MatrixCommands(
-        @three,
-        @timeKeeper,
-        @ # for AnimationLoop
-      )
+  updateCode: (newCode) ->
 
-      @graphicsCommands = new GraphicsCommands(
-        @three,
-        @threeJsSystem,
-        @colourFunctions,
-        @matrixCommands,
-        @colourLiterals,
-        @ #lightSystem, animationLoop
-      )
+    output = @codeCompiler.compileCode newCode
 
-      @lightSystem = new LightsCommands(
-        @graphicsCommands,
-        @three,
-        @threeJsSystem,
-        @colourFunctions
-      )
+    switch output.status
+      when 'error'
+        @eventRouter.emit("compile-time-error-thrown", output.error)
+      when 'parsed'
+        @eventRouter.emit("clear-error")
+        @programRunner.setProgram(output.program, newCode)
+      when 'empty'
+        # we do a couple of special resets when
+        # the code is the empty string.
+        @animationLoop.sleeping = true
+        @graphicsCommands.resetTheSpinThingy = true
+        @eventRouter.emit("clear-error")
+        @programRunner.reset()
 
-      @animationLoop = new AnimationLoop(
-        @, # programRunner and codeCompiler
-        @eventRouter,
-        @statsWidget,
-        @timeKeeper,
-        @blendControls,
-        @backgroundPainter,
-        @renderer,
-        @matrixCommands,
-        @soundSystem,
-        @lightSystem,
-        @graphicsCommands
-      )
-
-      @graphicsCommands.addToScope(@globalscope)
-      @matrixCommands.addToScope(@globalscope)
-      @lightSystem.addToScope(@globalscope)
-      @colourLiterals.addToScope(@globalscope)
-      @backgroundPainter.addToScope(@globalscope)
-      @blendControls.addToScope(@globalscope)
-      @soundSystem.addToScope(@globalscope)
-      @colourFunctions.addToScope(@globalscope)
-      @animationLoop.addToScope(@globalscope)
-      @timeKeeper.addToScope(@globalscope)
-      @programRunner.addToScope(@globalscope)
-      @mathFunctions.addToScope(@globalscope)
-      @otherCommands.addToScope(@globalscope)
-
-    setLanguage: (langName) ->
-
-      languageObjects = @languages.getLanguageObjects(langName)
-      @programRunner = languageObjects.runner
-      @codeCompiler = languageObjects.compiler
-
-    paintARandomBackground: ->
-      @backgroundPainter.paintARandomBackground()
-
-    startAnimationLoop: ->
+    if output.status is 'parsed' and @animationLoop.sleeping
+      @animationLoop.sleeping = false
       @animationLoop.animate()
 
-    runLastWorkingProgram: ->
-      @programRunner.runLastWorkingProgram()
-
-    playStartupSound: ->
-      @soundSystem.playStartupSound()
-
-    isAudioSupported: ->
-      @soundSystem.isAudioSupported()
-
-    updateCode: (newCode) ->
-
-      output = @codeCompiler.compileCode newCode
-
-      switch output.status
-        when 'error'
-          @eventRouter.emit("compile-time-error-thrown", output.error)
-        when 'parsed'
-          @eventRouter.emit("clear-error")
-          @programRunner.setProgram(output.program, newCode)
-        when 'empty'
-          # we do a couple of special resets when
-          # the code is the empty string.
-          @animationLoop.sleeping = true
-          @graphicsCommands.resetTheSpinThingy = true
-          @eventRouter.emit("clear-error")
-          @programRunner.reset()
-
-      if output.status is 'parsed' and @animationLoop.sleeping
-        @animationLoop.sleeping = false
-        @animationLoop.animate()
-
-        @eventRouter.emit("livecodelab-waking-up")
+      @eventRouter.emit("livecodelab-waking-up")
 
 
-    # why do we leave the option to put a background?
-    # For two reasons:
-    #  a) leaving the transparent background makes it very
-    #     difficult to save a reference "expected" image. The way to do
-    #     that would be to save the image that appears in the failing test
-    #     case. And when one does it, the correct image with the transparent
-    #     background gets saved. But still, the expected image is slightly
-    #     different from the generated image.
-    #     This is really weird as the two should be absolutely identical,
-    #     and yet (maybe because of compression artifacts reasons?) they are
-    #     different enough that it makes the testing unusable.
-    #  b) In theory one could get Three.js to directly render on an opaque
-    #     background but if we do it this way (as in after all the rendering has
-    #     happened) we keep the motionblur and the paintover styles. If we let
-    #     Three.js paint the backgrounds, then the postprocessing effects for
-    #     motionblur and for paintOver wouldn't work anymore.
-    getForeground3DSceneImage: (backgroundColor) ->
-      # some shorthands
-      blendedThreeJsSceneCanvas =
-        @threeJsSystem.blendedThreeJsSceneCanvas
+  # why do we leave the option to put a background?
+  # For two reasons:
+  #  a) leaving the transparent background makes it very
+  #     difficult to save a reference "expected" image. The way to do
+  #     that would be to save the image that appears in the failing test
+  #     case. And when one does it, the correct image with the transparent
+  #     background gets saved. But still, the expected image is slightly
+  #     different from the generated image.
+  #     This is really weird as the two should be absolutely identical,
+  #     and yet (maybe because of compression artifacts reasons?) they are
+  #     different enough that it makes the testing unusable.
+  #  b) In theory one could get Three.js to directly render on an opaque
+  #     background but if we do it this way (as in after all the rendering has
+  #     happened) we keep the motionblur and the paintover styles. If we let
+  #     Three.js paint the backgrounds, then the postprocessing effects for
+  #     motionblur and for paintOver wouldn't work anymore.
+  getForeground3DSceneImage: (backgroundColor) ->
+    # some shorthands
+    blendedThreeJsSceneCanvas =
+      @threeJsSystem.blendedThreeJsSceneCanvas
 
+    img = new Image
+    img.src = blendedThreeJsSceneCanvas.toDataURL()
+
+    if backgroundColor
+      ctx = document.createElement("canvas")
+      ctx.width = blendedThreeJsSceneCanvas.width
+      ctx.height = blendedThreeJsSceneCanvas.height
+      ctxContext = ctx.getContext("2d")
+      ctxContext.drawImage img, 0, 0
+      ctxContext.globalCompositeOperation = "destination-over"
+      ctxContext.fillStyle = backgroundColor
+      ctxContext.fillRect \
+        0, 0,
+        blendedThreeJsSceneCanvas.width,
+        blendedThreeJsSceneCanvas.height
       img = new Image
-      img.src = blendedThreeJsSceneCanvas.toDataURL()
+      img.src = ctx.toDataURL()
+    img
 
-      if backgroundColor
-        ctx = document.createElement("canvas")
-        ctx.width = blendedThreeJsSceneCanvas.width
-        ctx.height = blendedThreeJsSceneCanvas.height
-        ctxContext = ctx.getContext("2d")
-        ctxContext.drawImage img, 0, 0
-        ctxContext.globalCompositeOperation = "destination-over"
-        ctxContext.fillStyle = backgroundColor
-        ctxContext.fillRect \
-          0, 0,
-          blendedThreeJsSceneCanvas.width,
-          blendedThreeJsSceneCanvas.height
-        img = new Image
-        img.src = ctx.toDataURL()
-      img
-
-  LiveCodeLabCore
+module.exports = LiveCodeLabCore
 

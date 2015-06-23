@@ -1,14 +1,12 @@
 
-define () ->
+class OtherCommands
 
-  class OtherCommands
+  constructor: () ->
 
-    constructor: () ->
+  addToScope: (scope) ->
+    scope.add('noOperation', () => @noOperation())
 
-    addToScope: (scope) ->
-      scope.add('noOperation', () => @noOperation())
+  noOperation: () ->
 
-    noOperation: () ->
-
-  OtherCommands
+module.exports = OtherCommands
 

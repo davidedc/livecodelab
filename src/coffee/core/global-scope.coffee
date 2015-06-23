@@ -6,16 +6,15 @@
 ## from within Live Code Lab
 ###
 
-define () ->
+class GlobalScope
 
-  class GlobalScope
+  constructor: () ->
+    @scope = {}
 
-    constructor: () ->
-      @scope = {}
+  add: (name, value) ->
+    window[name] = value
+    @scope[name] = value
 
-    add: (name, value) ->
-      window[name] = value
-      @scope[name] = value
+  getScope: () -> @scope
 
-    getScope: () -> @scope
-
+module.exports = GlobalScope

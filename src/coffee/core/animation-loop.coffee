@@ -52,185 +52,183 @@
 ## but that would probably take some malice.
 ###
 
-define () ->
+class AnimationLoop
 
-  class AnimationLoop
+  loopInterval: null
+  wantedFramesPerSecond: null
+  AS_HIGH_FPS_AS_POSSIBLE: -1
 
-    loopInterval: null
-    wantedFramesPerSecond: null
-    AS_HIGH_FPS_AS_POSSIBLE: -1
+  sleeping: true
 
-    sleeping: true
+  constructor: (
+    @lclCore,
+    @eventRouter,
+    @stats,
+    @timeKeeper,
+    @blendControls,
+    @backgroundPainter,
+    @renderer,
+    @matrixCommands,
+    @soundSystem,
+    @lightSystem,
+    @graphicsCommands,
+    @forceUseOfTimeoutForScheduling = false
+  ) ->
+    # Some basic initialisations and constant definitions
+    @wantedFramesPerSecond = @AS_HIGH_FPS_AS_POSSIBLE
 
-    constructor: (
-      @lclCore,
-      @eventRouter,
-      @stats,
-      @timeKeeper,
-      @blendControls,
-      @backgroundPainter,
-      @renderer,
-      @matrixCommands,
-      @soundSystem,
-      @lightSystem,
-      @graphicsCommands,
-      @forceUseOfTimeoutForScheduling = false
-    ) ->
-      # Some basic initialisations and constant definitions
-      @wantedFramesPerSecond = @AS_HIGH_FPS_AS_POSSIBLE
+    # global variale, keeps the count of how many frames since beginning
+    # of session (or since the program was last cleared).
+    # This variable is incremented and reset in the animation
+    # loop "animate" function.
+    @setFrame(0)
 
-      # global variale, keeps the count of how many frames since beginning
-      # of session (or since the program was last cleared).
-      # This variable is incremented and reset in the animation
-      # loop "animate" function.
-      @setFrame(0)
+  addToScope: (scope) ->
+    @scope = scope
+    @scope.add('frame', @frame)
 
-    addToScope: (scope) ->
-      @scope = scope
-      @scope.add('frame', @frame)
+  setFrame: (value) ->
+    @frame = value
+    if @scope
+      @scope.add('frame', value)
 
-    setFrame: (value) ->
-      @frame = value
-      if @scope
-        @scope.add('frame', value)
-
-    # There are two different ways to schedule the next frame:
-    # 1. using a native window.requestAnimationFrame implementation
-    #    (supported by some browsers)
-    # 2. using timeouts
-    #
-    # Notes and constraints:
-    # * window.requestAnimationFrame cannot be used if user wants a
-    #   specific fps (i.e. you can't pick a specific framerate)
-    # * for browser that don't have a window.requestAnimationFrame, a shim
-    #   at the end of the page replaces that with an implementation
-    #   based on timeouts
-    # * the user can decide to force the use of timeouts (for testing purposes)
-    scheduleNextFrame: ->
-      if @forceUseOfTimeoutForScheduling
-        if @wantedFramesPerSecond is @AS_HIGH_FPS_AS_POSSIBLE
-          setTimeout (=>
-            @animate()
-          ), 1000 / 60
-        else
-          setTimeout (=>
-            @animate()
-          ), 1000 / @wantedFramesPerSecond
+  # There are two different ways to schedule the next frame:
+  # 1. using a native window.requestAnimationFrame implementation
+  #    (supported by some browsers)
+  # 2. using timeouts
+  #
+  # Notes and constraints:
+  # * window.requestAnimationFrame cannot be used if user wants a
+  #   specific fps (i.e. you can't pick a specific framerate)
+  # * for browser that don't have a window.requestAnimationFrame, a shim
+  #   at the end of the page replaces that with an implementation
+  #   based on timeouts
+  # * the user can decide to force the use of timeouts (for testing purposes)
+  scheduleNextFrame: ->
+    if @forceUseOfTimeoutForScheduling
+      if @wantedFramesPerSecond is @AS_HIGH_FPS_AS_POSSIBLE
+        setTimeout (=>
+          @animate()
+        ), 1000 / 60
       else
-        if @wantedFramesPerSecond is @AS_HIGH_FPS_AS_POSSIBLE
-          window.requestAnimationFrame =>
-            @animate()
-        else
-          if loopInterval?
-            loopInterval = setInterval(
-              () => window.requestAnimationFrame(() => @animate()),
-              1000 / @wantedFramesPerSecond
-            )
-
-
-    # animation loop
-    animate: ->
-
-      if @frame is 0
-        @timeKeeper.resetTime()
+        setTimeout (=>
+          @animate()
+        ), 1000 / @wantedFramesPerSecond
+    else
+      if @wantedFramesPerSecond is @AS_HIGH_FPS_AS_POSSIBLE
+        window.requestAnimationFrame =>
+          @animate()
       else
-        @timeKeeper.updateTime()
+        if loopInterval?
+          loopInterval = setInterval(
+            () => window.requestAnimationFrame(() => @animate()),
+            1000 / @wantedFramesPerSecond
+          )
 
-      @cleanStateBeforeRunningDrawAndRendering()
 
-      # if the draw function is empty, then don't schedule the
-      # next animation frame and set a "I'm sleeping" flag.
-      # We'll re-start the animation when the editor content
-      # changes. Note that this frame goes to completion anyways, because
-      # we actually do want to render one "empty screen" frame.
-      if not @sleeping
-        @scheduleNextFrame()
+  # animation loop
+  animate: ->
 
-        # Now here is another try/catch check.
-        # The reason is that there might be references to uninitialised
-        # or inexistent variables. For example:
-        #   box
-        #   background yeLow
-        #   ball
-        # draws only a box, because the execution silently fails at
-        # the 'yeLow' reference.
-        # So in that case we need to
-        # 1. highlight the error
-        # 2. run the previously known good program.
-        try
-          @lclCore.programRunner.runProgram()
-        catch e
+    if @frame is 0
+      @timeKeeper.resetTime()
+    else
+      @timeKeeper.updateTime()
 
-          # note that this causes the running of the last stable function
-          # so you could have executed half of the original draw function,
-          # then got an error, now you are re-running an old draw function.
-          @eventRouter.emit("runtime-error-thrown", e)
-          return
-        @lclCore.programRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(
-          @lclCore.codeCompiler
-        )
-      else
-        # the program is empty and so is the screen. Effectively, the user
-        # is starting from scratch, so the frame should be reset to zero.
-        @setFrame(0)
-        @blendControls.animationStyle(@blendControls.animationStyles.normal)
-        @blendControls.animationStyleUpdateIfChanged()
-        @renderer.render(@graphicsCommands)
+    @cleanStateBeforeRunningDrawAndRendering()
 
-      # we have to repeat this check because in the case
-      # the user has set frame = 0,
-      # then we have to catch that case here
-      # after the program has executed
-      @timeKeeper.resetTime()  if @frame is 0
-      @blendControls.animationStyleUpdateIfChanged()
-      @backgroundPainter.simpleGradientUpdateIfChanged()
+    # if the draw function is empty, then don't schedule the
+    # next animation frame and set a "I'm sleeping" flag.
+    # We'll re-start the animation when the editor content
+    # changes. Note that this frame goes to completion anyways, because
+    # we actually do want to render one "empty screen" frame.
+    if not @sleeping
+      @scheduleNextFrame()
 
-      # "frame" starts at zero, so we increment after the first time the draw
-      # function has been run.
-      @setFrame(@frame + 1)
+      # Now here is another try/catch check.
+      # The reason is that there might be references to uninitialised
+      # or inexistent variables. For example:
+      #   box
+      #   background yeLow
+      #   ball
+      # draws only a box, because the execution silently fails at
+      # the 'yeLow' reference.
+      # So in that case we need to
+      # 1. highlight the error
+      # 2. run the previously known good program.
+      try
+        @lclCore.programRunner.runProgram()
+      catch e
 
-      geometryOnScreenMightHaveChanged = (
-        @graphicsCommands.atLeastOneObjectWasDrawn ||
-        @graphicsCommands.atLeastOneObjectIsDrawn
+        # note that this causes the running of the last stable function
+        # so you could have executed half of the original draw function,
+        # then got an error, now you are re-running an old draw function.
+        @eventRouter.emit("runtime-error-thrown", e)
+        return
+      @lclCore.programRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(
+        @lclCore.codeCompiler
       )
+    else
+      # the program is empty and so is the screen. Effectively, the user
+      # is starting from scratch, so the frame should be reset to zero.
+      @setFrame(0)
+      @blendControls.animationStyle(@blendControls.animationStyles.normal)
+      @blendControls.animationStyleUpdateIfChanged()
+      @renderer.render(@graphicsCommands)
 
-      # if livecodelab is dozing off, in that case you do
-      # want to do a render because it will clear the screen.
-      # otherwise the last frame of the sketch is going
-      # to remain painted in the background behind
-      # the big cursor.
-      if !@sleeping and geometryOnScreenMightHaveChanged
-        @renderer.render @graphicsCommands
-        @graphicsCommands.atLeastOneObjectWasDrawn = @graphicsCommands.atLeastOneObjectIsDrawn
+    # we have to repeat this check because in the case
+    # the user has set frame = 0,
+    # then we have to catch that case here
+    # after the program has executed
+    @timeKeeper.resetTime()  if @frame is 0
+    @blendControls.animationStyleUpdateIfChanged()
+    @backgroundPainter.simpleGradientUpdateIfChanged()
+
+    # "frame" starts at zero, so we increment after the first time the draw
+    # function has been run.
+    @setFrame(@frame + 1)
+
+    geometryOnScreenMightHaveChanged = (
+      @graphicsCommands.atLeastOneObjectWasDrawn ||
+      @graphicsCommands.atLeastOneObjectIsDrawn
+    )
+
+    # if livecodelab is dozing off, in that case you do
+    # want to do a render because it will clear the screen.
+    # otherwise the last frame of the sketch is going
+    # to remain painted in the background behind
+    # the big cursor.
+    if !@sleeping and geometryOnScreenMightHaveChanged
+      @renderer.render @graphicsCommands
+      @graphicsCommands.atLeastOneObjectWasDrawn = @graphicsCommands.atLeastOneObjectIsDrawn
 
 
-      # update stats
-      if @stats then @stats.update()
+    # update stats
+    if @stats then @stats.update()
 
-    cleanStateBeforeRunningDrawAndRendering: ->
-      @renderer.resetExclusionPrincipleWobbleDataIfNeeded @graphicsCommands
+  cleanStateBeforeRunningDrawAndRendering: ->
+    @renderer.resetExclusionPrincipleWobbleDataIfNeeded @graphicsCommands
 
-      @matrixCommands.resetMatrixStack()
+    @matrixCommands.resetMatrixStack()
 
-      # the sound list needs to be cleaned
-      # so that the user program can create its own from scratch
-      @lclCore.soundSystem.clearPatterns()
+    # the sound list needs to be cleaned
+    # so that the user program can create its own from scratch
+    @lclCore.soundSystem.clearPatterns()
 
-      @lclCore.programRunner.resetTrackingOfDoOnceOccurrences()
+    @lclCore.programRunner.resetTrackingOfDoOnceOccurrences()
 
-      @lightSystem.noLights()
-      @graphicsCommands.reset()
-      @blendControls.animationStyle @blendControls.animationStyles.normal
-      @backgroundPainter.resetGradientStack()
+    @lightSystem.noLights()
+    @graphicsCommands.reset()
+    @blendControls.animationStyle @blendControls.animationStyles.normal
+    @backgroundPainter.resetGradientStack()
 
-      # In case we want to make each frame an actual
-      # pure function then we need to seed "random" and "noise"
-      # each frame...
-      # [todo] All the math functions ideally should be taken out of the
-      # global scope same as in the colour-functions.coffee file
-      # but they are global now so here we go.
-      # noiseSeed @frame
-      # randomSeed @frame
+    # In case we want to make each frame an actual
+    # pure function then we need to seed "random" and "noise"
+    # each frame...
+    # [todo] All the math functions ideally should be taken out of the
+    # global scope same as in the colour-functions.coffee file
+    # but they are global now so here we go.
+    # noiseSeed @frame
+    # randomSeed @frame
 
-  AnimationLoop
+module.exports = AnimationLoop
 
