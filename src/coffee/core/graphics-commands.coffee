@@ -647,11 +647,99 @@ class GraphicsCommands
 
     # primitive-specific initialisations:
     @noStroke()
-    @fill red
+    @fill lightgreen
+    @liveCodeLabCoreInstance.lightSystem.ambientLight()
+    @liveCodeLabCoreInstance.matrixCommands.rotate Math.PI/2,0,0
+    @peg 1,0.3,1
+
     @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
-    @liveCodeLabCoreInstance.matrixCommands.move 0,0.7,0
-    @ball 0.1,1,0.1
+    @liveCodeLabCoreInstance.matrixCommands.move 0,0.14,0
+    @pushStroke @defaultNormalStroke,@currentStrokeColor,@currentStrokeAlpha,@doStroke
+    @stroke 255,104,0
+    @ballDetail 6
+    @ball 1,0.4,1
+    @popStroke()
     @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+    # legs
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.move -0.4,0,-0.4
+    @liveCodeLabCoreInstance.matrixCommands.rotate 0,3*Math.PI/4,0
+    @box 0.3
+    @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.move 0.4,0,-0.4
+    @liveCodeLabCoreInstance.matrixCommands.rotate 0,3*Math.PI/4,0
+    @box 0.3
+    @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.move -0.4,0,0.4
+    @liveCodeLabCoreInstance.matrixCommands.rotate 0,3*Math.PI/4,0
+    @box 0.3
+    @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.move 0.4,0,0.4
+    @liveCodeLabCoreInstance.matrixCommands.rotate 0,3*Math.PI/4,0
+    @box 0.3
+    @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+    # tail
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.move 0,0,0.5
+    @liveCodeLabCoreInstance.matrixCommands.rotate 0,3*Math.PI/4,0
+    @box 0.3
+    @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.move 0,0,-0.45
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.rotate 3*Math.PI/4,0,0
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.move 0,-0.2,0
+    @box 0.3,0.5,0.3
+    @liveCodeLabCoreInstance.matrixCommands.move 0,-0.2,0
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.rotate -3*Math.PI/4,0,0
+    @box 0.3
+
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.move -0.08,0.07,-0.12
+    @pushFill @defaultNormalFill,@currentFillColor,@currentFillAlpha,@doFill
+    @fill white
+    @box 0.1
+    @popFill()
+    @liveCodeLabCoreInstance.matrixCommands.move 0,0,-0.05
+    @pushFill @defaultNormalFill,@currentFillColor,@currentFillAlpha,@doFill
+    @fill black
+    @box 0.04
+    @popFill()
+    @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.move 0.08,0.07,-0.12
+    @pushFill @defaultNormalFill,@currentFillColor,@currentFillAlpha,@doFill
+    @fill white
+    @box 0.1
+    @popFill()
+    @liveCodeLabCoreInstance.matrixCommands.move 0,0,-0.05
+    @pushFill @defaultNormalFill,@currentFillColor,@currentFillAlpha,@doFill
+    @fill black
+    @box 0.04
+    @popFill()
+    @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
+    @liveCodeLabCoreInstance.matrixCommands.pushMatrix()
+    @liveCodeLabCoreInstance.matrixCommands.move 0,-0.07,-0.12
+    @pushFill @defaultNormalFill,@currentFillColor,@currentFillAlpha,@doFill
+    @fill white
+    @box 0.2,0.04,0.1
+    @popFill()
+    @liveCodeLabCoreInstance.matrixCommands.popMatrix()
+
 
     if appendedFunction?
       appendedFunction()
