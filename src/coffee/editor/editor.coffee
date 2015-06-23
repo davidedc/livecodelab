@@ -6,7 +6,7 @@
 
 CodeMirror      = require '../../js/codemirror'
 window.CodeMirror = CodeMirror
-#require '../../js/coffeescript-livecodelab-mode'
+require '../../js/coffeescript-livecodelab-mode'
 
 class Editor
 
