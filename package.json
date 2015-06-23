@@ -2,26 +2,13 @@
   "name": "livecodelab",
   "version": "0.1.0",
   "description": "A live coding environment for the browser",
-  "dependencies": {
-    "exec": "~0.0.4",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-clean": "~0.6.0",
-    "grunt-contrib-coffee": "~0.12.0",
-    "grunt-contrib-copy": "~0.7.0",
-    "grunt-recess": "~1.0.0",
-    "grunt-targethtml": "~0.2.6",
-    "grunt-coffeelint": "0.0.13",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-contrib-requirejs": "~0.4.4",
-    "grunt-docco": "~0.3.3",
-    "grunt": "~0.4.5",
-    "grunt-contrib-connect": "~0.9.0",
-    "grunt-contrib-nodeunit": "~0.4.1",
-    "grunt-jison": "~1.2.1",
-    "jison": "~0.4.15",
-    "requirejs": "~2.1.15"
+  "scripts": {
   },
   "devDependencies": {
-    "grunt-git-describe": "^2.3.2"
+    "browserify": "^10.2.4",
+    "coffeeify": "^1.1.0",
+    "grunt-git-describe": "^2.3.2",
+    "jison": "^0.4.15",
+    "recess": "^1.1.9"
   }
 }
