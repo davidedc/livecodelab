@@ -7,7 +7,7 @@
 ###
 
 Interpreter = require '../../../js/lcl/interpreter'
-_           = require '../../../js/underscore'
+_           = require 'underscore'
 
 class V2ProgramRunner
 
