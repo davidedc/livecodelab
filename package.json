@@ -7,8 +7,12 @@
     "style": "recess ./style/* --compile > ./dist/style.css",
     "html": "cp ./html/index.html ./dist/",
     "jison": "jison ./src/grammar/lcl-grammar.jison -m commonjs -o ./src/generated/parser.js",
+    "buildfirst": "npm run statics && npm run style && npm run html && npm run jison",
+
     "compile": "browserify -t coffeeify --extension='.coffee' ./src/coffee/lcl-init.coffee -o ./dist/app.js",
-    "build": "npm run statics && npm run style && npm run html && npm run jison && npm run compile"
+    "compiledev": "browserify --debug -t coffeeify --extension='.coffee' ./src/coffee/lcl-init.coffee -o ./dist/app.js",
+    "prodbuild": "npm run buildfirst && npm run compile",
+    "devbuild": "npm run buildfirst && npm run compiledev"
   },
   "devDependencies": {
     "browserify": "^10.2.4",
