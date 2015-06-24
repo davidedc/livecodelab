@@ -621,23 +621,20 @@ class ProgramLoader
       submenu: "Others "
       title: "Smileys fountain"
       code: """
-            background black
+            simpleGradient red, orange, yellow
             play 'tranceKick'  ,'-x-x ---x x--- --xx'
             play "penta" + int(time + random 3)%16 ,'x'
             play "dish" + int(random 3) ,'x'
             play "highHatClosed"  ,'--x- ---- --x- ----'
 
             rotate time,sin(time)%Math.PI/4,0
-            scale 2,1,1
-            move -3, 0, 0
+            scale 0.3
+            move -15, 0, 0
             symbols = ["Ƹ̵̡Ӝ̵̨̄Ʒ", "ʕ•ᴥ•ʔ", "◔⌣◔", "͡° ͜ʖ ͡°","★","❀","◕‿◕","☃", "♫", "❤"]
-            numberOfParticles = 80
+            numberOfParticles = 40
             numberOfParticles times with i
-            ▶r = ((i  * 3) + (time * 12)) % 255
-            ▶g = ((i * 7) + (time * 30 + 20) * 7) % 255
-            ▶b = ((17) + (time * 30 + 40) * 3) % 255
-            ▶fill r, g, b
-            ▶move ((i+time)%(7))+i/20 ,sin i+time,0
+            ▶fill 255*(sin i+time), 255*sin(i*2+time), 255*sin(i*3+time)
+            ▶move  ((i+time*5)+i/2)%(30), 4*sin(i), sin i
             ▶▶label symbols[i%symbols.length]
             """
 
