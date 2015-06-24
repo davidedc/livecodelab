@@ -8,16 +8,17 @@
     "html": "cp ./html/index.html ./dist/",
     "jison": "jison ./src/grammar/lcl-grammar.jison -m commonjs -o ./src/generated/parser.js",
     "buildfirst": "npm run statics && npm run style && npm run html && npm run jison",
-
     "compile": "browserify -t coffeeify --extension='.coffee' ./src/coffee/lcl-init.coffee -o ./dist/app.js",
     "compiledev": "browserify --debug -t coffeeify --extension='.coffee' ./src/coffee/lcl-init.coffee -o ./dist/app.js",
     "prodbuild": "npm run buildfirst && npm run compile",
-    "devbuild": "npm run buildfirst && npm run compiledev"
+    "devbuild": "npm run buildfirst && npm run compiledev",
+    "serve": "http-server ./dist"
   },
   "devDependencies": {
     "browserify": "^10.2.4",
     "coffeeify": "^1.1.0",
     "grunt-git-describe": "^2.3.2",
+    "http-server": "^0.8.0",
     "jison": "^0.4.15",
     "recess": "^1.1.9"
   },
