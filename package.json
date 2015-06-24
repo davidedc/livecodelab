@@ -12,14 +12,19 @@
     "compiledev": "browserify --debug -t coffeeify --extension='.coffee' ./src/coffee/lcl-init.coffee -o ./dist/app.js",
     "prodbuild": "npm run buildfirst && npm run compile",
     "devbuild": "npm run buildfirst && npm run compiledev",
-    "serve": "http-server ./dist"
+    "serve": "http-server ./dist",
+    "lintcoffee": "coffeelint ./src/",
+    "lintjs": "jslint ./src/**/*.js",
+    "lintstyle": "recess ./style/*"
   },
   "devDependencies": {
     "browserify": "^10.2.4",
     "coffeeify": "^1.1.0",
+    "coffeelint": "^1.10.1",
     "grunt-git-describe": "^2.3.2",
     "http-server": "^0.8.0",
     "jison": "^0.4.15",
+    "jslint": "^0.9.0",
     "recess": "^1.1.9"
   },
   "dependencies": {
