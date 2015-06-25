@@ -3,7 +3,7 @@
 ## cruise speed
 ###
 
-Stats           = require '../js/three.js/Stats'
+Stats           = require '../js/threejs/Stats'
 EventEmitter    = require './core/event-emitter'
 LiveCodeLabCore = require './core/livecodelab-core'
 ProgramLoader   = require './core/program-loader'
@@ -21,7 +21,7 @@ window.CodeMirror = CodeMirror
 $               = require '../js/jquery'
 window.$ = $
 window.jQuery = $
-Detector        = require '../js/three.js/Detector'
+Detector        = require '../js/threejs/Detector'
 
 require '../js/mousewheel'
 require '../js/coffeescript-livecodelab-mode'

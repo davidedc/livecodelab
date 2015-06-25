@@ -1,3 +1,4 @@
+/*jslint browser: true */
 /**
  * @author mr.doob / http://mrdoob.com/
  */
@@ -27,7 +28,7 @@ var Stats = function () {
 
 		_mode = ( _mode + 1 ) % _modes;
 
-		if ( _mode == 0 ) {
+		if ( _mode === 0 ) {
 
 			_fpsDiv.style.display = 'block';
 			_msDiv.style.display = 'none';
@@ -118,7 +119,7 @@ var Stats = function () {
 		var child = dom.appendChild( dom.firstChild );
 		child.style.height = value + 'px';
 
-	}
+	};
 
 	return {
 
@@ -198,3 +199,10 @@ var Stats = function () {
 	};
 
 };
+
+if ( typeof module === 'object' ) {
+
+	module.exports = Stats;
+
+}
+

@@ -5,14 +5,14 @@
 
 Ui = require '../ui/ui'
 _  = require 'underscore'
-require '../../js/three.js/CanvasRenderer' # needed for the CanvasRenderer
-require '../../js/three.js/Projector'      # needed for the CanvasRenderer
-require '../../js/three.js/ShaderExtras'
-require '../../js/three.js/postprocessing/EffectComposer'
-require '../../js/three.js/postprocessing/MaskPass'
-require '../../js/three.js/postprocessing/RenderPass'
-require '../../js/three.js/postprocessing/SavePass'
-require '../../js/three.js/postprocessing/ShaderPass'
+require '../../js/threejs/CanvasRenderer' # needed for the CanvasRenderer
+require '../../js/threejs/Projector'      # needed for the CanvasRenderer
+require '../../js/threejs/ShaderExtras'
+require '../../js/threejs/postprocessing/EffectComposer'
+require '../../js/threejs/postprocessing/MaskPass'
+require '../../js/threejs/postprocessing/RenderPass'
+require '../../js/threejs/postprocessing/SavePass'
+require '../../js/threejs/postprocessing/ShaderPass'
 
 helpers = {}
 

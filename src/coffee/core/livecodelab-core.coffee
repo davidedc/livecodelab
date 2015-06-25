@@ -76,7 +76,7 @@ GlobalScope       = require './global-scope'
 SampleBank        = require '../sound/samplebank'
 SoundSystem       = require '../sound/sound-system'
 PatternPlayer     = require '../sound/pattern-player'
-ThreeJs           = require '../../js/three.min'
+ThreeJs           = require '../../js/three'
 window.THREE = ThreeJs
 ThreeJsSystem     = require './threejs-system'
 
