@@ -4,9 +4,13 @@
 ## with the other parts of LiveCodeLab.
 ###
 
+CodeMirror      = require '../../js/codemirror'
+window.CodeMirror = CodeMirror
+#require '../../js/coffeescript-livecodelab-mode'
+
 class Editor
 
-  constructor: (@eventRouter, codemirror, @codeTextArea) ->
+  constructor: (@eventRouter, @codeTextArea) ->
     # Setup Event Listeners
     @eventRouter.addListener("reset", => @codemirrorInstance.setValue "")
 
@@ -19,7 +23,7 @@ class Editor
         @setCursor cursorPosBeforeCheck
     )
 
-    @codemirrorInstance = codemirror.fromTextArea(
+    @codemirrorInstance = CodeMirror.fromTextArea(
       @codeTextArea,
       {
         mode: "livecodelab"

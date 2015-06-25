@@ -16,15 +16,12 @@ EditorDimmer    = require './ui/text-dimming'
 Ui              = require './ui/ui'
 Editor          = require './editor/editor'
 Autocoder       = require './autocoder/autocoder'
-CodeMirror      = require '../js/codemirror'
-window.CodeMirror = CodeMirror
 $               = require '../js/jquery'
 window.$ = $
 window.jQuery = $
 Detector        = require '../js/threejs/Detector'
 
 MouseWheelHandler = require '../js/mousewheel'
-require '../js/coffeescript-livecodelab-mode'
 require './globals/numbertimes'
 require './globals/requestAnimFrame'
 
@@ -146,7 +143,7 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
   )
 
   codeTextArea = document.getElementById('code')
-  editor = new Editor(eventRouter, CodeMirror, codeTextArea)
+  editor = new Editor(eventRouter, codeTextArea)
   MouseWheelHandler.attach editor
 
   # requires threeJsSystem, blendControls, graphicsCommands, renderer

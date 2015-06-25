@@ -2770,3 +2770,5 @@ var CodeMirror = (function() {
 
   return CodeMirror;
 })();
+
+module.exports = CodeMirror;
