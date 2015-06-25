@@ -13,7 +13,7 @@ class V2CodeCompiler
 
     @codePreprocessor = Preprocessor
 
-    @parser = Parser
+    @parser = Parser.parser
     @parser.yy.parseError = (message, details) ->
       throw message
 
