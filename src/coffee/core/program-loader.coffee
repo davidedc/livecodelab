@@ -624,7 +624,7 @@ class ProgramLoader
             simpleGradient red, orange, yellow
             play 'tranceKick'  ,'-x-x ---x x--- --xx'
             play "penta" + int(time + random 3)%16 ,'x'
-            play "dish" + int(random 3) ,'x'
+            play "dish" + int(random 3) ,'x-x'
             play "highHatClosed"  ,'--x- ---- --x- ----'
 
             rotate time,sin(time)%Math.PI/4,0
@@ -634,7 +634,7 @@ class ProgramLoader
             numberOfParticles = 40
             numberOfParticles times with i
             ▶fill 255*(sin i+time), 255*sin(i*2+time), 255*sin(i*3+time)
-            ▶move  ((i+time*5)+i/2)%(30), 4*sin(i), sin i
+            ▶move  ((i+time*5)+i/2)%(30), 4*sin(i+time), sin i
             ▶▶label symbols[i%symbols.length]
             """
 
