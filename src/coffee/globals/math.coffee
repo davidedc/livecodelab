@@ -550,7 +550,7 @@ class Marsaglia
     z = i1 or 362436069
     w = i2 or 521288629
 
-  createRandomized: ->
+  @createRandomized: ->
     now = new Date()
     new Marsaglia((now / 60000) & 0xFFFFFFFF, now & 0xFFFFFFFF)
 
