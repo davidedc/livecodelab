@@ -23,7 +23,7 @@ window.$ = $
 window.jQuery = $
 Detector        = require '../js/threejs/Detector'
 
-require '../js/mousewheel'
+MouseWheelHandler = require '../js/mousewheel'
 require '../js/coffeescript-livecodelab-mode'
 require './globals/numbertimes'
 require './globals/requestAnimFrame'
@@ -147,7 +147,7 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
 
   codeTextArea = document.getElementById('code')
   editor = new Editor(eventRouter, CodeMirror, codeTextArea)
-  attachMouseWheelHandler editor
+  MouseWheelHandler.attach editor
 
   # requires threeJsSystem, blendControls, graphicsCommands, renderer
   # note that the programLoader variable below is never used. Leaving it

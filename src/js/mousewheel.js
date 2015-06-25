@@ -1,5 +1,5 @@
-/*jslint browser: true, devel: true */
-/*global editor, $ */
+/*jslint browser: true */
+/*global editor, $, module */
 
 ///////////// START OF MOUSEWHEEL HANDLER CODE
 // I couldn't quite get the exact Javascript plugin below to
@@ -80,8 +80,12 @@ var attachMouseWheelHandler = function(editor) {
 					window.onmousewheel = document.onmousewheel = wheel;
 			}
 	}());
-}
+};
 
+
+module.exports = {
+    attach: attachMouseWheelHandler
+};
 
 ///////////// END OF MOUSEWHEEL HANDLER CODE
 // this function is called when the cursor moves
