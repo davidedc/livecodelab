@@ -10,7 +10,7 @@ dquote                "\""
 squote                "'"
 
 identifier            {letter}({letter}|{digit})*
-number                (\-)?{digit}+("."{digit}+)?
+number                {digit}+("."{digit}+)?
 
 %%
 
@@ -19,40 +19,22 @@ number                (\-)?{digit}+("."{digit}+)?
 "elif"                return "t_elif"
 "else"                return "t_else"
 "times"               return "t_times"
+"loop"                return "t_loop"
 "with"                return "t_with"
-"function"            return "t_function"
-"return"              return "t_return"
 "doOnce"              return "t_doOnce"
+"def"                 return "t_def"
 
 /* arrows */
 "->"                  return "t_arrow"
 ">>"                  return "t_inlined"
 
 /* comments */
-"//".*\n              /* skip comments */
-"//".*<<EOF>>         /* skip comments */
+"//".*\n              return "t_newline"
+"//".*<<EOF>>         return "t_eof"
 
 /* strings */
 {dquote}{strchars}{dquote} yytext = yytext.substr(1,yyleng-2); return "t_string"
 {squote}{strchars}{squote} yytext = yytext.substr(1,yyleng-2); return "t_string"
-
-/* primitives */
-"line"                return "t_shape"
-"rect"                return "t_shape"
-"box"                 return "t_shape"
-"peg"                 return "t_shape"
-"ball"                return "t_shape"
-
-/* matrix command */
-"rotate"              return "t_matrix"
-"scale"               return "t_matrix"
-"move"                return "t_matrix"
-
-/* style commands */
-"fill"                return "t_style"
-"noFill"              return "t_style"
-"stroke"              return "t_style"
-"noStroke"            return "t_style"
 
 "✓"                   return "t_tick"
 
@@ -96,23 +78,11 @@ number                (\-)?{digit}+("."{digit}+)?
 
 /lex
 
-%token                t_if
-%token                t_elif
-%token                t_else
-%token                t_times
-%token                t_function
-%token                t_arrow
-%token                t_number
-%token                t_primitive
-%token                t_matrix
-%token                t_style
-%token                t_id
-%token                t_eof
-%token                t_newline
-%token                t_blockstart
-%token                t_blockend
-%token                t_comma
-%token                t_tick
+%{
+
+var Ast = require('../js/lcl/ast');
+
+%}
 
 /* operator associations and precedence */
 
@@ -122,216 +92,147 @@ number                (\-)?{digit}+("."{digit}+)?
 %left "+" "-"
 %left "*" "/" "%"
 %left "^"
+%right UMINUS
 
 %start Program
+
+%ebnf
 
 %% /* language grammar */
 
 Program
-    : ProgramStart ProgramEnd
-        { return []; }
-    | ProgramStart SourceElements ProgramEnd
-        { return $SourceElements; }
+    : Terminator* SourceElement*
+        { return Ast.Node.Block($2); }
     ;
 
-ProgramStart
-    :
-    | NewLine
-    ;
-
-ProgramEnd
-    : t_eof
-    ;
-
-NewLine
+Terminator
     : t_newline
-    | t_newline NewLine
+    | t_eof
     ;
 
-SourceElements
-    : Statement
-        { $$ = [$1]; }
-    | Statement NewLine SourceElements
-        { $$ = [$1, $3]; }
-    | Statement NewLine
-        { $$ = [$1]; }
+SourceElement
+    : Statement Terminator+
+        { $$ = $1; }
     ;
 
 Block
-    : t_blockstart NewLine BlockElements t_blockend
-        {$$ = ["BLOCK", $3]; }
-    ;
-
-BlockElements
-    : BlockStatement NewLine
-        { $$ = [$1]; }
-    | BlockStatement NewLine BlockElements
-        { $$ = [$1, $3]; }
-    ;
-
-BlockStatement
-    : Statement
-    | t_return Expression
+    : t_blockstart Terminator+ SourceElement* t_blockend
+        {$$ = Ast.Node.Block($3); }
     ;
 
 Statement
     : Assignment
-    | FunctionCall
-    | PrimitiveCall
-    | IfStructure
+    | Application
+    | If
     | TimesLoop
     | DoOnce
     | FinishedDoOnce
     ;
 
 Assignment
-    : Identifier "=" Expression
-        { $$ = ["=", $1, $3]; }
-    | Identifier "=" FunctionDef
-        { $$ = ["=", $1, $3]; }
+    : Identifier "=" PrimaryExpression
+        { $$ = Ast.Node.Assignment($1, $3); }
     ;
 
-FunctionCall
-    : Identifier FunctionArgs
-        { $$ = ["FUNCTIONCALL", $1, $2]; }
+Application
+    : Identifier ApplicationArgs
+        { $$ = Ast.Node.Application($1, $2); }
+    | Identifier ApplicationArgs t_inlined Application
+        { $$ = Ast.Node.Application($1, $2, $4); }
+    | Identifier ApplicationArgs Block
+        { $$ = Ast.Node.Application($1, $2, $3); }
     ;
 
-PrimitiveCall
-    : MatrixCall
-    | StyleCall
-    | ShapeCall
+ApplicationArgs
+    : EmptyArgsList
+    | ApplicationArgsList
     ;
 
-MatrixCall
-    : MatrixFunction FunctionArgs
-        { $$ = ["FUNCTIONCALL", $1, $2]; }
-    | MatrixFunction FunctionArgs t_inlined PrimitiveCall
-        { $$ = ["FUNCTIONCALL", $1, $2, ['BLOCK', [$4]]]; }
-    | MatrixFunction FunctionArgs PrimitiveCall
-        { $$ = ["FUNCTIONCALL", $1, $2, ['BLOCK', [$3]]]; }
-    | MatrixFunction FunctionArgs t_inlined Block
-        { $$ = ["FUNCTIONCALL", $1, $2, $4]; }
-    | MatrixFunction FunctionArgs Block
-        { $$ = ["FUNCTIONCALL", $1, $2, $3]; }
-    ;
 
-StyleCall
-    : StyleFunction FunctionArgs
-        { $$ = ["FUNCTIONCALL", $1, $2]; }
-    | StyleFunction FunctionArgs t_inlined PrimitiveCall
-        { $$ = ["FUNCTIONCALL", $1, $2, ['BLOCK', [$4]]]; }
-    | StyleFunction FunctionArgs PrimitiveCall
-        { $$ = ["FUNCTIONCALL", $1, $2, ['BLOCK', [$3]]]; }
-    | StyleFunction FunctionArgs t_inlined Block
-        { $$ = ["FUNCTIONCALL", $1, $2, $4]; }
-    | StyleFunction FunctionArgs Block
-        { $$ = ["FUNCTIONCALL", $1, $2, $3]; }
-    ;
-
-ShapeCall
-    : ShapeFunction FunctionArgs
-        { $$ = ["FUNCTIONCALL", $1, $2]; }
-    ;
-
-ExprFunctionCall
-    : Identifier "(" FunctionArgs ")"
-        { $$ = ["FUNCTIONCALL", $1, $3]; }
-    ;
-
-FunctionArgs
-    :
-        { $$ = []; }
-    | FunctionArgValue
+ApplicationArgsList
+    : PrimaryExpression
         { $$ = [$1]; }
-    | FunctionArgValue t_comma FunctionArgs
-        { $$ = [$1, $3]; }
+    | PrimaryExpression t_comma ApplicationArgsList
+        { $$ = [$1].concat($3); }
     ;
 
-FunctionArgValue
-    : Expression
-    | FunctionDef
-    ;
-
-IfStructure
+If
     : t_if Expression Block
-        { $$ = ["IF", $2, $3]; }
+        { $$ = Ast.Node.If($2, $3); }
     | t_if Expression Block t_else Block
-        { $$ = ["IF", $2, $3, $4]; }
+        { $$ = Ast.Node.If($2, $3, $4); }
     ;
 
-FunctionDef
-    : t_function "(" FunctionArgNames ")" t_arrow Expression
-        { $$ = ["FUNCTIONDEF", $3, $6]; }
-    | t_function "(" FunctionArgNames ")" t_arrow Block
-        { $$ = ["FUNCTIONDEF", $3, $6]; }
-    ;
-
-FunctionArgNames
+EmptyArgsList
     :
         { $$ = []; }
-    | Identifier
-        { $$ = [$1]; }
-    | Identifier t_comma FunctionArgNames
-        { $$ = [$1, $3]; }
     ;
 
 TimesLoop
-    : Variable t_times Block
-        { $$ = ["TIMES", $1, $3]; }
-    | Variable t_times t_with Identifier Block
-        { $$ = ["TIMES", $1, $5, $4]; }
-    | Number t_times Block
-        { $$ = ["TIMES", $1, $3]; }
-    | Number t_times t_with Identifier Block
-        { $$ = ["TIMES", $1, $5, $4]; }
+    : t_loop Expression t_times Block
+        { $$ = Ast.Node.Times($2, $4); }
+    | t_loop Expression t_times t_with Identifier Block
+        { $$ = Ast.Node.Times($2, $6, $5); }
     ;
 
 DoOnce
     : t_doOnce Block
-        { $$ = ["DOONCE", $2]; }
-    | t_doOnce Expression
-        { $$ = ["DOONCE", $2]; }
-    | t_doOnce PrimitiveCall
-        { $$ = ["DOONCE", $2]; }
+        { $$ = Ast.Node.DoOnce($2); }
     ;
 
 FinishedDoOnce
     : t_tick DoOnce
-        { $$ = ["DOONCE", []]; }
+        { $$ = Ast.Node.DoOnce([]); }
+    ;
+
+
+/** Expressions
+ *
+ */
+
+PrimaryExpression
+    : Expression
+    | Closure
     ;
 
 Expression
     : Expression "+" Expression
-        { $$ = ["+", $1, $3]; }
+        { $$ = Ast.Node.BinaryMathOp("+", $1, $3); }
     | Expression "-" Expression
-        { $$ = ["-", $1, $3]; }
+        { $$ = Ast.Node.BinaryMathOp("-", $1, $3); }
     | Expression "*" Expression
-        { $$ = ["*", $1, $3]; }
+        { $$ = Ast.Node.BinaryMathOp("*", $1, $3); }
     | Expression "/" Expression
-        { $$ = ["/", $1, $3]; }
+        { $$ = Ast.Node.BinaryMathOp("/", $1, $3); }
     | Expression "^" Expression
-        { $$ = ["^", $1, $3]; }
+        { $$ = Ast.Node.BinaryMathOp("^", $1, $3); }
     | Expression "%" Expression
-        { $$ = ["%", $1, $3]; }
+        { $$ = Ast.Node.BinaryMathOp("%", $1, $3); }
 
+    | "!" Expression
+        { $$ = Ast.Node.UnaryLogicOp("!", $1); }
     | Expression ">" Expression
-        { $$ = [">", $1, $3]; }
+        { $$ = Ast.Node.BinaryLogicOp(">", $1, $3); }
     | Expression "<" Expression
-        { $$ = ["<", $1, $3]; }
+        { $$ = Ast.Node.BinaryLogicOp("<", $1, $3); }
     | Expression ">=" Expression
-        { $$ = [">=", $1, $3]; }
+        { $$ = Ast.Node.BinaryLogicOp(">=", $1, $3); }
     | Expression "<=" Expression
-        { $$ = ["<=", $1, $3]; }
+        { $$ = Ast.Node.BinaryLogicOp("<=", $1, $3); }
     | Expression "==" Expression
-        { $$ = ["==", $1, $3]; }
+        { $$ = Ast.Node.BinaryLogicOp("==", $1, $3); }
     | Expression "&&" Expression
-        { $$ = ["&&", $1, $3]; }
+        { $$ = Ast.Node.BinaryLogicOp("&&", $1, $3); }
     | Expression "||" Expression
-        { $$ = ["||", $1, $3]; }
+        { $$ = Ast.Node.BinaryLogicOp("||", $1, $3); }
 
     | "(" Expression ")"
         { $$ = $2; }
-    | ExprFunctionCall
+
+    | NegativeExpression
+        { $$ = $1; }
+
+    | ExprApplication
         { $$ = $1; }
     | Number
         { $$ = $1; }
@@ -341,34 +242,52 @@ Expression
         { $$ = $1; }
     ;
 
-ShapeFunction
-    : t_shape
-        { $$ = yytext; }
+NegativeExpression
+    : "-" Number %prec UMINUS
+        { $$ = Ast.Node.UnaryMathOp("-", $1); }
+    | "-" Variable %prec UMINUS
+        { $$ = Ast.Node.UnaryMathOp("-", $1); }
+    | "-" "(" Expression ")" prec UMINUS
+        { $$ = Ast.Node.UnaryMathOp("-", $1); }
     ;
 
-MatrixFunction
-    : t_matrix
-        { $$ = yytext; }
+ExprApplication
+    : Identifier "(" ApplicationArgs ")"
+        { $$ = Ast.Node.Application($1, $3); }
     ;
 
-StyleFunction
-    : t_style
-        { $$ = yytext; }
+Closure
+    : t_def "(" ClosureArgs ")" t_arrow PrimaryExpression
+        { $$ = Ast.Node.Closure($3, $6); }
+    | t_def "(" ClosureArgs ")" t_arrow Block
+        { $$ = Ast.Node.Closure($3, $6); }
+    ;
+
+ClosureArgs
+    : EmptyArgsList
+    | ClosureArgsList
+    ;
+
+ClosureArgsList
+    : Identifier
+        { $$ = [$1]; }
+    | Identifier t_comma ClosureArgsList
+        { $$ = [$1].concat($3); }
     ;
 
 Number
     : t_number
-        { $$ = ["NUMBER", Number(yytext)]; }
+        { $$ = Ast.Node.Num(Number(yytext)); }
     ;
 
 Variable
     : Identifier
-        { $$ = ["VARIABLE", $1]; }
+        { $$ = Ast.Node.Variable($1); }
     ;
 
 String
     : t_string
-        { $$ = ["STRING", yytext]; }
+        { $$ = Ast.Node.Str(yytext); }
     ;
 
 Identifier

@@ -2,209 +2,119 @@
 
 var helpers = require('./interpreter-funcs');
 
-var Interpreter,
-    interpreterState;
+var Interpreter = {};
+var internal = {};
+Interpreter.internal = internal;
 
-Interpreter = {};
-interpreterState = {
-    doOnceTriggered: false
-};
+Interpreter.run = function (programBlock, globalscope) {
 
-Interpreter.run = function (ast, globalscope) {
-
-    var scope = helpers.createChildScope(globalscope);
-
-    interpreterState.doOnceTriggered = false;
-
-    this.runAST(ast, scope);
-
-    return {
-        doOnceTriggered: interpreterState.doOnceTriggered
+    var state = {
+        exitCode: 0,
+        doOnceTriggered: false
     };
 
-};
-
-Interpreter.runAST = function (ast, scope) {
-    var branch, remainder;
-
-    branch = ast[0];
-    remainder = ast[1];
-
-    this.evaluate(branch, scope);
-    if (remainder !== undefined) {
-        this.runAST(remainder, scope);
+    if (programBlock.ast !== 'BLOCK') {
+        state.exitCode = 1;
+        return state;
     }
+
+    internal.evaluate(programBlock, globalscope);
+    return state;
 };
 
-Interpreter.evaluate = function (branch, scope) {
+internal.evaluate = function (node, scope) {
 
-    var symbol, output;
+    var output;
 
-    symbol = branch[0];
+    switch (node.ast) {
 
-    switch (symbol) {
-
-    case '=':
-        // branch[1] = name
-        // branch[2] = value
-        scope[branch[1]] = this.evaluate(branch[2], scope);
-        output = branch[2];
+    case 'BLOCK':
+        output = internal.evaluateBlock(node, scope);
         break;
 
-    case '+':
-        output = this.evaluate(branch[1], scope) + this.evaluate(branch[2], scope);
+    case 'ASSIGNMENT':
+        output = internal.evaluateAssignment(node, scope);
         break;
 
-    case '-':
-        output = this.evaluate(branch[1], scope) - this.evaluate(branch[2], scope);
+    case 'APPLICATION':
+        output = internal.evaluateApplication(node, scope);
         break;
-
-    case '*':
-        output = this.evaluate(branch[1], scope) * this.evaluate(branch[2], scope);
-        break;
-
-    case '/':
-        output = this.evaluate(branch[1], scope) / this.evaluate(branch[2], scope);
-        break;
-
-    case '^':
-        output = Math.pow(this.evaluate(branch[1], scope), (this.evaluate(branch[2], scope)));
-        break;
-
-    case '%':
-        output = this.evaluate(branch[1], scope) % this.evaluate(branch[2], scope);
-        break;
-
-
-    case '>':
-        output = this.evaluate(branch[1], scope) > this.evaluate(branch[2], scope);
-        break;
-
-    case '<':
-        output = this.evaluate(branch[1], scope) < this.evaluate(branch[2], scope);
-        break;
-
-    case '>=':
-        output = this.evaluate(branch[1], scope) >= this.evaluate(branch[2], scope);
-        break;
-
-    case '<=':
-        output = this.evaluate(branch[1], scope) <= this.evaluate(branch[2], scope);
-        break;
-
-    case '==':
-        output = this.evaluate(branch[1], scope) === this.evaluate(branch[2], scope);
-        break;
-
-    case '&&':
-        output = this.evaluate(branch[1], scope) && this.evaluate(branch[2], scope);
-        break;
-
-    case '||':
-        output = this.evaluate(branch[1], scope) || this.evaluate(branch[2], scope);
-        break;
-
-
-    case 'VARIABLE':
-        output = scope[branch[1]];
-        if (output === undefined) {
-            throw 'Undefined Variable: ' + branch[1];
-        }
-        break;
-
-    case 'NUMBER':
-        output = branch[1];
-        break;
-
-    case 'STRING':
-        output = branch[1];
-        break;
-
 
     case 'IF':
-        output = this.evaluateIfBlock(branch, scope);
+        output = internal.evaluateIf(node, scope);
         break;
 
-    case 'FUNCTIONCALL':
-        output = this.evaluateFunctionCall(branch, scope);
-        break;
-
-    case 'FUNCTIONDEF':
-        output = this.evaluateFunctionDefinition(branch, scope);
+    case 'CLOSURE':
+        output = internal.evaluateClosure(node, scope);
         break;
 
     case 'TIMES':
-        output = this.evaluateTimesLoop(branch, scope);
-        break;
-
-    case 'BLOCK':
-        output = this.evaluateBlock(branch, scope);
+        output = internal.evaluateTimes(node, scope);
         break;
 
     case 'DOONCE':
-        if (branch[1].length > 0) {
-            interpreterState.doOnceTriggered = true;
-            output = this.evaluate(branch[1], scope);
-        } else {
-            output = '';
-        }
+        output = internal.evaluateDoOnce(node, scope);
+        break;
+
+    case 'BINARYMATHOP':
+        output = internal.evaluateBinaryMathOp(node, scope);
+        break;
+
+    case 'UNARYMATHOP':
+        output = internal.evaluateUnaryMathOp(node, scope);
+        break;
+
+    case 'BINARYLOGICOP':
+        output = internal.evaluateBinaryLogicOp(node, scope);
+        break;
+
+    case 'UNARYLOGICOP':
+        output = internal.evaluateUnaryLogicOp(node, scope);
+        break;
+
+    case 'NUMBER':
+        output = node.value;
+        break;
+
+    case 'VARIABLE':
+        output = internal.evaluateVariable(node, scope);
+        break;
+
+    case 'STRING':
+        output = node.value;
         break;
 
     default:
-        throw 'Unknown Symbol: ' + symbol;
+        throw 'Unknown Symbol: ' + node.ast;
     }
 
     return output;
 
 };
 
-Interpreter.evaluateBlock = function (block, scope) {
-    var childScope, statements;
+internal.evaluateBlock = function (block, scope) {
+    var childScope = helpers.createChildScope(scope);
+    var output = null;
+    var i, el;
+    for (i = 0; i < block.elements.length; i += 1) {
+        el = block.elements[i];
+        output = internal.evaluate(el, childScope);
+    }
 
-    childScope = helpers.createChildScope(scope);
-
-    statements = block[1];
-
-    this.runAST(statements, childScope);
-
+    return output;
 };
 
-Interpreter.evaluateFunctionDefinition = function (branch, scope) {
-    var argnames, block, func, self;
-    argnames = helpers.functionargs(branch[1]);
-    block = branch[2];
-
-    self = this;
-
-    func = function (funcscope, argvalues) {
-        var i, childScope, output;
-
-        childScope = helpers.createChildScope(funcscope);
-
-        for (i = 0; i < argnames.length; i += 1) {
-            childScope[argnames[i]] = argvalues[i];
-        }
-
-        output = self.evaluateBlock(block, childScope);
-
-        return output;
-
-    };
-
-    // return a list containing the function so that when
-    // we come to evaluate this we can tell the difference between
-    // a user defined function and a normal javascript function
-    return [func];
-
+internal.evaluateAssignment = function(assignment, scope) {
+    var value = internal.evaluate(assignment.expression, scope);
+    scope[assignment.identifier] = value;
+    return value;
 };
 
-Interpreter.evaluateFunctionCall = function (branch, scope) {
+internal.evaluateApplication = function (application, scope) {
 
-    var func, barefunc, funcname, args, evaledargs, output, i, block, self;
+    var func, barefunc, funcname, args, evaledargs, output, i, block;
 
-    self = this;
-
-    funcname = branch[1];
+    funcname = application.identifier;
 
     func = scope[funcname];
     if (func === undefined) {
@@ -213,17 +123,17 @@ Interpreter.evaluateFunctionCall = function (branch, scope) {
 
     evaledargs = [];
 
-    args = helpers.functionargs(branch[2]);
+    args = application.args;
 
     for (i = 0; i < args.length; i += 1) {
-        evaledargs.push(this.evaluate(args[i], scope));
+        evaledargs.push(internal.evaluate(args[i], scope));
     }
 
     // if this function call has a block section then add it to the args
-    block = branch[3];
+    block = application.block;
     if (block !== undefined) {
         evaledargs.push(function () {
-            self.evaluateBlock(block, scope);
+            internal.evaluateBlock(block, scope);
         });
     }
 
@@ -245,10 +155,12 @@ Interpreter.evaluateFunctionCall = function (branch, scope) {
 
         output = func.apply(scope, evaledargs);
     } else if (typeof func === "object") {
-        // functions defined by the user are wrapped in a list, so we need
+        // Functions defined by the user are wrapped in a list, so we need
         // to unwrap them
+        // Also we don't pass the scope in because everything is created
+        // as a closure
         barefunc = func[0];
-        output = barefunc(scope, evaledargs);
+        output = barefunc(evaledargs);
     } else {
         throw 'Error interpreting function: ' + funcname;
     }
@@ -256,40 +168,190 @@ Interpreter.evaluateFunctionCall = function (branch, scope) {
     return output;
 };
 
-Interpreter.evaluateTimesLoop = function (branch, scope) {
-    var times, block, i, loopvar, statements, childScope;
+internal.evaluateIf = function (ifStatement, scope) {
+    var predicate, ifblock, elseblock;
 
-    times   = this.evaluate(branch[1], scope);
-    block   = branch[2];
-    loopvar = branch[3];
+    predicate = ifStatement.predicate;
+    ifblock = ifStatement.ifBlock;
+    elseblock = ifStatement.elseBlock;
 
-    statements = block[1];
+    if (internal.evaluate(predicate, scope)) {
+        internal.evaluateBlock(ifblock, scope);
+    } else if (elseblock !== undefined) {
+        internal.evaluateBlock(elseblock, scope);
+    }
+
+};
+
+internal.evaluateClosure = function (closure, scope) {
+    var argnames, body, func;
+    argnames = closure.argNames;
+    body = closure.body;
+
+    func = function (argvalues) {
+        var i, childScope, output;
+        childScope = helpers.createChildScope(scope);
+        for (i = 0; i < argnames.length; i += 1) {
+            childScope[argnames[i]] = argvalues[i];
+        }
+        output = internal.evaluate(body, childScope);
+        return output;
+    };
+
+    // return a list containing the function so that when
+    // we come to evaluate this we can tell the difference between
+    // a user defined function and a normal javascript function
+    return [func];
+};
+
+internal.evaluateTimes = function (times, scope) {
+    var i, statements, childScope;
+
+    var loops   = internal.evaluate(times.number, scope);
+    var block   = times.block;
+    var loopVar = times.loopVar;
+
+    block = times.block;
 
     childScope = helpers.createChildScope(scope);
 
-    for (i = 0; i < times; i += 1) {
+    for (i = 0; i < loops; i += 1) {
 
-        childScope[loopvar] = i;
+        childScope[loopVar] = i;
 
-        this.runAST(statements, childScope);
+        internal.evaluate(block, childScope);
     }
 
 };
 
-Interpreter.evaluateIfBlock = function (branch, scope) {
-    var predicate, ifblock, elseblock;
+internal.evaluateDoOnce = function (doOnce, scope) {
+    var output = internal.evaluate(doOnce.block, scope);
+    return output;
+};
 
-    predicate = branch[1];
-    ifblock = branch[2];
-    elseblock = branch[3];
+internal.evaluateUnaryMathOp = function(mathOp, scope) {
+    var output;
+    var val1 = internal.evaluate(mathOp.expr1, scope);
 
-    if (this.evaluate(predicate, scope)) {
-        this.evaluateBlock(ifblock, scope);
-    } else if (elseblock !== undefined) {
-        this.evaluateBlock(elseblock, scope);
+    switch(mathOp.operation) {
+
+    case '-':
+        output = -1 * val1;
+        break;
+
+    default:
+        throw 'Unknown Symbol: ' + mathOp.operation;
     }
 
+    return output;
 };
+
+internal.evaluateBinaryMathOp = function(mathOp, scope) {
+    var output;
+    var val1 = internal.evaluate(mathOp.expr1, scope);
+    var val2 = internal.evaluate(mathOp.expr2, scope);
+
+    switch(mathOp.operation) {
+
+    case '+':
+        output = val1 + val2;
+        break;
+
+    case '-':
+        output = val1 - val2;
+        break;
+
+    case '*':
+        output = val1 * val2;
+        break;
+
+    case '/':
+        output = val1 / val2;
+        break;
+
+    case '^':
+        output = Math.pow(val1, val2);
+        break;
+
+    case '%':
+        output = val1 % val2;
+        break;
+
+    default:
+        throw 'Unknown Symbol: ' + mathOp.operation;
+    }
+
+    return output;
+};
+
+internal.evaluateUnaryLogicOp = function(logicOp, scope) {
+    var output;
+    var val1 = internal.evaluate(logicOp.expr1, scope);
+
+    switch(logicOp.operation) {
+
+    case '!':
+        output = !val1;
+        break;
+
+    default:
+        throw 'Unknown Symbol: ' + logicOp.operation;
+    }
+
+    return output;
+};
+
+internal.evaluateBinaryLogicOp = function(logicOp, scope) {
+    var output;
+    var val1 = internal.evaluate(logicOp.expr1, scope);
+    var val2 = internal.evaluate(logicOp.expr2, scope);
+
+    switch(logicOp.operation) {
+
+    case '>':
+        output = val1 > val2;
+        break;
+
+    case '<':
+        output = val1 < val2;
+        break;
+
+    case '>=':
+        output = val1 >= val2;
+        break;
+
+    case '<=':
+        output = val1 <= val2;
+        break;
+
+    case '==':
+        output = val1 === val2;
+        break;
+
+    case '&&':
+        output = val1 && val2;
+        break;
+
+    case '||':
+        output = val1 || val2;
+        break;
+
+    default:
+        throw 'Unknown Symbol: ' + logicOp.operation;
+    }
+
+    return output;
+};
+
+internal.evaluateVariable = function (variable, scope) {
+    var output = scope[variable.identifier];
+    if (output === undefined) {
+        throw 'Undefined Variable: ' + variable.identifier;
+    }
+    return output;
+};
+
+
 
 module.exports = Interpreter;
 
