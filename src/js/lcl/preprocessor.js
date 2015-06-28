@@ -4,6 +4,16 @@ var ProgramData = require('./programdata');
 
 var PreProcessor = {};
 
+PreProcessor.fixLoops = function (programText) {
+    var funcRegexp = /=(.+->)/gm;
+    return programText.replace(funcRegexp, "= def $1");
+};
+
+PreProcessor.fixFunctionDef = function (programText) {
+    var loopRegexp = /^(\t*)(.+times)/gm;
+    return programText.replace(loopRegexp, "$1loop $2");
+};
+
 PreProcessor.blockcalc = function (program) {
 
     var blocks, c, starttabs, blockdepth, onlywhitespace;
@@ -45,7 +55,7 @@ PreProcessor.blockcalc = function (program) {
 
 };
 
-PreProcessor.insertBlocks = function (programtext, blocks) {
+PreProcessor.insertBlocks = function (programText, blocks) {
 
     var programlines,
         i,
@@ -60,7 +70,7 @@ PreProcessor.insertBlocks = function (programtext, blocks) {
         emptylines;
 
     output = [];
-    programlines = programtext.split('\n');
+    programlines = programText.split('\n');
     lastblockdepth = 0;
     trackeddepth = 0;
     emptylines = [];
@@ -133,12 +143,15 @@ PreProcessor.insertBlocks = function (programtext, blocks) {
 
 };
 
-PreProcessor.process = function (programtext) {
+PreProcessor.process = function (programText) {
     var blocks, p;
-    p = new ProgramData(programtext);
+    var loopRewritten = PreProcessor.fixLoops(programText);
+    var funcRewritten = PreProcessor.fixFunctionDef(loopRewritten);
+    p = new ProgramData(funcRewritten);
     blocks = PreProcessor.blockcalc(p);
 
-    return PreProcessor.insertBlocks(programtext, blocks);
+    var blocksDefined =  PreProcessor.insertBlocks(funcRewritten, blocks);
+    return blocksDefined;
 };
 
 module.exports = PreProcessor;
