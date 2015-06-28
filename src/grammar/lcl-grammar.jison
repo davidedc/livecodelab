@@ -244,11 +244,11 @@ Expression
 
 NegativeExpression
     : "-" Number %prec UMINUS
-        { $$ = Ast.Node.UnaryMathOp("-", $1); }
+        { $$ = Ast.Node.UnaryMathOp("-", $2); }
     | "-" Variable %prec UMINUS
-        { $$ = Ast.Node.UnaryMathOp("-", $1); }
+        { $$ = Ast.Node.UnaryMathOp("-", $2); }
     | "-" "(" Expression ")" prec UMINUS
-        { $$ = Ast.Node.UnaryMathOp("-", $1); }
+        { $$ = Ast.Node.UnaryMathOp("-", $3); }
     ;
 
 ExprApplication
