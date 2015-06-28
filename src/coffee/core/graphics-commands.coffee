@@ -450,12 +450,14 @@ class GraphicsCommands
       if not pooledObjectWithMaterials.normalMaterial?
         pooledObjectWithMaterials.normalMaterial =
           new @threeJs.MeshNormalMaterial()
+        pooledObjectWithMaterials.normalMaterial.shading = @threeJs.FlatShading;
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.normalMaterial
     else unless @liveCodeLabCoreInstance.lightSystem.lightsAreOn
       if not pooledObjectWithMaterials.basicMaterial?
         pooledObjectWithMaterials.basicMaterial =
           new @threeJs.MeshBasicMaterial()
+        pooledObjectWithMaterials.basicMaterial.shading = @threeJs.FlatShading;
       pooledObjectWithMaterials.basicMaterial.color.setHex colorToBeUsed
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.basicMaterial
@@ -465,6 +467,8 @@ class GraphicsCommands
       if not pooledObjectWithMaterials.lambertMaterial?
         pooledObjectWithMaterials.lambertMaterial =
           new @threeJs.MeshLambertMaterial()
+        pooledObjectWithMaterials.lambertMaterial.shading =
+          @threeJs.FlatShading;
       pooledObjectWithMaterials.lambertMaterial.color.setHex colorToBeUsed
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.lambertMaterial
