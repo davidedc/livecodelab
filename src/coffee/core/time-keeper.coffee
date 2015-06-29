@@ -16,6 +16,7 @@ class TimeKeeper extends EventEmitter
     @beatCount      = 1            # last whole beat number
     @beatFraction   = 0            # fraction of the beat we're at
 
+    @defaultBpm     = 100
     @bpm            = 100
     @newBpm         = 100
     @mspb           = 60000 / @bpm # milliseconds per beat
@@ -99,6 +100,8 @@ class TimeKeeper extends EventEmitter
     @setTime((@audioApi.getTime() - @millisAtStart) / 1000)
 
   setBpm: (bpm) ->
+    if !(bpm?)
+      bpm = @defaultBpm
     if (@bpm != bpm)
       @bpm = Math.max(20, Math.min(bpm, 250))
       @mspb = 60000 / @bpm
