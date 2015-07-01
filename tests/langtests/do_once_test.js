@@ -2,15 +2,9 @@
 
 'use strict';
 
-var requirejs = require('requirejs');
-
-requirejs.config({
-    baseUrl: 'build/js',
-    nodeRequire: require
-});
-
-var parser = requirejs('lib/lcl/parser');
-var preproc = requirejs('lib/lcl/preprocessor');
+var parser  = require('../../src/generated/parser').parser;
+var preproc = require('../../src/js/lcl/preprocessor');
+var ast     = require('../../src/js/lcl/ast').Node;
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -40,75 +34,74 @@ exports.programdata = {
 
     'simple doOnce expression works': function (test) {
 
-        var program, ast, expected, processed;
+        var program = "doOnce box";
+        var processed = preproc.process(program);
+        var parsed = parser.parse(processed);
 
-        program = "doOnce box";
-        processed = preproc.process(program);
-        ast = parser.parse(processed);
-
-        expected = [
-            ['DOONCE',
-                ['FUNCTIONCALL', 'box', []]
-            ]
-        ];
-
-        test.deepEqual(ast, expected);
+        var expected = ast.Block([
+            ast.DoOnce(
+                ast.Block([
+                    ast.Application('box', [])
+                ])
+            )
+        ]);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'finished simple doOnce expression works': function (test) {
 
-        var program, ast, expected, processed;
+        var program = "✓doOnce box";
+        var processed = preproc.process(program);
+        var parsed = parser.parse(processed);
 
-        program = "✓doOnce box";
-        processed = preproc.process(program);
-        ast = parser.parse(processed);
+        var expected = ast.Block([
+            ast.DoOnce(
+                ast.Block([])
+            )
+        ]);
 
-        expected = [
-            ['DOONCE', []]
-        ];
-
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'block doOnce expression works': function (test) {
 
-        var program, ast, expected, processed;
+        var program = "doOnce\n\trotate\n\t\tbox 4";
+        var processed = preproc.process(program);
+        var parsed = parser.parse(processed);
 
-        program = "doOnce\n\trotate\n\t\tbox 4";
-        processed = preproc.process(program);
-        ast = parser.parse(processed);
+        var expected = ast.Block([
+            ast.DoOnce(
+                ast.Block([
+                    ast.Application(
+                        'rotate',
+                        [],
+                        ast.Block([
+                            ast.Application('box', [ast.Num(4)])
+                        ])
+                    )
+                ])
+            )
+        ]);
 
-        expected = [
-            ['DOONCE', ['BLOCK',
-                [
-                    ['FUNCTIONCALL', 'rotate', [],
-                        ['BLOCK', [
-                            ['FUNCTIONCALL', 'box', [['NUMBER', 4]]]
-                        ]]
-                    ]
-                ]
-            ]]
-        ];
-
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'finished block doOnce expression works': function (test) {
 
-        var program, ast, expected, processed;
+        var program = "✓doOnce\n\trotate\n\t\tbox 4";
+        var processed = preproc.process(program);
+        var parsed = parser.parse(processed);
 
-        program = "✓doOnce\n\trotate\n\t\tbox 4";
-        processed = preproc.process(program);
-        ast = parser.parse(processed);
+        var expected = ast.Block([
+            ast.DoOnce(
+                ast.Block([])
+            )
+        ]);
 
-        expected = [
-            ['DOONCE', []]
-        ];
-
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     }
 

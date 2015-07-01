@@ -2,15 +2,9 @@
 
 'use strict';
 
-var requirejs = require('requirejs');
-
-requirejs.config({
-    baseUrl: 'build/js',
-    nodeRequire: require
-});
-
-var parser  = requirejs('lib/lcl/parser');
-var preproc = requirejs('lib/lcl/preprocessor');
+var parser  = require('../../src/generated/parser').parser;
+var preproc = require('../../src/js/lcl/preprocessor');
+var ast     = require('../../src/js/lcl/ast').Node;
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -40,121 +34,107 @@ exports.programdata = {
 
     'basic function calls work': function (test) {
 
-        var program, ast, expected, processed;
+        var program = "\n\nbox\n";
+        var processed = preproc.process(program);
+        var parsed = parser.parse(processed);
 
-        program = "\n\nbox\n";
-        processed = preproc.process(program);
-        ast = parser.parse(processed);
+        var expected = ast.Block([
+            ast.Application('box', [])
+        ]);
 
-        expected = [
-            ['FUNCTIONCALL', 'box', []]
-        ];
-
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'primitive with args and block': function (test) {
 
-        var program, ast, expected, processed;
+        var program = "rotate 2, 3\n\tbox\n";
+        var processed = preproc.process(program);
+        var parsed = parser.parse(processed);
 
-        program = "rotate 2, 3\n\tbox\n";
-        processed = preproc.process(program);
-        ast = parser.parse(processed);
+        var expected = ast.Block([
+            ast.Application(
+                'rotate',
+                [ast.Num(2), ast.Num(3)],
+                ast.Block([
+                    ast.Application('box', [])
+                ])
+            )
+        ]);
 
-        expected = [
-            ['FUNCTIONCALL', 'rotate', [
-                ['NUMBER', 2], [
-                    ['NUMBER', 3]
-                ]
-            ],
-                ['BLOCK', [
-                    ['FUNCTIONCALL', 'box', []]
-                ]]
-                ]
-        ];
-
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'inline calls': function (test) {
 
-        var program, ast, expected, processed;
+        var program = "rotate 2, 3 >> box\n";
+        var processed = preproc.process(program);
+        var parsed = parser.parse(processed);
 
-        program = "rotate 2, 3 >> box\n";
-        processed = preproc.process(program);
-        ast = parser.parse(processed);
+        var expected = ast.Block([
+            ast.Application(
+                'rotate',
+                [ast.Num(2), ast.Num(3)],
+                ast.Block([
+                    ast.Application('box', [])
+                ])
+            )
+        ]);
 
-        expected = [
-            ['FUNCTIONCALL', 'rotate', [
-                ['NUMBER', 2], [
-                    ['NUMBER', 3]
-                ]
-            ],
-                ['BLOCK', [
-                    ['FUNCTIONCALL', 'box', []]
-                ]]
-                ]
-        ];
-
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'multiple inline calls': function (test) {
 
-        var program, ast, expected, processed;
+        var program = "rotate 2, 3 >> fill red >> box\n";
+        var processed = preproc.process(program);
+        var parsed = parser.parse(processed);
 
-        program = "rotate 2, 3 >> fill red >> box\n";
-        processed = preproc.process(program);
-        ast = parser.parse(processed);
+        var expected = ast.Block([
+            ast.Application(
+                'rotate',
+                [ast.Num(2), ast.Num(3)],
+                ast.Block([
+                    ast.Application(
+                        'fill',
+                        [ast.Variable('red')],
+                            ast.Block([
+                                ast.Application('box', [])
+                            ])
+                    )
+                ])
+            )
+        ]);
 
-        expected = [
-            ['FUNCTIONCALL', 'rotate', [
-                ['NUMBER', 2], [
-                    ['NUMBER', 3]
-                ]
-            ],
-                ['BLOCK', [
-                    ['FUNCTIONCALL', 'fill', [['IDENTIFIER', 'red']],
-                        ['BLOCK', [
-                            ['FUNCTIONCALL', 'box', []]
-                        ]]
-                        ]
-                ]]
-                ]
-        ];
-
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'multiple inline calls with no arrows': function (test) {
 
-        var program, ast, expected, processed;
+        var program = "rotate 2, 3 fill red box\n";
+        var processed = preproc.process(program);
+        var parsed = parser.parse(processed);
 
-        program = "rotate 2, 3 fill red box\n";
-        processed = preproc.process(program);
-        ast = parser.parse(processed);
+        var expected = ast.Block([
+            ast.Application(
+                'rotate',
+                [ast.Num(2), ast.Num(3)],
+                ast.Block([
+                    ast.Application(
+                        'fill',
+                        [ast.Variable('red')],
+                            ast.Block([
+                                ast.Application('box')
+                            ])
+                    )
+                ])
+            )
+        ]);
 
-        expected = [
-            ['FUNCTIONCALL', 'rotate', [
-                ['NUMBER', 2], [
-                    ['NUMBER', 3]
-                ]
-            ],
-                ['BLOCK', [
-                    ['FUNCTIONCALL', 'fill', [['IDENTIFIER', 'red']],
-                        ['BLOCK', [
-                            ['FUNCTIONCALL', 'box', []]
-                        ]]
-                        ]
-                ]]
-                ]
-        ];
-
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     }
 

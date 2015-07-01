@@ -2,14 +2,15 @@
 
 'use strict';
 
-var requirejs = require('requirejs');
+var parser = require('../../src/generated/parser').parser;
+var ast    = require('../../src/js/lcl/ast').Node;
 
-requirejs.config({
-    baseUrl: 'build/js',
-    nodeRequire: require
-});
-
-var parser = requirejs('lib/lcl/parser');
+var Block = ast.Block;
+var Assignment = ast.Assignment;
+var BinaryMathOp = ast.BinaryMathOp;
+var UnaryMathOp = ast.UnaryMathOp;
+var Num = ast.Num;
+var Variable = ast.Variable;
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -35,85 +36,103 @@ parser.yy.parseError = function () {
     console.log(arguments);
 };
 
-var n = function (num) {
-    return ['NUMBER', num];
-};
-
 exports.programdata = {
 
     'process function works': function (test) {
 
-        var program, ast, expected;
+        var program = "a = 3 + 5";
+        var parsed = parser.parse(program);
 
-        program = "a = 3 + 5";
-        ast = parser.parse(program);
+        var expected = Block([
+            Assignment(
+                'a',
+                BinaryMathOp(
+                    '+', Num(3), Num(5)
+                )
+            )
+        ]);
 
-        expected = [
-            ['=', 'a', ['+', n(3), n(5)]]
-        ];
-
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'assignment assigns numbers': function (test) {
 
-        var program, ast, expected;
+        var program = "number = 444";
+        var parsed = parser.parse(program);
 
-        program = "number = 444";
-        ast = parser.parse(program);
+        var expected = Block([
+            Assignment(
+                'number',
+                Num(444)
+            )
+        ]);
 
-        expected = [
-            ['=', 'number', n(444)]
-        ];
 
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'assignment assigns negative numbers': function (test) {
 
-        var program, ast, expected;
+        var program = "number = -333";
+        var parsed = parser.parse(program);
 
-        program = "number = -333";
-        ast = parser.parse(program);
+        var expected = Block([
+            Assignment(
+                'number',
+                UnaryMathOp('-', Num(333))
+            )
+        ]);
 
-        expected = [
-            ['=', 'number', n(-333)]
-        ];
 
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'multiple assignments assigns bigger expression': function (test) {
 
-        var program, ast, expected, numa, numb, numc;
+        var program = "numa = 55 + 44 * 2 - 321\n numb = numa * -33\n numc = numa + numb";
+        var parsed = parser.parse(program);
 
-        program = "numa = 55 + 44 * 2 - 321\n numb = numa * -33\n numc = numa + numb";
-        ast = parser.parse(program);
+        var numa = Assignment('numa',
+            BinaryMathOp('-',
+                BinaryMathOp('+', Num(55),
+                    BinaryMathOp('*', Num(44), Num(2))
+                ),
+                Num(321)
+            )
+        );
+        var numb = Assignment('numb',
+            BinaryMathOp('*', Variable('numa'), UnaryMathOp('-', Num(33)))
+        );
+        var numc = Assignment('numc',
+            BinaryMathOp('+', Variable('numa'), Variable('numb'))
+        );
 
-        numa = ['=', 'numa', ['-', ['+', n(55), ['*', n(44), n(2)]], n(321)]];
-        numb = ['=', 'numb', ['*', ['IDENTIFIER', 'numa'], n(-33)]];
-        numc = ['=', 'numc', ['+', ['IDENTIFIER', 'numa'], ['IDENTIFIER', 'numb']]];
-        expected = [numa, [numb, [numc]]];
+        var expected = Block([
+            numa, numb, numc
+        ]);
 
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'brackets work correctly in expressions': function (test) {
 
-        var program, ast, expected;
+        var program = "number = (456 + 33) * 2";
+        var parsed = parser.parse(program);
 
-        program = "number = (456 + 33) * 2";
-        ast = parser.parse(program);
+        var expected = Block([
+            Assignment('number',
+                BinaryMathOp('*',
+                    BinaryMathOp('+', Num(456), Num(33)),
+                    Num(2)
+                )
+            )
+        ]);
 
-        expected = [
-            ['=', 'number', ['*', ['+', n(456), n(33)], n(2)]]
-        ];
-
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 

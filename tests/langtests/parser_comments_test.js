@@ -2,14 +2,8 @@
 
 'use strict';
 
-var requirejs = require('requirejs');
-
-requirejs.config({
-    baseUrl: 'build/js',
-    nodeRequire: require
-});
-
-var parser = requirejs('lib/lcl/parser');
+var parser = require('../../src/generated/parser').parser;
+var ast    = require('../../src/js/lcl/ast').Node;
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -39,40 +33,40 @@ exports.programdata = {
 
     'comments are ignored': function (test) {
 
-        var program, ast, expected;
+        var program = '\n\n// this is a comment \n\n\n// parser should ignore\n\n\nbox 4';
+        var parsed = parser.parse(program);
 
-        program = '\n\n// this is a comment \n\n\n// parser should ignore\n\n\nbox 4';
-        ast = parser.parse(program);
+        var expected = ast.Block([
+            ast.Application('box', [ast.Num(4)])
+        ]);
 
-        expected = [ ['FUNCTIONCALL', 'box', [['NUMBER', 4]] ] ];
-
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'comments after commands are ignored': function (test) {
 
-        var program, ast, expected;
+        var program = '\n\nbox 4 // this is a comment \n';
+        var parsed = parser.parse(program);
 
-        program = '\n\nbox 4 // this is a comment \n';
-        ast = parser.parse(program);
+        var expected = ast.Block([
+            ast.Application('box', [ast.Num(4)])
+        ]);
 
-        expected = [ ['FUNCTIONCALL', 'box', [['NUMBER', 4]] ] ];
-
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'comments at the end of the program are ignored': function (test) {
 
-        var program, ast, expected;
+        var program = '\n\nbox 4 // this is a comment';
+        var parsed = parser.parse(program);
 
-        program = '\n\nbox 4 // this is a comment';
-        ast = parser.parse(program);
+        var expected = ast.Block([
+            ast.Application('box', [ast.Num(4)])
+        ]);
 
-        expected = [ ['FUNCTIONCALL', 'box', [['NUMBER', 4]] ] ];
-
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     }
 

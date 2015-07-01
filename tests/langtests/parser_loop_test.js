@@ -2,15 +2,9 @@
 
 'use strict';
 
-var requirejs = require('requirejs');
-
-requirejs.config({
-    baseUrl: 'build/js',
-    nodeRequire: require
-});
-
-var parser = requirejs('lib/lcl/parser');
-var preproc = requirejs('lib/lcl/preprocessor');
+var parser  = require('../../src/generated/parser').parser;
+var preproc = require('../../src/js/lcl/preprocessor');
+var ast     = require('../../src/js/lcl/ast').Node;
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -40,61 +34,67 @@ exports.programdata = {
 
     'basic times loop works': function (test) {
 
-        var program, ast, expected, processed;
+        var program = "4 times\n\tbox(4)";
+        var processed = preproc.process(program);
+        var parsed = parser.parse(processed);
 
-        program = "4 times\n\tbox(4)";
-        processed = preproc.process(program);
-        ast = parser.parse(processed);
-
-        expected = [
-            ['TIMES', ['NUMBER', 4],
-                ['BLOCK', [
-                    ['FUNCTIONCALL', 'box', [['NUMBER', 4]]]
-                ]]]
-        ];
-
-        test.deepEqual(ast, expected);
+        var expected = ast.Block([
+            ast.Times(
+                ast.Num(4),
+                ast.Block([
+                    ast.Application(
+                        'box',
+                        [ast.Num(4)]
+                    )
+                ])
+            )
+        ]);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'times loop with variable': function (test) {
 
-        var program, ast, expected, processed;
+        var program = "4 times with i\n\tbox(4)";
+        var processed = preproc.process(program);
+        var parsed = parser.parse(processed);
 
-        program = "4 times with i\n\tbox(4)";
-        processed = preproc.process(program);
-        ast = parser.parse(processed);
-
-        expected = [
-            ['TIMES', ['NUMBER', 4],
-                ['BLOCK', [
-                    ['FUNCTIONCALL', 'box', [['NUMBER', 4]]]
-                ]], 'i']
-        ];
-
-        test.deepEqual(ast, expected);
+        var expected = ast.Block([
+            ast.Times(
+                ast.Num(4),
+                ast.Block([
+                    ast.Application(
+                        'box',
+                        [ast.Num(4)]
+                    )
+                ]),
+                'i'
+            )
+        ]);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'times loop with variable number and loopvar': function (test) {
 
-        var program, ast, expected, processed;
+        var program = "foo = 100\nfoo times with i\n\tbox(4)";
+        var processed = preproc.process(program);
+        var parsed = parser.parse(processed);
 
-        program = "foo = 100\nfoo times with i\n\tbox(4)";
-        processed = preproc.process(program);
-        ast = parser.parse(processed);
-
-        expected = [
-            ['=', 'foo', ['NUMBER', 100]], [
-                ['TIMES', ['IDENTIFIER', 'foo'],
-                    ['BLOCK', [
-                        ['FUNCTIONCALL', 'box', [['NUMBER', 4]]]
-                    ]],
-                    'i']
-            ]
-        ];
-
-        test.deepEqual(ast, expected);
+        var expected = ast.Block([
+            ast.Assignment('foo', ast.Num(100)),
+            ast.Times(
+                ast.Variable('foo'),
+                ast.Block([
+                    ast.Application(
+                        'box',
+                        [ast.Num(4)]
+                    )
+                ]),
+                'i'
+            )
+        ]);
+        test.deepEqual(parsed, expected);
         test.done();
     }
 

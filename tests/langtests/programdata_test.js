@@ -2,14 +2,7 @@
 
 'use strict';
 
-var requirejs = require('requirejs');
-
-requirejs.config({
-    baseUrl: 'build/js',
-    nodeRequire: require
-});
-
-var ProgramData = requirejs('lib/lcl/programdata');
+var ProgramData = require('../../src/js/lcl/programdata');
 
 /*
   ======== A Handy Little Nodeunit Reference ========

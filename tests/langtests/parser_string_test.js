@@ -2,15 +2,9 @@
 
 'use strict';
 
-var requirejs = require('requirejs');
-
-requirejs.config({
-    baseUrl: 'build/js',
-    nodeRequire: require
-});
-
-var parser  = requirejs('lib/lcl/parser');
-var preproc = requirejs('lib/lcl/preprocessor');
+var parser  = require('../../src/generated/parser').parser;
+var preproc = require('../../src/js/lcl/preprocessor');
+var ast     = require('../../src/js/lcl/ast').Node;
 
 parser.yy.parseError = function (message) {
     console.log(message);
@@ -20,37 +14,37 @@ exports.programdata = {
 
     'simple string assignment passes': function (test) {
 
-        var program, ast, expected, processed;
+        var program, parsed, expected, processed;
 
         program = [
             "a = \"string\"",
         ].join('\n');
         processed = preproc.process(program);
-        ast = parser.parse(processed);
+        parsed = parser.parse(processed);
 
-        expected = [
-            ['=', 'a', ["STRING", "string"]]
-        ];
+        expected = ast.Block([
+            ast.Assignment('a', ast.Str('string'))
+        ]);
 
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     },
 
     'string with whitespace passes': function (test) {
 
-        var program, ast, expected, processed;
+        var program, parsed, expected, processed;
 
         program = [
             "a = \"string  sdf\tasdf\"",
         ].join('\n');
         processed = preproc.process(program);
-        ast = parser.parse(processed);
+        parsed = parser.parse(processed);
 
-        expected = [
-            ['=', 'a', ["STRING", "string  sdf\tasdf"]]
-        ];
+        expected = ast.Block([
+            ast.Assignment('a', ast.Str("string  sdf\tasdf"))
+        ]);
 
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     }
 

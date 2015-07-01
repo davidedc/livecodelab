@@ -2,16 +2,9 @@
 
 'use strict';
 
-var requirejs = require('requirejs');
+var PreProcessor = require('../../src/js/lcl/preprocessor');
 
-requirejs.config({
-    baseUrl: 'build/js',
-    nodeRequire: require
-});
-
-var PreProcessor = requirejs('lib/lcl/preprocessor');
-
-var ProgramData = requirejs('lib/lcl/programdata');
+var ProgramData = require('../../src/js/lcl/programdata');
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -33,7 +26,7 @@ var ProgramData = requirejs('lib/lcl/programdata');
     test.ifError(value)
 */
 
-exports.programdata = {
+module.exports = {
 
     'basic calc': function (test) {
 

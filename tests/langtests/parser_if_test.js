@@ -2,15 +2,9 @@
 
 'use strict';
 
-var requirejs = require('requirejs');
-
-requirejs.config({
-    baseUrl: 'build/js',
-    nodeRequire: require
-});
-
-var parser  = requirejs('lib/lcl/parser');
-var preproc = requirejs('lib/lcl/preprocessor');
+var parser  = require('../../src/generated/parser').parser;
+var preproc = require('../../src/js/lcl/preprocessor');
+var ast     = require('../../src/js/lcl/ast').Node;
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -40,26 +34,25 @@ exports.programdata = {
 
     'simple if statement parses': function (test) {
 
-        var program, ast, expected, processed;
-
-        program = [
+        var program = [
             "a = 3\n",
             "if a == 3",
             "\tbox"
         ].join('\n');
-        processed = preproc.process(program);
-        ast = parser.parse(processed);
+        var processed = preproc.process(program);
+        var parsed = parser.parse(processed);
 
-        expected = [
-            ['=', 'a', ['NUMBER', 3]],
-            [[
-                'IF',
-                ['==', ['IDENTIFIER', 'a'], ['NUMBER', 3]],
-                ['BLOCK', [['FUNCTIONCALL', 'box', []]]]
-            ]]
-        ];
+        var expected = ast.Block([
+            ast.Assignment('a', ast.Num(3)),
+            ast.If(
+                ast.BinaryLogicOp('==', ast.Variable('a'), ast.Num(3)),
+                ast.Block([
+                    ast.Application('box', [])
+                ])
+            )
+        ]);
 
-        test.deepEqual(ast, expected);
+        test.deepEqual(parsed, expected);
         test.done();
     }
 

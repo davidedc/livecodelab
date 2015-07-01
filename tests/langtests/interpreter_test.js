@@ -2,15 +2,8 @@
 
 'use strict';
 
-var requirejs = require('requirejs');
-
-requirejs.config({
-    baseUrl: 'build/js',
-    nodeRequire: require
-});
-
-var Interpreter = requirejs('lib/lcl/interpreter');
-var parser = requirejs('lib/lcl/parser');
+var Interpreter = require('../../src/js/lcl/interpreter');
+var parser = require('../../src/generated/parser').parser;
 
 /*
   ======== A Handy Little Nodeunit Reference ========

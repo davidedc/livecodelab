@@ -138,7 +138,7 @@ Application
     : Identifier ApplicationArgs
         { $$ = Ast.Node.Application($1, $2); }
     | Identifier ApplicationArgs t_inlined Application
-        { $$ = Ast.Node.Application($1, $2, $4); }
+        { $$ = Ast.Node.Application($1, $2, Ast.Node.Block([$4])); }
     | Identifier ApplicationArgs Block
         { $$ = Ast.Node.Application($1, $2, $3); }
     ;
@@ -178,11 +178,13 @@ TimesLoop
 DoOnce
     : t_doOnce Block
         { $$ = Ast.Node.DoOnce($2); }
+    | t_doOnce Application
+        { $$ = Ast.Node.DoOnce(Ast.Node.Block([$2])); }
     ;
 
 FinishedDoOnce
     : t_tick DoOnce
-        { $$ = Ast.Node.DoOnce([]); }
+        { $$ = Ast.Node.DoOnce(Ast.Node.Block([])); }
     ;
 
 
