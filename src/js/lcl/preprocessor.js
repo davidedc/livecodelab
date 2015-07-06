@@ -4,13 +4,14 @@ var ProgramData = require('./programdata');
 
 var PreProcessor = {};
 
+var funcRegexp = /\=(.+->)/gm;
+var loopRegexp = /^(\t*)(.+times)/gm;
+
 PreProcessor.fixLoops = function (programText) {
-    var funcRegexp = /=(.+->)/gm;
     return programText.replace(funcRegexp, "= def $1");
 };
 
 PreProcessor.fixFunctionDef = function (programText) {
-    var loopRegexp = /^(\t*)(.+times)/gm;
     return programText.replace(loopRegexp, "$1loop $2");
 };
 
