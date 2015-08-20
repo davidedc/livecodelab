@@ -36,6 +36,26 @@ number                {digit}+("."{digit}+)?
 {dquote}{strchars}{dquote} yytext = yytext.substr(1,yyleng-2); return "t_string"
 {squote}{strchars}{squote} yytext = yytext.substr(1,yyleng-2); return "t_string"
 
+/* inlinable functions */
+
+/* shape commands */
+"line"                return "t_shape"
+"rect"                return "t_shape"
+"box"                 return "t_shape"
+"peg"                 return "t_shape"
+"ball"                return "t_shape"
+
+/* matrix commands */
+"rotate"              return "t_matrix"
+"scale"               return "t_matrix"
+"move"                return "t_matrix"
+
+/* style commands */
+"fill"                return "t_style"
+"noFill"              return "t_style"
+"stroke"              return "t_style"
+"noStroke"            return "t_style"
+
 "✓"                   return "t_tick"
 
 {number}              return "t_number"
@@ -123,6 +143,7 @@ Block
 Statement
     : Assignment
     | Application
+    | InlinableApplication
     | If
     | TimesLoop
     | DoOnce
@@ -139,7 +160,22 @@ Application
         { $$ = Ast.Node.Application($1, $2); }
     | Identifier ApplicationArgs t_inlined Application
         { $$ = Ast.Node.Application($1, $2, Ast.Node.Block([$4])); }
+    | Identifier ApplicationArgs t_inlined InlinableApplication
+        { $$ = Ast.Node.Application($1, $2, Ast.Node.Block([$4])); }
     | Identifier ApplicationArgs Block
+        { $$ = Ast.Node.Application($1, $2, $3); }
+    ;
+
+InlinableApplication
+    : Inlinable ApplicationArgs
+        { $$ = Ast.Node.Application($1, $2); }
+    | Inlinable ApplicationArgs t_inlined Application
+        { $$ = Ast.Node.Application($1, $2, Ast.Node.Block([$4])); }
+    | Inlinable ApplicationArgs t_inlined InlinableApplication
+        { $$ = Ast.Node.Application($1, $2, Ast.Node.Block([$4])); }
+    | Inlinable ApplicationArgs InlinableApplication
+        { $$ = Ast.Node.Application($1, $2, Ast.Node.Block([$3])); }
+    | Inlinable ApplicationArgs Block
         { $$ = Ast.Node.Application($1, $2, $3); }
     ;
 
@@ -179,6 +215,8 @@ DoOnce
     : t_doOnce Block
         { $$ = Ast.Node.DoOnce($2); }
     | t_doOnce Application
+        { $$ = Ast.Node.DoOnce(Ast.Node.Block([$2])); }
+    | t_doOnce InlinableApplication
         { $$ = Ast.Node.DoOnce(Ast.Node.Block([$2])); }
     ;
 
@@ -277,6 +315,8 @@ ClosureArgsList
         { $$ = [$1].concat($3); }
     ;
 
+/* basics */
+
 Number
     : t_number
         { $$ = Ast.Node.Num(Number(yytext)); }
@@ -290,6 +330,15 @@ Variable
 String
     : t_string
         { $$ = Ast.Node.Str(yytext); }
+    ;
+
+Inlinable
+    : t_shape
+        { $$ = yytext; }
+    | t_matrix
+        { $$ = yytext; }
+    | t_style
+        { $$ = yytext; }
     ;
 
 Identifier
