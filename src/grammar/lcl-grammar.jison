@@ -287,7 +287,7 @@ NegativeExpression
         { $$ = Ast.Node.UnaryMathOp("-", $2); }
     | "-" Variable %prec UMINUS
         { $$ = Ast.Node.UnaryMathOp("-", $2); }
-    | "-" "(" Expression ")" prec UMINUS
+    | "-" "(" Expression ")" %prec UMINUS
         { $$ = Ast.Node.UnaryMathOp("-", $3); }
     ;
 
