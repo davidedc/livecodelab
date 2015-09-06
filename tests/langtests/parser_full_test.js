@@ -127,7 +127,7 @@ exports.programdata = {
                         'fill',
                         [ast.Variable('red')],
                             ast.Block([
-                                ast.Application('box')
+                                ast.Application('box', [])
                             ])
                     )
                 ])
