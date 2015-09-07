@@ -1,9 +1,7 @@
 /* global exports, require */
 
-'use strict';
-
 var Interpreter = require('../../src/js/lcl/interpreter');
-var parser = require('../../src/generated/parser').parser;
+var parser      = require('../../src/js/lcl/parser');
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -24,10 +22,6 @@ var parser = require('../../src/generated/parser').parser;
     test.doesNotThrow(block, [error], [message])
     test.ifError(value)
 */
-
-parser.yy.parseError = function () {
-    console.log(arguments);
-};
 
 exports.programdata = {
 

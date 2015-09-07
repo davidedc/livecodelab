@@ -3,19 +3,17 @@
 ## This is then run by the ProgramRunner.
 ###
 
-Preprocessor = require '../../../js/lcl/preprocessor'
-Parser       = require '../../../generated/parser'
-
+Parser       = require '../../../js/lcl/parser'
 class V2CodeCompiler
 
   constructor: () ->
     # the code compiler needs the CodePreprocessor
 
-    @codePreprocessor = Preprocessor
-
-    @parser = Parser.parser
-    @parser.yy.parseError = (message, details) ->
-      throw message
+    @parser = Parser
+    @parser.setErrFunc(
+      (message, details) ->
+        throw message
+    )
 
   # returns an object
   # {
@@ -25,7 +23,7 @@ class V2CodeCompiler
   # }
   compileCode: (codeString) ->
 
-    code = @codePreprocessor.process codeString
+    code = @parser.preprocess codeString
 
     output = {}
 

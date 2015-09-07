@@ -1,42 +1,17 @@
 /* global exports, require */
 
-'use strict';
-
-var PreProcessor = require('../../src/js/lcl/preprocessor');
-
+var parser = require('../../src/js/lcl/parser');
 var ProgramData = require('../../src/js/lcl/programdata');
-
-/*
-  ======== A Handy Little Nodeunit Reference ========
-  https://github.com/caolan/nodeunit
-
-  Test methods:
-    test.expect(numAssertions)
-    test.done()
-  Test assertions:
-    test.ok(value, [message])
-    test.equal(actual, expected, [message])
-    test.notEqual(actual, expected, [message])
-    test.deepEqual(actual, expected, [message])
-    test.notDeepEqual(actual, expected, [message])
-    test.strictEqual(actual, expected, [message])
-    test.notStrictEqual(actual, expected, [message])
-    test.throws(block, [error], [message])
-    test.doesNotThrow(block, [error], [message])
-    test.ifError(value)
-*/
 
 module.exports = {
 
     'basic calc': function (test) {
 
-        var progdata, p, blocks, expected;
+        var progdata = "a b c\nd e f\ng h i";
+        var p = new ProgramData(progdata);
 
-        progdata = "a b c\nd e f\ng h i";
-        p = new ProgramData(progdata);
-
-        blocks = PreProcessor.blockcalc(p);
-        expected = [0, 0, 0];
+        var blocks = parser.preprocessor.blockcalc(p);
+        var expected = [0, 0, 0];
 
         test.deepEqual(blocks, expected);
         test.done();
@@ -49,7 +24,7 @@ module.exports = {
         progdata = "a b c\n  \ng h i";
         p = new ProgramData(progdata);
 
-        blocks = PreProcessor.blockcalc(p);
+        blocks = parser.preprocessor.blockcalc(p);
         expected = [0, -1, 0];
 
         test.deepEqual(blocks, expected);
@@ -63,7 +38,7 @@ module.exports = {
         progdata = " a b c\n\t d e f  \ng h i";
         p = new ProgramData(progdata);
 
-        blocks = PreProcessor.blockcalc(p);
+        blocks = parser.preprocessor.blockcalc(p);
         expected = [0, 1, 0];
 
         test.deepEqual(blocks, expected);
@@ -77,7 +52,7 @@ module.exports = {
         progdata = " a b c\n\n\t d e f  \ng h i";
         p = new ProgramData(progdata);
 
-        blocks = PreProcessor.blockcalc(p);
+        blocks = parser.preprocessor.blockcalc(p);
         expected = [0, -1, 1, 0];
 
         test.deepEqual(blocks, expected);
@@ -91,7 +66,7 @@ module.exports = {
         progdata = " a b c\n\t d e f  \n\tg h i";
         p = new ProgramData(progdata);
 
-        blocks = PreProcessor.blockcalc(p);
+        blocks = parser.preprocessor.blockcalc(p);
         expected = [0, 1, 1];
 
         test.deepEqual(blocks, expected);
@@ -105,7 +80,7 @@ module.exports = {
         progdata = " a b c\n\t d e f  \n\t\t g h i\n\tj k l\nm n o";
         p = new ProgramData(progdata);
 
-        blocks = PreProcessor.blockcalc(p);
+        blocks = parser.preprocessor.blockcalc(p);
         expected = [0, 1, 2, 1, 0];
 
         test.deepEqual(blocks, expected);
@@ -128,7 +103,7 @@ module.exports = {
         ].join('\n');
         p = new ProgramData(progdata);
 
-        blocks = PreProcessor.blockcalc(p);
+        blocks = parser.preprocessor.blockcalc(p);
         expected = [0, 1, 2, -1, 2, 1, 2, 0];
 
         test.deepEqual(blocks, expected);
@@ -156,9 +131,9 @@ module.exports = {
 
         p = new ProgramData(progdata);
 
-        blocks = PreProcessor.blockcalc(p);
+        blocks = parser.preprocessor.blockcalc(p);
 
-        finalprog = PreProcessor.insertBlocks(progdata, blocks);
+        finalprog = parser.preprocessor.insertBlocks(progdata, blocks);
 
         test.deepEqual(finalprog, expected);
         test.done();
@@ -187,9 +162,9 @@ module.exports = {
 
         p = new ProgramData(progdata);
 
-        blocks = PreProcessor.blockcalc(p);
+        blocks = parser.preprocessor.blockcalc(p);
 
-        finalprog = PreProcessor.insertBlocks(progdata, blocks);
+        finalprog = parser.preprocessor.insertBlocks(progdata, blocks);
 
         test.deepEqual(finalprog, expected);
         test.done();
@@ -216,9 +191,9 @@ module.exports = {
 
         p = new ProgramData(progdata);
 
-        blocks = PreProcessor.blockcalc(p);
+        blocks = parser.preprocessor.blockcalc(p);
 
-        finalprog = PreProcessor.insertBlocks(progdata, blocks);
+        finalprog = parser.preprocessor.insertBlocks(progdata, blocks);
 
         test.deepEqual(finalprog, expected);
         test.done();
@@ -253,9 +228,9 @@ module.exports = {
         ].join('\n');
         p = new ProgramData(progdata);
 
-        blocks = PreProcessor.blockcalc(p);
+        blocks = parser.preprocessor.blockcalc(p);
 
-        finalprog = PreProcessor.insertBlocks(progdata, blocks);
+        finalprog = parser.preprocessor.insertBlocks(progdata, blocks);
 
         test.deepEqual(finalprog, expected);
         test.done();
@@ -272,7 +247,7 @@ module.exports = {
             "}"
         ].join('\n');
 
-        finalprog = PreProcessor.process(programtext);
+        finalprog = parser.preprocessor.process(programtext);
 
         test.equal(finalprog, expected);
         test.done();
@@ -297,7 +272,7 @@ module.exports = {
             " kilo"
         ].join('\n');
 
-        finalprog = PreProcessor.process(programtext);
+        finalprog = parser.preprocessor.process(programtext);
 
         test.deepEqual(finalprog, expected);
         test.done();
