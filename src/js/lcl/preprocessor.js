@@ -5,7 +5,7 @@ var ProgramData = require('./programdata');
 var PreProcessor = {};
 
 var funcRegexp = /\=(.+->)/gm;
-var loopRegexp = /^(\t*)(.+times)/gm;
+var loopRegexp = /^([\/\t]*)(.+times)/gm;
 
 PreProcessor.fixLoops = function (programText) {
     return programText.replace(funcRegexp, "= def $1");
