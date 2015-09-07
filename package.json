@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "coffee-script": "^1.9.3",
+    "lex": "^1.7.9",
     "underscore": "^1.8.3"
   }
 }
