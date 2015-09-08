@@ -11,6 +11,7 @@ parser.yy.parseError = (function (error) {
 
 module.exports = {
     parser: parser,
+    lexer: lexer,
     preprocessor: preprocessor,
     parse: parser.parse.bind(parser),
     preprocess: preprocessor.process,
