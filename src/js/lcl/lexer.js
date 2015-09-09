@@ -2,18 +2,70 @@
 
 var Lexer = require('lex');
 
-var lexer = new Lexer();
+var lexer = new Lexer(function (c) {
+    throw new Error(
+        "Unexpected character at row " + row + ", col " + col + ": " + c
+    );
+});
 
+lexer.yyloc = {
+    first_column: 0,
+    first_line: 1,
+    last_line: 1,
+    last_column: 0
+};
+lexer.yylloc = lexer.yyloc;
+lexer.yylineno = 0;
+
+var row = 1;
+var col = 1;
 /* Whitespace rules */
-lexer.addRule(/[ \t]+/, function () {});
+lexer.addRule(/[ ]+/, function () {});
+
+indent = [0];
+lexer.addRule(/^\t*(?!\n)/gm, function (lexeme) {
+    var indentation = lexeme.length;
+
+    if (indentation > indent[0]) {
+        indent.unshift(indentation);
+        return "t_blockstart";
+    }
+
+    var tokens = [];
+
+    while (indentation < indent[0]) {
+        tokens.push("t_blockend");
+        tokens.push("t_newline");
+        indent.shift();
+    }
+
+    if (tokens.length) {
+        return tokens;
+    }
+});
+
+lexer.addRule(/^(\t*)\n/gm, function (lexeme, tabs) {
+    this.yylineno += 1;
+    // ignore empty lines
+});
 
 lexer.addRule(/\n/, function (lexeme) {
     this.yytext = lexeme;
+    lexer.yylineno += 1;
+    row += 1;
+    col = 1;
     return "t_newline";
 });
 
 lexer.addRule(/$/, function () {
-    return "t_eof";
+    tokens = ["t_newline"];
+    while (0 < indent[0]) {
+        tokens.push("t_blockend");
+        tokens.push("t_newline");
+        indent.shift();
+    }
+    tokens.push("t_eof");
+    return tokens;
 });
 
 /* Number */
@@ -84,10 +136,6 @@ lexer.addRule(/\/\/.*\n/, function (lexeme) {
 });
 lexer.addRule(/\/\/.*$/, function (lexeme) {
     this.yytext = lexeme;
-    return "t_eof";
-});
-
-lexer.addRule(/$/, function () {
     return "t_eof";
 });
 
