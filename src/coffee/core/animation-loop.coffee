@@ -159,6 +159,7 @@ class AnimationLoop
         @lclCore.programRunner.runProgram()
       catch e
 
+        throw e
         # note that this causes the running of the last stable function
         # so you could have executed half of the original draw function,
         # then got an error, now you are re-running an old draw function.

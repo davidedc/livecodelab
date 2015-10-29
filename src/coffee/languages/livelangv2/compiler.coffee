@@ -3,17 +3,14 @@
 ## This is then run by the ProgramRunner.
 ###
 
-Parser       = require '../../../js/lcl/parser'
+Parser = require '../../../generated/parser'
+
 class V2CodeCompiler
 
   constructor: () ->
     # the code compiler needs the CodePreprocessor
 
     @parser = Parser
-    @parser.setErrFunc(
-      (message, details) ->
-        throw message
-    )
 
   # returns an object
   # {
@@ -21,22 +18,9 @@ class V2CodeCompiler
   #   program: the program, if the status is parsed
   #   error: the error if there is one
   # }
-  compileCode: (codeString) ->
-
-    code = @parser.preprocess codeString
+  compileCode: (code) ->
 
     output = {}
-
-    # TODO
-    # Currently the PreProcessor doesn't throw any meaningful errors
-    # Will add all this back in when it does
-    #
-    # If 'error' is not null then it means that the preprocessing has
-    # found an error. In which case, we report the error and skip the parsing.
-    #if error?
-    #  output.status = 'error'
-    #  output.error = e
-    #  return output
 
     try
       programAST = @parser.parse(code)

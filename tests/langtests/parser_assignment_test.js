@@ -1,12 +1,12 @@
 /* global exports, require */
 
-var parser = require('../../src/js/lcl/parser');
+var parser = require('../../src/generated/parser');
 var ast    = require('../../src/js/lcl/ast').Node;
 
 var Block = ast.Block;
 var Assignment = ast.Assignment;
-var BinaryMathOp = ast.BinaryMathOp;
-var UnaryMathOp = ast.UnaryMathOp;
+var BinaryOp = ast.BinaryOp;
+var UnaryOp = ast.UnaryOp;
 var Num = ast.Num;
 var Variable = ast.Variable;
 
@@ -14,13 +14,13 @@ exports.programdata = {
 
     'process function works': function (test) {
 
-        var program = "a = 3 + 5";
+        var program = 'a = 3 + 5';
         var parsed = parser.parse(program);
 
         var expected = Block([
             Assignment(
                 'a',
-                BinaryMathOp(
+                BinaryOp(
                     '+', Num(3), Num(5)
                 )
             )
@@ -32,7 +32,7 @@ exports.programdata = {
 
     'assignment assigns numbers': function (test) {
 
-        var program = "number = 444";
+        var program = 'number = 444';
         var parsed = parser.parse(program);
 
         var expected = Block([
@@ -49,13 +49,13 @@ exports.programdata = {
 
     'assignment assigns negative numbers': function (test) {
 
-        var program = "number = -333";
+        var program = 'number = -333';
         var parsed = parser.parse(program);
 
         var expected = Block([
             Assignment(
                 'number',
-                UnaryMathOp('-', Num(333))
+                UnaryOp('-', Num(333))
             )
         ]);
 
@@ -66,22 +66,22 @@ exports.programdata = {
 
     'multiple assignments assigns bigger expression': function (test) {
 
-        var program = "numa = 55 + 44 * 2 - 321\n numb = numa * -33\n numc = numa + numb";
+        var program = 'numa = 55 + 44 * 2 - 321\nnumb = numa * -33\nnumc = numa + numb';
         var parsed = parser.parse(program);
 
         var numa = Assignment('numa',
-            BinaryMathOp('-',
-                BinaryMathOp('+', Num(55),
-                    BinaryMathOp('*', Num(44), Num(2))
+            BinaryOp('-',
+                BinaryOp('+', Num(55),
+                    BinaryOp('*', Num(44), Num(2))
                 ),
                 Num(321)
             )
         );
         var numb = Assignment('numb',
-            BinaryMathOp('*', Variable('numa'), UnaryMathOp('-', Num(33)))
+            BinaryOp('*', Variable('numa'), UnaryOp('-', Num(33)))
         );
         var numc = Assignment('numc',
-            BinaryMathOp('+', Variable('numa'), Variable('numb'))
+            BinaryOp('+', Variable('numa'), Variable('numb'))
         );
 
         var expected = Block([
@@ -94,13 +94,13 @@ exports.programdata = {
 
     'brackets work correctly in expressions': function (test) {
 
-        var program = "number = (456 + 33) * 2";
+        var program = 'number = (456 + 33) * 2';
         var parsed = parser.parse(program);
 
         var expected = Block([
             Assignment('number',
-                BinaryMathOp('*',
-                    BinaryMathOp('+', Num(456), Num(33)),
+                BinaryOp('*',
+                    BinaryOp('+', Num(456), Num(33)),
                     Num(2)
                 )
             )
@@ -108,8 +108,7 @@ exports.programdata = {
 
         test.deepEqual(parsed, expected);
         test.done();
-    },
-
+    }
 
 };
 

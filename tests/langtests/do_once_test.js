@@ -1,20 +1,19 @@
 /* global exports, require */
 
-var parser  = require('../../src/js/lcl/parser');
+var parser  = require('../../src/generated/parser');
 var ast     = require('../../src/js/lcl/ast').Node;
 
 exports.programdata = {
 
     'simple doOnce expression works': function (test) {
 
-        var program = "doOnce box";
-        var processed = parser.preprocess(program);
-        var parsed = parser.parse(processed);
+        var program = 'doOnce box()';
+        var parsed = parser.parse(program);
 
         var expected = ast.Block([
             ast.DoOnce(
                 ast.Block([
-                    ast.Application('box', [])
+                    ast.Application('box', [], null)
                 ])
             )
         ]);
@@ -24,9 +23,8 @@ exports.programdata = {
 
     'finished simple doOnce expression works': function (test) {
 
-        var program = "✓doOnce box";
-        var processed = parser.preprocess(program);
-        var parsed = parser.parse(processed);
+        var program = '✓doOnce box';
+        var parsed = parser.parse(program);
 
         var expected = ast.Block([
             ast.DoOnce(
@@ -40,9 +38,8 @@ exports.programdata = {
 
     'block doOnce expression works': function (test) {
 
-        var program = "doOnce\n\trotate\n\t\tbox 4";
-        var processed = parser.preprocess(program);
-        var parsed = parser.parse(processed);
+        var program = 'doOnce\n\trotate\n\t\tbox 4';
+        var parsed = parser.parse(program);
 
         var expected = ast.Block([
             ast.DoOnce(
@@ -51,7 +48,7 @@ exports.programdata = {
                         'rotate',
                         [],
                         ast.Block([
-                            ast.Application('box', [ast.Num(4)])
+                            ast.Application('box', [ast.Num(4)], null)
                         ])
                     )
                 ])
@@ -64,9 +61,8 @@ exports.programdata = {
 
     'finished block doOnce expression works': function (test) {
 
-        var program = "✓doOnce\n\trotate\n\t\tbox 4";
-        var processed = parser.preprocess(program);
-        var parsed = parser.parse(processed);
+        var program = '✓doOnce\n\trotate\n\t\tbox 4';
+        var parsed = parser.parse(program);
 
         var expected = ast.Block([
             ast.DoOnce(

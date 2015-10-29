@@ -1,6 +1,6 @@
 /* global exports, require */
 
-var parser = require('../../src/js/lcl/parser');
+var parser = require('../../src/generated/parser');
 var ast    = require('../../src/js/lcl/ast').Node;
 
 exports.programdata = {
@@ -11,7 +11,7 @@ exports.programdata = {
         var parsed = parser.parse(program);
 
         var expected = ast.Block([
-            ast.Application('box', [ast.Num(4)])
+            ast.Application('box', [ast.Num(4)], null)
         ]);
 
         test.deepEqual(parsed, expected);
@@ -24,7 +24,21 @@ exports.programdata = {
         var parsed = parser.parse(program);
 
         var expected = ast.Block([
-            ast.Application('box', [ast.Num(4)])
+            ast.Application('box', [ast.Num(4)], null)
+        ]);
+
+        test.deepEqual(parsed, expected);
+        test.done();
+    },
+
+    'comments in the middle of commands are ignored': function (test) {
+
+        var program = '\n\nbox 4\n// this is a comment \npeg 3\n//and another';
+        var parsed = parser.parse(program);
+
+        var expected = ast.Block([
+            ast.Application('box', [ast.Num(4)], null),
+            ast.Application('peg', [ast.Num(3)], null)
         ]);
 
         test.deepEqual(parsed, expected);
@@ -37,7 +51,7 @@ exports.programdata = {
         var parsed = parser.parse(program);
 
         var expected = ast.Block([
-            ast.Application('box', [ast.Num(4)])
+            ast.Application('box', [ast.Num(4)], null)
         ]);
 
         test.deepEqual(parsed, expected);

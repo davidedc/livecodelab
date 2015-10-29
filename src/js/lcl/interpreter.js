@@ -1,4 +1,3 @@
-/*global define */
 
 var helpers = require('./interpreter-funcs');
 
@@ -56,20 +55,12 @@ internal.evaluate = function (node, scope) {
         output = internal.evaluateDoOnce(node, scope);
         break;
 
-    case 'BINARYMATHOP':
-        output = internal.evaluateBinaryMathOp(node, scope);
+    case 'BINARYOP':
+        output = internal.evaluateBinaryOp(node, scope);
         break;
 
-    case 'UNARYMATHOP':
-        output = internal.evaluateUnaryMathOp(node, scope);
-        break;
-
-    case 'BINARYLOGICOP':
-        output = internal.evaluateBinaryLogicOp(node, scope);
-        break;
-
-    case 'UNARYLOGICOP':
-        output = internal.evaluateUnaryLogicOp(node, scope);
+    case 'UNARYOP':
+        output = internal.evaluateUnaryOp(node, scope);
         break;
 
     case 'NUMBER':
@@ -117,7 +108,7 @@ internal.evaluateApplication = function (application, scope) {
     funcname = application.identifier;
 
     func = scope[funcname];
-    if (func === undefined) {
+    if (!helpers.exists(func)) {
         throw 'Function not defined: ' + funcname;
     }
 
@@ -131,7 +122,7 @@ internal.evaluateApplication = function (application, scope) {
 
     // if this function call has a block section then add it to the args
     block = application.block;
-    if (block !== undefined) {
+    if (helpers.exists(block)) {
         evaledargs.push(function () {
             internal.evaluateBlock(block, scope);
         });
@@ -139,7 +130,7 @@ internal.evaluateApplication = function (application, scope) {
 
     // functions written in javascript will be normal functions added to the scope
     // user defined functions will be wrapped in a list so we unwrap them then call them
-    if (typeof func === "function") {
+    if (typeof func === 'function') {
 
         // apply is a method of the JS function object. it takes a scope
         // and then a list of arguments
@@ -154,7 +145,7 @@ internal.evaluateApplication = function (application, scope) {
         // bar will equal 5
 
         output = func.apply(scope, evaledargs);
-    } else if (typeof func === "object") {
+    } else if (typeof func === 'object') {
         // Functions defined by the user are wrapped in a list, so we need
         // to unwrap them
         // Also we don't pass the scope in because everything is created
@@ -177,7 +168,7 @@ internal.evaluateIf = function (ifStatement, scope) {
 
     if (internal.evaluate(predicate, scope)) {
         internal.evaluateBlock(ifblock, scope);
-    } else if (elseblock !== undefined) {
+    } else if (helpers.exists(elseblock)) {
         internal.evaluateBlock(elseblock, scope);
     }
 
@@ -205,15 +196,12 @@ internal.evaluateClosure = function (closure, scope) {
 };
 
 internal.evaluateTimes = function (times, scope) {
-    var i, statements, childScope;
+    var i;
 
-    var loops   = internal.evaluate(times.number, scope);
-    var block   = times.block;
-    var loopVar = times.loopVar;
-
-    block = times.block;
-
-    childScope = helpers.createChildScope(scope);
+    var loops      = internal.evaluate(times.number, scope);
+    var block      = times.block;
+    var loopVar    = times.loopVar;
+    var childScope = helpers.createChildScope(scope);
 
     for (i = 0; i < loops; i += 1) {
 
@@ -229,29 +217,33 @@ internal.evaluateDoOnce = function (doOnce, scope) {
     return output;
 };
 
-internal.evaluateUnaryMathOp = function(mathOp, scope) {
+internal.evaluateUnaryOp = function(operation, scope) {
     var output;
-    var val1 = internal.evaluate(mathOp.expr1, scope);
+    var val1 = internal.evaluate(operation.expr1, scope);
 
-    switch(mathOp.operation) {
+    switch(operation.operator) {
 
     case '-':
         output = -1 * val1;
         break;
 
+    case '!':
+        output = !val1;
+        break;
+
     default:
-        throw 'Unknown Symbol: ' + mathOp.operation;
+        throw 'Unknown Operator: ' + operation.operator;
     }
 
     return output;
 };
 
-internal.evaluateBinaryMathOp = function(mathOp, scope) {
+internal.evaluateBinaryOp = function(binaryOp, scope) {
     var output;
-    var val1 = internal.evaluate(mathOp.expr1, scope);
-    var val2 = internal.evaluate(mathOp.expr2, scope);
+    var val1 = internal.evaluate(binaryOp.expr1, scope);
+    var val2 = internal.evaluate(binaryOp.expr2, scope);
 
-    switch(mathOp.operation) {
+    switch(binaryOp.operator) {
 
     case '+':
         output = val1 + val2;
@@ -276,37 +268,6 @@ internal.evaluateBinaryMathOp = function(mathOp, scope) {
     case '%':
         output = val1 % val2;
         break;
-
-    default:
-        throw 'Unknown Symbol: ' + mathOp.operation;
-    }
-
-    return output;
-};
-
-internal.evaluateUnaryLogicOp = function(logicOp, scope) {
-    var output;
-    var val1 = internal.evaluate(logicOp.expr1, scope);
-
-    switch(logicOp.operation) {
-
-    case '!':
-        output = !val1;
-        break;
-
-    default:
-        throw 'Unknown Symbol: ' + logicOp.operation;
-    }
-
-    return output;
-};
-
-internal.evaluateBinaryLogicOp = function(logicOp, scope) {
-    var output;
-    var val1 = internal.evaluate(logicOp.expr1, scope);
-    var val2 = internal.evaluate(logicOp.expr2, scope);
-
-    switch(logicOp.operation) {
 
     case '>':
         output = val1 > val2;
@@ -337,7 +298,7 @@ internal.evaluateBinaryLogicOp = function(logicOp, scope) {
         break;
 
     default:
-        throw 'Unknown Symbol: ' + logicOp.operation;
+        throw 'Unknown Operator: ' + binaryOp.operator;
     }
 
     return output;
@@ -345,7 +306,7 @@ internal.evaluateBinaryLogicOp = function(logicOp, scope) {
 
 internal.evaluateVariable = function (variable, scope) {
     var output = scope[variable.identifier];
-    if (output === undefined) {
+    if (!helpers.exists(output)) {
         throw 'Undefined Variable: ' + variable.identifier;
     }
     return output;

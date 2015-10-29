@@ -49,7 +49,7 @@ Ast.Node.If = function (predicate, ifBlock, elseBlock) {
         ast: 'IF',
         predicate: predicate,
         ifBlock: ifBlock,
-        elseBlock: elseBlock,
+        elseBlock: elseBlock
     };
 };
 
@@ -93,10 +93,10 @@ Ast.Node.DoOnce = function (block) {
  *  operation: String
  *  expr1: Expression
  */
-Ast.Node.UnaryMathOp = function (operation, expr1) {
+Ast.Node.UnaryOp = function (operator, expr1) {
     return {
-        ast: 'UNARYMATHOP',
-        operation: operation,
+        ast: 'UNARYOP',
+        operator: operator,
         expr1: expr1
     };
 };
@@ -106,40 +106,15 @@ Ast.Node.UnaryMathOp = function (operation, expr1) {
  *  expr1: Expression
  *  expr2: Expression
  */
-Ast.Node.BinaryMathOp = function (operation, expr1, expr2) {
+Ast.Node.BinaryOp = function (operator, expr1, expr2) {
     return {
-        ast: 'BINARYMATHOP',
-        operation: operation,
+        ast: 'BINARYOP',
+        operator: operator,
         expr1: expr1,
         expr2: expr2
     };
 };
 
-/**
- *  operation: String
- *  expr1: Expression
- */
-Ast.Node.UnaryLogicOp = function (operation, expr1) {
-    return {
-        ast: 'UNARYLOGICOP',
-        operation: operation,
-        expr1: expr1
-    };
-};
-
-/**
- *  operation: String
- *  expr1: Expression
- *  expr2: Expression
- */
-Ast.Node.BinaryLogicOp = function (operation, expr1, expr2) {
-    return {
-        ast: 'BINARYLOGICOP',
-        operation: operation,
-        expr1: expr1,
-        expr2: expr2
-    };
-};
 
 /**
  *  value: Number
