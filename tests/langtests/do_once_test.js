@@ -12,6 +12,7 @@ exports.programdata = {
 
         var expected = ast.Block([
             ast.DoOnce(
+                true,
                 ast.Block([
                     ast.Application('box', [], null)
                 ])
@@ -23,12 +24,15 @@ exports.programdata = {
 
     'finished simple doOnce expression works': function (test) {
 
-        var program = '✓doOnce box';
+        var program = '✓doOnce box()';
         var parsed = parser.parse(program);
 
         var expected = ast.Block([
             ast.DoOnce(
-                ast.Block([])
+                false,
+                ast.Block([
+                    ast.Application('box', [], null)
+                ])
             )
         ]);
 
@@ -43,6 +47,7 @@ exports.programdata = {
 
         var expected = ast.Block([
             ast.DoOnce(
+                true,
                 ast.Block([
                     ast.Application(
                         'rotate',
@@ -66,7 +71,16 @@ exports.programdata = {
 
         var expected = ast.Block([
             ast.DoOnce(
-                ast.Block([])
+                false,
+                ast.Block([
+                    ast.Application(
+                        'rotate',
+                        [],
+                        ast.Block([
+                            ast.Application('box', [ast.Num(4)], null)
+                        ])
+                    )
+                ])
             )
         ]);
 

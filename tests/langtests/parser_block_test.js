@@ -12,6 +12,7 @@ exports.programdata = {
 
         var expected = ast.Block([
             ast.DoOnce(
+                true,
                 ast.Block([
                     ast.Application(
                         'box',
@@ -37,8 +38,10 @@ exports.programdata = {
 
         var expected = ast.Block([
             ast.DoOnce(
+                true,
                 ast.Block([
                     ast.DoOnce(
+                        true,
                         ast.Block([
                             ast.Application(
                                 'rotate',
