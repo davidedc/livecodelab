@@ -17,50 +17,50 @@ Interpreter.run = function (programBlock, globalscope) {
         return state;
     }
 
-    internal.evaluate(programBlock, globalscope);
+    internal.evaluate(state, programBlock, globalscope);
     return state;
 };
 
-internal.evaluate = function (node, scope) {
+internal.evaluate = function (state, node, scope) {
 
     var output;
 
     switch (node.ast) {
 
     case 'BLOCK':
-        output = internal.evaluateBlock(node, scope);
+        output = internal.evaluateBlock(state, node, scope);
         break;
 
     case 'ASSIGNMENT':
-        output = internal.evaluateAssignment(node, scope);
+        output = internal.evaluateAssignment(state, node, scope);
         break;
 
     case 'APPLICATION':
-        output = internal.evaluateApplication(node, scope);
+        output = internal.evaluateApplication(state, node, scope);
         break;
 
     case 'IF':
-        output = internal.evaluateIf(node, scope);
+        output = internal.evaluateIf(state, node, scope);
         break;
 
     case 'CLOSURE':
-        output = internal.evaluateClosure(node, scope);
+        output = internal.evaluateClosure(state, node, scope);
         break;
 
     case 'TIMES':
-        output = internal.evaluateTimes(node, scope);
+        output = internal.evaluateTimes(state, node, scope);
         break;
 
     case 'DOONCE':
-        output = internal.evaluateDoOnce(node, scope);
+        output = internal.evaluateDoOnce(state, node, scope);
         break;
 
     case 'BINARYOP':
-        output = internal.evaluateBinaryOp(node, scope);
+        output = internal.evaluateBinaryOp(state, node, scope);
         break;
 
     case 'UNARYOP':
-        output = internal.evaluateUnaryOp(node, scope);
+        output = internal.evaluateUnaryOp(state, node, scope);
         break;
 
     case 'NUMBER':
@@ -68,7 +68,7 @@ internal.evaluate = function (node, scope) {
         break;
 
     case 'VARIABLE':
-        output = internal.evaluateVariable(node, scope);
+        output = internal.evaluateVariable(state, node, scope);
         break;
 
     case 'STRING':
@@ -83,25 +83,25 @@ internal.evaluate = function (node, scope) {
 
 };
 
-internal.evaluateBlock = function (block, scope) {
+internal.evaluateBlock = function (state, block, scope) {
     var childScope = helpers.createChildScope(scope);
     var output = null;
     var i, el;
     for (i = 0; i < block.elements.length; i += 1) {
         el = block.elements[i];
-        output = internal.evaluate(el, childScope);
+        output = internal.evaluate(state, el, childScope);
     }
 
     return output;
 };
 
-internal.evaluateAssignment = function(assignment, scope) {
-    var value = internal.evaluate(assignment.expression, scope);
+internal.evaluateAssignment = function(state, assignment, scope) {
+    var value = internal.evaluate(state, assignment.expression, scope);
     scope[assignment.identifier] = value;
     return value;
 };
 
-internal.evaluateApplication = function (application, scope) {
+internal.evaluateApplication = function (state, application, scope) {
 
     var func, barefunc, funcname, args, evaledargs, output, i, block;
 
@@ -117,14 +117,14 @@ internal.evaluateApplication = function (application, scope) {
     args = application.args;
 
     for (i = 0; i < args.length; i += 1) {
-        evaledargs.push(internal.evaluate(args[i], scope));
+        evaledargs.push(internal.evaluate(state, args[i], scope));
     }
 
     // if this function call has a block section then add it to the args
     block = application.block;
     if (helpers.exists(block)) {
         evaledargs.push(function () {
-            internal.evaluateBlock(block, scope);
+            internal.evaluateBlock(state, block, scope);
         });
     }
 
@@ -159,22 +159,22 @@ internal.evaluateApplication = function (application, scope) {
     return output;
 };
 
-internal.evaluateIf = function (ifStatement, scope) {
+internal.evaluateIf = function (state, ifStatement, scope) {
     var predicate, ifblock, elseblock;
 
     predicate = ifStatement.predicate;
     ifblock = ifStatement.ifBlock;
     elseblock = ifStatement.elseBlock;
 
-    if (internal.evaluate(predicate, scope)) {
-        internal.evaluateBlock(ifblock, scope);
+    if (internal.evaluate(state, predicate, scope)) {
+        internal.evaluateBlock(state, ifblock, scope);
     } else if (helpers.exists(elseblock)) {
-        internal.evaluateBlock(elseblock, scope);
+        internal.evaluateBlock(state, elseblock, scope);
     }
 
 };
 
-internal.evaluateClosure = function (closure, scope) {
+internal.evaluateClosure = function (state, closure, scope) {
     var argnames, body, func;
     argnames = closure.argNames;
     body = closure.body;
@@ -185,7 +185,7 @@ internal.evaluateClosure = function (closure, scope) {
         for (i = 0; i < argnames.length; i += 1) {
             childScope[argnames[i]] = argvalues[i];
         }
-        output = internal.evaluate(body, childScope);
+        output = internal.evaluate(state, body, childScope);
         return output;
     };
 
@@ -195,10 +195,10 @@ internal.evaluateClosure = function (closure, scope) {
     return [func];
 };
 
-internal.evaluateTimes = function (times, scope) {
+internal.evaluateTimes = function (state, times, scope) {
     var i;
 
-    var loops      = internal.evaluate(times.number, scope);
+    var loops      = internal.evaluate(state, times.number, scope);
     var block      = times.block;
     var loopVar    = times.loopVar;
     var childScope = helpers.createChildScope(scope);
@@ -207,19 +207,24 @@ internal.evaluateTimes = function (times, scope) {
 
         childScope[loopVar] = i;
 
-        internal.evaluate(block, childScope);
+        internal.evaluate(state, block, childScope);
     }
 
 };
 
-internal.evaluateDoOnce = function (doOnce, scope) {
-    var output = internal.evaluate(doOnce.block, scope);
+internal.evaluateDoOnce = function (state, doOnce, scope) {
+    if (doOnce.active) {
+        state.doOnceTriggered = true;
+        var output = internal.evaluate(state, doOnce.block, scope);
+    } else {
+        output = [];
+    }
     return output;
 };
 
-internal.evaluateUnaryOp = function(operation, scope) {
+internal.evaluateUnaryOp = function(state, operation, scope) {
     var output;
-    var val1 = internal.evaluate(operation.expr1, scope);
+    var val1 = internal.evaluate(state, operation.expr1, scope);
 
     switch(operation.operator) {
 
@@ -238,10 +243,10 @@ internal.evaluateUnaryOp = function(operation, scope) {
     return output;
 };
 
-internal.evaluateBinaryOp = function(binaryOp, scope) {
+internal.evaluateBinaryOp = function(state, binaryOp, scope) {
     var output;
-    var val1 = internal.evaluate(binaryOp.expr1, scope);
-    var val2 = internal.evaluate(binaryOp.expr2, scope);
+    var val1 = internal.evaluate(state, binaryOp.expr1, scope);
+    var val2 = internal.evaluate(state, binaryOp.expr2, scope);
 
     switch(binaryOp.operator) {
 
@@ -304,15 +309,13 @@ internal.evaluateBinaryOp = function(binaryOp, scope) {
     return output;
 };
 
-internal.evaluateVariable = function (variable, scope) {
+internal.evaluateVariable = function (state, variable, scope) {
     var output = scope[variable.identifier];
     if (!helpers.exists(output)) {
         throw 'Undefined Variable: ' + variable.identifier;
     }
     return output;
 };
-
-
 
 module.exports = Interpreter;
 

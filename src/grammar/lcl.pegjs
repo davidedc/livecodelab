@@ -144,16 +144,17 @@ DoOnce "do once"
   / ActiveDoOnce
 
 FinishedDoOnce "finished do once"
-  = "✓" _ ActiveDoOnce {
-      return Ast.Node.DoOnce(Ast.Node.Block([]));
+  = "✓" _ doOnce:ActiveDoOnce {
+      doOnce.active = false;
+      return doOnce;
   }
 
 ActiveDoOnce "active do once"
   = "doOnce" _ NewLine block:Block {
-      return Ast.Node.DoOnce(block);
+      return Ast.Node.DoOnce(true, block);
   }
   / "doOnce" _ expr:Expression {
-      return Ast.Node.DoOnce(Ast.Node.Block([expr]));
+      return Ast.Node.DoOnce(true, Ast.Node.Block([expr]));
   }
 
 /** Expression Rules

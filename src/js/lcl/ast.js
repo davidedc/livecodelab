@@ -82,9 +82,10 @@ Ast.Node.Times = function (number, block, loopVar) {
 /**
  *  block: Block
  */
-Ast.Node.DoOnce = function (block) {
+Ast.Node.DoOnce = function (active, block) {
     return {
         ast: 'DOONCE',
+        active: active,
         block: block
     };
 };
