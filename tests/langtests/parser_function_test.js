@@ -166,5 +166,56 @@ exports.programdata = {
         test.done();
     },
 
+    'two inlined function calls are parsed': function (test) {
+
+        var program = 'rotate 2 box 3';
+        var parsed = parser.parse(program);
+
+        var expected = ast.Block([
+            ast.Application(
+                'rotate',
+                [ ast.Num(2) ],
+                ast.Block([
+                    ast.Application(
+                        'box',
+                        [ ast.Num(3)],
+                        null
+                    )
+                ])
+            )
+        ]);
+
+        test.deepEqual(parsed, expected);
+        test.done();
+    },
+
+    'inlined function calls are parsed': function (test) {
+
+        var program = 'rotate 2 fill red box 3, 4';
+        var parsed = parser.parse(program);
+
+        var expected = ast.Block([
+            ast.Application(
+                'rotate',
+                [ ast.Num(2) ],
+                ast.Block([
+                    ast.Application(
+                        'fill',
+                        [ ast.Variable('red') ],
+                        ast.Block([
+                            ast.Application(
+                                'box',
+                                [ ast.Num(3), ast.Num(4) ],
+                                null
+                            )
+                        ])
+                    )
+                ])
+            )
+        ]);
+
+        test.deepEqual(parsed, expected);
+        test.done();
+    }
 };
 
