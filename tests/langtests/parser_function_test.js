@@ -191,7 +191,7 @@ exports.programdata = {
 
     'inlined function calls are parsed': function (test) {
 
-        var program = 'rotate 2 fill red box 3, 4';
+        var program = 'rotate 2 fill red box 3, 4 peg 2';
         var parsed = parser.parse(program);
 
         var expected = ast.Block([
@@ -206,7 +206,45 @@ exports.programdata = {
                             ast.Application(
                                 'box',
                                 [ ast.Num(3), ast.Num(4) ],
-                                null
+                                ast.Block([ast.Application('peg', [ast.Num(2)], null)])
+                            )
+                        ])
+                    )
+                ])
+            )
+        ]);
+
+        test.deepEqual(parsed, expected);
+        test.done();
+    },
+
+    'inlined function calls without arguments': function (test) {
+
+        var program = 'a = 3\nrotate scale move a rotate box 3, 4 peg 2';
+        var parsed = parser.parse(program);
+
+        var expected = ast.Block([
+            ast.Assignment('a', ast.Num(3)),
+            ast.Application(
+                'rotate', [],
+                ast.Block([
+                    ast.Application(
+                        'scale', [],
+                        ast.Block([
+                            ast.Application(
+                                'move', [ast.Variable('a')],
+                                ast.Block([
+                                    ast.Application(
+                                        'rotate', [],
+                                        ast.Block([
+                                            ast.Application(
+                                                'box',
+                                                [ ast.Num(3), ast.Num(4) ],
+                                                ast.Block([ast.Application('peg', [ast.Num(2)], null)])
+                                            )
+                                        ])
+                                    )
+                                ])
                             )
                         ])
                     )

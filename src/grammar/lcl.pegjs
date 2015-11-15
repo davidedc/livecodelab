@@ -89,23 +89,47 @@ ExpressionApplication "expr application"
   }
 
 FullApplication
-  = name:Identifier _ args:ArgumentList? _ block:ApplicationBlock? {
-      var argList =  optionalList(args, 0);
+  = name:Identifier _ body:ApplicationBody? {
+      var argList = [];
+      var block = null;
+      if (body !== null) {
+        argList = body.argList;
+        block = body.block;
+      }
       return Ast.Node.Application(name, argList, block);
+  }
+
+ApplicationBody
+  = block:ApplicationBlock {
+      return {
+        argList: [],
+        block: block
+      };
+  }
+  / args:ArgumentList? _ block:ApplicationBlock? {
+      return {
+        argList: optionalList(args, 0),
+        block: block
+      };
   }
 
 ApplicationBlock
   = NewLine block:Block {
       return block;
   }
-  / ">>"? _ fullApl:FullApplication {
-      return Ast.Node.Block([fullApl]);
+  / ">>"? _ inlined:InlinedApplication {
+      return Ast.Node.Block([inlined]);
+  }
+
+InlinedApplication
+  = name:Inlinable _ body:ApplicationBody {
+      return Ast.Node.Application(name, body.argList, body.block);
   }
 
 ArgumentList
   = head:Expression tail:(_ "," _ Expression)* {
       return buildList(head, tail, 3);
-    }
+  }
 
 /** If Rules
  *
@@ -216,6 +240,18 @@ Variable "variable"
 
 Identifier
   = [a-zA-Z]+[a-zA-Z0-9]* {return text(); }
+
+Inlinable
+  = Matrix / Colour / Primitive
+
+Matrix
+  = "rotate" / "move" / "scale"
+
+Colour
+  = "fill" / "noFill" / "stroke" / "noStroke"
+
+Primitive
+  = "box" / "peg" / "ball" / "rect" / "line"
 
 /** Literals
  *
