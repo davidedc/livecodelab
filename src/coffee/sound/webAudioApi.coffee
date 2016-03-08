@@ -13,6 +13,7 @@ class WebAudioApi
     @total = 0
     @bufL = []
     @bufR = []
+    @analyser
     @getUserMedia audio:true, @gotStream
 
   getTime: () =>
@@ -40,10 +41,16 @@ class WebAudioApi
 
         # get an AudioNode from the stream
         @mediaStreamSource = @context.createMediaStreamSource stream
-
+        @analyser = @context.createAnalyser()
+        
+        @analyser.fftSize = 1024
+        @analyser.smoothingTimeConstant = 0.3
         # binding to window because otherwise it'll
         # get garbage collected
         window.microphoneProcessingNode = @createNode()
+        @mediaStreamSource.connect @analyser;
+       # @analyser.connect @mediaStreamSource;
+        
         @mediaStreamSource.connect window.microphoneProcessingNode
         window.microphoneProcessingNode.connect @context.destination
         
@@ -54,6 +61,11 @@ class WebAudioApi
             right = e.inputBuffer.getChannelData(1)
             #console.log('received audio ' +left[0])
             # clone the samples
+            
+            freqByteData = new Uint8Array @analyser.frequencyBinCount
+            	
+            @analyser.getByteFrequencyData freqByteData; 
+            
             @bufL = new Float32Array(left)
             @bufR = new Float32Array(right)
 
