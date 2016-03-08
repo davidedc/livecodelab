@@ -13,6 +13,7 @@ class WebAudioApi
     @total = 0
     @bufL = []
     @bufR = []
+    @fft = []
     @analyser
     @getUserMedia audio:true, @gotStream
 
@@ -43,7 +44,7 @@ class WebAudioApi
         @mediaStreamSource = @context.createMediaStreamSource stream
         @analyser = @context.createAnalyser()
         
-        @analyser.fftSize = 1024
+        @analyser.fftSize = 2048
         @analyser.smoothingTimeConstant = 0.3
         # binding to window because otherwise it'll
         # get garbage collected
@@ -65,6 +66,20 @@ class WebAudioApi
             freqByteData = new Uint8Array @analyser.frequencyBinCount
             	
             @analyser.getByteFrequencyData freqByteData; 
+            numbars = 14
+
+            for i in [0...numbars]
+            	    multipliers = @analyser.frequencyBinCount / numbars
+            	    
+            	    magnitude = 0
+            	    multipliers = Math.floor ( multipliers )
+            	    offset = i * multipliers 
+            	    #gotta sum/average the block, or we miss narrow-bandwidth spikes
+            	    for j in [0...multipliers]
+            	    	    magnitude += freqByteData[offset + j]            	    	   
+            	    
+            	    magnitude = magnitude / multipliers
+            	    @fft[i] = magnitude
             
             @bufL = new Float32Array(left)
             @bufR = new Float32Array(right)
@@ -80,7 +95,7 @@ class WebAudioApi
     console.log('hola +++++++++++++++++++++++')
     
   readMic: () =>
-     @bufL
+     @fft
       
   loadSample: (name, path) =>
     url = path
