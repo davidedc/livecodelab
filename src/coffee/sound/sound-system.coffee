@@ -18,7 +18,10 @@ class SoundSystem
 
   addToScope: (scope) ->
     scope.addFunction('play', (soundName, pattern) => @play(soundName, pattern))
-    scope.addFunction('readMic', () => @readMic())
+    scope.addFunction('readMic', (hola) => @readMic())
+    scope.addFunction('setSmoothingTimeConstant', (hola) => @setSmoothingTimeConstant(hola))
+    scope.addFunction('setNumVars', (value) => @setNumVars(value))
+    scope.addFunction('getFFT', (value) => @getFFT(value))
 
   clearPatterns: ->
     @playPatterns = []
@@ -36,6 +39,17 @@ class SoundSystem
       
   readMic: () ->
   	  @audioApi.readMic()
+  	  
+  	  
+  getFFT: (value) ->
+  	  @audioApi.readMic()[value]
+  	  
+  	  
+  setSmoothingTimeConstant: (value) ->
+  	  @audioApi.setSmoothingTimeConstant value
+  	  
+  setNumVars: (value) ->
+  	  @audioApi.setNumVars value
 
   playSounds: (beat) =>
     for p in @playPatterns

@@ -15,6 +15,7 @@ class WebAudioApi
     @bufR = []
     @fft = []
     @analyser
+    @numbars = 14
     @getUserMedia audio:true, @gotStream
 
   getTime: () =>
@@ -44,7 +45,7 @@ class WebAudioApi
         @mediaStreamSource = @context.createMediaStreamSource stream
         @analyser = @context.createAnalyser()
         
-        @analyser.fftSize = 2048
+        @analyser.fftSize = 1024
         @analyser.smoothingTimeConstant = 0.3
         # binding to window because otherwise it'll
         # get garbage collected
@@ -66,10 +67,10 @@ class WebAudioApi
             freqByteData = new Uint8Array @analyser.frequencyBinCount
             	
             @analyser.getByteFrequencyData freqByteData; 
-            numbars = 14
+            #numbars = 14
 
-            for i in [0...numbars]
-            	    multipliers = @analyser.frequencyBinCount / numbars
+            for i in [0...@numbars]
+            	    multipliers = @analyser.frequencyBinCount / @numbars
             	    
             	    magnitude = 0
             	    multipliers = Math.floor ( multipliers )
@@ -96,6 +97,12 @@ class WebAudioApi
     
   readMic: () =>
      @fft
+     
+  setNumVars: (value) =>
+     @numbars = value
+     
+  setSmoothingTimeConstant: (smooth) =>   
+     @analyser.smoothingTimeConstant = smooth
       
   loadSample: (name, path) =>
     url = path
