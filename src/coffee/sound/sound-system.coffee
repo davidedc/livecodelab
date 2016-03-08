@@ -18,6 +18,7 @@ class SoundSystem
 
   addToScope: (scope) ->
     scope.addFunction('play', (soundName, pattern) => @play(soundName, pattern))
+    scope.addFunction('readMic', () => @readMic())
 
   clearPatterns: ->
     @playPatterns = []
@@ -32,6 +33,9 @@ class SoundSystem
         name: name,
         pattern: pattern
       })
+      
+  readMic: () ->
+  	  @audioApi.readMic()
 
   playSounds: (beat) =>
     for p in @playPatterns
