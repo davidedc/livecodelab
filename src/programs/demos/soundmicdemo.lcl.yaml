@@ -1,0 +1,12 @@
+submenu: Sound
+title: Microphone Demo
+code: |
+  // draw lines like this
+  audioRaw = (readMic 0)
+  move -1, 0, 0
+  for i in audioRaw
+  	//console.log 'h'+i
+  	move 0.003, 0, 0 
+  	//rotate audioRaw[i]
+  	//console.log audioRaw[i]
+  	box 0.002, 1.0 +  audioRaw[i] * 2.0, 0.2

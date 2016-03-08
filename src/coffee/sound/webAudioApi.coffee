@@ -9,7 +9,7 @@ class WebAudioApi
     @context = new (window.AudioContext || window.webkitAudioContext)
     @soundout = @context.destination
     @samples = {}
-    @bufferSize = 4096
+    @bufferSize = 1024
     @total = 0
     @bufL = []
     @bufR = []
@@ -52,10 +52,10 @@ class WebAudioApi
         node.onaudioprocess = (e) =>
             left = e.inputBuffer.getChannelData(0)
             right = e.inputBuffer.getChannelData(1)
-            console.log('received audio ' +left[0])
+            #console.log('received audio ' +left[0])
             # clone the samples
-            @bufL.push new Float32Array(left)
-            @bufR.push new Float32Array(right)
+            @bufL = new Float32Array(left)
+            @bufR = new Float32Array(right)
 
             @total += @bufferSize
             if @total > @bufLength
