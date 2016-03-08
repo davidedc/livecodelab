@@ -18,6 +18,7 @@ class SoundSystem
 
   addToScope: (scope) ->
     scope.addFunction('play', (soundName, pattern) => @play(soundName, pattern))
+    scope.addFunction('readMic', () => @readMic())
 
   clearPatterns: ->
     @playPatterns = []
@@ -33,6 +34,9 @@ class SoundSystem
         pattern: pattern
       })
 
+  readMic: () ->
+      @audioApi.readMic()
+
   playSounds: (beat) =>
     for p in @playPatterns
       if (@patternPlayer.runPattern(p.pattern, beat))
@@ -40,4 +44,3 @@ class SoundSystem
     @clearPatterns()
 
 module.exports = SoundSystem
-
