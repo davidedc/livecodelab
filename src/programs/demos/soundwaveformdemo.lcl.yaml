@@ -1,0 +1,11 @@
+submenu: Sound
+title: Waveform Demo
+code: |
+  // draw lines like this
+  audioRaw = (getWaveForm 0)
+  setSmoothingTimeConstant 0.8
+  etNumVars 19  
+  move -0.5, -2, 0
+  for i in [0...audioRaw.length]
+  	move 0.005*i, audioRaw[i] * 0.02, 0
+  		box 0.0005, 0.05, 0.2
