@@ -18,10 +18,11 @@ class SoundSystem
 
   addToScope: (scope) ->
     scope.addFunction('play', (soundName, pattern) => @play(soundName, pattern))
-    scope.addFunction('readMic', (hola) => @readMic())
-    scope.addFunction('setSmoothingTimeConstant', (hola) => @setSmoothingTimeConstant(hola))
+    scope.addFunction('getFFT', () => @getFFT())
+    scope.addFunction('getWaveForm', () => @getWaveForm())
+    scope.addFunction('setSmoothingTimeConstant', (value) => @setSmoothingTimeConstant(valuehola))
     scope.addFunction('setNumVars', (value) => @setNumVars(value))
-    scope.addFunction('getFFT', (value) => @getFFT(value))
+    scope.addFunction('getFFTvalue', (value) => @getFFT()[0][value])#TODO this not working
 
   clearPatterns: ->
     @playPatterns = []
@@ -36,14 +37,13 @@ class SoundSystem
         name: name,
         pattern: pattern
       })
-      
-  readMic: () ->
-  	  @audioApi.readMic()
   	  
   	  
-  getFFT: (value) ->
-  	  @audioApi.readMic()[value]
-  	  
+  getFFT: () ->
+  	  @audioApi.getFFT()
+ 
+  getWaveForm: (value) ->
+  	  @audioApi.getWaveForm()
   	  
   setSmoothingTimeConstant: (value) ->
   	  @audioApi.setSmoothingTimeConstant value

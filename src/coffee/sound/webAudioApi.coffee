@@ -11,9 +11,8 @@ class WebAudioApi
     @samples = {}
     @bufferSize = 1024
     @total = 0
-    @bufL = []
-    @bufR = []
     @fft = []
+    @waveform = []
     @analyser
     @numbars = 14
     @getUserMedia audio:true, @gotStream
@@ -59,14 +58,16 @@ class WebAudioApi
    createNode: =>
         node = @context.createScriptProcessor @bufferSize, 2, 2
         node.onaudioprocess = (e) =>
-            left = e.inputBuffer.getChannelData(0)
-            right = e.inputBuffer.getChannelData(1)
+            
             #console.log('received audio ' +left[0])
             # clone the samples
             
             freqByteData = new Uint8Array @analyser.frequencyBinCount
-            	
-            @analyser.getByteFrequencyData freqByteData; 
+            timeByteData = new Uint8Array @analyser.frequencyBinCount
+             
+            @analyser.getByteFrequencyData freqByteData;
+            @analyser.getByteTimeDomainData timeByteData;
+            @waveform = timeByteData
             #numbars = 14
 
             for i in [0...@numbars]
@@ -81,9 +82,6 @@ class WebAudioApi
             	    
             	    magnitude = magnitude / multipliers
             	    @fft[i] = magnitude
-            
-            @bufL = new Float32Array(left)
-            @bufR = new Float32Array(right)
 
             @total += @bufferSize
             if @total > @bufLength
@@ -95,9 +93,12 @@ class WebAudioApi
   activateMic: () =>
     console.log('hola +++++++++++++++++++++++')
     
-  readMic: () =>
+  getFFT: () =>
      @fft
      
+  getWaveForm: () =>
+     @waveform 
+   
   setNumVars: (value) =>
      @numbars = value
      
