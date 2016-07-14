@@ -277,7 +277,7 @@ String "string"
   }
 
 Lambda "lambda"
-  = "(" _ params:ParamList? _ ")" _ "->" _ body:LambdaBody {
+  = "(" _ params:ParamList? _ ")" _ ("->" / "=>") _ body:LambdaBody {
       return Ast.Node.Closure(optionalList(params), body);
   }
 
