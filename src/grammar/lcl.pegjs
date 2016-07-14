@@ -136,13 +136,18 @@ ArgumentList
  */
 
 If "if"
-  = "if" _ predicate:Expression _ NewLine ifBlock:Block elseBlock:Else?{
+  = "if" _ predicate:Expression _ NewLine ifBlock:Block elseBlock:(ElseIf / Else)?{
       return Ast.Node.If(predicate, ifBlock, elseBlock);
   }
 
+ElseIf "elseif"
+  = NewLine "else" _ ifBlock:If {
+      return ifBlock;
+  }
+
 Else "else"
-  = NewLine "else" _ NewLine elseBlock:Block {
-      return elseBlock;
+  = NewLine "else" _ NewLine block:Block {
+      return Ast.Node.If(Ast.Node.Num(1), block);
   }
 
 /** Times Loop Rules

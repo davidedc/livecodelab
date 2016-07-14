@@ -27,7 +27,7 @@ exports.programdata = {
 
     'if else statement parses': function (test) {
 
-        var program = 'a = 3\nif (a == 3)\n\tbox\nelse\n\tpeg';
+        var program = 'a = 3\nif a == 3\n\tbox\nelse\n\tpeg';
         var parsed = parser.parse(program);
 
         var expected = ast.Block([
@@ -37,9 +37,43 @@ exports.programdata = {
                 ast.Block([
                     ast.Application('box', [], null)
                 ]),
+                ast.If(
+                    ast.Num(1),
+                    ast.Block([
+                        ast.Application('peg', [], null)
+                    ])
+                )
+            )
+        ]);
+
+        test.deepEqual(parsed, expected);
+        test.done();
+    },
+
+    'if ifelse else statement parses': function (test) {
+
+        var program = 'a = 3\nif a == 1\n\tbox\nelse if a == 2\n\tball\nelse\n\tpeg';
+        var parsed = parser.parse(program);
+
+        var expected = ast.Block([
+            ast.Assignment('a', ast.Num(3)),
+            ast.If(
+                ast.BinaryOp('==', ast.Variable('a'), ast.Num(1)),
                 ast.Block([
-                    ast.Application('peg', [], null)
-                ])
+                    ast.Application('box', [], null)
+                ]),
+                ast.If(
+                    ast.BinaryOp('==', ast.Variable('a'), ast.Num(2)),
+                    ast.Block([
+                        ast.Application('ball', [], null)
+                    ]),
+                    ast.If(
+                        ast.Num(1),
+                        ast.Block([
+                            ast.Application('peg', [], null)
+                        ])
+                    )
+                )
             )
         ]);
 

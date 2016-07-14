@@ -160,6 +160,7 @@ internal.evaluateApplication = function (state, application, scope) {
 };
 
 internal.evaluateIf = function (state, ifStatement, scope) {
+    console.log('if', ifStatement);
     var predicate, ifblock, elseblock;
 
     predicate = ifStatement.predicate;
@@ -169,7 +170,7 @@ internal.evaluateIf = function (state, ifStatement, scope) {
     if (internal.evaluate(state, predicate, scope)) {
         internal.evaluateBlock(state, ifblock, scope);
     } else if (helpers.exists(elseblock)) {
-        internal.evaluateBlock(state, elseblock, scope);
+        internal.evaluateIf(state, elseblock, scope);
     }
 
 };
