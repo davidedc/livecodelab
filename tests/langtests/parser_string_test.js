@@ -29,6 +29,32 @@ exports.programdata = {
 
         test.deepEqual(parsed, expected);
         test.done();
+    },
+
+    'squote string with other dquote char passes': function (test) {
+
+        var program = 'a = \'stri"asdf\'';
+        var parsed = parser.parse(program);
+
+        var expected = ast.Block([
+            ast.Assignment('a', ast.Str('stri"asdf'))
+        ]);
+
+        test.deepEqual(parsed, expected);
+        test.done();
+    },
+
+    'dquote string with other squote char passes': function (test) {
+
+        var program = 'a = "stri\'asdf"';
+        var parsed = parser.parse(program);
+
+        var expected = ast.Block([
+            ast.Assignment('a', ast.Str("stri'asdf"))
+        ]);
+
+        test.deepEqual(parsed, expected);
+        test.done();
     }
 
 };

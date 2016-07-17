@@ -272,7 +272,7 @@ String "string"
   = "'" chars:([^\n\r\f'])* "'" {
       return Ast.Node.Str(chars.join(''));
   }
-  / '"' chars:([^\n\r\f"])* '"' {
+  / "\"" chars:([^\n\r\f\"])* "\"" {
       return Ast.Node.Str(chars.join(''));
   }
 
