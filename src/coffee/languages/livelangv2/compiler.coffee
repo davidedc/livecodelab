@@ -18,12 +18,15 @@ class V2CodeCompiler
   #   program: the program, if the status is parsed
   #   error: the error if there is one
   # }
-  compileCode: (code) ->
+  compileCode: (code, globalscope) ->
 
     output = {}
 
     try
-      programAST = @parser.parse(code)
+      programAST = @parser.parse(
+        code,
+        { functionNames: globalscope.getNames() }
+      )
     catch e
       # parser has caught a syntax error.
       # we are going to display the error and we WON'T register the new code

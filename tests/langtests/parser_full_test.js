@@ -1,110 +1,128 @@
-/* global console */
-
 var parser  = require('../../src/generated/parser');
 var ast     = require('../../src/js/lcl/ast').Node;
 
+var dedent = require('dentist').dedent;
+
 exports.programdata = {
 
-    'basic function calls work': function (test) {
+  'basic function calls work': function (test) {
 
-        var program = '\n\nbox\n';
-        var parsed = parser.parse(program);
+    var program = dedent(`
 
-        var expected = ast.Block([
-            ast.Application('box', [], null)
-        ]);
+                         box
+                         `);
+    var parsed = parser.parse(program, {functionNames: ['box']});
 
-        test.deepEqual(parsed, expected);
-        test.done();
-    },
+    var expected = ast.Block([
+      ast.Application('box', [], null)
+    ]);
 
-    'primitive with args and block': function (test) {
+    test.deepEqual(parsed, expected);
+    test.done();
+  },
 
-        var program = 'rotate 2, 3\n\tbox\n';
-        var parsed = parser.parse(program);
+  'primitive with args and block': function (test) {
 
-        var expected = ast.Block([
-            ast.Application(
-                'rotate',
-                [ast.Num(2), ast.Num(3)],
-                ast.Block([
-                    ast.Application('box', [], null)
-                ])
-            )
-        ]);
+    var program = dedent(`
+                         rotate 2, 3
+                         \tbox
 
-        test.deepEqual(parsed, expected);
-        test.done();
-    },
+                         `);
+    var parsed = parser.parse(program, {functionNames: ['rotate', 'box']});
 
-    'inline calls': function (test) {
+    var expected = ast.Block([
+      ast.Application(
+        'rotate',
+        [ast.Num(2), ast.Num(3)],
+        ast.Block([
+          ast.Application('box', [], null)
+        ])
+      )
+    ]);
 
-        var program = 'rotate 2, 3 >> box\n';
-        var parsed = parser.parse(program);
+    test.deepEqual(parsed, expected);
+    test.done();
+  },
 
-        var expected = ast.Block([
-            ast.Application(
-                'rotate',
-                [ast.Num(2), ast.Num(3)],
-                ast.Block([
-                    ast.Application('box', [], null)
-                ])
-            )
-        ]);
+  'inline calls': function (test) {
 
-        test.deepEqual(parsed, expected);
-        test.done();
-    },
+    var program = dedent(`
+                         rotate 2, 3 >> box
+                         `);
+    var parsed = parser.parse(program, {functionNames: ['rotate', 'box']});
 
-    'multiple inline calls': function (test) {
+    var expected = ast.Block([
+      ast.Application(
+        'rotate',
+        [ast.Num(2), ast.Num(3)],
+        ast.Block([
+          ast.Application('box', [], null)
+        ])
+      )
+    ]);
 
-        var program = 'rotate 2, 3 >> fill red >> box\n';
-        var parsed = parser.parse(program);
+    test.deepEqual(parsed, expected);
+    test.done();
+  },
 
-        var expected = ast.Block([
-            ast.Application(
-                'rotate',
-                [ast.Num(2), ast.Num(3)],
-                ast.Block([
-                    ast.Application(
-                        'fill',
-                        [ast.Variable('red')],
-                            ast.Block([
-                                ast.Application('box', [], null)
-                            ])
-                    )
-                ])
-            )
-        ]);
+  'multiple inline calls': function (test) {
 
-        test.deepEqual(parsed, expected);
-        test.done();
-    },
+    var program = dedent(`rotate 2, 3 >> fill red >> box
+                         `);
+    var parsed = parser.parse(program,
+                              {functionNames:
+                               ['rotate', 'fill', 'box']}
+                             );
 
-    'multiple inline calls with no arrows': function (test) {
+    var expected = ast.Block([
+      ast.Application(
+        'rotate',
+        [ast.Num(2), ast.Num(3)],
+        ast.Block([
+          ast.Application(
+            'fill',
+            [ast.Variable('red')],
+            ast.Block([
+              ast.Application('box', [], null)
+            ])
+          )
+        ])
+      )
+    ]);
 
-        var program = 'rotate 2, 3 fill red box\n';
-        var parsed = parser.parse(program);
+    test.deepEqual(parsed, expected);
+    test.done();
+  },
 
-        var expected = ast.Block([
-            ast.Application(
-                'rotate',
-                [ast.Num(2), ast.Num(3)],
-                ast.Block([
-                    ast.Application(
-                        'fill',
-                        [ast.Variable('red')],
-                            ast.Block([
-                                ast.Application('box', [], null)
-                            ])
-                    )
-                ])
-            )
-        ]);
+  'multiple inline calls with no arrows': function (test) {
 
-        test.deepEqual(parsed, expected);
-        test.done();
-    }
+    var program = dedent(`
+                         rotate 2, 3 fill red box
+                         `);
+    var parsed = parser.parse(program,
+                              {functionNames:
+                               ['rotate', 'fill', 'box']}
+                             );
+
+    var expected = ast.Block([
+      ast.Application(
+        'rotate',
+        [ast.Num(2), ast.Num(3)],
+        ast.Block([
+          ast.Application(
+            'fill',
+            [ast.Variable('red')],
+            ast.Block([
+              ast.Application('box', [], null)
+            ])
+          )
+        ])
+      )
+    ]);
+
+    test.deepEqual(parsed, expected);
+    test.done();
+  }
 
 };
 

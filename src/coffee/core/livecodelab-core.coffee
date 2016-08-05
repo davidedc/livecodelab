@@ -220,7 +220,7 @@ class LiveCodeLabCore
 
   updateCode: (newCode) ->
 
-    output = @codeCompiler.compileCode newCode
+    output = @codeCompiler.compileCode newCode, @globalscope
 
     switch output.status
       when 'error'

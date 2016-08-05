@@ -6,6 +6,8 @@
 
     var indentStack = [], indent = "";
 
+    var functionNames = options.functionNames || [];
+
     var collapseTail = function (head, tail, astNode) {
         return _.reduce(tail, function (o, n) {
             var op  = n[1];
@@ -71,6 +73,9 @@ Statement "statement"
 
 Assignment "assignment"
   = id:Identifier _ "=" _ expr:Expression {
+      if (expr.ast === "CLOSURE") {
+          functionNames.push(id);
+      }
       return Ast.Node.Assignment(id, expr);
   }
 
@@ -81,15 +86,22 @@ Assignment "assignment"
 Application "application"
   = FullApplication
   / ExpressionApplication
+  / SimpleApplication
 
 ExpressionApplication "expr application"
-  = name:Identifier _ "(" _ args:ArgumentList? _ ")" {
+  = name:FunctionName _ "(" _ args:ArgumentList? _ ")" {
+      var argList =  optionalList(args, 0);
+      return Ast.Node.Application(name, argList, null);
+  }
+
+SimpleApplication "simple application"
+  = name:FunctionName _ args:ArgumentList? {
       var argList =  optionalList(args, 0);
       return Ast.Node.Application(name, argList, null);
   }
 
 FullApplication
-  = name:Identifier _ body:ApplicationBody? {
+  = name:FunctionName _ body:ApplicationBody? {
       var argList = [];
       var block = null;
       if (body !== null) {
@@ -122,13 +134,21 @@ ApplicationBlock
   }
 
 InlinedApplication
-  = name:Inlinable _ body:ApplicationBody {
+  = name:FunctionName _ body:ApplicationBody {
       return Ast.Node.Application(name, body.argList, body.block);
   }
 
 ArgumentList
   = head:Expression tail:(_ "," _ Expression)* {
       return buildList(head, tail, 3);
+  }
+
+FunctionName
+  = name:Identifier &{
+    var isFunction = (functionNames.indexOf(name) !== -1);
+    return isFunction;
+  } {
+    return name;
   }
 
 /** If Rules
@@ -237,6 +257,7 @@ NegativeExpr
 Base
   = Num
   / ExpressionApplication
+  / Application
   / Variable
   / "(" _ expr:Expression _ ")" { return expr; }
 
@@ -245,18 +266,6 @@ Variable "variable"
 
 Identifier
   = [a-zA-Z]+[a-zA-Z0-9]* {return text(); }
-
-Inlinable
-  = Matrix / Colour / Primitive
-
-Matrix
-  = "rotate" / "move" / "scale"
-
-Colour
-  = "fill" / "noFill" / "stroke" / "noStroke"
-
-Primitive
-  = "box" / "peg" / "ball" / "rect" / "line"
 
 /** Literals
  *

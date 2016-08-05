@@ -15,6 +15,8 @@ class GlobalScope
     window[name] = value
     @scope[name] = value
 
+  getNames: () -> Object.keys(@scope)
+
   getScope: () -> @scope
 
 module.exports = GlobalScope
