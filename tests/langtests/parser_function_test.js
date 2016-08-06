@@ -112,10 +112,14 @@ exports.programdata = {
       ),
       ast.Assignment(
         'bar',
-        ast.BinaryOp(
-          '+',
-          ast.Application('foo', [ast.Num(1)], null),
-          ast.Application('foo', [ast.Num(2)], null)
+        ast.Application(
+          'foo',
+          [ast.BinaryOp(
+            '+',
+            ast.Num(1),
+            ast.Application('foo', [ast.Num(2)], null)
+          )],
+          null
         )
       )
     ]);
