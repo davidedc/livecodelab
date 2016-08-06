@@ -88,9 +88,7 @@ exports.programdata = {
              a = (x) -> x * 2
              //another function
              b = (x, y) -> x + y
-             c = a 1
-             d = b(a(2), 3) + c
-             result d
+             result b(a(2), 3) + a 1
              `
             ),
       { functionNames: ['result']}
