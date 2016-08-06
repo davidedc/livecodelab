@@ -129,9 +129,13 @@ ApplicationBlock
   = NewLine block:Block {
       return block;
   }
-  / ">>"? _ inlined:InlinedApplication {
+  / ">>"? _ inlined:Inlinable {
       return Ast.Node.Block([inlined]);
   }
+
+Inlinable
+  = InlinedApplication
+  / TimesLoop
 
 InlinedApplication
   = name:FunctionName _ body:ApplicationBody {
@@ -175,8 +179,16 @@ Else "else"
  */
 
 TimesLoop "times"
-  = expr:Expression _ "times" loopVar:LoopVar? _ NewLine block:Block {
+  = expr:Expression _ "times" loopVar:LoopVar? _ block:TimesLoopBlock {
       return Ast.Node.Times(expr, block, loopVar);
+  }
+
+TimesLoopBlock
+  = NewLine block:Block {
+      return block;
+  }
+  / ">>"? _ inlined:Inlinable {
+      return Ast.Node.Block([inlined]);
   }
 
 LoopVar
