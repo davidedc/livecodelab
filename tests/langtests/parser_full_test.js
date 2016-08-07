@@ -122,6 +122,47 @@ exports.programdata = {
 
     test.deepEqual(parsed, expected);
     test.done();
+  },
+
+  'more complex inline function calls': function (test) {
+
+    var program = dedent(`
+                         scale 2, wave 2 peg
+                         \tscale 2, wave 2 ball
+                         `);
+    var parsed = parser.parse(program,
+                              {functionNames:
+                               ['scale', 'wave', 'peg', 'ball']}
+                             );
+
+    var expected = ast.Block([
+      ast.Application(
+        'scale',
+        [ast.Num(2), ast.Application('wave', [ast.Num(2)], null)],
+        ast.Block([
+          ast.Application(
+            'peg',
+            [],
+            ast.Block([
+              ast.Application(
+                'scale',
+                [ast.Num(2), ast.Application('wave', [ast.Num(2)], null)],
+                ast.Block([
+                  ast.Application(
+                    'ball',
+                    [],
+                    null
+                  )
+                ])
+              )
+            ])
+          )
+        ])
+      )
+    ]);
+
+    test.deepEqual(parsed, expected);
+    test.done();
   }
 
 };
