@@ -68,8 +68,8 @@ Statement "statement"
   = Assignment
   / DoOnce
   / If
-  / TimesLoop
   / Application
+  / TimesLoop
 
 Assignment "assignment"
   = id:Identifier _ "=" _ expr:Expression {
@@ -134,8 +134,8 @@ ApplicationBlock
   }
 
 Inlinable
-  = InlinedApplication
-  / TimesLoop
+  = TimesLoop
+  / InlinedApplication
 
 InlinedApplication
   = name:FunctionName _ body:ApplicationBody {

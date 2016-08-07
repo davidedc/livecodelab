@@ -163,6 +163,38 @@ exports.programdata = {
 
     test.deepEqual(parsed, expected);
     test.done();
+  },
+
+  'more complicated times loop inlining': function (test) {
+
+    var program = `rotate wave + 2 times box`;
+    var parsed = parser.parse(program,
+                              {functionNames:
+                               ['rotate', 'wave', 'box']}
+                             );
+
+    var expected = ast.Block([
+      ast.Application(
+        'rotate',
+        [],
+        ast.Block([
+            ast.Times(
+            ast.BinaryOp('+', ast.Application('wave', [], null), ast.Num(2)),
+            ast.Block([
+                ast.Application(
+                'box',
+                [],
+                null
+                )
+            ]),
+            null
+            )
+        ])
+      )
+    ]);
+
+    test.deepEqual(parsed, expected);
+    test.done();
   }
 
 };
