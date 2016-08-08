@@ -206,6 +206,27 @@ exports.programdata = {
     test.done();
   },
 
+  'paren-less function with parened function as argument': function (test) {
+
+    var program = `foo bar(3)`;
+    var parsed = parser.parse(program, {functionNames: ['foo', 'bar']});
+
+    var expected = ast.Block([
+      ast.Application(
+        'foo',
+        [ast.Application(
+            'bar',
+            [ ast.Num(3) ],
+            null
+        )],
+        null
+      )
+    ]);
+
+    test.deepEqual(parsed, expected);
+    test.done();
+  },
+
   'inlined function calls are parsed': function (test) {
 
     var program = `rotate 2 fill red box 3, 4 peg 2`;
