@@ -11,7 +11,11 @@ exports.programdata = {
                          4 times
                          \tbox(4)
                          `);
-    var parsed = parser.parse(program, {functionNames: ['box']});
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box'],
+        inlinableFunctions: ['box']
+      });
 
     var expected = ast.Block([
       ast.Times(
@@ -36,7 +40,11 @@ exports.programdata = {
                          4 times with i
                          \tbox(4)
                          `);
-    var parsed = parser.parse(program, {functionNames: ['box']});
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box'],
+        inlinableFunctions: ['box']
+      });
 
     var expected = ast.Block([
       ast.Times(
@@ -62,7 +70,11 @@ exports.programdata = {
                          foo times with i
                          \tbox(4)
                          `);
-    var parsed = parser.parse(program, {functionNames: ['box']});
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box'],
+        inlinableFunctions: ['box']
+      });
 
     var expected = ast.Block([
       ast.Assignment('foo', ast.Num(100)),
@@ -84,7 +96,11 @@ exports.programdata = {
 
   'times loop can be inlined': function (test) {
     var program = dedent(`4 times 3 times box`);
-    var parsed = parser.parse(program, {functionNames: ['box']});
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box'],
+        inlinableFunctions: ['box']
+      });
 
     var expected = ast.Block([
       ast.Times(

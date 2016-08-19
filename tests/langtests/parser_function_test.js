@@ -60,7 +60,11 @@ exports.programdata = {
                          \tc = a + b
                          \tbox c, 3
                          `);
-    var parsed = parser.parse(program, {functionNames: ['box']});
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box'],
+        inlinableFunctions: ['box']
+      });
 
     var expected = ast.Block([
       ast.Assignment(
@@ -130,8 +134,12 @@ exports.programdata = {
 
   'bare application call with single expression args': function (test) {
 
-    var program = `box (3 + 4) + 2`;
-    var parsed = parser.parse(program, {functionNames: ['box']});
+    var program = `box 3 + 4 + 2`;
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box'],
+        inlinableFunctions: ['box']
+      });
 
     var expected = ast.Block([
       ast.Application(
@@ -158,7 +166,11 @@ exports.programdata = {
   'bare application call with expression args': function (test) {
 
     var program = `box 3 + 4, a * 2`;
-    var parsed = parser.parse(program, {functionNames: ['box']});
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box'],
+        inlinableFunctions: ['box']
+      });
 
     var expected = ast.Block([
       ast.Application(
@@ -186,7 +198,11 @@ exports.programdata = {
   'two inlined function calls are parsed': function (test) {
 
     var program = `rotate 2 box 3`;
-    var parsed = parser.parse(program, {functionNames: ['rotate', 'box']});
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['rotate', 'box'],
+        inlinableFunctions: ['rotate', 'box']
+      });
 
     var expected = ast.Block([
       ast.Application(
@@ -208,12 +224,16 @@ exports.programdata = {
 
   'paren-less function with parened function as argument': function (test) {
 
-    var program = `foo bar(3)`;
-    var parsed = parser.parse(program, {functionNames: ['foo', 'bar']});
+    var program = `box bar(3)`;
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box', 'bar'],
+        inlinableFunctions: ['box']
+      });
 
     var expected = ast.Block([
       ast.Application(
-        'foo',
+        'box',
         [ast.Application(
             'bar',
             [ ast.Num(3) ],
@@ -230,10 +250,12 @@ exports.programdata = {
   'inlined function calls are parsed': function (test) {
 
     var program = `rotate 2 fill red box 3, 4 peg 2`;
-    var parsed = parser.parse(program,
-                              {functionNames: [
-                                'rotate', 'fill', 'box', 'peg'
-                              ]});
+    var parsed = parser.parse(
+      program,
+      {
+        functionNames: ['rotate', 'fill', 'box', 'peg'],
+        inlinableFunctions: ['rotate', 'fill', 'box', 'peg']
+      });
 
     var expected = ast.Block([
       ast.Application(
@@ -265,10 +287,12 @@ exports.programdata = {
                          a = 3
                          rotate scale move a rotate box 3, 4 peg 2
                          `);
-    var parsed = parser.parse(program,
-                              {functionNames: [
-                                'rotate', 'scale', 'move', 'box', 'peg'
-                              ]});
+    var parsed = parser.parse(
+      program,
+      {
+        functionNames: ['rotate', 'scale', 'move', 'box', 'peg'],
+        inlinableFunctions: ['rotate', 'scale', 'move', 'box', 'peg']
+      });
 
     var expected = ast.Block([
       ast.Assignment('a', ast.Num(3)),

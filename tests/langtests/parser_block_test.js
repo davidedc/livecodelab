@@ -47,11 +47,13 @@ exports.programdata = {
                          \tpeg 4
                          ball 2
                          `);
-    var parsed = parser.parse(program,
-                              {functionNames: [
-                                'rotate', 'ball', 'peg', 'box'
-                              ]}
-                             );
+    var parsed = parser.parse(
+      program,
+      {
+        functionNames: ['rotate', 'ball', 'peg', 'box'],
+        inlinableFunctions: ['rotate', 'ball', 'peg', 'box']
+      }
+    );
 
     var expected = ast.Block([
       ast.DoOnce(

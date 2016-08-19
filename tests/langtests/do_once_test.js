@@ -8,7 +8,10 @@ exports.programdata = {
   'simple doOnce expression works': function (test) {
 
     var program = `doOnce box()`;
-    var parsed = parser.parse(program, {functionNames: ['box']});
+    var parsed = parser.parse(program, {
+      functionNames: ['box'],
+      inlinableFunctions: ['box']
+    });
 
     var expected = ast.Block([
       ast.DoOnce(
@@ -25,7 +28,10 @@ exports.programdata = {
   'finished simple doOnce expression works': function (test) {
 
     var program = `✓doOnce box()`;
-    var parsed = parser.parse(program, {functionNames: ['box']});
+    var parsed = parser.parse(program, {
+      functionNames: ['box'],
+      inlinableFunctions: ['box']
+    });
 
     var expected = ast.Block([
       ast.DoOnce(
@@ -47,9 +53,13 @@ exports.programdata = {
                          \trotate
                          \t\tbox 4
                          `);
-    var parsed = parser.parse(program,
-                              {functionNames: ['rotate', 'box']}
-                             );
+    var parsed = parser.parse(
+      program,
+      {
+        functionNames: ['rotate', 'box'],
+        inlinableFunctions: ['rotate', 'box']
+      }
+    );
 
     var expected = ast.Block([
       ast.DoOnce(
@@ -77,9 +87,13 @@ exports.programdata = {
                          \trotate
                          \t\tbox 4
                          `);
-    var parsed = parser.parse(program,
-                              {functionNames: ['rotate', 'box']}
-                             );
+    var parsed = parser.parse(
+      program,
+      {
+        functionNames: ['rotate', 'box'],
+        inlinableFunctions: ['rotate', 'box']
+      }
+    );
 
     var expected = ast.Block([
       ast.DoOnce(

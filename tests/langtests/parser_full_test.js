@@ -28,7 +28,13 @@ exports.programdata = {
                          \tbox
 
                          `);
-    var parsed = parser.parse(program, {functionNames: ['rotate', 'box']});
+    var parsed = parser.parse(
+      program,
+      {
+        functionNames: ['rotate', 'box'],
+        inlinableFunctions: ['rotate', 'box']
+      }
+    );
 
     var expected = ast.Block([
       ast.Application(
@@ -49,7 +55,13 @@ exports.programdata = {
     var program = dedent(`
                          rotate 2, 3 >> box
                          `);
-    var parsed = parser.parse(program, {functionNames: ['rotate', 'box']});
+    var parsed = parser.parse(
+      program,
+      {
+        functionNames: ['rotate', 'box'],
+        inlinableFunctions: ['rotate', 'box'],
+      }
+    );
 
     var expected = ast.Block([
       ast.Application(
@@ -69,10 +81,13 @@ exports.programdata = {
 
     var program = dedent(`rotate 2, 3 >> fill red >> box
                          `);
-    var parsed = parser.parse(program,
-                              {functionNames:
-                               ['rotate', 'fill', 'box']}
-                             );
+    var parsed = parser.parse(
+      program,
+      {
+        functionNames: ['rotate', 'fill', 'box'],
+        inlinableFunctions: ['rotate', 'fill', 'box']
+      }
+    );
 
     var expected = ast.Block([
       ast.Application(
@@ -99,10 +114,13 @@ exports.programdata = {
     var program = dedent(`
                          rotate 2, 3 fill red box
                          `);
-    var parsed = parser.parse(program,
-                              {functionNames:
-                               ['rotate', 'fill', 'box']}
-                             );
+    var parsed = parser.parse(
+      program,
+      {
+        functionNames: ['rotate', 'fill', 'box'],
+        inlinableFunctions: ['rotate', 'fill', 'box']
+      }
+    );
 
     var expected = ast.Block([
       ast.Application(
@@ -130,10 +148,13 @@ exports.programdata = {
                          scale 2, wave 2 peg
                          \tscale 2, wave 2 ball
                          `);
-    var parsed = parser.parse(program,
-                              {functionNames:
-                               ['scale', 'wave', 'peg', 'ball']}
-                             );
+    var parsed = parser.parse(
+      program,
+      {
+        functionNames: ['scale', 'wave', 'peg', 'ball'],
+        inlinableFunctions: ['scale', 'peg', 'ball']
+      }
+    );
 
     var expected = ast.Block([
       ast.Application(
@@ -168,10 +189,13 @@ exports.programdata = {
   'more complicated times loop inlining': function (test) {
 
     var program = `rotate wave + 2 times box`;
-    var parsed = parser.parse(program,
-                              {functionNames:
-                               ['rotate', 'wave', 'box']}
-                             );
+    var parsed = parser.parse(
+      program,
+      {
+        functionNames: ['rotate', 'wave', 'box'],
+        inlinableFunctions: ['rotate', 'box']
+      }
+    );
 
     var expected = ast.Block([
       ast.Application(

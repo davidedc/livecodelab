@@ -1,5 +1,6 @@
 var Interpreter = require('../../src/js/lcl/interpreter');
 var parser      = require('../../src/generated/parser');
+var ast     = require('../../src/js/lcl/ast').Node;
 
 var dedent = require('dentist').dedent;
 
@@ -14,7 +15,7 @@ exports.programdata = {
       }
     };
     var program = parser.parse(
-      `result (3 + 4) * 2`,
+      `result((3 + 4) * 2)`,
       { functionNames: ['result']}
     );
     i.run(program, scope);
@@ -35,7 +36,7 @@ exports.programdata = {
     var program = parser.parse(
       dedent(`
              a = foo + 1
-             result (a + 4) * foo`
+             result((a + 4) * foo)`
             ),
       { functionNames: ['result']}
     );
@@ -93,6 +94,42 @@ exports.programdata = {
             ),
       { functionNames: ['result']}
     );
+
+    var expected = ast.Block([
+      ast.Assignment(
+        'a',
+        ast.Closure(
+          ['x'],
+          ast.BinaryOp(
+            '*',
+            ast.Variable('x'),
+            ast.Num(2)
+          )
+        )
+      ),
+      ast.Assignment(
+        'b',
+        ast.Closure(
+          ['x', 'y'],
+          ast.BinaryOp(
+            '+',
+            ast.Variable('x'),
+            ast.Variable('y')
+          )
+        )
+      ),
+      ast.Application(
+        'result',
+        [ast.BinaryOp(
+          '+',
+          ast.Application('b', [ast.Application('a', [ast.Num(2)], null), ast.Num(3)], null),
+          ast.Application('a', [ast.Num(1)], null)
+        )],
+        null
+      )
+    ]);
+
+    test.deepEqual(program, expected);
 
     i.run(program, scope);
 

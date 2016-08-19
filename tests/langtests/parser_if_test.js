@@ -13,7 +13,11 @@ exports.programdata = {
                          if (a == 3)
                          \tbox
                          `);
-    var parsed = parser.parse(program, {functionNames: ['box']});
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box'],
+        inlibaleFunctions: ['box']
+      });
 
     var expected = ast.Block([
       ast.Assignment('a', ast.Num(3)),
@@ -39,7 +43,11 @@ exports.programdata = {
                          else
                          \tpeg
                          `);
-    var parsed = parser.parse(program, {functionNames: ['box', 'peg']});
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box', 'peg'],
+        inlinableFunctions: ['box', 'peg']
+      });
 
     var expected = ast.Block([
       ast.Assignment('a', ast.Num(3)),
@@ -72,7 +80,11 @@ exports.programdata = {
                          else
                          \tpeg
                          `);
-    var parsed = parser.parse(program, {functionNames: ['box', 'peg', 'ball']});
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box', 'peg', 'ball'],
+        inlinableFunctions: ['box', 'peg', 'ball']
+      });
 
     var expected = ast.Block([
       ast.Assignment('a', ast.Num(3)),

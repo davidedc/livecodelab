@@ -8,6 +8,10 @@
 
     var functionNames = options.functionNames || [];
 
+    var inlinableFunctions = options.inlinableFunctions || [];
+
+    var blockFunctions = inlinableFunctions
+
     var collapseTail = function (head, tail, astNode) {
         return _.reduce(tail, function (o, n) {
             var op  = n[1];
@@ -85,23 +89,20 @@ Assignment "assignment"
 
 Application "application"
   = FullApplication
-  / ExpressionApplication
   / SimpleApplication
 
-ExpressionApplication "expr application"
+SimpleApplication "simple application"
   = name:FunctionName _ "(" _ args:ArgumentList? _ ")" {
       var argList =  optionalList(args, 0);
       return Ast.Node.Application(name, argList, null);
   }
-
-SimpleApplication "simple application"
-  = name:FunctionName _ args:ArgumentList? {
+  / name:FunctionName _ args:ArgumentList? {
       var argList =  optionalList(args, 0);
       return Ast.Node.Application(name, argList, null);
   }
 
 FullApplication
-  = name:FunctionName _ body:ApplicationBody? {
+  = name:InlinableFunction _ body:ApplicationBody? {
       var argList = [];
       var block = null;
       if (body !== null) {
@@ -112,7 +113,13 @@ FullApplication
   }
 
 ApplicationBody
-  = block:ApplicationBlock {
+  = "(" _ args:ArgumentList? _ ")" _ block:ApplicationBlock? {
+      return {
+        argList: optionalList(args, 0),
+        block: block
+      };
+  }
+  / block:ApplicationBlock {
       return {
         argList: [],
         block: block
@@ -138,7 +145,7 @@ Inlinable
   / InlinedApplication
 
 InlinedApplication
-  = name:FunctionName _ body:ApplicationBody {
+  = name:InlinableFunction _ body:ApplicationBody {
       return Ast.Node.Application(name, body.argList, body.block);
   }
 
@@ -151,6 +158,14 @@ FunctionName
   = name:Identifier &{
     var isFunction = (functionNames.indexOf(name) !== -1);
     return isFunction;
+  } {
+    return name;
+  }
+
+InlinableFunction
+  = name:Identifier &{
+    var isInlinable = (inlinableFunctions.indexOf(name) !== -1);
+    return isInlinable;
   } {
     return name;
   }
@@ -268,7 +283,6 @@ NegativeExpr
 
 Base
   = Num
-  / ExpressionApplication
   / Application
   / Variable
   / "(" _ expr:Expression _ ")" { return expr; }
