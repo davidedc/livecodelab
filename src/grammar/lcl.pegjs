@@ -312,7 +312,8 @@ String "string"
   }
 
 Lambda "lambda"
-  = "(" _ params:ParamList? _ ")" _ ("->" / "=>") _ body:LambdaBody {
+  = LazyLambda
+  / "(" _ params:ParamList? _ ")" _ ("->" / "=>") _ body:LambdaBody {
       return Ast.Node.Closure(optionalList(params), body);
   }
 
@@ -320,6 +321,11 @@ LambdaBody
   = Expression
   / NewLine block:Block {
       return block;
+  }
+
+LazyLambda "lazy"
+  = "<" _ lazy:Application _ ">" {
+      return Ast.Node.Closure([], Ast.Node.Block([lazy]));
   }
 
 ParamList "param list"
