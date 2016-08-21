@@ -19,7 +19,8 @@ exports.programdata = {
             '+', 
             ast.Variable('a'),
             ast.Num(1)
-          )
+          ),
+          false
         )
       )
     ]);
@@ -44,7 +45,8 @@ exports.programdata = {
             '+', 
             ast.Variable('a'),
             ast.Variable('b')
-          )
+          ),
+          false
         )
       )
     ]);
@@ -85,7 +87,8 @@ exports.programdata = {
               [ast.Variable('c'), ast.Num(3)],
               null
             )
-          ])
+          ]),
+          false
         )
       )
     ]);
@@ -111,7 +114,8 @@ exports.programdata = {
             '+', 
             ast.Variable('a'),
             ast.Num(3)
-          )
+          ),
+          false
         )
       ),
       ast.Assignment(

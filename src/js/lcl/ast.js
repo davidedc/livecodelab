@@ -57,11 +57,12 @@ Ast.Node.If = function (predicate, ifBlock, elseBlock) {
  *  argNames: [Identifier]
  *  body:     Block
  */
-Ast.Node.Closure = function (argNames, body) {
+Ast.Node.Closure = function (argNames, body, inlinable) {
     return {
         ast: 'CLOSURE',
         argNames: argNames,
-        body: body
+        body: body,
+        inlinable: inlinable || false
     };
 };
 

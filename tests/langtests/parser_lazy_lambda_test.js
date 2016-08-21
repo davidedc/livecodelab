@@ -25,7 +25,8 @@ exports.programdata = {
                 [ast.Num(3), ast.Num(4)],
                 null
             )
-          ])
+          ]),
+          true
         )
       )
     ]);
@@ -58,7 +59,8 @@ exports.programdata = {
                 [ast.Num(3), ast.Num(4)],
                 null
             )
-          ])
+          ]),
+          true
         )
       ),
       ast.Application(
@@ -66,6 +68,45 @@ exports.programdata = {
         [],
         ast.Block([
           ast.Application('foo', [], null)
+        ])
+      )
+    ]);
+
+    test.deepEqual(parsed, expected);
+    test.done();
+  },
+
+  'lazy closure is inlinable': function (test) {
+
+    var program = dedent(`
+                         bigger = <scale 1.1>
+                         rotate bigger box
+                         `);
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['rotate', 'box', 'scale'],
+        inlinableFunctions: ['rotate', 'box', 'scale']
+      });
+
+    var expected = ast.Block([
+      ast.Assignment(
+        'bigger',
+        ast.Closure(
+          [],
+          ast.Block([ast.Application('scale', [ast.Num(1.1)], null)]),
+          true
+        ),
+        true
+      ),
+      ast.Application(
+        'rotate',
+        [],
+        ast.Block([
+          ast.Application(
+            'bigger',
+            [],
+            ast.Block([ast.Application('box', [], null)])
+          )
         ])
       )
     ]);

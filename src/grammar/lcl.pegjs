@@ -79,6 +79,9 @@ Assignment "assignment"
   = id:Identifier _ "=" _ expr:Expression {
       if (expr.ast === "CLOSURE") {
           functionNames.push(id);
+          if (expr.inlinable) {
+            inlinableFunctions.push(id);
+          }
       }
       return Ast.Node.Assignment(id, expr);
   }
@@ -314,7 +317,7 @@ String "string"
 Lambda "lambda"
   = LazyLambda
   / "(" _ params:ParamList? _ ")" _ ("->" / "=>") _ body:LambdaBody {
-      return Ast.Node.Closure(optionalList(params), body);
+      return Ast.Node.Closure(optionalList(params), body, false);
   }
 
 LambdaBody
@@ -325,7 +328,7 @@ LambdaBody
 
 LazyLambda "lazy"
   = "<" _ lazy:Application _ ">" {
-      return Ast.Node.Closure([], Ast.Node.Block([lazy]));
+      return Ast.Node.Closure([], Ast.Node.Block([lazy]), true);
   }
 
 ParamList "param list"
