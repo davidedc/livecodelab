@@ -213,7 +213,7 @@ class LiveCodeLabCore
     @programRunner.runLastWorkingProgram()
 
   playStartupSound: ->
-    #@soundSystem.playStartupSound()
+    @soundSystem.playStartupSound()
 
   isAudioSupported: ->
     @soundSystem.isAudioSupported()
