@@ -17,7 +17,7 @@ class SoundSystem
     @playPatterns = []
 
   addToScope: (scope) ->
-    scope.add('play', (soundName, pattern) => @play(soundName, pattern))
+    scope.addFunction('play', (soundName, pattern) => @play(soundName, pattern))
 
   clearPatterns: ->
     @playPatterns = []

@@ -10,12 +10,27 @@ class GlobalScope
 
   constructor: () ->
     @scope = {}
+    @functions = []
+    @inlinables = []
 
-  add: (name, value) ->
+  addVariable: (name, value) ->
     window[name] = value
     @scope[name] = value
 
-  getNames: () -> Object.keys(@scope)
+  addFunction: (name, value) ->
+    window[name] = value
+    @scope[name] = value
+    @functions.push(name)
+
+  addInlinable: (name, value) ->
+    window[name] = value
+    @scope[name] = value
+    @functions.push(name)
+    @inlinables.push(name)
+
+  getFunctions: () -> @functions
+
+  getInlinables: () -> @inlinables
 
   getScope: () -> @scope
 

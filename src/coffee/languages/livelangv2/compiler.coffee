@@ -23,9 +23,14 @@ class V2CodeCompiler
     output = {}
 
     try
+      console.log('functions', globalscope.getFunctions());
+      console.log('inlinables', globalscope.getInlinables());
       programAST = @parser.parse(
         code,
-        { functionNames: globalscope.getNames() }
+        {
+          functionNames: globalscope.getFunctions(),
+          inlinableFunctions: globalscope.getInlinables()
+        }
       )
     catch e
       # parser has caught a syntax error.

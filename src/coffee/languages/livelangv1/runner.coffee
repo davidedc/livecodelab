@@ -34,8 +34,8 @@ class ProgramRunner
 
   addToScope: (scope) ->
 
-    scope.add('addDoOnce', (a) => @addDoOnce(a))
-    scope.add('run', (a,b) => @run(a,b))
+    scope.addFunction('addDoOnce', (a) => @addDoOnce(a))
+    scope.addFunction('run', (a,b) => @run(a,b))
 
   # the run function is used so one can write
   #   a = <box>

@@ -103,23 +103,23 @@ class ColourFunctions
 
   addToScope: (scope) ->
 
-    scope.add('color',      (a,b,c,d) => @color(a,b,c,d))
-    scope.add('colorToHSB', (a) => @colorToHSB(a))
-    scope.add('brightness', (a) => @brightness(a))
-    scope.add('saturation', (a) => @saturation(a))
-    scope.add('hue',        (a) => @hue(a))
-    scope.add('redF',       (a) => @redF(a))
-    scope.add('greenF',     (a) => @greenF(a))
-    scope.add('blueF',      (a) => @blueF(a))
-    scope.add('alpha',      (a) => @alpha(a))
-    scope.add('alphaZeroToOne',      (a) => @alphaZeroToOne(a))
-    scope.add('lerp',       (a,b,c) => @lerp(a,b,c))
-    scope.add('lerpColor',  (a,b,c) => @lerpColor(a,b,c))
-    scope.add('colorMode',  (a,b,c,d,e) => @lerpColor(a,b,c,d,e))
-    scope.add('blendColor', (a,b,c) => @blendColor(a,b,c))
+    scope.addFunction('color',      (a,b,c,d) => @color(a,b,c,d))
+    scope.addFunction('colorToHSB', (a) => @colorToHSB(a))
+    scope.addFunction('brightness', (a) => @brightness(a))
+    scope.addFunction('saturation', (a) => @saturation(a))
+    scope.addFunction('hue',        (a) => @hue(a))
+    scope.addFunction('redF',       (a) => @redF(a))
+    scope.addFunction('greenF',     (a) => @greenF(a))
+    scope.addFunction('blueF',      (a) => @blueF(a))
+    scope.addFunction('alpha',      (a) => @alpha(a))
+    scope.addFunction('alphaZeroToOne',      (a) => @alphaZeroToOne(a))
+    scope.addFunction('lerp',       (a,b,c) => @lerp(a,b,c))
+    scope.addFunction('lerpColor',  (a,b,c) => @lerpColor(a,b,c))
+    scope.addFunction('colorMode',  (a,b,c,d,e) => @lerpColor(a,b,c,d,e))
+    scope.addFunction('blendColor', (a,b,c) => @blendColor(a,b,c))
 
-    scope.add('HSB',      @Constants.HSB)
-    scope.add('RGB',      @Constants.RGB)
+    scope.addVariable('HSB',      @Constants.HSB)
+    scope.addVariable('RGB',      @Constants.RGB)
 
   color$4: (aValue1, aValue2, aValue3, aValue4) ->
     r = undefined

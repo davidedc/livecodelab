@@ -13,13 +13,13 @@ class MatrixCommands
 
   addToScope: (scope) ->
 
-    scope.add('pushMatrix',           () => @pushMatrix())
-    scope.add('discardPushedMatrix',  () => @discardPushedMatrix())
-    scope.add('popMatrix',            () => @popMatrix())
-    scope.add('resetMatrix',          () => @resetMatrix())
-    scope.add('move',                 (args...) => @move.apply(this,args))
-    scope.add('rotate',               (args...) => @rotate.apply(this,args))
-    scope.add('scale',                (args...) => @scale.apply(this,args))
+    scope.addFunction('pushMatrix',           () => @pushMatrix())
+    scope.addFunction('discardPushedMatrix',  () => @discardPushedMatrix())
+    scope.addFunction('popMatrix',            () => @popMatrix())
+    scope.addFunction('resetMatrix',          () => @resetMatrix())
+    scope.addInlinable('move',        (args...) => @move.apply(this,args))
+    scope.addInlinable('rotate',      (args...) => @rotate.apply(this,args))
+    scope.addInlinable('scale',       (args...) => @scale.apply(this,args))
 
   getWorldMatrix: ->
     @worldMatrix

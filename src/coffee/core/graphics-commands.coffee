@@ -327,17 +327,17 @@ class GraphicsCommands
 
   addToScope: (scope) ->
 
-    scope.add('line',       (a,b,c,d) => @line(a,b,c,d))
-    scope.add('rect',       (a,b,c,d) => @rect(a,b,c,d))
-    scope.add('box',        (a,b,c,d) => @box(a,b,c,d))
-    scope.add('peg',        (a,b,c,d) => @peg(a,b,c,d))
-    scope.add('ball',       (a,b,c,d) => @ball(a,b,c,d))
-    scope.add('ballDetail', (a) => @ballDetail(a))
-    scope.add('fill',       (a,b,c,d,e) => @fill(a,b,c,d,e))
-    scope.add('noFill',     (a) => @noFill(a))
-    scope.add('stroke',     (a,b,c,d,e) => @stroke(a,b,c,d,e))
-    scope.add('noStroke',   (a) => @noStroke(a))
-    scope.add('strokeSize', (a) => @strokeSize(a))
+    scope.addInlinable('line',       (a,b,c,d) => @line(a,b,c,d))
+    scope.addInlinable('rect',       (a,b,c,d) => @rect(a,b,c,d))
+    scope.addInlinable('box',        (a,b,c,d) => @box(a,b,c,d))
+    scope.addInlinable('peg',        (a,b,c,d) => @peg(a,b,c,d))
+    scope.addInlinable('ball',       (a,b,c,d) => @ball(a,b,c,d))
+    scope.addFunction('ballDetail',  (a) => @ballDetail(a))
+    scope.addInlinable('fill',       (a,b,c,d,e) => @fill(a,b,c,d,e))
+    scope.addInlinable('noFill',     (a) => @noFill(a))
+    scope.addInlinable('stroke',     (a,b,c,d,e) => @stroke(a,b,c,d,e))
+    scope.addInlinable('noStroke',   (a) => @noStroke(a))
+    scope.addFunction('strokeSize',  (a) => @strokeSize(a))
 
   createObjectIfNeededAndDressWithCorrectMaterial: (
     a, b, c, primitiveProperties, strokeTime, colorToBeUsed,

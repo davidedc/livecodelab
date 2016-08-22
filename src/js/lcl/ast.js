@@ -54,8 +54,9 @@ Ast.Node.If = function (predicate, ifBlock, elseBlock) {
 };
 
 /**
- *  argNames: [Identifier]
- *  body:     Block
+ *  argNames:  [Identifier]
+ *  body:      Block
+ *  inlinable: Boolean
  */
 Ast.Node.Closure = function (argNames, body, inlinable) {
     return {

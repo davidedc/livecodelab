@@ -176,9 +176,9 @@ class ColourLiterals
       val = parseInt(colorValue)
       if isNaN(val)
         # this is the case of special colors that have string values
-        scope.add("#{colorName}", colorValue)
+        scope.addVariable("#{colorName}", colorValue)
       else
-        scope.add("#{colorName}", val)
+        scope.addVariable("#{colorName}", val)
 
   getColour: (name) ->
     colorValue = @colourNamesValues[name]

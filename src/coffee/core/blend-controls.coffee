@@ -23,10 +23,10 @@ class BlendControls
     @animationStyles.motionBlur = 2
 
   addToScope: (scope) ->
-    scope.add('normal',         @animationStyles.normal)
-    scope.add('paintOver',      @animationStyles.paintOver)
-    scope.add('motionBlur',     @animationStyles.motionBlur)
-    scope.add('animationStyle', (a) => @animationStyle(a))
+    scope.addVariable('normal',         @animationStyles.normal)
+    scope.addVariable('paintOver',      @animationStyles.paintOver)
+    scope.addVariable('motionBlur',     @animationStyles.motionBlur)
+    scope.addFunction('animationStyle', (a) => @animationStyle(a))
 
   animationStyle: (a) ->
     # turns out when you type normal that the first two letters "no"
