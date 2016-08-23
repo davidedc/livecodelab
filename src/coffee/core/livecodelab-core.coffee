@@ -61,7 +61,7 @@ children are accessed.
 AnimationLoop     = require './animation-loop'
 BackgroundPainter = require './background-painter'
 BlendControls     = require './blend-controls'
-Languages         = require './languages'
+LiveLangV2        = require '../languages/livelangv2'
 ColourFunctions   = require './colour-functions'
 ColourLiterals    = require './colour-literals'
 GraphicsCommands  = require './graphics-commands'
@@ -131,10 +131,8 @@ class LiveCodeLabCore
       @colourLiterals
     )
 
-    @languages = new Languages(@eventRouter, @globalscope)
-    languageObjects = @languages.getLanguageObjects()
-    @programRunner = languageObjects.runner
-    @codeCompiler = languageObjects.compiler
+    @programRunner = new LiveLangV2.runner(@eventRouter, @globalscope)
+    @codeCompiler = new LiveLangV2.compiler()
 
     @threeJsSystem = new ThreeJsSystem(
       @usingWebGL
@@ -196,12 +194,6 @@ class LiveCodeLabCore
     @programRunner.addToScope(@globalscope)
     @mathFunctions.addToScope(@globalscope)
     @otherCommands.addToScope(@globalscope)
-
-  setLanguage: (langName) ->
-
-    languageObjects = @languages.getLanguageObjects(langName)
-    @programRunner = languageObjects.runner
-    @codeCompiler = languageObjects.compiler
 
   paintARandomBackground: ->
     @backgroundPainter.paintARandomBackground()

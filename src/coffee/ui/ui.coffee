@@ -244,25 +244,6 @@ class Ui
           $('#'+tutorialSubmenuNoSpaces)
         )
 
-    languageList = [
-        'name': 'LCL V1',
-        'value': 'lclv1'
-      ,
-        'name': 'LCL V2',
-        'value': 'lclv2'
-    ]
-
-    for lang in languageList
-      l = """<li>
-             <a id='language-#{lang.value}'>
-             #{lang.name}
-             </a>
-             </li>"""
-      $(l).appendTo(
-        $('#ulForLanguages')
-      )
-
-
     # Now that all the menu items are in place in the DOM,
     # invoke sooperfish,
     # which does some more transformations of its own.
@@ -274,10 +255,6 @@ class Ui
 
     $("#tutorials li a").click ->
       eventRouter.emit("load-program", $(@).attr("id"))
-      false
-
-    $("#languages li a").click ->
-      eventRouter.emit("set-language", $(@).attr("id"))
       false
 
     $("#autocodeIndicator").click(
