@@ -13,7 +13,7 @@
     "buildfirst": "npm run statics && npm run style && npm run html && npm run genparser",
     "compile": "browserify -t coffeeify --extension='.coffee' ./src/coffee/lcl-init.coffee -o ./dist/app.js",
     "watch-js": "watchify -t coffeeify --extension='.coffee' ./src/coffee/lcl-init.coffee -o ./dist/app.js",
-    "compiledev": "browserify --debug -t coffeeify --extension='.coffee' ./src/coffee/lcl-init.coffee -o ./dist/app.js",
+    "compiledev": "webpack -d",
     "prodbuild": "npm run buildfirst && npm run compile",
     "devbuild": "npm run buildfirst && npm run compiledev",
     "serve": "http-server ./dist",
@@ -39,7 +39,9 @@
     "dentist": "1.0.3"
   },
   "dependencies": {
+    "coffee-loader": "^0.7.2",
     "coffee-script": "^1.9.3",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "webpack": "^1.13.2"
   }
 }
