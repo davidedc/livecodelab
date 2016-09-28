@@ -55,6 +55,48 @@ exports.programdata = {
     test.done();
   },
 
+  'simple function call is parsed': function (test) {
+
+    var program = `box 1`;
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box'],
+        inlinableFunctions: ['box']
+      });
+
+    var expected = ast.Block([
+        ast.Application(
+            'box',
+            [ast.Num(1)],
+            null
+        )
+    ]);
+
+    test.deepEqual(parsed, expected);
+    test.done();
+  },
+
+  'simple function call with empty arg list is parsed': function (test) {
+
+    var program = `box`;
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box'],
+        inlinableFunctions: ['box']
+      });
+
+    var expected = ast.Block([
+        ast.Application(
+            'box',
+            [],
+            null
+        )
+    ]);
+
+    test.deepEqual(parsed, expected);
+    test.done();
+  },
+
   'block function is parsed': function (test) {
 
     var program = dedent(`
@@ -101,7 +143,7 @@ exports.programdata = {
 
     var program = dedent(`
                          foo = (a) -> a + 3
-                         bar = foo 1 + foo(2)
+                         bar = foo 1 + foo 2
                          `);
     var parsed = parser.parse(program);
 
@@ -128,6 +170,119 @@ exports.programdata = {
             ast.Application('foo', [ast.Num(2)], null)
           )],
           null
+        )
+      )
+    ]);
+
+    test.deepEqual(parsed, expected);
+    test.done();
+  },
+
+  'function precedence is linear': function (test) {
+
+    var program = dedent(`
+                         foo = (a, b) -> a + b
+                         bar = foo foo 1, 2, 3
+                         `);
+    var parsed = parser.parse(program);
+
+    var expected = ast.Block([
+      ast.Assignment(
+        'foo',
+        ast.Closure(
+          ['a', 'b'],
+          ast.BinaryOp(
+            '+', 
+            ast.Variable('a'),
+            ast.Variable('b')
+          ),
+          false
+        )
+      ),
+      ast.Assignment(
+        'bar',
+        ast.Application(
+          'foo',
+          [
+            ast.Application(
+              'foo',
+              [
+                ast.Num(1),
+                ast.Num(2),
+                ast.Num(3)
+              ],
+              null
+            ),
+          ],
+          null
+        )
+      )
+    ]);
+
+    test.deepEqual(parsed, expected);
+    test.done();
+  },
+
+  'complex expression function is parsed': function (test) {
+
+    var program = 'foo = (x, y, j, z) -> spread * (  ( noise  (x * abs (sin (time+y) * movmentSpeed)) / (j + z) ) - 0.5  )';
+
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['noise', 'abs', 'sin'],
+        inlinableFunctions: []
+      });
+
+    var expected = ast.Block([
+      ast.Assignment(
+        'foo',
+        ast.Closure(
+          ['x', 'y', 'j', 'z'],
+          ast.BinaryOp(
+            '*', 
+            ast.Variable('spread'),
+
+            ast.BinaryOp(
+              '-',
+
+              ast.Application(
+                'noise',
+                [
+                  ast.BinaryOp(
+                    '/',
+                    ast.BinaryOp(
+                      '*',
+                      ast.Variable('x'), 
+                      ast.Application(
+                        'abs',
+                        [
+                          ast.Application(
+                            'sin',
+                            [
+                              ast.BinaryOp(
+                                '*',
+                                ast.BinaryOp('+', ast.Variable('time'), ast.Variable('y')),
+                                ast.Variable('movmentSpeed')
+                              )
+                            ],
+                            null
+                          )
+                        ],
+                        null
+                      )
+                    ),
+                    ast.BinaryOp('+', ast.Variable('j'), ast.Variable('z'))
+
+                  )
+                ],
+                null
+              ),
+              ast.Num(0.5)
+            )
+
+
+          ),
+          false
         )
       )
     ]);
@@ -199,6 +354,42 @@ exports.programdata = {
     test.done();
   },
 
+  'bare application call with parenthesised expression args': function (test) {
+
+    var program = `box (3 + 4) * 2, a * 2`;
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box'],
+        inlinableFunctions: ['box']
+      });
+
+    var expected = ast.Block([
+      ast.Application(
+        'box',
+        [
+          ast.BinaryOp(
+            '*',
+            ast.BinaryOp(
+              '+', 
+              ast.Num(3),
+              ast.Num(4)
+            ),
+            ast.Num(2)
+          ),
+          ast.BinaryOp(
+            '*', 
+            ast.Variable('a'),
+            ast.Num(2)
+          )
+        ],
+        null
+      )
+    ]);
+
+    test.deepEqual(parsed, expected);
+    test.done();
+  },
+
   'two inlined function calls are parsed': function (test) {
 
     var program = `rotate 2 box 3`;
@@ -228,7 +419,7 @@ exports.programdata = {
 
   'paren-less function with parened function as argument': function (test) {
 
-    var program = `box bar(3)`;
+    var program = `box bar 3`;
     var parsed = parser.parse(
       program, {
         functionNames: ['box', 'bar'],

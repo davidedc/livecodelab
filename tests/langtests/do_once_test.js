@@ -7,7 +7,7 @@ exports.programdata = {
 
   'simple doOnce expression works': function (test) {
 
-    var program = `doOnce box()`;
+    var program = `doOnce box`;
     var parsed = parser.parse(program, {
       functionNames: ['box'],
       inlinableFunctions: ['box']
@@ -27,7 +27,7 @@ exports.programdata = {
 
   'finished simple doOnce expression works': function (test) {
 
-    var program = `✓doOnce box()`;
+    var program = `✓doOnce box`;
     var parsed = parser.parse(program, {
       functionNames: ['box'],
       inlinableFunctions: ['box']

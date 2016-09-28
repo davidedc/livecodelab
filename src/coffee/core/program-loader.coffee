@@ -56,7 +56,7 @@ class ProgramLoader
       submenu: "Basic"
       title: "Cubes and spikes"
       code: """
-            simpleGradient fuchsia, color(100, 200, 200), yellow
+            simpleGradient fuchsia, (color 100, 200, 200), yellow
             scale 2.1
             5 times
             ▶rotate 0, 1, time / 5
@@ -188,12 +188,15 @@ class ProgramLoader
             thinness = 0.08
             colorSpeed = 4
             movmentSpeed = 0.002
-            noiseMov = (x, y, j, z) -> spread * (noise(((x*abs(sin((time+y)*movmentSpeed))))/(j+z))-0.5)
+            noiseMov = (x, y, j, z) -> spread * (  ( noise  (x * abs (sin (time+y) * movmentSpeed)) / (j + z) ) - 0.5  )
             move 1, 1, 0
             rotate 3, 0.6, time / 10
             numStacks times with j
             ▶move 0
-            ▶▶move noiseMov(200,100,j,20),noiseMov(209,200,j,2),noiseMov(100,300,j,40)/4
+            ▶▶xm = noiseMov 200, 100, j, 20
+            ▶▶ym = noiseMov 209, 200, j, 2
+            ▶▶zm = (noiseMov 100, 300, j, 40) / 4
+            ▶▶move xm, ym, zm
             ▶▶stackN times with i
             ▶▶▶move 0, 0, i * thinness
             ▶▶▶▶fill 255, (time*3*j*colorSpeed+i*255/stackN)%255, (time*1*j*colorSpeed+i*255/stackN)%255
@@ -213,12 +216,15 @@ class ProgramLoader
             thinness = 0.08
             colorSpeed = 4
             movmentSpeed = 0.003
-            noiseMov = (x,y,j,z) -> spread*(noise(((x*abs(sin((time+y)*movmentSpeed))))/(j+z))-0.5)
+            noiseMov = (x, y, j, z) -> spread * (  ( noise  (x * abs (sin (time+y) * movmentSpeed)) / (j + z) ) - 0.5  )
             move 1,1,0
             rotate time/10
             numStacks times with j
             ▶move 0
-            ▶▶move noiseMov(501,300,j,20),noiseMov(703,400,j,2),noiseMov(604,500,j,40)/4
+            ▶▶xm = noiseMov 501, 300, j, 20
+            ▶▶ym = noiseMov 703, 400, j, 2
+            ▶▶zm = (noiseMov 604, 500, j, 40) / 4
+            ▶▶move xm, ym, zm
             ▶▶move 0,0,thinness
             ▶▶▶fill 0,0, (time*1*j*colorSpeed+255/stackN)%255
             ▶▶▶rect 0.24
@@ -343,7 +349,7 @@ class ProgramLoader
       title: "Lamp"
       code: """
             animationStyle motionBlur
-            simpleGradient red, yellow, color(255, 0, 255)
+            simpleGradient red, yellow, (color 255, 0, 255)
             //animationStyle paintOver
             scale 2
             rotate time / 4, time / 4, time / 4
@@ -527,7 +533,7 @@ class ProgramLoader
       title: "Springy squares"
       code: """
             animationStyle motionBlur
-            simpleGradient fuchsia, color(100, 200, 200), yellow
+            simpleGradient fuchsia, (color 100, 200, 200), yellow
             scale 0.3
             3 times
             ▶move 0, 0, 0.5
@@ -542,7 +548,7 @@ class ProgramLoader
       title: "Dice"
       code: """
             animationStyle motionBlur
-            simpleGradient color(255), moccasin, peachpuff
+            simpleGradient (color 255), moccasin, peachpuff
             stroke 255, 100, 100, 255
             fill red, 155
             move -0.5, 0, 0
@@ -869,7 +875,7 @@ class ProgramLoader
             // even nicer, you can paint a
             // background gradient:
 
-            simpleGradient color(190, 10, 10), color(30, 90, 100), color(0)
+            simpleGradient (color 190, 10, 10), (color 30, 90, 100), color 0
             rotate time
             box
 
