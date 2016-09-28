@@ -3,6 +3,13 @@
 ## cruise speed
 ###
 
+require '../style/codemirror.css'
+require '../style/main.css'
+require '../style/night.css'
+require '../style/simpleModal.css'
+require '../style/sooperfish.css'
+require '../style/sooperfish-theme-glass.css'
+        
 Stats           = require '../js/threejs/Stats'
 EventEmitter    = require './core/event-emitter'
 LiveCodeLabCore = require './core/livecodelab-core'

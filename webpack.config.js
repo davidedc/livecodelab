@@ -1,11 +1,21 @@
 module.exports = {
   entry: './src/coffee/lcl-init.coffee',
   output: {
-    filename: './dist/app.js'
+    path: './dist',
+    filename: './app.js'
   },
   module: {
     loaders: [
-      { test: /\.coffee$/, loader: 'coffee-loader' }
+      { test: /\.coffee$/, loader: 'coffee-loader' },
+      { test: /\.css$/, loader: 'style-loader!css-loader' },
+      {
+        test: /\.ttf$|\.eot$/,
+        loader: 'file',
+        query: {
+          name: 'font/[hash].[ext]'
+        }
+      },
+      { test: /\.(png|jpg)$/, loader: 'url-loader?limit=8192' }
     ]
   },
   resolve: {
