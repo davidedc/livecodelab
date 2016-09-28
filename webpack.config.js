@@ -9,6 +9,13 @@ module.exports = {
       { test: /\.coffee$/, loader: 'coffee-loader' },
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       {
+        test: /\.html$/,
+        loader: 'file',
+        query: {
+          name: '[name].[ext]'
+        }
+      },
+      {
         test: /\.ttf$|\.eot$/,
         loader: 'file',
         query: {
@@ -19,7 +26,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.json', '.coffee'],
+    extensions: ['', '.js', '.json', '.coffee', '.html'],
     alias: {
       jquery: './jquery'
     }
