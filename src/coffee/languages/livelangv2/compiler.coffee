@@ -23,8 +23,6 @@ class V2CodeCompiler
     output = {}
 
     try
-      console.log('functions', globalscope.getFunctions());
-      console.log('inlinables', globalscope.getInlinables());
       programAST = @parser.parse(
         code,
         {

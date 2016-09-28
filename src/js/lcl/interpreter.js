@@ -160,7 +160,6 @@ internal.evaluateApplication = function (state, application, scope) {
 };
 
 internal.evaluateIf = function (state, ifStatement, scope) {
-    console.log('if', ifStatement);
     var predicate, ifblock, elseblock;
 
     predicate = ifStatement.predicate;
