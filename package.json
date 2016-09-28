@@ -4,11 +4,9 @@
   "description": "A live coding environment for the browser",
   "scripts": {
     "statics": "cp -r ./static/sound/* ./dist/",
-    "html": "cp ./html/index.html ./dist/",
-    "watch-html": "nodemon --watch html -e html --exec 'npm run html'",
     "genparser": "pegjs ./src/grammar/lcl.pegjs ./src/generated/parser.js",
     "dbgparser": "pegjs --trace ./src/grammar/lcl.pegjs ./src/generated/parser.js",
-    "buildfirst": "npm run statics && npm run html && npm run genparser",
+    "buildfirst": "npm run statics && npm run genparser",
     "compile": "browserify -t coffeeify --extension='.coffee' ./src/coffee/lcl-init.coffee -o ./dist/app.js",
     "watch-js": "watchify -t coffeeify --extension='.coffee' ./src/coffee/lcl-init.coffee -o ./dist/app.js",
     "compiledev": "webpack -d",
