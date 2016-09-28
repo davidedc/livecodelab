@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "A live coding environment for the browser",
   "scripts": {
-    "statics": "cp -r ./static/sound/* ./dist/",
+    "sounds": "cp -r ./static/sound ./dist/",
     "genparser": "pegjs ./src/grammar/lcl.pegjs ./src/generated/parser.js",
     "dbgparser": "pegjs --trace ./src/grammar/lcl.pegjs ./src/generated/parser.js",
     "buildfirst": "npm run statics && npm run genparser",
