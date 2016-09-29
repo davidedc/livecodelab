@@ -5,7 +5,7 @@
   "scripts": {
     "build": "webpack -p",
     "devbuild": "webpack -d",
-    "serve": "http-server ./dist",
+    "serve": "webpack-dev-server --content-base dist/ --inline",
     "docs": "docco docs/**/*.md -o dist/docs",
     "docs:src": "docco src/coffee/**/*.coffee -o dist/docs/src",
     "test": "nodeunit tests/langtests"
@@ -16,13 +16,13 @@
     "dentist": "1.0.3",
     "docco": "^0.7.0",
     "file-loader": "^0.9.0",
-    "http-server": "^0.8.0",
     "nodeunit": "^0.9.1",
     "pegjs": "^0.9.0",
     "pegjs-loader": "^0.4.0",
     "style-loader": "^0.13.1",
     "underscore": "^1.8.3",
     "url-loader": "^0.5.7",
-    "webpack": "^1.13.2"
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.16.1"
   }
 }
