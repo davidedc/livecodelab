@@ -22,11 +22,12 @@ module.exports = {
           name: 'font/[hash].[ext]'
         }
       },
-      { test: /\.(png|jpg)$/, loader: 'url-loader?limit=8192' }
+      { test: /\.(png|jpg)$/, loader: 'url-loader?limit=8192' },
+      { test: /\.pegjs$/, loader: 'pegjs-loader' }
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.json', '.coffee', '.html'],
+    extensions: ['', '.js', '.json', '.coffee', '.html', '.pegjs'],
     alias: {
       jquery: './jquery'
     }
