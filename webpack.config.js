@@ -22,12 +22,19 @@ module.exports = {
           name: 'font/[hash].[ext]'
         }
       },
+      {
+        test: /\.(mp3|ogg)$/,
+        loader: 'file',
+        query: {
+          name: 'sound/[hash][name].[ext]'
+        }
+      },
       { test: /\.(png|jpg)$/, loader: 'url-loader?limit=8192' },
       { test: /\.pegjs$/, loader: 'pegjs-loader' }
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.json', '.coffee', '.html', '.pegjs'],
+    extensions: ['', '.js', '.json', '.coffee', '.html', '.pegjs', '.mp3', '.ogg'],
     alias: {
       jquery: './jquery'
     }
