@@ -4,19 +4,17 @@
   "description": "A live coding environment for the browser",
   "scripts": {
     "sounds": "cp -r ./static/sound ./dist/",
-    "genparser": "pegjs ./src/grammar/lcl.pegjs ./src/generated/parser.js",
-    "dbgparser": "pegjs --trace ./src/grammar/lcl.pegjs ./src/generated/parser.js",
-    "buildfirst": "npm run sounds && npm run genparser",
     "compile": "webpack -p",
     "compiledev": "webpack -d",
-    "prodbuild": "npm run buildfirst && npm run compile",
-    "devbuild": "npm run buildfirst && npm run compiledev",
+    "prodbuild": "npm run sounds && npm run compile",
+    "devbuild": "npm run sounds && npm run compiledev",
     "serve": "http-server ./dist",
     "docs": "docco docs/**/*.md -o dist/docs",
     "docs:src": "docco src/coffee/**/*.coffee -o dist/docs/src",
     "test": "nodeunit tests/langtests"
   },
   "devDependencies": {
+    "coffee-loader": "^0.7.2",
     "css-loader": "^0.25.0",
     "dentist": "1.0.3",
     "docco": "^0.7.0",
@@ -24,10 +22,10 @@
     "http-server": "^0.8.0",
     "nodeunit": "^0.9.1",
     "pegjs": "^0.9.0",
+    "pegjs-loader": "^0.4.0",
     "style-loader": "^0.13.1",
-    "url-loader": "^0.5.7",
-    "coffee-loader": "^0.7.2",
     "underscore": "^1.8.3",
+    "url-loader": "^0.5.7",
     "webpack": "^1.13.2"
   }
 }
