@@ -14,7 +14,7 @@ class WebAudioApi
     @context.currentTime * 1000
 
   loadSample: (name, path) =>
-    url = path + '.mp3'
+    url = path
     request = new XMLHttpRequest()
     request.open('GET', url, true)
     request.responseType = 'arraybuffer'

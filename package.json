@@ -3,11 +3,8 @@
   "version": "0.1.0",
   "description": "A live coding environment for the browser",
   "scripts": {
-    "sounds": "cp -r ./static/sound ./dist/",
-    "compile": "webpack -p",
-    "compiledev": "webpack -d",
-    "prodbuild": "npm run sounds && npm run compile",
-    "devbuild": "npm run sounds && npm run compiledev",
+    "build": "webpack -p",
+    "devbuild": "webpack -d",
     "serve": "http-server ./dist",
     "docs": "docco docs/**/*.md -o dist/docs",
     "docs:src": "docco src/coffee/**/*.coffee -o dist/docs/src",
