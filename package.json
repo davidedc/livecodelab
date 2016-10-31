@@ -8,6 +8,7 @@
     "serve": "webpack-dev-server --content-base dist/ --inline",
     "docs": "docco docs/**/*.md -o dist/docs",
     "docs:src": "docco src/coffee/**/*.coffee -o dist/docs/src",
+    "pretest": "pegjs ./src/grammar/lcl.pegjs ./src/generated/parser.js",
     "test": "nodeunit tests/langtests"
   },
   "devDependencies": {
