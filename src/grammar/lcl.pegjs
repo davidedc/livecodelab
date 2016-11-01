@@ -149,8 +149,9 @@ ArgumentList
 
 FunctionName
   = name:Identifier &{
+    var isInlinable = (inlinableFunctions.indexOf(name) !== -1);
     var isFunction = (functionNames.indexOf(name) !== -1);
-    return isFunction;
+    return (isFunction && !isInlinable);
   } {
     return name;
   }
@@ -222,6 +223,9 @@ ActiveDoOnce "active do once"
   = "doOnce" _ NewLine block:Block {
       return Ast.Node.DoOnce(true, block);
   }
+  / "doOnce" _ appl:FullApplication {
+      return Ast.Node.DoOnce(true, Ast.Node.Block([appl]));
+  }
   / "doOnce" _ expr:Expression {
       return Ast.Node.DoOnce(true, Ast.Node.Block([expr]));
   }
@@ -276,12 +280,17 @@ NegativeExpr
 
 Base
   = Num
-  / Application
+  / SimpleApplication
   / Variable
   / "(" _ expr:Expression _ ")" { return expr; }
 
 Variable "variable"
-  = id:Identifier { return Ast.Node.Variable(id); }
+  = id:Identifier &{
+    var isInlinable = (inlinableFunctions.indexOf(id) !== -1);
+    return !isInlinable;
+  } {
+    return Ast.Node.Variable(id);
+  }
 
 Identifier
   = [a-zA-Z]+[a-zA-Z0-9]* {return text(); }

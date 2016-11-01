@@ -520,6 +520,54 @@ exports.programdata = {
 
     test.deepEqual(parsed, expected);
     test.done();
+  },
+
+  'inlined simple function calls without arguments': function (test) {
+
+    var program = dedent('scale wave box');
+    var parsed = parser.parse(
+      program,
+      {
+        functionNames: ['scale', 'wave', 'box'],
+        inlinableFunctions: ['scale', 'box']
+      });
+
+    var expected = ast.Block([
+      ast.Application(
+        'scale', [ast.Application('wave', [], null)],
+        ast.Block([
+          ast.Application('box', [], null)
+        ])
+      )
+    ]);
+
+    test.deepEqual(parsed, expected);
+    test.done();
+  },
+
+  'multiple inlined simple function calls without arguments': function (test) {
+
+    var program = dedent('scale wave wave box');
+    var parsed = parser.parse(
+      program,
+      {
+        functionNames: ['scale', 'wave', 'box'],
+        inlinableFunctions: ['scale', 'box']
+      });
+
+    var expected = ast.Block([
+      ast.Application(
+        'scale', [ast.Application('wave', [
+          ast.Application('wave', [], null)
+        ], null)],
+        ast.Block([
+          ast.Application('box', [], null)
+        ])
+      )
+    ]);
+
+    test.deepEqual(parsed, expected);
+    test.done();
   }
 };
 
