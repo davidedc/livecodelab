@@ -33,6 +33,15 @@ If you actually want the bundled js, html and audio files, then you need to do a
  * Full release build: Will be more optimised.
    `npm run build`
 
+LiveCodeLang V2
+---------------
+
+By default LiveCodeLab builds and runs with version 1 of the language. To use version 2, set the environment variable **LCLANG** before running any of the tasks. For example:
+
+ * `LCLANG=v2 npm run serve`
+ * `LCLANG=v2 npm run build`
+ * `LCLANG=v2 npm run devbuild`
+
 Testing
 -------
 
