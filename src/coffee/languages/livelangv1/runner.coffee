@@ -30,7 +30,7 @@ class ProgramRunner
   # LiveCodeLab might be running an older version.
   currentCodeString = ""
   
-  constructor: (@eventRouter, @codeCompiler) ->
+  constructor: (@eventRouter, @codeCompiler, @globalScope) ->
 
   addToScope: (scope) ->
 

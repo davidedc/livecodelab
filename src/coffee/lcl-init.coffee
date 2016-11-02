@@ -3,6 +3,15 @@
 ## cruise speed
 ###
 
+require '../style/codemirror.css'
+require '../style/main.css'
+require '../style/night.css'
+require '../style/simpleModal.css'
+require '../style/sooperfish.css'
+require '../style/sooperfish-theme-glass.css'
+
+require '../index.html'
+
 Stats           = require '../js/threejs/Stats'
 EventEmitter    = require './core/event-emitter'
 LiveCodeLabCore = require './core/livecodelab-core'
@@ -134,12 +143,6 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
   eventRouter.addListener(
     'big-cursor-hide',
     () -> bigCursor.shrinkBigCursor()
-  )
-  eventRouter.addListener(
-    'set-language',
-    (langNameId) ->
-      langName = langNameId.split('-')[1]
-      liveCodeLabCore.setLanguage(langName)
   )
 
   codeTextArea = document.getElementById('code')

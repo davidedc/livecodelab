@@ -11,7 +11,7 @@ _           = require 'underscore'
 
 class V2ProgramRunner
 
-  constructor: (@eventRouter, @globalscope) ->
+  constructor: (@eventRouter, @compiler, @globalscope) ->
 
     # contains the program AST
     @programAST = []
