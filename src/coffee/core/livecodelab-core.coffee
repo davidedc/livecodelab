@@ -133,6 +133,7 @@ class LiveCodeLabCore
 
     @languages = new Languages(@eventRouter, @globalscope)
     languageObjects = @languages.getLanguageObjects()
+    console.log(languageObjects);
     @programRunner = languageObjects.runner
     @codeCompiler = languageObjects.compiler
 
@@ -196,12 +197,6 @@ class LiveCodeLabCore
     @programRunner.addToScope(@globalscope)
     @mathFunctions.addToScope(@globalscope)
     @otherCommands.addToScope(@globalscope)
-
-  setLanguage: (langName) ->
-
-    languageObjects = @languages.getLanguageObjects(langName)
-    @programRunner = languageObjects.runner
-    @codeCompiler = languageObjects.compiler
 
   paintARandomBackground: ->
     @backgroundPainter.paintARandomBackground()

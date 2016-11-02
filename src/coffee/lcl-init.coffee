@@ -144,12 +144,6 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
     'big-cursor-hide',
     () -> bigCursor.shrinkBigCursor()
   )
-  eventRouter.addListener(
-    'set-language',
-    (langNameId) ->
-      langName = langNameId.split('-')[1]
-      liveCodeLabCore.setLanguage(langName)
-  )
 
   codeTextArea = document.getElementById('code')
   editor = new Editor(eventRouter, codeTextArea)

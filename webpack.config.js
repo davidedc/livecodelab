@@ -1,3 +1,7 @@
+/* global process */
+
+var webpack = require('webpack');
+
 module.exports = {
   entry: './src/coffee/lcl-init.coffee',
   output: {
@@ -38,5 +42,10 @@ module.exports = {
     alias: {
       jquery: './jquery'
     }
-  }
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      LANGUAGE: JSON.stringify(process.env.LCLANG || 'v1')
+    }),
+  ]
 };
