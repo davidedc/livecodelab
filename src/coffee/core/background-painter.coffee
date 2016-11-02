@@ -83,8 +83,8 @@ class BackgroundPainter
 
   addToScope: (scope) ->
 
-    scope.add('simpleGradient', (a,b,c) => @simpleGradient(a,b,c))
-    scope.add('background', (a,b,c) => @background(a,b,c))
+    scope.addFunction('simpleGradient', (a,b,c) => @simpleGradient(a,b,c))
+    scope.addFunction('background', (a,b,c) => @background(a,b,c))
 
   # This needs to be global so it can be run by the draw function
   simpleGradient: (a, b, c, d) ->

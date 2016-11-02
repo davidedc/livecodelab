@@ -4,7 +4,7 @@ class OtherCommands
   constructor: () ->
 
   addToScope: (scope) ->
-    scope.add('noOperation', () => @noOperation())
+    scope.addFunction('noOperation', () => @noOperation())
 
   noOperation: () ->
 

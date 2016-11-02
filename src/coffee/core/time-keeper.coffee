@@ -31,16 +31,16 @@ class TimeKeeper extends EventEmitter
   addToScope: (scope) ->
 
     @scope = scope
-    scope.add('bpm',   (bpm) => @setBpm(bpm))
-    scope.add('beat',  () => @beat())
-    scope.add('pulse', (frequency) => @pulse(frequency))
-    scope.add('wave',  (frequency) => @wave(frequency))
-    scope.add('time',  @time)
+    scope.addFunction('bpm',   (bpm) => @setBpm(bpm))
+    scope.addFunction('beat',  () => @beat())
+    scope.addFunction('pulse', (frequency) => @pulse(frequency))
+    scope.addFunction('wave',  (frequency) => @wave(frequency))
+    scope.addVariable('time',  @time)
 
   setTime: (value) =>
     @time = value
     if @scope
-      @scope.add('time', @time)
+      @scope.addVariable('time', @time)
 
   ###
   This is the beat loop that runs at 4 quarters to the beat, emitting

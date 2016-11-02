@@ -22,9 +22,9 @@ class LightsCommands
     
   addToScope: (scope) ->
 
-    scope.add('lights', () => @lights())
-    scope.add('noLights', () => @noLights())
-    scope.add('ambientLight', (a,b,c,d) => @ambientLight(a,b,c,d))
+    scope.addFunction('lights', () => @lights())
+    scope.addFunction('noLights', () => @noLights())
+    scope.addFunction('ambientLight', (a,b,c,d) => @ambientLight(a,b,c,d))
 
   lights: ->
     @lightsAreOn = true

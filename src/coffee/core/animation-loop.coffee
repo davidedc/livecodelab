@@ -85,12 +85,12 @@ class AnimationLoop
 
   addToScope: (scope) ->
     @scope = scope
-    @scope.add('frame', @frame)
+    @scope.addVariable('frame', @frame)
 
   setFrame: (value) ->
     @frame = value
     if @scope
-      @scope.add('frame', value)
+      @scope.addVariable('frame', value)
 
   # There are two different ways to schedule the next frame:
   # 1. using a native window.requestAnimationFrame implementation

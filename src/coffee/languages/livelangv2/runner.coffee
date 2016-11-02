@@ -25,7 +25,7 @@ class V2ProgramRunner
 
   addToScope: (scope) ->
 
-    scope.add('run', (a,b) => @run(a,b))
+    scope.addFunction('run', (a,b) => @run(a,b))
 
   # the run function is used so one can write
   #   a = <box>
