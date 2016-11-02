@@ -5,7 +5,7 @@
   "scripts": {
     "build": "webpack -p",
     "devbuild": "webpack -d",
-    "serve": "webpack-dev-server --content-base dist/ --inline",
+    "serve": "webpack-dev-server -d --content-base dist/ --inline",
     "docs": "docco docs/**/*.md -o dist/docs",
     "docs:src": "docco src/coffee/**/*.coffee -o dist/docs/src",
     "pretest": "pegjs ./src/grammar/lcl.pegjs ./src/generated/parser.js",
@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "coffee-loader": "^0.7.2",
+    "coffee-script": "^1.11.1",
     "css-loader": "^0.25.0",
     "dentist": "1.0.3",
     "docco": "^0.7.0",
