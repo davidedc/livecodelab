@@ -45,7 +45,7 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      LANGUAGE: JSON.stringify(process.env.LCLANG || 'v1')
+      LANGUAGE: JSON.stringify(process.env.LCLANG === 'v2' ? 'livelangv2' : 'livelangv1')
     }),
   ]
 };
