@@ -138,7 +138,6 @@ class LiveCodeLabCore
     @codeCompiler = languageObjects.compiler
 
     @threeJsSystem = new ThreeJsSystem(
-      @usingWebGL
       @threeJsCanvas,
       @paramsObject.testMode,
       @three
