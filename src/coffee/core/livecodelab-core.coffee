@@ -89,7 +89,6 @@ class LiveCodeLabCore
     @syncClient,
     @audioAPI,
     @statsWidget,
-    @usingWebGL,
     @paramsObject
   ) ->
 

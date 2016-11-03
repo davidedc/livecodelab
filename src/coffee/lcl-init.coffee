@@ -123,7 +123,6 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
     syncClient,
     audioAPI,
     stats,
-    usingWebGL,
     {
       testMode: paramsObject.testMode
     }
