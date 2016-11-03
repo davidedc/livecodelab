@@ -146,7 +146,7 @@ class LiveCodeLabCore
 
     @blendControls = new BlendControls(@threeJsSystem)
 
-    @renderer = new Renderer(@threeJsSystem, @usingWebGL, @blendControls)
+    @renderer = new Renderer(@threeJsSystem, @blendControls)
 
     @matrixCommands = new MatrixCommands(
       @three,

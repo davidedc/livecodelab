@@ -5,59 +5,11 @@
 
 class Renderer
 
-  constructor: (@threeJsSystem, @usingWebGL, @blendControls) ->
+  constructor: (@threeJsSystem, @blendControls) ->
 
   render: (graphics) ->
-
-    # some shorthands
-    renderer = @threeJsSystem.renderer
-    blendedThreeJsSceneCanvasContext =
-      @threeJsSystem.blendedThreeJsSceneCanvasContext
-    previousFrameThreeJSSceneRenderForBlendingCanvasContext =
-      @threeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvasContext
-
     @combDisplayList graphics
-
-
-    if @usingWebGL
-      @threeJsSystem.composer.render()
-    else
-
-      # the renderer draws into an offscreen
-      # canvas called currentFrameThreeJsSceneCanvas
-      renderer.render @threeJsSystem.scene, @threeJsSystem.camera
-
-      # clear the final render context
-      blendedThreeJsSceneCanvasContext.globalAlpha = 1.0
-      blendedThreeJsSceneCanvasContext.clearRect(
-        0, 0, window.innerWidth, window.innerHeight
-      )
-
-      # draw the rendering on the blendedThreeJsSceneCanvasContext
-      # this needs a few steps so we can get the motionBlur or the paintOver
-      # effects right
-      # TODO: I'm sure that this can be optimised when there is no
-      # motionBlur and no paintOver, because we don't need to keep and blend
-      # with the previous frame in that case.
-      blendedThreeJsSceneCanvasContext.globalAlpha =
-        @blendControls.blendAmount
-      blendedThreeJsSceneCanvasContext.drawImage(
-        @threeJsSystem.previousFrameThreeJSSceneRenderForBlendingCanvas, 0, 0
-      )
-      blendedThreeJsSceneCanvasContext.globalAlpha = 1.0
-      blendedThreeJsSceneCanvasContext.drawImage(
-        @threeJsSystem.currentFrameThreeJsSceneCanvas, 0, 0
-      )
-      previousFrameThreeJSSceneRenderForBlendingCanvasContext.globalCompositeOperation = "copy"
-      previousFrameThreeJSSceneRenderForBlendingCanvasContext.drawImage(
-        @threeJsSystem.blendedThreeJsSceneCanvas, 0, 0
-      )
-
-      # clear the renderer's canvas to transparent black
-      @threeJsSystem.currentFrameThreeJsSceneCanvasContext.clearRect(
-        0, 0, window.innerWidth, window.innerHeight
-      )
-
+    @threeJsSystem.composer.render()
 
   # By doing some profiling it is apparent that
   # adding and removing objects has a big cost.
