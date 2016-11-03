@@ -13,14 +13,15 @@ class BlendControls
   previousanimationStyleValue: 0
   animationStyleValue: 0
   # Just an object to hold the animation style variables
-  animationStyles: {}
+  animationStyles: {
+    normal: 0,
+    paintOver: 1,
+    motionBlur: 2
+  }
   # Used for setting how much blending there is between frames
   blendAmount: 0
   
-  constructor: (@usingWebGL, @threeJsSystem) ->
-    @animationStyles.normal = 0
-    @animationStyles.paintOver = 1
-    @animationStyles.motionBlur = 2
+  constructor: (@threeJsSystem) ->
 
   addToScope: (scope) ->
     scope.addVariable('normal',         @animationStyles.normal)
@@ -29,9 +30,6 @@ class BlendControls
     scope.addFunction('animationStyle', (a) => @animationStyle(a))
 
   animationStyle: (a) ->
-    # turns out when you type normal that the first two letters "no"
-    # are sent as "false"
-    return  if a is false or not a?
     @animationStyleValue = a
 
   animationStyleUpdateIfChanged: ->
@@ -39,23 +37,16 @@ class BlendControls
     return  if @animationStyleValue is @previousanimationStyleValue
     @previousanimationStyleValue = @animationStyleValue
 
-    # defining a couple of shorthands to avoid super-long lines
-    @animationStyles = @animationStyles
+    switch @animationStyleValue
+        when @animationStyles.paintOver
+            @threeJsSystem.effectBlend.uniforms.mixRatio.value = 1.0 
+        when @animationStyles.motionBlur
+            @threeJsSystem.effectBlend.uniforms.mixRatio.value = 0.7
+        when @animationStyles.normal
+            @threeJsSystem.effectBlend.uniforms.mixRatio.value = 0
+        else
+            @threeJsSystem.effectBlend.uniforms.mixRatio.value = 0
 
-    if @usingWebGL and @animationStyleValue is @animationStyles.motionBlur
-      @threeJsSystem.effectBlend.uniforms.mixRatio.value = 0.4
-    else if not @usingWebGL and @animationStyleValue is @animationStyles.motionBlur
-      @blendAmount = 0.6
-
-    if @usingWebGL and @animationStyleValue is @animationStyles.paintOver
-      @threeJsSystem.effectBlend.uniforms.mixRatio.value = 1.0
-    else if not @usingWebGL and @animationStyleValue is @animationStyles.paintOver
-      @blendAmount = 1
-
-    if @usingWebGL and @animationStyleValue is @animationStyles.normal
-      @threeJsSystem.effectBlend.uniforms.mixRatio.value = 0
-    else if not @usingWebGL and @animationStyleValue is @animationStyles.normal
-      @blendAmount = 0
 
 module.exports = BlendControls
 

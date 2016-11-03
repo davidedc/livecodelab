@@ -144,7 +144,7 @@ class LiveCodeLabCore
       @three
     )
 
-    @blendControls = new BlendControls(@usingWebGL, @threeJsSystem)
+    @blendControls = new BlendControls(@threeJsSystem)
 
     @renderer = new Renderer(@threeJsSystem, @usingWebGL, @blendControls)
 
