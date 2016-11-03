@@ -154,8 +154,7 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
   programLoader = new ProgramLoader(
     eventRouter,
     editor,
-    liveCodeLabCore,
-    usingWebGL
+    liveCodeLabCore
   )
   eventRouter.addListener(
     "load-program",
