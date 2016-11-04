@@ -74,7 +74,13 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
     $("#simplemodal-container").height 200
     return
 
-  usingWebGL = (Detector.webgl and not paramsObject.forceCanvasRenderer)
+  unless Detector.webgl
+    $("#noWebGLMessage").modal onClose: ->
+      $("#loading").text "sorry :-("
+      $.modal.close
+
+    $("#simplemodal-container").height 200
+    return
 
   # EventRouter manages all the events/callbacks across the whole
   # of livecodelab.
@@ -327,9 +333,6 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
   #/////////////////////////////////////////////////////
   liveCodeLabCore.paintARandomBackground()
   liveCodeLabCore.startAnimationLoop()
-  if not Detector.webgl or paramsObject.forceCanvasRenderer
-    $("#noWebGLMessage").modal onClose: $.modal.close
-    $("#simplemodal-container").height 200
   editor.focus()
 
   # check if the url points to a particular demo,
@@ -375,7 +378,6 @@ if setupForNormalLCLPage?
           threeJsCanvas,
           backgroundDiv,
           {
-            forceCanvasRenderer: false
             bubbleUpErrorsForDebugging: false
 
             # testMode enables the webgl flag "preserverDrawingBuffer",
