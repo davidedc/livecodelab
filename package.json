@@ -8,8 +8,7 @@
     "serve": "webpack-dev-server -d --content-base dist/ --inline",
     "docs": "docco docs/**/*.md -o dist/docs",
     "docs:src": "docco src/coffee/**/*.coffee -o dist/docs/src",
-    "pretest": "pegjs ./src/grammar/lcl.pegjs ./src/generated/parser.js",
-    "test": "mocha tests/langtests"
+    "test": "mocha-webpack --webpack-config webpack.config.js tests/langtests"
   },
   "devDependencies": {
     "coffee-loader": "^0.7.2",

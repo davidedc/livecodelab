@@ -1,6 +1,6 @@
 /* global describe, it */
 
-var parser = require('../../src/generated/parser');
+var parser  = require('../../src/grammar/lcl');
 var ast    = require('../../src/js/lcl/ast').Node;
 
 var dedent = require('dentist').dedent;
