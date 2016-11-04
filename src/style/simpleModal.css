@@ -19,6 +19,9 @@
 #noAudioMessage {
     display:none;
 }
+#noWebGLMessage {
+    display:none;
+}
 /* Overlay */
 #simplemodal-overlay {
     background-color:#000;
