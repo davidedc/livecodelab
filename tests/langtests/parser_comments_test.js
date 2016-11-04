@@ -1,11 +1,15 @@
+/* global describe, it */
+
 var parser = require('../../src/generated/parser');
 var ast    = require('../../src/js/lcl/ast').Node;
 
 var dedent = require('dentist').dedent;
 
-exports.programdata = {
+var assert = require('assert');
 
-  'comments are ignored': function (test) {
+describe('Comments', function () {
+  
+  it('comments are ignored', function () {
 
     var program = dedent(`
 
@@ -23,11 +27,10 @@ exports.programdata = {
       ast.Application('box', [ast.Num(4)], null)
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'comments after commands are ignored': function (test) {
+  it('comments after commands are ignored', function () {
 
     var program = dedent(`
 
@@ -40,11 +43,10 @@ exports.programdata = {
       ast.Application('box', [ast.Num(4)], null)
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'comments in the middle of commands are ignored': function (test) {
+  it('comments in the middle of commands are ignored', function () {
 
     var program = dedent(`
 
@@ -62,11 +64,10 @@ exports.programdata = {
       ast.Application('peg', [ast.Num(3)], null)
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'comments at the end of the program are ignored': function (test) {
+  it('comments at the end of the program are ignored', function () {
 
     var program = dedent(`
 
@@ -79,8 +80,7 @@ exports.programdata = {
       ast.Application('box', [ast.Num(4)], null)
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  }
+    assert.deepEqual(parsed, expected);
+  });
 
-};
+});

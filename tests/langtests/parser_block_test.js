@@ -1,11 +1,15 @@
+/* global describe, it */
+
 var parser  = require('../../src/generated/parser');
 var ast     = require('../../src/js/lcl/ast').Node;
 
 var dedent = require('dentist').dedent;
 
-exports.programdata = {
+var assert = require('assert');
 
-  'simple doOnce block parses': function (test) {
+describe('Block', function () {
+
+  it('simple doOnce block parses', function () {
 
     var program = dedent(`
                          doOnce
@@ -33,11 +37,10 @@ exports.programdata = {
         null
       )
     ]);
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'nested blocks parses': function (test) {
+  it('nested blocks parses', function () {
 
     var program = dedent(`
                          doOnce
@@ -88,8 +91,7 @@ exports.programdata = {
         null
       )
     ]);
-    test.deepEqual(parsed, expected);
-    test.done();
-  }
+    assert.deepEqual(parsed, expected);
+  });
 
-};
+});

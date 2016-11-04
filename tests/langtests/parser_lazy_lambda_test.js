@@ -1,13 +1,17 @@
+/* global describe, it */
+
 var parser  = require('../../src/generated/parser');
 var ast     = require('../../src/js/lcl/ast').Node;
 
 var dedent = require('dentist').dedent;
 
-exports.programdata = {
+var assert = require('assert');
 
-  'lazy closure is parsed': function (test) {
+describe('Lazy Lambda', function () {
 
-    var program = `foo = <box 3, 4>`;
+  it('lazy closure is parsed', function () {
+
+    var program = 'foo = <box 3, 4>';
     var parsed = parser.parse(
       program, {
         functionNames: ['box'],
@@ -31,11 +35,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'lazy closure is created and used': function (test) {
+  it('lazy closure is created and used', function () {
 
     var program = dedent(`
                          foo = <box 3, 4>
@@ -72,11 +75,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'lazy closure is inlinable': function (test) {
+  it('lazy closure is inlinable', function () {
 
     var program = dedent(`
                          bigger = <scale 1.1>
@@ -111,9 +113,8 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  }
+    assert.deepEqual(parsed, expected);
+  });
 
-};
+});
 

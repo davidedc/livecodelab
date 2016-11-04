@@ -1,12 +1,16 @@
+/* global describe, it */
+
 var Interpreter = require('../../src/js/lcl/interpreter');
 var parser      = require('../../src/generated/parser');
 var ast     = require('../../src/js/lcl/ast').Node;
 
 var dedent = require('dentist').dedent;
 
-exports.programdata = {
+var assert = require('assert');
 
-  'evaluate simple expression': function (test) {
+describe('Interpreter', function () {
+
+  it('evaluate simple expression', function () {
     var i = Interpreter;
     var result = {};
     var scope = {
@@ -15,16 +19,15 @@ exports.programdata = {
       }
     };
     var program = parser.parse(
-      `result((3 + 4) * 2)`,
+      'result((3 + 4) * 2)',
       { functionNames: ['result']}
     );
     i.run(program, scope);
 
-    test.equal(result.v, 14, 'should return 14');
-    test.done();
-  },
+    assert.equal(result.v, 14, 'should return 14');
+  });
 
-  'evaluate expression with variable': function (test) {
+  it('evaluate expression with variable', function () {
     var i = Interpreter;
     var result = {};
     var scope = {
@@ -42,12 +45,11 @@ exports.programdata = {
     );
     i.run(program, scope);
 
-    test.equal(result.v, 36, 'output should be 36');
-    test.done();
+    assert.equal(result.v, 36, 'output should be 36');
 
-  },
+  });
 
-  'times loop': function (test) {
+  it('times loop', function () {
     var i = Interpreter;
     var output;
     var scope = {
@@ -69,12 +71,10 @@ exports.programdata = {
 
     i.run(program, scope);
 
-    test.equal(output, 4, 'output should be 4');
-    test.done();
+    assert.equal(output, 4, 'output should be 4');
+  });
 
-  },
-
-  'function definition and usage': function (test) {
+  it('function definition and usage', function () {
     var i = Interpreter;
     var output;
     var scope = {
@@ -129,13 +129,11 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(program, expected);
+    assert.deepEqual(program, expected);
 
     i.run(program, scope);
 
-    test.equal(output, 9, 'output should be 9');
-    test.done();
+    assert.equal(output, 9, 'output should be 9');
+  });
 
-  }
-
-};
+});

@@ -1,13 +1,17 @@
+/* global describe, it */
+
 var parser  = require('../../src/generated/parser');
 var ast     = require('../../src/js/lcl/ast').Node;
 
 var dedent = require('dentist').dedent;
 
-exports.programdata = {
+var assert = require('assert');
 
-  'expression function with one argument is parsed': function (test) {
+describe('Function', function () {
 
-    var program = `foo = (a) -> a + 1`;
+  it('expression function with one argument is parsed', function () {
+
+    var program = 'foo = (a) -> a + 1';
     var parsed = parser.parse(program);
 
     var expected = ast.Block([
@@ -25,11 +29,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'expression function is parsed': function (test) {
+  it('expression function is parsed', function () {
 
     var program = dedent(`
                          foo = (a, b) -> a + b
@@ -51,13 +54,12 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'simple function call is parsed': function (test) {
+  it('simple function call is parsed', function () {
 
-    var program = `box 1`;
+    var program = 'box 1';
     var parsed = parser.parse(
       program, {
         functionNames: ['box'],
@@ -65,20 +67,19 @@ exports.programdata = {
       });
 
     var expected = ast.Block([
-        ast.Application(
-            'box',
-            [ast.Num(1)],
-            null
-        )
+      ast.Application(
+        'box',
+        [ast.Num(1)],
+        null
+      )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'simple function call with empty arg list is parsed': function (test) {
+  it('simple function call with empty arg list is parsed', function () {
 
-    var program = `box`;
+    var program = 'box';
     var parsed = parser.parse(
       program, {
         functionNames: ['box'],
@@ -86,18 +87,17 @@ exports.programdata = {
       });
 
     var expected = ast.Block([
-        ast.Application(
-            'box',
-            [],
-            null
-        )
+      ast.Application(
+        'box',
+        [],
+        null
+      )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'block function is parsed': function (test) {
+  it('block function is parsed', function () {
 
     var program = dedent(`
                          bar = (a, b) ->
@@ -135,11 +135,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'expression function is parsed then used': function (test) {
+  it('expression function is parsed then used', function () {
 
     var program = dedent(`
                          foo = (a) -> a + 3
@@ -174,11 +173,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'function precedence is linear': function (test) {
+  it('function precedence is linear', function () {
 
     var program = dedent(`
                          foo = (a, b) -> a + b
@@ -219,11 +217,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'complex expression function is parsed': function (test) {
+  it('complex expression function is parsed', function () {
 
     var program = 'foo = (x, y, j, z) -> spread * (  ( noise  (x * abs (sin (time+y) * movmentSpeed)) / (j + z) ) - 0.5  )';
 
@@ -287,13 +284,12 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'bare application call with single expression args': function (test) {
+  it('bare application call with single expression args', function () {
 
-    var program = `box 3 + 4 + 2`;
+    var program = 'box 3 + 4 + 2';
     var parsed = parser.parse(
       program, {
         functionNames: ['box'],
@@ -318,13 +314,12 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
+  
+  it('bare application call with expression args', function () {
 
-  'bare application call with expression args': function (test) {
-
-    var program = `box 3 + 4, a * 2`;
+    var program = 'box 3 + 4, a * 2';
     var parsed = parser.parse(
       program, {
         functionNames: ['box'],
@@ -350,13 +345,12 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'bare application call with parenthesised expression args': function (test) {
+  it('bare application call with parenthesised expression args', function () {
 
-    var program = `box (3 + 4) * 2, a * 2`;
+    var program = 'box (3 + 4) * 2, a * 2';
     var parsed = parser.parse(
       program, {
         functionNames: ['box'],
@@ -386,13 +380,12 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'two inlined function calls are parsed': function (test) {
+  it('two inlined function calls are parsed', function () {
 
-    var program = `rotate 2 box 3`;
+    var program = 'rotate 2 box 3';
     var parsed = parser.parse(
       program, {
         functionNames: ['rotate', 'box'],
@@ -413,13 +406,12 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'paren-less function with parened function as argument': function (test) {
+  it('paren-less function with parened function as argument', function () {
 
-    var program = `box bar 3`;
+    var program = 'box bar 3';
     var parsed = parser.parse(
       program, {
         functionNames: ['box', 'bar'],
@@ -438,13 +430,12 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'inlined function calls are parsed': function (test) {
+  it('inlined function calls are parsed', function () {
 
-    var program = `rotate 2 fill red box 3, 4 peg 2`;
+    var program = 'rotate 2 fill red box 3, 4 peg 2';
     var parsed = parser.parse(
       program,
       {
@@ -472,11 +463,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'inlined function calls without arguments': function (test) {
+  it('inlined function calls without arguments', function () {
 
     var program = dedent(`
                          a = 3
@@ -518,11 +508,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'inlined simple function calls without arguments': function (test) {
+  it('inlined simple function calls without arguments', function () {
 
     var program = dedent('scale wave box');
     var parsed = parser.parse(
@@ -541,11 +530,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'multiple inlined simple function calls without arguments': function (test) {
+  it('multiple inlined simple function calls without arguments', function () {
 
     var program = dedent('scale wave wave box');
     var parsed = parser.parse(
@@ -566,8 +554,8 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  }
-};
+    assert.deepEqual(parsed, expected);
+  });
+
+});
 

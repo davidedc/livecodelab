@@ -1,35 +1,37 @@
+/* global describe, it */
+
 var parser  = require('../../src/generated/parser');
 var ast     = require('../../src/js/lcl/ast').Node;
 
-exports.programdata = {
+var assert = require('assert');
 
-  'simple string assignment passes': function (test) {
+describe('Do Once', function () {
 
-    var program = `a = "string"`;
+  it('simple string assignment passes', function () {
+
+    var program = 'a = "string"';
     var parsed = parser.parse(program);
 
     var expected = ast.Block([
       ast.Assignment('a', ast.Str('string'))
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'string with whitespace passes': function (test) {
+  it('string with whitespace passes', function () {
 
-    var program = `a = "string  sdf\tasdf"`;
+    var program = 'a = "string  sdf\tasdf"';
     var parsed = parser.parse(program);
 
     var expected = ast.Block([
       ast.Assignment('a', ast.Str('string  sdf\tasdf'))
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'squote string with other dquote char passes': function (test) {
+  it('squote string with other dquote char passes', function () {
 
     var program = `a = 'stri"asdf'`;
     var parsed = parser.parse(program);
@@ -38,11 +40,10 @@ exports.programdata = {
       ast.Assignment('a', ast.Str('stri"asdf'))
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'dquote string with other squote char passes': function (test) {
+  it('dquote string with other squote char passes', function () {
 
     var program = `a = "stri'asdf"`;
     var parsed = parser.parse(program);
@@ -51,9 +52,8 @@ exports.programdata = {
       ast.Assignment('a', ast.Str("stri'asdf"))
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  }
+    assert.deepEqual(parsed, expected);
+  });
 
-};
+});
 

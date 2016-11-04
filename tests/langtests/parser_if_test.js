@@ -1,11 +1,15 @@
+/* global describe, it */
+
 var parser  = require('../../src/generated/parser');
 var ast     = require('../../src/js/lcl/ast').Node;
 
 var dedent = require('dentist').dedent;
 
-exports.programdata = {
+var assert = require('assert');
 
-  'simple if statement parses': function (test) {
+describe('If', function () {
+
+  it('simple if statement parses', function () {
 
     var program = dedent(`
                          a = 3
@@ -28,13 +32,12 @@ exports.programdata = {
         ]),
         null
       )
-        ]);
+    ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'if else statement parses': function (test) {
+  it('if else statement parses', function () {
 
     var program = dedent(`
                          a = 3
@@ -62,14 +65,13 @@ exports.programdata = {
             ast.Application('peg', [], null)
           ])
         )
-          )
-        ]);
+      )
+    ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'if ifelse else statement parses': function (test) {
+  it('if ifelse else statement parses', function () {
 
     var program = dedent(`
                          a = 3
@@ -104,13 +106,12 @@ exports.programdata = {
               ast.Application('peg', [], null)
             ])
           )
-            )
-          )
-        ]);
+        )
+      )
+    ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  }
+    assert.deepEqual(parsed, expected);
+  });
 
-};
+});
 

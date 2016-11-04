@@ -1,11 +1,15 @@
+/* global describe, it */
+
 var parser  = require('../../src/generated/parser');
 var ast     = require('../../src/js/lcl/ast').Node;
 
 var dedent = require('dentist').dedent;
 
-exports.programdata = {
+var assert = require('assert');
 
-  'basic function calls work': function (test) {
+describe('Parser', function () {
+
+  it('basic function calls work', function () {
 
     var program = dedent(`
 
@@ -17,11 +21,10 @@ exports.programdata = {
       ast.Application('box', [], null)
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'primitive with args and block': function (test) {
+  it('primitive with args and block', function () {
 
     var program = dedent(`
                          rotate 2, 3
@@ -46,11 +49,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'inline calls': function (test) {
+  it('inline calls', function () {
 
     var program = dedent(`
                          rotate 2, 3 >> box
@@ -73,11 +75,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'multiple inline calls': function (test) {
+  it('multiple inline calls', function () {
 
     var program = dedent(`rotate 2, 3 >> fill red >> box
                          `);
@@ -105,11 +106,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'multiple inline calls with no arrows': function (test) {
+  it('multiple inline calls with no arrows', function () {
 
     var program = dedent(`
                          rotate 2, 3 fill red box
@@ -138,11 +138,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'more complex inline function calls': function (test) {
+  it('more complex inline function calls', function () {
 
     var program = dedent(`
                          scale 2, wave 2 peg
@@ -182,13 +181,12 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'more complicated times loop inlining': function (test) {
+  it('more complicated times loop inlining', function () {
 
-    var program = `rotate wave + 2 times box`;
+    var program = 'rotate wave + 2 times box';
     var parsed = parser.parse(
       program,
       {
@@ -202,24 +200,23 @@ exports.programdata = {
         'rotate',
         [],
         ast.Block([
-            ast.Times(
+          ast.Times(
             ast.BinaryOp('+', ast.Application('wave', [], null), ast.Num(2)),
             ast.Block([
-                ast.Application(
+              ast.Application(
                 'box',
                 [],
                 null
-                )
+              )
             ]),
             null
-            )
+          )
         ])
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  }
+    assert.deepEqual(parsed, expected);
+  });
 
-};
+});
 

@@ -1,13 +1,17 @@
+/* global describe, it */
+
 var parser  = require('../../src/generated/parser');
 var ast     = require('../../src/js/lcl/ast').Node;
 
 var dedent = require('dentist').dedent;
 
-exports.programdata = {
+var assert = require('assert');
 
-  'negative number': function (test) {
+describe('Math', function () {
 
-    var program = `a = -3`;
+  it('negative number', function () {
+
+    var program = 'a = -3';
     var parsed = parser.parse(program);
 
     var expected = ast.Block([
@@ -18,11 +22,10 @@ exports.programdata = {
                     )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'negative variable': function (test) {
+  it('negative variable', function () {
 
     var program = dedent(`
                          a = 3
@@ -39,13 +42,12 @@ exports.programdata = {
                     )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'negative expression': function (test) {
+  it('negative expression', function () {
 
-    var program = `a = -(3 + 4)`;
+    var program = 'a = -(3 + 4)';
     var parsed = parser.parse(program);
 
     var expected = ast.Block([
@@ -61,13 +63,12 @@ exports.programdata = {
                     )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'parenthesised expressions': function (test) {
+  it('parenthesised expressions', function () {
 
-    var program = `a = (3 + 4) + 4`;
+    var program = 'a = (3 + 4) + 4';
     var parsed = parser.parse(program);
 
     var expected = ast.Block([
@@ -84,8 +85,7 @@ exports.programdata = {
                     )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  }
-};
+    assert.deepEqual(parsed, expected);
+  });
+});
 

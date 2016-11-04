@@ -1,3 +1,5 @@
+/* global describe, it */
+
 var parser = require('../../src/generated/parser');
 var ast    = require('../../src/js/lcl/ast').Node;
 
@@ -10,11 +12,13 @@ var UnaryOp = ast.UnaryOp;
 var Num = ast.Num;
 var Variable = ast.Variable;
 
-exports.programdata = {
+var assert = require('assert');
 
-  'process function works': function (test) {
+describe('Assignment', function () {
 
-    var program = `a = 3 + 5`;
+  it('process function works', function () {
+
+    var program = 'a = 3 + 5';
     var parsed = parser.parse(program);
 
     var expected = Block([
@@ -26,13 +30,12 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'assignment assigns numbers': function (test) {
+  it('assignment assigns numbers', function () {
 
-    var program = `number = 444`;
+    var program = 'number = 444';
     var parsed = parser.parse(program);
 
     var expected = Block([
@@ -43,13 +46,12 @@ exports.programdata = {
     ]);
 
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'assignment assigns negative numbers': function (test) {
+  it('assignment assigns negative numbers', function () {
 
-    var program = `number = -333`;
+    var program = 'number = -333';
     var parsed = parser.parse(program);
 
     var expected = Block([
@@ -60,11 +62,10 @@ exports.programdata = {
     ]);
 
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'multiple assignments assigns bigger expression': function (test) {
+  it('multiple assignments assigns bigger expression', function () {
 
     var program = dedent(`
                          numa = 55 + 44 * 2 - 321
@@ -92,13 +93,12 @@ exports.programdata = {
       numa, numb, numc
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'brackets work correctly in expressions': function (test) {
+  it('brackets work correctly in expressions', function () {
 
-    var program = `number = (456 + 33) * 2`;
+    var program = 'number = (456 + 33) * 2';
     var parsed = parser.parse(program);
 
     var expected = Block([
@@ -110,8 +110,7 @@ exports.programdata = {
                 )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  }
+    assert.deepEqual(parsed, expected);
+  });
 
-};
+});

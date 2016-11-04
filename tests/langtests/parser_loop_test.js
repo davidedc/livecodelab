@@ -1,11 +1,15 @@
+/* global describe, it */
+
 var parser  = require('../../src/generated/parser');
 var ast     = require('../../src/js/lcl/ast').Node;
 
 var dedent = require('dentist').dedent;
 
-exports.programdata = {
+var assert = require('assert');
 
-  'basic times loop works': function (test) {
+describe('Loop', function () {
+
+  it('basic times loop works', function () {
 
     var program = dedent(`
                          4 times
@@ -30,11 +34,10 @@ exports.programdata = {
         null
       )
     ]);
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'times loop with variable': function (test) {
+  it('times loop with variable', function () {
 
     var program = dedent(`
                          4 times with i
@@ -59,11 +62,10 @@ exports.programdata = {
         'i'
       )
     ]);
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'times loop with variable number and loopvar': function (test) {
+  it('times loop with variable number and loopvar', function () {
 
     var program = dedent(`
                          foo = 100
@@ -90,12 +92,11 @@ exports.programdata = {
         'i'
       )
     ]);
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'times loop can be inlined': function (test) {
-    var program = dedent(`4 times 3 times box`);
+  it('times loop can be inlined', function () {
+    var program = dedent('4 times 3 times box');
     var parsed = parser.parse(
       program, {
         functionNames: ['box'],
@@ -109,11 +110,11 @@ exports.programdata = {
           ast.Times(
             ast.Num(3),
             ast.Block([
-                ast.Application(
-                    'box',
-                    [],
-                    null
-                )
+              ast.Application(
+                'box',
+                [],
+                null
+              )
             ]),
             null
           )
@@ -121,9 +122,8 @@ exports.programdata = {
         null
       )
     ]);
-    test.deepEqual(parsed, expected);
-    test.done();
-  }
+    assert.deepEqual(parsed, expected);
+  });
 
-};
+});
 

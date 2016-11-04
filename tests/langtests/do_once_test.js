@@ -1,13 +1,17 @@
+/* global describe, it */
+
 var parser  = require('../../src/generated/parser');
 var ast     = require('../../src/js/lcl/ast').Node;
 
 var dedent = require('dentist').dedent;
 
-exports.programdata = {
+var assert = require('assert');
 
-  'simple doOnce expression works': function (test) {
+describe('Do Once', function () {
 
-    var program = `doOnce box`;
+  it('should be parsed with an inline expression', function () {
+
+    var program = 'doOnce box';
     var parsed = parser.parse(program, {
       functionNames: ['box'],
       inlinableFunctions: ['box']
@@ -21,13 +25,12 @@ exports.programdata = {
         ])
       )
     ]);
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'finished simple doOnce expression works': function (test) {
+  it('should be parsed when marked as run', function () {
 
-    var program = `✓doOnce box`;
+    var program = '✓doOnce box';
     var parsed = parser.parse(program, {
       functionNames: ['box'],
       inlinableFunctions: ['box']
@@ -42,11 +45,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'block doOnce expression works': function (test) {
+  it('should be parsed with a block expression', function () {
 
     var program = dedent(`
                          doOnce
@@ -76,11 +78,10 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  },
+    assert.deepEqual(parsed, expected);
+  });
 
-  'finished block doOnce expression works': function (test) {
+  it('should be parsed with a block expression when finished', function () {
 
     var program = dedent(`
                          ✓doOnce
@@ -110,8 +111,7 @@ exports.programdata = {
       )
     ]);
 
-    test.deepEqual(parsed, expected);
-    test.done();
-  }
+    assert.deepEqual(parsed, expected);
+  });
 
-};
+});
