@@ -8,7 +8,7 @@
     "serve": "webpack-dev-server -d --content-base dist/ --inline",
     "docs": "docco docs/**/*.md -o dist/docs",
     "docs:src": "docco src/coffee/**/*.coffee -o dist/docs/src",
-    "test": "mocha-webpack --webpack-config webpack.config.js tests/langtests"
+    "test": "mocha-webpack --webpack-config webpack.config.js tests/livelangv1"
   },
   "devDependencies": {
     "coffee-loader": "^0.7.2",
