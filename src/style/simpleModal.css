@@ -16,16 +16,7 @@
 #aboutWindow {
     display:none;
 }
-#noWebGLMessage {
-    display:none;
-}
-#exampleNeedsWebgl {
-    display:none;
-}
 #noAudioMessage {
-    display:none;
-}
-#noCanvasMessage {
     display:none;
 }
 /* Overlay */
