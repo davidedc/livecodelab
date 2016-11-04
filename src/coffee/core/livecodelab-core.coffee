@@ -97,8 +97,7 @@ class LiveCodeLabCore
     # The difference between three and the threeJsSystem is that
     # a) three is the raw Three.js system without some bits
     # b) threeJsSystem contains some convenience fields and abstractions,
-    #    for example it keeps the renderer (whether it's canvas-based or WebGL
-    #    based) in a "renderer" field.
+    #    for example it keeps the renderer in a "renderer" field.
     # Several fields/methods in threeJsSystem are just conveniency
     # mappings into the raw three object.
     # But often in LiveCodeLab there are direct reference to three

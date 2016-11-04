@@ -1,12 +1,10 @@
 ###
-## Sets up canvas or webgl Threejs renderer based on browser capabilities
+## Sets up webgl Threejs renderer based on browser capabilities
 ## and flags passed in the constructor. Sets up all the post-filtering steps.
 ###
 
 Ui = require '../ui/ui'
 _  = require 'underscore'
-require '../../js/threejs/CanvasRenderer' # needed for the CanvasRenderer
-require '../../js/threejs/Projector'      # needed for the CanvasRenderer
 require '../../js/threejs/ShaderExtras'
 require '../../js/threejs/postprocessing/EffectComposer'
 require '../../js/threejs/postprocessing/MaskPass'
