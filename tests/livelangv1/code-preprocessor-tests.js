@@ -1183,7 +1183,6 @@ describe('V1 Code Preprocessor', function() {
   it('should pass all the existing tests', function() {
     var error, results, tc, transformed, userDefinedFunctions;
 
-    console.log('foo');
     var preprocessor = new CodePreprocessor();
 
     var len = testCases.length;
