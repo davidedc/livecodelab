@@ -113,5 +113,40 @@ describe('If', function () {
     assert.deepEqual(parsed, expected);
   });
 
+  it('if else statement parses inside a block', function () {
+
+    var program = dedent(`
+                         rotate
+                         \tif 1
+                         \t\tbox
+                         \telse
+                         \t\tpeg`);
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box', 'peg', 'rotate'],
+        inlinableFunctions: ['box', 'peg', 'rotate']
+      });
+
+    var expected = ast.Block([
+      ast.Application('rotate', [], ast.Block([
+        ast.If(
+          ast.Num(1),
+          ast.Block([
+            ast.Application('box', [], null)
+          ]),
+          ast.If(
+            ast.Num(1),
+            ast.Block([
+              ast.Application('peg', [], null)
+            ])
+          )
+        )
+      ]))
+    ]);
+
+    assert.deepEqual(parsed, expected);
+  });
+
+
 });
 

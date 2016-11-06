@@ -138,6 +138,48 @@ describe('Function', function () {
     assert.deepEqual(parsed, expected);
   });
 
+  it('block function with if is parsed', function () {
+
+    var program = dedent(`
+                         bar = (a, b) ->
+                         \tif a > b
+                         \t\tbox a
+                         \telse
+                         \t\tbox b
+                         `);
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box'],
+        inlinableFunctions: ['box']
+      });
+
+    var expected = ast.Block([
+      ast.Assignment(
+        'bar',
+        ast.Closure(
+          ['a', 'b'],
+          ast.Block([
+            ast.If(
+              ast.BinaryOp('>', ast.Variable('a'), ast.Variable('b')),
+              ast.Block([
+                ast.Application('box', [ast.Variable('a')], null)
+              ]),
+              ast.If(
+                ast.Num(1),
+                ast.Block([
+                  ast.Application('box', [ast.Variable('b')], null)
+                ])
+              )
+            )
+          ]),
+          false
+        )
+      )
+    ]);
+
+    assert.deepEqual(parsed, expected);
+  });
+
   it('expression function is parsed then used', function () {
 
     var program = dedent(`
