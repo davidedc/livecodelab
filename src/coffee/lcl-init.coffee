@@ -61,6 +61,10 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
   # Stats are updated in the animationLoop
   # add Stats.js - https://github.com/mrdoob/stats.js
   stats = new Stats
+  eventRouter.addListener(
+    'frame-animated',
+    stats.update
+  )
 
   # Client used to sync to a time pulse over websocket
   syncClient = new Pulse()
@@ -95,8 +99,7 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
     backgroundDiv,
     eventRouter,
     syncClient,
-    audioAPI,
-    stats
+    audioAPI
   )
 
   #/////////////////////////////////////////////////////

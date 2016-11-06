@@ -10,8 +10,6 @@
 ## * the new 3d scene is rendered via Three.js
 ## * the beat of the sound system is changed if needed
 ## * the "frame" counter is incremented
-## * the stats widget in the top right corner is updated
-##   (it show either fps or milliseconds taken by each loop frame).
 ##
 ## Note that the followings are NOT done as part of the animation loop:
 ## * Syntax checking of the program typed by the user
@@ -64,7 +62,6 @@ class AnimationLoop
     @programRunner,
     @codeCompiler,
     @eventRouter,
-    @stats,
     @timeKeeper,
     @blendControls,
     @backgroundPainter,
@@ -168,6 +165,7 @@ class AnimationLoop
       @programRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(
         @codeCompiler
       )
+      @eventRouter.emit('frame-animated')
     else
       # the program is empty and so is the screen. Effectively, the user
       # is starting from scratch, so the frame should be reset to zero.
@@ -201,10 +199,6 @@ class AnimationLoop
     if !@sleeping and geometryOnScreenMightHaveChanged
       @renderer.render @graphicsCommands
       @graphicsCommands.atLeastOneObjectWasDrawn = @graphicsCommands.atLeastOneObjectIsDrawn
-
-
-    # update stats
-    if @stats then @stats.update()
 
   cleanStateBeforeRunningDrawAndRendering: ->
     @renderer.resetExclusionPrincipleWobbleDataIfNeeded @graphicsCommands

@@ -87,8 +87,7 @@ class LiveCodeLabCore
     @backgroundDiv,
     @eventRouter,
     @syncClient,
-    @audioAPI,
-    @statsWidget
+    @audioAPI
   ) ->
 
     # three is a global defined in three.min.js and used in:
@@ -167,7 +166,6 @@ class LiveCodeLabCore
       @programRunner,
       @codeCompiler
       @eventRouter,
-      @statsWidget,
       @timeKeeper,
       @blendControls,
       @backgroundPainter,
