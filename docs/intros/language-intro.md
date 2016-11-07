@@ -1,19 +1,19 @@
 Dive-in examples
-===============
+================
 
 The simplest program a user can write in LiveCodeLab is:
 
 ```
 box
 ```
-This will create a cube of unit size in the middle of the screen. Note how LiveCodeLab follows the Fluxus way of default drawing primitives in the middle of the screen (as opposed to Processing, where the world coordinates and camera arrangement cause the equivalent command to draw a cube at the top-left corner).  A slightly more interesting scene can be created by using the rotate command.
+This will create a cube of unit size in the middle of the screen. Note how LiveCodeLab follows the Fluxus way of default drawing primitives in the middle of the screen (as opposed to Processing, where the world coordinates and camera arrangement cause the equivalent command to draw a cube at the top-left corner).  A slightly more interesting scene can be created by using the *rotate* command.
 ```
 rotate
 box
 ```
 Here the cube will rotate freely, still centred on screen.
 
-There are two things to note about these programs. First, both box and rotate are functions that optionally take parameters, but the “no parameters” default gives an interesting behaviour already. In the example above, “rotate” without parameters animates a continuous rotation (as opposed to rotating the world of a specific amount when parameters are passed). Secondly, these programs will run as soon as they are typed in. LiveCodeLab uses an “aggressive” execution model: whenever there is a change to the program, the environment will immediately attempt to read and interpret it. If the program is valid, then LCL will run it until it further edits are made.
+There are two things to note about these programs. First, both *box* and *rotate* are functions that optionally take parameters, but the "no parameters" default gives an interesting behaviour already. In the example above, *rotate* without parameters animates a continuous rotation (as opposed to rotating the world of a specific amount when parameters are passed). Secondly, these programs will run as soon as they are typed in. LiveCodeLab uses an "aggressive" execution model: whenever there is a change to the program, the environment will immediately attempt to read and interpret it. If the program is valid, then LCL will run it until it further edits are made.
 
 LiveCodeLab has borrowed ideas liberally from Processing, many of the keywords and constructs are immediately recognizable:
 ```
@@ -36,7 +36,7 @@ rotate // only affects indented parts
         ball
 box // unaffected by “rotate” and red fill
 ```
-This program will display a green rotating box, a red rotating sphere and a fixed green box. The user is also free to inline graphic state commands and primitives, and in-lining implies “nested scoping down the line”, so the above snippet is exactly the same as:
+This program will display a green rotating box, a red rotating sphere and a fixed green box. The user is also free to inline graphic state commands and primitives, and in-lining implies "nested scoping down the line", so the above snippet works exactly the same:
 ```
 fill green
 rotate box fill red ball
@@ -54,65 +54,41 @@ or the similar version that supports binding of a variable:
     rotate
     box i // nested boxes, i is the scale
 ```
-This will create five cubes, all rotating at different speeds (the rotation is compounded at each loop iteration, just like it would in Processing). Note that in this latter case only the biggest “encasing” box is visible (they are opaque by default), and one of inner boxes isn’t even drawn since its scale is zero (“times” index starts at zero).
+This will create five cubes, all rotating at different speeds (the rotation is compounded at each loop iteration, just like it would in Processing). Note that in this latter case only the biggest “encasing” box is visible (they are opaque by default), and one of inner boxes isn’t even drawn since its scale is zero ("times" index starts at zero).
 
 
 Principles
-=========
+----------
 
-LiveCodeLab uses a similar syntax to Coffeescript, which fundamentally means that indentation matters and also that parentheses in function invocations can be avoided in many cases. A minimal example of both concepts is:
+LiveCodeLab does not require parentheses for calling functions. Arguments to a function need to be separated by commas, and a function will consume all arguments to the right.
+
+```
+box 1, 2, 3
+```
+
+Parentheses do need to be used when arguments to a function could be considered ambiguous. For example if we have a function called *addOne*, which takes a single number argument and adds 1 to it, and we call the following:
+```
+box addOne 1, 1, 1
+```
+then the *box* function would actually be called with a single argument, which would be the result of *addOne being called with three arguments. To disambiguate this, parentheses can be used to make it clear that `addOne 1` is a single expression.
+```
+box (addOne 1), 1, 1
+```
+
+Indentation
+-----------
+
+LiveCodeLab uses a similar syntax to Coffeescript, which means that indentation matters. A minimal example of this concept is:
 
 ```
 if true
     box 1, 2, 3
 ```
 
-...the indentation under the if is important to tell which parts are affected by the condition, and the parentheses in the 'box' invocation can be omitted.
+...the indentation under the if is important to tell which parts are affected by the condition.
 
-Most of the coffeescript syntax can be used, however LiveCodeLab uses some euristics to make many short constructs a lot quicker to express and to type. For example "()" can be omitted almost all the times, and sequences of commands will almost always be disambiguated and interpreted correctly. Some examples follow.
-
-
-"()" can be omitted almost all the times
-----------------------------
-In coffeescript there is a difference between writing
-```
-box
-```
-and writing
-```
-box()
-```
-while in LiveCodeLab, a bit like in Ruby, there isn't. Any time a "known" function name (e.g. any LiveCodeLab function and any user-defined function) appears without arguments and parentheses, the function is implicitely called on the spot. Since all LiveCodeLab functions have a valid and interesting meaning when invoked without arguments, this is useful, as it means that one can write
-```
-box
-rotate move line
-move
-peg
-```
-and get a sketch going without having to add any of the parentheses.
-
-Another example:
-```
-aCertainAmount = -> sin(random)
-move aCertainAmount box
-```
-
-Or:
-
-```
-a = <box> // assigns to 'a' the function 'box'
-a // Won't draw a box. Should be a() instead.
-```
-
-Another example is the following function takes a function and runs it. Note the use of "run" to run a function.
-
-```
-runMyFunction = (theFunction) -> run theFunction
-runMyFunction <box>
-```
-
-";" is not needed
------------
+End of line symbols are not needed
+----------------------------------
 Instead of writing...
 ```
 box; move; line; move; peg; move
@@ -121,10 +97,11 @@ box; move; line; move; peg; move
 ```
 box move line move peg move
 ```
-Since semicolons are not needed (we used none outside of strings comments and regexes in the LiveCodeLab source) and they add significant complexity to the parser, semicolons are actually not allowed in LCL sketches.
 
-"times"
-------
+Since End of line symbols are not needed and they add significant complexity to the parser, semicolons are actually not allowed in LCL sketches.
+
+*times*
+-------
 instead of writing
 ```
 for i in [1..5]
@@ -140,24 +117,29 @@ or also
 5 times do something
 ```
 
-What about functional programming?
------------
-If all functions are run as soon as they are mentioned, how can one use them without evaluating them?
+If a loop variable is needed, then this can be added after the times.
+```
+5 times with i
+    box i
+```
 
-The following works:
+Lazy expression evaluation
+--------------------------
 
+If all functions are run as soon as they are mentioned, how can one use them without evaluating them? LiveCodeLab uses angle brackets to denote an expression that should not be immediately evaluated.
 
+For example:
 ```
 either = (a,b) -> if random > 0.5 then run a else run b
 either <box>, <peg>
 either <box 2>, <peg 2>
 ```
 
-basically, instead of forcing you to parentheses to evaluate functions, LiveCodeLab forces you to use parentheses/brackets to *avoid* the evaluation, so that the two functions "box" and "peg" can be passed to "either" as unevaluated functions.
+In this case, the *box* and *peg* functions 
 
 
 "Scoped" matrix transformations
------------
+-------------------------------
 In processing, if one wants to apply transformation(s) to only some primitive(s), one does:
 ```
 pushMatrix();
