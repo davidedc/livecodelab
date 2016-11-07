@@ -14,7 +14,6 @@
 
 detailedDebug = false
 
-CodePreprocessorTests = require './code-preprocessor-tests'
 ColourLiterals        = require '../../core/colour-literals'
 
 # we want to have the following snippet to work:
@@ -27,7 +26,7 @@ ColourLiterals        = require '../../core/colour-literals'
 # in order to do that, we transform the if into
 #    flickering = ifFunctional(random() > 0.5, scale function taking the block as argument)
 # so flickering is a function that can take the block as argument.
-window.ifFunctional = (condition, thenCode, elseCode) ->
+ifFunctional = (condition, thenCode, elseCode) ->
   #console.log "outside: " + thenCode
   (afterBlocks...) ->
     #console.log "inside: " + thenCode
@@ -45,6 +44,7 @@ window.ifFunctional = (condition, thenCode, elseCode) ->
         if afterBlocks[0]?
           afterBlocks[0]()
 
+window.ifFunctional = ifFunctional if window?
 
 class CodePreprocessor
 
@@ -162,7 +162,6 @@ class CodePreprocessor
 
 
   constructor: ->
-    @testCases = (new CodePreprocessorTests()).testCases
     @qualifyingCommandsRegex = @qualifyingCommands.join "|"
     @primitivesRegex = @primitives.join "|"
     @primitivesAndMatrixRegex = @qualifyingCommandsRegex + "|" + @primitivesRegex
@@ -181,15 +180,6 @@ class CodePreprocessor
     @colorsRegex = @colorsRegex.substring(1, @colorsRegex.length)
 
     @colorsCommandsRegex = @colorCommands.join "|"
-    # make the preprocessor tests easily accessible from
-    # the debug console (just type testPreprocessor())
-    window.testPreprocessor =  (rangeMin = undefined, rangeMax = undefined) =>
-      # there are far too many tests to
-      # keep the debug on
-      previousDetailedDebug = detailedDebug
-      detailedDebug = false
-      @test(rangeMin, rangeMax)
-      detailedDebug = previousDetailedDebug
 
   ###
   ## Stops ticked doOnce blocks from running
