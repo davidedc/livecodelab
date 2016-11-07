@@ -11,10 +11,8 @@ class ProgramLoader
     @eventRouter,
     @texteditor,
     @liveCodeLabCoreInstance,
-    @usingWebGL,
   ) ->
     @lastHash = ""
-    userWarnedAboutWebglExamples = false
     @programs =
       demos: {}
       tutorials: {}
@@ -1015,15 +1013,6 @@ class ProgramLoader
     )
 
   loadDemoOrTutorial: (demoName) ->
-    if (
-      not @usingWebGL and
-      not userWarnedAboutWebglExamples and
-      demoName.indexOf("webgl") is 0
-    )
-      userWarnedAboutWebglExamples = true
-      $("#exampleNeedsWebgl").modal()
-      $("#simplemodal-container").height 200
-
     # set the demo as a hash state
     # so that ideally people can link directly to
     # a specific demo they like.
@@ -1031,15 +1020,6 @@ class ProgramLoader
     @eventRouter.emit("big-cursor-hide")
     @eventRouter.emit("editor-undim")
     @liveCodeLabCoreInstance.graphicsCommands.doTheSpinThingy = false
-    prependMessage = ""
-    if not @usingWebGL and demoName.indexOf("webgl") is 0
-      prependMessage =
-      """
-      // This drawing makes much more sense
-      // in a WebGL-enabled browser.
-
-
-      """
 
     # Note, setting the value of the texteditor (texteditor.setValue below)
     # triggers the codeMirror onChange callback, which registers the new
@@ -1049,12 +1029,10 @@ class ProgramLoader
     if @programs.demos[demoName] || @programs.tutorials[demoName]
       if @programs.demos[demoName]
         # the "replace" here is to change the arrows in tabs
-        @texteditor.setValue prependMessage +
-          @programs.demos[demoName].code.replace(/\u25B6/g, "\t")
+        @texteditor.setValue @programs.demos[demoName].code.replace(/\u25B6/g, "\t")
       else if @programs.tutorials[demoName]
         # the "replace" here is to change the arrows in tabs
-        @texteditor.setValue prependMessage +
-          @programs.tutorials[demoName].code.replace(/\u25B6/g, "\t")
+        @texteditor.setValue @programs.tutorials[demoName].code.replace(/\u25B6/g, "\t")
       # clear history. Why? Because we want to avoid the follwing:
       # user opens an example. User opens another example.
       # User performs undo. Result: previous example is open, but the hashtag

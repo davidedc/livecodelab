@@ -34,23 +34,6 @@ MouseWheelHandler = require '../js/mousewheel'
 require './globals/numbertimes'
 require './globals/requestAnimFrame'
 
-# see http://stackoverflow.com/questions/2745432
-canvasIsSupportedAndNotIE9 = ->
-
-  # first check if we are IE 9
-  div = document.createElement("div")
-  div.innerHTML = "<!--[if IE 9 ]><i></i><![endif]-->"
-  isIE9 = (div.getElementsByTagName("i").length == 1)
-  if (isIE9)
-    return false
-
-
-  # now check is the canvas element is available
-  elem = document.createElement("canvas")
-  # One would think that doing the !! double negation below is
-  # redundant but no, that's how Javascript rolls.
-  !!(elem.getContext and elem.getContext("2d"))
-
 
 startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
 
@@ -59,22 +42,13 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
   # before LiveCodeCore.
   #/////////////////////////////////////////////////////
 
-  # We need to check that the browser supports canvas
-  # AND that we are not in IE9.
-  # IE9 supports canvas, but Three.js doesn't work on it
-  # because it uses typedArrays. There would be a shim
-  # but I tried it and it's way too slow. References:
-  #    https://github.com/mrdoob/three.js/issues/4452
-  #    http://caniuse.com/typedarrays
-  unless canvasIsSupportedAndNotIE9()
-    $("#noCanvasMessage").modal onClose: ->
+  unless Detector.webgl
+    $("#noWebGLMessage").modal onClose: ->
       $("#loading").text "sorry :-("
-      $.modal.close()
+      $.modal.close
 
     $("#simplemodal-container").height 200
     return
-
-  usingWebGL = (Detector.webgl and not paramsObject.forceCanvasRenderer)
 
   # EventRouter manages all the events/callbacks across the whole
   # of livecodelab.
@@ -123,7 +97,6 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
     syncClient,
     audioAPI,
     stats,
-    usingWebGL,
     {
       testMode: paramsObject.testMode
     }
@@ -155,8 +128,7 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
   programLoader = new ProgramLoader(
     eventRouter,
     editor,
-    liveCodeLabCore,
-    usingWebGL
+    liveCodeLabCore
   )
   eventRouter.addListener(
     "load-program",
@@ -329,9 +301,6 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
   #/////////////////////////////////////////////////////
   liveCodeLabCore.paintARandomBackground()
   liveCodeLabCore.startAnimationLoop()
-  if not Detector.webgl or paramsObject.forceCanvasRenderer
-    $("#noWebGLMessage").modal onClose: $.modal.close
-    $("#simplemodal-container").height 200
   editor.focus()
 
   # check if the url points to a particular demo,
@@ -377,7 +346,6 @@ if setupForNormalLCLPage?
           threeJsCanvas,
           backgroundDiv,
           {
-            forceCanvasRenderer: false
             bubbleUpErrorsForDebugging: false
 
             # testMode enables the webgl flag "preserverDrawingBuffer",

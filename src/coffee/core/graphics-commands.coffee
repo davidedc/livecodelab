@@ -1025,8 +1025,6 @@ class GraphicsCommands
     # So it's limited to 10. In some graphic cards this doesn't even have
     # any effect. In windows there is no thickness beyond "1" cause
     # ANGLE doesn't doesn't translate that properly to DirectX.
-    # Vice-versa, the canvas renderer of Three.js draws beautiful lines
-    # with round cap size of any thickness.
     if not a?
       a = 1
     else a = 0  if a < 0
