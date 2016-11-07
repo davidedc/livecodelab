@@ -130,7 +130,6 @@ class LiveCodeLabCore
 
     @languages = new Languages(@eventRouter, @globalscope)
     languageObjects = @languages.getLanguageObjects()
-    console.log(languageObjects);
     @programRunner = languageObjects.runner
     @codeCompiler = languageObjects.compiler
 
