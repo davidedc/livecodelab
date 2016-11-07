@@ -233,46 +233,5 @@ class LiveCodeLabCore
 
       @eventRouter.emit("livecodelab-waking-up")
 
-
-  # why do we leave the option to put a background?
-  # For two reasons:
-  #  a) leaving the transparent background makes it very
-  #     difficult to save a reference "expected" image. The way to do
-  #     that would be to save the image that appears in the failing test
-  #     case. And when one does it, the correct image with the transparent
-  #     background gets saved. But still, the expected image is slightly
-  #     different from the generated image.
-  #     This is really weird as the two should be absolutely identical,
-  #     and yet (maybe because of compression artifacts reasons?) they are
-  #     different enough that it makes the testing unusable.
-  #  b) In theory one could get Three.js to directly render on an opaque
-  #     background but if we do it this way (as in after all the rendering has
-  #     happened) we keep the motionblur and the paintover styles. If we let
-  #     Three.js paint the backgrounds, then the postprocessing effects for
-  #     motionblur and for paintOver wouldn't work anymore.
-  getForeground3DSceneImage: (backgroundColor) ->
-    # some shorthands
-    blendedThreeJsSceneCanvas =
-      @threeJsSystem.blendedThreeJsSceneCanvas
-
-    img = new Image
-    img.src = blendedThreeJsSceneCanvas.toDataURL()
-
-    if backgroundColor
-      ctx = document.createElement("canvas")
-      ctx.width = blendedThreeJsSceneCanvas.width
-      ctx.height = blendedThreeJsSceneCanvas.height
-      ctxContext = ctx.getContext("2d")
-      ctxContext.drawImage img, 0, 0
-      ctxContext.globalCompositeOperation = "destination-over"
-      ctxContext.fillStyle = backgroundColor
-      ctxContext.fillRect \
-        0, 0,
-        blendedThreeJsSceneCanvas.width,
-        blendedThreeJsSceneCanvas.height
-      img = new Image
-      img.src = ctx.toDataURL()
-    img
-
 module.exports = LiveCodeLabCore
 
