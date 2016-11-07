@@ -88,8 +88,7 @@ class LiveCodeLabCore
     @eventRouter,
     @syncClient,
     @audioAPI,
-    @statsWidget,
-    @paramsObject
+    @statsWidget
   ) ->
 
     # three is a global defined in three.min.js and used in:
@@ -137,7 +136,7 @@ class LiveCodeLabCore
 
     @threeJsSystem = new ThreeJsSystem(
       @threeJsCanvas,
-      @paramsObject.testMode,
+      false,
       @three
     )
 

@@ -96,10 +96,7 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
     eventRouter,
     syncClient,
     audioAPI,
-    stats,
-    {
-      testMode: paramsObject.testMode
-    }
+    stats
   )
 
   #/////////////////////////////////////////////////////
@@ -274,11 +271,6 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
       editor.undo()
     else
       liveCodeLabCore.runLastWorkingProgram()
-
-    # re-throw the error so that the top-level debuggers
-    # (firebug, built-in, whathaveyous) can properly
-    # catch the error and let the user inspect things.
-    throw (e)  if paramsObject.bubbleUpErrorsForDebugging
   )
 
   eventRouter.addListener("compile-time-error-thrown", (e) ->
@@ -318,56 +310,27 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
     650
   )
 
-if setupForNormalLCLPage?
-  $(document).ready ->
+$(document).ready ->
 
-    threeJsCanvas = document.getElementById('threeJsCanvas')
-    Ui.sizeForegroundCanvas(
-      threeJsCanvas,
-      {
-        x: Ui.foregroundCanvasMaxScaleUpFactor,
-        y: Ui.foregroundCanvasMaxScaleUpFactor
-      }
-    )
+  threeJsCanvas = document.getElementById('threeJsCanvas')
+  Ui.sizeForegroundCanvas(
+    threeJsCanvas,
+    {
+      x: Ui.foregroundCanvasMaxScaleUpFactor,
+      y: Ui.foregroundCanvasMaxScaleUpFactor
+    }
+  )
 
-    backgroundDiv = document.getElementById('backgroundDiv')
-    Ui.fullscreenify(
-      backgroundDiv,
-      {
-        x: Ui.backgroundCanvasFractionOfWindowSize,
-        y: Ui.backgroundCanvasFractionOfWindowSize
-      }
-    )
+  backgroundDiv = document.getElementById('backgroundDiv')
+  Ui.fullscreenify(
+    backgroundDiv,
+    {
+      x: Ui.backgroundCanvasFractionOfWindowSize,
+      y: Ui.backgroundCanvasFractionOfWindowSize
+    }
+  )
 
-
-    setTimeout(
-      () ->
-        startEnvironment(
-          threeJsCanvas,
-          backgroundDiv,
-          {
-            bubbleUpErrorsForDebugging: false
-
-            # testMode enables the webgl flag "preserverDrawingBuffer",
-            # see https://github.com/mrdoob/three.js/pull/421
-            testMode: false
-          }
-        )
-      , 100
-    )
-
-if setupForTestPage?
-  $(document).ready ->
-    console.log 'describing ImageTest'
-
-    execJasmine = ->
-      jasmineEnv.execute()
-    prettyPrint()
-    jasmineEnv = jasmine.getEnv()
-    jasmineEnv.updateInterval = 1000
-    reporter = new jasmine.HtmlReporter()
-    jasmineEnv.addReporter reporter
-    jasmineEnv.specFilter = (spec) ->
-      reporter.specFilter spec
-
-    execJasmine()
+  setTimeout(
+    () -> startEnvironment(threeJsCanvas, backgroundDiv),
+    100
+  )
