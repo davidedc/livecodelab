@@ -61,7 +61,8 @@ class AnimationLoop
   sleeping: true
 
   constructor: (
-    @lclCore,
+    @programRunner,
+    @codeCompiler,
     @eventRouter,
     @stats,
     @timeKeeper,
@@ -156,7 +157,7 @@ class AnimationLoop
       # 1. highlight the error
       # 2. run the previously known good program.
       try
-        @lclCore.programRunner.runProgram()
+        @programRunner.runProgram()
       catch e
 
         # note that this causes the running of the last stable function
@@ -164,8 +165,8 @@ class AnimationLoop
         # then got an error, now you are re-running an old draw function.
         @eventRouter.emit("runtime-error-thrown", e)
         return
-      @lclCore.programRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(
-        @lclCore.codeCompiler
+      @programRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(
+        @codeCompiler
       )
     else
       # the program is empty and so is the screen. Effectively, the user
@@ -212,9 +213,9 @@ class AnimationLoop
 
     # the sound list needs to be cleaned
     # so that the user program can create its own from scratch
-    @lclCore.soundSystem.clearPatterns()
+    @soundSystem.clearPatterns()
 
-    @lclCore.programRunner.resetTrackingOfDoOnceOccurrences()
+    @programRunner.resetTrackingOfDoOnceOccurrences()
 
     @lightSystem.noLights()
     @graphicsCommands.reset()

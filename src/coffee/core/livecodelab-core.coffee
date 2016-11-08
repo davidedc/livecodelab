@@ -165,7 +165,8 @@ class LiveCodeLabCore
     )
 
     @animationLoop = new AnimationLoop(
-      @, # programRunner and codeCompiler
+      @programRunner,
+      @codeCompiler
       @eventRouter,
       @statsWidget,
       @timeKeeper,
