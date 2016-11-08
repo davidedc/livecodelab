@@ -9,6 +9,16 @@ var assert = require('assert');
 
 describe('Comments', function () {
   
+  it('ignores single comments', function () {
+
+    var program = '// this is a comment';
+    var parsed = parser.parse(program, {});
+
+    var expected = ast.Block([]);
+
+    assert.deepEqual(parsed, expected);
+  });
+
   it('comments are ignored', function () {
 
     var program = dedent(`
