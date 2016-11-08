@@ -145,8 +145,7 @@ class LiveCodeLabCore
 
     @matrixCommands = new MatrixCommands(
       @three,
-      @timeKeeper,
-      @ # for AnimationLoop
+      @timeKeeper
     )
 
     @graphicsCommands = new GraphicsCommands(
@@ -155,7 +154,7 @@ class LiveCodeLabCore
       @colourFunctions,
       @matrixCommands,
       @colourLiterals,
-      @ #lightSystem, animationLoop
+      @ #lightSystem
     )
 
     @lightSystem = new LightsCommands(

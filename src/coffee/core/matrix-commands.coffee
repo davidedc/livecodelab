@@ -8,7 +8,7 @@ class MatrixCommands
 
   matrixStack: []
 
-  constructor: (@three, @timeKeeper, @liveCodeLabCoreInstance) ->
+  constructor: (@three, @timeKeeper) ->
     @worldMatrix = new @three.Matrix4()
 
   addToScope: (scope) ->
@@ -29,9 +29,6 @@ class MatrixCommands
     @worldMatrix.identity()
 
   pushMatrix: ->
-    if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
-      return
-
     @matrixStack.push @worldMatrix
     @worldMatrix = (new @three.Matrix4()).copy(@worldMatrix)
 
@@ -49,31 +46,19 @@ class MatrixCommands
   # the push. This is like a pop but we
   # discard the popped value.
   discardPushedMatrix: ->
-    if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
-      return
-
     if @matrixStack.length
       @matrixStack.pop()
 
   popMatrix: ->
-    if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
-      return
-
     if @matrixStack.length
       @worldMatrix = @matrixStack.pop()
     else
       @worldMatrix.identity()
 
   resetMatrix: ->
-    if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
-      return
-
     @worldMatrix.identity()
 
   move: (a, b, c = 0, d = null) ->
-    if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
-      return
-
     arg_a = a
     arg_b = b
     arg_c = c
@@ -112,9 +97,6 @@ class MatrixCommands
       @popMatrix()
 
   rotate: (a, b, c = 0, d = null) ->
-    if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
-      return
-
     arg_a = a
     arg_b = b
     arg_c = c
@@ -155,9 +137,6 @@ class MatrixCommands
       @popMatrix()
 
   scale: (a, b, c = 1, d = null) ->
-    if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
-      return
-
     arg_a = a
     arg_b = b
     arg_c = c
