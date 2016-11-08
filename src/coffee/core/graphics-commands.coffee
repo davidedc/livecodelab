@@ -278,9 +278,6 @@ class GraphicsCommands
 
 
   pushFill: (defaultNormalFill,currentFillColor,currentFillAlpha, doFill)->
-    if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
-      return
-
     @fillStack.push defaultNormalFill
     @fillStack.push currentFillColor
     @fillStack.push currentFillAlpha
@@ -293,18 +290,12 @@ class GraphicsCommands
     currentStrokeAlpha,
     doStroke
   )->
-    if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
-      return
-
     @strokeStack.push defaultNormalStroke
     @strokeStack.push currentStrokeColor
     @strokeStack.push currentStrokeAlpha
     @strokeStack.push doStroke
 
   popFill: ->
-    if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
-      return
-
     if @fillStack.length
       @doFill = @fillStack.pop()
       @currentFillAlpha = @fillStack.pop()
@@ -314,9 +305,6 @@ class GraphicsCommands
       @resetFillStack()
 
   popStroke: ->
-    if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
-      return
-
     if @strokeStack.length
       @doStroke = @strokeStack.pop()
       @currentStrokeAlpha = @strokeStack.pop()
@@ -597,11 +585,6 @@ class GraphicsCommands
       @threeJsSystem.scene.add(pooledObjectWithMaterials.threejsObject3D)
 
   commonPrimitiveDrawingLogic: (a, b, c, d, primitiveProperties) ->
-
-    if @liveCodeLabCoreInstance.animationLoop.noDrawFrame
-      #console.log "skipping the frame"
-      return
-
     # b and c are not functional in some geometric
     # primitives, but we handle them here in all cases
     # to make the code uniform and unifiable
