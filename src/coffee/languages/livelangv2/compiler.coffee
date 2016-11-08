@@ -37,7 +37,7 @@ class V2CodeCompiler
       output.error = e
       return output
 
-    if (programAST.length == 0)
+    if (programAST.elements.length == 0)
       output.status = 'empty'
     else
       output.status = 'parsed'
