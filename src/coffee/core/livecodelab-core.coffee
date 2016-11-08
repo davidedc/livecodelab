@@ -129,9 +129,8 @@ class LiveCodeLabCore
     )
 
     @languages = new Languages(@eventRouter, @globalscope)
-    languageObjects = @languages.getLanguageObjects()
-    @programRunner = languageObjects.runner
-    @codeCompiler = languageObjects.compiler
+    @programRunner = @languages.runner
+    @codeCompiler = @languages.compiler
 
     @threeJsSystem = new ThreeJsSystem(
       @threeJsCanvas,
