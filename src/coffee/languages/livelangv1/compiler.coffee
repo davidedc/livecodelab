@@ -17,7 +17,7 @@ class CodeCompiler
   codePreprocessor: null
   lastCorrectOutput: null
 
-  whitespaceCheck: /^\s*$/
+  whitespaceCheck: /^\s*(\/\/[^\n]*\n*)*\s*$/
 
   constructor: (@eventRouter) ->
     # the code compiler needs the CodePreprocessor
