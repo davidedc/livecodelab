@@ -82,7 +82,7 @@ class AnimationLoop
   addToScope: (scope) ->
     @scope = scope
     @scope.addVariable('frame', @frame)
-    @scope.addFunction('fps',  (targetFPS) => @ballDetail(targetFPS))
+    @scope.addFunction('fps',  (targetFPS) => @fps(targetFPS))
 
   setFrame: (value) ->
     @frame = value
@@ -93,7 +93,7 @@ class AnimationLoop
     if targetFPS == undefined
       @targetFPS = -1
     else
-      @targetFPS = value
+      @targetFPS = targetFPS
 
   # requestAnimationFrame is used to synchronize frame animation.
   # It is possible for users to set the framerate themselves, at
@@ -101,10 +101,10 @@ class AnimationLoop
   # setTimeout.
   scheduleNextFrame: ->
     if @targetFPS == -1
-      window.requestAnimationFrame(@animate)
+      window.requestAnimationFrame(() => @animate())
     else
       setTimeout(
-        () => window.requestAnimationFrame(@animate),
+        () => window.requestAnimationFrame(() => @animate()),
         1000 / @targetFPS
       )
 
