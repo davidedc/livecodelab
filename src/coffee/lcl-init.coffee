@@ -32,7 +32,6 @@ Detector        = require '../js/threejs/Detector'
 
 MouseWheelHandler = require '../js/mousewheel'
 require './globals/numbertimes'
-require './globals/requestAnimFrame'
 
 
 startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
