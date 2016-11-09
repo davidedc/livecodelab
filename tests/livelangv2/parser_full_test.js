@@ -9,6 +9,16 @@ var assert = require('assert');
 
 describe('Parser', function () {
 
+  it('always returns a block, even with an empty program', function () {
+
+    var program = '';
+    var parsed = parser.parse(program, {});
+
+    var expected = ast.Block([]);
+
+    assert.deepEqual(parsed, expected);
+  });
+
   it('basic function calls work', function () {
 
     var program = dedent(`

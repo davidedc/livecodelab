@@ -51,13 +51,15 @@ Program
 
 SourceElements "elements"
   = head:SourceElement tail:(NewLine SourceElement)* {
-      return buildList(head, tail, 1);
+      var elements = buildList(head, tail, 1);
+      return _.filter(elements, function (e) { return e.ast !== 'COMMENT'; });
   }
 
 SourceElement "elements"
-  = Samedent statement:Statement _ Comment* _ {
+  = Samedent statement:Statement _ Comment? {
       return statement;
   }
+  / Comment
 
 Block "block"
   = Indent elements:SourceElements Dedent {
@@ -372,10 +374,12 @@ Dedent
  */
 
 Comment
-  = "//" [^\n]*
+  = "//" [^\n]* {
+    return Ast.Node.Comment();
+  }
 
 NewLine
-  = Comment? "\n"+ Comment? NewLine?
+  = "\n"+
 
 EOF
   = !.

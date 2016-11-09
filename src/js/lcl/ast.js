@@ -149,5 +149,13 @@ Ast.Node.Str = function (value) {
     };
 };
 
+/**
+ */
+Ast.Node.Comment = function () {
+    return {
+        ast: 'COMMENT'
+    };
+};
+
 module.exports = Ast;
 

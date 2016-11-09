@@ -61,6 +61,10 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
   # Stats are updated in the animationLoop
   # add Stats.js - https://github.com/mrdoob/stats.js
   stats = new Stats
+  eventRouter.addListener(
+    'frame-animated',
+    stats.update
+  )
 
   # Client used to sync to a time pulse over websocket
   syncClient = new Pulse()
@@ -95,8 +99,7 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
     backgroundDiv,
     eventRouter,
     syncClient,
-    audioAPI,
-    stats
+    audioAPI
   )
 
   #/////////////////////////////////////////////////////
@@ -177,6 +180,10 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
     () -> ui.showStatsWidget()
   )
   eventRouter.addListener(
+    'livecodelab-sleeping',
+    () -> ui.hideStatsWidget()
+  )
+  eventRouter.addListener(
     'code-changed',
     (updatedCodeAsString) ->
       if updatedCodeAsString isnt ""
@@ -190,7 +197,6 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
         )
         eventRouter.emit("set-url-hash", "")
         eventRouter.emit("big-cursor-show")
-        ui.hideStatsWidget()
       liveCodeLabCore.updateCode updatedCodeAsString
   )
 
