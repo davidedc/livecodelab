@@ -83,6 +83,7 @@ class AnimationLoop
     @scope = scope
     @scope.addVariable('frame', @frame)
     @scope.addFunction('fps',  (targetFPS) => @fps(targetFPS))
+    @scope.addFunction('resetFps',  () => @resetFps())
 
   setFrame: (value) ->
     @frame = value
@@ -94,6 +95,9 @@ class AnimationLoop
       @targetFPS = -1
     else
       @targetFPS = targetFPS
+
+  resetFps: () ->
+    @targetFPS = -1
 
   # requestAnimationFrame is used to synchronize frame animation.
   # It is possible for users to set the framerate themselves, at
