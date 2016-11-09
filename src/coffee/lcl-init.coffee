@@ -180,6 +180,10 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
     () -> ui.showStatsWidget()
   )
   eventRouter.addListener(
+    'livecodelab-sleeping',
+    () -> ui.hideStatsWidget()
+  )
+  eventRouter.addListener(
     'code-changed',
     (updatedCodeAsString) ->
       if updatedCodeAsString isnt ""
@@ -193,7 +197,6 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
         )
         eventRouter.emit("set-url-hash", "")
         eventRouter.emit("big-cursor-show")
-        ui.hideStatsWidget()
       liveCodeLabCore.updateCode updatedCodeAsString
   )
 
