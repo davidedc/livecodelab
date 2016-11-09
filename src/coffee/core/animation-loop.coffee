@@ -91,7 +91,7 @@ class AnimationLoop
       @scope.addVariable('frame', value)
 
   fps: (targetFPS) ->
-    if targetFPS == undefined
+    if targetFPS == undefined or targetFPS >= 60 or targetFPS < 0
       @targetFPS = -1
     else
       @targetFPS = targetFPS
