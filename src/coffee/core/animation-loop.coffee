@@ -52,9 +52,13 @@
 
 class AnimationLoop
 
-  loopInterval: null
-  wantedFramesPerSecond: null
-  AS_HIGH_FPS_AS_POSSIBLE: -1
+  targetFPS: -1
+
+  # global variable, keeps the count of how many frames since beginning
+  # of session (or since the program was last cleared).
+  # This variable is incremented and reset in the animation
+  # loop "animate" function.
+  frame: 0
 
   sleeping: true
 
@@ -69,60 +73,41 @@ class AnimationLoop
     @matrixCommands,
     @soundSystem,
     @lightSystem,
-    @graphicsCommands,
-    @forceUseOfTimeoutForScheduling = false
+    @graphicsCommands
   ) ->
-    # Some basic initialisations and constant definitions
-    @wantedFramesPerSecond = @AS_HIGH_FPS_AS_POSSIBLE
-
-    # global variale, keeps the count of how many frames since beginning
-    # of session (or since the program was last cleared).
-    # This variable is incremented and reset in the animation
-    # loop "animate" function.
-    @setFrame(0)
 
   addToScope: (scope) ->
     @scope = scope
     @scope.addVariable('frame', @frame)
+    @scope.addFunction('fps',  (targetFPS) => @fps(targetFPS))
+    @scope.addFunction('resetFps',  () => @resetFps())
 
   setFrame: (value) ->
     @frame = value
     if @scope
       @scope.addVariable('frame', value)
 
-  # There are two different ways to schedule the next frame:
-  # 1. using a native window.requestAnimationFrame implementation
-  #    (supported by some browsers)
-  # 2. using timeouts
-  #
-  # Notes and constraints:
-  # * window.requestAnimationFrame cannot be used if user wants a
-  #   specific fps (i.e. you can't pick a specific framerate)
-  # * for browser that don't have a window.requestAnimationFrame, a shim
-  #   at the end of the page replaces that with an implementation
-  #   based on timeouts
-  # * the user can decide to force the use of timeouts (for testing purposes)
-  scheduleNextFrame: ->
-    if @forceUseOfTimeoutForScheduling
-      if @wantedFramesPerSecond is @AS_HIGH_FPS_AS_POSSIBLE
-        setTimeout (=>
-          @animate()
-        ), 1000 / 60
-      else
-        setTimeout (=>
-          @animate()
-        ), 1000 / @wantedFramesPerSecond
+  fps: (targetFPS) ->
+    if targetFPS == undefined or targetFPS >= 60 or targetFPS < 0
+      @targetFPS = -1
     else
-      if @wantedFramesPerSecond is @AS_HIGH_FPS_AS_POSSIBLE
-        window.requestAnimationFrame =>
-          @animate()
-      else
-        if loopInterval?
-          loopInterval = setInterval(
-            () => window.requestAnimationFrame(() => @animate()),
-            1000 / @wantedFramesPerSecond
-          )
+      @targetFPS = targetFPS
 
+  resetFps: () ->
+    @targetFPS = -1
+
+  # requestAnimationFrame is used to synchronize frame animation.
+  # It is possible for users to set the framerate themselves, at
+  # which point requestAnimationFrame is used in conjunction with
+  # setTimeout.
+  scheduleNextFrame: ->
+    if @targetFPS == -1
+      window.requestAnimationFrame(() => @animate())
+    else
+      setTimeout(
+        () => window.requestAnimationFrame(() => @animate()),
+        1000 / @targetFPS
+      )
 
   # animation loop
   animate: ->
