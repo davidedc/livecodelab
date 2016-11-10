@@ -52,9 +52,13 @@
 
 class AnimationLoop
 
-  loopInterval: null
-
   targetFPS: -1
+
+  # global variable, keeps the count of how many frames since beginning
+  # of session (or since the program was last cleared).
+  # This variable is incremented and reset in the animation
+  # loop "animate" function.
+  frame: 0
 
   sleeping: true
 
@@ -71,13 +75,6 @@ class AnimationLoop
     @lightSystem,
     @graphicsCommands
   ) ->
-    # Some basic initialisations and constant definitions
-
-    # global variale, keeps the count of how many frames since beginning
-    # of session (or since the program was last cleared).
-    # This variable is incremented and reset in the animation
-    # loop "animate" function.
-    @setFrame(0)
 
   addToScope: (scope) ->
     @scope = scope
