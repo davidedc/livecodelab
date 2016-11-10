@@ -10,12 +10,14 @@ require '../../js/jquery.sooperfish'
 require '../../js/jquery.easing-sooper'
 require '../../js/jquery.simplemodal'
 
+programs = require '../programs'
+
 class Ui
 
   @backgroundCanvasFractionOfWindowSize: 10
   @foregroundCanvasMaxScaleUpFactor: 2
 
-  constructor: (@eventRouter, @stats, @programLoader) ->
+  constructor: (@eventRouter, @stats) ->
     # Setup Event Listeners
     @eventRouter.addListener(
       "report-runtime-or-compile-time-error",
@@ -171,7 +173,7 @@ class Ui
         false
     )
 
-    allDemos = @programLoader.programs.demos
+    allDemos = programs.demos
 
     # Create an object with a property for each submenu.
     # That property contains an array with all the demos that belong to
@@ -200,14 +202,14 @@ class Ui
       for demo in demoSubmenus[demoSubmenu]
         a = """<li>
                <a id='#{demo}'>
-               #{@programLoader.programs.demos[demo].title}
+               #{programs.demos[demo].title}
                </a>
                </li>"""
         $(a).appendTo(
           $('#'+demoSubmenuNoSpaces)
         )
 
-    allTutorials = @programLoader.programs.tutorials
+    allTutorials = programs.tutorials
 
     # Create an object with a property for each submenu.
     # That property contains an array with all the tutorials that belong to
@@ -237,7 +239,7 @@ class Ui
       for tutorial in tutorialSubmenus[tutorialSubmenu]
         a = """<li>
                <a id='#{tutorial}'>
-               #{@programLoader.programs.tutorials[tutorial].title}
+               #{programs.tutorials[tutorial].title}
                </a>
                </li>"""
         $(a).appendTo(
