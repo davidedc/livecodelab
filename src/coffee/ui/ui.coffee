@@ -17,7 +17,7 @@ class Ui
   @backgroundCanvasFractionOfWindowSize: 10
   @foregroundCanvasMaxScaleUpFactor: 2
 
-  constructor: (eventRouter, @stats) ->
+  constructor: (eventRouter, stats) ->
     # Setup Event Listeners
     eventRouter.addListener(
       "report-runtime-or-compile-time-error",
@@ -164,10 +164,10 @@ class Ui
     )
 
     # Align bottom-left
-    @stats.getDomElement().style.position = "absolute"
-    @stats.getDomElement().style.right = "0px"
-    @stats.getDomElement().style.top = "0px"
-    document.body.appendChild @stats.getDomElement()
+    stats.getDomElement().style.position = "absolute"
+    stats.getDomElement().style.right = "0px"
+    stats.getDomElement().style.top = "0px"
+    document.body.appendChild(stats.getDomElement())
 
     $("#startingCurtainScreen").fadeOut()
     $("#formCode").css "opacity", 0
