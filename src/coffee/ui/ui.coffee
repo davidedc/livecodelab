@@ -166,13 +166,6 @@ class Ui
     # to the UI elements that generated the events
     eventRouter = @eventRouter
 
-    $('#logo span').click(
-      () ->
-        $("#aboutWindow").modal()
-        $("#simplemodal-container").height 250
-        false
-    )
-
     allDemos = programs.demos
 
     # Create an object with a property for each submenu.
@@ -250,6 +243,13 @@ class Ui
     # invoke sooperfish,
     # which does some more transformations of its own.
     $('ul.sf-menu').sooperfish()
+
+    $('#logo span').click(
+      () ->
+        $("#aboutWindow").modal()
+        $("#simplemodal-container").height 250
+        false
+    )
 
     $("#demos ul li a").click ->
       eventRouter.emit("load-program", $(@).attr("id"))
