@@ -17,14 +17,14 @@ class Ui
   @backgroundCanvasFractionOfWindowSize: 10
   @foregroundCanvasMaxScaleUpFactor: 2
 
-  constructor: (@eventRouter, @stats) ->
+  constructor: (eventRouter, @stats) ->
     # Setup Event Listeners
-    @eventRouter.addListener(
+    eventRouter.addListener(
       "report-runtime-or-compile-time-error",
       (e) => @checkErrorAndReport(e)
     )
-    @eventRouter.addListener("clear-error", => @clearError() )
-    @eventRouter.addListener("autocoder-button-pressed", (state) ->
+    eventRouter.addListener("clear-error", => @clearError() )
+    eventRouter.addListener("autocoder-button-pressed", (state) ->
       if state is true
         $("#autocodeIndicator span").html("Autocode: on").css(
           "background-color", "#FF0000"
@@ -35,22 +35,17 @@ class Ui
         )
     )
 
-    @eventRouter.addListener("autocoderbutton-flash", ->
+    eventRouter.addListener("autocoderbutton-flash", ->
       $("#autocodeIndicator").fadeOut(100).fadeIn 100
     )
 
-    @eventRouter.addListener("auto-hide-code-button-pressed",
+    eventRouter.addListener("auto-hide-code-button-pressed",
       (autoDimmingIsOn) ->
         if autoDimmingIsOn
           $("#dimCodeButton span").html("Hide Code: on")
         else
           $("#dimCodeButton span").html("Hide Code: off")
     )
-
-    # we need a way to reference the eventRouter without
-    # resorting to "@", because the "@"s below need to stick
-    # to the UI elements that generated the events
-    eventRouter = @eventRouter
 
     allDemos = programs.demos
 
