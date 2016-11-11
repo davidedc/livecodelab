@@ -290,7 +290,6 @@ class Ui
 
     $("#startingCurtainScreen").fadeOut()
     $("#formCode").css "opacity", 0
-    @constructor.adjustCodeMirrorHeight()
 
 module.exports = Ui
 
