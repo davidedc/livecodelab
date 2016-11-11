@@ -34,7 +34,25 @@ MouseWheelHandler = require '../js/mousewheel'
 require './globals/numbertimes'
 
 
-startEnvironment = (threeJsCanvas, backgroundDiv) ->
+$(document).ready ->
+
+  threeJsCanvas = document.getElementById('threeJsCanvas')
+  Ui.sizeForegroundCanvas(
+    threeJsCanvas,
+    {
+      x: Ui.foregroundCanvasMaxScaleUpFactor,
+      y: Ui.foregroundCanvasMaxScaleUpFactor
+    }
+  )
+
+  backgroundDiv = document.getElementById('backgroundDiv')
+  Ui.fullscreenify(
+    backgroundDiv,
+    {
+      x: Ui.backgroundCanvasFractionOfWindowSize,
+      y: Ui.backgroundCanvasFractionOfWindowSize
+    }
+  )
 
   #/////////////////////////////////////////////////////
   # Phase 1 - Preliminary checks and initialisations
@@ -316,27 +334,3 @@ startEnvironment = (threeJsCanvas, backgroundDiv) ->
     650
   )
 
-$(document).ready ->
-
-  threeJsCanvas = document.getElementById('threeJsCanvas')
-  Ui.sizeForegroundCanvas(
-    threeJsCanvas,
-    {
-      x: Ui.foregroundCanvasMaxScaleUpFactor,
-      y: Ui.foregroundCanvasMaxScaleUpFactor
-    }
-  )
-
-  backgroundDiv = document.getElementById('backgroundDiv')
-  Ui.fullscreenify(
-    backgroundDiv,
-    {
-      x: Ui.backgroundCanvasFractionOfWindowSize,
-      y: Ui.backgroundCanvasFractionOfWindowSize
-    }
-  )
-
-  setTimeout(
-    () -> startEnvironment(threeJsCanvas, backgroundDiv),
-    100
-  )
