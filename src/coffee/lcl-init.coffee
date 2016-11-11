@@ -309,7 +309,6 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
     )
     bigCursor.toggleBlink true
 
-  ui.setup()
   Ui.adjustCodeMirrorHeight()
 
   setTimeout(

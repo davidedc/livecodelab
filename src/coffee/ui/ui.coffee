@@ -47,120 +47,6 @@ class Ui
           $("#dimCodeButton span").html("Hide Code: off")
     )
 
-  @sizeForegroundCanvas: (canvas, scale = {x: 1, y: 1}) ->
-
-    # set the buffer size
-    canvas.width = (window.innerWidth + 40) / scale.x
-    canvas.height = (window.innerHeight + 40) / scale.y
-
-    scaleString = scale.x + ", " + scale.y
-
-    $(canvas).css("-ms-transform-origin", "0% 0%")
-            .css("-webkit-transform-origin", "0% 0%")
-            .css("-moz-transform-origin", "0% 0%")
-            .css("-o-transform-origin", "0% 0%")
-            .css("transform-origin", "0% 0%")
-            .css("-ms-transform", "scale(" + scaleString + ")")
-            .css("-webkit-transform", "scale3d(" + scaleString + ", 1)")
-            .css("-moz-transform", "scale(" + scaleString + ")")
-            .css("-o-transform", "scale(" + scaleString + ")")
-            .css "transform", "scale(" + scaleString + ")"
-
-
-  @resizeCanvas: (canvas, scale = {x: 1, y: 1}) ->
-    sx = (window.innerWidth + 40) / 10
-    sy = (window.innerHeight + 40) / 10
-    canvas.style.width = sx + "px"
-    canvas.style.height = sy + "px"
-
-    scaleString = 10 + ", " + 10
-
-    $(canvas).css("-ms-transform-origin", "0% 0%")
-            .css("-webkit-transform-origin", "0% 0%")
-            .css("-moz-transform-origin", "0% 0%")
-            .css("-o-transform-origin", "0% 0%")
-            .css("transform-origin", "0% 0%")
-            .css("-ms-transform", "scale(" + scaleString + ")")
-            .css("-webkit-transform", "scale3d(" + scaleString + ", 1)")
-            .css("-moz-transform", "scale(" + scaleString + ")")
-            .css("-o-transform", "scale(" + scaleString + ")")
-            .css "transform", "scale(" + scaleString + ")"
-
-
-  # TODO In theory we want to re-draw the background because the
-  # aspect ration might have changed.
-  # But for the time being we only have vertical
-  # gradients so that's not going to be a problem.
-  @adjustCodeMirrorHeight: ->
-    $(".CodeMirror-scroll").css(
-      "height", window.innerHeight - $("#theMenu").height()
-    )
-
-
-  # resizing the text area is necessary otherwise
-  # as the user types to the end of it, instead of just scrolling
-  # the content leaving all the other parts of the page where
-  # they are, it expands and it pushes down
-  # the view of the page, meaning that the canvas goes up and
-  # the menu disappears
-  # so we have to resize it at launch and also every time the window
-  # is resized.
-  @fullscreenify: (canvas, scale = {x: 1, y: 1}) ->
-    @resizeCanvas canvas, scale
-    window.addEventListener "resize", (=>
-      @adjustCodeMirrorHeight()
-      @resizeCanvas canvas, scale
-    ), false
-
-  checkErrorAndReport: (e) ->
-    $("#errorMessageDisplay").css "color", "red"
-
-    # if the object is an exception then get the message
-    # otherwise e should just be a string
-    errorMessage = e.message or e
-    if errorMessage.indexOf("Unexpected 'INDENT'") > -1
-      errorMessage = "weird indentation"
-    else if errorMessage.indexOf("Unexpected 'TERMINATOR'") > -1
-      errorMessage = "line not complete"
-    else if errorMessage.indexOf("Unexpected 'CALL_END'") > -1
-      errorMessage = "line not complete"
-    else if errorMessage.indexOf("Unexpected '}'") > -1
-      errorMessage = "something wrong"
-    else if errorMessage.indexOf("Unexpected 'MATH'") > -1
-      errorMessage = "weird arithmetic there"
-    else if errorMessage.indexOf("Unexpected 'LOGIC'") > -1
-      errorMessage = "odd expression thingy"
-    else if errorMessage.indexOf("Unexpected 'NUMBER'") > -1
-      errorMessage = "lost number?"
-    else if errorMessage.indexOf("Unexpected 'NUMBER'") > -1
-      errorMessage = "lost number?"
-    else
-      errorMessage = errorMessage.replace(/ReferenceError:\s/g, "") if(
-        errorMessage.indexOf("ReferenceError") > -1
-      )
-    $("#errorMessageDisplay").text errorMessage
-
-  clearError: ->
-    $("#errorMessageDisplay").css "color", "#000000"
-    $("#errorMessageDisplay").text ""
-
-  soundSystemOk: ->
-    $("#soundSystemStatus").text("Sound System On").removeClass("off")
-
-  hideStatsWidget: ->
-    $("#statsWidget").hide()
-
-
-  showStatsWidget: ->
-    # I wish I could tell you why showing
-    # the widget straight away doesn't work.
-    # Postponing a little bit makes this work. It doesn't make any sense.
-    setTimeout(
-      () -> $("#statsWidget").show(),
-      1
-    )
-
-  setup: ->
     # we need a way to reference the eventRouter without
     # resorting to "@", because the "@"s below need to stick
     # to the UI elements that generated the events
@@ -290,6 +176,119 @@ class Ui
 
     $("#startingCurtainScreen").fadeOut()
     $("#formCode").css "opacity", 0
+
+  @sizeForegroundCanvas: (canvas, scale = {x: 1, y: 1}) ->
+
+    # set the buffer size
+    canvas.width = (window.innerWidth + 40) / scale.x
+    canvas.height = (window.innerHeight + 40) / scale.y
+
+    scaleString = scale.x + ", " + scale.y
+
+    $(canvas).css("-ms-transform-origin", "0% 0%")
+            .css("-webkit-transform-origin", "0% 0%")
+            .css("-moz-transform-origin", "0% 0%")
+            .css("-o-transform-origin", "0% 0%")
+            .css("transform-origin", "0% 0%")
+            .css("-ms-transform", "scale(" + scaleString + ")")
+            .css("-webkit-transform", "scale3d(" + scaleString + ", 1)")
+            .css("-moz-transform", "scale(" + scaleString + ")")
+            .css("-o-transform", "scale(" + scaleString + ")")
+            .css "transform", "scale(" + scaleString + ")"
+
+
+  @resizeCanvas: (canvas, scale = {x: 1, y: 1}) ->
+    sx = (window.innerWidth + 40) / 10
+    sy = (window.innerHeight + 40) / 10
+    canvas.style.width = sx + "px"
+    canvas.style.height = sy + "px"
+
+    scaleString = 10 + ", " + 10
+
+    $(canvas).css("-ms-transform-origin", "0% 0%")
+            .css("-webkit-transform-origin", "0% 0%")
+            .css("-moz-transform-origin", "0% 0%")
+            .css("-o-transform-origin", "0% 0%")
+            .css("transform-origin", "0% 0%")
+            .css("-ms-transform", "scale(" + scaleString + ")")
+            .css("-webkit-transform", "scale3d(" + scaleString + ", 1)")
+            .css("-moz-transform", "scale(" + scaleString + ")")
+            .css("-o-transform", "scale(" + scaleString + ")")
+            .css "transform", "scale(" + scaleString + ")"
+
+
+  # TODO In theory we want to re-draw the background because the
+  # aspect ration might have changed.
+  # But for the time being we only have vertical
+  # gradients so that's not going to be a problem.
+  @adjustCodeMirrorHeight: ->
+    $(".CodeMirror-scroll").css(
+      "height", window.innerHeight - $("#theMenu").height()
+    )
+
+
+  # resizing the text area is necessary otherwise
+  # as the user types to the end of it, instead of just scrolling
+  # the content leaving all the other parts of the page where
+  # they are, it expands and it pushes down
+  # the view of the page, meaning that the canvas goes up and
+  # the menu disappears
+  # so we have to resize it at launch and also every time the window
+  # is resized.
+  @fullscreenify: (canvas, scale = {x: 1, y: 1}) ->
+    @resizeCanvas canvas, scale
+    window.addEventListener "resize", (=>
+      @adjustCodeMirrorHeight()
+      @resizeCanvas canvas, scale
+    ), false
+
+  checkErrorAndReport: (e) ->
+    $("#errorMessageDisplay").css "color", "red"
+
+    # if the object is an exception then get the message
+    # otherwise e should just be a string
+    errorMessage = e.message or e
+    if errorMessage.indexOf("Unexpected 'INDENT'") > -1
+      errorMessage = "weird indentation"
+    else if errorMessage.indexOf("Unexpected 'TERMINATOR'") > -1
+      errorMessage = "line not complete"
+    else if errorMessage.indexOf("Unexpected 'CALL_END'") > -1
+      errorMessage = "line not complete"
+    else if errorMessage.indexOf("Unexpected '}'") > -1
+      errorMessage = "something wrong"
+    else if errorMessage.indexOf("Unexpected 'MATH'") > -1
+      errorMessage = "weird arithmetic there"
+    else if errorMessage.indexOf("Unexpected 'LOGIC'") > -1
+      errorMessage = "odd expression thingy"
+    else if errorMessage.indexOf("Unexpected 'NUMBER'") > -1
+      errorMessage = "lost number?"
+    else if errorMessage.indexOf("Unexpected 'NUMBER'") > -1
+      errorMessage = "lost number?"
+    else
+      errorMessage = errorMessage.replace(/ReferenceError:\s/g, "") if(
+        errorMessage.indexOf("ReferenceError") > -1
+      )
+    $("#errorMessageDisplay").text errorMessage
+
+  clearError: ->
+    $("#errorMessageDisplay").css "color", "#000000"
+    $("#errorMessageDisplay").text ""
+
+  soundSystemOk: ->
+    $("#soundSystemStatus").text("Sound System On").removeClass("off")
+
+  hideStatsWidget: ->
+    $("#statsWidget").hide()
+
+
+  showStatsWidget: ->
+    # I wish I could tell you why showing
+    # the widget straight away doesn't work.
+    # Postponing a little bit makes this work. It doesn't make any sense.
+    setTimeout(
+      () -> $("#statsWidget").show(),
+      1
+    )
 
 module.exports = Ui
 
