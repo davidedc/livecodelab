@@ -34,7 +34,7 @@ MouseWheelHandler = require '../js/mousewheel'
 require './globals/numbertimes'
 
 
-startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
+startEnvironment = (threeJsCanvas, backgroundDiv) ->
 
   #/////////////////////////////////////////////////////
   # Phase 1 - Preliminary checks and initialisations
