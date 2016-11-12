@@ -10,7 +10,7 @@ require '../../js/jquery.sooperfish'
 require '../../js/jquery.easing-sooper'
 require '../../js/jquery.simplemodal'
 
-programs = require '../programs'
+programs = require '../programs/programs'
 
 class Ui
 
