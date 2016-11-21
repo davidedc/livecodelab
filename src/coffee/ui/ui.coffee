@@ -10,19 +10,21 @@ require '../../js/jquery.sooperfish'
 require '../../js/jquery.easing-sooper'
 require '../../js/jquery.simplemodal'
 
+programs = require '../programs/programs'
+
 class Ui
 
   @backgroundCanvasFractionOfWindowSize: 10
   @foregroundCanvasMaxScaleUpFactor: 2
 
-  constructor: (@eventRouter, @stats, @programLoader) ->
+  constructor: (eventRouter, stats) ->
     # Setup Event Listeners
-    @eventRouter.addListener(
+    eventRouter.addListener(
       "report-runtime-or-compile-time-error",
       (e) => @checkErrorAndReport(e)
     )
-    @eventRouter.addListener("clear-error", => @clearError() )
-    @eventRouter.addListener("autocoder-button-pressed", (state) ->
+    eventRouter.addListener("clear-error", => @clearError() )
+    eventRouter.addListener("autocoder-button-pressed", (state) ->
       if state is true
         $("#autocodeIndicator span").html("Autocode: on").css(
           "background-color", "#FF0000"
@@ -33,17 +35,142 @@ class Ui
         )
     )
 
-    @eventRouter.addListener("autocoderbutton-flash", ->
+    eventRouter.addListener("autocoderbutton-flash", ->
       $("#autocodeIndicator").fadeOut(100).fadeIn 100
     )
 
-    @eventRouter.addListener("auto-hide-code-button-pressed",
+    eventRouter.addListener("auto-hide-code-button-pressed",
       (autoDimmingIsOn) ->
         if autoDimmingIsOn
           $("#dimCodeButton span").html("Hide Code: on")
         else
           $("#dimCodeButton span").html("Hide Code: off")
     )
+
+    allDemos = programs.demos
+
+    # Create an object with a property for each submenu.
+    # That property contains an array with all the demos that belong to
+    # that submenu.
+    demoSubmenus = {}
+    for demo of allDemos
+      submenuOfThisDemo = allDemos[demo].submenu
+      demoSubmenus[submenuOfThisDemo] ?= []
+      demoSubmenus[submenuOfThisDemo].push(demo)
+
+    for demoSubmenu of demoSubmenus
+
+      demoSubmenuNoSpaces = demoSubmenu.replace(" ","_")
+      # insert the submenu in the first level
+      $("<li></li>").appendTo(
+        $('#ulForDemos')
+      ).attr('id', 'hookforDemos' + demoSubmenuNoSpaces)
+
+      $("<span>#{demoSubmenu}</span>").appendTo(
+        $('#hookforDemos' + demoSubmenuNoSpaces)
+      )
+      $("<ul id='#{demoSubmenuNoSpaces}'></ul>").appendTo(
+        $('#hookforDemos' + demoSubmenuNoSpaces)
+      )
+      # now take each demo that belongs to this submenu and put it there
+      for demo in demoSubmenus[demoSubmenu]
+        a = """<li>
+               <a id='#{demo}'>
+               #{programs.demos[demo].title}
+               </a>
+               </li>"""
+        $(a).appendTo(
+          $('#'+demoSubmenuNoSpaces)
+        )
+
+    allTutorials = programs.tutorials
+
+    # Create an object with a property for each submenu.
+    # That property contains an array with all the tutorials that belong to
+    # that submenu.
+    tutorialSubmenus = {}
+    for tutorial of allTutorials
+      submenuOfThisTutorial = allTutorials[tutorial].submenu
+      # create array if it didn't exist
+      tutorialSubmenus[submenuOfThisTutorial] ?= []
+      tutorialSubmenus[submenuOfThisTutorial].push(tutorial)
+
+    for tutorialSubmenu of tutorialSubmenus
+
+      tutorialSubmenuNoSpaces = tutorialSubmenu.replace(" ","_")
+      # insert the submenu in the first level
+      $("<li></li>").appendTo(
+        $('#ulForTutorials')
+      ).attr('id', 'hookforTutorials' + tutorialSubmenuNoSpaces)
+
+      $("<span>#{tutorialSubmenu}</span>").appendTo(
+        $('#hookforTutorials' + tutorialSubmenuNoSpaces)
+      )
+      $("<ul id='#{tutorialSubmenuNoSpaces}'></ul>").appendTo(
+        $('#hookforTutorials' + tutorialSubmenuNoSpaces)
+      )
+      # now take each tutorial that belongs to this submenu and put it there
+      for tutorial in tutorialSubmenus[tutorialSubmenu]
+        a = """<li>
+               <a id='#{tutorial}'>
+               #{programs.tutorials[tutorial].title}
+               </a>
+               </li>"""
+        $(a).appendTo(
+          $('#'+tutorialSubmenuNoSpaces)
+        )
+
+    # Now that all the menu items are in place in the DOM,
+    # invoke sooperfish,
+    # which does some more transformations of its own.
+    $('ul.sf-menu').sooperfish()
+
+    $('#logo span').click(
+      () ->
+        $("#aboutWindow").modal()
+        $("#simplemodal-container").height 250
+        false
+    )
+
+    $("#demos ul li a").click ->
+      eventRouter.emit("load-program", $(@).attr("id"))
+      false
+
+    $("#tutorials li a").click ->
+      eventRouter.emit("load-program", $(@).attr("id"))
+      false
+
+    $("#languages li a").click ->
+      eventRouter.emit("set-language", $(@).attr("id"))
+      false
+
+    $("#autocodeIndicator").click(
+      () ->
+        eventRouter.emit("toggle-autocoder")
+        false
+    )
+
+    $("#dimCodeButton").click(
+      () ->
+        eventRouter.emit("editor-toggle-dim")
+        false
+    )
+
+    $('#resetButton').click(
+      () ->
+        eventRouter.emit("reset")
+        $(@).stop().fadeOut(100).fadeIn 100
+        false
+    )
+
+    # Align bottom-left
+    stats.getDomElement().style.position = "absolute"
+    stats.getDomElement().style.right = "0px"
+    stats.getDomElement().style.top = "0px"
+    document.body.appendChild(stats.getDomElement())
+
+    $("#startingCurtainScreen").fadeOut()
+    $("#formCode").css "opacity", 0
 
   @sizeForegroundCanvas: (canvas, scale = {x: 1, y: 1}) ->
 
@@ -52,26 +179,6 @@ class Ui
     canvas.height = (window.innerHeight + 40) / scale.y
 
     scaleString = scale.x + ", " + scale.y
-
-    $(canvas).css("-ms-transform-origin", "0% 0%")
-            .css("-webkit-transform-origin", "0% 0%")
-            .css("-moz-transform-origin", "0% 0%")
-            .css("-o-transform-origin", "0% 0%")
-            .css("transform-origin", "0% 0%")
-            .css("-ms-transform", "scale(" + scaleString + ")")
-            .css("-webkit-transform", "scale3d(" + scaleString + ", 1)")
-            .css("-moz-transform", "scale(" + scaleString + ")")
-            .css("-o-transform", "scale(" + scaleString + ")")
-            .css "transform", "scale(" + scaleString + ")"
-
-
-  @resizeCanvas: (canvas, scale = {x: 1, y: 1}) ->
-    sx = (window.innerWidth + 40) / 10
-    sy = (window.innerHeight + 40) / 10
-    canvas.style.width = sx + "px"
-    canvas.style.height = sy + "px"
-
-    scaleString = 10 + ", " + 10
 
     $(canvas).css("-ms-transform-origin", "0% 0%")
             .css("-webkit-transform-origin", "0% 0%")
@@ -103,11 +210,13 @@ class Ui
   # the menu disappears
   # so we have to resize it at launch and also every time the window
   # is resized.
-  @fullscreenify: (canvas, scale = {x: 1, y: 1}) ->
-    @resizeCanvas canvas, scale
+  @fullscreenify: (background, scale = {x: 1, y: 1}) ->
+    background.style.width = ((window.innerWidth + 40) / 10) + "px"
+    background.style.height = ((window.innerHeight + 40) / 10) + "px"
     window.addEventListener "resize", (=>
+      background.style.width = ((window.innerWidth + 40) / 10) + "px"
+      background.style.height = ((window.innerHeight + 40) / 10) + "px"
       @adjustCodeMirrorHeight()
-      @resizeCanvas canvas, scale
     ), false
 
   checkErrorAndReport: (e) ->
@@ -157,138 +266,6 @@ class Ui
       () -> $("#statsWidget").show(),
       1
     )
-
-  setup: ->
-    # we need a way to reference the eventRouter without
-    # resorting to "@", because the "@"s below need to stick
-    # to the UI elements that generated the events
-    eventRouter = @eventRouter
-
-    $('#logo span').click(
-      () ->
-        $("#aboutWindow").modal()
-        $("#simplemodal-container").height 250
-        false
-    )
-
-    allDemos = @programLoader.programs.demos
-
-    # Create an object with a property for each submenu.
-    # That property contains an array with all the demos that belong to
-    # that submenu.
-    demoSubmenus = {}
-    for demo of allDemos
-      submenuOfThisDemo = allDemos[demo].submenu
-      demoSubmenus[submenuOfThisDemo] ?= []
-      demoSubmenus[submenuOfThisDemo].push(demo)
-
-    for demoSubmenu of demoSubmenus
-
-      demoSubmenuNoSpaces = demoSubmenu.replace(" ","_")
-      # insert the submenu in the first level
-      $("<li></li>").appendTo(
-        $('#ulForDemos')
-      ).attr('id', 'hookforDemos' + demoSubmenuNoSpaces)
-
-      $("<span>#{demoSubmenu}</span>").appendTo(
-        $('#hookforDemos' + demoSubmenuNoSpaces)
-      )
-      $("<ul id='#{demoSubmenuNoSpaces}'></ul>").appendTo(
-        $('#hookforDemos' + demoSubmenuNoSpaces)
-      )
-      # now take each demo that belongs to this submenu and put it there
-      for demo in demoSubmenus[demoSubmenu]
-        a = """<li>
-               <a id='#{demo}'>
-               #{@programLoader.programs.demos[demo].title}
-               </a>
-               </li>"""
-        $(a).appendTo(
-          $('#'+demoSubmenuNoSpaces)
-        )
-
-    allTutorials = @programLoader.programs.tutorials
-
-    # Create an object with a property for each submenu.
-    # That property contains an array with all the tutorials that belong to
-    # that submenu.
-    tutorialSubmenus = {}
-    for tutorial of allTutorials
-      submenuOfThisTutorial = allTutorials[tutorial].submenu
-      # create array if it didn't exist
-      tutorialSubmenus[submenuOfThisTutorial] ?= []
-      tutorialSubmenus[submenuOfThisTutorial].push(tutorial)
-
-    for tutorialSubmenu of tutorialSubmenus
-
-      tutorialSubmenuNoSpaces = tutorialSubmenu.replace(" ","_")
-      # insert the submenu in the first level
-      $("<li></li>").appendTo(
-        $('#ulForTutorials')
-      ).attr('id', 'hookforTutorials' + tutorialSubmenuNoSpaces)
-
-      $("<span>#{tutorialSubmenu}</span>").appendTo(
-        $('#hookforTutorials' + tutorialSubmenuNoSpaces)
-      )
-      $("<ul id='#{tutorialSubmenuNoSpaces}'></ul>").appendTo(
-        $('#hookforTutorials' + tutorialSubmenuNoSpaces)
-      )
-      # now take each tutorial that belongs to this submenu and put it there
-      for tutorial in tutorialSubmenus[tutorialSubmenu]
-        a = """<li>
-               <a id='#{tutorial}'>
-               #{@programLoader.programs.tutorials[tutorial].title}
-               </a>
-               </li>"""
-        $(a).appendTo(
-          $('#'+tutorialSubmenuNoSpaces)
-        )
-
-    # Now that all the menu items are in place in the DOM,
-    # invoke sooperfish,
-    # which does some more transformations of its own.
-    $('ul.sf-menu').sooperfish()
-
-    $("#demos ul li a").click ->
-      eventRouter.emit("load-program", $(@).attr("id"))
-      false
-
-    $("#tutorials li a").click ->
-      eventRouter.emit("load-program", $(@).attr("id"))
-      false
-
-    $("#languages li a").click ->
-      eventRouter.emit("set-language", $(@).attr("id"))
-      false
-
-    $("#autocodeIndicator").click(
-      () ->
-        eventRouter.emit("toggle-autocoder")
-        false
-    )
-
-    $("#dimCodeButton").click(
-      () ->
-        eventRouter.emit("editor-toggle-dim")
-        false
-    )
-
-    $('#resetButton').click(
-      () ->
-        eventRouter.emit("reset")
-        $(@).stop().fadeOut(100).fadeIn 100
-        false
-    )
-
-    # Align bottom-left
-    @stats.getDomElement().style.position = "absolute"
-    @stats.getDomElement().style.right = "0px"
-    @stats.getDomElement().style.top = "0px"
-    document.body.appendChild @stats.getDomElement()
-
-    $("#startingCurtainScreen").fadeOut()
-    $("#formCode").css "opacity", 0
-    @constructor.adjustCodeMirrorHeight()
 
 module.exports = Ui
 

@@ -163,13 +163,6 @@ class GraphicsCommands
   lastPositionOfPrimitiveType: []
   numberOfOverlappingPrimitives: []
 
-  # we can avoid invoking render() if there are
-  # two consecutive frames where no object-drawing
-  # primitives are invoked so we use these to keep
-  # track of of that.
-  atLeastOneObjectIsDrawn: false
-  atLeastOneObjectWasDrawn: false
-
   constructor: (
     @threeJs,
     @threeJsSystem,
@@ -330,11 +323,6 @@ class GraphicsCommands
   createObjectIfNeededAndDressWithCorrectMaterial: (
     a, b, c, primitiveProperties, strokeTime, colorToBeUsed,
     alphaToBeUsed, applyDefaultNormalColor) ->
-
-    # we can avoid invoking render() if there are
-    # no objects being drawn so let's keep track
-    # of that.
-    @atLeastOneObjectIsDrawn = true
 
     objectIsNew = false
     pooledObjectWithMaterials = undefined
@@ -659,11 +647,6 @@ class GraphicsCommands
     return
 
   reset: ->
-
-    # we can avoid invoking render() if there are
-    # no objects being drawn so let's keep track
-    # of that.
-    @atLeastOneObjectIsDrawn = false
 
     @resetFillStack()
     @resetStrokeStack()

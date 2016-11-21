@@ -151,11 +151,3 @@ h1 span {
     position: absolute;
     z-index: -2;
 }
-
-#backgroundCanvasOrDiv {
-    left: 0px;
-    top: 0px;
-    position: absolute;
-    z-index: -3;
-}
-

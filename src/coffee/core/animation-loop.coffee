@@ -171,19 +171,13 @@ class AnimationLoop
     # function has been run.
     @setFrame(@frame + 1)
 
-    geometryOnScreenMightHaveChanged = (
-      @graphicsCommands.atLeastOneObjectWasDrawn ||
-      @graphicsCommands.atLeastOneObjectIsDrawn
-    )
-
     # if livecodelab is dozing off, in that case you do
     # want to do a render because it will clear the screen.
     # otherwise the last frame of the sketch is going
     # to remain painted in the background behind
     # the big cursor.
-    if !@sleeping and geometryOnScreenMightHaveChanged
+    if !@sleeping
       @renderer.render @graphicsCommands
-      @graphicsCommands.atLeastOneObjectWasDrawn = @graphicsCommands.atLeastOneObjectIsDrawn
 
   cleanStateBeforeRunningDrawAndRendering: ->
     @renderer.resetExclusionPrincipleWobbleDataIfNeeded @graphicsCommands

@@ -15,7 +15,7 @@ require '../index.html'
 Stats           = require '../js/threejs/Stats'
 EventEmitter    = require './core/event-emitter'
 LiveCodeLabCore = require './core/livecodelab-core'
-ProgramLoader   = require './core/program-loader'
+ProgramLoader   = require './programs/program-loader'
 Pulse           = require '../js/pulse'
 WebAudioAPI     = require './sound/webAudioApi'
 BuzzAudioAPI    = require './sound/buzzAudioApi'
@@ -34,7 +34,25 @@ MouseWheelHandler = require '../js/mousewheel'
 require './globals/numbertimes'
 
 
-startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
+$(document).ready ->
+
+  threeJsCanvas = document.getElementById('threeJsCanvas')
+  Ui.sizeForegroundCanvas(
+    threeJsCanvas,
+    {
+      x: Ui.foregroundCanvasMaxScaleUpFactor,
+      y: Ui.foregroundCanvasMaxScaleUpFactor
+    }
+  )
+
+  backgroundDiv = document.getElementById('backgroundDiv')
+  Ui.fullscreenify(
+    backgroundDiv,
+    {
+      x: Ui.backgroundCanvasFractionOfWindowSize,
+      y: Ui.backgroundCanvasFractionOfWindowSize
+    }
+  )
 
   #/////////////////////////////////////////////////////
   # Phase 1 - Preliminary checks and initialisations
@@ -60,6 +78,9 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
   # Stats are updated in the animationLoop
   # add Stats.js - https://github.com/mrdoob/stats.js
   stats = new Stats
+
+  ui = new Ui(eventRouter, stats) # $
+
   eventRouter.addListener(
     'frame-animated',
     stats.update
@@ -122,8 +143,6 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
   MouseWheelHandler.attach editor
 
   # requires threeJsSystem, blendControls, graphicsCommands, renderer
-  # note that the programLoader variable below is never used. Leaving it
-  # in for consistency.
   programLoader = new ProgramLoader(
     eventRouter,
     editor,
@@ -133,8 +152,6 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
     "load-program",
     (demoName) -> programLoader.loadDemoOrTutorial(demoName)
   )
-
-  ui = new Ui(eventRouter, stats, programLoader) # $
 
   # requires: ColourNames
   autocoder = new Autocoder(
@@ -309,33 +326,11 @@ startEnvironment = (threeJsCanvas, backgroundDiv, paramsObject) ->
       650
     )
     bigCursor.toggleBlink true
-  ui.setup()
+
+  Ui.adjustCodeMirrorHeight()
+
   setTimeout(
     () -> programLoader.kickOff(),
     650
   )
 
-$(document).ready ->
-
-  threeJsCanvas = document.getElementById('threeJsCanvas')
-  Ui.sizeForegroundCanvas(
-    threeJsCanvas,
-    {
-      x: Ui.foregroundCanvasMaxScaleUpFactor,
-      y: Ui.foregroundCanvasMaxScaleUpFactor
-    }
-  )
-
-  backgroundDiv = document.getElementById('backgroundDiv')
-  Ui.fullscreenify(
-    backgroundDiv,
-    {
-      x: Ui.backgroundCanvasFractionOfWindowSize,
-      y: Ui.backgroundCanvasFractionOfWindowSize
-    }
-  )
-
-  setTimeout(
-    () -> startEnvironment(threeJsCanvas, backgroundDiv),
-    100
-  )
