@@ -32,7 +32,6 @@ CodeMirror.defineMode('livecodelab', function(conf) {
 
 
   var stringPrefixes = new RegExp("^('{3}|\"{3}|['\"])");
-  var regexPrefixes = new RegExp("^(/{3}|/)");
   var commonConstants = ['Infinity', 'NaN', 'undefined', 'null', 'true', 'false', 'on', 'off', 'yes', 'no'];
   var constants = wordRegexp(commonConstants);
 
@@ -115,16 +114,7 @@ CodeMirror.defineMode('livecodelab', function(conf) {
       state.tokenize = tokenFactory(stream.current(), 'string');
       return state.tokenize(stream, state);
     }
-    // Handle regex literals
-    if (stream.match(regexPrefixes)) {
-      if (stream.current() != '/' || stream.match(/^.*\//, false)) { // prevent highlight of division
-        state.tokenize = tokenFactory(stream.current(), 'string-2');
-        return state.tokenize(stream, state);
-      } else {
-        stream.backUp(1);
-      }
-    }
-    
+
     // Handle operators and delimiters
     if (stream.match(tripleDelimiters) || stream.match(doubleDelimiters)) {
       return 'punctuation';
