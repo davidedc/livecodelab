@@ -20,6 +20,8 @@ class MatrixCommands
     scope.addInlinable('move',        (args...) => @move.apply(this,args))
     scope.addInlinable('rotate',      (args...) => @rotate.apply(this,args))
     scope.addInlinable('scale',       (args...) => @scale.apply(this,args))
+    scope.addInlinable('bigger',        (block) => @scale(1.2, block))
+    scope.addInlinable('smaller',       (block) => @scale(0.8, block))
 
   getWorldMatrix: ->
     @worldMatrix
