@@ -30,6 +30,7 @@ class MathFunctions
     @radians = radians
 
     @random = random
+    @randomSeed = randomSeed
     @noise = noise
 
     @pi = Math.PI
@@ -57,6 +58,7 @@ class MathFunctions
     scope.addFunction('degrees', @degrees)
     scope.addFunction('radians', @radians)
     scope.addFunction('random',  @random)
+    scope.addFunction('randomSeed', @randomSeed)
     scope.addFunction('noise',   @noise)
     scope.addVariable('pi',      @pi)
 
@@ -547,17 +549,17 @@ class Marsaglia
 
   constructor:(i1, i2) ->
     # from http://www.math.uni-bielefeld.de/~sillke/ALGORITHMS/random/marsaglia-c
-    z = i1 or 362436069
-    w = i2 or 521288629
+    @z = i1 or 362436069
+    @w = i2 or 521288629
 
   @createRandomized: ->
     now = new Date()
     new Marsaglia((now / 60000) & 0xFFFFFFFF, now & 0xFFFFFFFF)
 
   nextInt: ->
-    z = (36969 * (z & 65535) + (z >>> 16)) & 0xFFFFFFFF
-    w = (18000 * (w & 65535) + (w >>> 16)) & 0xFFFFFFFF
-    (((z & 0xFFFF) << 16) | (w & 0xFFFF)) & 0xFFFFFFFF
+    @z = (36969 * (@z & 65535) + (@z >>> 16)) & 0xFFFFFFFF
+    @w = (18000 * (@w & 65535) + (@w >>> 16)) & 0xFFFFFFFF
+    (((@z & 0xFFFF) << 16) | (@w & 0xFFFF)) & 0xFFFFFFFF
 
   nextDouble: ->
     i = @nextInt() / 4294967296
@@ -577,7 +579,8 @@ each time the software is run.
 @see noiseSeed
 ###
 randomSeed = (seed) ->
-  currentRandom = (new Marsaglia(seed)).nextDouble
+  mrand = new Marsaglia(seed)
+  currentRandom = () -> mrand.nextDouble()
 
 
 # Random
