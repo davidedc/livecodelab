@@ -72,6 +72,8 @@ class CodePreprocessor
     "rotate"
     "move"
     "scale"
+    "bigger"
+    "smaller"
     # Color and drawing styles
     "fill"
     "stroke"
