@@ -93,4 +93,32 @@ describe('Comments', function () {
     assert.deepEqual(parsed, expected);
   });
 
+  it('ignores indented comments', function () {
+
+    var program = dedent(`
+
+                         rotate
+                         \t// this is a comment
+                         \tpeg 3
+
+                         //and another
+
+                         `);
+    var parsed = parser.parse(program, {
+      functionNames: ['rotate', 'peg'],
+      inlinableFunctions:['rotate']
+    });
+
+    var expected = ast.Block([
+      ast.Application(
+        'rotate',
+        [],
+        ast.Block([
+          ast.Application('peg', [ast.Num(3)], null)
+        ])
+      ),
+    ]);
+
+    assert.deepEqual(parsed, expected);
+  });
 });

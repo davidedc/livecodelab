@@ -59,7 +59,9 @@ SourceElement "elements"
   = Samedent statement:Statement _ Comment? {
       return statement;
   }
-  / Comment
+  / [\t]* _ c:Comment {
+      return c;
+  }
 
 Block "block"
   = Indent elements:SourceElements Dedent {
