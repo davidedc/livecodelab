@@ -2,123 +2,103 @@
 /**
  * CoedeMirror Live Code Lab mode
  */
-CodeMirror.defineMode('livecodelab', function(conf) {
-  var ERRORCLASS = 'error';
-  
-  
+CodeMirror.defineMode('livecodelab', function() {
+  const ERRORCLASS = 'error';
+
   function wordRegexp(words) {
     return new RegExp('^((' + words.join(')|(') + '))\\b');
   }
-  
-  var singleOperators = new RegExp('^[\\+\\-\\*/%&|\\^~<>!\?]');
-  var singleDelimiters = new RegExp('^[\\(\\)\\[\\]\\{\\}@,:`=;\\.]');
-  var doubleOperators = new RegExp('^((\->)|(\=>)|(\\+\\+)|(\\+\\=)|(\\-\\-)|(\\-\\=)|(\\*\\*)|(\\*\\=)|(\\/\\/)|(\\/\\=)|(==)|(!=)|(<=)|(>=)|(<>)|(<<)|(>>)|(//))');
-  var doubleDelimiters = new RegExp('^((\\.\\.)|(\\+=)|(\\-=)|(\\*=)|(%=)|(/=)|(&=)|(\\|=)|(\\^=))');
-  var tripleDelimiters = new RegExp('^((\\.\\.\\.)|(//=)|(>>=)|(<<=)|(\\*\\*=))');
-  var identifiers = new RegExp('^[_A-Za-z][_A-Za-z0-9]*');
 
-  var wordOperators = wordRegexp(['and', 'or', 'not',
-                                  'is', 'isnt', 'in',
-                                  'instanceof', 'typeof']);
-  var indentKeywords = ['times','for', 'while', 'loop', 'if', 'unless', 'else',
-                        'switch', 'try', 'catch', 'finally', 'class'];
-  var commonKeywords = ['break', 'by', 'continue', 'debugger', 'delete',
-                        'do', 'in', 'of', 'new', 'return', 'then',
-                        'this', 'throw', 'when', 'until'];
+  const tutorialLink = /\/\/\s*(next-tutorial:([^\s]+))\b/;
 
-  var keywords = wordRegexp(indentKeywords.concat(commonKeywords));
+  const singleOperators = new RegExp('^[\\+\\-\\*/%&|\\^~<>!\?]');
+  const singleDelimiters = new RegExp('^[\\(\\)\\[\\]\\{\\}@,:`=;\\.]');
+  const doubleOperators = new RegExp('^((\->)|(\=>)|(\\+\\+)|(\\+\\=)|(\\-\\-)|(\\-\\=)|(\\*\\*)|(\\*\\=)|(\\/\\/)|(\\/\\=)|(==)|(!=)|(<=)|(>=)|(<>)|(<<)|(>>)|(//))');
+  const identifiers = new RegExp('^[_A-Za-z][_A-Za-z0-9]*');
 
-  indentKeywords = wordRegexp(indentKeywords);
+  const wordOperators = wordRegexp(['and', 'or', 'not']);
+  const indentKeywords = ['times', 'if', 'else'];
+  const commonKeywords = [
+    'move', 'rotate', 'scale',
+    'with'
+  ];
 
+  const keywords = wordRegexp(indentKeywords.concat(commonKeywords));
 
-  var stringPrefixes = new RegExp("^('{3}|\"{3}|['\"])");
-  var commonConstants = ['Infinity', 'NaN', 'undefined', 'null', 'true', 'false', 'on', 'off', 'yes', 'no'];
-  var constants = wordRegexp(commonConstants);
+  const commonConstants = ['true', 'false'];
+  const constants = wordRegexp(commonConstants);
 
-  // Tokenizers
+  const lambdaOps = ['->', '=>'];
+
   function tokenBase(stream, state) {
-    // Handle scope changes
+
     if (stream.sol()) {
-      var scopeOffset = state.scopes[0].offset;
       if (stream.eatSpace()) {
-        var lineOffset = stream.indentation();
-        if (lineOffset > scopeOffset) {
+        const lineOffset = stream.indentation();
+        if (lineOffset > state.indentation) {
           return 'indent';
-        } else if (lineOffset < scopeOffset) {
+        } else if (lineOffset < state.indentation) {
           return 'dedent';
         }
         return null;
       } else {
-        if (scopeOffset > 0) {
-          dedent(stream, state);
+        if (state.indentation > 0) {
+          return 'undent';
         }
       }
     }
+
     if (stream.eatSpace()) {
       return null;
     }
-    
-    var ch = stream.peek();
-    
-    // Handle comments
-    if (ch === '#') {
-      stream.skipToEnd();
-      return 'comment';
-    }
 
-    // added by Davide Della Casa
+    const ch = stream.peek();
+
     if (ch === '/') {
-      if (stream.match(/\/\//i)) {
+      if (stream.match(tutorialLink)) {
+        stream.skipToEnd();
+        return 'link';
+      }
+      if (stream.match(/\/\//)) {
         stream.skipToEnd();
         return 'comment';
       }
     }
-    
+
     // Handle number literals
     if (stream.match(/^-?[0-9\.]/, false)) {
-      var floatLiteral = false;
       // Floats
       if (stream.match(/^-?\d*\.\d+(e[\+\-]?\d+)?/i)) {
-        floatLiteral = true;
+        return 'number';
       }
       if (stream.match(/^-?\d+\.\d*/)) {
-        floatLiteral = true;
+        return 'number';
       }
       if (stream.match(/^-?\.\d+/)) {
-        floatLiteral = true;
-      }
-      if (floatLiteral) {
         return 'number';
       }
       // Integers
-      var intLiteral = false;
       // Hex
       if (stream.match(/^-?0x[0-9a-f]+/i)) {
-        intLiteral = true;
+        return 'number';
       }
       // Decimal
       if (stream.match(/^-?[1-9]\d*(e[\+\-]?\d+)?/)) {
-        intLiteral = true;
+        return 'number';
       }
       // Zero by itself with no other piece of number.
       if (stream.match(/^-?0(?![\dx])/i)) {
-        intLiteral = true;
-      }
-      if (intLiteral) {
         return 'number';
       }
     }
-    
+
     // Handle strings
-    if (stream.match(stringPrefixes)) {
-      state.tokenize = tokenFactory(stream.current(), 'string');
+    if (ch === '"' || ch === '\'') {
+      state.tokenize = tokenString(ch);
       return state.tokenize(stream, state);
     }
 
     // Handle operators and delimiters
-    if (stream.match(tripleDelimiters) || stream.match(doubleDelimiters)) {
-      return 'punctuation';
-    }
     if (stream.match(doubleOperators)
         || stream.match(singleOperators)
         || stream.match(wordOperators)) {
@@ -127,205 +107,102 @@ CodeMirror.defineMode('livecodelab', function(conf) {
     if (stream.match(singleDelimiters)) {
       return 'punctuation';
     }
-    
+
     if (stream.match(constants)) {
       return 'atom';
     }
-    
+
     if (stream.match(keywords)) {
       return 'keyword';
     }
-    
+
     if (stream.match(identifiers)) {
       return 'variable';
     }
-    
+
     // Handle non-detected items
     stream.next();
     return ERRORCLASS;
   }
-  
-  function tokenFactory(delimiter, outclass) {
-    var delim_re = new RegExp(delimiter);
-    var singleline = delimiter.length == 1;
-    
-    return function tokenString(stream, state) {
+
+  function tokenString(quote) {
+    return (stream, state) => {
+      // consume the first quote
+      stream.eat(quote);
       while (!stream.eol()) {
-        stream.eatWhile(/[^'"\/\\]/);
-        if (stream.eat('\\')) {
-          stream.next();
-          if (singleline && stream.eol()) {
-            return outclass;
-          }
-        } else if (stream.match(delim_re)) {
+        stream.eatWhile(/[^'"]/);
+        if (stream.match(quote)) {
           state.tokenize = tokenBase;
-          return outclass;
-        } else {
-          stream.eat(/['"\/]/);
+          return 'string';
         }
       }
-      if (singleline) {
-        if (conf.mode.singleLineStringErrors) {
-          outclass = ERRORCLASS;
-        } else {
-          state.tokenize = tokenBase;
-        }
-      }
-      return outclass;
+      state.tokenize = tokenBase;
+      return ERRORCLASS;
     };
   }
-  
-  function indent(stream, state, type) {
-    type = type || 'coffee';
-    var indentUnit = 0;
-    if (type === 'coffee') {
-      for (var i = 0; i < state.scopes.length; i++) {
-        if (state.scopes[i].type === 'coffee') {
-          indentUnit = state.scopes[i].offset + conf.indentUnit;
-          break;
-        }
-      }
-    } else {
-      indentUnit = stream.column() + stream.current().length;
-    }
-    state.scopes.unshift({
-      offset: indentUnit,
-      type: type
-    });
+
+  function indent(state) {
+    state.indentation += 1;
   }
-  
-  function dedent(stream, state) {
-    if (state.scopes.length == 1) return;
-    if (state.scopes[0].type === 'coffee') {
-      var _indent = stream.indentation();
-      var _indent_index = -1;
-      for (var i = 0; i < state.scopes.length; ++i) {
-        if (_indent === state.scopes[i].offset) {
-          _indent_index = i;
-          break;
-        }
-      }
-      if (_indent_index === -1) {
-        return true;
-      }
-      while (state.scopes[0].offset !== _indent) {
-        state.scopes.shift();
-      }
-      return false;
-    } else {
-      state.scopes.shift();
-      return false;
-    }
+
+  function dedent(state) {
+    state.indentation -= 1;
+    return state.indentation < 0;
+  }
+
+  function undent(state) {
+    state.indentation = 0;
   }
 
   function tokenLexer(stream, state) {
-    var style = state.tokenize(stream, state);
-    var current = stream.current();
+    const style = state.tokenize(stream, state);
+    const current = stream.current();
 
-    // Handle '.' connected identifiers
-    if (current === '.') {
-      style = state.tokenize(stream, state);
-      current = stream.current();
-      if (style === 'variable') {
-        return 'variable';
-      } else {
-        return ERRORCLASS;
-      }
+    if (lambdaOps.includes(current) && stream.eol()) {
+      indent(state);
     }
-    
-    // Handle properties
-    if (current === '@') {
-      style = state.tokenize(stream, state);
-      current = stream.current();
-      if (style === 'variable') {
-        return 'variable-2';
-      } else {
-        return ERRORCLASS;
-      }
+
+    if (style === 'indent') {
+      indent(state);
     }
-    
-    // Handle scope changes.
-    if (current === 'return') {
-      state.dedent += 1;
-    }
-    if (((current === '->' || current === '=>') &&
-         !state.lambda &&
-         state.scopes[0].type == 'coffee' &&
-         stream.peek() === '')
-        || style === 'indent') {
-      indent(stream, state);
-    }
-    var delimiter_index = '[({'.indexOf(current);
-    if (delimiter_index !== -1) {
-      indent(stream, state, '])}'.slice(delimiter_index, delimiter_index+1));
-    }
-    if (indentKeywords.exec(current)){
-      indent(stream, state);
-    }
-    if (current == 'then'){
-      dedent(stream, state);
-    }
-    
 
     if (style === 'dedent') {
-      if (dedent(stream, state)) {
+      if (dedent(state)) {
         return ERRORCLASS;
       }
     }
-    delimiter_index = '])}'.indexOf(current);
-    if (delimiter_index !== -1) {
-      if (dedent(stream, state)) {
-        return ERRORCLASS;
-      }
+
+    if (style === 'undent') {
+      undent(state);
     }
-    if (state.dedent > 0 && stream.eol() && state.scopes[0].type == 'coffee') {
-      if (state.scopes.length > 1) state.scopes.shift();
-      state.dedent -= 1;
+
+    if (indentKeywords.includes(current)){
+      indent(state);
     }
-    
+
     return style;
   }
 
-  var external = {
-    startState: function(basecolumn) {
+  const external = {
+    startState: () => {
       return {
         tokenize: tokenBase,
-        scopes: [{offset:basecolumn || 0, type:'coffee'}],
-        lastToken: null,
-        lambda: false,
-        dedent: 0
+        indentation: 0
       };
     },
-    
-    token: function(stream, state) {
 
-      // way to add links taken form here:
-      // http://groups.google.com/group/codemirror/browse_thread/thread/a96bb56548815163/87a3869e2cfd0a37?lnk=gst&q=links#87a3869e2cfd0a37
-      if (stream.match(/\/\/\s*(next-tutorial:([^\s]+))\b/)) { 
-        return 'link';
-      } 
+    token: tokenLexer,
 
-      var style = tokenLexer(stream, state);
-      
-      state.lastToken = {style:style, content: stream.current()};
-      
-      if (stream.eol() && stream.lambda) {
-        state.lambda = false;
-      }
-      
-      return style;
+    blankLine: (state) => {
+      undent(state);
     },
-    
-    indent: function(state, textAfter) {
-      if (state.tokenize != tokenBase) {
-        return 0;
-      }
-      
-      return state.scopes[0].offset;
+
+    indent: (state) => {
+      return state.indentation;
     }
-    
+
   };
   return external;
 });
 
-CodeMirror.defineMIME('text/x-coffeescript', 'coffeescript');
+CodeMirror.defineMIME('text/x-livecodelang', 'livecodelang');
