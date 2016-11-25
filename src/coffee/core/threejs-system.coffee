@@ -3,7 +3,6 @@
 ## and flags passed in the constructor. Sets up all the post-filtering steps.
 ###
 
-Ui = require '../ui/ui'
 _  = require 'underscore'
 require '../../js/threejs/ShaderExtras'
 require '../../js/threejs/postprocessing/EffectComposer'
@@ -27,11 +26,13 @@ helpers.currentMaxBufferSize = () ->
     height: Math.floor(window.innerHeight * multiplier)
   }
 
+
 helpers.calculateMaxUnscaledBuffer = (a, b) ->
   {
     width: Math.min(a.width, b.width),
     height: Math.min(a.height, b.height)
   }
+
 
 helpers.sizeTheForegroundCanvas = (canvas) ->
   {width: width, height: height, scaling: scaling} = helpers.getBestBufferSize()
@@ -221,27 +222,24 @@ helpers.attachEffectsAndSizeTheirBuffers = (thrsystem, renderer) ->
   return [renderTarget, effectSaveTarget, effectBlend, composer]
 
 
-
-helpers.sizeRendererAndCamera = (renderer, camera, scale) ->
+helpers.sizeRendererAndCamera = (renderer, camera) ->
   # update the camera
   camera.aspect = window.innerWidth / window.innerHeight
   camera.updateProjectionMatrix()
 
-  multiplier = 1
-  {width: sx, height: sy} = helpers.getBestBufferSize()
-
+  {width: width, height: height} = helpers.getBestBufferSize()
   # resizes canvas buffer and sets the viewport to
-  # exactly the dimension passed. No multilications going
+  # exactly the dimension passed. No multiplications going
   # on due to devicePixelRatio because we set that to 1
-  # when we created the renderer
-  renderer.setSize sx * multiplier, sy * multiplier, false
+  # when we created the renderer.
+  renderer.setSize width, height, false
 
 
 helpers.attachResizingBehaviourToResizeEvent = (thrsystem, renderer, camera) ->
-  scale = Ui.foregroundCanvasMaxScaleUpFactor
   callback = () ->
     helpers.sizeTheForegroundCanvas thrsystem.canvas
-    helpers.sizeRendererAndCamera renderer, camera, scale
+    helpers.sizeRendererAndCamera renderer, camera
+
     [
       thrsystem.renderTarget,
       thrsystem.effectSaveTarget,
@@ -305,17 +303,11 @@ class ThreeJsSystem
     @camera.position.set 0, 0, 5
     @scene.add @camera
 
-    # Handle resizing of browser window
-    helpers.attachResizingBehaviourToResizeEvent @, @renderer, @camera
-
     # Set the correct size and scaling for the canvas
     helpers.sizeTheForegroundCanvas @canvas
 
-    helpers.sizeRendererAndCamera(
-      @renderer,
-      @camera,
-      Ui.foregroundCanvasMaxScaleUpFactor
-    )
+    # Set correct aspect ration and renderer size
+    helpers.sizeRendererAndCamera(@renderer, @camera)
 
     @renderTargetParameters = undefined
     @renderTarget = undefined
@@ -330,6 +322,9 @@ class ThreeJsSystem
       @effectBlend,
       @composer
     ] = helpers.attachEffectsAndSizeTheirBuffers(@, @renderer)
+
+    # Handle resizing of browser window
+    helpers.attachResizingBehaviourToResizeEvent @, @renderer, @camera
 
 module.exports = ThreeJsSystem
 
