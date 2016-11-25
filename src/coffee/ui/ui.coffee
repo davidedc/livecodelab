@@ -188,7 +188,7 @@ class Ui
   # the menu disappears
   # so we have to resize it at launch and also every time the window
   # is resized.
-  @fullscreenify: (background) ->
+  @fullscreenify: () ->
     window.addEventListener("resize", @adjustCodeMirrorHeight, false)
 
   checkErrorAndReport: (e) ->
