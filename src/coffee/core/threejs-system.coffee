@@ -193,7 +193,7 @@ helpers.sizeRendererAndCamera = (renderer, camera) ->
   renderer.setSize width, height, false
 
 
-helpers.attachResizingBehaviourToResizeEvent = (thrsystem, canvas, renderer, camera) ->
+helpers.attachResizingBehaviourToResizeEvent = (threejs, thrsystem, canvas, renderer, camera) ->
 
   callback = () ->
     helpers.sizeTheForegroundCanvas canvas
@@ -204,7 +204,7 @@ helpers.attachResizingBehaviourToResizeEvent = (thrsystem, canvas, renderer, cam
       thrsystem.effectSaveTarget,
       thrsystem.effectBlend,
       thrsystem.composer
-    ] = helpers.attachEffectsAndSizeTheirBuffers(thrsystem, renderer)
+    ] = helpers.attachEffectsAndSizeTheirBuffers(threejs, thrsystem, renderer)
 
   # Don't want to rebuild the rendering pipeline too quickly when
   # the window is resized.
@@ -267,7 +267,7 @@ class ThreeJsSystem
     ] = helpers.attachEffectsAndSizeTheirBuffers(threejs, @, @renderer)
 
     # Handle resizing of browser window
-    helpers.attachResizingBehaviourToResizeEvent(@, canvas, @renderer, @camera)
+    helpers.attachResizingBehaviourToResizeEvent(threejs, @, canvas, @renderer, @camera)
 
 module.exports = ThreeJsSystem
 
