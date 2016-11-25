@@ -131,11 +131,7 @@ class LiveCodeLabCore
     @programRunner = @languages.runner
     @codeCompiler = @languages.compiler
 
-    @threeJsSystem = new ThreeJsSystem(
-      @threeJsCanvas,
-      false,
-      @three
-    )
+    @threeJsSystem = new ThreeJsSystem(@threeJsCanvas, @three)
 
     @blendControls = new BlendControls(@threeJsSystem)
 

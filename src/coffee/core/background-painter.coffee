@@ -200,8 +200,8 @@ class BackgroundPainter
     if @currentGradientStackValue isnt @previousGradientStackValue
       @previousGradientStackValue = @currentGradientStackValue
 
-      sx = Math.floor((window.innerWidth + 40) / 10)
-      sy = Math.floor((window.innerHeight + 40) / 10)
+      sx = Math.floor(window.innerWidth / 10)
+      sy = Math.floor(window.innerHeight / 10)
       cssStringPreamble = "position: absolute; z-index:-3; top: 0px; left: 0px; width:#{sx}px; height:#{sy}px; "+@gradientPrefix+"transform-origin: 0% 0%; "+@gradientPrefix+"transform: scale(10,10);"
       cssStringPreamble = cssStringPreamble + "background:"
       cssString = ""

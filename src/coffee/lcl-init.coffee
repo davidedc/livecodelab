@@ -37,13 +37,6 @@ require './globals/numbertimes'
 $(document).ready ->
 
   threeJsCanvas = document.getElementById('threeJsCanvas')
-  Ui.sizeForegroundCanvas(
-    threeJsCanvas,
-    {
-      x: Ui.foregroundCanvasMaxScaleUpFactor,
-      y: Ui.foregroundCanvasMaxScaleUpFactor
-    }
-  )
 
   backgroundDiv = document.getElementById('backgroundDiv')
   Ui.fullscreenify(

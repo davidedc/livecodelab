@@ -15,7 +15,6 @@ programs = require '../programs/programs'
 class Ui
 
   @backgroundCanvasFractionOfWindowSize: 10
-  @foregroundCanvasMaxScaleUpFactor: 2
 
   constructor: (eventRouter, stats) ->
     # Setup Event Listeners
@@ -172,25 +171,6 @@ class Ui
     $("#startingCurtainScreen").fadeOut()
     $("#formCode").css "opacity", 0
 
-  @sizeForegroundCanvas: (canvas, scale = {x: 1, y: 1}) ->
-
-    # set the buffer size
-    canvas.width = (window.innerWidth + 40) / scale.x
-    canvas.height = (window.innerHeight + 40) / scale.y
-
-    scaleString = scale.x + ", " + scale.y
-
-    $(canvas).css("-ms-transform-origin", "0% 0%")
-            .css("-webkit-transform-origin", "0% 0%")
-            .css("-moz-transform-origin", "0% 0%")
-            .css("-o-transform-origin", "0% 0%")
-            .css("transform-origin", "0% 0%")
-            .css("-ms-transform", "scale(" + scaleString + ")")
-            .css("-webkit-transform", "scale3d(" + scaleString + ", 1)")
-            .css("-moz-transform", "scale(" + scaleString + ")")
-            .css("-o-transform", "scale(" + scaleString + ")")
-            .css "transform", "scale(" + scaleString + ")"
-
 
   # TODO In theory we want to re-draw the background because the
   # aspect ration might have changed.
@@ -211,11 +191,11 @@ class Ui
   # so we have to resize it at launch and also every time the window
   # is resized.
   @fullscreenify: (background, scale = {x: 1, y: 1}) ->
-    background.style.width = ((window.innerWidth + 40) / 10) + "px"
-    background.style.height = ((window.innerHeight + 40) / 10) + "px"
+    background.style.width = (window.innerWidth / 10) + "px"
+    background.style.height = (window.innerHeight / 10) + "px"
     window.addEventListener "resize", (=>
-      background.style.width = ((window.innerWidth + 40) / 10) + "px"
-      background.style.height = ((window.innerHeight + 40) / 10) + "px"
+      background.style.width = (window.innerWidth / 10) + "px"
+      background.style.height = (window.innerHeight / 10) + "px"
       @adjustCodeMirrorHeight()
     ), false
 

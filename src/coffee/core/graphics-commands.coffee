@@ -130,6 +130,7 @@ class GraphicsCommands
   primitiveTypes: {}
   minimumBallDetail: 2
   maximumBallDetail: 30
+  defaultBallDetail: 16
   doFill: true
   doStroke: true
   reflectValue: 1
@@ -652,7 +653,7 @@ class GraphicsCommands
     @resetStrokeStack()
 
     @currentStrokeSize = 1
-    @ballDetLevel = @threeJsSystem.ballDefaultDetLevel
+    @ballDetLevel = @defaultBallDetail
     @objectsUsedInFrameCounts[@primitiveTypes.ambientLight] = 0
     @objectsUsedInFrameCounts[@primitiveTypes.line] = 0
     @objectsUsedInFrameCounts[@primitiveTypes.rect] = 0

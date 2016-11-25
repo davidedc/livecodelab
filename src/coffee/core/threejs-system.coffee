@@ -3,7 +3,6 @@
 ## and flags passed in the constructor. Sets up all the post-filtering steps.
 ###
 
-Ui = require '../ui/ui'
 _  = require 'underscore'
 require '../../js/threejs/ShaderExtras'
 require '../../js/threejs/postprocessing/EffectComposer'
@@ -12,173 +11,127 @@ require '../../js/threejs/postprocessing/RenderPass'
 require '../../js/threejs/postprocessing/SavePass'
 require '../../js/threejs/postprocessing/ShaderPass'
 
+# This resolution is easily managed by modern graphic cards (the PS Vita can).
+IDEAL_RESOLUTION = {width: 880, height: 720}
+MAX_CANVAS_SCALING = 2
+SCALE_DELTA = 0.1
+
+
 helpers = {}
 
-helpers.sizeIsLessThan = (sizeX, sizeY, comparisonSize) ->
-  comparisonSizeX = comparisonSize[0]
-  comparisonSizeY = comparisonSize[1]
-  return (sizeX <= comparisonSizeX and sizeY <= comparisonSizeY)
-
-helpers.maximumBufferSizeAtFullDpiCapability = () ->
+helpers.currentMaxBufferSize = () ->
   multiplier = window.devicePixelRatio
-  sx = Math.floor(window.innerWidth + 40)
-  sy = Math.floor(window.innerHeight + 40)
-  return [sx * multiplier,sy * multiplier]
-
-helpers.sizeMinimums = (a, b) -> [Math.min(a[0],b[0]), Math.min(a[1],b[1])]
-
-helpers.sizeTheForegroundCanvas = (canvas) ->
-  multiplier = 1
-  [sx,sy,correction] = helpers.getBestBufferSize()
-
-  Ui.sizeForegroundCanvas canvas, {
-    x: Ui.foregroundCanvasMaxScaleUpFactor - correction,
-    y: Ui.foregroundCanvasMaxScaleUpFactor - correction
+  return {
+    width: Math.floor(window.innerWidth * multiplier),
+    height: Math.floor(window.innerHeight * multiplier)
   }
 
-  canvas.width = multiplier * sx
-  canvas.height = multiplier * sy
 
-  # dimension on screen
-  canvas.style.width = sx + "px"
-  canvas.style.height = sy + "px"
+helpers.calculateMaxUnscaledBuffer = (a, b) ->
+  {
+    width: Math.min(a.width, b.width),
+    height: Math.min(a.height, b.height)
+  }
 
+
+helpers.sizeTheForegroundCanvas = (canvas) ->
+  {width: width, height: height, scaling: scaling} = helpers.getBestBufferSize()
+
+  canvas.width = window.innerWidth / scaling
+  canvas.height = window.innerHeight / scaling
+
+  canvas.style.width = width + "px"
+  canvas.style.height = height + "px"
+
+  scaleString = scaling + ", " + scaling
+
+  $(canvas).css("-ms-transform-origin", "0% 0%")
+           .css("-webkit-transform-origin", "0% 0%")
+           .css("-moz-transform-origin", "0% 0%")
+           .css("-o-transform-origin", "0% 0%")
+           .css("transform-origin", "0% 0%")
+           .css("-ms-transform", "scale(" + scaleString + ")")
+           .css("-webkit-transform", "scale3d(" + scaleString + ", 1)")
+           .css("-moz-transform", "scale(" + scaleString + ")")
+           .css("-o-transform", "scale(" + scaleString + ")")
+           .css "transform", "scale(" + scaleString + ")"
+
+
+# To improve the performance of LiveCodeLab, the canvas resolution can
+# be scaled down. There is a maximum amount of scaling allowed so that
+# the graphics won't get too blurry, and the scaling factor adaptive,
+# transitioning between no scaling and the maximum.
+
+# This function calculates the best size for the current canvas buffer,
+# based on the current resolution, the devide pixel ratio and the
+# maximum amount of scaling allowed.
 helpers.getBestBufferSize = () ->
-  multiplier = 1
 
-  correction = -0.1
-  blendedThreeJsSceneCanvasWidth = 0
-  blendedThreeJsSceneCanvasHeight = 0
-
-  previousCorrection = 0
-
-  # this is the minimum size of the buffer that we'd accept to use
-  # given the size of this screen. Basically this is the buffer that
-  # would give us the maximum blurryness that we can accept.
-  # if this buffer is below a certain size though, we'll increase it.
-  sx = Math.floor(
-    (window.innerWidth + 40) / (Ui.foregroundCanvasMaxScaleUpFactor)
-  )
-  sy = Math.floor(
-    (window.innerHeight + 40) / (Ui.foregroundCanvasMaxScaleUpFactor)
+  # Displays with the ideal resolution or less should not be scaled.
+  # So below the ideal resolution we show graphics on the canvas at 1 to 1.
+  # At the same time, we don't want to use buffers that are bigger
+  # than necessary, so we limit the buffer to the maximum we need.
+  maxUnscaledBuffer = helpers.calculateMaxUnscaledBuffer(
+    IDEAL_RESOLUTION,
+    helpers.currentMaxBufferSize()
   )
 
-  # it's useful to be conservative and use a small buffer when the screen
-  # or window are big (i.e. buffer will have to show as somewhat blurry),
-  # but when the screen / window are small we can afford to fill them
-  # a bit better: there is no point in using for the buffer a fraction of
-  # the window size when the window size is small and we can afford to fill
-  # all of it (or a good fraction of it).
+  # This is the minimum size buffer based on how much we're willing to scale.
+  # Basically this is the buffer that would give us the maximum blurryness
+  # that we can accept.
+  # If this buffer is bigger than the ideal resolution maximally scaled then
+  # this is what will be used.
+  scaledCanvasWidth = Math.floor(window.innerWidth / MAX_CANVAS_SCALING)
+  scaledCanvasHeight = Math.floor(window.innerHeight / MAX_CANVAS_SCALING)
 
-  # there is no point showing blurry buffers if they are less than
-  # 880x720. That size is easily managed by modern graphic cards
-  # (the PS Vita can). So below 880x720 we show graphics as more
-  # crisp instead of scaling it. At the same time, we don't want to use
-  # buffers bigger than the maximum size we need for the window,
-  # so we curtail the buffer to the maximum we need. This is so
-  # we don't waste buffer in case of small windows.
-  maximumBufferSizeBelowConstraintWorthShowing = helpers.sizeMinimums(
-    [880,720],
-    helpers.maximumBufferSizeAtFullDpiCapability()
-  )
+  # Starting with maximum scaling, check if that buffer resolution is within
+  # the acceptable limits. If it is then decrease the scaling factor and carry
+  # on checking. If it's not then exit the loop and use the last acceptable
+  # buffer size.
+  scaling = MAX_CANVAS_SCALING
+  while (scaling > 1)
 
+    sW = Math.floor(window.innerWidth / (scaling - SCALE_DELTA))
+    sH = Math.floor(window.innerHeight / (scaling - SCALE_DELTA))
 
-  # So here we proceed to optimally size the buffers and scale the canvas.
-  # If we see that the buffer needed to achieve the maximum acceptable
-  # scaling (so we are within a maximum acceptable blurryness)
-  # exceeds our allowance for crisp buffer, then we exit the loop and
-  # we'll have to settle for having a bigger canvas than ideal in order
-  # to satisfy the maximum acceptable blurryness.
-  # Otherwise, it means that we can use our allowance for crisp buffer:
-  # we just correct the scale of the canvas until we fall below that
-  # allowance.
-  # So basically: we decrease our "maximum scaling" of the canvas until
-  # the buffer size falls within our allowance.
-  while helpers.sizeIsLessThan(
-    blendedThreeJsSceneCanvasWidth,
-    blendedThreeJsSceneCanvasHeight,
-    maximumBufferSizeBelowConstraintWorthShowing
-  )
+    if (sW > maxUnscaledBuffer.width ||
+        sH > maxUnscaledBuffer.height)
+         break
 
-    previousCorrection = correction
-    previousSx = sx
-    previousSy = sy
+    scaledCanvasWidth = sW
+    scaledCanvasHeight = sH
+    scaling -= SCALE_DELTA;
 
-    # if we are here it means we can get away with scale-up
-    # the canvas a bit less
-    correction += 0.1
-    # calculate the size of the buffer at the maximum blur we can accept
-    sx = Math.floor(
-      (window.innerWidth + 40) / (Ui.foregroundCanvasMaxScaleUpFactor - correction)
-    )
-    sy = Math.floor(
-      (window.innerHeight + 40) / (Ui.foregroundCanvasMaxScaleUpFactor - correction)
-    )
-
-    # buffer size
-    blendedThreeJsSceneCanvasWidth = multiplier * sx
-    blendedThreeJsSceneCanvasHeight = multiplier * sy
-
-  return [previousSx, previousSy, previousCorrection]
+  return {
+    width: scaledCanvasWidth,
+    height: scaledCanvasHeight
+    scaling: scaling
+  }
 
 
-helpers.attachEffectsAndSizeTheirBuffers = (thrsystem, renderer) ->
+helpers.attachEffectsAndSizeTheirBuffers = (threejs, thrsystem, renderer) ->
 
-  liveCodeLabCore_three = thrsystem.threejs
-  renderTargetParameters = thrsystem.renderTargetParameters
   camera = thrsystem.camera
   scene = thrsystem.scene
 
-  multiplier = 1
-  [sx,sy,unused] = helpers.getBestBufferSize()
+  {width: width, height: height} = helpers.getBestBufferSize()
 
-  #debugger
   if thrsystem.renderTarget?
     thrsystem.renderTarget.dispose()
 
-  renderTarget = new liveCodeLabCore_three.WebGLRenderTarget(
-    sx * multiplier,
-    sy * multiplier,
-    renderTargetParameters)
+  # https://threejs.org/docs/?q=render#Reference/Renderers/WebGLRenderTarget
+  renderTarget = new threejs.WebGLRenderTarget(width, height)
+
 
   if thrsystem.effectSaveTarget?
     thrsystem.effectSaveTarget.renderTarget.dispose()
 
-  effectSaveTarget = new liveCodeLabCore_three.SavePass(
-    new liveCodeLabCore_three.WebGLRenderTarget(
-      sx * multiplier,
-      sy * multiplier,
-      {
-        minFilter: liveCodeLabCore_three.LinearFilter,
-        magFilter: liveCodeLabCore_three.LinearFilter,
-        format: liveCodeLabCore_three.RGBAFormat,
-        stencilBuffer: true
-      }
-    )
+  effectSaveTarget = new threejs.SavePass(
+    new threejs.WebGLRenderTarget(width, height)
   )
 
-  effectSaveTarget.clear = false
-
-  # Uncomment the three lines containing "fxaaPass" below to try a fast
-  # antialiasing filter. Commented below because of two reasons:
-  # a) it's slow
-  # b) it blends in some black pixels, so it only looks good
-  #     in dark backgrounds
-  # The problem of blending with black pixels is the same problem of the
-  # motionBlur leaving a black trail - tracked in github with
-  # https://github.com/davidedc/livecodelab/issues/22
-
-  #fxaaPass = new liveCodeLabCore_three.ShaderPass(
-  #  liveCodeLabCore_three.ShaderExtras.fxaa
-  #);
-  #fxaaPass.uniforms.resolution.value.set(
-  #  1 / window.innerWidth,
-  #  1 / window.innerHeight
-  #);
-
   # this is the place where everything is mixed together
-  composer = new liveCodeLabCore_three.EffectComposer(
-    renderer, renderTarget)
+  composer = new threejs.EffectComposer(renderer, renderTarget)
 
 
   # this is the effect that blends two buffers together
@@ -190,9 +143,7 @@ helpers.attachEffectsAndSizeTheirBuffers = (thrsystem, renderer) ->
   else
     mixR = 0
 
-
-  effectBlend = new liveCodeLabCore_three.ShaderPass(
-    liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1")
+  effectBlend = new threejs.ShaderPass(threejs.ShaderExtras.blend, "tDiffuse1")
   effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
   effectBlend.uniforms.mixRatio.value = 0
 
@@ -203,7 +154,6 @@ helpers.attachEffectsAndSizeTheirBuffers = (thrsystem, renderer) ->
   # all black. Unclear why. Maybe it needs to render
   # once with value zero, then it can render with
   # the proper value? But why?
-
   setTimeout (() ->
     thrsystem.effectBlend.uniforms.mixRatio.value = 0
   ), 1
@@ -211,51 +161,44 @@ helpers.attachEffectsAndSizeTheirBuffers = (thrsystem, renderer) ->
     thrsystem.effectBlend.uniforms.mixRatio.value = mixR
   ), 90
 
-  screenPass = new liveCodeLabCore_three.ShaderPass(
-    liveCodeLabCore_three.ShaderExtras.screen)
+  screenPass = new threejs.ShaderPass(threejs.ShaderExtras.screen)
 
-  renderModel = new liveCodeLabCore_three.RenderPass(
-    scene, camera)
+  renderModel = new threejs.RenderPass(scene, camera)
 
 
   # first thing, render the model
   composer.addPass renderModel
-  # then apply some fake post-processed antialiasing
-  #composer.addPass(fxaaPass);
   # then blend using the previously saved buffer and a mixRatio
   composer.addPass effectBlend
   # the result is saved in a copy: @effectSaveTarget.renderTarget
   composer.addPass effectSaveTarget
   # last pass is the one that is put to screen
   composer.addPass screenPass
+
   screenPass.renderToScreen = true
-  #debugger
-  ThreeJsSystem.timesInvoked = true
 
   return [renderTarget, effectSaveTarget, effectBlend, composer]
 
 
-
-helpers.sizeRendererAndCamera = (renderer, camera, scale) ->
+helpers.sizeRendererAndCamera = (renderer, camera) ->
   # update the camera
-  camera.aspect = (window.innerWidth+40) / (window.innerHeight+40)
+  camera.aspect = window.innerWidth / window.innerHeight
   camera.updateProjectionMatrix()
 
-  multiplier = 1
-  [sx,sy,unused] = helpers.getBestBufferSize()
-
+  {width: width, height: height} = helpers.getBestBufferSize()
   # resizes canvas buffer and sets the viewport to
-  # exactly the dimension passed. No multilications going
+  # exactly the dimension passed. No multiplications going
   # on due to devicePixelRatio because we set that to 1
-  # when we created the renderer
-  renderer.setSize sx * multiplier, sy * multiplier, false
+  # when we created the renderer.
+  renderer.setSize width, height, false
 
 
-helpers.attachResizingBehaviourToResizeEvent = (thrsystem, renderer, camera) ->
-  scale = Ui.foregroundCanvasMaxScaleUpFactor
+helpers.attachResizingBehaviourToResizeEvent = (thrsystem, canvas, renderer, camera) ->
+
   callback = () ->
-    helpers.sizeTheForegroundCanvas thrsystem.canvas
-    helpers.sizeRendererAndCamera renderer, camera, scale
+    helpers.sizeTheForegroundCanvas canvas
+    helpers.sizeRendererAndCamera renderer, camera
+
     [
       thrsystem.renderTarget,
       thrsystem.effectSaveTarget,
@@ -263,47 +206,32 @@ helpers.attachResizingBehaviourToResizeEvent = (thrsystem, renderer, camera) ->
       thrsystem.composer
     ] = helpers.attachEffectsAndSizeTheirBuffers(thrsystem, renderer)
 
-  # it's not healthy to rebuild/resize the
-  # rendering pipeline in realtime as the
-  # window is resized, it bothers the browser.
-  # So giving it some slack and doing it when "at rest"
-  # rather than multiple times consecutively during the
-  # resizing.
+  # Don't want to rebuild the rendering pipeline too quickly when
+  # the window is resized.
   debouncedCallback = _.debounce(callback, 250)
 
   # bind the resize event
   window.addEventListener "resize", debouncedCallback, false
 
-  # return .stop() the function to stop watching window resize
-
-  ###*
-  Stop watching window resize
-  ###
-  stop: ->
-    window.removeEventListener "resize", callback
-    return
-
 
 class ThreeJsSystem
 
-  @composer: null
-  @timesInvoked: false
+  renderTarget: undefined # used by effects
+  effectSaveTarget: undefined # used by effects
 
-  constructor: (
-    @canvas,
-    @testMode,
-    @threejs
-  ) ->
+  effectBlend: undefined # used by blend-controls
+  composer: undefined # used by renderer
+  scene: undefined # used by renderer, graphics commands and light commands
 
-    @ballDefaultDetLevel = 16
-    @canvasContext = @canvas.getContext("experimental-webgl")
+  constructor: (canvas, threejs) ->
 
-    # see:
-    #  http://mrdoob.github.io/three.js/docs/#Reference/Renderers/WebGLRenderer
-    @renderer = new @threejs.WebGLRenderer(
-      canvas: @canvas
-      antialias: false
-      premultipliedAlpha: false
+    @canvasContext = canvas.getContext("experimental-webgl")
+
+    # https://threejs.org/docs/index.html#Reference/Renderers/WebGLRenderer
+    @renderer = new threejs.WebGLRenderer({
+      canvas: canvas,
+      antialias: false,
+      premultipliedAlpha: false,
       # we need to force the devicePixelRatio to 1
       # here because we find it useful to use the
       # setSize method of the renderer.
@@ -311,42 +239,35 @@ class ThreeJsSystem
       # buffer on retina displays which is
       # somehing we want to control manually.
       devicePixelRatio: 1
-    )
+    })
 
-    @scene = new @threejs.Scene()
+    # https://threejs.org/docs/index.html#Reference/Scenes/Scene
+    @scene = new threejs.Scene()
     @scene.matrixAutoUpdate = false
 
-    # put a camera in the scene
-    @camera = new @threejs.PerspectiveCamera(
+    # https://threejs.org/docs/index.html#Reference/Cameras/PerspectiveCamera
+    @camera = new threejs.PerspectiveCamera(
       35,
-      @canvas.width / @canvas.height, 1, 10000
+      canvas.width / canvas.height, 1, 10000
     )
     @camera.position.set 0, 0, 5
     @scene.add @camera
 
-    helpers.attachResizingBehaviourToResizeEvent @, @renderer, @camera
+    # Set the correct size and scaling for the canvas
+    helpers.sizeTheForegroundCanvas canvas
 
-    helpers.sizeTheForegroundCanvas @canvas
-
-    helpers.sizeRendererAndCamera(
-      @renderer,
-      @camera,
-      Ui.foregroundCanvasMaxScaleUpFactor
-    )
-
-    @renderTargetParameters = undefined
-    @renderTarget = undefined
-    @effectSaveTarget = undefined
-    @renderTargetParameters =
-      format: @threejs.RGBAFormat
-      stencilBuffer: true
+    # Set correct aspect ration and renderer size
+    helpers.sizeRendererAndCamera(@renderer, @camera)
 
     [
       @renderTarget,
       @effectSaveTarget,
       @effectBlend,
       @composer
-    ] = helpers.attachEffectsAndSizeTheirBuffers(@, @renderer)
+    ] = helpers.attachEffectsAndSizeTheirBuffers(threejs, @, @renderer)
+
+    # Handle resizing of browser window
+    helpers.attachResizingBehaviourToResizeEvent(@, canvas, @renderer, @camera)
 
 module.exports = ThreeJsSystem
 
