@@ -15,7 +15,6 @@ programs = require '../programs/programs'
 class Ui
 
   @backgroundCanvasFractionOfWindowSize: 10
-  @foregroundCanvasMaxScaleUpFactor: 2
 
   constructor: (eventRouter, stats) ->
     # Setup Event Listeners
