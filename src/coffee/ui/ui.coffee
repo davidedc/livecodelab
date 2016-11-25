@@ -172,25 +172,6 @@ class Ui
     $("#startingCurtainScreen").fadeOut()
     $("#formCode").css "opacity", 0
 
-  @sizeForegroundCanvas: (canvas, scale = {x: 1, y: 1}) ->
-
-    # set the buffer size
-    canvas.width = window.innerWidth / scale.x
-    canvas.height = window.innerHeight / scale.y
-
-    scaleString = scale.x + ", " + scale.y
-
-    $(canvas).css("-ms-transform-origin", "0% 0%")
-            .css("-webkit-transform-origin", "0% 0%")
-            .css("-moz-transform-origin", "0% 0%")
-            .css("-o-transform-origin", "0% 0%")
-            .css("transform-origin", "0% 0%")
-            .css("-ms-transform", "scale(" + scaleString + ")")
-            .css("-webkit-transform", "scale3d(" + scaleString + ", 1)")
-            .css("-moz-transform", "scale(" + scaleString + ")")
-            .css("-o-transform", "scale(" + scaleString + ")")
-            .css "transform", "scale(" + scaleString + ")"
-
 
   # TODO In theory we want to re-draw the background because the
   # aspect ration might have changed.

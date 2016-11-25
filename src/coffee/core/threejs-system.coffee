@@ -34,20 +34,26 @@ helpers.calculateMaxUnscaledBuffer = (a, b) ->
   }
 
 helpers.sizeTheForegroundCanvas = (canvas) ->
-  multiplier = 1
-  {width: sx, height: sy, scaling: scaling} = helpers.getBestBufferSize()
+  {width: width, height: height, scaling: scaling} = helpers.getBestBufferSize()
 
-  Ui.sizeForegroundCanvas canvas, {
-    x: scaling,
-    y: scaling
-  }
+  canvas.width = window.innerWidth / scaling
+  canvas.height = window.innerHeight / scaling
 
-  canvas.width = multiplier * sx
-  canvas.height = multiplier * sy
+  canvas.style.width = width + "px"
+  canvas.style.height = height + "px"
 
-  # dimension on screen
-  canvas.style.width = sx + "px"
-  canvas.style.height = sy + "px"
+  scaleString = scaling + ", " + scaling
+
+  $(canvas).css("-ms-transform-origin", "0% 0%")
+           .css("-webkit-transform-origin", "0% 0%")
+           .css("-moz-transform-origin", "0% 0%")
+           .css("-o-transform-origin", "0% 0%")
+           .css("transform-origin", "0% 0%")
+           .css("-ms-transform", "scale(" + scaleString + ")")
+           .css("-webkit-transform", "scale3d(" + scaleString + ", 1)")
+           .css("-moz-transform", "scale(" + scaleString + ")")
+           .css("-o-transform", "scale(" + scaleString + ")")
+           .css "transform", "scale(" + scaleString + ")"
 
 
 # To improve the performance of LiveCodeLab, the canvas resolution can
@@ -302,6 +308,7 @@ class ThreeJsSystem
     # Handle resizing of browser window
     helpers.attachResizingBehaviourToResizeEvent @, @renderer, @camera
 
+    # Set the correct size and scaling for the canvas
     helpers.sizeTheForegroundCanvas @canvas
 
     helpers.sizeRendererAndCamera(
