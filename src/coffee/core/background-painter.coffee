@@ -178,6 +178,7 @@ class BackgroundPainter
           if scanningGradStack.gradStacka?
             return 'linear-gradient(to bottom, ' + color.toString(scanningGradStack.gradStacka) + ', ' + color.toString(scanningGradStack.gradStackb) + ', ' + color.toString(scanningGradStack.gradStackc) + ")"
           else
+            # solid colours are done as a gradient so that stacking backgrounds works correctly
             return 'linear-gradient(to bottom, ' + color.toString(scanningGradStack.solid) + ', ' + color.toString(scanningGradStack.solid) + ')'
       ).join(',')
 
