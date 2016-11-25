@@ -39,13 +39,7 @@ $(document).ready ->
   threeJsCanvas = document.getElementById('threeJsCanvas')
 
   backgroundDiv = document.getElementById('backgroundDiv')
-  Ui.fullscreenify(
-    backgroundDiv,
-    {
-      x: Ui.backgroundCanvasFractionOfWindowSize,
-      y: Ui.backgroundCanvasFractionOfWindowSize
-    }
-  )
+  Ui.fullscreenify(backgroundDiv)
 
   #/////////////////////////////////////////////////////
   # Phase 1 - Preliminary checks and initialisations
