@@ -12,28 +12,34 @@ require '../../js/threejs/postprocessing/RenderPass'
 require '../../js/threejs/postprocessing/SavePass'
 require '../../js/threejs/postprocessing/ShaderPass'
 
+# This resolution is easily managed by modern graphic cards (the PS Vita can).
+IDEAL_RESOLUTION = {width: 880, height: 720}
+MAX_CANVAS_SCALING = 2
+SCALE_DELTA = 0.1
+
+
 helpers = {}
 
-helpers.sizeIsLessThan = (sizeX, sizeY, comparisonSize) ->
-  comparisonSizeX = comparisonSize[0]
-  comparisonSizeY = comparisonSize[1]
-  return (sizeX <= comparisonSizeX and sizeY <= comparisonSizeY)
-
-helpers.maximumBufferSizeAtFullDpiCapability = () ->
+helpers.currentMaxBufferSize = () ->
   multiplier = window.devicePixelRatio
-  sx = Math.floor(window.innerWidth)
-  sy = Math.floor(window.innerHeight)
-  return [sx * multiplier,sy * multiplier]
+  return {
+    width: Math.floor(window.innerWidth * multiplier),
+    height: Math.floor(window.innerHeight * multiplier)
+  }
 
-helpers.sizeMinimums = (a, b) -> [Math.min(a[0],b[0]), Math.min(a[1],b[1])]
+helpers.calculateMaxUnscaledBuffer = (a, b) ->
+  {
+    width: Math.min(a.width, b.width),
+    height: Math.min(a.height, b.height)
+  }
 
 helpers.sizeTheForegroundCanvas = (canvas) ->
   multiplier = 1
-  [sx,sy,correction] = helpers.getBestBufferSize()
+  {width: sx, height: sy, scaling: scaling} = helpers.getBestBufferSize()
 
   Ui.sizeForegroundCanvas canvas, {
-    x: Ui.foregroundCanvasMaxScaleUpFactor - correction,
-    y: Ui.foregroundCanvasMaxScaleUpFactor - correction
+    x: scaling,
+    y: scaling
   }
 
   canvas.width = multiplier * sx
@@ -43,83 +49,57 @@ helpers.sizeTheForegroundCanvas = (canvas) ->
   canvas.style.width = sx + "px"
   canvas.style.height = sy + "px"
 
+
+# To improve the performance of LiveCodeLab, the canvas resolution can
+# be scaled down. There is a maximum amount of scaling allowed so that
+# the graphics won't get too blurry, and the scaling factor adaptive,
+# transitioning between no scaling and the maximum.
+
+# This function calculates the best size for the current canvas buffer,
+# based on the current resolution, the devide pixel ratio and the
+# maximum amount of scaling allowed.
 helpers.getBestBufferSize = () ->
-  multiplier = 1
 
-  correction = -0.1
-  blendedThreeJsSceneCanvasWidth = 0
-  blendedThreeJsSceneCanvasHeight = 0
-
-  previousCorrection = 0
-
-  # this is the minimum size of the buffer that we'd accept to use
-  # given the size of this screen. Basically this is the buffer that
-  # would give us the maximum blurryness that we can accept.
-  # if this buffer is below a certain size though, we'll increase it.
-  sx = Math.floor(
-    window.innerWidth / Ui.foregroundCanvasMaxScaleUpFactor
-  )
-  sy = Math.floor(
-    window.innerHeight / Ui.foregroundCanvasMaxScaleUpFactor
+  # Displays with the ideal resolution or less should not be scaled.
+  # So below the ideal resolution we show graphics on the canvas at 1 to 1.
+  # At the same time, we don't want to use buffers that are bigger
+  # than necessary, so we limit the buffer to the maximum we need.
+  maxUnscaledBuffer = helpers.calculateMaxUnscaledBuffer(
+    IDEAL_RESOLUTION,
+    helpers.currentMaxBufferSize()
   )
 
-  # it's useful to be conservative and use a small buffer when the screen
-  # or window are big (i.e. buffer will have to show as somewhat blurry),
-  # but when the screen / window are small we can afford to fill them
-  # a bit better: there is no point in using for the buffer a fraction of
-  # the window size when the window size is small and we can afford to fill
-  # all of it (or a good fraction of it).
+  # This is the minimum size buffer based on how much we're willing to scale.
+  # Basically this is the buffer that would give us the maximum blurryness
+  # that we can accept.
+  # If this buffer is bigger than the ideal resolution maximally scaled then
+  # this is what will be used.
+  scaledCanvasWidth = Math.floor(window.innerWidth / MAX_CANVAS_SCALING)
+  scaledCanvasHeight = Math.floor(window.innerHeight / MAX_CANVAS_SCALING)
 
-  # there is no point showing blurry buffers if they are less than
-  # 880x720. That size is easily managed by modern graphic cards
-  # (the PS Vita can). So below 880x720 we show graphics as more
-  # crisp instead of scaling it. At the same time, we don't want to use
-  # buffers bigger than the maximum size we need for the window,
-  # so we curtail the buffer to the maximum we need. This is so
-  # we don't waste buffer in case of small windows.
-  maximumBufferSizeBelowConstraintWorthShowing = helpers.sizeMinimums(
-    [880,720],
-    helpers.maximumBufferSizeAtFullDpiCapability()
-  )
+  # Starting with maximum scaling, check if that buffer resolution is within
+  # the acceptable limits. If it is then decrease the scaling factor and carry
+  # on checking. If it's not then exit the loop and use the last acceptable
+  # buffer size.
+  scaling = MAX_CANVAS_SCALING
+  while (scaling > 1)
 
+    sW = Math.floor(window.innerWidth / (scaling - SCALE_DELTA))
+    sH = Math.floor(window.innerHeight / (scaling - SCALE_DELTA))
 
-  # So here we proceed to optimally size the buffers and scale the canvas.
-  # If we see that the buffer needed to achieve the maximum acceptable
-  # scaling (so we are within a maximum acceptable blurryness)
-  # exceeds our allowance for crisp buffer, then we exit the loop and
-  # we'll have to settle for having a bigger canvas than ideal in order
-  # to satisfy the maximum acceptable blurryness.
-  # Otherwise, it means that we can use our allowance for crisp buffer:
-  # we just correct the scale of the canvas until we fall below that
-  # allowance.
-  # So basically: we decrease our "maximum scaling" of the canvas until
-  # the buffer size falls within our allowance.
-  while helpers.sizeIsLessThan(
-    blendedThreeJsSceneCanvasWidth,
-    blendedThreeJsSceneCanvasHeight,
-    maximumBufferSizeBelowConstraintWorthShowing
-  )
+    if (sW > maxUnscaledBuffer.width ||
+        sH > maxUnscaledBuffer.height)
+         break
 
-    previousCorrection = correction
-    previousSx = sx
-    previousSy = sy
+    scaledCanvasWidth = sW
+    scaledCanvasHeight = sH
+    scaling -= SCALE_DELTA;
 
-    # if we are here it means we can get away with scale-up
-    # the canvas a bit less
-    correction += 0.1
-    # calculate the size of the buffer at the maximum blur we can accept
-    sx = Math.floor(
-      window.innerWidth / (Ui.foregroundCanvasMaxScaleUpFactor - correction)
-    )
-    sy = Math.floor(
-      window.innerHeight / (Ui.foregroundCanvasMaxScaleUpFactor - correction)
-    )
-
-    # buffer size
-    blendedThreeJsSceneCanvasWidth = multiplier * sx
-    blendedThreeJsSceneCanvasHeight = multiplier * sy
-
-  return [previousSx, previousSy, previousCorrection]
+  return {
+    width: scaledCanvasWidth,
+    height: scaledCanvasHeight
+    scaling: scaling
+  }
 
 
 helpers.attachEffectsAndSizeTheirBuffers = (thrsystem, renderer) ->
@@ -130,7 +110,7 @@ helpers.attachEffectsAndSizeTheirBuffers = (thrsystem, renderer) ->
   scene = thrsystem.scene
 
   multiplier = 1
-  [sx,sy,unused] = helpers.getBestBufferSize()
+  {width: sx, height: sy} = helpers.getBestBufferSize()
 
   #debugger
   if thrsystem.renderTarget?
@@ -242,7 +222,7 @@ helpers.sizeRendererAndCamera = (renderer, camera, scale) ->
   camera.updateProjectionMatrix()
 
   multiplier = 1
-  [sx,sy,unused] = helpers.getBestBufferSize()
+  {width: sx, height: sy} = helpers.getBestBufferSize()
 
   # resizes canvas buffer and sets the viewport to
   # exactly the dimension passed. No multilications going
