@@ -112,10 +112,7 @@ class AnimationLoop
   # animation loop
   animate: ->
 
-    if @frame is 0
-      @timeKeeper.resetTime()
-    else
-      @timeKeeper.updateTime()
+    @timeKeeper.updateTime()
 
     @cleanStateBeforeRunningDrawAndRendering()
 
@@ -150,34 +147,17 @@ class AnimationLoop
       @programRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(
         @codeCompiler
       )
+      @setFrame(@frame + 1)
       @eventRouter.emit('frame-animated')
     else
       # the program is empty and so is the screen. Effectively, the user
       # is starting from scratch, so the frame should be reset to zero.
       @setFrame(0)
       @blendControls.animationStyle(@blendControls.animationStyles.normal)
-      @blendControls.animationStyleUpdateIfChanged()
-      @renderer.render(@graphicsCommands)
 
-    # we have to repeat this check because in the case
-    # the user has set frame = 0,
-    # then we have to catch that case here
-    # after the program has executed
-    @timeKeeper.resetTime()  if @frame is 0
     @blendControls.animationStyleUpdateIfChanged()
     @backgroundPainter.simpleGradientUpdateIfChanged()
-
-    # "frame" starts at zero, so we increment after the first time the draw
-    # function has been run.
-    @setFrame(@frame + 1)
-
-    # if livecodelab is dozing off, in that case you do
-    # want to do a render because it will clear the screen.
-    # otherwise the last frame of the sketch is going
-    # to remain painted in the background behind
-    # the big cursor.
-    if !@sleeping
-      @renderer.render @graphicsCommands
+    @renderer.render @graphicsCommands
 
   cleanStateBeforeRunningDrawAndRendering: ->
     @renderer.resetExclusionPrincipleWobbleDataIfNeeded @graphicsCommands

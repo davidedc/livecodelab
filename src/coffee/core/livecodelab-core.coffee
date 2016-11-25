@@ -215,6 +215,7 @@ class LiveCodeLabCore
         # we do a couple of special resets when
         # the code is the empty string.
         @animationLoop.sleeping = true
+        @timeKeeper.resetTime()
         @graphicsCommands.resetTheSpinThingy = true
         @eventRouter.emit("clear-error")
         @programRunner.reset()
