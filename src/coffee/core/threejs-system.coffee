@@ -295,7 +295,6 @@ class ThreeJsSystem
     @threejs
   ) ->
 
-    @ballDefaultDetLevel = 16
     @canvasContext = @canvas.getContext("experimental-webgl")
 
     # see:
