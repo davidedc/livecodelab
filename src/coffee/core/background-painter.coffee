@@ -41,6 +41,7 @@
 ## a command is issued.
 ###
 
+_ = require 'underscore'
 
 class BackgroundPainter
 
@@ -55,7 +56,7 @@ class BackgroundPainter
     @defaultGradientColor3 = 0
     @whichDefaultBackground = undefined
     @currentGradientStackValue = ""
-    @previousGradientStackValue = 0
+    @previousGradientStackValue = ""
 
 
   addToScope: (scope) ->
@@ -64,8 +65,6 @@ class BackgroundPainter
     scope.addFunction('background', (a,b,c) => @background(a,b,c))
 
   simpleGradient: (a, b, c, d) ->
-    @currentGradientStackValue =
-      @currentGradientStackValue + " " + a + "" + b + "" + c + "" + d + "null "
 
     # if all colors of a gradient are opaque then
     # you can flush the command list.
@@ -77,8 +76,9 @@ class BackgroundPainter
       @gradStack = []
       @currentGradientStackValue = ""
 
+    @currentGradientStackValue += " " + a + "" + b + "" + c + "" + d + "null "
 
-    @gradStack.push
+    @gradStack.unshift
       gradStacka: @colourFunctions.color(a)
       gradStackb: @colourFunctions.color(b)
       gradStackc: @colourFunctions.color(c)
@@ -86,24 +86,21 @@ class BackgroundPainter
       solid: null
 
 
-  
   background: ->
-    
+
     # [todo] should the screen be cleared when you invoke
     # the background command? (In processing it's not)
     a = @colourFunctions.color(
       arguments[0], arguments[1], arguments[2], arguments[3])
 
-    # if the fill color is opaque then
-    # you can flush the command list.
+    # if the fill color is opaque then flush the stack.
     if @colourFunctions.alpha(a) == 255
       @gradStack = []
       @currentGradientStackValue = ""
 
+    @currentGradientStackValue += " null null null null " + a + " "
 
-    @currentGradientStackValue =
-      @currentGradientStackValue + " null null null null " + a + " "
-    @gradStack.push
+    @gradStack.unshift
       solid: a
       gradStacka: undefined
       gradStackb: undefined
@@ -142,7 +139,7 @@ class BackgroundPainter
         @defaultGradientColor2 = @colourFunctions.color(155,255,155)
         @defaultGradientColor3 = @colourFunctions.color(155,255,155)
         $("#fakeStartingBlinkingCursor").css "color", "DarkOliveGreen"
-    
+
     # in theory we should wait for the next frame to repaing the background,
     # but there would be a problem with that: livecodelab goes to sleep when
     # the program is empty and the big cursor blinks. And yet, when the
@@ -156,7 +153,7 @@ class BackgroundPainter
 
   resetGradientStack: ->
     @currentGradientStackValue = ""
-    
+
     # we could be more efficient and
     # reuse the previous stack elements
     # but I don't think it matters here
@@ -175,12 +172,14 @@ class BackgroundPainter
     if @currentGradientStackValue isnt @previousGradientStackValue
       @previousGradientStackValue = @currentGradientStackValue
 
-      backgroundStyle = ""
-      for scanningGradStack in @gradStack
-        if scanningGradStack.gradStacka?
-          backgroundStyle = "linear-gradient(to bottom, " + color.toString(scanningGradStack.gradStacka) + ", " + color.toString(scanningGradStack.gradStackb) + ", " + color.toString(scanningGradStack.gradStackc) + ")"
-        else
-          backgroundStyle = color.toString(scanningGradStack.solid)
+      backgroundStyle = _.map(
+        @gradStack,
+        (scanningGradStack) =>
+          if scanningGradStack.gradStacka?
+            return 'linear-gradient(to bottom, ' + color.toString(scanningGradStack.gradStacka) + ', ' + color.toString(scanningGradStack.gradStackb) + ', ' + color.toString(scanningGradStack.gradStackc) + ")"
+          else
+            return 'linear-gradient(to bottom, ' + color.toString(scanningGradStack.solid) + ', ' + color.toString(scanningGradStack.solid) + ')'
+      ).join(',')
 
       @backgroundDiv.style.background = backgroundStyle
 
