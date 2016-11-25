@@ -293,8 +293,7 @@ class ThreeJsSystem
 
     @canvasContext = @canvas.getContext("experimental-webgl")
 
-    # see:
-    #  http://mrdoob.github.io/three.js/docs/#Reference/Renderers/WebGLRenderer
+    # https://threejs.org/docs/index.html#Reference/Renderers/WebGLRenderer
     @renderer = new @threejs.WebGLRenderer(
       canvas: @canvas
       antialias: false
@@ -308,10 +307,11 @@ class ThreeJsSystem
       devicePixelRatio: 1
     )
 
+    # https://threejs.org/docs/index.html#Reference/Scenes/Scene
     @scene = new @threejs.Scene()
     @scene.matrixAutoUpdate = false
 
-    # put a camera in the scene
+    # https://threejs.org/docs/index.html#Reference/Cameras/PerspectiveCamera
     @camera = new @threejs.PerspectiveCamera(
       35,
       @canvas.width / @canvas.height, 1, 10000
@@ -319,6 +319,7 @@ class ThreeJsSystem
     @camera.position.set 0, 0, 5
     @scene.add @camera
 
+    # Handle resizing of browser window
     helpers.attachResizingBehaviourToResizeEvent @, @renderer, @camera
 
     helpers.sizeTheForegroundCanvas @canvas
