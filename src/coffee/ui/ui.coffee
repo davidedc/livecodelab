@@ -175,8 +175,8 @@ class Ui
   @sizeForegroundCanvas: (canvas, scale = {x: 1, y: 1}) ->
 
     # set the buffer size
-    canvas.width = (window.innerWidth + 40) / scale.x
-    canvas.height = (window.innerHeight + 40) / scale.y
+    canvas.width = window.innerWidth / scale.x
+    canvas.height = window.innerHeight / scale.y
 
     scaleString = scale.x + ", " + scale.y
 
@@ -211,11 +211,11 @@ class Ui
   # so we have to resize it at launch and also every time the window
   # is resized.
   @fullscreenify: (background, scale = {x: 1, y: 1}) ->
-    background.style.width = ((window.innerWidth + 40) / 10) + "px"
-    background.style.height = ((window.innerHeight + 40) / 10) + "px"
+    background.style.width = (window.innerWidth / 10) + "px"
+    background.style.height = (window.innerHeight / 10) + "px"
     window.addEventListener "resize", (=>
-      background.style.width = ((window.innerWidth + 40) / 10) + "px"
-      background.style.height = ((window.innerHeight + 40) / 10) + "px"
+      background.style.width = (window.innerWidth / 10) + "px"
+      background.style.height = (window.innerHeight / 10) + "px"
       @adjustCodeMirrorHeight()
     ), false
 

@@ -21,8 +21,8 @@ helpers.sizeIsLessThan = (sizeX, sizeY, comparisonSize) ->
 
 helpers.maximumBufferSizeAtFullDpiCapability = () ->
   multiplier = window.devicePixelRatio
-  sx = Math.floor(window.innerWidth + 40)
-  sy = Math.floor(window.innerHeight + 40)
+  sx = Math.floor(window.innerWidth)
+  sy = Math.floor(window.innerHeight)
   return [sx * multiplier,sy * multiplier]
 
 helpers.sizeMinimums = (a, b) -> [Math.min(a[0],b[0]), Math.min(a[1],b[1])]
@@ -57,10 +57,10 @@ helpers.getBestBufferSize = () ->
   # would give us the maximum blurryness that we can accept.
   # if this buffer is below a certain size though, we'll increase it.
   sx = Math.floor(
-    (window.innerWidth + 40) / (Ui.foregroundCanvasMaxScaleUpFactor)
+    window.innerWidth / Ui.foregroundCanvasMaxScaleUpFactor
   )
   sy = Math.floor(
-    (window.innerHeight + 40) / (Ui.foregroundCanvasMaxScaleUpFactor)
+    window.innerHeight / Ui.foregroundCanvasMaxScaleUpFactor
   )
 
   # it's useful to be conservative and use a small buffer when the screen
@@ -109,10 +109,10 @@ helpers.getBestBufferSize = () ->
     correction += 0.1
     # calculate the size of the buffer at the maximum blur we can accept
     sx = Math.floor(
-      (window.innerWidth + 40) / (Ui.foregroundCanvasMaxScaleUpFactor - correction)
+      window.innerWidth / (Ui.foregroundCanvasMaxScaleUpFactor - correction)
     )
     sy = Math.floor(
-      (window.innerHeight + 40) / (Ui.foregroundCanvasMaxScaleUpFactor - correction)
+      window.innerHeight / (Ui.foregroundCanvasMaxScaleUpFactor - correction)
     )
 
     # buffer size
@@ -238,7 +238,7 @@ helpers.attachEffectsAndSizeTheirBuffers = (thrsystem, renderer) ->
 
 helpers.sizeRendererAndCamera = (renderer, camera, scale) ->
   # update the camera
-  camera.aspect = (window.innerWidth+40) / (window.innerHeight+40)
+  camera.aspect = window.innerWidth / window.innerHeight
   camera.updateProjectionMatrix()
 
   multiplier = 1
