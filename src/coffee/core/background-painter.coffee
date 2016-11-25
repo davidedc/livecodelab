@@ -178,7 +178,7 @@ class BackgroundPainter
       backgroundStyle = ""
       for scanningGradStack in @gradStack
         if scanningGradStack.gradStacka?
-          backgroundStyle = "linear-gradient(to bottom, " + color.toString(scanningGradStack.gradStacka) + ", " + color.toString(scanningGradStack.gradStackb) + ", " + color.toString(scanningGradStack.gradStackc) + ")" + backgroundStyle
+          backgroundStyle = "linear-gradient(to bottom, " + color.toString(scanningGradStack.gradStacka) + ", " + color.toString(scanningGradStack.gradStackb) + ", " + color.toString(scanningGradStack.gradStackc) + ")"
         else
           backgroundStyle = color.toString(scanningGradStack.solid)
 
