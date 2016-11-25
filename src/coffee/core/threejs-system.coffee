@@ -111,61 +111,28 @@ helpers.getBestBufferSize = () ->
 
 helpers.attachEffectsAndSizeTheirBuffers = (thrsystem, renderer) ->
 
-  liveCodeLabCore_three = thrsystem.threejs
-  renderTargetParameters = thrsystem.renderTargetParameters
+  threejs = thrsystem.threejs
   camera = thrsystem.camera
   scene = thrsystem.scene
 
-  multiplier = 1
-  {width: sx, height: sy} = helpers.getBestBufferSize()
+  {width: width, height: height} = helpers.getBestBufferSize()
 
-  #debugger
   if thrsystem.renderTarget?
     thrsystem.renderTarget.dispose()
 
-  renderTarget = new liveCodeLabCore_three.WebGLRenderTarget(
-    sx * multiplier,
-    sy * multiplier,
-    renderTargetParameters)
+  # https://threejs.org/docs/?q=render#Reference/Renderers/WebGLRenderTarget
+  renderTarget = new threejs.WebGLRenderTarget(width, height)
+
 
   if thrsystem.effectSaveTarget?
     thrsystem.effectSaveTarget.renderTarget.dispose()
 
-  effectSaveTarget = new liveCodeLabCore_three.SavePass(
-    new liveCodeLabCore_three.WebGLRenderTarget(
-      sx * multiplier,
-      sy * multiplier,
-      {
-        minFilter: liveCodeLabCore_three.LinearFilter,
-        magFilter: liveCodeLabCore_three.LinearFilter,
-        format: liveCodeLabCore_three.RGBAFormat,
-        stencilBuffer: true
-      }
-    )
+  effectSaveTarget = new threejs.SavePass(
+    new threejs.WebGLRenderTarget(width, height)
   )
 
-  effectSaveTarget.clear = false
-
-  # Uncomment the three lines containing "fxaaPass" below to try a fast
-  # antialiasing filter. Commented below because of two reasons:
-  # a) it's slow
-  # b) it blends in some black pixels, so it only looks good
-  #     in dark backgrounds
-  # The problem of blending with black pixels is the same problem of the
-  # motionBlur leaving a black trail - tracked in github with
-  # https://github.com/davidedc/livecodelab/issues/22
-
-  #fxaaPass = new liveCodeLabCore_three.ShaderPass(
-  #  liveCodeLabCore_three.ShaderExtras.fxaa
-  #);
-  #fxaaPass.uniforms.resolution.value.set(
-  #  1 / window.innerWidth,
-  #  1 / window.innerHeight
-  #);
-
   # this is the place where everything is mixed together
-  composer = new liveCodeLabCore_three.EffectComposer(
-    renderer, renderTarget)
+  composer = new threejs.EffectComposer(renderer, renderTarget)
 
 
   # this is the effect that blends two buffers together
@@ -177,9 +144,7 @@ helpers.attachEffectsAndSizeTheirBuffers = (thrsystem, renderer) ->
   else
     mixR = 0
 
-
-  effectBlend = new liveCodeLabCore_three.ShaderPass(
-    liveCodeLabCore_three.ShaderExtras.blend, "tDiffuse1")
+  effectBlend = new threejs.ShaderPass(threejs.ShaderExtras.blend, "tDiffuse1")
   effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
   effectBlend.uniforms.mixRatio.value = 0
 
@@ -190,7 +155,6 @@ helpers.attachEffectsAndSizeTheirBuffers = (thrsystem, renderer) ->
   # all black. Unclear why. Maybe it needs to render
   # once with value zero, then it can render with
   # the proper value? But why?
-
   setTimeout (() ->
     thrsystem.effectBlend.uniforms.mixRatio.value = 0
   ), 1
@@ -198,26 +162,21 @@ helpers.attachEffectsAndSizeTheirBuffers = (thrsystem, renderer) ->
     thrsystem.effectBlend.uniforms.mixRatio.value = mixR
   ), 90
 
-  screenPass = new liveCodeLabCore_three.ShaderPass(
-    liveCodeLabCore_three.ShaderExtras.screen)
+  screenPass = new threejs.ShaderPass(threejs.ShaderExtras.screen)
 
-  renderModel = new liveCodeLabCore_three.RenderPass(
-    scene, camera)
+  renderModel = new threejs.RenderPass(scene, camera)
 
 
   # first thing, render the model
   composer.addPass renderModel
-  # then apply some fake post-processed antialiasing
-  #composer.addPass(fxaaPass);
   # then blend using the previously saved buffer and a mixRatio
   composer.addPass effectBlend
   # the result is saved in a copy: @effectSaveTarget.renderTarget
   composer.addPass effectSaveTarget
   # last pass is the one that is put to screen
   composer.addPass screenPass
+
   screenPass.renderToScreen = true
-  #debugger
-  ThreeJsSystem.timesInvoked = true
 
   return [renderTarget, effectSaveTarget, effectBlend, composer]
 
@@ -271,7 +230,6 @@ helpers.attachResizingBehaviourToResizeEvent = (thrsystem, renderer, camera) ->
 class ThreeJsSystem
 
   @composer: null
-  @timesInvoked: false
 
   constructor: (@canvas, @threejs) ->
 
@@ -309,12 +267,8 @@ class ThreeJsSystem
     # Set correct aspect ration and renderer size
     helpers.sizeRendererAndCamera(@renderer, @camera)
 
-    @renderTargetParameters = undefined
     @renderTarget = undefined
     @effectSaveTarget = undefined
-    @renderTargetParameters =
-      format: @threejs.RGBAFormat
-      stencilBuffer: true
 
     [
       @renderTarget,
