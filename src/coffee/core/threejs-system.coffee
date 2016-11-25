@@ -289,11 +289,7 @@ class ThreeJsSystem
   @composer: null
   @timesInvoked: false
 
-  constructor: (
-    @canvas,
-    @testMode,
-    @threejs
-  ) ->
+  constructor: (@canvas, @threejs) ->
 
     @canvasContext = @canvas.getContext("experimental-webgl")
 
