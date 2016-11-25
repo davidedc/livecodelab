@@ -109,9 +109,8 @@ helpers.getBestBufferSize = () ->
   }
 
 
-helpers.attachEffectsAndSizeTheirBuffers = (thrsystem, renderer) ->
+helpers.attachEffectsAndSizeTheirBuffers = (threejs, thrsystem, renderer) ->
 
-  threejs = thrsystem.threejs
   camera = thrsystem.camera
   scene = thrsystem.scene
 
@@ -194,10 +193,10 @@ helpers.sizeRendererAndCamera = (renderer, camera) ->
   renderer.setSize width, height, false
 
 
-helpers.attachResizingBehaviourToResizeEvent = (thrsystem, renderer, camera) ->
+helpers.attachResizingBehaviourToResizeEvent = (thrsystem, canvas, renderer, camera) ->
 
   callback = () ->
-    helpers.sizeTheForegroundCanvas thrsystem.canvas
+    helpers.sizeTheForegroundCanvas canvas
     helpers.sizeRendererAndCamera renderer, camera
 
     [
@@ -217,15 +216,20 @@ helpers.attachResizingBehaviourToResizeEvent = (thrsystem, renderer, camera) ->
 
 class ThreeJsSystem
 
-  @composer: null
+  renderTarget: undefined # used by effects
+  effectSaveTarget: undefined # used by effects
 
-  constructor: (@canvas, @threejs) ->
+  effectBlend: undefined # used by blend-controls
+  composer: undefined # used by renderer
+  scene: undefined # used by renderer, graphics commands and light commands
 
-    @canvasContext = @canvas.getContext("experimental-webgl")
+  constructor: (canvas, threejs) ->
+
+    @canvasContext = canvas.getContext("experimental-webgl")
 
     # https://threejs.org/docs/index.html#Reference/Renderers/WebGLRenderer
-    @renderer = new @threejs.WebGLRenderer({
-      canvas: @canvas,
+    @renderer = new threejs.WebGLRenderer({
+      canvas: canvas,
       antialias: false,
       premultipliedAlpha: false,
       # we need to force the devicePixelRatio to 1
@@ -238,35 +242,32 @@ class ThreeJsSystem
     })
 
     # https://threejs.org/docs/index.html#Reference/Scenes/Scene
-    @scene = new @threejs.Scene()
+    @scene = new threejs.Scene()
     @scene.matrixAutoUpdate = false
 
     # https://threejs.org/docs/index.html#Reference/Cameras/PerspectiveCamera
-    @camera = new @threejs.PerspectiveCamera(
+    @camera = new threejs.PerspectiveCamera(
       35,
-      @canvas.width / @canvas.height, 1, 10000
+      canvas.width / canvas.height, 1, 10000
     )
     @camera.position.set 0, 0, 5
     @scene.add @camera
 
     # Set the correct size and scaling for the canvas
-    helpers.sizeTheForegroundCanvas @canvas
+    helpers.sizeTheForegroundCanvas canvas
 
     # Set correct aspect ration and renderer size
     helpers.sizeRendererAndCamera(@renderer, @camera)
-
-    @renderTarget = undefined
-    @effectSaveTarget = undefined
 
     [
       @renderTarget,
       @effectSaveTarget,
       @effectBlend,
       @composer
-    ] = helpers.attachEffectsAndSizeTheirBuffers(@, @renderer)
+    ] = helpers.attachEffectsAndSizeTheirBuffers(threejs, @, @renderer)
 
     # Handle resizing of browser window
-    helpers.attachResizingBehaviourToResizeEvent(@, @renderer, @camera)
+    helpers.attachResizingBehaviourToResizeEvent(@, canvas, @renderer, @camera)
 
 module.exports = ThreeJsSystem
 
