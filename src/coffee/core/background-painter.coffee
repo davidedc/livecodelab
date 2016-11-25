@@ -41,26 +41,6 @@
 ## a command is issued.
 ###
 
-# Detect which browser prefix to use for the specified CSS value
-# (e.g., background-image: -moz-linear-gradient(...);
-#        background-image:   -o-linear-gradient(...); etc).
-#
-getCssValuePrefix = (name, value) ->
-  prefixes = ["", "-o-", "-ms-", "-moz-", "-webkit-"]
-  
-  # Create a temporary DOM object for testing
-  dom = document.createElement("div")
-  i = 0
-
-  while i < prefixes.length
-    
-    # Attempt to set the style
-    dom.style[name] = prefixes[i] + value
-    
-    # Detect if the style was successfully set
-    return prefixes[i]  if dom.style[name]
-    dom.style[name] = "" # Reset the style
-    i++
 
 class BackgroundPainter
 
@@ -76,9 +56,6 @@ class BackgroundPainter
     @whichDefaultBackground = undefined
     @currentGradientStackValue = ""
     @previousGradientStackValue = 0
-    @gradientPrefix = getCssValuePrefix(
-      'background', 'linear-gradient(left, #fff, #fff)'
-    )
 
 
   addToScope: (scope) ->
@@ -86,7 +63,6 @@ class BackgroundPainter
     scope.addFunction('simpleGradient', (a,b,c) => @simpleGradient(a,b,c))
     scope.addFunction('background', (a,b,c) => @background(a,b,c))
 
-  # This needs to be global so it can be run by the draw function
   simpleGradient: (a, b, c, d) ->
     @currentGradientStackValue =
       @currentGradientStackValue + " " + a + "" + b + "" + c + "" + d + "null "
@@ -111,7 +87,6 @@ class BackgroundPainter
 
 
   
-  # This needs to be global so it can be run by the draw function
   background: ->
     
     # [todo] should the screen be cleared when you invoke
@@ -200,21 +175,14 @@ class BackgroundPainter
     if @currentGradientStackValue isnt @previousGradientStackValue
       @previousGradientStackValue = @currentGradientStackValue
 
-      sx = Math.floor(window.innerWidth / 10)
-      sy = Math.floor(window.innerHeight / 10)
-      cssStringPreamble = "position: absolute; z-index:-3; top: 0px; left: 0px; width:#{sx}px; height:#{sy}px; "+@gradientPrefix+"transform-origin: 0% 0%; "+@gradientPrefix+"transform: scale(10,10);"
-      cssStringPreamble = cssStringPreamble + "background:"
-      cssString = ""
-
+      backgroundStyle = ""
       for scanningGradStack in @gradStack
         if scanningGradStack.gradStacka?
-          cssString = @gradientPrefix+"linear-gradient(top,  "+color.toString(scanningGradStack.gradStacka)+" 0%,"+color.toString(scanningGradStack.gradStackb)+" 50%,"+color.toString(scanningGradStack.gradStackc)+" 100%)," + cssString
+          backgroundStyle = "linear-gradient(to bottom, " + color.toString(scanningGradStack.gradStacka) + ", " + color.toString(scanningGradStack.gradStackb) + ", " + color.toString(scanningGradStack.gradStackc) + ")" + backgroundStyle
         else
-          cssString = @gradientPrefix + "linear-gradient(top,  "+color.toString(scanningGradStack.solid)+" 0%,"+color.toString(scanningGradStack.solid)+" 100%)," + cssString
+          backgroundStyle = color.toString(scanningGradStack.solid)
 
-      cssString = cssString.substring(0, cssString.length - 1);
-      cssString = cssStringPreamble + cssString + ";"
-      @backgroundDiv.style.cssText = cssString
+      @backgroundDiv.style.background = backgroundStyle
 
 module.exports = BackgroundPainter
 
