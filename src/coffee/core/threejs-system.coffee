@@ -195,6 +195,7 @@ helpers.sizeRendererAndCamera = (renderer, camera) ->
 
 
 helpers.attachResizingBehaviourToResizeEvent = (thrsystem, renderer, camera) ->
+
   callback = () ->
     helpers.sizeTheForegroundCanvas thrsystem.canvas
     helpers.sizeRendererAndCamera renderer, camera
@@ -236,10 +237,10 @@ class ThreeJsSystem
     @canvasContext = @canvas.getContext("experimental-webgl")
 
     # https://threejs.org/docs/index.html#Reference/Renderers/WebGLRenderer
-    @renderer = new @threejs.WebGLRenderer(
-      canvas: @canvas
-      antialias: false
-      premultipliedAlpha: false
+    @renderer = new @threejs.WebGLRenderer({
+      canvas: @canvas,
+      antialias: false,
+      premultipliedAlpha: false,
       # we need to force the devicePixelRatio to 1
       # here because we find it useful to use the
       # setSize method of the renderer.
@@ -247,7 +248,7 @@ class ThreeJsSystem
       # buffer on retina displays which is
       # somehing we want to control manually.
       devicePixelRatio: 1
-    )
+    })
 
     # https://threejs.org/docs/index.html#Reference/Scenes/Scene
     @scene = new @threejs.Scene()
