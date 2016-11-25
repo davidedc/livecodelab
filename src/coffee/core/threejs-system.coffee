@@ -207,25 +207,12 @@ helpers.attachResizingBehaviourToResizeEvent = (thrsystem, renderer, camera) ->
       thrsystem.composer
     ] = helpers.attachEffectsAndSizeTheirBuffers(thrsystem, renderer)
 
-  # it's not healthy to rebuild/resize the
-  # rendering pipeline in realtime as the
-  # window is resized, it bothers the browser.
-  # So giving it some slack and doing it when "at rest"
-  # rather than multiple times consecutively during the
-  # resizing.
+  # Don't want to rebuild the rendering pipeline too quickly when
+  # the window is resized.
   debouncedCallback = _.debounce(callback, 250)
 
   # bind the resize event
   window.addEventListener "resize", debouncedCallback, false
-
-  # return .stop() the function to stop watching window resize
-
-  ###*
-  Stop watching window resize
-  ###
-  stop: ->
-    window.removeEventListener "resize", callback
-    return
 
 
 class ThreeJsSystem
@@ -279,7 +266,7 @@ class ThreeJsSystem
     ] = helpers.attachEffectsAndSizeTheirBuffers(@, @renderer)
 
     # Handle resizing of browser window
-    helpers.attachResizingBehaviourToResizeEvent @, @renderer, @camera
+    helpers.attachResizingBehaviourToResizeEvent(@, @renderer, @camera)
 
 module.exports = ThreeJsSystem
 
