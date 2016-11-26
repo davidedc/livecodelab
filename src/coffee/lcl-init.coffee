@@ -40,8 +40,6 @@ $(document).ready ->
 
   backgroundDiv = document.getElementById('backgroundDiv')
 
-  Ui.fullscreenify()
-
   #/////////////////////////////////////////////////////
   # Phase 1 - Preliminary checks and initialisations
   # before LiveCodeCore.
@@ -127,6 +125,7 @@ $(document).ready ->
   )
 
   codeTextArea = document.getElementById('code')
+
   editor = new Editor(eventRouter, codeTextArea)
   MouseWheelHandler.attach editor
 
@@ -314,8 +313,6 @@ $(document).ready ->
       650
     )
     bigCursor.toggleBlink true
-
-  Ui.adjustCodeMirrorHeight()
 
   setTimeout(
     () -> programLoader.kickOff(),

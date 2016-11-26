@@ -170,27 +170,6 @@ class Ui
     $("#formCode").css "opacity", 0
 
 
-  # TODO In theory we want to re-draw the background because the
-  # aspect ration might have changed.
-  # But for the time being we only have vertical
-  # gradients so that's not going to be a problem.
-  @adjustCodeMirrorHeight: ->
-    $(".CodeMirror-scroll").css(
-      "height", window.innerHeight - $("#theMenu").height()
-    )
-
-
-  # resizing the text area is necessary otherwise
-  # as the user types to the end of it, instead of just scrolling
-  # the content leaving all the other parts of the page where
-  # they are, it expands and it pushes down
-  # the view of the page, meaning that the canvas goes up and
-  # the menu disappears
-  # so we have to resize it at launch and also every time the window
-  # is resized.
-  @fullscreenify: () ->
-    window.addEventListener("resize", @adjustCodeMirrorHeight, false)
-
   checkErrorAndReport: (e) ->
     $("#errorMessageDisplay").css "color", "red"
 
