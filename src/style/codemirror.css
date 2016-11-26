@@ -1,19 +1,21 @@
 .CodeMirror {
   line-height: 1.3em;
-  /*font-family: "Lucida Sans Unicode", "Lucida Grande", "Mukti Narrow";*/
-  font-family: MavenPro-Medium;
   border: none;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
 }
-
-
 
 .CodeMirror-scroll {
   height: auto;
   overflow-y: hidden;
   overflow-x: auto;
-  width: 100%
+  width: 100%;
+  height: 100%;
 }
-
 
 .CodeMirror-gutter {
   position: absolute; left: 0; top: 0;
@@ -49,20 +51,6 @@
 .CodeMirror-wrap pre {
   word-wrap: break-word;
   white-space: pre-wrap;
-}
-.CodeMirror-wrap .CodeMirror-scroll {
-  overflow-x: hidden;
-}
-
-.CodeMirror-scroll {
-  height: 300px;
-  /*
-  These two don't seem to do anything, so
-  I'm removing them.
-  overflow-y: hidden;
-  overflow-x: auto;
-  */
-  width: 100%
 }
 
 .CodeMirror textarea {
