@@ -1212,18 +1212,8 @@ var CodeMirror = (function() {
       changes.push({from: 0, to: doc.size});
     }
     function computeTabText() {
-      // small change here below made by Davide Della Casa
-      // Problem with that is that tabText itself is a span
-      // which makes the function
-      // below slow when the cursor moves accross lines with tabs
-      // SO I've just replaced the tabText directly with two characters,
-      // so moving the cursor and selecting and editing
-      // accross lines with tabs is now fast and causes no glitches
-      // on the other ongoing animations.
-
-      //for (var str = '<span class="cm-tab">', i = 0; i < options.tabSize; ++i) str += " ";
-      //return str + "</span>";
-      return "\u25B6";
+      for (var str = '<span class="cm-tab">', i = 0; i < options.tabSize; ++i) str += " ";
+      return str + "</span>";
     }
     function tabsChanged() {
       tabText = computeTabText();
