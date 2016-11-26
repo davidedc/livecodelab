@@ -138,6 +138,7 @@ h1 span {
 }
 
 #miao {
+    line-height: 1.3em;
     font-family: MavenPro-Medium;
     position: fixed;
     top: 30px;
