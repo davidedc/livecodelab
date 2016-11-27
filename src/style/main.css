@@ -138,7 +138,6 @@ h1 span {
 }
 
 #miao {
-    line-height: 1.3em;
     font-family: MavenPro-Medium;
     position: fixed;
     top: 30px;
@@ -146,6 +145,7 @@ h1 span {
     width: 100%;
     height: 100%;
     font-size: 3em;
+    line-height: 1.2em;
 }
 
 #threeJsCanvas {
@@ -172,4 +172,5 @@ h1 span {
   z-index: 5;
   width: 100%;
   height: 100%;
+  background: transparent;
 }

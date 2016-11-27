@@ -1,26 +1,15 @@
 /* Loosely based on the Midnight Textmate theme */
 
-.cm-s-night .cm-tab {
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url('./images/tab-triangle-yellow.svg');
-    background-size: 90% 90%;
-    background-color: inherit;
-    line-height: 1em;
-}
-
-.cm-s-night { background: transparent; color: white; }
-.cm-s-night span.CodeMirror-selected { background-color: #a8f !important; }
-.cm-s-night .CodeMirror-gutter { background: #0a001f; border-right: 1px solid #aaa; }
-.cm-s-night .CodeMirror-gutter-text { color: #f8f8f8; }
 .cm-s-night .CodeMirror-cursor {
-	border-left: 2px solid black !important;
+    border-right: 2px solid black;
+    border-left: 2px solid yellow;
 }
 
 .cm-s-night span { background: yellow; color: #ffdd00;}
 .cm-s-night span.cm-comment { color: #6900a1; }
 .cm-s-night span.cm-atom { color: #845dc4; }
-.cm-s-night span.cm-number, .cm-s-night span.cm-attribute { color: #ff0000; }
+.cm-s-night span.cm-number,
+.cm-s-night span.cm-attribute { color: #ff0000; }
 .cm-s-night span.cm-keyword { color: #599eff; }
 .cm-s-night span.cm-punctuation { color: #009900; }
 .cm-s-night span.cm-string { color: #599eff; }
@@ -28,10 +17,21 @@
 .cm-s-night span.cm-meta { color: #7678e2; }
 .cm-s-night span.cm-operator { color: #009900; }
 .cm-s-night span.cm-variable { color: #0000ff; }
-.cm-s-night span.cm-variable-2, .cm-s-night span.cm-tag { color: #99b2ff; }
-.cm-s-night span.cm-variable-3, .cm-s-night span.cm-def { color: white; }
+.cm-s-night span.cm-variable-2,
+.cm-s-night span.cm-tag { color: #99b2ff; }
+.cm-s-night span.cm-variable-3,
+.cm-s-night span.cm-def { color: white; }
 .cm-s-night span.cm-error { color: #9d1e15; }
 .cm-s-night span.cm-bracket { color: #8da6ce; }
 .cm-s-night span.cm-comment { color: #6900a1; }
-.cm-s-night span.cm-builtin, .cm-s-night span.cm-special { color: #ff9e59; }
+.cm-s-night span.cm-builtin,
+.cm-s-night span.cm-special { color: #ff9e59; }
 .cm-s-night span.cm-link { color: #845dc4; cursor: pointer; }
+
+.cm-s-night span.cm-tab {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url('./images/tab-triangle-yellow.svg');
+    background-size: 90% 90%;
+    background-color: inherit;
+}

@@ -33,7 +33,6 @@ class Editor
         tabSize: 3
         indentUnit: 3
         lineWrapping: true
-
       }
     )
 
