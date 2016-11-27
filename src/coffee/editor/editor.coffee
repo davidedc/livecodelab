@@ -34,23 +34,24 @@ class Editor
         indentUnit: 3
         lineWrapping: true
 
-        # We want the code editor to always have focus
-        # since there is nothing else to type into.
-        # One of those little wonders: you have to pause a little
-        # before giving the editor focus, otherwise for some reason
-        # the focus is not regained. Go figure.
-        onBlur: =>
-          setTimeout @codemirrorInstance.focus, 30
-
-        # the onChange and onCursorActivity functions of CodeMirror
-        # will pass in the "editor" instance as the first
-        # argument to the function callback
-        onChange: (editor) =>
-          @eventRouter.emit("code-changed", @codemirrorInstance.getValue())
-
-        onCursorActivity: (editor) =>
-          @suspendDimmingAndCheckIfLink()
       }
+    )
+
+    # We want the code editor to always have focus
+    # since there is nothing else to type into.
+    @codemirrorInstance.on(
+      'blur',
+      (editor) => editor.focus()
+    )
+
+    @codemirrorInstance.on(
+      'change',
+      (editor) => @eventRouter.emit("code-changed", @codemirrorInstance.getValue())
+    )
+
+    @codemirrorInstance.on(
+      'cursorActivity',
+      (editor) => @suspendDimmingAndCheckIfLink()
     )
 
   focus: ->
