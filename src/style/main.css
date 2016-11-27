@@ -121,7 +121,7 @@ h1 span {
 }
 
 #code {
-    z-index: 1;
+    z-index: 5;
 }
 
 #toMove {
@@ -169,6 +169,7 @@ h1 span {
   position: absolute;
   top: 0px;
   left: 0px;
+  z-index: 5;
   width: 100%;
   height: 100%;
 }
