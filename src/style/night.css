@@ -1,19 +1,15 @@
 /* Loosely based on the Midnight Textmate theme */
 
-.cm-tab:after {
-    /* content: "\25A3"; */
-    display: -moz-inline-block;
-    display: -webkit-inline-block;
-    display: inline-block;
-    width: 0px;
-    position: relative;
-    overflow: visible;
-    left: -0.6em;
-    color: #FF0000;
+.cm-s-night .cm-tab {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url('./images/tab-triangle-yellow.svg');
+    background-size: 80% 80%;
+    background-color: inherit;
 }
 
 .cm-s-night { background: transparent; color: white; }
-.cm-s-night span.CodeMirror-selected { background: #a8f !important; }
+.cm-s-night span.CodeMirror-selected { background-color: #a8f !important; }
 .cm-s-night .CodeMirror-gutter { background: #0a001f; border-right: 1px solid #aaa; }
 .cm-s-night .CodeMirror-gutter-text { color: #f8f8f8; }
 .cm-s-night .CodeMirror-cursor {

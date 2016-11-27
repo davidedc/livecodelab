@@ -30,8 +30,8 @@ class Editor
         theme: "night"
         lineNumbers: false
         indentWithTabs: true
-        tabSize: 1
-        indentUnit: 1
+        tabSize: 3
+        indentUnit: 3
         lineWrapping: true
 
         # We want the code editor to always have focus
