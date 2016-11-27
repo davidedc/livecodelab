@@ -8,15 +8,15 @@ describe('V1 Code Preprocessor', function() {
   var testCases = [
     {
       notes: "An organic example which also\ntests whether multiple lines\nmangle things.",
-      input: "5 times\n▶rotate 0,1,time/5000\n▶move 0.2,0,0\n▶3 times\n▶▶rotate 1\n▶▶box",
-      expected: "5.times ->\n▶rotate 0,1,time/5000\n▶move 0.2,0,0\n▶3.times ->\n▶▶rotate 1\n▶▶box()"
+      input: "5 times\n\trotate 0,1,time/5000\n\tmove 0.2,0,0\n\t3 times\n\t\trotate 1\n\t\tbox",
+      expected: "5.times ->\n\trotate 0,1,time/5000\n\tmove 0.2,0,0\n\t3.times ->\n\t\trotate 1\n\t\tbox()"
     }, {
       notes: "Should give error as 'times'\nis missing how many times the\nloop has to go for",
-      input: "// should give error\npeg\ntimes\n▶box 2",
+      input: "// should give error\npeg\ntimes\n\tbox 2",
       error: "how many times?"
     }, {
       notes: "Should give error as 'times'\nis missing how many times the\nloop has to go for",
-      input: "// should give error\ntimes\n▶box",
+      input: "// should give error\ntimes\n\tbox",
       error: "how many times?"
     }, {
       notes: "Should give error as 'times'\nis missing how many times the\nloop has to go for",
@@ -56,8 +56,8 @@ describe('V1 Code Preprocessor', function() {
       expected: "6.times -> rotate box"
     }, {
       notes: "Qualifying rotate within an indented \"times\" body",
-      input: "6 times:\n▶rotate box",
-      expected: "6.times ->\n▶rotate box"
+      input: "6 times:\n\trotate box",
+      expected: "6.times ->\n\trotate box"
     }, {
       input: "1+1 times: rotate box",
       expected: "(1+1).times -> rotate box"
@@ -98,8 +98,8 @@ describe('V1 Code Preprocessor', function() {
       input: "// testing whether mangled accross multiple lines\nif random() > 0.5 then box\n2 times: box\n2 times: rotate box",
       expected: "\nif random() > 0.5 then box()\n2.times box\n2.times -> rotate box"
     }, {
-      input: "// testing whether mangled accross multiple lines\n6 times: rotate box\n6 times:\n▶rotate box",
-      expected: "\n6.times -> rotate box\n6.times ->\n▶rotate box"
+      input: "// testing whether mangled accross multiple lines\n6 times: rotate box\n6 times:\n\trotate box",
+      expected: "\n6.times -> rotate box\n6.times ->\n\trotate box"
     }, {
       input: "ab",
       expected: "ab"
@@ -301,20 +301,20 @@ describe('V1 Code Preprocessor', function() {
       input: "scale 0.3\na = 3\nmove rotate scale 3 box peg line 2\nmove 0.1 peg move 0.4 box",
       expected: "scale 0.3\na = 3\nmove -> rotate -> scale 3, -> box -> peg -> line 2\nmove 0.1, -> peg -> move 0.4, box"
     }, {
-      input: "noFill\nfor i in [1..20]\n▶rotate time/100000\n▶box i/8",
-      expected: "noFill()\nfor i in [1..20]\n▶rotate time/100000\n▶box i/8"
+      input: "noFill\nfor i in [1..20]\n\trotate time/100000\n\tbox i/8",
+      expected: "noFill()\nfor i in [1..20]\n\trotate time/100000\n\tbox i/8"
     }, {
-      input: "noFill\nfor i in [1..20] by 5\n▶rotate time/100000\n▶box i/8",
-      expected: "noFill()\nfor i in [1..20] by 5\n▶rotate time/100000\n▶box i/8"
+      input: "noFill\nfor i in [1..20] by 5\n\trotate time/100000\n\tbox i/8",
+      expected: "noFill()\nfor i in [1..20] by 5\n\trotate time/100000\n\tbox i/8"
     }, {
       input: "// yo dawg I heard you like balls so I put a ball inside a ball so you can see balls inside balls\nnoFill\nsizes = [1..3]\nball size for size in sizes when size isnt 3",
       expected: "\nnoFill()\nsizes = [1..3]\nball size for size in sizes when size isnt 3"
     }, {
-      input: "noFill\n20.times (i) ->\n▶rotate time/100000\n▶box i/8",
-      expected: "noFill()\n20.timesWithVariable (i) ->\n▶rotate time/100000\n▶box i/8"
+      input: "noFill\n20.times (i) ->\n\trotate time/100000\n\tbox i/8",
+      expected: "noFill()\n20.timesWithVariable (i) ->\n\trotate time/100000\n\tbox i/8"
     }, {
-      input: "scale 0.1\nshapes = 'box': 1, 'ball': 2, 'peg': 3\n\nfor shape, size of shapes\n▶move 2\n▶eval(shape+\"(\" + size+\")\")",
-      expected: "scale 0.1\nshapes = 'box': 1, 'ball': 2, 'peg': 3\n\nfor shape, size of shapes\n▶move 2\n▶eval(shape+\"(\" + size+\")\")"
+      input: "scale 0.1\nshapes = 'box': 1, 'ball': 2, 'peg': 3\n\nfor shape, size of shapes\n\tmove 2\n\teval(shape+\"(\" + size+\")\")",
+      expected: "scale 0.1\nshapes = 'box': 1, 'ball': 2, 'peg': 3\n\nfor shape, size of shapes\n\tmove 2\n\teval(shape+\"(\" + size+\")\")"
     }, {
       input: "d = 2\nscale 2, d box b, c",
       expected: "d = 2\nscale 2, d, -> box b, c"
@@ -343,8 +343,8 @@ describe('V1 Code Preprocessor', function() {
       input: "rand = (arg) -> random(arg)\nbox (rand 2) ball 2",
       expected: "rand = (arg) -> random(arg)\nbox (rand 2), -> ball 2"
     }, {
-      input: "animationStyle paintOver\nnoStroke\nrand = -> 255*random\nfill rand, 255*random, 255*random\n50 times\n▶resetMatrix\n▶scale 0.4\n▶move 5-(random 10), 5-(random 10), 5-(random 10)\n▶ball",
-      expected: "animationStyle paintOver\nnoStroke()\nrand = -> 255*random()\nfill rand(), 255*random(), 255*random()\n50.times ->\n▶resetMatrix()\n▶scale 0.4\n▶move 5-(random 10), 5-(random 10), 5-(random 10)\n▶ball()"
+      input: "animationStyle paintOver\nnoStroke\nrand = -> 255*random\nfill rand, 255*random, 255*random\n50 times\n\tresetMatrix\n\tscale 0.4\n\tmove 5-(random 10), 5-(random 10), 5-(random 10)\n\tball",
+      expected: "animationStyle paintOver\nnoStroke()\nrand = -> 255*random()\nfill rand(), 255*random(), 255*random()\n50.times ->\n\tresetMatrix()\n\tscale 0.4\n\tmove 5-(random 10), 5-(random 10), 5-(random 10)\n\tball()"
     }, {
       input: "scale rotate box 2 peg 2.3",
       expected: "scale -> rotate -> box 2, -> peg 2.3"
@@ -373,35 +373,35 @@ describe('V1 Code Preprocessor', function() {
       input: "10 times rotate scale box",
       expected: "10.times -> rotate -> scale box"
     }, {
-      input: "rotate time/1000\n✓doOnce\n▶background 255\n▶fill 255,0,0\n✓doOnce ball\nbox",
-      expected: "rotate time/1000\nif false\n▶background 255\n▶fill 255,0,0\nnoOperation\nbox()"
+      input: "rotate time/1000\n✓doOnce\n\tbackground 255\n\tfill 255,0,0\n✓doOnce ball\nbox",
+      expected: "rotate time/1000\nif false\n\tbackground 255\n\tfill 255,0,0\nnoOperation\nbox()"
     }, {
-      input: "line\n✓doOnce\n▶box 1\n\nline\n✓doOnce //\n▶box 1",
-      expected: "line()\nif false\n▶box 1\n\nline()\nif false\n▶box 1"
+      input: "line\n✓doOnce\n\tbox 1\n\nline\n✓doOnce //\n\tbox 1",
+      expected: "line()\nif false\n\tbox 1\n\nline()\nif false\n\tbox 1"
     }, {
-      input: "line\n✓doOnce\n▶box 1\n\nline\n✓doOnce//\n▶box 1",
-      expected: "line()\nif false\n▶box 1\n\nline()\nif false\n▶box 1"
+      input: "line\n✓doOnce\n\tbox 1\n\nline\n✓doOnce//\n\tbox 1",
+      expected: "line()\nif false\n\tbox 1\n\nline()\nif false\n\tbox 1"
     }, {
-      input: "rotate time\n✓doOnce\n▶background 255\n▶fill 255,0,0\nif true\n▶✓doOnce ball\nbox",
-      expected: "rotate time\nif false\n▶background 255\n▶fill 255,0,0\nif true\n▶noOperation\nbox()"
+      input: "rotate time\n✓doOnce\n\tbackground 255\n\tfill 255,0,0\nif true\n\t✓doOnce ball\nbox",
+      expected: "rotate time\nif false\n\tbackground 255\n\tfill 255,0,0\nif true\n\tnoOperation\nbox()"
     }, {
-      input: "rotate time/1000\ndoOnce\n▶background 255\n▶fill 255,0,0\ndoOnce ball\nbox",
-      expected: "rotate time/1000\n1.times ->\n▶addDoOnce(1); background 255\n▶fill 255,0,0\naddDoOnce(4); 1.times ball\nbox()"
+      input: "rotate time/1000\ndoOnce\n\tbackground 255\n\tfill 255,0,0\ndoOnce ball\nbox",
+      expected: "rotate time/1000\n1.times ->\n\taddDoOnce(1); background 255\n\tfill 255,0,0\naddDoOnce(4); 1.times ball\nbox()"
     }, {
-      input: "rotate time/1000\ndoOnce\n▶// test\n▶background 255\n▶fill 255,0,0\n✓doOnce -> ball\nbox",
-      expected: "rotate time/1000\n1.times ->\n▶addDoOnce(1)\n▶background 255\n▶fill 255,0,0\nnoOperation\nbox()"
+      input: "rotate time/1000\ndoOnce\n\t// test\n\tbackground 255\n\tfill 255,0,0\n✓doOnce -> ball\nbox",
+      expected: "rotate time/1000\n1.times ->\n\taddDoOnce(1)\n\tbackground 255\n\tfill 255,0,0\nnoOperation\nbox()"
     }, {
       input: "move peg 1.2 move box",
       expected: "move -> peg 1.2, -> move box"
     }, {
-      input: "rotate\n▶box\npeg",
-      expected: "rotate ->\n▶box()\npeg()"
+      input: "rotate\n\tbox\npeg",
+      expected: "rotate ->\n\tbox()\npeg()"
     }, {
-      input: "rotate 2\n▶box\npeg",
-      expected: "rotate 2, ->\n▶box()\npeg()"
+      input: "rotate 2\n\tbox\npeg",
+      expected: "rotate 2, ->\n\tbox()\npeg()"
     }, {
-      input: "rotate\nrotate 2,1,0\n▶box\n▶rotate 1\n▶▶line 3\n▶▶move\n▶▶rotate\n▶▶▶ball 0.6",
-      expected: "rotate()\nrotate 2,1,0, ->\n▶box()\n▶rotate 1, ->\n▶▶line 3\n▶▶move()\n▶▶rotate ->\n▶▶▶ball 0.6"
+      input: "rotate\nrotate 2,1,0\n\tbox\n\trotate 1\n\t\tline 3\n\t\tmove\n\t\trotate\n\t\t\tball 0.6",
+      expected: "rotate()\nrotate 2,1,0, ->\n\tbox()\n\trotate 1, ->\n\t\tline 3\n\t\tmove()\n\t\trotate ->\n\t\t\tball 0.6"
     }, {
       notes: "A complex case with nested if then else and\nfunction definition.",
       input: "if true then if true then a = -> ball if true then a = -> rect else line ball\na",
@@ -440,8 +440,8 @@ describe('V1 Code Preprocessor', function() {
       expected: "if random() < 0.5 then 2.times -> rotate box else 3.times -> move peg"
     }, {
       notes: "                 ",
-      input: "peg move\n▶box\npeg",
-      expected: "peg -> move ->\n▶box()\npeg()"
+      input: "peg move\n\tbox\npeg",
+      expected: "peg -> move ->\n\tbox()\npeg()"
     }, {
       notes: "                 ",
       input: "a = 3\nrotate 2,a+1+3*(a*2.32+Math.PI) 2+a+Math.PI times box\npeg",
@@ -519,8 +519,8 @@ describe('V1 Code Preprocessor', function() {
       failsMootAppends: true
     }, {
       notes: "                 ",
-      input: "myBoxFunc = <box>\nrotate\n▶myBoxFunc 1, 2, 3",
-      expected: "myBoxFunc = box\nrotate ->\n▶myBoxFunc 1, 2, 3",
+      input: "myBoxFunc = <box>\nrotate\n\tmyBoxFunc 1, 2, 3",
+      expected: "myBoxFunc = box\nrotate ->\n\tmyBoxFunc 1, 2, 3",
       notIdempotent: true,
       failsMootAppends: true
     }, {
@@ -539,8 +539,8 @@ describe('V1 Code Preprocessor', function() {
       expected: "myBoxFunc = (a,b,c) -> -> box a,b,c\nrotate myBoxFunc 1, 2, 3"
     }, {
       notes: "                 ",
-      input: "myBoxFunc = (a,b,c) -> box a,b,c\nrotate\n▶myBoxFunc 1, 2, 3",
-      expected: "myBoxFunc = (a,b,c) -> box a,b,c\nrotate ->\n▶myBoxFunc 1, 2, 3"
+      input: "myBoxFunc = (a,b,c) -> box a,b,c\nrotate\n\tmyBoxFunc 1, 2, 3",
+      expected: "myBoxFunc = (a,b,c) -> box a,b,c\nrotate ->\n\tmyBoxFunc 1, 2, 3"
     }, {
       notes: "                 ",
       input: "flickr = (code) -> if random < 0.5 then code()\nflickr <box peg 1.1 2 times rotate ball>",
@@ -548,34 +548,34 @@ describe('V1 Code Preprocessor', function() {
       failsMootAppends: true
     }, {
       notes: "                 ",
-      input: "sin time*10 times\n▶box",
-      expected: "(sin time*10).times ->\n▶box()"
+      input: "sin time*10 times\n\tbox",
+      expected: "(sin time*10).times ->\n\tbox()"
     }, {
       notes: "                 ",
-      input: "(sin time*10) times\n▶box",
-      expected: "(sin time*10).times ->\n▶box()"
+      input: "(sin time*10) times\n\tbox",
+      expected: "(sin time*10).times ->\n\tbox()"
     }, {
       notes: "                 ",
-      input: "time*100 % 1 times\n▶box",
-      expected: "(time*100 % 1).times ->\n▶box()"
+      input: "time*100 % 1 times\n\tbox",
+      expected: "(time*100 % 1).times ->\n\tbox()"
     }, {
       notes: "                 ",
-      input: "round(wave 0.5) times\n▶box",
-      expected: "(round(wave 0.5)).times ->\n▶box()"
+      input: "round(wave 0.5) times\n\tbox",
+      expected: "(round(wave 0.5)).times ->\n\tbox()"
     }, {
       notes: "                 ",
-      input: "myF = (a)-> sin time*a\n\nmyF 2 times\n▶box",
-      expected: "myF = (a) -> sin time*a\n\n(myF 2).times ->\n▶box()",
+      input: "myF = (a)-> sin time*a\n\nmyF 2 times\n\tbox",
+      expected: "myF = (a) -> sin time*a\n\n(myF 2).times ->\n\tbox()",
       failsMootAppends: true,
       failsMootPrepends: true
     }, {
       notes: "                 ",
-      input: "myF = ()-> sin time*2\n\nmyF 2 times\n▶box",
-      expected: "myF = () -> sin time*2\n\nmyF(); 2.times ->\n▶box()"
+      input: "myF = ()-> sin time*2\n\nmyF 2 times\n\tbox",
+      expected: "myF = () -> sin time*2\n\nmyF(); 2.times ->\n\tbox()"
     }, {
       notes: "                 ",
-      input: "myF = -> sin time*2\n\nmyF 2 times\n▶box",
-      expected: "myF = -> sin time*2\n\nmyF(); 2.times ->\n▶box()"
+      input: "myF = -> sin time*2\n\nmyF 2 times\n\tbox",
+      expected: "myF = -> sin time*2\n\nmyF(); 2.times ->\n\tbox()"
     }, {
       notes: "                 ",
       input: "myF = (a)-> sin time*2\nb = myF +4",
@@ -749,8 +749,8 @@ describe('V1 Code Preprocessor', function() {
       failsMootPrepends: true
     }, {
       notes: "it's a little silly to write this\nbut we accept\n  stroke red green box\nso we also accept this",
-      input: "rotate\n▶fill red red box",
-      expected: "rotate ->\n▶fill red, -> fill -> fill red, box",
+      input: "rotate\n\tfill red red box",
+      expected: "rotate ->\n\tfill red, -> fill -> fill red, box",
       failsMootAppends: true,
       failsMootPrepends: true
     }, {
@@ -783,15 +783,15 @@ describe('V1 Code Preprocessor', function() {
       error: "redundant color"
     }, {
       notes: "                 ",
-      input: "a = (code) -> code()\n\na <ball>\n\na\n▶rect\n▶peg",
-      expected: "a = (code) -> code()\n\na ball\n\na ->\n▶rect()\n▶peg()",
+      input: "a = (code) -> code()\n\na <ball>\n\na\n\trect\n\tpeg",
+      expected: "a = (code) -> code()\n\na ball\n\na ->\n\trect()\n\tpeg()",
       notIdempotent: true,
       failsMootAppends: true,
       failsMootPrepends: true
     }, {
       notes: "                 ",
-      input: "skel = (numberOfTimes, code) ->\n▶for i in [1..numberOfTimes]\n▶▶rotate i*time scale i noFill\n▶▶▶code()\n\nscale 1/4\nskel 10 * wave 0.1\n▶ball",
-      expected: "skel = (numberOfTimes, code) ->\n▶for i in [1..numberOfTimes]\n▶▶rotate i*time, -> scale i, -> noFill ->\n▶▶▶code()\n\nscale 1/4\nskel 10 * wave(0.1), ->\n▶ball()",
+      input: "skel = (numberOfTimes, code) ->\n\tfor i in [1..numberOfTimes]\n\t\trotate i*time scale i noFill\n\t\t\tcode()\n\nscale 1/4\nskel 10 * wave 0.1\n\tball",
+      expected: "skel = (numberOfTimes, code) ->\n\tfor i in [1..numberOfTimes]\n\t\trotate i*time, -> scale i, -> noFill ->\n\t\t\tcode()\n\nscale 1/4\nskel 10 * wave(0.1), ->\n\tball()",
       failsMootAppends: true,
       failsMootPrepends: true
     }, {
@@ -825,20 +825,20 @@ describe('V1 Code Preprocessor', function() {
       failsMootPrepends: true
     }, {
       notes: "colors can be on their own with their own\nindented scoping, just like \"rotate\" and\nalike",
-      input: "red\n▶box\n▶ball\npeg",
-      expected: "fill red},{ ->\n▶box()\n▶ball()\npeg()",
+      input: "red\n\tbox\n\tball\npeg",
+      expected: "fill red},{ ->\n\tbox()\n\tball()\npeg()",
       failsMootAppends: true,
       failsMootPrepends: true
     }, {
       notes: "more color rejigging test of\nlines on their own",
-      input: "red stroke\n▶box\npeg",
-      expected: "stroke red},{ ->\n▶box()\npeg()",
+      input: "red stroke\n\tbox\npeg",
+      expected: "stroke red},{ ->\n\tbox()\npeg()",
       failsMootAppends: true,
       failsMootPrepends: true
     }, {
       notes: "more color rejigging test of\nlines starting with tabs",
-      input: "rotate\n▶red box",
-      expected: "rotate ->\n▶fill red, box",
+      input: "rotate\n\tred box",
+      expected: "rotate ->\n\tfill red, box",
       failsMootAppends: true,
       failsMootPrepends: true
     }, {
@@ -847,15 +847,15 @@ describe('V1 Code Preprocessor', function() {
       expected: "noFill -> (wave()*3).timesWithVariable (i) -> rotate -> box i+1"
     }, {
       notes: "An organic example,\nusing times with binding",
-      input: "5 times with i\n▶rotate 0,time,time/5000\n▶▶move i/5,0,0\n▶▶3 times with j\n▶▶▶rotate j\n▶▶▶box",
-      expected: "5.timesWithVariable (i) ->\n▶rotate 0,time,time/5000, ->\n▶▶move i/5,0,0\n▶▶3.timesWithVariable (j) ->\n▶▶▶rotate j\n▶▶▶box()"
+      input: "5 times with i\n\trotate 0,time,time/5000\n\t\tmove i/5,0,0\n\t\t3 times with j\n\t\t\trotate j\n\t\t\tbox",
+      expected: "5.timesWithVariable (i) ->\n\trotate 0,time,time/5000, ->\n\t\tmove i/5,0,0\n\t\t3.timesWithVariable (j) ->\n\t\t\trotate j\n\t\t\tbox()"
     }, {
       notes: "Should give error as 'times'\nis missing how many times the\nloop has to go for",
-      input: "// should give error\npeg\ntimes with i\n▶box 2",
+      input: "// should give error\npeg\ntimes with i\n\tbox 2",
       error: "how many times?"
     }, {
       notes: "Should give error as 'times'\nis missing how many times the\nloop has to go for",
-      input: "// should give error\ntimes with i\n▶box",
+      input: "// should give error\ntimes with i\n\tbox",
       error: "how many times?"
     }, {
       notes: "Should give error as 'times'\nis missing how many times the\nloop has to go for",
@@ -895,8 +895,8 @@ describe('V1 Code Preprocessor', function() {
       expected: "6.timesWithVariable (i) -> rotate box"
     }, {
       notes: "Qualifying rotate within an indented \"times\" body",
-      input: "6 times with i:\n▶rotate box",
-      expected: "6.timesWithVariable (i) ->\n▶rotate box"
+      input: "6 times with i:\n\trotate box",
+      expected: "6.timesWithVariable (i) ->\n\trotate box"
     }, {
       input: "1+1 times with i: rotate box",
       expected: "(1+1).timesWithVariable (i) -> rotate box"
@@ -933,8 +933,8 @@ describe('V1 Code Preprocessor', function() {
       input: "// testing whether mangled accross multiple lines\nif random() > 0.5 then box\n2 times with i: box\n2 times with i: rotate box",
       expected: "\nif random() > 0.5 then box()\n2.timesWithVariable (i) -> box()\n2.timesWithVariable (i) -> rotate box"
     }, {
-      input: "// testing whether mangled accross multiple lines\n6 times with i: rotate box\n6 times with i:\n▶rotate box",
-      expected: "\n6.timesWithVariable (i) -> rotate box\n6.timesWithVariable (i) ->\n▶rotate box"
+      input: "// testing whether mangled accross multiple lines\n6 times with i: rotate box\n6 times with i:\n\trotate box",
+      expected: "\n6.timesWithVariable (i) -> rotate box\n6.timesWithVariable (i) ->\n\trotate box"
     }, {
       input: "2 times with i rotate box wave wave",
       expected: "2.timesWithVariable (i) -> rotate -> box wave wave()"
@@ -1033,8 +1033,8 @@ describe('V1 Code Preprocessor', function() {
       expected: "2.times -> box 4"
     }, {
       notes: "the parser implementation accepts the notation of times\nwithout the dot and with the arrow, so\nmatching that",
-      input: "2 times ->\n▶box 4",
-      expected: "2.times ->\n▶box 4"
+      input: "2 times ->\n\tbox 4",
+      expected: "2.times ->\n\tbox 4"
     }, {
       notes: "the specs supported chevrons for making\nuser's life easier",
       input: "rotate 2, 3 >> box",
@@ -1089,20 +1089,20 @@ describe('V1 Code Preprocessor', function() {
       failsMootAppends: true
     }, {
       notes: "testing some more advanced higher-order-functions\nexamples",
-      input: "drawPieces = [<box>, <move>,<ball>]\nif random > 0.5\n▶drawThis = drawPieces.reduce (acc,x) -> -> x(acc)\nelse\n▶drawThis = drawPieces.reduceRight (acc,x) -> -> x(acc)\ndrawThis()",
-      expected: "drawPieces = [box, move, ball]\nif random() > 0.5\n▶drawThis = drawPieces.reduce (acc,x) -> -> x(acc)\nelse\n▶drawThis = drawPieces.reduceRight (acc,x) -> -> x(acc)\ndrawThis()",
+      input: "drawPieces = [<box>, <move>,<ball>]\nif random > 0.5\n\tdrawThis = drawPieces.reduce (acc,x) -> -> x(acc)\nelse\n\tdrawThis = drawPieces.reduceRight (acc,x) -> -> x(acc)\ndrawThis()",
+      expected: "drawPieces = [box, move, ball]\nif random() > 0.5\n\tdrawThis = drawPieces.reduce (acc,x) -> -> x(acc)\nelse\n\tdrawThis = drawPieces.reduceRight (acc,x) -> -> x(acc)\ndrawThis()",
       notIdempotent: true,
       failsMootAppends: true
     }, {
       notes: "testing some more advanced higher-order-functions\nexamples",
-      input: "drawPieces = [<box>, <move>,<ball>]\nrotate\n▶if random > 0.5\n▶▶drawThis = drawPieces.reduce (acc,x) -> -> x(acc)\n▶else\n▶▶drawThis = drawPieces.reduceRight (acc,x) -> -> x(acc)\n▶drawThis()",
-      expected: "drawPieces = [box, move, ball]\nrotate ->\n▶if random() > 0.5\n▶▶drawThis = drawPieces.reduce (acc,x) -> -> x(acc)\n▶else\n▶▶drawThis = drawPieces.reduceRight (acc,x) -> -> x(acc)\n▶drawThis()",
+      input: "drawPieces = [<box>, <move>,<ball>]\nrotate\n\tif random > 0.5\n\t\tdrawThis = drawPieces.reduce (acc,x) -> -> x(acc)\n\telse\n\t\tdrawThis = drawPieces.reduceRight (acc,x) -> -> x(acc)\n\tdrawThis()",
+      expected: "drawPieces = [box, move, ball]\nrotate ->\n\tif random() > 0.5\n\t\tdrawThis = drawPieces.reduce (acc,x) -> -> x(acc)\n\telse\n\t\tdrawThis = drawPieces.reduceRight (acc,x) -> -> x(acc)\n\tdrawThis()",
       notIdempotent: true,
       failsMootAppends: true
     }, {
       notes: "testing some more advanced higher-order-functions\nexamples",
-      input: "rotate\n▶box\npeg\n\na = <move 1>\nbox a ball",
-      expected: "rotate ->\n▶box()\npeg()\n\na = ((parametersForBracketedFunctions) -> (move 1, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))\nbox -> a ball",
+      input: "rotate\n\tbox\npeg\n\na = <move 1>\nbox a ball",
+      expected: "rotate ->\n\tbox()\npeg()\n\na = ((parametersForBracketedFunctions) -> (move 1, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null)))\nbox -> a ball",
       notIdempotent: true,
       failsMootAppends: true
     }, {
@@ -1119,14 +1119,14 @@ describe('V1 Code Preprocessor', function() {
       failsMootAppends: false
     }, {
       notes: "tests avoidLastArgumentInvocationOverflowing\nsubstitutions also work with a dangling\nfunctions",
-      input: "scale 2, wave time peg\n▶scale ball",
-      expected: "scale 2, wave(time), -> peg ->\n▶scale ball",
+      input: "scale 2, wave time peg\n\tscale ball",
+      expected: "scale 2, wave(time), -> peg ->\n\tscale ball",
       notIdempotent: false,
       failsMootAppends: false
     }, {
       notes: "tests avoidLastArgumentInvocationOverflowing\nsubstitutions also work with a dangling\nfunctions",
-      input: "scale 2, wave 2 peg\n▶scale 2, wave 2 ball",
-      expected: "scale 2, wave(2), -> peg ->\n▶scale 2, wave(2), ball",
+      input: "scale 2, wave 2 peg\n\tscale 2, wave 2 ball",
+      expected: "scale 2, wave(2), -> peg ->\n\tscale 2, wave(2), ball",
       notIdempotent: false,
       failsMootAppends: false
     }, {
@@ -1143,14 +1143,14 @@ describe('V1 Code Preprocessor', function() {
       failsMootAppends: false
     }, {
       notes: "                 ",
-      input: "ball\n▶box",
-      expected: "ball ->\n▶box()",
+      input: "ball\n\tbox",
+      expected: "ball ->\n\tbox()",
       notIdempotent: false,
       failsMootAppends: false
     }, {
       notes: "                 ",
-      input: "flashing = <if random > 0.5 then scale 0>\nrotating = <rotate>\nflashing\n▶ball\n▶rotating box\nrotate 2 peg 0.7",
-      expected: "flashing = ifFunctional(random() > 0.5},{((parametersForBracketedFunctions) -> (scale 0, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null))))\nrotating = rotate\nflashing ->\n▶ball()\n▶rotating box\nrotate 2, -> peg 0.7",
+      input: "flashing = <if random > 0.5 then scale 0>\nrotating = <rotate>\nflashing\n\tball\n\trotating box\nrotate 2 peg 0.7",
+      expected: "flashing = ifFunctional(random() > 0.5},{((parametersForBracketedFunctions) -> (scale 0, -> (if parametersForBracketedFunctions? then parametersForBracketedFunctions() else null))))\nrotating = rotate\nflashing ->\n\tball()\n\trotating box\nrotate 2, -> peg 0.7",
       notIdempotent: false,
       failsMootAppends: false
     }, {
@@ -1189,10 +1189,6 @@ describe('V1 Code Preprocessor', function() {
     var tc;
     for (var i = 0; i < len; i+= 1) {
       tc = testCases[i];
-      tc.input = tc.input.replace(/\u25B6/g, "\t");
-      if (tc.expected != null) {
-        tc.expected = tc.expected.replace(/\u25B6/g, "\t");
-      }
       results = preprocessor.preprocess(tc.input);
       transformed          = results[0];
       error                = results[1];
