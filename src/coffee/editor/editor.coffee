@@ -4,9 +4,9 @@
 ## with the other parts of LiveCodeLab.
 ###
 
-CodeMirror      = require '../../js/codemirror'
+CodeMirror      = require '../../js/codemirror/lib/codemirror'
 window.CodeMirror = CodeMirror
-require '../../js/codemirror-livecodelang-mode'
+require '../../js/codemirror/livecodelang'
 
 class Editor
 
