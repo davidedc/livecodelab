@@ -86,8 +86,8 @@ class Editor
 
   checkIfLink: (editor, event) ->
     coords = editor.coordsChar({left: event.pageX, top: event.pageY})
-    token = editor.getTokenAt(coords)
-    if token.type == 'link'
+    if editor.getTokenTypeAt(coords) == 'link'
+      token = editor.getTokenAt(coords)
       program = token.string.split(':')[1].replace("_", "") + "Tutorial"
       @eventRouter.emit("load-program", program)
 
