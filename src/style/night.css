@@ -5,6 +5,14 @@
     border-left: 2px solid yellow;
 }
 
+.cm-s-night span.CodeMirror-selectedtext {
+    background: #a8f;
+}
+
+.cm-s-night .CodeMirror-selected {
+    background: none;
+}
+
 .cm-s-night span { background: yellow; color: #ffdd00;}
 .cm-s-night span.cm-comment { color: #6900a1; }
 .cm-s-night span.cm-atom { color: #845dc4; }
