@@ -14,8 +14,6 @@ programs = require '../programs/programs'
 
 class Ui
 
-  @backgroundCanvasFractionOfWindowSize: 10
-
   constructor: (eventRouter, stats) ->
     # Setup Event Listeners
     eventRouter.addListener(
@@ -190,14 +188,8 @@ class Ui
   # the menu disappears
   # so we have to resize it at launch and also every time the window
   # is resized.
-  @fullscreenify: (background, scale = {x: 1, y: 1}) ->
-    background.style.width = (window.innerWidth / 10) + "px"
-    background.style.height = (window.innerHeight / 10) + "px"
-    window.addEventListener "resize", (=>
-      background.style.width = (window.innerWidth / 10) + "px"
-      background.style.height = (window.innerHeight / 10) + "px"
-      @adjustCodeMirrorHeight()
-    ), false
+  @fullscreenify: () ->
+    window.addEventListener("resize", @adjustCodeMirrorHeight, false)
 
   checkErrorAndReport: (e) ->
     $("#errorMessageDisplay").css "color", "red"

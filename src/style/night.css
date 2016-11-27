@@ -1,20 +1,5 @@
 /* Loosely based on the Midnight Textmate theme */
 
-/*this is what we want the div to look like*/
-div.fullscreen{
-    display:block;
-
-    /*set the div in the top-left corner of the screen*/
-    position:absolute;
-    top:0;
-    left:0;
-
-    /*set the width and height to 100% of the screen*/
-    width:100%;
-    height:100%;
-}
-
-
 .cm-tab:after {
     /* content: "\25A3"; */
     display: -moz-inline-block;
