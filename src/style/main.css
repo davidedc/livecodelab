@@ -103,7 +103,7 @@ h1 span {
 .menubar {
     background-color: black;
     position: fixed;
-    z-index: 4;
+    z-index: 7;
     top: 0px;
     left: 0px;
     width: 100%
