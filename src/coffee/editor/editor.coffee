@@ -85,7 +85,7 @@ class Editor
     @codemirrorInstance.lineCount()
 
   checkIfLink: (editor, event) ->
-    coords = editor.coordsChar({left: event.x, top: event.y})
+    coords = editor.coordsChar({left: event.pageX, top: event.pageY})
     token = editor.getTokenAt(coords)
     if token.type == 'link'
       program = token.string.split(':')[1].replace("_", "") + "Tutorial"
