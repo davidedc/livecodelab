@@ -103,12 +103,12 @@ h1 span {
 .menubar {
     background-color: black;
     position: fixed;
-    z-index: 7;
+    z-index: 6;
     top: 0px;
     left: 0px;
+    height: 30px;
     width: 100%
 }
-
 
 #startingCurtainScreen {
     width: 100%;
