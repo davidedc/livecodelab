@@ -30,6 +30,7 @@ class Editor
         mode: "livecodelab"
         theme: "night"
         lineNumbers: false
+        scrollbarStyle: "null"
         indentWithTabs: true
         tabSize: 3
         indentUnit: 3
@@ -52,6 +53,11 @@ class Editor
     @codemirrorInstance.on(
       'mousedown',
       (editor, event) => @checkIfLink(editor, event)
+    )
+
+    @codemirrorInstance.on(
+      'scroll',
+      (editor) => @eventRouter.emit("editor-undim")
     )
 
   focus: ->

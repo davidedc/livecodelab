@@ -30,7 +30,6 @@ window.$ = $
 window.jQuery = $
 Detector        = require '../js/threejs/Detector'
 
-MouseWheelHandler = require '../js/mousewheel'
 require './globals/numbertimes'
 
 
@@ -127,7 +126,6 @@ $(document).ready ->
   codeTextArea = document.getElementById('code')
 
   editor = new Editor(eventRouter, codeTextArea)
-  MouseWheelHandler.attach editor
 
   # requires threeJsSystem, blendControls, graphicsCommands, renderer
   programLoader = new ProgramLoader(
