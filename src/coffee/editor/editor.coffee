@@ -38,12 +38,6 @@ class Editor
       }
     )
 
-    # We want the code editor to always have focus
-    # since there is nothing else to type into.
-    @codemirrorInstance.on(
-      'blur',
-      (editor) => editor.focus()
-    )
 
     @codemirrorInstance.on(
       'change',
