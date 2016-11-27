@@ -4,8 +4,9 @@
     background-position: center;
     background-repeat: no-repeat;
     background-image: url('./images/tab-triangle-yellow.svg');
-    background-size: 80% 80%;
+    background-size: 90% 90%;
     background-color: inherit;
+    line-height: 1em;
 }
 
 .cm-s-night { background: transparent; color: white; }
