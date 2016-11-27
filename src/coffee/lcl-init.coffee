@@ -4,11 +4,11 @@
 ###
 
 require '../style/codemirror.css'
-require '../style/main.css'
 require '../style/night.css'
 require '../style/simpleModal.css'
 require '../style/sooperfish.css'
 require '../style/sooperfish-theme-glass.css'
+require '../style/main.css'
 
 require '../index.html'
 
