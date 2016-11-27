@@ -7,6 +7,7 @@
 CodeMirror      = require '../../js/codemirror/lib/codemirror'
 window.CodeMirror = CodeMirror
 require '../../js/codemirror/livecodelang'
+require '../../js/codemirror/addons/selection/mark-selection'
 
 class Editor
 
