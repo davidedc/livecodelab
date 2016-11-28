@@ -126,10 +126,12 @@ h1 span {
 
 #toMove {
     font-size: 30em;
+    pointer-events: none;
 }
 
 #justForFakeCursor {
     font-size: 30em;
+    pointer-events: none;
 }
 
 #loading {
