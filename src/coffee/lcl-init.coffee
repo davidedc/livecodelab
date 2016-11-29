@@ -165,6 +165,14 @@ $(document).ready ->
     "editor-toggle-dim",
     (autoDim) -> editorDimmer.toggleDimCode(autoDim)
   )
+  eventRouter.addListener(
+    "editor-undim",
+    () -> editorDimmer.undimEditor()
+  )
+  window.addEventListener(
+    'wheel',
+    () -> editorDimmer.undimEditor()
+  )
 
 
   #/////////////////////////////////////////////////////

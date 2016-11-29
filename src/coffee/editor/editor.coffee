@@ -54,11 +54,6 @@ class Editor
       (editor, event) => @checkIfLink(editor, event)
     )
 
-    @codemirrorInstance.on(
-      'scroll',
-      (editor) => @eventRouter.emit("editor-undim")
-    )
-
   focus: ->
     @codemirrorInstance.focus()
 
