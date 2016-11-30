@@ -113,10 +113,6 @@ class Ui
       eventRouter.emit("load-program", $(@).attr("id"))
       false
 
-    $("#languages li a").click ->
-      eventRouter.emit("set-language", $(@).attr("id"))
-      false
-
     $("#autocodeIndicator").click(
       () ->
         eventRouter.emit("toggle-autocoder")
