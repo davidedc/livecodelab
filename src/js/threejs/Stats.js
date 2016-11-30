@@ -3,8 +3,6 @@
  * @author mr.doob / http://mrdoob.com/
  */
 
-var badgeHeight = 16;
-
 var Stats = function () {
 
   var _bar, _mode = 1, _modes = 2,
@@ -44,20 +42,20 @@ var Stats = function () {
   // fps
   while ( fpsGraphEl.children.length < 74 ) {
     _bar = document.createElement( 'span' );
-    _bar.style.height = badgeHeight + 'px';
+    _bar.style.height = '100%';
     fpsGraphEl.appendChild( _bar );
   }
 
   // ms
   while ( msGraphEl.children.length < 74 ) {
     _bar = document.createElement( 'span' );
-    _bar.style.height = Math.random() * badgeHeight + 'px';
+    _bar.style.height = Math.random() * 100 + '%';
     msGraphEl.appendChild( _bar );
   }
 
   var _updateGraph = function ( dom, value ) {
     var child = dom.appendChild( dom.firstChild );
-    child.style.height = value + 'px';
+    child.style.height = value + '%';
   };
 
   return {
@@ -103,7 +101,7 @@ var Stats = function () {
       _msMax = Math.max( _msMax, _ms );
 
       msTextEl.textContent = _ms + ' MS ';
-      _updateGraph( msGraphEl, Math.min( badgeHeight, badgeHeight - ( _ms / 200 ) * badgeHeight ) );
+      _updateGraph( msGraphEl, Math.min( 1, 1 - ( _ms / 200 )) * 100 );
 
       _timeLastFrame = _time;
 
@@ -116,7 +114,7 @@ var Stats = function () {
         _fpsMax = Math.max( _fpsMax, _fps );
 
         fpsTextEl.textContent = _fps + ' FPS (' + _fpsMin + '-' + _fpsMax + ')';
-        _updateGraph( fpsGraphEl, Math.min( badgeHeight, badgeHeight - ( _fps / 100 ) * badgeHeight ) );
+        _updateGraph( fpsGraphEl, Math.min( 1, 1 - ( _fps / 100 )) * 100 );
 
         _timeLastSecond = _time;
         _frames = 0;
