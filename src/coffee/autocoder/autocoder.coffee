@@ -2,7 +2,9 @@
 ## Autocoder takes care of making random variations to the code.
 ###
 
-ColourLiterals = require '../core/colour-literals'
+colours = require '../core/colour-values'
+
+_ = require 'underscore'
 
 class Autocoder
 
@@ -10,22 +12,17 @@ class Autocoder
   autocoderMutateTimeout: undefined
   numberOfResults: 0
   whichOneToChange: 0
-  colorsRegex: ""
-  numberOfColors: 0
+  numberOfColours: 0
   mutationInterval: 1000
 
-  constructor: (@eventRouter, @editor, @colourNames) ->
+  constructor: (@eventRouter, @editor) ->
     # TODO this code is duplicated in the code-preprocessor
-    @colorsRegex = ""
-    @colourLiterals = new ColourLiterals
-    @numberOfColors = @colourNames.length
-    for key of @colourLiterals.colourNamesValues
-      if @colourLiterals.colourNamesValues.hasOwnProperty key
-        @colorsRegex = @colorsRegex + "|"+key
-    # delete the pre-pended pipe character
-    @colorsRegex = @colorsRegex.substring(1, @colorsRegex.length)
-    @colorsRe = RegExp(
-      "(^[\\t ]*|;| |,)([\\t ]*)("+@colorsRegex+")(?![\\w\\d])",
+
+    @colourNames = _.keys(colours)
+    @numberOfColours = @colourNames.length
+
+    @coloursRe = RegExp(
+      "(^[\\t ]*|;| |,)([\\t ]*)(" + @colourNames.join("|") + ")(?![\\w\\d])",
       'gm'
     )
     @matrixRe = RegExp(
@@ -45,7 +42,7 @@ class Autocoder
     else if whichMutation is 3
       @replaceABallWithABox()
     else if whichMutation is 4
-      @replaceAColorWithAnotherColor()
+      @replaceAColourWithAnotherColour()
     else if whichMutation is 5
       @replaceAMatrixTransformWithAnother()
     return
@@ -60,35 +57,35 @@ class Autocoder
     else
       numberOfResults = allMatches.length
     whichOneToChange = Math.floor(Math.random() * numberOfResults) + 1
-    whichColorToReplaceWith = Math.floor(
+    whichColourToReplaceWith = Math.floor(
       Math.random() * matrixTransforms.length
     )
     countWhichOneToSwap = 0
     editorContent = editorContent.replace(@matrixRe, (match, p1, p2) ->
       countWhichOneToSwap++
       if countWhichOneToSwap is whichOneToChange
-        return p1+p2+ matrixTransforms[whichColorToReplaceWith]
+        return p1+p2+ matrixTransforms[whichColourToReplaceWith]
       match
     )
     @editor.setValue editorContent
     return
 
 
-  replaceAColorWithAnotherColor : ->
+  replaceAColourWithAnotherColour : ->
     editorContent = @editor.getValue()
 
-    allMatches = editorContent.match(@colorsRe)
+    allMatches = editorContent.match(@coloursRe)
     if allMatches is null
       numberOfResults = 0
     else
       numberOfResults = allMatches.length
     whichOneToChange = Math.floor(Math.random() * numberOfResults) + 1
-    whichColorToReplaceWith = Math.floor(Math.random() * @numberOfColors)
+    whichColourToReplaceWith = Math.floor(Math.random() * @numberOfColours)
     countWhichOneToSwap = 0
-    editorContent = editorContent.replace(@colorsRe, (match, p1, p2) =>
+    editorContent = editorContent.replace(@coloursRe, (match, p1, p2) =>
       countWhichOneToSwap++
       if countWhichOneToSwap is whichOneToChange
-        return p1+p2+ @colourNames[whichColorToReplaceWith]
+        return p1+p2+ @colourNames[whichColourToReplaceWith]
       match
     )
     @editor.setValue editorContent

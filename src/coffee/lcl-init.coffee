@@ -142,12 +142,8 @@ $(document).ready ->
     (demoName) -> programLoader.loadDemoOrTutorial(demoName)
   )
 
-  # requires: ColourNames
-  autocoder = new Autocoder(
-    eventRouter,
-    editor,
-    liveCodeLabCore.colourLiterals.colourNames
-  )
+  autocoder = new Autocoder(eventRouter, editor)
+
   # Setup Event Listeners
   eventRouter.addListener("reset", -> autocoder.toggle(false))
   eventRouter.addListener("toggle-autocoder", -> autocoder.toggle())
