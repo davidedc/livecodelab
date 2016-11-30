@@ -103,12 +103,12 @@ h1 span {
 .menubar {
     background-color: black;
     position: fixed;
-    z-index: 4;
+    z-index: 6;
     top: 0px;
     left: 0px;
+    height: 30px;
     width: 100%
 }
-
 
 #startingCurtainScreen {
     width: 100%;
@@ -121,15 +121,17 @@ h1 span {
 }
 
 #code {
-    z-index: 1;
+    z-index: 5;
 }
 
 #toMove {
     font-size: 30em;
+    pointer-events: none;
 }
 
 #justForFakeCursor {
     font-size: 30em;
+    pointer-events: none;
 }
 
 #loading {
@@ -138,12 +140,14 @@ h1 span {
 }
 
 #miao {
+    font-family: MavenPro-Medium;
     position: fixed;
     top: 30px;
     left: 0px;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 30px);
     font-size: 3em;
+    line-height: 1.2em;
 }
 
 #threeJsCanvas {
@@ -161,4 +165,14 @@ h1 span {
     height: 10%;
     transform-origin: 0% 0%;
     transform: scale(10, 10);
+}
+.CodeMirror {
+  font-family: MavenPro-Medium;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  background: transparent;
 }

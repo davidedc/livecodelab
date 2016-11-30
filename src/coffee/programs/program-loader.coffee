@@ -42,11 +42,10 @@ class ProgramLoader
     # have cleared the screen with the code below.
     if programs.demos[demoName] || programs.tutorials[demoName]
       if programs.demos[demoName]
-        # the "replace" here is to change the arrows in tabs
-        @texteditor.setValue programs.demos[demoName].code.replace(/\u25B6/g, "\t")
+        @texteditor.setValue programs.demos[demoName].code
       else if programs.tutorials[demoName]
         # the "replace" here is to change the arrows in tabs
-        @texteditor.setValue programs.tutorials[demoName].code.replace(/\u25B6/g, "\t")
+        @texteditor.setValue programs.tutorials[demoName].code
       # clear history. Why? Because we want to avoid the follwing:
       # user opens an example. User opens another example.
       # User performs undo. Result: previous example is open, but the hashtag

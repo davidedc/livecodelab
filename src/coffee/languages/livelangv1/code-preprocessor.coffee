@@ -1819,9 +1819,9 @@ class CodePreprocessor
         # arrow to represent tabs so it's more
         # readable when looking at the examples.
         # We replace it with tabs here.
-        testCase.input = testCase.input.replace(/\u25B6/g, "\t")
+        testCase.input = testCase.input
         if testCase.expected?
-          testCase.expected = testCase.expected.replace(/\u25B6/g, "\t")
+          testCase.expected = testCase.expected
 
         [transformed, error, userDefinedFunctions] = @preprocess(testCase.input)
         # only check idempotency if there was no error

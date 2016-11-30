@@ -33,7 +33,7 @@ module.exports = {
           name: 'sound/[hash][name].[ext]'
         }
       },
-      { test: /\.(png|jpg)$/, loader: 'url-loader?limit=8192' },
+      { test: /\.(png|jpg|svg)$/, loader: 'url-loader?limit=8192' },
       { test: /\.pegjs$/, loader: 'pegjs-loader' }
     ]
   },

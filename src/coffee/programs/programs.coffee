@@ -43,12 +43,12 @@ programs.demos.cubesAndSpikes =
         simpleGradient fuchsia, (color 100, 200, 200), yellow
         scale 2.1
         5 times
-        ▶rotate 0, 1, time / 5
-        ▶box 0.1, 0.1, 0.1
-        ▶move 0, 0.1, 0.1
-        ▶3 times
-        ▶▶rotate 0, 1, 1
-        ▶▶box 0.01, 0.01, 1
+        \trotate 0, 1, time / 5
+        \tbox 0.1, 0.1, 0.1
+        \tmove 0, 0.1, 0.1
+        \t3 times
+        \t\trotate 0, 1, 1
+        \t\tbox 0.01, 0.01, 1
         """
 
 programs.demos.redthreadsDemo =
@@ -61,10 +61,10 @@ programs.demos.redthreadsDemo =
         noFill
         strokeSize 7
         2 times
-        ▶rotate time / 20
-        ▶ball
-        ▶rotate 0, 1, 1
-        ▶ball
+        \trotate time / 20
+        \tball
+        \trotate 0, 1, 1
+        \tball
         """
 
 
@@ -80,11 +80,11 @@ programs.demos.ringBall =
         rotate time / 5
         scale 0.7
         9 times with i
-        ▶rotate (time / 5) + i
-        ▶ringDetail times
-        ▶▶rotate 0, 0, (2 * pi) / ringDetail
-        ▶▶move 2, 0, 0
-        ▶▶▶rect 1, 0.3 + (1 / ringDetail)
+        \trotate (time / 5) + i
+        \tringDetail times
+        \t\trotate 0, 0, (2 * pi) / ringDetail
+        \t\tmove 2, 0, 0
+        \t\t\trect 1, 0.3 + (1 / ringDetail)
         """
 
 programs.demos.crazyRibbon =
@@ -96,9 +96,9 @@ programs.demos.crazyRibbon =
         background black
         rotate time
         200 times with i
-        ▶rotate time * 2 + sin(i)
-        ▶▶move 2, 0, 0
-        ▶▶▶box 1, 0.4, 0.07
+        \trotate time * 2 + sin(i)
+        \t\tmove 2, 0, 0
+        \t\t\tbox 1, 0.4, 0.07
         """
 
 programs.demos.acidTown =
@@ -113,8 +113,8 @@ programs.demos.acidTown =
         noFill
         strokeSize 7
         2 times
-        ▶rotate time / 20
-        ▶box
+        \trotate time / 20
+        \tbox
         """
 
 programs.demos.theGrid =
@@ -131,10 +131,10 @@ programs.demos.theGrid =
         // center everything
         move -(pad * gridSize / 2)
         gridSize times with rows
-        ▶gridSize times with columns
-        ▶▶gridSize times with slices
-        ▶▶▶move pad * rows, pad * columns, pad * slices
-        ▶▶▶▶box
+        \tgridSize times with columns
+        \t\tgridSize times with slices
+        \t\t\tmove pad * rows, pad * columns, pad * slices
+        \t\t\t\tbox
         """
 
 programs.demos.tube =
@@ -148,15 +148,15 @@ programs.demos.tube =
         scale 0.5
         noStroke
         8 times with j
-        ▶move 0, 0.5, 0
-        ▶31 times with i
-        ▶▶rotate 0, 0.2, 0
-        ▶▶r = ((i  * 3) + (time * 12)) % 255
-        ▶▶g = ((i * 7) + (time * 30 + 20) * 7) % 255
-        ▶▶b = ((j * 17) + (time * 30 + 40) * 3) % 255
-        ▶▶fill r, g, b
-        ▶▶rect 0.3, 0.3
-        ▶▶move 0.5, 0, 0
+        \tmove 0, 0.5, 0
+        \t31 times with i
+        \t\trotate 0, 0.2, 0
+        \t\tr = ((i  * 3) + (time * 12)) % 255
+        \t\tg = ((i * 7) + (time * 30 + 20) * 7) % 255
+        \t\tb = ((j * 17) + (time * 30 + 40) * 3) % 255
+        \t\tfill r, g, b
+        \t\trect 0.3, 0.3
+        \t\tmove 0.5, 0, 0
         """
 
 programs.demos.movingBlocks =
@@ -176,15 +176,15 @@ programs.demos.movingBlocks =
         move 1, 1, 0
         rotate 3, 0.6, time / 10
         numStacks times with j
-        ▶move 0
-        ▶▶xm = noiseMov 200, 100, j, 20
-        ▶▶ym = noiseMov 209, 200, j, 2
-        ▶▶zm = (noiseMov 100, 300, j, 40) / 4
-        ▶▶move xm, ym, zm
-        ▶▶stackN times with i
-        ▶▶▶move 0, 0, i * thinness
-        ▶▶▶▶fill 255, (time*3*j*colorSpeed+i*255/stackN)%255, (time*1*j*colorSpeed+i*255/stackN)%255
-        ▶▶▶▶rect
+        \tmove 0
+        \t\txm = noiseMov 200, 100, j, 20
+        \t\tym = noiseMov 209, 200, j, 2
+        \t\tzm = (noiseMov 100, 300, j, 40) / 4
+        \t\tmove xm, ym, zm
+        \t\tstackN times with i
+        \t\t\tmove 0, 0, i * thinness
+        \t\t\t\tfill 255, (time*3*j*colorSpeed+i*255/stackN)%255, (time*1*j*colorSpeed+i*255/stackN)%255
+        \t\t\t\trect
         """
 
 programs.demos.infoway =
@@ -204,14 +204,14 @@ programs.demos.infoway =
         move 1,1,0
         rotate time/10
         numStacks times with j
-        ▶move 0
-        ▶▶xm = noiseMov 501, 300, j, 20
-        ▶▶ym = noiseMov 703, 400, j, 2
-        ▶▶zm = (noiseMov 604, 500, j, 40) / 4
-        ▶▶move xm, ym, zm
-        ▶▶move 0,0,thinness
-        ▶▶▶fill 0,0, (time*1*j*colorSpeed+255/stackN)%255
-        ▶▶▶rect 0.24
+        \tmove 0
+        \t\txm = noiseMov 501, 300, j, 20
+        \t\tym = noiseMov 703, 400, j, 2
+        \t\tzm = (noiseMov 604, 500, j, 40) / 4
+        \t\tmove xm, ym, zm
+        \t\tmove 0,0,thinness
+        \t\t\tfill 0,0, (time*1*j*colorSpeed+255/stackN)%255
+        \t\t\trect 0.24
         """
 
 
@@ -221,8 +221,8 @@ programs.demos.webgltwocubesDemo =
     code: """
         background 155, 255, 255
         2 times
-        ▶rotate 0, 1, time / 2
-        ▶box
+        \trotate 0, 1, time / 2
+        \tbox
         """
 
 programs.demos.webglturbineDemo =
@@ -231,8 +231,8 @@ programs.demos.webglturbineDemo =
     code: """
         background 155, 55, 255
         70 times
-        ▶rotate time / 100, 1, time / 100
-        ▶box
+        \trotate time / 100, 1, time / 100
+        \tbox
         """
 
 programs.demos.webgllavaDemo =
@@ -242,9 +242,9 @@ programs.demos.webgllavaDemo =
         scale 4.5
         noStroke
         10 times with i
-        ▶rotate 1, time / 400, 2
-        ▶fill 255, 0, 200 * abs(sin(i))
-        ▶ball
+        \trotate 1, time / 400, 2
+        \tfill 255, 0, 200 * abs(sin(i))
+        \tball
         """
 
 
@@ -276,10 +276,10 @@ programs.demos.webglaKnot =
         scale 0.9
         rotate 15,3,1
         detail times with i
-        ▶rotate 0, 0, (2 * pi) / detail
-        ▶move 0.65
-        ▶▶rotate (turns * i * pi) / detail + (time * speed), 0, 0
-        ▶▶▶rect 1
+        \trotate 0, 0, (2 * pi) / detail
+        \tmove 0.65
+        \t\trotate (turns * i * pi) / detail + (time * speed), 0, 0
+        \t\t\trect 1
         """
 
 programs.demos.seaweeds =
@@ -293,12 +293,12 @@ programs.demos.seaweeds =
         scale 2
         rotate time / 5
         4 times
-        ▶rotate 0, 2, 0
-        ▶detail times with i
-        ▶▶rotate 0, 0, 2 * pi / detail
-        ▶▶move 2, 5, 1
-        ▶▶▶rotate (turns * i * pi) / detail + (time * speed), 0, 0
-        ▶▶▶rect 1
+        \trotate 0, 2, 0
+        \tdetail times with i
+        \t\trotate 0, 0, 2 * pi / detail
+        \t\tmove 2, 5, 1
+        \t\t\trotate (turns * i * pi) / detail + (time * speed), 0, 0
+        \t\t\trect 1
         """
 
 programs.demos.littleSpiralOfCubes =
@@ -308,9 +308,9 @@ programs.demos.littleSpiralOfCubes =
         background orange
         scale 0.1
         10 times
-        ▶rotate 0, 1, time
-        ▶move 1, 1, 1
-        ▶box
+        \trotate 0, 1, time
+        \tmove 1, 1, 1
+        \tbox
         """
 
 programs.demos.tentacleDemo =
@@ -320,12 +320,12 @@ programs.demos.tentacleDemo =
         background 155, 255, 155
         scale 0.15
         3 times
-        ▶rotate 0, 1, 1
-        ▶10 times
-        ▶▶rotate 0, 1, time
-        ▶▶scale 0.9
-        ▶▶move 1, 1, 1
-        ▶▶box
+        \trotate 0, 1, 1
+        \t10 times
+        \t\trotate 0, 1, time
+        \t\tscale 0.9
+        \t\tmove 1, 1, 1
+        \t\tbox
         """
 
 programs.demos.lampDemo =
@@ -338,12 +338,12 @@ programs.demos.lampDemo =
         scale 2
         rotate time / 4, time / 4, time / 4
         90 times
-        ▶rotate time / 200, time / 200,  time / 200
-        ▶line
-        ▶move 0.5, 0, 0
-        ▶line
-        ▶move -0.5, 0, 0
-        ▶line
+        \trotate time / 200, time / 200,  time / 200
+        \tline
+        \tmove 0.5, 0, 0
+        \tline
+        \tmove -0.5, 0, 0
+        \tline
         """
 
 programs.demos.trillionfeathersDemo =
@@ -355,11 +355,11 @@ programs.demos.trillionfeathersDemo =
         scale 2
         rotate
         20 times
-        ▶rotate
-        ▶move 0.25, 0, 0
-        ▶line
-        ▶move -0.5, 0, 0
-        ▶line
+        \trotate
+        \tmove 0.25, 0, 0
+        \tline
+        \tmove -0.5, 0, 0
+        \tline
         """
 
 programs.demos.monsterblobDemo =
@@ -371,11 +371,11 @@ programs.demos.monsterblobDemo =
         rotate time / 5
         simpleGradient fuchsia, aqua, yellow
         5 times
-        ▶rotate 0, 1, time / 5
-        ▶move 0.2, 0, 0
-        ▶3 times
-        ▶▶rotate 1
-        ▶▶ball -1
+        \trotate 0, 1, time / 5
+        \tmove 0.2, 0, 0
+        \t3 times
+        \t\trotate 1
+        \t\tball -1
         """
 
 programs.demos.industrialMusicDemo =
@@ -495,21 +495,21 @@ programs.demos.DJCastroHomage =
         // some extra rhythm mayhem
         // every now and then
         if beat % 24 > 18
-        ▶play 'DJCastro1' ,'x'
+        \tplay 'DJCastro1' ,'x'
         if beat % 36 > 30
-        ▶play 'DJCastro3' ,'x'
+        \tplay 'DJCastro3' ,'x'
 
         if beat % 10 > 5
-        ▶play 'castro'+ int(random 24)   ,'xxx-'
+        \tplay 'castro'+ int(random 24)   ,'xxx-'
         if beat % 10 > 2
-        ▶play 'DJCastro'+ vowelSmpl   ,'---x-'
-        ▶otherSmpl = [1, 3, 4, 5, 6, 7, 9, 10, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-        ▶otherSmpl = otherSmpl[int random otherSmpl.length]
-        ▶play 'DJCastro'+otherSmpl   ,'xx-'
+        \tplay 'DJCastro'+ vowelSmpl   ,'---x-'
+        \totherSmpl = [1, 3, 4, 5, 6, 7, 9, 10, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+        \totherSmpl = otherSmpl[int random otherSmpl.length]
+        \tplay 'DJCastro'+otherSmpl   ,'xx-'
         if beat % 12 > 10
-        ▶play 'DJCastro2'   ,'x'
+        \tplay 'DJCastro2'   ,'x'
         if beat % 12 > 8 and beat % 12 < 11
-        ▶play 'DJCastro23'   ,'x'
+        \tplay 'DJCastro23'   ,'x'
         """
 
 programs.demos.springysquaresDemo =
@@ -520,11 +520,11 @@ programs.demos.springysquaresDemo =
         simpleGradient fuchsia, (color 100, 200, 200), yellow
         scale 0.3
         3 times
-        ▶move 0, 0, 0.5
-        ▶5 times
-        ▶▶rotate time / 2
-        ▶▶move 0.7, 0, 0
-        ▶▶rect
+        \tmove 0, 0, 0.5
+        \t5 times
+        \t\trotate time / 2
+        \t\tmove 0.7, 0, 0
+        \t\trect
         """
 
 programs.demos.diceDemo =
@@ -538,11 +538,11 @@ programs.demos.diceDemo =
         move -0.5, 0, 0
         scale 0.3
         3 times
-        ▶move 0, 0, 0.5
-        ▶1 times
-        ▶▶rotate time
-        ▶▶move 2, 0, 0
-        ▶▶box
+        \tmove 0, 0, 0.5
+        \t1 times
+        \t\trotate time
+        \t\tmove 2, 0, 0
+        \t\tbox
         """
 
 programs.demos.webglalmostvoronoiDemo =
@@ -551,8 +551,8 @@ programs.demos.webglalmostvoronoiDemo =
     code: """
         scale 10
         2 times
-        ▶rotate 0, 1, time / 10
-        ▶ball -1
+        \trotate 0, 1, time / 10
+        \tball -1
         """
 
 programs.demos.webglshardsDemo =
@@ -563,10 +563,10 @@ programs.demos.webglshardsDemo =
         fill 0
         strokeSize 7
         5 times
-        ▶rotate 0, 1, time / 20
-        ▶ball
-        ▶rotate 0, 1, 1
-        ▶ball -1.01
+        \trotate 0, 1, time / 20
+        \tball
+        \trotate 0, 1, 1
+        \tball -1.01
         """
 
 programs.demos.möbius =
@@ -582,10 +582,10 @@ programs.demos.möbius =
         rotate time / 5
         scale 0.6
         detail times with i
-        ▶rotate 0, 0, (2 * pi) / detail
-        ▶move 2, 0, 0
-        ▶▶rotate 0, (turns * i * pi) / detail + (time * speed), 0
-        ▶▶rect 1, 0.04 + (1 / detail)
+        \trotate 0, 0, (2 * pi) / detail
+        \tmove 2, 0, 0
+        \t\trotate 0, (turns * i * pi) / detail + (time * speed), 0
+        \t\trect 1, 0.04 + (1 / detail)
         """
 
 programs.demos.theeye =
@@ -596,15 +596,15 @@ programs.demos.theeye =
         detail = 100
         speed = 3
         if time % 10 < 5
-        ▶ambientLight 255, 255, 255
+        \tambientLight 255, 255, 255
 
         background black
         rotate time / 5
         detail times with i
-        ▶rotate 0, 0, (2 * pi) / detail
-        ▶move 2, 0, 0
-        ▶▶rotate (turns * i * pi) / detail + (time * speed), 0, 0
-        ▶▶rect 1
+        \trotate 0, 0, (2 * pi) / detail
+        \tmove 2, 0, 0
+        \t\trotate (turns * i * pi) / detail + (time * speed), 0, 0
+        \t\trect 1
         """
 
 
@@ -753,8 +753,8 @@ programs.tutorials.timesTutorial =
 
         rotate 1
         3 times
-        ▶move 0.2, 0.2, 0.2
-        ▶box
+        \tmove 0.2, 0.2, 0.2
+        \tbox
 
         // note how the tabs indicate
         // exactly the block of code
@@ -873,8 +873,8 @@ programs.tutorials.lineTutorial =
         // draw lines like this:
 
         20 times
-        ▶rotate time / 9
-        ▶line
+        \trotate time / 9
+        \tline
 
         // next-tutorial:ball
         """
@@ -887,8 +887,8 @@ programs.tutorials.ballTutorial =
 
         ballDetail 10
         3 times
-        ▶move 0.2, 0.2, 0.2
-        ▶ball
+        \tmove 0.2, 0.2, 0.2
+        \tball
 
         // ('ballDetail' is optional)
         // next-tutorial:pushpopMatrix
@@ -940,8 +940,8 @@ programs.tutorials.doonceTutorial =
 
         rotate time
         ✓doOnce
-        ▶background 255
-        ▶fill 255, 0, 0
+        \tbackground 255
+        \tfill 255, 0, 0
         ✓doOnce ball
         box
 
@@ -964,11 +964,11 @@ programs.tutorials.conditionalsTutorial =
 
         rotate
         if frame % 3 == 0
-        ▶box
+        \tbox
         else if frame % 3 == 1
-        ▶ball
+        \tball
         else
-        ▶peg
+        \tpeg
 
         // next-tutorial:autocode
         """

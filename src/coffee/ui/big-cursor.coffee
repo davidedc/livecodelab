@@ -50,9 +50,9 @@ class BigCursor
         fontSize: 300
         left: 0
       , "fast"
-      setTimeout "$(\"#formCode\").animate({opacity: 1}, \"fast\");", 120
-      setTimeout "$(\"#justForFakeCursor\").hide();", 200
-      setTimeout "$(\"#toMove\").hide();", 200
+      setTimeout (() -> $("#formCode").animate({opacity: 1}, "fast")), 120
+      setTimeout (() -> $("#justForFakeCursor").hide()), 200
+      setTimeout (() -> $("#toMove").hide()), 200
       @isShowing = false
       @toggleBlink false
 

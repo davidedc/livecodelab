@@ -4,11 +4,11 @@
 ###
 
 require '../style/codemirror.css'
-require '../style/main.css'
 require '../style/night.css'
 require '../style/simpleModal.css'
 require '../style/sooperfish.css'
 require '../style/sooperfish-theme-glass.css'
+require '../style/main.css'
 
 require '../index.html'
 
@@ -30,7 +30,6 @@ window.$ = $
 window.jQuery = $
 Detector        = require '../js/threejs/Detector'
 
-MouseWheelHandler = require '../js/mousewheel'
 require './globals/numbertimes'
 
 
@@ -39,8 +38,6 @@ $(document).ready ->
   threeJsCanvas = document.getElementById('threeJsCanvas')
 
   backgroundDiv = document.getElementById('backgroundDiv')
-
-  Ui.fullscreenify()
 
   #/////////////////////////////////////////////////////
   # Phase 1 - Preliminary checks and initialisations
@@ -127,8 +124,8 @@ $(document).ready ->
   )
 
   codeTextArea = document.getElementById('code')
+
   editor = new Editor(eventRouter, codeTextArea)
-  MouseWheelHandler.attach editor
 
   # requires threeJsSystem, blendControls, graphicsCommands, renderer
   programLoader = new ProgramLoader(
@@ -167,6 +164,14 @@ $(document).ready ->
   eventRouter.addListener(
     "editor-toggle-dim",
     (autoDim) -> editorDimmer.toggleDimCode(autoDim)
+  )
+  eventRouter.addListener(
+    "editor-undim",
+    () -> editorDimmer.undimEditor()
+  )
+  window.addEventListener(
+    'wheel',
+    () -> editorDimmer.undimEditor()
   )
 
 
@@ -314,8 +319,6 @@ $(document).ready ->
       650
     )
     bigCursor.toggleBlink true
-
-  Ui.adjustCodeMirrorHeight()
 
   setTimeout(
     () -> programLoader.kickOff(),

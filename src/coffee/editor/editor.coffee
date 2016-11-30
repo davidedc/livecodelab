@@ -4,9 +4,9 @@
 ## with the other parts of LiveCodeLab.
 ###
 
-CodeMirror      = require '../../js/codemirror'
-window.CodeMirror = CodeMirror
-require '../../js/codemirror-livecodelang-mode'
+CodeMirror = require '../../js/codemirror/lib/codemirror'
+require '../../js/codemirror/livecodelang'
+require '../../js/codemirror/addons/selection/mark-selection'
 
 class Editor
 
@@ -29,28 +29,29 @@ class Editor
         mode: "livecodelab"
         theme: "night"
         lineNumbers: false
+        scrollbarStyle: "null"
         indentWithTabs: true
-        tabSize: 1
-        indentUnit: 1
+        tabSize: 3
+        indentUnit: 3
         lineWrapping: true
-
-        # We want the code editor to always have focus
-        # since there is nothing else to type into.
-        # One of those little wonders: you have to pause a little
-        # before giving the editor focus, otherwise for some reason
-        # the focus is not regained. Go figure.
-        onBlur: =>
-          setTimeout @codemirrorInstance.focus, 30
-
-        # the onChange and onCursorActivity functions of CodeMirror
-        # will pass in the "editor" instance as the first
-        # argument to the function callback
-        onChange: (editor) =>
-          @eventRouter.emit("code-changed", @codemirrorInstance.getValue())
-
-        onCursorActivity: (editor) =>
-          @suspendDimmingAndCheckIfLink()
+        styleSelectedText: true
       }
+    )
+
+
+    @codemirrorInstance.on(
+      'change',
+      (editor) => @eventRouter.emit("code-changed", @codemirrorInstance.getValue())
+    )
+
+    @codemirrorInstance.on(
+      'cursorActivity',
+      (editor) => @eventRouter.emit("editor-undim")
+    )
+
+    @codemirrorInstance.on(
+      'mousedown',
+      (editor, event) => @checkIfLink(editor, event)
     )
 
   focus: ->
@@ -77,29 +78,11 @@ class Editor
   lineCount: () ->
     @codemirrorInstance.lineCount()
 
-  suspendDimmingAndCheckIfLink: (editor) ->
-    cursorP = undefined
-    currentLineContent = undefined
-    program = undefined
-
-    # Now this is kind of a nasty hack: we check where the
-    # cursor is, and if it's over a line containing the
-    # link then we follow it.
-    # There was no better way, for some reason some onClick
-    # events are lost, so what happened is that one would click on
-    # the link and nothing would happen.
-    cursorP = @codemirrorInstance.getCursor(true)
-    if cursorP.ch > 2
-      currentLineContent = @codemirrorInstance.getLine(cursorP.line)
-      if currentLineContent.indexOf("// next-tutorial:") is 0
-        currentLineContent = currentLineContent.substring(17)
-        currentLineContent = currentLineContent.replace("_", "")
-        program = currentLineContent + "Tutorial"
-        setTimeout (=>
-          @eventRouter.emit("load-program", program)
-        ), 200
-    return if @codemirrorInstance.getValue() is ""
-    @eventRouter.emit("editor-undim")
+  checkIfLink: (editor, event) ->
+    coords = editor.coordsChar({left: event.pageX, top: event.pageY})
+    if editor.getTokenTypeAt(coords) == 'link'
+      token = editor.getTokenAt(coords)
+      program = token.string.split(':')[1].replace("_", "") + "Tutorial"
+      @eventRouter.emit("load-program", program)
 
 module.exports = Editor
-

@@ -1,8 +1,10 @@
-/* global CodeMirror */
 /**
  * CoedeMirror Live Code Lab mode
  */
-CodeMirror.defineMode('livecodelab', function() {
+
+var CodeMirror = require('../../js/codemirror/lib/codemirror');
+
+CodeMirror.defineMode('livecodelab', function(conf) {
   var ERRORCLASS = 'error';
 
   function wordRegexp(words) {
@@ -145,11 +147,11 @@ CodeMirror.defineMode('livecodelab', function() {
   }
 
   function indent(state) {
-    state.indentation += 1;
+    state.indentation += conf.indentUnit;
   }
 
   function dedent(state) {
-    state.indentation -= 1;
+    state.indentation -= conf.indentUnit;
     return state.indentation < 0;
   }
 
