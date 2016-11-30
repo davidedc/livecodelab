@@ -10,7 +10,49 @@ require '../../js/jquery.sooperfish'
 require '../../js/jquery.easing-sooper'
 require '../../js/jquery.simplemodal'
 
+_ = require 'underscore'
+
 programs = require '../programs/programs'
+
+createProgramMenu = (parentEl, programs) =>
+  _.chain(
+     programs
+   ).reduce(
+     (
+       (submenu, program, programKey) =>
+         submenu[program.submenu] = submenu[program.submenu] || {}
+         submenu[program.submenu][programKey] = program
+         return submenu
+     ),
+     {}
+   ).map(
+     (programs, name) =>
+
+       menuDropdown = document.createElement('li')
+
+       menuName = document.createElement('span')
+       menuName.textContent = name
+       menuDropdown.appendChild(menuName)
+
+       menuList = document.createElement('ul')
+       menuDropdown.appendChild(menuList)
+
+       _.each(
+         programs,
+         (program, programName) =>
+           programEntry = document.createElement('li')
+           programLink = document.createElement('a')
+           programLink.setAttribute('id', programName)
+           programLink.textContent = program.title
+           programEntry.appendChild(programLink)
+           menuList.appendChild(programEntry)
+       )
+       return menuDropdown
+   ).each(
+     (submenu) => parentEl.appendChild(submenu)
+   )
+
+
 
 class Ui
 
@@ -44,78 +86,12 @@ class Ui
           $("#dimCodeButton span").html("Hide Code: off")
     )
 
-    allDemos = programs.demos
+    demosEl = document.getElementById('ulForDemos')
+    createProgramMenu(demosEl, programs.demos)
 
-    # Create an object with a property for each submenu.
-    # That property contains an array with all the demos that belong to
-    # that submenu.
-    demoSubmenus = {}
-    for demo of allDemos
-      submenuOfThisDemo = allDemos[demo].submenu
-      demoSubmenus[submenuOfThisDemo] ?= []
-      demoSubmenus[submenuOfThisDemo].push(demo)
+    tutorialsEl = document.getElementById('ulForTutorials')
+    createProgramMenu(tutorialsEl, programs.tutorials)
 
-    for demoSubmenu of demoSubmenus
-
-      demoSubmenuNoSpaces = demoSubmenu.replace(" ","_")
-      # insert the submenu in the first level
-      $("<li></li>").appendTo(
-        $('#ulForDemos')
-      ).attr('id', 'hookforDemos' + demoSubmenuNoSpaces)
-
-      $("<span>#{demoSubmenu}</span>").appendTo(
-        $('#hookforDemos' + demoSubmenuNoSpaces)
-      )
-      $("<ul id='#{demoSubmenuNoSpaces}'></ul>").appendTo(
-        $('#hookforDemos' + demoSubmenuNoSpaces)
-      )
-      # now take each demo that belongs to this submenu and put it there
-      for demo in demoSubmenus[demoSubmenu]
-        a = """<li>
-               <a id='#{demo}'>
-               #{programs.demos[demo].title}
-               </a>
-               </li>"""
-        $(a).appendTo(
-          $('#'+demoSubmenuNoSpaces)
-        )
-
-    allTutorials = programs.tutorials
-
-    # Create an object with a property for each submenu.
-    # That property contains an array with all the tutorials that belong to
-    # that submenu.
-    tutorialSubmenus = {}
-    for tutorial of allTutorials
-      submenuOfThisTutorial = allTutorials[tutorial].submenu
-      # create array if it didn't exist
-      tutorialSubmenus[submenuOfThisTutorial] ?= []
-      tutorialSubmenus[submenuOfThisTutorial].push(tutorial)
-
-    for tutorialSubmenu of tutorialSubmenus
-
-      tutorialSubmenuNoSpaces = tutorialSubmenu.replace(" ","_")
-      # insert the submenu in the first level
-      $("<li></li>").appendTo(
-        $('#ulForTutorials')
-      ).attr('id', 'hookforTutorials' + tutorialSubmenuNoSpaces)
-
-      $("<span>#{tutorialSubmenu}</span>").appendTo(
-        $('#hookforTutorials' + tutorialSubmenuNoSpaces)
-      )
-      $("<ul id='#{tutorialSubmenuNoSpaces}'></ul>").appendTo(
-        $('#hookforTutorials' + tutorialSubmenuNoSpaces)
-      )
-      # now take each tutorial that belongs to this submenu and put it there
-      for tutorial in tutorialSubmenus[tutorialSubmenu]
-        a = """<li>
-               <a id='#{tutorial}'>
-               #{programs.tutorials[tutorial].title}
-               </a>
-               </li>"""
-        $(a).appendTo(
-          $('#'+tutorialSubmenuNoSpaces)
-        )
 
     # Now that all the menu items are in place in the DOM,
     # invoke sooperfish,
