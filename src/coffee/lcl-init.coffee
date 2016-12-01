@@ -4,6 +4,7 @@
 ###
 
 require '../style/codemirror.css'
+require '../style/stats.css'
 require '../style/night.css'
 require '../style/simpleModal.css'
 require '../style/sooperfish.css'
@@ -12,17 +13,17 @@ require '../style/main.css'
 
 require '../index.html'
 
-Stats           = require '../js/threejs/Stats'
 EventEmitter    = require './core/event-emitter'
 LiveCodeLabCore = require './core/livecodelab-core'
 ProgramLoader   = require './programs/program-loader'
 Pulse           = require '../js/pulse'
 WebAudioAPI     = require './sound/webAudioApi'
 BuzzAudioAPI    = require './sound/buzzAudioApi'
+Ui              = require './ui/ui'
 UrlRouter       = require './ui/url-router'
 BigCursor       = require './ui/big-cursor'
 EditorDimmer    = require './ui/text-dimming'
-Ui              = require './ui/ui'
+Stats           = require './ui/stats'
 Editor          = require './editor/editor'
 Autocoder       = require './autocoder/autocoder'
 $               = require '../js/jquery'
@@ -62,7 +63,9 @@ $(document).ready ->
 
   # Stats are updated in the animationLoop
   # add Stats.js - https://github.com/mrdoob/stats.js
-  stats = new Stats
+
+  stats = new Stats()
+  stats.hide()
 
   ui = new Ui(eventRouter, stats) # $
 
@@ -70,6 +73,7 @@ $(document).ready ->
     'frame-animated',
     stats.update
   )
+
 
   # Client used to sync to a time pulse over websocket
   syncClient = new Pulse()
@@ -186,11 +190,11 @@ $(document).ready ->
   eventRouter.emit('editor-toggle-dim', false)
   eventRouter.addListener(
     'livecodelab-running-stably',
-    () -> ui.showStatsWidget()
+    () -> stats.show()
   )
   eventRouter.addListener(
     'livecodelab-sleeping',
-    () -> ui.hideStatsWidget()
+    () -> stats.hide()
   )
   eventRouter.addListener(
     'code-changed',

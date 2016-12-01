@@ -160,12 +160,6 @@ class Ui
         false
     )
 
-    # Align bottom-left
-    stats.getDomElement().style.position = "absolute"
-    stats.getDomElement().style.right = "0px"
-    stats.getDomElement().style.top = "0px"
-    document.body.appendChild(stats.getDomElement())
-
     $("#startingCurtainScreen").fadeOut()
     $("#formCode").css "opacity", 0
 
@@ -204,19 +198,6 @@ class Ui
 
   soundSystemOk: ->
     $("#soundSystemStatus").text("Sound System On").removeClass("off")
-
-  hideStatsWidget: ->
-    $("#statsWidget").hide()
-
-
-  showStatsWidget: ->
-    # I wish I could tell you why showing
-    # the widget straight away doesn't work.
-    # Postponing a little bit makes this work. It doesn't make any sense.
-    setTimeout(
-      () -> $("#statsWidget").show(),
-      1
-    )
 
 module.exports = Ui
 
