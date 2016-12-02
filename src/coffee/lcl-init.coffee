@@ -101,7 +101,6 @@ $(document).ready ->
   #  - lightSystem
   #  - drawFunctionRunner
   #  - codeCompiler
-  #  - renderer
   #  - animationLoop
   liveCodeLabCore = new LiveCodeLabCore(
     threeJsCanvas,
@@ -131,7 +130,7 @@ $(document).ready ->
 
   editor = new Editor(eventRouter, codeTextArea)
 
-  # requires threeJsSystem, blendControls, graphicsCommands, renderer
+  # requires threeJsSystem, blendControls, graphicsCommands
   programLoader = new ProgramLoader(
     eventRouter,
     editor,

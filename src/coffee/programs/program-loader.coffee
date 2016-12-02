@@ -69,7 +69,7 @@ class ProgramLoader
     blendControls = @liveCodeLabCoreInstance.blendControls
     blendControls.animationStyle blendControls.animationStyles.normal
     blendControls.animationStyleUpdateIfChanged()
-    @liveCodeLabCoreInstance.renderer.render(
+    @liveCodeLabCoreInstance.threeJsSystem.render(
       @liveCodeLabCoreInstance.graphicsCommands
     )
 
