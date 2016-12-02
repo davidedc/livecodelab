@@ -81,7 +81,7 @@ ThreeJsSystem     = require './threejs-system'
 class LiveCodeLabCore
 
   constructor: (
-    @threeJsCanvas,
+    canvas,
     @backgroundDiv,
     @eventRouter,
     @syncClient,
@@ -129,7 +129,7 @@ class LiveCodeLabCore
     @programRunner = @languages.runner
     @codeCompiler = @languages.compiler
 
-    @threeJsSystem = new ThreeJsSystem(@threeJsCanvas, @three)
+    @threeJsSystem = new ThreeJsSystem(canvas, @three)
 
     @blendControls = new BlendControls(@threeJsSystem)
 

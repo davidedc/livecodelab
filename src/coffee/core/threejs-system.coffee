@@ -14,117 +14,6 @@ require '../../js/threejs/postprocessing/RenderPass'
 require '../../js/threejs/postprocessing/SavePass'
 require '../../js/threejs/postprocessing/ShaderPass'
 
-# This resolution is easily managed by modern graphic cards (the PS Vita can).
-IDEAL_RESOLUTION = {width: 880, height: 720}
-MAX_CANVAS_SCALING = 2
-SCALE_DELTA = 0.1
-
-
-helpers = {}
-
-helpers.currentMaxBufferSize = () ->
-  multiplier = window.devicePixelRatio
-  return {
-    width: Math.floor(window.innerWidth * multiplier),
-    height: Math.floor(window.innerHeight * multiplier)
-  }
-
-
-helpers.calculateMaxUnscaledBuffer = (a, b) ->
-  {
-    width: Math.min(a.width, b.width),
-    height: Math.min(a.height, b.height)
-  }
-
-
-helpers.sizeTheForegroundCanvas = (canvas) ->
-  {width: width, height: height, scaling: scaling} = helpers.getBestBufferSize()
-
-  canvas.width = window.innerWidth / scaling
-  canvas.height = window.innerHeight / scaling
-
-  canvas.style.width = width + "px"
-  canvas.style.height = height + "px"
-
-  scaleString = scaling + ", " + scaling
-
-  $(canvas).css("-ms-transform-origin", "0% 0%")
-           .css("-webkit-transform-origin", "0% 0%")
-           .css("-moz-transform-origin", "0% 0%")
-           .css("-o-transform-origin", "0% 0%")
-           .css("transform-origin", "0% 0%")
-           .css("-ms-transform", "scale(" + scaleString + ")")
-           .css("-webkit-transform", "scale3d(" + scaleString + ", 1)")
-           .css("-moz-transform", "scale(" + scaleString + ")")
-           .css("-o-transform", "scale(" + scaleString + ")")
-           .css "transform", "scale(" + scaleString + ")"
-
-
-# To improve the performance of LiveCodeLab, the canvas resolution can
-# be scaled down. There is a maximum amount of scaling allowed so that
-# the graphics won't get too blurry, and the scaling factor adaptive,
-# transitioning between no scaling and the maximum.
-
-# This function calculates the best size for the current canvas buffer,
-# based on the current resolution, the devide pixel ratio and the
-# maximum amount of scaling allowed.
-helpers.getBestBufferSize = () ->
-
-  # Displays with the ideal resolution or less should not be scaled.
-  # So below the ideal resolution we show graphics on the canvas at 1 to 1.
-  # At the same time, we don't want to use buffers that are bigger
-  # than necessary, so we limit the buffer to the maximum we need.
-  maxUnscaledBuffer = helpers.calculateMaxUnscaledBuffer(
-    IDEAL_RESOLUTION,
-    helpers.currentMaxBufferSize()
-  )
-
-  # This is the minimum size buffer based on how much we're willing to scale.
-  # Basically this is the buffer that would give us the maximum blurryness
-  # that we can accept.
-  # If this buffer is bigger than the ideal resolution maximally scaled then
-  # this is what will be used.
-  scaledCanvasWidth = Math.floor(window.innerWidth / MAX_CANVAS_SCALING)
-  scaledCanvasHeight = Math.floor(window.innerHeight / MAX_CANVAS_SCALING)
-
-  # Starting with maximum scaling, check if that buffer resolution is within
-  # the acceptable limits. If it is then decrease the scaling factor and carry
-  # on checking. If it's not then exit the loop and use the last acceptable
-  # buffer size.
-  scaling = MAX_CANVAS_SCALING
-  while (scaling > 1)
-
-    sW = Math.floor(window.innerWidth / (scaling - SCALE_DELTA))
-    sH = Math.floor(window.innerHeight / (scaling - SCALE_DELTA))
-
-    if (sW > maxUnscaledBuffer.width ||
-        sH > maxUnscaledBuffer.height)
-         break
-
-    scaledCanvasWidth = sW
-    scaledCanvasHeight = sH
-    scaling -= SCALE_DELTA;
-
-  return {
-    width: scaledCanvasWidth,
-    height: scaledCanvasHeight
-    scaling: scaling
-  }
-
-
-
-helpers.sizeRendererAndCamera = (renderer, camera) ->
-  # update the camera
-  camera.aspect = window.innerWidth / window.innerHeight
-  camera.updateProjectionMatrix()
-
-  {width: width, height: height} = helpers.getBestBufferSize()
-  # resizes canvas buffer and sets the viewport to
-  # exactly the dimension passed. No multiplications going
-  # on due to devicePixelRatio because we set that to 1
-  # when we created the renderer.
-  renderer.setSize width, height, false
-
 
 class ThreeJsSystem
 
@@ -137,11 +26,11 @@ class ThreeJsSystem
 
   constructor: (canvas, threejs) ->
 
-    @canvasContext = canvas.getContext("experimental-webgl")
+    @canvasContext = canvas.canvasElement.getContext("experimental-webgl")
 
     # https://threejs.org/docs/index.html#Reference/Renderers/WebGLRenderer
     @renderer = new threejs.WebGLRenderer({
-      canvas: canvas,
+      canvas: canvas.canvasElement,
       antialias: false,
       premultipliedAlpha: false,
       # we need to force the devicePixelRatio to 1
@@ -160,24 +49,23 @@ class ThreeJsSystem
     # https://threejs.org/docs/index.html#Reference/Cameras/PerspectiveCamera
     @camera = new threejs.PerspectiveCamera(
       35,
-      canvas.width / canvas.height, 1, 10000
+      canvas.canvasElement.width / canvas.canvasElement.height, 1, 10000
     )
     @camera.position.set 0, 0, 5
     @scene.add @camera
 
-    # Set the correct size and scaling for the canvas
-    helpers.sizeTheForegroundCanvas canvas
-
     # Set correct aspect ration and renderer size
-    helpers.sizeRendererAndCamera(@renderer, @camera)
+    @sizeRendererAndCamera(canvas)
 
-    @createEffectsPipeline(threejs)
-    @handleResizing(canvas, threejs)
+    @createEffectsPipeline(threejs, canvas)
+    canvas.onResize((bufferSize) => 
+      @sizeRendererAndCamera(canvas)
+      @createEffectsPipeline(threejs, canvas)
+    )
 
-  createEffectsPipeline: (threejs) ->
+  createEffectsPipeline: (threejs, canvas) ->
 
-    {width: width, height: height} = helpers.getBestBufferSize()
-    console.log(width, height);
+    {width: width, height: height} = canvas.getBestBufferSize()
 
     # If we're re-creating the effects pipeline then we need a new,
     # correctly sized renderTarget
@@ -237,19 +125,17 @@ class ThreeJsSystem
     @screenPass.renderToScreen = true
     @composer.addPass(@screenPass)
 
-  handleResizing: (canvas, threejs) ->
+  sizeRendererAndCamera: (canvas) ->
+    {width: width, height: height} = canvas.getBestBufferSize()
+    # update the camera
+    @camera.aspect = width / height
+    @camera.updateProjectionMatrix()
 
-    callback = () =>
-      helpers.sizeTheForegroundCanvas canvas
-      helpers.sizeRendererAndCamera @renderer, @camera
-      @createEffectsPipeline(threejs)
-
-    # Don't want to rebuild the rendering pipeline too quickly when
-    # the window is resized.
-    debouncedCallback = _.debounce(callback, 250)
-
-    # bind the resize event
-    window.addEventListener "resize", debouncedCallback, false
+    # resizes canvas buffer and sets the viewport to
+    # exactly the dimension passed. No multiplications going
+    # on due to devicePixelRatio because we set that to 1
+    # when we created the renderer.
+    @renderer.setSize(width, height, false)
 
 
   render: (graphics) ->

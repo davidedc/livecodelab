@@ -24,6 +24,7 @@ UrlRouter       = require './ui/url-router'
 BigCursor       = require './ui/big-cursor'
 EditorDimmer    = require './ui/text-dimming'
 Stats           = require './ui/stats'
+Canvas          = require './ui/canvas'
 Editor          = require './editor/editor'
 Autocoder       = require './autocoder/autocoder'
 $               = require '../js/jquery'
@@ -36,7 +37,7 @@ require './globals/numbertimes'
 
 $(document).ready ->
 
-  threeJsCanvas = document.getElementById('threeJsCanvas')
+  canvas = new Canvas(document.getElementById('threeJsCanvas'))
 
   backgroundDiv = document.getElementById('backgroundDiv')
 
@@ -103,7 +104,7 @@ $(document).ready ->
   #  - codeCompiler
   #  - animationLoop
   liveCodeLabCore = new LiveCodeLabCore(
-    threeJsCanvas,
+    canvas,
     backgroundDiv,
     eventRouter,
     syncClient,
