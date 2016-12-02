@@ -31,7 +31,7 @@ class Canvas
       false
     )
 
-  getElement: -> @canvasElement
+  getDOMElement: -> @canvasElement
   getWidth: -> @canvasElement.width
   getHeight: -> @canvasElement.height
   getAspectRatio: -> @canvasElement.width / @canvasElement.height

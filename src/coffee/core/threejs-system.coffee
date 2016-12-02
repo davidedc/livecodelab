@@ -26,11 +26,11 @@ class ThreeJsSystem
 
   constructor: (canvas, threejs) ->
 
-    @canvasContext = canvas.canvasElement.getContext("experimental-webgl")
+    @canvasContext = canvas.getDOMElement().getContext("experimental-webgl")
 
     # https://threejs.org/docs/index.html#Reference/Renderers/WebGLRenderer
     @renderer = new threejs.WebGLRenderer({
-      canvas: canvas.canvasElement,
+      canvas: canvas.getDOMElement(),
       antialias: false,
       premultipliedAlpha: false,
       # we need to force the devicePixelRatio to 1
@@ -42,27 +42,26 @@ class ThreeJsSystem
       devicePixelRatio: 1
     })
 
+
     # https://threejs.org/docs/index.html#Reference/Scenes/Scene
     @scene = new threejs.Scene()
     @scene.matrixAutoUpdate = false
 
     # https://threejs.org/docs/index.html#Reference/Cameras/PerspectiveCamera
-    @camera = new threejs.PerspectiveCamera(35, canvas.getAspecRatio, 1, 10000)
+    @camera = new threejs.PerspectiveCamera(35, canvas.getAspectRatio(), 1, 10000)
     @camera.position.set 0, 0, 5
     @scene.add @camera
 
     # Set correct aspect ration and renderer size
-    @sizeRendererAndCamera(canvas)
-
-    @createEffectsPipeline(threejs, canvas)
+    bufferSize = canvas.getBestBufferSize()
+    @sizeRendererAndCamera(bufferSize)
+    @createEffectsPipeline(threejs, bufferSize)
     canvas.onResize((bufferSize) => 
-      @sizeRendererAndCamera(canvas)
-      @createEffectsPipeline(threejs, canvas)
+      @sizeRendererAndCamera(bufferSize)
+      @createEffectsPipeline(threejs, bufferSize)
     )
 
-  createEffectsPipeline: (threejs, canvas) ->
-
-    {width: width, height: height} = canvas.getBestBufferSize()
+  createEffectsPipeline: (threejs, {width, height}) ->
 
     # If we're re-creating the effects pipeline then we need a new,
     # correctly sized renderTarget
@@ -122,8 +121,7 @@ class ThreeJsSystem
     @screenPass.renderToScreen = true
     @composer.addPass(@screenPass)
 
-  sizeRendererAndCamera: (canvas) ->
-    {width: width, height: height} = canvas.getBestBufferSize()
+  sizeRendererAndCamera: ({width, height}) ->
     @camera.aspect = width / height
     @camera.updateProjectionMatrix()
     @renderer.setSize(width, height, false)
