@@ -47,10 +47,7 @@ class ThreeJsSystem
     @scene.matrixAutoUpdate = false
 
     # https://threejs.org/docs/index.html#Reference/Cameras/PerspectiveCamera
-    @camera = new threejs.PerspectiveCamera(
-      35,
-      canvas.canvasElement.width / canvas.canvasElement.height, 1, 10000
-    )
+    @camera = new threejs.PerspectiveCamera(35, canvas.getAspecRatio, 1, 10000)
     @camera.position.set 0, 0, 5
     @scene.add @camera
 
@@ -127,14 +124,8 @@ class ThreeJsSystem
 
   sizeRendererAndCamera: (canvas) ->
     {width: width, height: height} = canvas.getBestBufferSize()
-    # update the camera
     @camera.aspect = width / height
     @camera.updateProjectionMatrix()
-
-    # resizes canvas buffer and sets the viewport to
-    # exactly the dimension passed. No multiplications going
-    # on due to devicePixelRatio because we set that to 1
-    # when we created the renderer.
     @renderer.setSize(width, height, false)
 
 

@@ -8,35 +8,43 @@ _ = require('underscore')
 IDEAL_RESOLUTION = {width: 880, height: 720}
 MAX_CANVAS_SCALING = 2
 SCALE_DELTA = 0.1
+RESIZE_TRIGGER_DEBOUNCING = 250
 
 class Canvas
 
   resizeCallbacks: []
 
   constructor: (@canvasElement) ->
-    @resize(@canvasElement)
+    @resize(@getBestBufferSize())
 
     window.addEventListener(
       "resize",
-      _.debounce((
-        () =>
-           bestBufferSize = @getBestBufferSize()
-           @resize(@canvasElement)
-           _.each(@resizeCallbacks, (cb) -> cb(bestBufferSize))
-      ), 250),
+      _.debounce(
+        (
+          () =>
+             bestBufferSize = @getBestBufferSize()
+             @resize(bestBufferSize)
+             _.each(@resizeCallbacks, (cb) -> cb(bestBufferSize))
+        ),
+        RESIZE_TRIGGER_DEBOUNCING
+      ),
       false
     )
+
+  getElement: -> @canvasElement
+  getWidth: -> @canvasElement.width
+  getHeight: -> @canvasElement.height
+  getAspectRatio: -> @canvasElement.width / @canvasElement.height
 
   onResize: (cb) ->
     @resizeCallbacks.push(cb)
 
-  currentMaxBufferSize: () ->
+  maxBufferSize: () ->
     multiplier = window.devicePixelRatio
     return {
       width: Math.floor(window.innerWidth * multiplier),
       height: Math.floor(window.innerHeight * multiplier)
     }
-
 
   calculateMaxUnscaledBuffer: (a, b) ->
     {
@@ -60,7 +68,7 @@ class Canvas
     # than necessary, so we limit the buffer to the maximum we need.
     maxUnscaledBuffer = @calculateMaxUnscaledBuffer(
       IDEAL_RESOLUTION,
-      @currentMaxBufferSize()
+      @maxBufferSize()
     )
 
     # This is the minimum size buffer based on how much we're willing to scale.
@@ -94,18 +102,17 @@ class Canvas
       scaling: scaling
     }
 
-  resize: (canvas) ->
-    {width: width, height: height, scaling: scaling} = @getBestBufferSize()
+  resize: ({width, height, scaling}) ->
 
-    canvas.width = window.innerWidth / scaling
-    canvas.height = window.innerHeight / scaling
+    @canvasElement.width = window.innerWidth / scaling
+    @canvasElement.height = window.innerHeight / scaling
 
-    canvas.style.width = width + "px"
-    canvas.style.height = height + "px"
+    @canvasElement.style.width = width + "px"
+    @canvasElement.style.height = height + "px"
 
     scaleString = scaling + ", " + scaling
 
-    $(canvas).css("-ms-transform-origin", "0% 0%")
+    $(@canvasElement).css("-ms-transform-origin", "0% 0%")
             .css("-webkit-transform-origin", "0% 0%")
             .css("-moz-transform-origin", "0% 0%")
             .css("-o-transform-origin", "0% 0%")
