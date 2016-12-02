@@ -112,69 +112,6 @@ helpers.getBestBufferSize = () ->
   }
 
 
-helpers.attachEffectsAndSizeTheirBuffers = (threejs, thrsystem, renderer) ->
-
-  camera = thrsystem.camera
-  scene = thrsystem.scene
-
-  {width: width, height: height} = helpers.getBestBufferSize()
-
-  if thrsystem.renderTarget?
-    thrsystem.renderTarget.dispose()
-
-  # Render a copy of the scene
-  # https://threejs.org/docs/?q=render#Reference/Renderers/WebGLRenderTarget
-  renderTarget = new threejs.WebGLRenderTarget(width, height)
-
-
-  if thrsystem.effectSaveTarget?
-    thrsystem.effectSaveTarget.renderTarget.dispose()
-
-  # The rendering pipeline that's going to combine all the effects
-  composer = new threejs.EffectComposer(renderer, renderTarget)
-
-
-  # Render the scene into the start of the effects chain
-  renderPass = new threejs.RenderPass(scene, camera)
-  composer.addPass(renderPass)
-
-
-  # This is where a copy of the rendered scene is going to be saved.
-  # Essentially this is the last frame with all the effects.
-  effectSaveTarget = new threejs.SavePass(
-    new threejs.WebGLRenderTarget(width, height)
-  )
-
-  # This is the effect that blends two buffers together for motion blur.
-  # It's going to blend a copy of the previous buffer (effectSaveTarget)
-  # with the  new rendered buffer
-
-  # If we're recreating the rendering pipeline (because the screen has been
-  # resized for example) then we want to make sure that the mixRatio
-  # doesn't change
-  if thrsystem.effectBlend?
-    mixRatio = thrsystem.effectBlend.uniforms.mixRatio.value
-  else
-    mixRatio = 0
-
-  # Blend using the previously saved buffer and a mixRatio
-  effectBlend = new threejs.ShaderPass(threejs.LCLBlendShader, "tDiffuse1")
-  effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget.texture
-  effectBlend.uniforms.mixRatio.value = mixRatio
-
-  # Add the blending into the effects pipeline
-  composer.addPass(effectBlend)
-
-  # Save a copy of the output to the effectSaveTarget
-  composer.addPass(effectSaveTarget)
-
-  # Render everything to the screen
-  screenPass = new threejs.ShaderPass(threejs.CopyShader)
-  screenPass.renderToScreen = true
-  composer.addPass(screenPass)
-
-  return [renderTarget, effectSaveTarget, effectBlend, composer]
-
 
 helpers.sizeRendererAndCamera = (renderer, camera) ->
   # update the camera
@@ -187,27 +124,6 @@ helpers.sizeRendererAndCamera = (renderer, camera) ->
   # on due to devicePixelRatio because we set that to 1
   # when we created the renderer.
   renderer.setSize width, height, false
-
-
-helpers.attachResizingBehaviourToResizeEvent = (threejs, thrsystem, canvas, renderer, camera) ->
-
-  callback = () ->
-    helpers.sizeTheForegroundCanvas canvas
-    helpers.sizeRendererAndCamera renderer, camera
-
-    [
-      thrsystem.renderTarget,
-      thrsystem.effectSaveTarget,
-      thrsystem.effectBlend,
-      thrsystem.composer
-    ] = helpers.attachEffectsAndSizeTheirBuffers(threejs, thrsystem, renderer)
-
-  # Don't want to rebuild the rendering pipeline too quickly when
-  # the window is resized.
-  debouncedCallback = _.debounce(callback, 250)
-
-  # bind the resize event
-  window.addEventListener "resize", debouncedCallback, false
 
 
 class ThreeJsSystem
@@ -255,15 +171,86 @@ class ThreeJsSystem
     # Set correct aspect ration and renderer size
     helpers.sizeRendererAndCamera(@renderer, @camera)
 
-    [
-      @renderTarget,
-      @effectSaveTarget,
-      @effectBlend,
-      @composer
-    ] = helpers.attachEffectsAndSizeTheirBuffers(threejs, @, @renderer)
+    @createEffectsPipeline(threejs)
+    @handleResizing(canvas, threejs)
 
-    # Handle resizing of browser window
-    helpers.attachResizingBehaviourToResizeEvent(threejs, @, canvas, @renderer, @camera)
+  createEffectsPipeline: (threejs) ->
+
+    {width: width, height: height} = helpers.getBestBufferSize()
+    console.log(width, height);
+
+    # If we're re-creating the effects pipeline then we need a new,
+    # correctly sized renderTarget
+    if @renderTarget?
+        @renderTarget.dispose()
+
+    # Render a copy of the scene
+    # https://threejs.org/docs/?q=render#Reference/Renderers/WebGLRenderTarget
+    @renderTarget = new threejs.WebGLRenderTarget(width, height)
+
+
+    # If we're re-creating the effects pipeline then we need a new,
+    # correctly sized effectSaveTarget
+    if @effectSaveTarget?
+        @effectSaveTarget.renderTarget.dispose()
+
+    # The rendering pipeline that's going to combine all the effects
+    @composer = new threejs.EffectComposer(@renderer, @renderTarget)
+
+
+    # Render the scene into the start of the effects chain
+    @renderPass = new threejs.RenderPass(@scene, @camera)
+    @composer.addPass(@renderPass)
+
+
+    # This is where a copy of the rendered scene is going to be saved.
+    # Essentially this is the last frame with all the effects.
+    @effectSaveTarget = new threejs.SavePass(
+        new threejs.WebGLRenderTarget(width, height)
+    )
+
+    # This is the effect that blends two buffers together for motion blur.
+    # It's going to blend a copy of the previous buffer (effectSaveTarget)
+    # with the  new rendered buffer
+
+    # If we're recreating the rendering pipeline (because the screen has been
+    # resized for example) then we want to make sure that the mixRatio
+    # doesn't change
+    if @effectBlend?
+        mixRatio = @effectBlend.uniforms.mixRatio.value
+    else
+        mixRatio = 0
+
+    # Blend using the previously saved buffer and a mixRatio
+    @effectBlend = new threejs.ShaderPass(threejs.LCLBlendShader, "tDiffuse1")
+    @effectBlend.uniforms.tDiffuse2.value = @effectSaveTarget.renderTarget.texture
+    @effectBlend.uniforms.mixRatio.value = mixRatio
+
+    # Add the blending into the effects pipeline
+    @composer.addPass(@effectBlend)
+
+    # Save a copy of the output to the effectSaveTarget
+    @composer.addPass(@effectSaveTarget)
+
+    # Render everything to the screen
+    @screenPass = new threejs.ShaderPass(threejs.CopyShader)
+    @screenPass.renderToScreen = true
+    @composer.addPass(@screenPass)
+
+  handleResizing: (canvas, threejs) ->
+
+    callback = () =>
+      helpers.sizeTheForegroundCanvas canvas
+      helpers.sizeRendererAndCamera @renderer, @camera
+      @createEffectsPipeline(threejs)
+
+    # Don't want to rebuild the rendering pipeline too quickly when
+    # the window is resized.
+    debouncedCallback = _.debounce(callback, 250)
+
+    # bind the resize event
+    window.addEventListener "resize", debouncedCallback, false
+
 
   render: (graphics) ->
     @combDisplayList graphics
