@@ -573,6 +573,19 @@ class GraphicsCommands
     if objectIsNew
       @threeJsSystem.scene.add(pooledObjectWithMaterials.threejsObject3D)
 
+  # we keep track of where each type of primitive was last drawn
+  # and how many of them were overlapping. Clean that data for
+  # each frame.
+  resetExclusionPrincipleWobbleDataIfNeeded: () ->
+    # resets the place where we recall where
+    # each type of primitive was placed last
+    if @exclusionPrincipleWobble
+      for i in [0...@lastPositionOfPrimitiveType.length]
+        @lastPositionOfPrimitiveType[i].set(
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+        )
+        @numberOfOverlappingPrimitives[i] = 0
+
   commonPrimitiveDrawingLogic: (a, b, c, d, primitiveProperties) ->
     # b and c are not functional in some geometric
     # primitives, but we handle them here in all cases

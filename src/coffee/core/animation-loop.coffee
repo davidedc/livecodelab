@@ -160,7 +160,7 @@ class AnimationLoop
     @threeJsSystem.render @graphicsCommands
 
   cleanStateBeforeRunningDrawAndRendering: ->
-    @threeJsSystem.resetExclusionPrincipleWobbleDataIfNeeded @graphicsCommands
+    @graphicsCommands.resetExclusionPrincipleWobbleDataIfNeeded()
 
     @matrixCommands.resetMatrixStack()
 
