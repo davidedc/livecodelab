@@ -4,7 +4,10 @@
 ###
 
 _  = require 'underscore'
-require '../../js/threejs/ShaderExtras'
+
+require '../../js/threejs/shaders/CopyShader'
+require '../../js/threejs/shaders/LCLBlendShader'
+
 require '../../js/threejs/postprocessing/EffectComposer'
 require '../../js/threejs/postprocessing/MaskPass'
 require '../../js/threejs/postprocessing/RenderPass'
@@ -119,6 +122,7 @@ helpers.attachEffectsAndSizeTheirBuffers = (threejs, thrsystem, renderer) ->
   if thrsystem.renderTarget?
     thrsystem.renderTarget.dispose()
 
+  # Render a copy of the scene
   # https://threejs.org/docs/?q=render#Reference/Renderers/WebGLRenderTarget
   renderTarget = new threejs.WebGLRenderTarget(width, height)
 
@@ -126,56 +130,48 @@ helpers.attachEffectsAndSizeTheirBuffers = (threejs, thrsystem, renderer) ->
   if thrsystem.effectSaveTarget?
     thrsystem.effectSaveTarget.renderTarget.dispose()
 
+  # The rendering pipeline that's going to combine all the effects
+  composer = new threejs.EffectComposer(renderer, renderTarget)
+
+
+  # Render the scene into the start of the effects chain
+  renderPass = new threejs.RenderPass(scene, camera)
+  composer.addPass(renderPass)
+
+
+  # This is where a copy of the rendered scene is going to be saved.
+  # Essentially this is the last frame with all the effects.
   effectSaveTarget = new threejs.SavePass(
     new threejs.WebGLRenderTarget(width, height)
   )
 
-  # this is the place where everything is mixed together
-  composer = new threejs.EffectComposer(renderer, renderTarget)
+  # This is the effect that blends two buffers together for motion blur.
+  # It's going to blend a copy of the previous buffer (effectSaveTarget)
+  # with the  new rendered buffer
 
-
-  # this is the effect that blends two buffers together
-  # for motion blur.
-  # it's going to blend the previous buffer that went to
-  # screen and the new rendered buffer
+  # If we're recreating the rendering pipeline (because the screen has been
+  # resized for example) then we want to make sure that the mixRatio
+  # doesn't change
   if thrsystem.effectBlend?
-    mixR = thrsystem.effectBlend.uniforms.mixRatio.value
+    mixRatio = thrsystem.effectBlend.uniforms.mixRatio.value
   else
-    mixR = 0
+    mixRatio = 0
 
-  effectBlend = new threejs.ShaderPass(threejs.ShaderExtras.blend, "tDiffuse1")
-  effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget
-  effectBlend.uniforms.mixRatio.value = 0
+  # Blend using the previously saved buffer and a mixRatio
+  effectBlend = new threejs.ShaderPass(threejs.LCLBlendShader, "tDiffuse1")
+  effectBlend.uniforms.tDiffuse2.value = effectSaveTarget.renderTarget.texture
+  effectBlend.uniforms.mixRatio.value = mixRatio
 
-  # one of those weird things, it appears that we
-  # temporarily need to set this blending value to
-  # zero, and only afterwards we can set to the proper
-  # value, otherwise the background gets painted
-  # all black. Unclear why. Maybe it needs to render
-  # once with value zero, then it can render with
-  # the proper value? But why?
-  setTimeout (() ->
-    thrsystem.effectBlend.uniforms.mixRatio.value = 0
-  ), 1
-  setTimeout (() ->
-    thrsystem.effectBlend.uniforms.mixRatio.value = mixR
-  ), 90
+  # Add the blending into the effects pipeline
+  composer.addPass(effectBlend)
 
-  screenPass = new threejs.ShaderPass(threejs.ShaderExtras.screen)
+  # Save a copy of the output to the effectSaveTarget
+  composer.addPass(effectSaveTarget)
 
-  renderModel = new threejs.RenderPass(scene, camera)
-
-
-  # first thing, render the model
-  composer.addPass renderModel
-  # then blend using the previously saved buffer and a mixRatio
-  composer.addPass effectBlend
-  # the result is saved in a copy: @effectSaveTarget.renderTarget
-  composer.addPass effectSaveTarget
-  # last pass is the one that is put to screen
-  composer.addPass screenPass
-
+  # Render everything to the screen
+  screenPass = new threejs.ShaderPass(threejs.CopyShader)
   screenPass.renderToScreen = true
+  composer.addPass(screenPass)
 
   return [renderTarget, effectSaveTarget, effectBlend, composer]
 

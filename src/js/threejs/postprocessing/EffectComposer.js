@@ -6,30 +6,35 @@ THREE.EffectComposer = function ( renderer, renderTarget ) {
 
 	this.renderer = renderer;
 
-	this.renderTarget1 = renderTarget;
+	if ( renderTarget === undefined ) {
 
-	if ( this.renderTarget1 === undefined ) {
-
-		var width = window.innerWidth || 1;
-		var height = window.innerHeight || 1;
-
-		this.renderTargetParameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBuffer: false };
-		this.renderTarget1 = new THREE.WebGLRenderTarget( width, height, this.renderTargetParameters );
+		var parameters = {
+			minFilter: THREE.LinearFilter,
+			magFilter: THREE.LinearFilter,
+			format: THREE.RGBAFormat,
+			stencilBuffer: false
+		};
+		var size = renderer.getSize();
+		renderTarget = new THREE.WebGLRenderTarget( size.width, size.height, parameters );
 
 	}
 
-	this.renderTarget2 = this.renderTarget1.clone();
+	this.renderTarget1 = renderTarget;
+	this.renderTarget2 = renderTarget.clone();
 
 	this.writeBuffer = this.renderTarget1;
 	this.readBuffer = this.renderTarget2;
 
 	this.passes = [];
 
-	this.copyPass = new THREE.ShaderPass( THREE.ShaderExtras[ "screen" ] );
+	if ( THREE.CopyShader === undefined )
+		console.error( "THREE.EffectComposer relies on THREE.CopyShader" );
+
+	this.copyPass = new THREE.ShaderPass( THREE.CopyShader );
 
 };
 
-THREE.EffectComposer.prototype = {
+Object.assign( THREE.EffectComposer.prototype, {
 
 	swapBuffers: function() {
 
@@ -43,12 +48,18 @@ THREE.EffectComposer.prototype = {
 
 		this.passes.push( pass );
 
+		var size = this.renderer.getSize();
+		pass.setSize( size.width, size.height );
+
+	},
+
+	insertPass: function ( pass, index ) {
+
+		this.passes.splice( index, 0, pass );
+
 	},
 
 	render: function ( delta ) {
-
-		this.writeBuffer = this.renderTarget1;
-		this.readBuffer = this.renderTarget2;
 
 		var maskActive = false;
 
@@ -58,7 +69,7 @@ THREE.EffectComposer.prototype = {
 
 			pass = this.passes[ i ];
 
-			if ( !pass.enabled ) continue;
+			if ( pass.enabled === false ) continue;
 
 			pass.render( this.renderer, this.writeBuffer, this.readBuffer, delta, maskActive );
 
@@ -80,13 +91,17 @@ THREE.EffectComposer.prototype = {
 
 			}
 
-			if ( pass instanceof THREE.MaskPass ) {
+			if ( THREE.MaskPass !== undefined ) {
 
-				maskActive = true;
+				if ( pass instanceof THREE.MaskPass ) {
 
-			} else if ( pass instanceof THREE.ClearMaskPass ) {
+					maskActive = true;
 
-				maskActive = false;
+				} else if ( pass instanceof THREE.ClearMaskPass ) {
+
+					maskActive = false;
+
+				}
 
 			}
 
@@ -96,28 +111,65 @@ THREE.EffectComposer.prototype = {
 
 	reset: function ( renderTarget ) {
 
-		this.renderTarget1 = renderTarget;
+		if ( renderTarget === undefined ) {
 
-		if ( this.renderTarget1 === undefined ) {
+			var size = this.renderer.getSize();
 
-			this.renderTarget1 = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, this.renderTargetParameters );
+			renderTarget = this.renderTarget1.clone();
+			renderTarget.setSize( size.width, size.height );
 
 		}
 
-		this.renderTarget2 = this.renderTarget1.clone();
+		this.renderTarget1.dispose();
+		this.renderTarget2.dispose();
+		this.renderTarget1 = renderTarget;
+		this.renderTarget2 = renderTarget.clone();
 
 		this.writeBuffer = this.renderTarget1;
 		this.readBuffer = this.renderTarget2;
 
+	},
+
+	setSize: function ( width, height ) {
+
+		this.renderTarget1.setSize( width, height );
+		this.renderTarget2.setSize( width, height );
+
+		for ( var i = 0; i < this.passes.length; i ++ ) {
+
+			this.passes[i].setSize( width, height );
+
+		}
+
 	}
+
+} );
+
+
+THREE.Pass = function () {
+
+	// if set to true, the pass is processed by the composer
+	this.enabled = true;
+
+	// if set to true, the pass indicates to swap read and write buffer after rendering
+	this.needsSwap = true;
+
+	// if set to true, the pass clears its buffer before rendering
+	this.clear = false;
+
+	// if set to true, the result of the pass is rendered to screen
+	this.renderToScreen = false;
 
 };
 
-// shared ortho camera
+Object.assign( THREE.Pass.prototype, {
 
-THREE.EffectComposer.camera = new THREE.OrthographicCamera( -1, 1, 1, -1, 0, 1 );
+	setSize: function( width, height ) {},
 
-THREE.EffectComposer.quad = new THREE.Mesh( new THREE.PlaneGeometry( 2, 2 ), null );
+	render: function ( renderer, writeBuffer, readBuffer, delta, maskActive ) {
 
-THREE.EffectComposer.scene = new THREE.Scene();
-THREE.EffectComposer.scene.add( THREE.EffectComposer.quad );
+		console.error( "THREE.Pass: .render() must be implemented in derived pass." );
+
+	}
+
+} );
