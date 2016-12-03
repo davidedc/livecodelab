@@ -13,7 +13,6 @@ A LiveCodeLabCore instance packs together the following parts:
 - lightSystem
 - programRunner
 - codeCompiler
-- renderer
 - animationLoop
 
 LiveCodeLab is built one part at a time, and the arguments in
@@ -68,7 +67,6 @@ GraphicsCommands  = require './graphics-commands'
 OtherCommands     = require './other-commands'
 LightsCommands    = require './lights-commands'
 MatrixCommands    = require './matrix-commands'
-Renderer          = require './renderer'
 TimeKeeper        = require './time-keeper'
 Pulse             = require '../../js/pulse'
 Math              = require '../globals/math'
@@ -83,7 +81,7 @@ ThreeJsSystem     = require './threejs-system'
 class LiveCodeLabCore
 
   constructor: (
-    @threeJsCanvas,
+    canvas,
     @backgroundDiv,
     @eventRouter,
     @syncClient,
@@ -95,7 +93,7 @@ class LiveCodeLabCore
     # The difference between three and the threeJsSystem is that
     # a) three is the raw Three.js system without some bits
     # b) threeJsSystem contains some convenience fields and abstractions,
-    #    for example it keeps the renderer in a "renderer" field.
+    #    for example it keeps the scene in a "scene" field.
     # Several fields/methods in threeJsSystem are just conveniency
     # mappings into the raw three object.
     # But often in LiveCodeLab there are direct reference to three
@@ -131,11 +129,9 @@ class LiveCodeLabCore
     @programRunner = @languages.runner
     @codeCompiler = @languages.compiler
 
-    @threeJsSystem = new ThreeJsSystem(@threeJsCanvas, @three)
+    @threeJsSystem = new ThreeJsSystem(canvas, @three)
 
     @blendControls = new BlendControls(@threeJsSystem)
-
-    @renderer = new Renderer(@threeJsSystem, @blendControls)
 
     @matrixCommands = new MatrixCommands(
       @three,
@@ -165,7 +161,7 @@ class LiveCodeLabCore
       @timeKeeper,
       @blendControls,
       @backgroundPainter,
-      @renderer,
+      @threeJsSystem,
       @matrixCommands,
       @soundSystem,
       @lightSystem,

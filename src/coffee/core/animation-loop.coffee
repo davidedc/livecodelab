@@ -69,7 +69,7 @@ class AnimationLoop
     @timeKeeper,
     @blendControls,
     @backgroundPainter,
-    @renderer,
+    @threeJsSystem,
     @matrixCommands,
     @soundSystem,
     @lightSystem,
@@ -157,10 +157,10 @@ class AnimationLoop
 
     @blendControls.animationStyleUpdateIfChanged()
     @backgroundPainter.simpleGradientUpdateIfChanged()
-    @renderer.render @graphicsCommands
+    @threeJsSystem.render @graphicsCommands
 
   cleanStateBeforeRunningDrawAndRendering: ->
-    @renderer.resetExclusionPrincipleWobbleDataIfNeeded @graphicsCommands
+    @graphicsCommands.resetExclusionPrincipleWobbleDataIfNeeded()
 
     @matrixCommands.resetMatrixStack()
 
