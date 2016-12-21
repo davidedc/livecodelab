@@ -2,13 +2,17 @@
   "name": "livecodelab",
   "version": "0.1.0",
   "description": "A live coding environment for the browser",
+  "main": "main.js",
   "scripts": {
     "build": "webpack -p",
     "devbuild": "webpack -d",
     "serve": "webpack-dev-server -d --content-base dist/ --inline --host 0.0.0.0",
     "docs": "docco docs/**/*.md -o dist/docs",
     "docs:src": "docco src/coffee/**/*.coffee -o dist/docs/src",
-    "test": "mocha-webpack --webpack-config webpack.config.js \"tests/**/*.js\""
+    "test": "mocha-webpack --webpack-config webpack.config.js \"tests/**/*.js\"",
+    "start-electron installed globally": "electron .",
+    "start-electron installed locally": "node_modules/electron/dist/electron .",
+    "start": "node_modules/electron/dist/electron ."
   },
   "devDependencies": {
     "coffee-loader": "^0.7.2",
@@ -16,6 +20,7 @@
     "css-loader": "^0.25.0",
     "dentist": "1.0.3",
     "docco": "^0.7.0",
+    "electron": "^1.4.13",
     "file-loader": "^0.9.0",
     "mocha": "^3.1.2",
     "mocha-webpack": "^0.7.0",
