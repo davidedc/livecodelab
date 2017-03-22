@@ -1,0 +1,31 @@
+---
+name: ball
+category: shape
+description: Draw a sphere of the given height, width and depth.
+related:
+  - ballDetail
+arguments:
+  - name: height
+    type: Number
+    optional: true
+    defaults:
+        - 1
+  - name: width
+    type: Number
+    optional: true
+    defaults:
+        - 1
+        - height
+  - name: depth
+    type: Number
+    optional: true
+    defaults:
+        - 1
+        - height
+        - 1
+inlinable: true
+block-scope: true
+examples:
+    simple: |
+      rotate
+      ball 1 0.4 1.3

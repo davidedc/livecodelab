@@ -1,0 +1,30 @@
+---
+name: rotate
+category: matrix
+description: Rotate position around any of the three axes.
+arguments:
+  - name: zRotation
+    type: Number
+    optional: true
+    defaults:
+        - (beat / 4) * pi
+  - name: yRotation
+    type: Number
+    optional: true
+    defaults:
+        - xRotation
+        - xRotation
+  - name: zRotation
+    type: Number
+    optional: true
+    defaults:
+        - 0
+        - yRotation
+        - 0
+inlinable: true
+block-scope: true
+examples:
+    simple: |
+      box
+      rotate 1
+      box

@@ -1,0 +1,15 @@
+---
+name: smaller
+category: matrix
+description: Decrease the size of objects slightly. Equivalent of `scale 0.8`
+arguments:
+inlinable: true
+block-scope: true
+examples:
+    simple: |
+      fill red
+      box 1 1 1
+      move 1 1 0
+      smaller
+      box 1 1 1
+...

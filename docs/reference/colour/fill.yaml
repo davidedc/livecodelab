@@ -1,0 +1,35 @@
+---
+name: fill
+category: colour
+description: Set the fill colour of the drawn shapes.
+related:
+  - colour
+arguments:
+  - name: red
+    type: Number
+    range: 0-255
+    optional: false
+  - name: green
+    type: Number
+    range: 0-255
+    optional: true
+    defaults:
+        - red
+  - name: blue
+    type: Number
+    range: 0-255
+    optional: true
+    defaults:
+        - green
+  - name: alpha
+    type: Number
+    range: 0-255
+    optional: true
+    defaults:
+        - 255
+inlinable: true
+block-scope: true
+examples:
+    simple: |
+      fill 100 255 30 30
+      box
