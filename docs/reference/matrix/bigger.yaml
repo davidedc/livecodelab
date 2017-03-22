@@ -1,0 +1,15 @@
+---
+name: bigger
+category: matrix
+description: Increase the size of objects slightly. Equivalent of `scale 1.2`
+arguments:
+inlinable: true
+block-scope: true
+examples:
+    simple: |
+      fill red
+      box 1 1 1
+      move 1 1 0
+      bigger
+      box 1 1 1
+...
