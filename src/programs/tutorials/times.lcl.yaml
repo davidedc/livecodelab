@@ -1,0 +1,17 @@
+submenu: Repeating stuff
+title: times
+description: The times loop
+code: |
+  // 'times' (not to be confused with
+  // 'time'!) can be used to
+  // repeat operations like so:
+
+  rotate 1
+  3 times
+  	move 0.2, 0.2, 0.2
+  	box
+
+  // note how the tabs indicate
+  // exactly the block of code
+  // to be repeated.
+  // next-tutorial:fill

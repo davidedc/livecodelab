@@ -34,14 +34,20 @@ module.exports = {
         }
       },
       { test: /\.(png|jpg|svg)$/, loader: 'url-loader?limit=8192' },
-      { test: /\.pegjs$/, loader: 'pegjs-loader' }
+      { test: /\.pegjs$/, loader: 'pegjs-loader' },
+      { test: /\.lcl\.yaml$/, loader: 'lcl-program-loader' }
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.json', '.coffee', '.html', '.pegjs', '.mp3', '.ogg'],
+    extensions: ['', '.js', '.json', '.coffee', '.html', '.pegjs', '.mp3', '.ogg', '.lcl.yaml'],
     alias: {
       jquery: './jquery'
     }
+  },
+  resolveLoader: {
+    modulesDirectories: [
+      './webpack', './node_modules'
+    ]
   },
   plugins: [
     new webpack.DefinePlugin({

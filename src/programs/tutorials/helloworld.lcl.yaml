@@ -1,0 +1,14 @@
+---
+submenu: Intro
+title: hello world
+description: Creating a box
+code: |
+  // type these three letters
+  // in one of these empty lines below:
+  // 'b' and 'o' and 'x'
+
+
+
+  // (you should then see a box facing you)
+  // click below for the next tutorial
+  // next-tutorial:some_notes

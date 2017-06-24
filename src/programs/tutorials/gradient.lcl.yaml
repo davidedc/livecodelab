@@ -1,0 +1,12 @@
+submenu: Graphics
+title: gradient
+description: The gradient function
+code: |
+  // even nicer, you can paint a
+  // background gradient:
+
+  simpleGradient (color 190, 10, 10), (color 30, 90, 100), color 0
+  rotate time
+  box
+
+  // next-tutorial:line

@@ -1,0 +1,17 @@
+submenu: Placing things
+title: scale
+description: The scale function
+code: |
+  // you can make an object bigger
+  // or smaller by using 'scale'
+
+  rotate 3
+  box
+  move 1
+  scale 2
+  box
+
+  // try to use scale or move before
+  // the first box to see how the
+  // scene changes.
+  // next-tutorial:times

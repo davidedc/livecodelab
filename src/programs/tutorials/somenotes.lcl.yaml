@@ -1,0 +1,14 @@
+---
+submenu: Intro
+title: some notes
+description: Notes about syntax
+code: |
+  // If this makes sense to you:
+  // the syntax is similar to Coffeescript
+  // and the commands are almost
+  // like Processing.
+
+  // If this doesn't make sense to you
+  // don't worry.
+
+  // next-tutorial:rotate

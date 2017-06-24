@@ -1,0 +1,18 @@
+submenu: Controlling flow
+title: conditionals
+description: Conditional flow commands
+code: |
+  // you can draw different things
+  // (or in general do different things)
+  // based on any
+  // test condition you want:
+
+  rotate
+  if frame % 3 == 0
+  	box
+  else if frame % 3 == 1
+  	ball
+  else
+  	peg
+
+  // next-tutorial:autocode

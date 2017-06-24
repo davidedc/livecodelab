@@ -1,0 +1,15 @@
+submenu: Animation
+title: frame
+description: The frame variable
+code: |
+  // make the box spin
+  // by replacing '1' with 'frame'
+
+  rotate 1
+  box
+
+  // 'frame' contains a number
+  // always incrementing as
+  // the screen is re-drawn.
+  // (use 'frame / 100' to slow it down)
+  // next-tutorial:time

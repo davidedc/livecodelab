@@ -1,0 +1,18 @@
+submenu: Animation
+title: time
+description: The time variable
+code: |
+  // 'frame / 100' has one problem:
+  // faster computers will make
+  // the cube spin too fast.
+  // Replace it with 'time / 2'.
+
+  rotate frame / 100
+  box
+
+  // 'time' counts the
+  // number of seconds since
+  // the program started, so it's
+  // independent of how fast
+  // the computer is at drawing.
+  // next-tutorial:move

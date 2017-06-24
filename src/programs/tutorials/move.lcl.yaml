@@ -1,0 +1,15 @@
+submenu: Placing things
+title: move
+description: The move function
+code: |
+  // you can move any object
+  // by using 'move'
+
+  box
+  move 1, 1, 0
+  box
+
+  // try to use a rotate before
+  // the first box to see how the
+  // scene changes.
+  // next-tutorial:scale

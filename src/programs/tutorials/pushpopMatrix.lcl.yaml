@@ -1,0 +1,20 @@
+submenu: Graphics
+title: push pop matrix
+description: The push and pop matrix functions
+code: |
+  // pushMatrix creates a bookmark of
+  // the position, which you can
+  // return to later by using popMatrix.
+  // You can reset using 'resetMatrix'.
+
+  rotate time
+  pushMatrix // bookmark the position after the rotation
+  line
+  move 0.5, 0, 0
+  line
+  popMatrix // go back to the bookmarked position
+  move -0.5, 0, 0
+  line
+  resetMatrix // resets the position
+  line // not affected by initial rotation
+  // next-tutorial:animation_style

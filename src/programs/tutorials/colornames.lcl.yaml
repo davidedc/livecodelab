@@ -1,0 +1,17 @@
+submenu: Graphics
+title: colour by name
+description: Colour names
+code: |
+  // you can call colors by name
+  // try to un-comment one line:
+  //fill greenyellow
+  //fill indigo
+  //fill lemonchiffon // whaaaat?
+
+  rotate 1
+  box
+
+  // more color names here:
+  // http://html-color-codes.info/color-names/
+  // (just use them in lower case)
+  // next-tutorial:lights
