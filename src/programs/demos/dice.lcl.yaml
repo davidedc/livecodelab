@@ -1,0 +1,15 @@
+submenu: Basic
+title: Dice
+code: |
+  animationStyle motionBlur
+  simpleGradient (color 255), moccasin, peachpuff
+  stroke 255, 100, 100, 255
+  fill red, 155
+  move -0.5, 0, 0
+  scale 0.3
+  3 times
+  	move 0, 0, 0.5
+  	1 times
+  		rotate time
+  		move 2, 0, 0
+  		box

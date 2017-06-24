@@ -1,0 +1,16 @@
+submenu: Complex
+title: Möbius
+code: |
+  turns = 1 // 1 = Möbius strip
+  detail = 200 // try up to 400 or so
+  speed = 0.5
+  ambientLight 255, 0, 0 // comment out to see the seam
+
+  background black
+  rotate time / 5
+  scale 0.6
+  detail times with i
+  	rotate 0, 0, (2 * pi) / detail
+  	move 2, 0, 0
+  		rotate 0, (turns * i * pi) / detail + (time * speed), 0
+  		rect 1, 0.04 + (1 / detail)

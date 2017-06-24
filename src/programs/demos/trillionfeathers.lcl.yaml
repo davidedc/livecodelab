@@ -1,0 +1,13 @@
+submenu: Basic
+title: A Trillion Feathers
+code: |
+  animationStyle paintOver
+  move 2, 0, 0
+  scale 2
+  rotate
+  20 times
+  	rotate
+  	move 0.25, 0, 0
+  	line
+  	move -0.5, 0, 0
+  	line

@@ -1,0 +1,11 @@
+submenu: WebGL
+title: "WebGL: Shards"
+code: |
+  scale 10
+  fill 0
+  strokeSize 7
+  5 times
+  	rotate 0, 1, time / 20
+  	ball
+  	rotate 0, 1, 1
+  	ball -1.01

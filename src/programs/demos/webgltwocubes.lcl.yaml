@@ -1,0 +1,7 @@
+submenu: WebGL
+title: "WebGL: Two cubes"
+code: |
+  background 155, 255, 255
+  2 times
+  	rotate 0, 1, time / 2
+  	box

@@ -1,0 +1,14 @@
+submenu: WebGL
+title: "WebGL: A Knot"
+code: |
+  turns = 2
+  detail = 400
+  speed = 0.4
+  background black
+  scale 0.9
+  rotate 15,3,1
+  detail times with i
+  	rotate 0, 0, (2 * pi) / detail
+  	move 0.65
+  		rotate (turns * i * pi) / detail + (time * speed), 0, 0
+  			rect 1

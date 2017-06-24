@@ -1,0 +1,11 @@
+submenu: Complex
+title: Crazy ribbon
+code: |
+  noStroke
+  fill red
+  background black
+  rotate time
+  200 times with i
+  	rotate time * 2 + sin(i)
+  		move 2, 0, 0
+  			box 1, 0.4, 0.07

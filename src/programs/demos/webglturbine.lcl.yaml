@@ -1,0 +1,7 @@
+submenu: WebGL
+title: "WebGL: Turbine"
+code: |
+  background 155, 55, 255
+  70 times
+  	rotate time / 100, 1, time / 100
+  	box

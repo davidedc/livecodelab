@@ -1,0 +1,9 @@
+submenu: Basic
+title: Simple cube
+code: |
+  // there you go!
+  // a simple cube!
+
+  background yellow
+  rotate 0, time / 2, time / 2
+  box

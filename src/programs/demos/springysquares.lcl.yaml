@@ -1,0 +1,12 @@
+submenu: Basic
+title: Springy squares
+code: |
+  animationStyle motionBlur
+  simpleGradient fuchsia, (color 100, 200, 200), yellow
+  scale 0.3
+  3 times
+  	move 0, 0, 0.5
+  	5 times
+  		rotate time / 2
+  		move 0.7, 0, 0
+  		rect

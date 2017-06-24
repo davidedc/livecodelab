@@ -1,0 +1,16 @@
+submenu: Complex
+title: The Eye
+code: |
+  turns = floor(time / 10) % 6
+  detail = 100
+  speed = 3
+  if time % 10 < 5
+  	ambientLight 255, 255, 255
+
+  background black
+  rotate time / 5
+  detail times with i
+  	rotate 0, 0, (2 * pi) / detail
+  	move 2, 0, 0
+  		rotate (turns * i * pi) / detail + (time * speed), 0, 0
+  		rect 1

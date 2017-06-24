@@ -1,0 +1,9 @@
+submenu: WebGL
+title: "WebGL: Lava"
+code: |
+  scale 4.5
+  noStroke
+  10 times with i
+  	rotate 1, time / 400, 2
+  	fill 255, 0, 200 * abs(sin(i))
+  	ball

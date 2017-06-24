@@ -1,0 +1,15 @@
+submenu: Basic
+title: Lamp
+code: |
+  animationStyle motionBlur
+  simpleGradient red, yellow, (color 255, 0, 255)
+  //animationStyle paintOver
+  scale 2
+  rotate time / 4, time / 4, time / 4
+  90 times
+  	rotate time / 200, time / 200,  time / 200
+  	line
+  	move 0.5, 0, 0
+  	line
+  	move -0.5, 0, 0
+  	line
