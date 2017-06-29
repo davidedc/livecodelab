@@ -277,6 +277,7 @@ Primary
   / Base
   / String
   / NegativeExpr
+  / List
 
 NegativeExpr
   = "-" _ base:Base {
@@ -316,6 +317,12 @@ String "string"
   }
   / "\"" chars:([^\n\r\f\"])* "\"" {
       return Ast.Node.Str(chars.join(''));
+  }
+
+List "list"
+  = "[" valList:ArgumentList? "]" {
+      var values =  optionalList(valList, 0);
+      return Ast.Node.List(values);
   }
 
 Lambda "lambda"

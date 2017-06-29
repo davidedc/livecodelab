@@ -1,5 +1,6 @@
 
 var helpers = require('./interpreter-funcs');
+var _ = require('underscore');
 
 var Interpreter = {};
 var internal = {};
@@ -73,6 +74,13 @@ internal.evaluate = function (state, node, scope) {
 
     case 'STRING':
         output = node.value;
+        break;
+
+    case 'LIST':
+        output = _.map(
+          node.values,
+          function (v) { return internal.evaluate(state, v, scope); }
+        );
         break;
 
     default:

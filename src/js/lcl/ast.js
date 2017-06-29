@@ -150,6 +150,16 @@ Ast.Node.Str = function (value) {
 };
 
 /**
+ *  value: String
+ */
+Ast.Node.List = function (values) {
+    return {
+        ast: 'LIST',
+        values: values
+    };
+};
+
+/**
  */
 Ast.Node.Comment = function () {
     return {
