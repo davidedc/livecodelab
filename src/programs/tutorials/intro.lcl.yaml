@@ -1,0 +1,15 @@
+---
+submenu: Intro
+title: intro
+description: The introduction
+code: |
+  // Lines beginning with two
+  // slashes (like these) are just comments.
+
+  // Everything else is run
+  // about 30 to 60 times per second
+  // in order to create an animation.
+
+  // Click the link below to start the tutorial.
+
+  // next-tutorial:hello_world

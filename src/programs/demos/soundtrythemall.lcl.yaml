@@ -1,0 +1,56 @@
+submenu: Sound
+title: Try them all
+code: |
+  bpm 88
+  // leave this one as base
+  play 'tranceKick'  ,'-x-x ---x x--- --xx'
+
+  //play 'alienBeep'  ,'--x- ---- --x- ----'
+  //play "beep" + int(random 4) ,'x'
+  //play "bing"  ,'--x- ---- --x- ----'
+  //play "ciack" + int(random 2) ,'x'
+  //play "cosmos"  ,'--x- ---- --x- ----'
+  //play "crash" + int(random 3) ,'x'
+  //play "detune"  ,'--x- ---- --x- ----'
+  //play "dish" + int(random 3) ,'x'
+  //play "downstairs"  ,'--x- ---- --x- ----'
+  //play "glass"  ,'--x- ---- --x- ----'
+  //play "growl" + int(random 6) ,'x'
+  //play "highHatClosed"  ,'--x- ---- --x- ----'
+  //play "highHatOpen"  ,'--x- ---- --x- ----'
+  //play "hiss" + int(random 3) ,'x'
+  //play "hoover" + int(random 2) ,'x'
+  //play "lowFlash" + int(random 2) ,'x'
+  //play "mouth" + int(random 5) ,'x'
+  //play "penta" + int(random 16) ,'x'
+
+  //play "pianoLDChord" + int(random 4) ,'x'
+  //play "pianoLHChord" + int(random 4) ,'x'
+  //play "pianoRHChord" + int(random 4) ,'x'
+
+  //play "ride"  ,'--x- ---- --x- ----'
+  //play "rust" + int(random 3) ,'x'
+
+  // scratches of short length
+  //play "scratch" + int(random 14) ,'x'
+  // scratches of high pitch
+  //play "scratch-high" + int(random 2) ,'x'
+  // scratches of long length
+  //play "scratch-long" + int(random 4) ,'x'
+  // scratches of medium length
+  //play "scratch-med" + int(random 9) ,'x'
+  // "rough"-sounding scratches
+  //play "scratch-rough" + int(random 4) ,'x'
+
+  //play "siren" + int(random 4) ,'x'
+  //play "snap" + int(random 2) ,'x'
+  //play "snare" + int(random 3) ,'x'
+  //play "thump"  + int(random 3) ,'x'
+  //play "tap" + int(random 6) ,'x'
+  //play "tense" + int(random 6) ,'x'
+  //play "tic" + int(random 5) ,'x'
+  //play "toc" + int(random 3) ,'x'
+  //play "tranceKick" + int(random 4) ,'x'
+  //play "tweet" + int(random 14) ,'x'
+  //play "voltage"  ,'--x- ---- --x- ----'
+  //play "warm"  ,'--x- ---- --x- ----'

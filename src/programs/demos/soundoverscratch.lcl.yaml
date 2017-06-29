@@ -1,0 +1,10 @@
+submenu: Sound
+title: Over-scratch
+code: |
+  bpm 108
+  play 'tranceKick',  'x-x- -x'
+  play 'tranceKick1', 'x-x-x-x'
+  play 'scratch' + int(random(14)) ,'x'
+  play 'scratch-med' + int(random(8)) ,'x-'
+  play 'scratch-high' + int(random(2)) ,'x---'
+  play 'scratch-rough' + int(random(4)) ,'x-'

@@ -1,0 +1,16 @@
+submenu: Complex
+title: Seaweeds
+code: |
+  turns = 2
+  detail = 100
+  speed = 2
+  background black
+  scale 2
+  rotate time / 5
+  4 times
+  	rotate 0, 2, 0
+  	detail times with i
+  		rotate 0, 0, 2 * pi / detail
+  		move 2, 5, 1
+  			rotate (turns * i * pi) / detail + (time * speed), 0, 0
+  			rect 1

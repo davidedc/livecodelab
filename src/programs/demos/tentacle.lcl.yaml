@@ -1,0 +1,12 @@
+submenu: Basic
+title: Tentacle
+code: |
+  background 155, 255, 155
+  scale 0.15
+  3 times
+  	rotate 0, 1, 1
+  	10 times
+  		rotate 0, 1, time
+  		scale 0.9
+  		move 1, 1, 1
+  		box

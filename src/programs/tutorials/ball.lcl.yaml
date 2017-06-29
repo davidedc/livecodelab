@@ -1,0 +1,13 @@
+submenu: Graphics
+title: ball
+description: The ball function
+code: |
+  // draw balls like this:
+
+  ballDetail 10
+  3 times
+  	move 0.2, 0.2, 0.2
+  	ball
+
+  // ('ballDetail' is optional)
+  // next-tutorial:pushpopMatrix

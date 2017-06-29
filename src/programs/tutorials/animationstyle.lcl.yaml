@@ -1,0 +1,14 @@
+submenu: Graphics
+title: animation style
+description: The animation style function
+code: |
+  // try uncommenting either line
+  // with the animationStyle
+
+  background 255
+  //animationStyle motionBlur
+  //animationStyle paintOver
+  rotate frame / 10
+  box
+
+  // next-tutorial:do_once

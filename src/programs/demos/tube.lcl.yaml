@@ -1,0 +1,19 @@
+submenu: Complex
+title: Tube
+code: |
+  background black
+  rotate time / 10
+  move 0, -1.2, -1
+  rotate pi / 2, 0, 0
+  scale 0.5
+  noStroke
+  8 times with j
+  	move 0, 0.5, 0
+  	31 times with i
+  		rotate 0, 0.2, 0
+  		r = ((i  * 3) + (time * 12)) % 255
+  		g = ((i * 7) + (time * 30 + 20) * 7) % 255
+  		b = ((j * 17) + (time * 30 + 40) * 3) % 255
+  		fill r, g, b
+  		rect 0.3, 0.3
+  		move 0.5, 0, 0

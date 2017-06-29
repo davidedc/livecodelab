@@ -1,0 +1,16 @@
+submenu: Basic
+title: Rose
+code: |
+  // 'B rose' by Guy John (@rumblesan)
+  // Mozilla Festival 2012
+  // adapted from 'A rose' by Lib4tech
+
+  background red
+  scale 1.5
+  animationStyle paintOver
+  rotate frame / 100
+  v = (frame / 2) % 255
+  fill 255 - v, 0, 0
+  stroke 255 - v, 0, 0
+  scale 1 - (v / 255)
+  box

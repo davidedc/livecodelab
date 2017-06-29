@@ -1,0 +1,12 @@
+submenu: Graphics
+title: background
+description: The background function
+code: |
+  // 'background' creates a
+  // solid background:
+
+  background 0, 0, 255
+  rotate time
+  box
+
+  // next-tutorial:gradient

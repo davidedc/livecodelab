@@ -1,0 +1,13 @@
+submenu: Basic
+title: Red Threads
+code: |
+  scale 4.5
+  background black
+  stroke red
+  noFill
+  strokeSize 7
+  2 times
+  	rotate time / 20
+  	ball
+  	rotate 0, 1, 1
+  	ball

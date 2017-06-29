@@ -1,0 +1,16 @@
+submenu: Complex
+title: Ring ball
+code: |
+  ringDetail = 45
+  ambientLight 255
+  noStroke
+  fill orange
+  background black
+  rotate time / 5
+  scale 0.7
+  9 times with i
+  	rotate (time / 5) + i
+  	ringDetail times
+  		rotate 0, 0, (2 * pi) / ringDetail
+  		move 2, 0, 0
+  			rect 1, 0.3 + (1 / ringDetail)

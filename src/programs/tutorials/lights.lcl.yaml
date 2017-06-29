@@ -1,0 +1,16 @@
+submenu: Graphics
+title: lights
+description: The lighting function
+code: |
+  // 'ambientLight' creates an
+  // ambient light so things have
+  // some sort of shading:
+
+  ambientLight 0, 255, 255
+  rotate time
+  box
+
+  // you can turn that light on and
+  // off while you build the scene
+  // by using 'lights' and 'noLights'
+  // next-tutorial:background

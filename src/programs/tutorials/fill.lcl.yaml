@@ -1,0 +1,17 @@
+submenu: Graphics
+title: fill
+description: The fill function
+code: |
+  // 'fill' changes the
+  // color of all the faces:
+
+  rotate 1
+  fill 255, 255, 0
+  box
+
+  // the three numbers indicate
+  // red green and blue values.
+  // You can also use color names such as 'indigo'
+  // Try replacing the numbers with
+  // 'angleColor'
+  // next-tutorial:stroke

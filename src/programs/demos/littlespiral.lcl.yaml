@@ -1,0 +1,9 @@
+submenu: Basic
+title: Little Spiral
+code: |
+  background orange
+  scale 0.1
+  10 times
+  	rotate 0, 1, time
+  	move 1, 1, 1
+  	box

@@ -1,0 +1,11 @@
+submenu: Graphics
+title: line
+description: The line function
+code: |
+  // draw lines like this:
+
+  20 times
+  	rotate time / 9
+  	line
+
+  // next-tutorial:ball

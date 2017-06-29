@@ -1,0 +1,11 @@
+submenu: Sound
+title: Industrial
+code: |
+  bpm 88
+  play 'alienBeep',  '--x- ---- --x- ----'
+  play 'beepC',      '-x-- ---- x--x xxx-'
+  play 'beepA',      '--x- ---- --x- ----'
+  play 'lowFlash',   '--x- ---- ---- ----'
+  play 'beepB',      'x--x ---- -x-- -x--'
+  play 'voltage',    'x-x- -x-- x-xx x-xx'
+  play 'tranceKick', '-x-x ---x x--- --xx'

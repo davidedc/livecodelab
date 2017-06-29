@@ -1,0 +1,14 @@
+submenu: Others
+title: autocode
+description: Autocode functionality
+code: |
+  // the Autocode button invents random
+  // variations for you.
+
+  // You can interrupt the Autocoder at
+  // any time by pressing the button again,
+  // or you can press CTRL-Z
+  // (or CMD-Z on Macs) to undo (or re-do) some of
+  // the steps even WHILE the autocoder is running,
+  // if you see that things got
+  // boring down a particular path of changes.

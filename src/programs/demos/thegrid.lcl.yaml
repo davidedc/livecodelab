@@ -1,0 +1,17 @@
+submenu: Complex
+title: The Grid
+code: |
+        background magenta
+        gridSize = 4 * abs(wave(0.05))
+        scale 1 / (abs(gridSize) + 2) // fit the screen
+        pad = 1 + abs(2 * wave(0.5))
+        ambientLight
+        fill yellow, 230
+        rotate time
+        // center everything
+        move -(pad * gridSize / 2)
+        gridSize times with rows
+        	gridSize times with columns
+        		gridSize times with slices
+        			move pad * rows, pad * columns, pad * slices
+        				box

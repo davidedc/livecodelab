@@ -1,0 +1,24 @@
+submenu: Complex
+title: Infoway
+code: |
+  background black
+  noStroke
+  stackN = 1
+  numStacks = 400
+  spread = 48
+  scale 0.5
+  thinness = 0.08
+  colorSpeed = 4
+  movmentSpeed = 0.003
+  noiseMov = (x, y, j, z) -> spread * (  ( noise  (x * abs (sin (time+y) * movmentSpeed)) / (j + z) ) - 0.5  )
+  move 1,1,0
+  rotate time/10
+  numStacks times with j
+  	move 0
+  		xm = noiseMov 501, 300, j, 20
+  		ym = noiseMov 703, 400, j, 2
+  		zm = (noiseMov 604, 500, j, 40) / 4
+  		move xm, ym, zm
+  		move 0,0,thinness
+  			fill 0,0, (time*1*j*colorSpeed+255/stackN)%255
+  			rect 0.24

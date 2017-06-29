@@ -1,0 +1,15 @@
+---
+submenu: Intro
+title: a taste of animation
+description: Making things rotate
+code: |
+  // now that we have a box
+  // let's rotate it:
+  // type 'rotate 1' in the
+  // line before the 'box'
+
+
+  box
+
+  // click for the next tutorial:
+  // next-tutorial:frame
