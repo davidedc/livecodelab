@@ -173,7 +173,7 @@ InlinableFunction
  */
 
 If "if"
-  = "if" _ predicate:Expression _ NewLine ifBlock:Block NewLine elseBlock:(Else)? {
+  = "if" _ predicate:Expression _ NewLine ifBlock:Block elseBlock:(Else)? {
       return Ast.Node.If(predicate, ifBlock, elseBlock);
   }
   / "if" _ predicate:Expression _ NewLine ifBlock:Block {
@@ -181,10 +181,10 @@ If "if"
   }
 
 Else "else"
-  = Samedent "else" _ ifBlock:If {
+  = NewLine Samedent "else" _ ifBlock:If {
       return ifBlock;
   }
-  / Samedent "else" _ NewLine block:Block {
+  / NewLine Samedent "else" _ NewLine block:Block {
       return Ast.Node.If(Ast.Node.Num(1), block);
   }
 

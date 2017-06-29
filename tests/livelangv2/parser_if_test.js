@@ -147,6 +147,41 @@ describe('If', function () {
     assert.deepEqual(parsed, expected);
   });
 
+  it('if with time and modulo', function () {
+
+    var program = dedent(`
+                         if time % 10 < 5
+                         \tambientLight 255, 255, 255
+                         rotate
+                         \tbox`);
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['ambientLight', 'box', 'rotate'],
+        inlinableFunctions: ['box', 'rotate']
+      });
+
+    var expected = ast.Block([
+      ast.If(
+        ast.BinaryOp('<',
+          ast.BinaryOp('%', ast.Variable('time'), ast.Num(10)),
+          ast.Num(5)
+        ),
+        ast.Block([
+          ast.Application('ambientLight', [
+            ast.Num(255), ast.Num(255), ast.Num(255)
+          ], null)
+        ])
+      ),
+      ast.Application('rotate', [],
+        ast.Block([
+          ast.Application('box', [], null)
+        ])
+      )
+    ]);
+
+    assert.deepEqual(parsed, expected);
+  });
+
 
 });
 
