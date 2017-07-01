@@ -140,9 +140,10 @@ internal.evaluateApplication = function (state, application, scope) {
         });
     }
 
-    // functions written in javascript will be normal functions added to the scope
+    // functions are wrapped in an object with a function type
+    // to differentiate between builtins and closures
     // user defined functions will be wrapped in a list so we unwrap them then call them
-    if (typeof func === 'function') {
+    if (func.type === 'builtin') {
 
         // apply is a method of the JS function object. it takes a scope
         // and then a list of arguments
@@ -156,14 +157,13 @@ internal.evaluateApplication = function (state, application, scope) {
         //
         // bar will equal 5
 
-        output = func.apply(scope, evaledargs);
-    } else if (typeof func === 'object') {
+        output = func.func.apply(scope, evaledargs);
+    } else if (func.type === 'closure') {
         // Functions defined by the user are wrapped in a list, so we need
         // to unwrap them
         // Also we don't pass the scope in because everything is created
         // as a closure
-        barefunc = func[0];
-        output = barefunc(evaledargs);
+        output = func.func(evaledargs);
     } else {
         throw 'Error interpreting function: ' + funcname;
     }
@@ -201,10 +201,12 @@ internal.evaluateClosure = function (state, closure, scope) {
         return output;
     };
 
-    // return a list containing the function so that when
-    // we come to evaluate this we can tell the difference between
-    // a user defined function and a normal javascript function
-    return [func];
+    // Return the function wrapped in an object with the function
+    // type set to be closure
+    return {
+        type: 'closure',
+        func: func
+    };
 };
 
 internal.evaluateTimes = function (state, times, scope) {

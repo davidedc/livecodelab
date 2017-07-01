@@ -44,11 +44,9 @@ class V2ProgramRunner
 
     # in the case "run <box>"
     # we have to paint it now
-    if _.isFunction(functionToBeRun)
-      functionToBeRun()
-
-    if _.isFunction(chainedFunction)
-      chainedFunction()
+    functionToBeRun.func()
+    if chainedFunction
+      chainedFunction.func()
 
   reset: () ->
     @consecutiveFramesWithoutRunTimeError = 0
