@@ -31,5 +31,35 @@ describe('List', function () {
     assert.deepEqual(parsed, expected);
   });
 
+  it('can deindex a value from a list', function () {
+
+    var program = dedent(`
+                         a = [1, 3, 5]
+                         b = a[0]
+                         `);
+    var parsed = parser.parse(
+      program, {
+        functionNames: [],
+        inlinableFunctions: []
+      });
+
+    var expected = ast.Block([
+      ast.Assignment(
+        'a',
+        ast.List([
+          ast.Num(1), ast.Num(3), ast.Num(5)
+        ])
+      ),
+      ast.Assignment(
+        'b',
+        ast.DeIndex(
+          ast.Variable('a'),
+          ast.Num(0)
+        )
+      )
+    ]);
+    assert.deepEqual(parsed, expected);
+  });
+
 });
 

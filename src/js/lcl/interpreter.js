@@ -72,6 +72,10 @@ internal.evaluate = function (state, node, scope) {
         output = internal.evaluateVariable(state, node, scope);
         break;
 
+    case 'DEINDEX':
+        output = internal.evaluateDeIndex(state, node, scope);
+        break;
+
     case 'STRING':
         output = node.value;
         break;
@@ -322,6 +326,21 @@ internal.evaluateVariable = function (state, variable, scope) {
     if (!helpers.exists(output)) {
         throw 'Undefined Variable: ' + variable.identifier;
     }
+    return output;
+};
+
+internal.evaluateDeIndex = function (state, deindex, scope) {
+    console.log('deindex', deindex);
+    var collection = internal.evaluate(state, deindex.collection, scope);
+    console.log('collection', collection)
+    if (!_.isArray(collection)) {
+        throw 'Must deindex lists';
+    }
+    var index = internal.evaluate(state, deindex.index, scope);
+    if (!_.isNumber(index)) {
+        throw 'Index must be a number';
+    }
+    var output = collection[index];
     return output;
 };
 

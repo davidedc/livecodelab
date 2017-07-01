@@ -274,10 +274,10 @@ Exponent "exponent"
 
 Primary
   = Lambda
+  / DeIndex
   / Base
   / String
   / NegativeExpr
-  / List
 
 NegativeExpr
   = "-" _ base:Base {
@@ -288,6 +288,7 @@ Base
   = Num
   / SimpleApplication
   / Variable
+  / List
   / "(" _ expr:Expression _ ")" { return expr; }
 
 Variable "variable"
@@ -296,6 +297,11 @@ Variable "variable"
     return !isInlinable;
   } {
     return Ast.Node.Variable(id);
+  }
+
+DeIndex "deindex"
+  = collection:Base "[" index:Expression "]" {
+    return Ast.Node.DeIndex(collection, index);
   }
 
 Identifier
