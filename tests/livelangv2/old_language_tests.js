@@ -94,5 +94,25 @@ describe('Old Language tests', function () {
     assert.ok(parsed);
   });
 
+  it('example 5 from old language tests', function () {
+
+    var program = dedent(`
+                         if random > 0.5 then box
+                         2 times box
+                         2 times rotate box
+                         `);
+    var parsed = parser.parse(
+      program,
+      {
+        functionNames: [
+          'rotate', 'ball', 'box', 'move'
+        ],
+        inlinableFunctions: ['rotate', 'ball', 'box', 'move']
+      }
+    );
+
+    assert.ok(parsed);
+  });
+
 });
 
