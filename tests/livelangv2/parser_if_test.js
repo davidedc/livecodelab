@@ -37,6 +37,34 @@ describe('If', function () {
     assert.deepEqual(parsed, expected);
   });
 
+  it('simple inline if statement parses', function () {
+
+    var program = dedent(`
+                         a = 3
+
+                         if (a == 3) then box
+
+                         `);
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box'],
+        inlibaleFunctions: ['box']
+      });
+
+    var expected = ast.Block([
+      ast.Assignment('a', ast.Num(3)),
+      ast.If(
+        ast.BinaryOp('==', ast.Variable('a'), ast.Num(3)),
+        ast.Block([
+          ast.Application('box', [], null)
+        ]),
+        null
+      )
+    ]);
+
+    assert.deepEqual(parsed, expected);
+  });
+
   it('if else statement parses', function () {
 
     var program = dedent(`
@@ -71,6 +99,35 @@ describe('If', function () {
     assert.deepEqual(parsed, expected);
   });
 
+  it('inline if else statement parses', function () {
+
+    var program = dedent(`
+                         a = 3
+                         if a == 3 then box else peg 1
+                         box
+                         `);
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box', 'peg'],
+        inlinableFunctions: ['box', 'peg']
+      });
+
+    var expected = ast.Block([
+      ast.Assignment('a', ast.Num(3)),
+      ast.If(
+        ast.BinaryOp('==', ast.Variable('a'), ast.Num(3)),
+        ast.Block([
+          ast.Application('box', [], null)
+        ]),
+        ast.Block([
+          ast.Application('peg', [ast.Num(1)], null)
+        ])
+      ),
+      ast.Application('box', [], null)
+    ]);
+
+    assert.deepEqual(parsed, expected);
+  });
   it('if ifelse else statement parses', function () {
 
     var program = dedent(`
