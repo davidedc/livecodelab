@@ -2,12 +2,13 @@
 name: fill
 category: colour
 description: Set the fill colour of the drawn shapes.
+notes: If a Colour is given as the first argument then all others are ignored
 related:
   - colour
 arguments:
   - name: red
-    type: Number
-    range: 0-255
+    type: Number of Colour
+    range: 0-255 or RGB
     optional: false
   - name: green
     type: Number
