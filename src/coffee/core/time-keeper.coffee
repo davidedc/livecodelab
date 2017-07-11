@@ -138,7 +138,7 @@ class TimeKeeper extends EventEmitter
   wave: (frequency) ->
     if typeof frequency != "number"
       frequency = 1
-    sin((@beat() * frequency) * Math.PI)
+    Math.sin((@beat() * frequency) * Math.PI)
 
 module.exports = TimeKeeper
 

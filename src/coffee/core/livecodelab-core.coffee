@@ -63,6 +63,7 @@ BlendControls     = require './blend-controls'
 Languages         = require './languages'
 ColourFunctions   = require './colour-functions'
 ColourLiterals    = require './colour-literals'
+ListFunctions     = require './list-functions'
 GraphicsCommands  = require './graphics-commands'
 OtherCommands     = require './other-commands'
 LightsCommands    = require './lights-commands'
@@ -108,6 +109,7 @@ class LiveCodeLabCore
 
     @colourFunctions = new ColourFunctions()
     @colourLiterals = new ColourLiterals()
+    @listFunctions = new ListFunctions()
 
     @mathFunctions = new Math()
     @otherCommands = new OtherCommands()
@@ -176,6 +178,7 @@ class LiveCodeLabCore
     @blendControls.addToScope(@globalscope)
     @soundSystem.addToScope(@globalscope)
     @colourFunctions.addToScope(@globalscope)
+    @listFunctions.addToScope(@globalscope)
     @animationLoop.addToScope(@globalscope)
     @timeKeeper.addToScope(@globalscope)
     @programRunner.addToScope(@globalscope)

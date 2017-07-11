@@ -57,6 +57,47 @@ describe('Function', function () {
     assert.deepEqual(parsed, expected);
   });
 
+  it('lambda can be used ok', function () {
+
+    var program = dedent(`
+                         foo = () => 255 * random
+                         fill foo
+                         box
+                         `);
+    var parsed = parser.parse(
+      program, {
+        functionNames: ['box', 'random', 'fill'],
+        inlinableFunctions: ['box']
+      });
+
+    var expected = ast.Block([
+      ast.Assignment(
+        'foo',
+        ast.Closure(
+          [],
+          ast.BinaryOp(
+            '*',
+            ast.Num(255),
+            ast.Application('random', [], null)
+          ),
+          false
+        )
+      ),
+      ast.Application(
+        'fill',
+        [ast.Application('foo', [])],
+        null
+      ),
+      ast.Application(
+        'box',
+        [],
+        null
+      )
+    ]);
+
+    assert.deepEqual(parsed, expected);
+  });
+
   it('simple function call is parsed', function () {
 
     var program = 'box 1';

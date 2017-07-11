@@ -12,40 +12,46 @@ describe('Interpreter', function () {
 
   it('evaluate simple expression', function () {
     var i = Interpreter;
-    var result = {};
+    var output;
     var scope = {
-      result: function (v) {
-        result.v = v;
+      result: {
+        type: 'builtin',
+        func: function (v) {
+          output = v;
+        }
       }
     };
     var program = parser.parse(
-      'result((3 + 4) * 2)',
+      'result (3 + 4) * 2',
       { functionNames: ['result']}
     );
     i.run(program, scope);
 
-    assert.equal(result.v, 14, 'should return 14');
+    assert.equal(output, 14, 'should return 14');
   });
 
   it('evaluate expression with variable', function () {
     var i = Interpreter;
-    var result = {};
+    var output;
     var scope = {
-      result: function (v) {
-        result.v = v;
+      result: {
+        type: 'builtin',
+        func: function (v) {
+          output = v;
+        }
       },
       foo: 4
     };
     var program = parser.parse(
       dedent(`
              a = foo + 1
-             result((a + 4) * foo)`
+             result (a + 4) * foo`
             ),
       { functionNames: ['result']}
     );
     i.run(program, scope);
 
-    assert.equal(result.v, 36, 'output should be 36');
+    assert.equal(output, 36, 'output should be 36');
 
   });
 
@@ -53,8 +59,11 @@ describe('Interpreter', function () {
     var i = Interpreter;
     var output;
     var scope = {
-      result: function (value) {
-        output = value;
+      result: {
+        type: 'builtin',
+        func: function (v) {
+          output = v;
+        }
       }
     };
 
@@ -71,15 +80,18 @@ describe('Interpreter', function () {
 
     i.run(program, scope);
 
-    assert.equal(output, 4, 'output should be 4');
+    assert.equal(output, 4, `output should be 4 not ${output}`);
   });
 
   it('function definition and usage', function () {
     var i = Interpreter;
     var output;
     var scope = {
-      result: function (value) {
-        output = value;
+      result: {
+        type: 'builtin',
+        func: function (v) {
+          output = v;
+        }
       }
     };
 
@@ -133,7 +145,7 @@ describe('Interpreter', function () {
 
     i.run(program, scope);
 
-    assert.equal(output, 9, 'output should be 9');
+    assert.equal(output, 9, `output should be 9 not ${output}`);
   });
 
 });

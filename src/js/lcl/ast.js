@@ -120,6 +120,19 @@ Ast.Node.BinaryOp = function (operator, expr1, expr2) {
 
 
 /**
+ *  collection: Expression
+ *  index: Expression
+ */
+Ast.Node.DeIndex = function (collection, index) {
+    return {
+        ast: 'DEINDEX',
+        collection: collection,
+        index: index
+    };
+};
+
+
+/**
  *  value: Number
  */
 Ast.Node.Num = function (value) {
@@ -146,6 +159,16 @@ Ast.Node.Str = function (value) {
     return {
         ast: 'STRING',
         value: value
+    };
+};
+
+/**
+ *  value: List
+ */
+Ast.Node.List = function (values) {
+    return {
+        ast: 'LIST',
+        values: values
     };
 };
 

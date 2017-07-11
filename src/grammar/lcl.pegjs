@@ -12,6 +12,8 @@
 
     var blockFunctions = inlinableFunctions
 
+    var keywords = ['else']
+
     var collapseTail = function (head, tail, astNode) {
         return _.reduce(tail, function (o, n) {
             var op  = n[1];
@@ -173,18 +175,28 @@ InlinableFunction
  */
 
 If "if"
-  = "if" _ predicate:Expression _ NewLine ifBlock:Block NewLine elseBlock:(Else)? {
+  = "if" _ predicate:Expression _ NewLine ifBlock:Block elseBlock:(Else)? {
       return Ast.Node.If(predicate, ifBlock, elseBlock);
   }
   / "if" _ predicate:Expression _ NewLine ifBlock:Block {
       return Ast.Node.If(predicate, ifBlock, null);
   }
+  / "if" _ predicate:Expression _ "then" _ ifAction:Statement _ "else" _ elseAction:Statement {
+      return Ast.Node.If(
+        predicate,
+        Ast.Node.Block([ifAction]),
+        Ast.Node.Block([elseAction])
+      );
+  }
+  / "if" _ predicate:Expression _ "then" _ ifAction:Statement {
+      return Ast.Node.If(predicate, Ast.Node.Block([ifAction]), null);
+  }
 
 Else "else"
-  = Samedent "else" _ ifBlock:If {
+  = NewLine Samedent "else" _ ifBlock:If {
       return ifBlock;
   }
-  / Samedent "else" _ NewLine block:Block {
+  / NewLine Samedent "else" _ NewLine block:Block {
       return Ast.Node.If(Ast.Node.Num(1), block);
   }
 
@@ -274,6 +286,7 @@ Exponent "exponent"
 
 Primary
   = Lambda
+  / DeIndex
   / Base
   / String
   / NegativeExpr
@@ -287,14 +300,21 @@ Base
   = Num
   / SimpleApplication
   / Variable
+  / List
   / "(" _ expr:Expression _ ")" { return expr; }
 
 Variable "variable"
   = id:Identifier &{
     var isInlinable = (inlinableFunctions.indexOf(id) !== -1);
-    return !isInlinable;
+    var isKeyword = (keywords.indexOf(id) !== -1);
+    return !isInlinable && !isKeyword;
   } {
     return Ast.Node.Variable(id);
+  }
+
+DeIndex "deindex"
+  = collection:Base "[" index:Expression "]" {
+    return Ast.Node.DeIndex(collection, index);
   }
 
 Identifier
@@ -316,6 +336,12 @@ String "string"
   }
   / "\"" chars:([^\n\r\f\"])* "\"" {
       return Ast.Node.Str(chars.join(''));
+  }
+
+List "list"
+  = "[" valList:ArgumentList? "]" {
+      var values =  optionalList(valList, 0);
+      return Ast.Node.List(values);
   }
 
 Lambda "lambda"

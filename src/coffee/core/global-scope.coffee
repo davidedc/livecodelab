@@ -17,12 +17,20 @@ class GlobalScope
     window[name] = value
     @scope[name] = value
 
-  addFunction: (name, value) ->
+  addFunction: (name, func) ->
+    value = {
+      type: 'builtin',
+      func: func
+    }
     window[name] = value
     @scope[name] = value
     @functions.push(name)
 
-  addInlinable: (name, value) ->
+  addInlinable: (name, func) ->
+    value = {
+      type: 'builtin',
+      func: func
+    }
     window[name] = value
     @scope[name] = value
     @functions.push(name)
