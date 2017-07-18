@@ -1,6 +1,5 @@
-/* global process, require, module, __dirname */
+/* global require, module, __dirname */
 
-const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
@@ -14,12 +13,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        exclude: [
-          /node_modules/,
-          /jquery.*\.js/,
-          /coffee-script\.js/,
-          /codemirror/,
-        ],
+        exclude: [/node_modules/, /jquery.*\.js/, /codemirror/],
         loader: 'babel-loader',
         options: {
           presets: [
@@ -90,13 +84,6 @@ module.exports = {
   resolveLoader: {
     modules: ['./webpack', './node_modules'],
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      LANGUAGE: JSON.stringify(
-        process.env.LCLANG === 'v2' ? 'livelangv2' : 'livelangv1'
-      ),
-    }),
-  ],
   devServer: {
     host: '0.0.0.0',
     port: 8080,

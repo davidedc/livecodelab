@@ -60,7 +60,7 @@ children are accessed.
 AnimationLoop     = require './animation-loop'
 BackgroundPainter = require './background-painter'
 BlendControls     = require './blend-controls'
-Languages         = require './languages'
+LiveLang          = require '../livelang'
 ColourFunctions   = require './colour-functions'
 ColourLiterals    = require './colour-literals'
 ListFunctions     = require './list-functions'
@@ -123,9 +123,8 @@ class LiveCodeLabCore
       @colourLiterals
     )
 
-    @languages = new Languages(@eventRouter, @globalscope)
-    @programRunner = @languages.runner
-    @codeCompiler = @languages.compiler
+    @codeCompiler = new LiveLang.compiler(@eventRouter)
+    @programRunner = new LiveLang.runner(@eventRouter, @codeCompiler, @globalscope)
 
     @threeJsSystem = new ThreeJsSystem(canvas)
 
