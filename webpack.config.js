@@ -1,5 +1,3 @@
-/* global process */
-
 var path = require('path');
 var webpack = require('webpack');
 
@@ -18,7 +16,6 @@ module.exports = {
           /jquery.*\.js/,
           /three\.js/,
           /threejs/,
-          /coffee-script\.js/,
           /codemirror/
         ],
         loader: 'babel-loader'
@@ -67,12 +64,5 @@ module.exports = {
   },
   resolveLoader: {
     modules: ['./webpack', './node_modules']
-  },
-  plugins: [
-    new webpack.DefinePlugin({
-      LANGUAGE: JSON.stringify(
-        process.env.LCLANG === 'v2' ? 'livelangv2' : 'livelangv1'
-      )
-    })
-  ]
+  }
 };

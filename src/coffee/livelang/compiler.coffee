@@ -3,7 +3,7 @@
 ## This is then run by the ProgramRunner.
 ###
 
-Parser = require '../../../grammar/lcl'
+Parser = require '../../grammar/lcl'
 
 class V2CodeCompiler
 
