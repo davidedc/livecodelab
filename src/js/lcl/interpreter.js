@@ -332,9 +332,7 @@ internal.evaluateVariable = function (state, variable, scope) {
 };
 
 internal.evaluateDeIndex = function (state, deindex, scope) {
-    console.log('deindex', deindex);
     var collection = internal.evaluate(state, deindex.collection, scope);
-    console.log('collection', collection)
     if (!_.isArray(collection)) {
         throw 'Must deindex lists';
     }

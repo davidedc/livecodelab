@@ -18,7 +18,7 @@ class PatternPlayer
   runPattern: (pattern, beat) ->
     if (pattern.length > 0)
       compressedPattern = pattern.replace(/\s+/g, '')
-      patternPos = int(((beat - 1) * 4) % compressedPattern.length)
+      patternPos = Math.abs(((beat - 1) * 4) % compressedPattern.length)
       compressedPattern[patternPos] == 'x'
 
 module.exports = PatternPlayer
