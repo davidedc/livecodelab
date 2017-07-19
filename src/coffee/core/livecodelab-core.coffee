@@ -145,6 +145,7 @@ class LiveCodeLabCore
       @colourFunctions,
       @matrixCommands,
       @colourLiterals,
+      @timeKeeper,
       @ #lightSystem
     )
 
