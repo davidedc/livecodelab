@@ -1,16 +1,14 @@
 /* global describe, it */
 
-var parser  = require('../../src/grammar/lcl');
-var ast    = require('../../src/js/lcl/ast').Node;
+var parser = require('../../src/grammar/lcl');
+var ast = require('../../src/js/lcl/ast').Node;
 
 var dedent = require('dentist').dedent;
 
 var assert = require('assert');
 
-describe('Comments', function () {
-  
-  it('ignores single comments', function () {
-
+describe('Comments', function() {
+  it('ignores single comments', function() {
     var program = '// this is a comment';
     var parsed = parser.parse(program, {});
 
@@ -19,8 +17,7 @@ describe('Comments', function () {
     assert.deepEqual(parsed, expected);
   });
 
-  it('comments are ignored', function () {
-
+  it('comments are ignored', function() {
     var program = dedent(`
 
                          // this is a comment
@@ -31,33 +28,27 @@ describe('Comments', function () {
 
                          box 4
                          `);
-    var parsed = parser.parse(program, {functionNames: ['box']});
+    var parsed = parser.parse(program, { functionNames: ['box'] });
 
-    var expected = ast.Block([
-      ast.Application('box', [ast.Num(4)], null)
-    ]);
+    var expected = ast.Block([ast.Application('box', [ast.Num(4)], null)]);
 
     assert.deepEqual(parsed, expected);
   });
 
-  it('comments after commands are ignored', function () {
-
+  it('comments after commands are ignored', function() {
     var program = dedent(`
 
                          box 4 // this is a comment
 
                          `);
-    var parsed = parser.parse(program, {functionNames: ['box']});
+    var parsed = parser.parse(program, { functionNames: ['box'] });
 
-    var expected = ast.Block([
-      ast.Application('box', [ast.Num(4)], null)
-    ]);
+    var expected = ast.Block([ast.Application('box', [ast.Num(4)], null)]);
 
     assert.deepEqual(parsed, expected);
   });
 
-  it('comments in the middle of commands are ignored', function () {
-
+  it('comments in the middle of commands are ignored', function() {
     var program = dedent(`
 
                          box 4
@@ -67,7 +58,7 @@ describe('Comments', function () {
                          //and another
 
                          `);
-    var parsed = parser.parse(program, {functionNames: ['box', 'peg']});
+    var parsed = parser.parse(program, { functionNames: ['box', 'peg'] });
 
     var expected = ast.Block([
       ast.Application('box', [ast.Num(4)], null),
@@ -77,24 +68,20 @@ describe('Comments', function () {
     assert.deepEqual(parsed, expected);
   });
 
-  it('comments at the end of the program are ignored', function () {
-
+  it('comments at the end of the program are ignored', function() {
     var program = dedent(`
 
                          box 4 // this is a comment
 
                          `);
-    var parsed = parser.parse(program, {functionNames: ['box']});
+    var parsed = parser.parse(program, { functionNames: ['box'] });
 
-    var expected = ast.Block([
-      ast.Application('box', [ast.Num(4)], null)
-    ]);
+    var expected = ast.Block([ast.Application('box', [ast.Num(4)], null)]);
 
     assert.deepEqual(parsed, expected);
   });
 
-  it('ignores indented comments', function () {
-
+  it('ignores indented comments', function() {
     var program = dedent(`
 
                          rotate
@@ -106,17 +93,15 @@ describe('Comments', function () {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['rotate', 'peg'],
-      inlinableFunctions:['rotate']
+      inlinableFunctions: ['rotate']
     });
 
     var expected = ast.Block([
       ast.Application(
         'rotate',
         [],
-        ast.Block([
-          ast.Application('peg', [ast.Num(3)], null)
-        ])
-      ),
+        ast.Block([ast.Application('peg', [ast.Num(3)], null)])
+      )
     ]);
 
     assert.deepEqual(parsed, expected);

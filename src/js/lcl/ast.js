@@ -1,5 +1,3 @@
-
-
 var Ast = {};
 Ast.Node = {};
 Ast.Helpers = {};
@@ -7,36 +5,36 @@ Ast.Helpers = {};
 /**
  *  elements: [Element]
  */
-Ast.Node.Block = function (elements) {
-    return {
-        ast: 'BLOCK',
-        elements: elements
-    };
+Ast.Node.Block = function(elements) {
+  return {
+    ast: 'BLOCK',
+    elements: elements
+  };
 };
 
 /**
  *  identifier: Identifier
  *  expression: Expression
  */
-Ast.Node.Assignment = function (identifier, expression) {
-    return {
-        ast: 'ASSIGNMENT',
-        identifier: identifier,
-        expression: expression
-    };
+Ast.Node.Assignment = function(identifier, expression) {
+  return {
+    ast: 'ASSIGNMENT',
+    identifier: identifier,
+    expression: expression
+  };
 };
 
 /**
  *  identifier: Identifier
  *  args:       [Expression]
  */
-Ast.Node.Application = function (identifier, args, block) {
-    return {
-        ast: 'APPLICATION',
-        identifier: identifier,
-        args: args,
-        block: block
-    };
+Ast.Node.Application = function(identifier, args, block) {
+  return {
+    ast: 'APPLICATION',
+    identifier: identifier,
+    args: args,
+    block: block
+  };
 };
 
 /**
@@ -44,13 +42,13 @@ Ast.Node.Application = function (identifier, args, block) {
  *  ifBlock:   Block
  *  elseBlock: Block
  */
-Ast.Node.If = function (predicate, ifBlock, elseBlock) {
-    return {
-        ast: 'IF',
-        predicate: predicate,
-        ifBlock: ifBlock,
-        elseBlock: elseBlock
-    };
+Ast.Node.If = function(predicate, ifBlock, elseBlock) {
+  return {
+    ast: 'IF',
+    predicate: predicate,
+    ifBlock: ifBlock,
+    elseBlock: elseBlock
+  };
 };
 
 /**
@@ -58,13 +56,13 @@ Ast.Node.If = function (predicate, ifBlock, elseBlock) {
  *  body:      Block
  *  inlinable: Boolean
  */
-Ast.Node.Closure = function (argNames, body, inlinable) {
-    return {
-        ast: 'CLOSURE',
-        argNames: argNames,
-        body: body,
-        inlinable: inlinable || false
-    };
+Ast.Node.Closure = function(argNames, body, inlinable) {
+  return {
+    ast: 'CLOSURE',
+    argNames: argNames,
+    body: body,
+    inlinable: inlinable || false
+  };
 };
 
 /**
@@ -72,36 +70,36 @@ Ast.Node.Closure = function (argNames, body, inlinable) {
  *  block:   Block
  *  loopVar: Identifier
  */
-Ast.Node.Times = function (number, block, loopVar) {
-    return {
-        ast: 'TIMES',
-        number: number,
-        block: block,
-        loopVar: loopVar
-    };
+Ast.Node.Times = function(number, block, loopVar) {
+  return {
+    ast: 'TIMES',
+    number: number,
+    block: block,
+    loopVar: loopVar
+  };
 };
 
 /**
  *  block: Block
  */
-Ast.Node.DoOnce = function (active, block) {
-    return {
-        ast: 'DOONCE',
-        active: active,
-        block: block
-    };
+Ast.Node.DoOnce = function(active, block) {
+  return {
+    ast: 'DOONCE',
+    active: active,
+    block: block
+  };
 };
 
 /**
  *  operation: String
  *  expr1: Expression
  */
-Ast.Node.UnaryOp = function (operator, expr1) {
-    return {
-        ast: 'UNARYOP',
-        operator: operator,
-        expr1: expr1
-    };
+Ast.Node.UnaryOp = function(operator, expr1) {
+  return {
+    ast: 'UNARYOP',
+    operator: operator,
+    expr1: expr1
+  };
 };
 
 /**
@@ -109,76 +107,73 @@ Ast.Node.UnaryOp = function (operator, expr1) {
  *  expr1: Expression
  *  expr2: Expression
  */
-Ast.Node.BinaryOp = function (operator, expr1, expr2) {
-    return {
-        ast: 'BINARYOP',
-        operator: operator,
-        expr1: expr1,
-        expr2: expr2
-    };
+Ast.Node.BinaryOp = function(operator, expr1, expr2) {
+  return {
+    ast: 'BINARYOP',
+    operator: operator,
+    expr1: expr1,
+    expr2: expr2
+  };
 };
-
 
 /**
  *  collection: Expression
  *  index: Expression
  */
-Ast.Node.DeIndex = function (collection, index) {
-    return {
-        ast: 'DEINDEX',
-        collection: collection,
-        index: index
-    };
+Ast.Node.DeIndex = function(collection, index) {
+  return {
+    ast: 'DEINDEX',
+    collection: collection,
+    index: index
+  };
 };
-
 
 /**
  *  value: Number
  */
-Ast.Node.Num = function (value) {
-    return {
-        ast: 'NUMBER',
-        value: value
-    };
+Ast.Node.Num = function(value) {
+  return {
+    ast: 'NUMBER',
+    value: value
+  };
 };
 
 /**
  *  value: Identifier
  */
-Ast.Node.Variable = function (identifier) {
-    return {
-        ast: 'VARIABLE',
-        identifier: identifier
-    };
+Ast.Node.Variable = function(identifier) {
+  return {
+    ast: 'VARIABLE',
+    identifier: identifier
+  };
 };
 
 /**
  *  value: String
  */
-Ast.Node.Str = function (value) {
-    return {
-        ast: 'STRING',
-        value: value
-    };
+Ast.Node.Str = function(value) {
+  return {
+    ast: 'STRING',
+    value: value
+  };
 };
 
 /**
  *  value: List
  */
-Ast.Node.List = function (values) {
-    return {
-        ast: 'LIST',
-        values: values
-    };
+Ast.Node.List = function(values) {
+  return {
+    ast: 'LIST',
+    values: values
+  };
 };
 
 /**
  */
-Ast.Node.Comment = function () {
-    return {
-        ast: 'COMMENT'
-    };
+Ast.Node.Comment = function() {
+  return {
+    ast: 'COMMENT'
+  };
 };
 
 module.exports = Ast;
-
