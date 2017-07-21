@@ -1,34 +1,47 @@
 /* global process */
 
+var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  entry: './src/coffee/lcl-init.coffee',
+  entry: ['babel-polyfill', './src/coffee/lcl-init.coffee'],
   output: {
-    path: './dist',
+    path: path.resolve(__dirname, './dist'),
     filename: './app.js'
   },
   module: {
-    loaders: [
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: [
+          /node_modules/,
+          /jquery.*\.js/,
+          /three\.js/,
+          /threejs/,
+          /coffee-script\.js/,
+          /codemirror/
+        ],
+        loader: 'babel-loader'
+      },
       { test: /\.coffee$/, loader: 'coffee-loader' },
-      { test: /\.css$/, loader: 'style-loader!css-loader' },
+      { test: /\.css$/, loader: ['style-loader', 'css-loader'] },
       {
         test: /\.html$/,
-        loader: 'file',
+        loader: 'file-loader',
         query: {
           name: '[name].[ext]'
         }
       },
       {
         test: /\.ttf$|\.eot$/,
-        loader: 'file',
+        loader: 'file-loader',
         query: {
           name: 'font/[hash].[ext]'
         }
       },
       {
         test: /\.(mp3|ogg)$/,
-        loader: 'file',
+        loader: 'file-loader',
         query: {
           name: 'sound/[hash][name].[ext]'
         }
@@ -39,19 +52,27 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.json', '.coffee', '.html', '.pegjs', '.mp3', '.ogg', '.lcl.yaml'],
+    extensions: [
+      '.js',
+      '.coffee',
+      '.html',
+      '.pegjs',
+      '.mp3',
+      '.ogg',
+      '.lcl.yaml'
+    ],
     alias: {
       jquery: './jquery'
     }
   },
   resolveLoader: {
-    modulesDirectories: [
-      './webpack', './node_modules'
-    ]
+    modules: ['./webpack', './node_modules']
   },
   plugins: [
     new webpack.DefinePlugin({
-      LANGUAGE: JSON.stringify(process.env.LCLANG === 'v2' ? 'livelangv2' : 'livelangv1')
-    }),
+      LANGUAGE: JSON.stringify(
+        process.env.LCLANG === 'v2' ? 'livelangv2' : 'livelangv1'
+      )
+    })
   ]
 };

@@ -77,7 +77,7 @@ internal.evaluate = function(state, node, scope) {
       break;
 
     case 'LIST':
-      output = _.map(node.values, function(v) {
+      output = _.map(node.values, v => {
         return internal.evaluate(state, v, scope);
       });
       break;
