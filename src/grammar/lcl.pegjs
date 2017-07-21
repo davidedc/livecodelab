@@ -378,7 +378,6 @@ Indent
         {
             indentStack.push(indent);
             indent = i.join("");
-            parser.position = location().start.offset;
         }
     )
 
