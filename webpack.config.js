@@ -4,13 +4,25 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  entry: './src/coffee/lcl-init.coffee',
+  entry: ['babel-polyfill', './src/coffee/lcl-init.coffee'],
   output: {
     path: path.resolve(__dirname, './dist'),
     filename: './app.js'
   },
   module: {
     rules: [
+      {
+        test: /\.js$/,
+        exclude: [
+          /node_modules/,
+          /jquery.*\.js/,
+          /three\.js/,
+          /threejs/,
+          /coffee-script\.js/,
+          /codemirror/
+        ],
+        loader: 'babel-loader'
+      },
       { test: /\.coffee$/, loader: 'coffee-loader' },
       { test: /\.css$/, loader: ['style-loader', 'css-loader'] },
       {
