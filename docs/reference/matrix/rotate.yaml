@@ -1,6 +1,10 @@
 ---
 name: rotate
 category: matrix
+attributes:
+  type: function
+  inlinable: true
+  block-scope: true
 description: Rotate position around any of the three axes.
 arguments:
   - name: zRotation
@@ -21,10 +25,9 @@ arguments:
         - 0
         - yRotation
         - 0
-inlinable: true
-block-scope: true
 examples:
-    simple: |
+  - name: simple
+    code: |
       box
       rotate 1
       box

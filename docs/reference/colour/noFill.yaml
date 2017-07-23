@@ -1,11 +1,14 @@
 ---
 name: noFill
 category: colour
+attributes:
+  type: function
+  inlinable: true
+  block-scope: true
 description: Do not draw the fill of drawn shapes. Essentially makes fill fully transparent.
 arguments: []
-inlinable: true
-block-scope: true
 examples:
-    simple: |
+  - name: simple
+    code: |
       noFill
       box

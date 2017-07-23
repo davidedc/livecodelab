@@ -1,8 +1,13 @@
 ---
 name: stroke
 category: colour
-description: Set the stroke colour of the drawn shapes.
-notes: If a Colour is given as the first argument then all others are ignored
+attributes:
+  type: function
+  inlinable: true
+  block-scope: true
+description: |
+  Set the stroke colour of the drawn shapes.
+  If a Colour is given as the first argument then all others are ignored.
 related:
   - colour
 arguments:
@@ -28,10 +33,9 @@ arguments:
     optional: true
     defaults:
         - 255
-inlinable: true
-block-scope: true
 examples:
-    simple: |
+  - name: simple
+    code: |
       noFill
       stroke 100 255 30 30
       box

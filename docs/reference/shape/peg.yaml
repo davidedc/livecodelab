@@ -1,6 +1,10 @@
 ---
 name: peg
 category: shape
+attributes:
+  type: function
+  inlinable: true
+  block-scope: true
 description: Draw a cylinder of the given height, width and depth.
 arguments:
   - name: height
@@ -21,9 +25,8 @@ arguments:
         - 1
         - height
         - 1
-inlinable: true
-block-scope: true
 examples:
-    simple: |
+  - name: simple
+    code: |
       rotate
       peg 1 0.4 1.3

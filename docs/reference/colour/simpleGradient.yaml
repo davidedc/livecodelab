@@ -1,6 +1,10 @@
 ---
 name: simpleGradient
 category: colour
+attributes:
+  type: function
+  inlinable: false
+  block-scope: false
 description: Set the screen background colour to be a gradient
 related:
   - background
@@ -21,10 +25,9 @@ arguments:
     optional: true
     defaults:
         - white
-inlinable: false
-block-scope: false
 examples:
-    simple: |
+  - name: simple
+    code: |
       simpleGradient green, white, blue
       fill red
       stroke red

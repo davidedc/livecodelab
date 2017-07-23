@@ -1,6 +1,10 @@
 ---
 name: ball
 category: shape
+attributes:
+  type: function
+  inlinable: true
+  block-scope: true
 description: Draw a sphere of the given height, width and depth.
 related:
   - ballDetail
@@ -23,9 +27,8 @@ arguments:
         - 1
         - height
         - 1
-inlinable: true
-block-scope: true
 examples:
-    simple: |
+  - name: simple
+    code: |
       rotate
       ball 1 0.4 1.3

@@ -1,6 +1,10 @@
 ---
 name: rect
 category: shape
+attributes:
+  type: function
+  inlinable: true
+  block-scope: true
 description: Draw a rectangle of the given height and width.
 arguments:
   - name: height
@@ -14,9 +18,8 @@ arguments:
     defaults:
         - 1
         - height
-inlinable: true
-block-scope: true
 examples:
-    simple: |
+  - name: simple
+    code: |
       rotate
       rect 1 0.4

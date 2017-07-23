@@ -1,6 +1,10 @@
 ---
 name: line
 category: shape
+attributes:
+  type: function
+  inlinable: true
+  block-scope: true
 description: Draw a line of the given length.
 arguments:
   - name: length
@@ -8,10 +12,9 @@ arguments:
     optional: true
     defaults:
         - 1
-inlinable: true
-block-scope: true
 examples:
-    simple: |
+  - name: simple
+    code: |
       line 1
       rotate
       line 2
