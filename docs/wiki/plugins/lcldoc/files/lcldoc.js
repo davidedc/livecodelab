@@ -12,25 +12,32 @@ function codeblock(code) {
   };
 }
 
+function boolToStr(value, defaultValue) {
+  if (value === undefined || value === null) {
+    return text('unknown');
+  }
+  return text(value.toString());
+}
+
 function text(text) {
   return { type: 'text', text: text };
 }
 
-function attributesTable(docData) {
+function attributesTable(attributes) {
   return [
     element('h2', [text('Attributes')]),
     element('table', [
       element('tr', [
         element('th', [text('type')]),
-        element('td', [text(docData.type || 'unknown')])
+        element('td', [text(attributes.type || 'unknown')])
       ]),
       element('tr', [
         element('th', [text('inlinable')]),
-        element('td', [text(docData.inlinable.toString())])
+        element('td', [boolToStr(attributes.inlinable)])
       ]),
       element('tr', [
         element('th', [text('block scoping')]),
-        element('td', [text(docData['block-scope'].toString())])
+        element('td', [boolToStr(attributes['block-scope'])])
       ])
     ])
   ];
@@ -41,6 +48,7 @@ function argumentsTable(docData) {
     element('tr', [
       element('th', [text('Name')]),
       element('th', [text('Type')]),
+      element('th', [text('Range')]),
       element('th', [text('Optional')]),
       element('th', [text('Defaults')])
     ])
@@ -50,6 +58,7 @@ function argumentsTable(docData) {
       return element('tr', [
         element('td', [text(arg.name)]),
         element('td', [text(arg.type)]),
+        element('td', [text(arg.range || 'any')]),
         element('td', [text(arg.optional.toString())]),
         element('td', [text(arg.optional ? arg.defaults.join(', ') : '')])
       ]);
@@ -59,17 +68,21 @@ function argumentsTable(docData) {
   return [element('h2', [text('Arguments')]), element('table', rows)];
 }
 
-function codeExample(examples, name) {
-  return [element('h2', [text('Examples')]), codeblock(examples[name])];
+function codeExamples(examples) {
+  return [element('h2', [text('Examples')])].concat(
+    examples.map(function(example) {
+      return codeblock(example.code);
+    })
+  );
 }
 
 function formatDoc(docData) {
   var tree = [];
   return []
     .concat([text(docData.description)])
-    .concat(attributesTable(docData))
+    .concat(attributesTable(docData.attributes))
     .concat(argumentsTable(docData))
-    .concat(codeExample(docData.examples, 'simple'));
+    .concat(codeExamples(docData.examples));
 }
 
 module.exports = {

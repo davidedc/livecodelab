@@ -1,6 +1,10 @@
 ---
 name: scale
 category: matrix
+attributes:
+  type: function
+  inlinable: true
+  block-scope: true
 description: Translate objects position along any of the three axes.
 arguments:
   - name: xMove
@@ -21,10 +25,9 @@ arguments:
         - xMove
         - xMove
         - 1
-inlinable: true
-block-scope: true
 examples:
-    simple: |
+  - name: simple
+    code: |
       fill red
       box 1 1 1
       move 1 1 1
