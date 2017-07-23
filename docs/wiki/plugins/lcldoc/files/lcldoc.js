@@ -16,6 +16,19 @@ function text(text) {
   return { type: 'text', text: text };
 }
 
+function attributesTable(attrs) {
+  return element('table', [
+    element('tr', [
+      element('th', [text('inlinable')]),
+      element('td', [text(attrs.inlinable.toString())])
+    ]),
+    element('tr', [
+      element('th', [text('block scoping')]),
+      element('td', [text(attrs.blockScope.toString())])
+    ])
+  ]);
+}
+
 function codeExamples(example) {
   return codeblock(example.code);
 }
@@ -29,6 +42,10 @@ function formatDoc(docData) {
   );
   return [
     text(docData.description),
+    attributesTable({
+      inlinable: docData.inlinable,
+      blockScope: docData['block-scope']
+    }),
     argList,
     codeblock(docData.examples.simple)
   ];
