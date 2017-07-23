@@ -9,7 +9,9 @@
     "docs": "docco docs/**/*.md -o dist/docs",
     "docs:src": "docco src/coffee/**/*.coffee -o dist/docs/src",
     "test": "mocha-webpack --webpack-config webpack.config.js \"tests/**/*.js\"",
-    "prettier": "prettier --single-quote"
+    "prettier": "prettier --single-quote",
+    "servewiki": "tiddlywiki docs/wiki --server",
+    "buildwiki": "tiddlywiki docs/wiki --output ./dist/wiki --build index"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
@@ -29,6 +31,7 @@
     "pegjs-loader": "^0.5.1",
     "prettier": "^1.5.3",
     "style-loader": "^0.18.2",
+    "tiddlywiki": "^5.1.14",
     "underscore": "^1.8.3",
     "url-loader": "^0.5.7",
     "webpack": "^2.7.0",
