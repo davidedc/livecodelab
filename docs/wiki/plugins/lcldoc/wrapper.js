@@ -10,14 +10,11 @@ Display lcldoc yaml files
   'use strict';
 
   var jsyaml = require('$:/plugins/livecodelab/lcldoc/js-yaml.min.js');
-
-  function formatDoc(docData) {
-    return [{ type: 'text', text: docData.name }];
-  }
+  var lcldoc = require('$:/plugins/livecodelab/lcldoc/lcldoc.js');
 
   var LCLDocParser = function(type, text, options) {
     var docData = jsyaml.load(text);
-    this.tree = formatDoc(docData);
+    this.tree = lcldoc.format(docData);
   };
 
   exports['application/lcldoc'] = LCLDocParser;

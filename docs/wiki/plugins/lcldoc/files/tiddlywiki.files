@@ -6,9 +6,15 @@
 				"type": "application/javascript",
 				"title": "$:/plugins/livecodelab/lcldoc/js-yaml.min.js",
 				"module-type": "library"
-			},
-			"prefix": "var jsyaml = require(\"$:/plugins/livecodelab/lcldoc/js-yaml.min.js\");\n",
-			"suffix": "\nexports.jsyaml = jsyaml;\n"
+			}
+		},
+		{
+			"file": "lcldoc.js",
+			"fields": {
+				"type": "application/javascript",
+				"title": "$:/plugins/livecodelab/lcldoc/lcldoc.js",
+				"module-type": "library"
+			}
 		}
 	]
 }
