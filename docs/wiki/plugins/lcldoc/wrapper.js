@@ -13,8 +13,13 @@ Display lcldoc yaml files
   var lcldoc = require('$:/plugins/livecodelab/lcldoc/lcldoc.js');
 
   var LCLDocParser = function(type, text, options) {
-    var docData = jsyaml.load(text);
-    this.tree = lcldoc.format(docData);
+    try {
+      var docData = jsyaml.load(text);
+      this.tree = lcldoc.format(docData);
+    } catch (err) {
+      console.log(err);
+      this.tree = [{ type: 'text', text: 'Error with LCLDoc' }];
+    }
   };
 
   exports['application/lcldoc'] = LCLDocParser;
