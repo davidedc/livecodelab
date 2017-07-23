@@ -1,0 +1,7 @@
+{
+	"title": "$:/plugins/livecodelab/lcldoc",
+	"description": "Display lcldoc files",
+	"author": "rumblesan",
+	"core-version": ">=5.0.0",
+	"list": "readme usage"
+}

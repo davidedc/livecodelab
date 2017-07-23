@@ -1,0 +1,14 @@
+{
+	"tiddlers": [
+		{
+			"file": "js-yaml.min.js",
+			"fields": {
+				"type": "application/javascript",
+				"title": "$:/plugins/livecodelab/lcldoc/js-yaml.min.js",
+				"module-type": "library"
+			},
+			"prefix": "var jsyaml = require(\"$:/plugins/livecodelab/lcldoc/js-yaml.min.js\");\n",
+			"suffix": "\nexports.jsyaml = jsyaml;\n"
+		}
+	]
+}
