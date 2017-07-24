@@ -7,7 +7,7 @@
         "title": "Language Intro",
         "created": {"source": "created"},
         "modified": {"source": "modified"},
-        "type": "text/x-markdown"
+        "type": "text/x-marked"
       }
     }
   ],
@@ -20,7 +20,7 @@
         "title": {"source": "basename-uri-decoded"},
         "created": {"source": "created"},
         "modified": {"source": "modified"},
-        "type": "text/x-markdown",
+        "type": "text/x-marked",
         "tags": ["development"]
       }
     }
