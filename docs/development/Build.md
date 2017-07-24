@@ -1,11 +1,9 @@
-Livecodelab Development Setup
-=============================
+# Livecodelab Development Setup
 
 If you just want to use LiveCodeLab, you only need to browse to [livecodelab.net](http://livecodelab.net).
 For modifying LiveCodeLab though one needs to set up the build system. The project uses webpack to build everything, and has a few npm scripts setup already to do it.
 
-Setup
------
+## Setup
 
 To setup the build system:
 
@@ -15,16 +13,14 @@ To setup the build system:
    `npm install`
  * See below depending on what sort of build you want to do.
 
-Serving and running LCL
------------------------
+## Serving and running LCL
 
 If you want to do development work on LCL with the aim of messing around or contributing back to the project, then really all you need to do is use the dev server to run it locally. This uses the *webpack-dev-server* and so has hot-reloading of code all setup.
 
  * Run `npm run serve`.
  * Browse to [localhost:8080](http://localhost:8080/) in your browser and you should have LiveCodeLab running.
 
-Building
---------
+## Building
 
 If you actually want the bundled js, html and audio files, then you need to do a full build. Depending on wether this needs to be optimised, or still for development, there are two options.
 
@@ -33,22 +29,11 @@ If you actually want the bundled js, html and audio files, then you need to do a
  * Full release build: Will be more optimised.
    `npm run build`
 
-LiveCodeLang V2
----------------
+## Testing
 
-By default LiveCodeLab builds and runs with version 1 of the language. To use version 2, set the environment variable **LCLANG** before running any of the tasks. For example:
+Tests can be run with `npm test`. This will run a series of unit tests against the language parser and interpreter.
 
- * `LCLANG=v2 npm run serve`
- * `LCLANG=v2 npm run build`
- * `LCLANG=v2 npm run devbuild`
-
-Testing
--------
-
-Tests can be run with `npm test`. This will run a series of unit tests against the language parser and interpreter. The test suite needs more filling out though.
-
-Documentation
--------------
+## Documentation
 
 Documentation is available by first running the following:
 
