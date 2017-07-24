@@ -14,7 +14,6 @@ class GlobalScope
     @inlinables = []
 
   addVariable: (name, value) ->
-    window[name] = value
     @scope[name] = value
 
   addFunction: (name, func) ->
@@ -22,7 +21,6 @@ class GlobalScope
       type: 'builtin',
       func: func
     }
-    window[name] = value
     @scope[name] = value
     @functions.push(name)
 
@@ -31,7 +29,6 @@ class GlobalScope
       type: 'builtin',
       func: func
     }
-    window[name] = value
     @scope[name] = value
     @functions.push(name)
     @inlinables.push(name)

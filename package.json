@@ -22,6 +22,7 @@
     "dentist": "1.0.3",
     "docco": "^0.7.0",
     "file-loader": "^0.11.2",
+    "loglevel": "^1.4.1",
     "mocha": "^3.1.2",
     "mocha-webpack": "^0.7.0",
     "pegjs": "^0.10.0",

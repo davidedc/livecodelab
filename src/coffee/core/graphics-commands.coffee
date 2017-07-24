@@ -170,6 +170,7 @@ class GraphicsCommands
     @colourFunctions,
     @matrixCommands,
     @colourLiterals,
+    @timeKeeper,
     @liveCodeLabCoreInstance
   ) ->
 
@@ -555,7 +556,7 @@ class GraphicsCommands
         )
         @numberOfOverlappingPrimitives[primitiveID]++
         overlapPrimtives = @numberOfOverlappingPrimitives[primitiveID]
-        pert = sin(time*10) * sin(overlapPrimtives + time*10)/40
+        pert = Math.sin(@timeKeeper.time*10) * Math.sin(overlapPrimtives + @timeKeeper.time*10)/40
         pooledObjectWithMaterials.threejsObject3D.matrix.multiply(
           new @threeJs.Matrix4().makeRotationFromEuler(
             new @threeJs.Euler(pert,pert,pert,'XYZ')

@@ -32,8 +32,6 @@ window.$ = $
 window.jQuery = $
 Detector        = require '../js/threejs/Detector'
 
-require './globals/numbertimes'
-
 
 $(document).ready ->
 

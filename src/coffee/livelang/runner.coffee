@@ -6,7 +6,7 @@
 ## throws a runtime error.
 ###
 
-Interpreter = require '../../../js/lcl/interpreter'
+Interpreter = require '../../js/lcl/interpreter'
 _           = require 'underscore'
 
 class V2ProgramRunner
