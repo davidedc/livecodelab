@@ -1,5 +1,4 @@
-How to upgrade Three.js version
-===============================
+# How to upgrade Three.js version
 
  * check release notes at https://github.com/mrdoob/three.js/releases
  * check migration notes: https://github.com/mrdoob/three.js/wiki/Migration

@@ -1,0 +1,40 @@
+---
+name: fill
+category: colour
+attributes:
+  type: function
+  inlinable: true
+  block-scope: true
+description: |
+  Set the fill colour of the drawn shapes.
+  If a Colour is given as the first argument then all others are ignored.
+related:
+  - colour
+arguments:
+  - name: red
+    type: Number or Colour
+    range: 0-255 or RGB
+    optional: false
+  - name: green
+    type: Number
+    range: 0-255
+    optional: true
+    defaults:
+        - red
+  - name: blue
+    type: Number
+    range: 0-255
+    optional: true
+    defaults:
+        - green
+  - name: alpha
+    type: Number
+    range: 0-255
+    optional: true
+    defaults:
+        - 255
+examples:
+  - name: simple
+    code: |
+      fill 100 255 30 30
+      box

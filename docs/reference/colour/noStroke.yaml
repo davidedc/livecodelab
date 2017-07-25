@@ -1,0 +1,14 @@
+---
+name: noStroke
+category: colour
+attributes:
+  type: function
+  inlinable: true
+  block-scope: true
+description: Do not draw the stroke of drawn shapes. Essentially makes stroke fully transparent.
+arguments: []
+examples:
+  - name: simple
+    code: |
+      noStroke
+      box

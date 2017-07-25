@@ -1,0 +1,25 @@
+---
+name: rect
+category: shape
+attributes:
+  type: function
+  inlinable: true
+  block-scope: true
+description: Draw a rectangle of the given height and width.
+arguments:
+  - name: height
+    type: Number
+    optional: true
+    defaults:
+        - 1
+  - name: width
+    type: Number
+    optional: true
+    defaults:
+        - 1
+        - height
+examples:
+  - name: simple
+    code: |
+      rotate
+      rect 1 0.4

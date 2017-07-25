@@ -1,0 +1,36 @@
+---
+name: background
+category: colour
+attributes:
+  type: function
+  inlinable: false
+  block-scope: false
+description: |
+  Set the background colour of the scene
+  If the first argument is a Colour, then all others are ignored.
+related:
+  - colour
+arguments:
+  - name: value1
+    type: Number or Colour
+    range: 0-255 or RGB
+    optional: false
+  - name: value1
+    type: Number
+    range: 0-255
+    optional: true
+    defaults:
+        - value1
+  - name: value3
+    type: Number
+    range: 0-255
+    optional: true
+    defaults:
+        - value1
+examples:
+  - name: simple
+    code: |
+      background red
+      fill blue
+      rotate
+      box

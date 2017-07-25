@@ -1,0 +1,28 @@
+{
+  "tiddlers": [
+    {
+      "file": "../../../intros/language-intro.md",
+      "isTiddlerFile": true,
+      "fields": {
+        "title": "Language Intro",
+        "created": {"source": "created"},
+        "modified": {"source": "modified"},
+        "type": "text/x-marked"
+      }
+    }
+  ],
+  "directories": [
+    {
+      "path": "../../../development",
+      "filesRegExp": "^.*\\.(markdown|md)$",
+      "isTiddlerFile": true,
+      "fields": {
+        "title": {"source": "basename-uri-decoded"},
+        "created": {"source": "created"},
+        "modified": {"source": "modified"},
+        "type": "text/x-marked",
+        "tags": ["development"]
+      }
+    }
+  ]
+}

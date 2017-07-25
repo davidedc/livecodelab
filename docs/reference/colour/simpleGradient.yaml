@@ -1,0 +1,35 @@
+---
+name: simpleGradient
+category: colour
+attributes:
+  type: function
+  inlinable: false
+  block-scope: false
+description: Set the screen background colour to be a gradient
+related:
+  - background
+arguments:
+  - name: colour1
+    type: Colour
+    range: RGB
+    optional: false
+  - name: colur2
+    type: Colour
+    range: RGB
+    optional: true
+    defaults:
+        - white
+  - name: colour3
+    type: Colour
+    range: RGB
+    optional: true
+    defaults:
+        - white
+examples:
+  - name: simple
+    code: |
+      simpleGradient green, white, blue
+      fill red
+      stroke red
+      rotate
+      box

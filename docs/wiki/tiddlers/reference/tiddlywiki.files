@@ -1,0 +1,40 @@
+{
+  "directories": [
+    {
+      "path": "../../../reference/colour",
+      "filesRegExp": "^.*\\.yaml$",
+      "isTiddlerFile": false,
+      "fields": {
+        "title": {"source": "basename-uri-decoded"},
+        "created": {"source": "created"},
+        "modified": {"source": "modified"},
+        "type": "application/lcldoc",
+        "tags": ["reference", "colour"]
+      }
+    },
+    {
+      "path": "../../../reference/matrix",
+      "filesRegExp": "^.*\\.yaml$",
+      "isTiddlerFile": false,
+      "fields": {
+        "title": {"source": "basename-uri-decoded"},
+        "created": {"source": "created"},
+        "modified": {"source": "modified"},
+        "type": "application/lcldoc",
+        "tags": ["reference", "matrix"]
+      }
+    },
+    {
+      "path": "../../../reference/shape",
+      "filesRegExp": "^.*\\.yaml$",
+      "isTiddlerFile": false,
+      "fields": {
+        "title": {"source": "basename-uri-decoded"},
+        "created": {"source": "created"},
+        "modified": {"source": "modified"},
+        "type": "application/lcldoc",
+        "tags": ["reference", "shape"]
+      }
+    }
+  ]
+}

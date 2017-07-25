@@ -1,5 +1,4 @@
-Performance considerations i.e. how to get 60 fps.
-==============
+# Performance considerations i.e. how to get 60 fps.
 
 If LiveCodeLab is not running at least at 40 fps there could be 3 limiting factors. Here is a description of those possible bottlenecks with solutions/workarounds.
 

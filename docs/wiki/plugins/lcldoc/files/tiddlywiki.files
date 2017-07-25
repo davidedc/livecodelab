@@ -1,0 +1,20 @@
+{
+	"tiddlers": [
+		{
+			"file": "js-yaml.min.js",
+			"fields": {
+				"type": "application/javascript",
+				"title": "$:/plugins/livecodelab/lcldoc/js-yaml.min.js",
+				"module-type": "library"
+			}
+		},
+		{
+			"file": "lcldoc.js",
+			"fields": {
+				"type": "application/javascript",
+				"title": "$:/plugins/livecodelab/lcldoc/lcldoc.js",
+				"module-type": "library"
+			}
+		}
+	]
+}
