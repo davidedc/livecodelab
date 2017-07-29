@@ -9,6 +9,7 @@
     "docs": "docco docs/**/*.md -o dist/docs",
     "docs:src": "docco src/coffee/**/*.coffee -o dist/docs/src",
     "test": "mocha-webpack --webpack-config webpack.config.js \"tests/**/*.js\"",
+    "testone": "mocha-webpack --webpack-config webpack.config.js",
     "prettier": "prettier --single-quote",
     "servewiki": "tiddlywiki docs/wiki --server",
     "buildwiki": "tiddlywiki docs/wiki --output ./dist/wiki --build index"
