@@ -22,7 +22,7 @@ class GlobalScope
       type: 'builtin',
       func: func
     }
-    window[name] = value
+    window[name] = func
     @scope[name] = value
     @functions.push(name)
 
@@ -31,7 +31,7 @@ class GlobalScope
       type: 'builtin',
       func: func
     }
-    window[name] = value
+    window[name] = func
     @scope[name] = value
     @functions.push(name)
     @inlinables.push(name)
