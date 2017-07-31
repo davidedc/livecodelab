@@ -165,7 +165,6 @@ class GraphicsCommands
   numberOfOverlappingPrimitives: []
 
   constructor: (
-    @threeJs,
     @threeJsSystem,
     @colourFunctions,
     @matrixCommands,
@@ -229,27 +228,27 @@ class GraphicsCommands
     pegProportion = 1.1
     ballProportion = 0.64
 
-    @geometriesBank[@primitiveTypes.line] = new @threeJs.Geometry()
+    @geometriesBank[@primitiveTypes.line] = new THREE.Geometry()
     @geometriesBank[@primitiveTypes.line].vertices.push \
-      new @threeJs.Vector3(0, -0.5 * lineProportion, 0)
+      new THREE.Vector3(0, -0.5 * lineProportion, 0)
     @geometriesBank[@primitiveTypes.line].vertices.push \
-      new @threeJs.Vector3(0, 0.5 * lineProportion, 0)
+      new THREE.Vector3(0, 0.5 * lineProportion, 0)
       @geometriesBank[@primitiveTypes.line].mergeVertices()
-    @geometriesBank[@primitiveTypes.rect] = new @threeJs.PlaneGeometry(
+    @geometriesBank[@primitiveTypes.rect] = new THREE.PlaneGeometry(
       1 * rectProportion, 1 * rectProportion
     )
-    @geometriesBank[@primitiveTypes.box] = new @threeJs.BoxGeometry(
+    @geometriesBank[@primitiveTypes.box] = new THREE.BoxGeometry(
       1 * boxProportion, 1 * boxProportion, 1 * boxProportion
     )
     @geometriesBank[@primitiveTypes.peg] =
-      new @threeJs.CylinderGeometry(
+      new THREE.CylinderGeometry(
         0.5 * pegProportion, 0.5 * pegProportion, 1 * pegProportion, 32
       )
 
     # creating ball geometries
     for i in [0...(@maximumBallDetail - @minimumBallDetail + 1)]
       @geometriesBank[@primitiveTypes.ball + i] =
-        new @threeJs.SphereGeometry(
+        new THREE.SphereGeometry(
           1 * ballProportion, @minimumBallDetail + i, @minimumBallDetail + i)
 
     # creating a place to remember where
@@ -257,7 +256,7 @@ class GraphicsCommands
     # many of them are overlapping so far
     ballsNum = (@maximumBallDetail - @minimumBallDetail + 1)
     for i in [0..numberOfPrimitives + ballsNum]
-      @lastPositionOfPrimitiveType[i] = new @threeJs.Matrix4()
+      @lastPositionOfPrimitiveType[i] = new THREE.Matrix4()
       @numberOfOverlappingPrimitives[i] = 0
 
   resetFillStack: ->
@@ -390,12 +389,12 @@ class GraphicsCommands
     if primitiveProperties.primitiveType is @primitiveTypes.line
       if not pooledObjectWithMaterials.lineMaterial?
         pooledObjectWithMaterials.lineMaterial =
-          new @threeJs.LineBasicMaterial()
+          new THREE.LineBasicMaterial()
 
       # associating normal material to threejs' Object3D
       if @currentStrokeColor is @angleColor or @defaultNormalStroke
         theAngle = (
-          new @threeJs.Vector3(0, 1, 0)
+          new THREE.Vector3(0, 1, 0)
         ).applyProjection(
           pooledObjectWithMaterials.threejsObject3D.matrix
         ).normalize()
@@ -426,15 +425,15 @@ class GraphicsCommands
       # for each different type of material.
       if not pooledObjectWithMaterials.normalMaterial?
         pooledObjectWithMaterials.normalMaterial =
-          new @threeJs.MeshNormalMaterial()
-        pooledObjectWithMaterials.normalMaterial.shading = @threeJs.FlatShading;
+          new THREE.MeshNormalMaterial()
+        pooledObjectWithMaterials.normalMaterial.shading = THREE.FlatShading;
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.normalMaterial
     else unless @liveCodeLabCoreInstance.lightSystem.lightsAreOn
       if not pooledObjectWithMaterials.basicMaterial?
         pooledObjectWithMaterials.basicMaterial =
-          new @threeJs.MeshBasicMaterial()
-        pooledObjectWithMaterials.basicMaterial.shading = @threeJs.FlatShading;
+          new THREE.MeshBasicMaterial()
+        pooledObjectWithMaterials.basicMaterial.shading = THREE.FlatShading;
       pooledObjectWithMaterials.basicMaterial.color.setHex colorToBeUsed
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.basicMaterial
@@ -443,9 +442,9 @@ class GraphicsCommands
       # lights are on
       if not pooledObjectWithMaterials.lambertMaterial?
         pooledObjectWithMaterials.lambertMaterial =
-          new @threeJs.MeshLambertMaterial()
+          new THREE.MeshLambertMaterial()
         pooledObjectWithMaterials.lambertMaterial.shading =
-          @threeJs.FlatShading;
+          THREE.FlatShading;
       pooledObjectWithMaterials.lambertMaterial.color.setHex colorToBeUsed
       pooledObjectWithMaterials.threejsObject3D.material =
         pooledObjectWithMaterials.lambertMaterial
@@ -510,7 +509,7 @@ class GraphicsCommands
       # the rendering step, so the memory for the material is initialised
       # correctly.
       pooledObjectWithMaterials.threejsObject3D.matrix.multiply(
-        new @threeJs.Matrix4().makeScale(0.0001, 0.0001, 0.0001)
+        new THREE.Matrix4().makeScale(0.0001, 0.0001, 0.0001)
       )
     else if a isnt 1 or b isnt 1 or c isnt 1
       if strokeTime
@@ -522,7 +521,7 @@ class GraphicsCommands
         # case that is simple to check where there is no need
         # of these 16 extra multiplications (of the scale)
         pooledObjectWithMaterials.threejsObject3D.matrix.multiply(
-          new @threeJs.Matrix4().makeScale(a + 0.001, b + 0.001, c + 0.001)
+          new THREE.Matrix4().makeScale(a + 0.001, b + 0.001, c + 0.001)
         )
       else
         # odd things happen setting scale to zero
@@ -530,7 +529,7 @@ class GraphicsCommands
         b = 0.000000001  if b > -0.000000001 and b < 0.000000001
         c = 0.000000001  if c > -0.000000001 and c < 0.000000001
         pooledObjectWithMaterials.threejsObject3D.matrix.multiply(
-          new @threeJs.Matrix4().makeScale(a, b, c)
+          new THREE.Matrix4().makeScale(a, b, c)
         )
 
 
@@ -557,13 +556,13 @@ class GraphicsCommands
         overlapPrimtives = @numberOfOverlappingPrimitives[primitiveID]
         pert = sin(time*10) * sin(overlapPrimtives + time*10)/40
         pooledObjectWithMaterials.threejsObject3D.matrix.multiply(
-          new @threeJs.Matrix4().makeRotationFromEuler(
-            new @threeJs.Euler(pert,pert,pert,'XYZ')
+          new THREE.Matrix4().makeRotationFromEuler(
+            new THREE.Euler(pert,pert,pert,'XYZ')
           )
         )
 
         pooledObjectWithMaterials.threejsObject3D.matrix.multiply(
-          new @threeJs.Matrix4().makeTranslation(pert, pert, pert)
+          new THREE.Matrix4().makeTranslation(pert, pert, pert)
         )
       else
         @lastPositionOfPrimitiveType[primitiveID].copy \
@@ -710,8 +709,8 @@ class GraphicsCommands
     primitiveProperties =
       canFill: false
       primitiveType: @primitiveTypes.line
-      sidedness: @threeJs.FrontSide
-      threeObjectConstructor: @threeJs.Line
+      sidedness: THREE.FrontSide
+      threeObjectConstructor: THREE.Line
       detailLevel: 0
 
 
@@ -723,8 +722,8 @@ class GraphicsCommands
     primitiveProperties =
       canFill: true
       primitiveType: @primitiveTypes.rect
-      sidedness: @threeJs.DoubleSide
-      threeObjectConstructor: @threeJs.Mesh
+      sidedness: THREE.DoubleSide
+      threeObjectConstructor: THREE.Mesh
       detailLevel: 0
 
 
@@ -736,8 +735,8 @@ class GraphicsCommands
     primitiveProperties =
       canFill: true
       primitiveType: @primitiveTypes.box
-      sidedness: @threeJs.FrontSide
-      threeObjectConstructor: @threeJs.Mesh
+      sidedness: THREE.FrontSide
+      threeObjectConstructor: THREE.Mesh
       detailLevel: 0
 
     # end of primitive-specific initialisations:
@@ -748,8 +747,8 @@ class GraphicsCommands
     primitiveProperties =
       canFill: true
       primitiveType: @primitiveTypes.peg
-      sidedness: @threeJs.FrontSide
-      threeObjectConstructor: @threeJs.Mesh
+      sidedness: THREE.FrontSide
+      threeObjectConstructor: THREE.Mesh
       detailLevel: 0
 
 
@@ -767,8 +766,8 @@ class GraphicsCommands
     primitiveProperties =
       canFill: true
       primitiveType: @primitiveTypes.ball
-      sidedness: @threeJs.FrontSide
-      threeObjectConstructor: @threeJs.Mesh
+      sidedness: THREE.FrontSide
+      threeObjectConstructor: THREE.Mesh
       detailLevel: @ballDetLevel - @minimumBallDetail
 
 

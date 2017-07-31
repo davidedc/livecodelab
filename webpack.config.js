@@ -16,7 +16,6 @@ module.exports = {
         exclude: [
           /node_modules/,
           /jquery.*\.js/,
-          /three\.js/,
           /threejs/,
           /coffee-script\.js/,
           /codemirror/

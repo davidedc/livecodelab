@@ -75,8 +75,6 @@ GlobalScope       = require './global-scope'
 SampleBank        = require '../sound/samplebank'
 SoundSystem       = require '../sound/sound-system'
 PatternPlayer     = require '../sound/pattern-player'
-ThreeJs           = require '../../js/three'
-window.THREE = ThreeJs
 ThreeJsSystem     = require './threejs-system'
 
 class LiveCodeLabCore
@@ -100,8 +98,6 @@ class LiveCodeLabCore
     # But often in LiveCodeLab there are direct reference to three
     # fields/methods. So, threeJsSystem provides some abstraction without
     # attempting to be a complete abstraction layer.
-    @three = ThreeJs
-    
     
     @timeKeeper = new TimeKeeper(@syncClient, @audioAPI)
 
@@ -131,17 +127,15 @@ class LiveCodeLabCore
     @programRunner = @languages.runner
     @codeCompiler = @languages.compiler
 
-    @threeJsSystem = new ThreeJsSystem(canvas, @three)
+    @threeJsSystem = new ThreeJsSystem(canvas)
 
     @blendControls = new BlendControls(@threeJsSystem)
 
     @matrixCommands = new MatrixCommands(
-      @three,
       @timeKeeper
     )
 
     @graphicsCommands = new GraphicsCommands(
-      @three,
       @threeJsSystem,
       @colourFunctions,
       @matrixCommands,
@@ -151,7 +145,6 @@ class LiveCodeLabCore
 
     @lightSystem = new LightsCommands(
       @graphicsCommands,
-      @three,
       @threeJsSystem,
       @colourFunctions
     )

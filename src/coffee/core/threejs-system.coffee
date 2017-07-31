@@ -24,12 +24,12 @@ class ThreeJsSystem
   composer: undefined # used by renderer
   scene: undefined # used by renderer, graphics commands and light commands
 
-  constructor: (canvas, threejs) ->
+  constructor: (canvas) ->
 
     @canvasContext = canvas.getDOMElement().getContext("experimental-webgl")
 
     # https://threejs.org/docs/index.html#Reference/Renderers/WebGLRenderer
-    @renderer = new threejs.WebGLRenderer({
+    @renderer = new THREE.WebGLRenderer({
       canvas: canvas.getDOMElement(),
       antialias: false,
       premultipliedAlpha: false,
@@ -44,24 +44,24 @@ class ThreeJsSystem
 
 
     # https://threejs.org/docs/index.html#Reference/Scenes/Scene
-    @scene = new threejs.Scene()
+    @scene = new THREE.Scene()
     @scene.matrixAutoUpdate = false
 
     # https://threejs.org/docs/index.html#Reference/Cameras/PerspectiveCamera
-    @camera = new threejs.PerspectiveCamera(35, canvas.getAspectRatio(), 1, 10000)
+    @camera = new THREE.PerspectiveCamera(35, canvas.getAspectRatio(), 1, 10000)
     @camera.position.set 0, 0, 5
     @scene.add @camera
 
     # Set correct aspect ration and renderer size
     bufferSize = canvas.getBestBufferSize()
     @sizeRendererAndCamera(bufferSize)
-    @createEffectsPipeline(threejs, bufferSize)
+    @createEffectsPipeline(bufferSize)
     canvas.onResize((bufferSize) => 
       @sizeRendererAndCamera(bufferSize)
-      @createEffectsPipeline(threejs, bufferSize)
+      @createEffectsPipeline(bufferSize)
     )
 
-  createEffectsPipeline: (threejs, {width, height}) ->
+  createEffectsPipeline: ({width, height}) ->
 
     # If we're re-creating the effects pipeline then we need a new,
     # correctly sized renderTarget
@@ -70,7 +70,7 @@ class ThreeJsSystem
 
     # Render a copy of the scene
     # https://threejs.org/docs/?q=render#Reference/Renderers/WebGLRenderTarget
-    @renderTarget = new threejs.WebGLRenderTarget(width, height)
+    @renderTarget = new THREE.WebGLRenderTarget(width, height)
 
 
     # If we're re-creating the effects pipeline then we need a new,
@@ -79,18 +79,18 @@ class ThreeJsSystem
         @effectSaveTarget.renderTarget.dispose()
 
     # The rendering pipeline that's going to combine all the effects
-    @composer = new threejs.EffectComposer(@renderer, @renderTarget)
+    @composer = new THREE.EffectComposer(@renderer, @renderTarget)
 
 
     # Render the scene into the start of the effects chain
-    @renderPass = new threejs.RenderPass(@scene, @camera)
+    @renderPass = new THREE.RenderPass(@scene, @camera)
     @composer.addPass(@renderPass)
 
 
     # This is where a copy of the rendered scene is going to be saved.
     # Essentially this is the last frame with all the effects.
-    @effectSaveTarget = new threejs.SavePass(
-        new threejs.WebGLRenderTarget(width, height)
+    @effectSaveTarget = new THREE.SavePass(
+        new THREE.WebGLRenderTarget(width, height)
     )
 
     # This is the effect that blends two buffers together for motion blur.
@@ -106,7 +106,7 @@ class ThreeJsSystem
         mixRatio = 0
 
     # Blend using the previously saved buffer and a mixRatio
-    @effectBlend = new threejs.ShaderPass(threejs.LCLBlendShader, "tDiffuse1")
+    @effectBlend = new THREE.ShaderPass(THREE.LCLBlendShader, "tDiffuse1")
     @effectBlend.uniforms.tDiffuse2.value = @effectSaveTarget.renderTarget.texture
     @effectBlend.uniforms.mixRatio.value = mixRatio
 
@@ -117,7 +117,7 @@ class ThreeJsSystem
     @composer.addPass(@effectSaveTarget)
 
     # Render everything to the screen
-    @screenPass = new threejs.ShaderPass(threejs.CopyShader)
+    @screenPass = new THREE.ShaderPass(THREE.CopyShader)
     @screenPass.renderToScreen = true
     @composer.addPass(@screenPass)
 
