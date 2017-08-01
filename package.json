@@ -2,6 +2,11 @@
   "name": "livecodelab",
   "version": "0.1.0",
   "description": "A live coding environment for the browser",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/davidedc/livecodelab/issues"
+  },
+  "repository": "davidedc/livecodelab",
   "scripts": {
     "build": "webpack -p",
     "devbuild": "webpack -d",
