@@ -8,8 +8,8 @@ class MatrixCommands
 
   matrixStack: []
 
-  constructor: (@three, @timeKeeper) ->
-    @worldMatrix = new @three.Matrix4()
+  constructor: (@timeKeeper) ->
+    @worldMatrix = new THREE.Matrix4()
 
   addToScope: (scope) ->
 
@@ -32,7 +32,7 @@ class MatrixCommands
 
   pushMatrix: ->
     @matrixStack.push @worldMatrix
-    @worldMatrix = (new @three.Matrix4()).copy(@worldMatrix)
+    @worldMatrix = (new THREE.Matrix4()).copy(@worldMatrix)
 
   # in the following case:
   #  flashing = <if random < 0.5 then scale 0>
@@ -85,7 +85,7 @@ class MatrixCommands
 
     @pushMatrix() if appendedFunctionsStartIndex?
     @worldMatrix.multiply(
-      new @three.Matrix4().makeTranslation(arg_a, arg_b, arg_c)
+      new THREE.Matrix4().makeTranslation(arg_a, arg_b, arg_c)
     )
     if appendedFunctionsStartIndex?
       while _.isFunction arguments[appendedFunctionsStartIndex]
@@ -123,8 +123,8 @@ class MatrixCommands
 
     @pushMatrix() if appendedFunctionsStartIndex?
     @worldMatrix.multiply(
-      new @three.Matrix4().makeRotationFromEuler(
-        new @three.Euler(arg_a,arg_b,arg_c,'XYZ')
+      new THREE.Matrix4().makeRotationFromEuler(
+        new THREE.Euler(arg_a,arg_b,arg_c,'XYZ')
       )
     )
     if appendedFunctionsStartIndex?
@@ -168,7 +168,7 @@ class MatrixCommands
     arg_b = 0.000000001  if arg_b > -0.000000001 and arg_b < 0.000000001
     arg_c = 0.000000001  if arg_c > -0.000000001 and arg_c < 0.000000001
 
-    @worldMatrix.multiply(new @three.Matrix4().makeScale(arg_a, arg_b, arg_c))
+    @worldMatrix.multiply(new THREE.Matrix4().makeScale(arg_a, arg_b, arg_c))
     if appendedFunctionsStartIndex?
       while _.isFunction arguments[appendedFunctionsStartIndex]
         result = arguments[appendedFunctionsStartIndex]()

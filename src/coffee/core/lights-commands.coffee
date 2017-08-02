@@ -7,7 +7,6 @@ class LightsCommands
   lightsAreOn: false
   constructor: (
     @graphicsCommands,
-    @three,
     @threeJsSystem,
     @colourFunctions
   ) ->
@@ -63,7 +62,7 @@ class LightsCommands
       # so the faces of the cube would all be of the same exact color.
       # Note that in Three.js versions before r50 the AmbientLight
       # would work like a PointLight does now.
-      pooledAmbientLight = new @three.PointLight(colorToBeUsed)
+      pooledAmbientLight = new THREE.PointLight(colorToBeUsed)
       pooledAmbientLight.position.set 10, 50, 130
       newLightCreated = true
       ambientLightsPool.push pooledAmbientLight
