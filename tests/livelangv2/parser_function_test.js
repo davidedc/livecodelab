@@ -230,7 +230,7 @@ describe('Function', function() {
 
   it('complex expression function is parsed', function() {
     var program =
-      'foo = (x, y, j, z) -> spread * (  ( noise  (x * abs (sin (time+y) * movmentSpeed)) / (j + z) ) - 0.5  )';
+      'foo = (x, y, j, z) -> spread * (  ( noise(x * abs(sin(time+y) * movmentSpeed)) / (j + z) ) - 0.5  )';
 
     var parsed = parser.parse(program, {
       functionNames: ['noise', 'abs', 'sin'],
@@ -247,45 +247,44 @@ describe('Function', function() {
             ast.Variable('spread'),
             ast.BinaryOp(
               '-',
-              ast.Application(
-                'noise',
-                [
-                  ast.BinaryOp(
-                    '/',
+              ast.BinaryOp(
+                '/',
+                ast.Application(
+                  'noise',
+                  [
                     ast.BinaryOp(
                       '*',
                       ast.Variable('x'),
                       ast.Application(
                         'abs',
                         [
-                          ast.Application(
-                            'sin',
-                            [
-                              ast.BinaryOp(
-                                '*',
+                          ast.BinaryOp(
+                            '*',
+                            ast.Application(
+                              'sin',
+                              [
                                 ast.BinaryOp(
                                   '+',
                                   ast.Variable('time'),
                                   ast.Variable('y')
-                                ),
-                                ast.Variable('movmentSpeed')
-                              )
-                            ],
-                            null
+                                )
+                              ],
+                              null
+                            ),
+                            ast.Variable('movmentSpeed')
                           )
                         ],
                         null
                       )
-                    ),
-                    ast.BinaryOp('+', ast.Variable('j'), ast.Variable('z'))
-                  )
-                ],
-                null
+                    )
+                  ],
+                  null
+                ),
+                ast.BinaryOp('+', ast.Variable('j'), ast.Variable('z'))
               ),
               ast.Num(0.5)
             )
-          ),
-          false
+          )
         )
       )
     ]);
@@ -390,6 +389,47 @@ describe('Function', function() {
 
     var expected = ast.Block([
       ast.Application('box', [ast.Application('bar', [ast.Num(3)], null)], null)
+    ]);
+
+    assert.deepEqual(parsed, expected);
+  });
+
+  it('parens work as expectd with functions', function() {
+    var program = dedent(`
+                         a = bar 3 + 1
+                         b = bar(3) + 1
+                         c = bar (3) + 1
+                         `);
+    var parsed = parser.parse(program, {
+      functionNames: ['bar'],
+      inlinableFunctions: []
+    });
+
+    var expected = ast.Block([
+      ast.Assignment(
+        'a',
+        ast.Application(
+          'bar',
+          [ast.BinaryOp('+', ast.Num(3), ast.Num(1))],
+          null
+        )
+      ),
+      ast.Assignment(
+        'b',
+        ast.BinaryOp(
+          '+',
+          ast.Application('bar', [ast.Num(3)], null),
+          ast.Num(1)
+        )
+      ),
+      ast.Assignment(
+        'c',
+        ast.Application(
+          'bar',
+          [ast.BinaryOp('+', ast.Num(3), ast.Num(1))],
+          null
+        )
+      )
     ]);
 
     assert.deepEqual(parsed, expected);

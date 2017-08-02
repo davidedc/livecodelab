@@ -101,7 +101,11 @@ Application "application"
   / SimpleApplication
 
 SimpleApplication "simple application"
-  = name:FunctionName _ args:ArgumentList? {
+  = name:FunctionName "(" _ args:ArgumentList? _ ")" {
+      var argList =  optionalList(args, 0);
+      return Ast.Node.Application(name, argList, null);
+  }
+  / name:FunctionName _ args:ArgumentList? {
       var argList =  optionalList(args, 0);
       return Ast.Node.Application(name, argList, null);
   }
