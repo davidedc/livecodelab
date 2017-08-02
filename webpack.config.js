@@ -1,4 +1,4 @@
-/* global process */
+/* global process, require, module, __dirname */
 
 var path = require('path');
 var webpack = require('webpack');
@@ -16,7 +16,6 @@ module.exports = {
         exclude: [
           /node_modules/,
           /jquery.*\.js/,
-          /threejs/,
           /coffee-script\.js/,
           /codemirror/
         ],
