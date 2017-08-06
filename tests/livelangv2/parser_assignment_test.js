@@ -1,18 +1,18 @@
 /* global describe, it */
 
-var parser = require('../../src/grammar/lcl');
-var ast = require('../../src/js/lcl/ast').Node;
+import parser from '../../src/grammar/lcl';
+import {
+  Assignment,
+  BinaryOp,
+  Block,
+  Num,
+  UnaryOp,
+  Variable
+} from '../../src/js/lcl/ast';
 
-var dedent = require('dentist').dedent;
+import { dedent } from 'dentist';
 
-var Block = ast.Block;
-var Assignment = ast.Assignment;
-var BinaryOp = ast.BinaryOp;
-var UnaryOp = ast.UnaryOp;
-var Num = ast.Num;
-var Variable = ast.Variable;
-
-var assert = require('assert');
+import assert from 'assert';
 
 describe('Assignment', function() {
   it('process function works', function() {

@@ -1,10 +1,10 @@
 /* global describe, it */
 
-var parser = require('../../src/grammar/lcl');
+import parser from '../../src/grammar/lcl';
 
-var dedent = require('dentist').dedent;
+import { dedent } from 'dentist';
 
-var assert = require('assert');
+import assert from 'assert';
 
 describe('Old Language tests', function() {
   it('example 1 from old language tests', function() {

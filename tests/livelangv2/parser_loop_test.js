@@ -1,11 +1,18 @@
 /* global describe, it */
 
-var parser = require('../../src/grammar/lcl');
-var ast = require('../../src/js/lcl/ast').Node;
+import parser from '../../src/grammar/lcl';
+import {
+  Application,
+  Assignment,
+  Block,
+  Num,
+  Times,
+  Variable
+} from '../../src/js/lcl/ast';
 
-var dedent = require('dentist').dedent;
+import { dedent } from 'dentist';
 
-var assert = require('assert');
+import assert from 'assert';
 
 describe('Loop', function() {
   it('basic times loop works', function() {
@@ -18,12 +25,8 @@ describe('Loop', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([
-      ast.Times(
-        ast.Num(4),
-        ast.Block([ast.Application('box', [ast.Num(4)], null)]),
-        null
-      )
+    var expected = Block([
+      Times(Num(4), Block([Application('box', [Num(4)])]))
     ]);
     assert.deepEqual(parsed, expected);
   });
@@ -38,12 +41,8 @@ describe('Loop', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([
-      ast.Times(
-        ast.Num(4),
-        ast.Block([ast.Application('box', [ast.Num(4)], null)]),
-        'i'
-      )
+    var expected = Block([
+      Times(Num(4), Block([Application('box', [Num(4)])]), 'i')
     ]);
     assert.deepEqual(parsed, expected);
   });
@@ -59,13 +58,9 @@ describe('Loop', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([
-      ast.Assignment('foo', ast.Num(100)),
-      ast.Times(
-        ast.Variable('foo'),
-        ast.Block([ast.Application('box', [ast.Num(4)], null)]),
-        'i'
-      )
+    var expected = Block([
+      Assignment('foo', Num(100)),
+      Times(Variable('foo'), Block([Application('box', [Num(4)])]), 'i')
     ]);
     assert.deepEqual(parsed, expected);
   });
@@ -77,18 +72,8 @@ describe('Loop', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([
-      ast.Times(
-        ast.Num(4),
-        ast.Block([
-          ast.Times(
-            ast.Num(3),
-            ast.Block([ast.Application('box', [], null)]),
-            null
-          )
-        ]),
-        null
-      )
+    var expected = Block([
+      Times(Num(4), Block([Times(Num(3), Block([Application('box', [])]))]))
     ]);
     assert.deepEqual(parsed, expected);
   });

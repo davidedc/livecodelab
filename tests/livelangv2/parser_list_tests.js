@@ -1,11 +1,18 @@
 /* global describe, it */
 
-var parser = require('../../src/grammar/lcl');
-var ast = require('../../src/js/lcl/ast').Node;
+import parser from '../../src/grammar/lcl';
+import {
+  Assignment,
+  Block,
+  DeIndex,
+  List,
+  Num,
+  Variable
+} from '../../src/js/lcl/ast';
 
-var dedent = require('dentist').dedent;
+import { dedent } from 'dentist';
 
-var assert = require('assert');
+import assert from 'assert';
 
 describe('List', function() {
   it('basic list literal works', function() {
@@ -17,9 +24,7 @@ describe('List', function() {
       inlinableFunctions: []
     });
 
-    var expected = ast.Block([
-      ast.Assignment('a', ast.List([ast.Num(1), ast.Num(3), ast.Num(5)]))
-    ]);
+    var expected = Block([Assignment('a', List([Num(1), Num(3), Num(5)]))]);
     assert.deepEqual(parsed, expected);
   });
 
@@ -33,9 +38,9 @@ describe('List', function() {
       inlinableFunctions: []
     });
 
-    var expected = ast.Block([
-      ast.Assignment('a', ast.List([ast.Num(1), ast.Num(3), ast.Num(5)])),
-      ast.Assignment('b', ast.DeIndex(ast.Variable('a'), ast.Num(0)))
+    var expected = Block([
+      Assignment('a', List([Num(1), Num(3), Num(5)])),
+      Assignment('b', DeIndex(Variable('a'), Num(0)))
     ]);
     assert.deepEqual(parsed, expected);
   });

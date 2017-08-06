@@ -1,11 +1,11 @@
 /* global describe, it */
 
-var parser = require('../../src/grammar/lcl');
-var ast = require('../../src/js/lcl/ast').Node;
+import parser from '../../src/grammar/lcl';
+import { Application, Block, DoOnce, Num } from '../../src/js/lcl/ast';
 
-var dedent = require('dentist').dedent;
+import { dedent } from 'dentist';
 
-var assert = require('assert');
+import assert from 'assert';
 
 describe('Do Once', function() {
   it('should be parsed with an inline expression', function() {
@@ -15,9 +15,7 @@ describe('Do Once', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([
-      ast.DoOnce(true, ast.Block([ast.Application('box', [], null)]))
-    ]);
+    var expected = Block([DoOnce(true, Block([Application('box', [])]))]);
     assert.deepEqual(parsed, expected);
   });
 
@@ -28,9 +26,7 @@ describe('Do Once', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([
-      ast.DoOnce(false, ast.Block([ast.Application('box', [], null)]))
-    ]);
+    var expected = Block([DoOnce(false, Block([Application('box', [])]))]);
 
     assert.deepEqual(parsed, expected);
   });
@@ -46,15 +42,11 @@ describe('Do Once', function() {
       inlinableFunctions: ['rotate', 'box']
     });
 
-    var expected = ast.Block([
-      ast.DoOnce(
+    var expected = Block([
+      DoOnce(
         true,
-        ast.Block([
-          ast.Application(
-            'rotate',
-            [],
-            ast.Block([ast.Application('box', [ast.Num(4)], null)])
-          )
+        Block([
+          Application('rotate', [], Block([Application('box', [Num(4)])]))
         ])
       )
     ]);
@@ -73,15 +65,11 @@ describe('Do Once', function() {
       inlinableFunctions: ['rotate', 'box']
     });
 
-    var expected = ast.Block([
-      ast.DoOnce(
+    var expected = Block([
+      DoOnce(
         false,
-        ast.Block([
-          ast.Application(
-            'rotate',
-            [],
-            ast.Block([ast.Application('box', [ast.Num(4)], null)])
-          )
+        Block([
+          Application('rotate', [], Block([Application('box', [Num(4)])]))
         ])
       )
     ]);

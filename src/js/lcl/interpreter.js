@@ -1,96 +1,119 @@
-var helpers = require('./interpreter-funcs');
-var _ = require('underscore');
+import _ from 'underscore';
 
-var Interpreter = {};
-var internal = {};
-Interpreter.internal = internal;
+import {
+  NULL,
+  BLOCK,
+  ASSIGNMENT,
+  APPLICATION,
+  IF,
+  CLOSURE,
+  TIMES,
+  DOONCE,
+  UNARYOP,
+  BINARYOP,
+  DEINDEX,
+  NUM,
+  VARIABLE,
+  STRING,
+  LIST
+} from './ast/types';
 
-Interpreter.run = function(programBlock, globalscope) {
-  var state = {
+function exists(node) {
+  return node.type !== NULL;
+}
+
+function createChildScope(parentScope) {
+  return Object.create(parentScope);
+}
+
+export const internal = {};
+
+export function run(programBlock, globalscope) {
+  const state = {
     exitCode: 0,
     doOnceTriggered: false
   };
 
-  if (programBlock.ast !== 'BLOCK') {
+  if (programBlock.type !== BLOCK) {
     state.exitCode = 1;
     return state;
   }
 
   internal.evaluate(state, programBlock, globalscope);
   return state;
-};
+}
 
 internal.evaluate = function(state, node, scope) {
   var output;
 
-  switch (node.ast) {
-    case 'BLOCK':
+  switch (node.type) {
+    case BLOCK:
       output = internal.evaluateBlock(state, node, scope);
       break;
 
-    case 'ASSIGNMENT':
+    case ASSIGNMENT:
       output = internal.evaluateAssignment(state, node, scope);
       break;
 
-    case 'APPLICATION':
+    case APPLICATION:
       output = internal.evaluateApplication(state, node, scope);
       break;
 
-    case 'IF':
+    case IF:
       output = internal.evaluateIf(state, node, scope);
       break;
 
-    case 'CLOSURE':
+    case CLOSURE:
       output = internal.evaluateClosure(state, node, scope);
       break;
 
-    case 'TIMES':
+    case TIMES:
       output = internal.evaluateTimes(state, node, scope);
       break;
 
-    case 'DOONCE':
+    case DOONCE:
       output = internal.evaluateDoOnce(state, node, scope);
       break;
 
-    case 'BINARYOP':
+    case BINARYOP:
       output = internal.evaluateBinaryOp(state, node, scope);
       break;
 
-    case 'UNARYOP':
+    case UNARYOP:
       output = internal.evaluateUnaryOp(state, node, scope);
       break;
 
-    case 'NUMBER':
+    case NUM:
       output = node.value;
       break;
 
-    case 'VARIABLE':
+    case VARIABLE:
       output = internal.evaluateVariable(state, node, scope);
       break;
 
-    case 'DEINDEX':
+    case DEINDEX:
       output = internal.evaluateDeIndex(state, node, scope);
       break;
 
-    case 'STRING':
+    case STRING:
       output = node.value;
       break;
 
-    case 'LIST':
+    case LIST:
       output = _.map(node.values, v => {
         return internal.evaluate(state, v, scope);
       });
       break;
 
     default:
-      throw 'Unknown Symbol: ' + node.ast;
+      throw `Unknown AST Type: ${node.type}`;
   }
 
   return output;
 };
 
 internal.evaluateBlock = function(state, block, scope) {
-  var childScope = helpers.createChildScope(scope);
+  var childScope = createChildScope(scope);
   var output = null;
   var i, el;
   for (i = 0; i < block.elements.length; i += 1) {
@@ -108,12 +131,12 @@ internal.evaluateAssignment = function(state, assignment, scope) {
 };
 
 internal.evaluateApplication = function(state, application, scope) {
-  var func, barefunc, funcname, args, evaledargs, output, i, block;
+  var func, funcname, args, evaledargs, output, i, block;
 
   funcname = application.identifier;
 
   func = scope[funcname];
-  if (!helpers.exists(func)) {
+  if (!exists(func)) {
     throw 'Function not defined: ' + funcname;
   }
 
@@ -127,7 +150,7 @@ internal.evaluateApplication = function(state, application, scope) {
 
   // if this function call has a block section then add it to the args
   block = application.block;
-  if (helpers.exists(block)) {
+  if (exists(block)) {
     evaledargs.push(function() {
       internal.evaluateBlock(state, block, scope);
     });
@@ -172,7 +195,7 @@ internal.evaluateIf = function(state, ifStatement, scope) {
 
   if (internal.evaluate(state, predicate, scope)) {
     internal.evaluateBlock(state, ifblock, scope);
-  } else if (helpers.exists(elseblock)) {
+  } else if (exists(elseblock)) {
     internal.evaluateIf(state, elseblock, scope);
   }
 };
@@ -184,7 +207,7 @@ internal.evaluateClosure = function(state, closure, scope) {
 
   func = function(argvalues) {
     var i, childScope, output;
-    childScope = helpers.createChildScope(scope);
+    childScope = createChildScope(scope);
     for (i = 0; i < argnames.length; i += 1) {
       childScope[argnames[i]] = argvalues[i];
     }
@@ -206,7 +229,7 @@ internal.evaluateTimes = function(state, times, scope) {
   var loops = internal.evaluate(state, times.number, scope);
   var block = times.block;
   var loopVar = times.loopVar;
-  var childScope = helpers.createChildScope(scope);
+  var childScope = createChildScope(scope);
 
   for (i = 0; i < loops; i += 1) {
     childScope[loopVar] = i;
@@ -312,7 +335,7 @@ internal.evaluateBinaryOp = function(state, binaryOp, scope) {
 
 internal.evaluateVariable = function(state, variable, scope) {
   var output = scope[variable.identifier];
-  if (!helpers.exists(output)) {
+  if (!exists(output)) {
     throw 'Undefined Variable: ' + variable.identifier;
   }
   return output;
@@ -330,5 +353,3 @@ internal.evaluateDeIndex = function(state, deindex, scope) {
   var output = collection[index];
   return output;
 };
-
-module.exports = Interpreter;

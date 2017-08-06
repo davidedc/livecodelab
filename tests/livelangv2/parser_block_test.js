@@ -1,11 +1,11 @@
 /* global describe, it */
 
-var parser = require('../../src/grammar/lcl');
-var ast = require('../../src/js/lcl/ast').Node;
+import parser from '../../src/grammar/lcl';
+import { Application, Block, DoOnce, Num } from '../../src/js/lcl/ast';
 
-var dedent = require('dentist').dedent;
+import { dedent } from 'dentist';
 
-var assert = require('assert');
+import assert from 'assert';
 
 describe('Block', function() {
   it('simple doOnce block parses', function() {
@@ -16,9 +16,9 @@ describe('Block', function() {
                          `);
     var parsed = parser.parse(program, { functionNames: ['peg', 'box'] });
 
-    var expected = ast.Block([
-      ast.DoOnce(true, ast.Block([ast.Application('box', [ast.Num(4)], null)])),
-      ast.Application('peg', [ast.Num(3), ast.Num(4)], null)
+    var expected = Block([
+      DoOnce(true, Block([Application('box', [Num(4)])])),
+      Application('peg', [Num(3), Num(4)])
     ]);
     assert.deepEqual(parsed, expected);
   });
@@ -37,24 +37,20 @@ describe('Block', function() {
       inlinableFunctions: ['rotate', 'ball', 'peg', 'box']
     });
 
-    var expected = ast.Block([
-      ast.DoOnce(
+    var expected = Block([
+      DoOnce(
         true,
-        ast.Block([
-          ast.DoOnce(
+        Block([
+          DoOnce(
             true,
-            ast.Block([
-              ast.Application(
-                'rotate',
-                [],
-                ast.Block([ast.Application('box', [ast.Num(4)], null)])
-              )
+            Block([
+              Application('rotate', [], Block([Application('box', [Num(4)])]))
             ])
           ),
-          ast.Application('peg', [ast.Num(4)], null)
+          Application('peg', [Num(4)])
         ])
       ),
-      ast.Application('ball', [ast.Num(2)], null)
+      Application('ball', [Num(2)])
     ]);
     assert.deepEqual(parsed, expected);
   });

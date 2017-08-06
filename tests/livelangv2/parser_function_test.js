@@ -1,25 +1,30 @@
 /* global describe, it */
 
-var parser = require('../../src/grammar/lcl');
-var ast = require('../../src/js/lcl/ast').Node;
+import parser from '../../src/grammar/lcl';
+import {
+  Application,
+  Assignment,
+  BinaryOp,
+  Block,
+  Closure,
+  If,
+  Num,
+  Variable
+} from '../../src/js/lcl/ast';
 
-var dedent = require('dentist').dedent;
+import { dedent } from 'dentist';
 
-var assert = require('assert');
+import assert from 'assert';
 
 describe('Function', function() {
   it('expression function with one argument is parsed', function() {
     var program = 'foo = (a) -> a + 1';
     var parsed = parser.parse(program);
 
-    var expected = ast.Block([
-      ast.Assignment(
+    var expected = Block([
+      Assignment(
         'foo',
-        ast.Closure(
-          ['a'],
-          ast.BinaryOp('+', ast.Variable('a'), ast.Num(1)),
-          false
-        )
+        Closure(['a'], BinaryOp('+', Variable('a'), Num(1)), false)
       )
     ]);
 
@@ -32,14 +37,10 @@ describe('Function', function() {
                          `);
     var parsed = parser.parse(program);
 
-    var expected = ast.Block([
-      ast.Assignment(
+    var expected = Block([
+      Assignment(
         'foo',
-        ast.Closure(
-          ['a', 'b'],
-          ast.BinaryOp('+', ast.Variable('a'), ast.Variable('b')),
-          false
-        )
+        Closure(['a', 'b'], BinaryOp('+', Variable('a'), Variable('b')), false)
       )
     ]);
 
@@ -57,17 +58,13 @@ describe('Function', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([
-      ast.Assignment(
+    var expected = Block([
+      Assignment(
         'foo',
-        ast.Closure(
-          [],
-          ast.BinaryOp('*', ast.Num(255), ast.Application('random', [], null)),
-          false
-        )
+        Closure([], BinaryOp('*', Num(255), Application('random', [])), false)
       ),
-      ast.Application('fill', [ast.Application('foo', [])], null),
-      ast.Application('box', [], null)
+      Application('fill', [Application('foo', [])]),
+      Application('box', [])
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -80,7 +77,7 @@ describe('Function', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([ast.Application('box', [ast.Num(1)], null)]);
+    var expected = Block([Application('box', [Num(1)])]);
 
     assert.deepEqual(parsed, expected);
   });
@@ -92,7 +89,7 @@ describe('Function', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([ast.Application('box', [], null)]);
+    var expected = Block([Application('box', [])]);
 
     assert.deepEqual(parsed, expected);
   });
@@ -108,17 +105,14 @@ describe('Function', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([
-      ast.Assignment(
+    var expected = Block([
+      Assignment(
         'bar',
-        ast.Closure(
+        Closure(
           ['a', 'b'],
-          ast.Block([
-            ast.Assignment(
-              'c',
-              ast.BinaryOp('+', ast.Variable('a'), ast.Variable('b'))
-            ),
-            ast.Application('box', [ast.Variable('c'), ast.Num(3)], null)
+          Block([
+            Assignment('c', BinaryOp('+', Variable('a'), Variable('b'))),
+            Application('box', [Variable('c'), Num(3)])
           ]),
           false
         )
@@ -141,19 +135,16 @@ describe('Function', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([
-      ast.Assignment(
+    var expected = Block([
+      Assignment(
         'bar',
-        ast.Closure(
+        Closure(
           ['a', 'b'],
-          ast.Block([
-            ast.If(
-              ast.BinaryOp('>', ast.Variable('a'), ast.Variable('b')),
-              ast.Block([ast.Application('box', [ast.Variable('a')], null)]),
-              ast.If(
-                ast.Num(1),
-                ast.Block([ast.Application('box', [ast.Variable('b')], null)])
-              )
+          Block([
+            If(
+              BinaryOp('>', Variable('a'), Variable('b')),
+              Block([Application('box', [Variable('a')])]),
+              If(Num(1), Block([Application('box', [Variable('b')])]))
             )
           ]),
           false
@@ -171,28 +162,16 @@ describe('Function', function() {
                          `);
     var parsed = parser.parse(program);
 
-    var expected = ast.Block([
-      ast.Assignment(
+    var expected = Block([
+      Assignment(
         'foo',
-        ast.Closure(
-          ['a'],
-          ast.BinaryOp('+', ast.Variable('a'), ast.Num(3)),
-          false
-        )
+        Closure(['a'], BinaryOp('+', Variable('a'), Num(3)), false)
       ),
-      ast.Assignment(
+      Assignment(
         'bar',
-        ast.Application(
-          'foo',
-          [
-            ast.BinaryOp(
-              '+',
-              ast.Num(1),
-              ast.Application('foo', [ast.Num(2)], null)
-            )
-          ],
-          null
-        )
+        Application('foo', [
+          BinaryOp('+', Num(1), Application('foo', [Num(2)]))
+        ])
       )
     ]);
 
@@ -206,22 +185,14 @@ describe('Function', function() {
                          `);
     var parsed = parser.parse(program);
 
-    var expected = ast.Block([
-      ast.Assignment(
+    var expected = Block([
+      Assignment(
         'foo',
-        ast.Closure(
-          ['a', 'b'],
-          ast.BinaryOp('+', ast.Variable('a'), ast.Variable('b')),
-          false
-        )
+        Closure(['a', 'b'], BinaryOp('+', Variable('a'), Variable('b')), false)
       ),
-      ast.Assignment(
+      Assignment(
         'bar',
-        ast.Application(
-          'foo',
-          [ast.Application('foo', [ast.Num(1), ast.Num(2), ast.Num(3)], null)],
-          null
-        )
+        Application('foo', [Application('foo', [Num(1), Num(2), Num(3)])])
       )
     ]);
 
@@ -237,52 +208,36 @@ describe('Function', function() {
       inlinableFunctions: []
     });
 
-    var expected = ast.Block([
-      ast.Assignment(
+    var expected = Block([
+      Assignment(
         'foo',
-        ast.Closure(
+        Closure(
           ['x', 'y', 'j', 'z'],
-          ast.BinaryOp(
+          BinaryOp(
             '*',
-            ast.Variable('spread'),
-            ast.BinaryOp(
+            Variable('spread'),
+            BinaryOp(
               '-',
-              ast.BinaryOp(
+              BinaryOp(
                 '/',
-                ast.Application(
-                  'noise',
-                  [
-                    ast.BinaryOp(
-                      '*',
-                      ast.Variable('x'),
-                      ast.Application(
-                        'abs',
-                        [
-                          ast.BinaryOp(
-                            '*',
-                            ast.Application(
-                              'sin',
-                              [
-                                ast.BinaryOp(
-                                  '+',
-                                  ast.Variable('time'),
-                                  ast.Variable('y')
-                                )
-                              ],
-                              null
-                            ),
-                            ast.Variable('movmentSpeed')
-                          )
-                        ],
-                        null
+                Application('noise', [
+                  BinaryOp(
+                    '*',
+                    Variable('x'),
+                    Application('abs', [
+                      BinaryOp(
+                        '*',
+                        Application('sin', [
+                          BinaryOp('+', Variable('time'), Variable('y'))
+                        ]),
+                        Variable('movmentSpeed')
                       )
-                    )
-                  ],
-                  null
-                ),
-                ast.BinaryOp('+', ast.Variable('j'), ast.Variable('z'))
+                    ])
+                  )
+                ]),
+                BinaryOp('+', Variable('j'), Variable('z'))
               ),
-              ast.Num(0.5)
+              Num(0.5)
             )
           )
         )
@@ -299,18 +254,8 @@ describe('Function', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([
-      ast.Application(
-        'box',
-        [
-          ast.BinaryOp(
-            '+',
-            ast.BinaryOp('+', ast.Num(3), ast.Num(4)),
-            ast.Num(2)
-          )
-        ],
-        null
-      )
+    var expected = Block([
+      Application('box', [BinaryOp('+', BinaryOp('+', Num(3), Num(4)), Num(2))])
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -323,15 +268,11 @@ describe('Function', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([
-      ast.Application(
-        'box',
-        [
-          ast.BinaryOp('+', ast.Num(3), ast.Num(4)),
-          ast.BinaryOp('*', ast.Variable('a'), ast.Num(2))
-        ],
-        null
-      )
+    var expected = Block([
+      Application('box', [
+        BinaryOp('+', Num(3), Num(4)),
+        BinaryOp('*', Variable('a'), Num(2))
+      ])
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -344,19 +285,11 @@ describe('Function', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([
-      ast.Application(
-        'box',
-        [
-          ast.BinaryOp(
-            '*',
-            ast.BinaryOp('+', ast.Num(3), ast.Num(4)),
-            ast.Num(2)
-          ),
-          ast.BinaryOp('*', ast.Variable('a'), ast.Num(2))
-        ],
-        null
-      )
+    var expected = Block([
+      Application('box', [
+        BinaryOp('*', BinaryOp('+', Num(3), Num(4)), Num(2)),
+        BinaryOp('*', Variable('a'), Num(2))
+      ])
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -369,12 +302,8 @@ describe('Function', function() {
       inlinableFunctions: ['rotate', 'box']
     });
 
-    var expected = ast.Block([
-      ast.Application(
-        'rotate',
-        [ast.Num(2)],
-        ast.Block([ast.Application('box', [ast.Num(3)], null)])
-      )
+    var expected = Block([
+      Application('rotate', [Num(2)], Block([Application('box', [Num(3)])]))
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -387,9 +316,7 @@ describe('Function', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([
-      ast.Application('box', [ast.Application('bar', [ast.Num(3)], null)], null)
-    ]);
+    var expected = Block([Application('box', [Application('bar', [Num(3)])])]);
 
     assert.deepEqual(parsed, expected);
   });
@@ -405,31 +332,10 @@ describe('Function', function() {
       inlinableFunctions: []
     });
 
-    var expected = ast.Block([
-      ast.Assignment(
-        'a',
-        ast.Application(
-          'bar',
-          [ast.BinaryOp('+', ast.Num(3), ast.Num(1))],
-          null
-        )
-      ),
-      ast.Assignment(
-        'b',
-        ast.BinaryOp(
-          '+',
-          ast.Application('bar', [ast.Num(3)], null),
-          ast.Num(1)
-        )
-      ),
-      ast.Assignment(
-        'c',
-        ast.Application(
-          'bar',
-          [ast.BinaryOp('+', ast.Num(3), ast.Num(1))],
-          null
-        )
-      )
+    var expected = Block([
+      Assignment('a', Application('bar', [BinaryOp('+', Num(3), Num(1))])),
+      Assignment('b', BinaryOp('+', Application('bar', [Num(3)]), Num(1))),
+      Assignment('c', Application('bar', [BinaryOp('+', Num(3), Num(1))]))
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -442,19 +348,19 @@ describe('Function', function() {
       inlinableFunctions: ['rotate', 'fill', 'box', 'peg']
     });
 
-    var expected = ast.Block([
-      ast.Application(
+    var expected = Block([
+      Application(
         'rotate',
-        [ast.Num(2)],
-        ast.Block([
-          ast.Application(
+        [Num(2)],
+        Block([
+          Application(
             'fill',
-            [ast.Variable('red')],
-            ast.Block([
-              ast.Application(
+            [Variable('red')],
+            Block([
+              Application(
                 'box',
-                [ast.Num(3), ast.Num(4)],
-                ast.Block([ast.Application('peg', [ast.Num(2)], null)])
+                [Num(3), Num(4)],
+                Block([Application('peg', [Num(2)])])
               )
             ])
           )
@@ -475,28 +381,28 @@ describe('Function', function() {
       inlinableFunctions: ['rotate', 'scale', 'move', 'box', 'peg']
     });
 
-    var expected = ast.Block([
-      ast.Assignment('a', ast.Num(3)),
-      ast.Application(
+    var expected = Block([
+      Assignment('a', Num(3)),
+      Application(
         'rotate',
         [],
-        ast.Block([
-          ast.Application(
+        Block([
+          Application(
             'scale',
             [],
-            ast.Block([
-              ast.Application(
+            Block([
+              Application(
                 'move',
-                [ast.Variable('a')],
-                ast.Block([
-                  ast.Application(
+                [Variable('a')],
+                Block([
+                  Application(
                     'rotate',
                     [],
-                    ast.Block([
-                      ast.Application(
+                    Block([
+                      Application(
                         'box',
-                        [ast.Num(3), ast.Num(4)],
-                        ast.Block([ast.Application('peg', [ast.Num(2)], null)])
+                        [Num(3), Num(4)],
+                        Block([Application('peg', [Num(2)])])
                       )
                     ])
                   )
@@ -518,11 +424,11 @@ describe('Function', function() {
       inlinableFunctions: ['scale', 'box']
     });
 
-    var expected = ast.Block([
-      ast.Application(
+    var expected = Block([
+      Application(
         'scale',
-        [ast.Application('wave', [], null)],
-        ast.Block([ast.Application('box', [], null)])
+        [Application('wave', [])],
+        Block([Application('box', [])])
       )
     ]);
 
@@ -536,11 +442,11 @@ describe('Function', function() {
       inlinableFunctions: ['scale', 'box']
     });
 
-    var expected = ast.Block([
-      ast.Application(
+    var expected = Block([
+      Application(
         'scale',
-        [ast.Application('wave', [ast.Application('wave', [], null)], null)],
-        ast.Block([ast.Application('box', [], null)])
+        [Application('wave', [Application('wave', [])])],
+        Block([Application('box', [])])
       )
     ]);
 

@@ -1,11 +1,17 @@
 /* global describe, it */
 
-var parser = require('../../src/grammar/lcl');
-var ast = require('../../src/js/lcl/ast').Node;
+import parser from '../../src/grammar/lcl';
+import {
+  Application,
+  Assignment,
+  Block,
+  Closure,
+  Num
+} from '../../src/js/lcl/ast';
 
-var dedent = require('dentist').dedent;
+import { dedent } from 'dentist';
 
-var assert = require('assert');
+import assert from 'assert';
 
 describe('Lazy Lambda', function() {
   it('lazy closure is parsed', function() {
@@ -15,14 +21,10 @@ describe('Lazy Lambda', function() {
       inlinableFunctions: ['box']
     });
 
-    var expected = ast.Block([
-      ast.Assignment(
+    var expected = Block([
+      Assignment(
         'foo',
-        ast.Closure(
-          [],
-          ast.Block([ast.Application('box', [ast.Num(3), ast.Num(4)], null)]),
-          true
-        )
+        Closure([], Block([Application('box', [Num(3), Num(4)])]), true)
       )
     ]);
 
@@ -40,20 +42,12 @@ describe('Lazy Lambda', function() {
       inlinableFunctions: ['rotate', 'box']
     });
 
-    var expected = ast.Block([
-      ast.Assignment(
+    var expected = Block([
+      Assignment(
         'foo',
-        ast.Closure(
-          [],
-          ast.Block([ast.Application('box', [ast.Num(3), ast.Num(4)], null)]),
-          true
-        )
+        Closure([], Block([Application('box', [Num(3), Num(4)])]), true)
       ),
-      ast.Application(
-        'rotate',
-        [],
-        ast.Block([ast.Application('foo', [], null)])
-      )
+      Application('rotate', [], Block([Application('foo', [])]))
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -69,26 +63,16 @@ describe('Lazy Lambda', function() {
       inlinableFunctions: ['rotate', 'box', 'scale']
     });
 
-    var expected = ast.Block([
-      ast.Assignment(
+    var expected = Block([
+      Assignment(
         'bigger',
-        ast.Closure(
-          [],
-          ast.Block([ast.Application('scale', [ast.Num(1.1)], null)]),
-          true
-        ),
+        Closure([], Block([Application('scale', [Num(1.1)])]), true),
         true
       ),
-      ast.Application(
+      Application(
         'rotate',
         [],
-        ast.Block([
-          ast.Application(
-            'bigger',
-            [],
-            ast.Block([ast.Application('box', [], null)])
-          )
-        ])
+        Block([Application('bigger', [], Block([Application('box', [])]))])
       )
     ]);
 

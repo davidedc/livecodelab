@@ -1,16 +1,16 @@
 /* global describe, it */
 
-var parser = require('../../src/grammar/lcl');
-var ast = require('../../src/js/lcl/ast').Node;
+import parser from '../../src/grammar/lcl';
+import { Assignment, Block, Str } from '../../src/js/lcl/ast';
 
-var assert = require('assert');
+import assert from 'assert';
 
 describe('Do Once', function() {
   it('simple string assignment passes', function() {
     var program = 'a = "string"';
     var parsed = parser.parse(program);
 
-    var expected = ast.Block([ast.Assignment('a', ast.Str('string'))]);
+    var expected = Block([Assignment('a', Str('string'))]);
 
     assert.deepEqual(parsed, expected);
   });
@@ -19,27 +19,25 @@ describe('Do Once', function() {
     var program = 'a = "string  sdf\tasdf"';
     var parsed = parser.parse(program);
 
-    var expected = ast.Block([
-      ast.Assignment('a', ast.Str('string  sdf\tasdf'))
-    ]);
+    var expected = Block([Assignment('a', Str('string  sdf\tasdf'))]);
 
     assert.deepEqual(parsed, expected);
   });
 
   it('squote string with other dquote char passes', function() {
-    var program = `a = 'stri"asdf'`;
+    var program = "a = 'stri\"asdf'";
     var parsed = parser.parse(program);
 
-    var expected = ast.Block([ast.Assignment('a', ast.Str('stri"asdf'))]);
+    var expected = Block([Assignment('a', Str('stri"asdf'))]);
 
     assert.deepEqual(parsed, expected);
   });
 
   it('dquote string with other squote char passes', function() {
-    var program = `a = "stri'asdf"`;
+    var program = 'a = "stri\'asdf"';
     var parsed = parser.parse(program);
 
-    var expected = ast.Block([ast.Assignment('a', ast.Str("stri'asdf"))]);
+    var expected = Block([Assignment('a', Str("stri'asdf"))]);
 
     assert.deepEqual(parsed, expected);
   });

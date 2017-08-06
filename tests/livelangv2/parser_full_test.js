@@ -1,18 +1,25 @@
 /* global describe, it */
 
-var parser = require('../../src/grammar/lcl');
-var ast = require('../../src/js/lcl/ast').Node;
+import parser from '../../src/grammar/lcl';
+import {
+  Application,
+  BinaryOp,
+  Block,
+  Num,
+  Times,
+  Variable
+} from '../../src/js/lcl/ast';
 
-var dedent = require('dentist').dedent;
+import { dedent } from 'dentist';
 
-var assert = require('assert');
+import assert from 'assert';
 
 describe('Parser', function() {
   it('always returns a block, even with an empty program', function() {
     var program = '';
     var parsed = parser.parse(program, {});
 
-    var expected = ast.Block([]);
+    var expected = Block([]);
 
     assert.deepEqual(parsed, expected);
   });
@@ -24,7 +31,7 @@ describe('Parser', function() {
                          `);
     var parsed = parser.parse(program, { functionNames: ['box'] });
 
-    var expected = ast.Block([ast.Application('box', [], null)]);
+    var expected = Block([Application('box', [])]);
 
     assert.deepEqual(parsed, expected);
   });
@@ -40,12 +47,8 @@ describe('Parser', function() {
       inlinableFunctions: ['rotate', 'box']
     });
 
-    var expected = ast.Block([
-      ast.Application(
-        'rotate',
-        [ast.Num(2), ast.Num(3)],
-        ast.Block([ast.Application('box', [], null)])
-      )
+    var expected = Block([
+      Application('rotate', [Num(2), Num(3)], Block([Application('box', [])]))
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -60,12 +63,8 @@ describe('Parser', function() {
       inlinableFunctions: ['rotate', 'box']
     });
 
-    var expected = ast.Block([
-      ast.Application(
-        'rotate',
-        [ast.Num(2), ast.Num(3)],
-        ast.Block([ast.Application('box', [], null)])
-      )
+    var expected = Block([
+      Application('rotate', [Num(2), Num(3)], Block([Application('box', [])]))
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -79,15 +78,15 @@ describe('Parser', function() {
       inlinableFunctions: ['rotate', 'fill', 'box']
     });
 
-    var expected = ast.Block([
-      ast.Application(
+    var expected = Block([
+      Application(
         'rotate',
-        [ast.Num(2), ast.Num(3)],
-        ast.Block([
-          ast.Application(
+        [Num(2), Num(3)],
+        Block([
+          Application(
             'fill',
-            [ast.Variable('red')],
-            ast.Block([ast.Application('box', [], null)])
+            [Variable('red')],
+            Block([Application('box', [])])
           )
         ])
       )
@@ -105,15 +104,15 @@ describe('Parser', function() {
       inlinableFunctions: ['rotate', 'fill', 'box']
     });
 
-    var expected = ast.Block([
-      ast.Application(
+    var expected = Block([
+      Application(
         'rotate',
-        [ast.Num(2), ast.Num(3)],
-        ast.Block([
-          ast.Application(
+        [Num(2), Num(3)],
+        Block([
+          Application(
             'fill',
-            [ast.Variable('red')],
-            ast.Block([ast.Application('box', [], null)])
+            [Variable('red')],
+            Block([Application('box', [])])
           )
         ])
       )
@@ -132,19 +131,19 @@ describe('Parser', function() {
       inlinableFunctions: ['scale', 'peg', 'ball']
     });
 
-    var expected = ast.Block([
-      ast.Application(
+    var expected = Block([
+      Application(
         'scale',
-        [ast.Num(2), ast.Application('wave', [ast.Num(2)], null)],
-        ast.Block([
-          ast.Application(
+        [Num(2), Application('wave', [Num(2)])],
+        Block([
+          Application(
             'peg',
             [],
-            ast.Block([
-              ast.Application(
+            Block([
+              Application(
                 'scale',
-                [ast.Num(2), ast.Application('wave', [ast.Num(2)], null)],
-                ast.Block([ast.Application('ball', [], null)])
+                [Num(2), Application('wave', [Num(2)])],
+                Block([Application('ball', [])])
               )
             ])
           )
@@ -162,15 +161,14 @@ describe('Parser', function() {
       inlinableFunctions: ['rotate', 'box']
     });
 
-    var expected = ast.Block([
-      ast.Application(
+    var expected = Block([
+      Application(
         'rotate',
         [],
-        ast.Block([
-          ast.Times(
-            ast.BinaryOp('+', ast.Application('wave', [], null), ast.Num(2)),
-            ast.Block([ast.Application('box', [], null)]),
-            null
+        Block([
+          Times(
+            BinaryOp('+', Application('wave', []), Num(2)),
+            Block([Application('box', [])])
           )
         ])
       )
