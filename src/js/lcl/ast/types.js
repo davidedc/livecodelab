@@ -13,4 +13,3 @@ export const NUM = 'NUM';
 export const VARIABLE = 'VARIABLE';
 export const STRING = 'STRING';
 export const LIST = 'LIST';
-export const COMMENT = 'COMMENT';
