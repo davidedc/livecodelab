@@ -1,18 +1,18 @@
 /* global describe, it */
 
-var parser = require('../../src/grammar/lcl');
-var ast = require('../../src/js/lcl/ast').Node;
+import parser from '../../src/grammar/lcl';
+import { Application, Block, Num } from '../../src/js/lcl/ast';
 
-var dedent = require('dentist').dedent;
+import { dedent } from 'dentist';
 
-var assert = require('assert');
+import assert from 'assert';
 
 describe('Comments', function() {
   it('ignores single comments', function() {
     var program = '// this is a comment';
     var parsed = parser.parse(program, {});
 
-    var expected = ast.Block([]);
+    var expected = Block([]);
 
     assert.deepEqual(parsed, expected);
   });
@@ -30,7 +30,7 @@ describe('Comments', function() {
                          `);
     var parsed = parser.parse(program, { functionNames: ['box'] });
 
-    var expected = ast.Block([ast.Application('box', [ast.Num(4)], null)]);
+    var expected = Block([Application('box', [Num(4)])]);
 
     assert.deepEqual(parsed, expected);
   });
@@ -43,7 +43,7 @@ describe('Comments', function() {
                          `);
     var parsed = parser.parse(program, { functionNames: ['box'] });
 
-    var expected = ast.Block([ast.Application('box', [ast.Num(4)], null)]);
+    var expected = Block([Application('box', [Num(4)])]);
 
     assert.deepEqual(parsed, expected);
   });
@@ -60,9 +60,9 @@ describe('Comments', function() {
                          `);
     var parsed = parser.parse(program, { functionNames: ['box', 'peg'] });
 
-    var expected = ast.Block([
-      ast.Application('box', [ast.Num(4)], null),
-      ast.Application('peg', [ast.Num(3)], null)
+    var expected = Block([
+      Application('box', [Num(4)]),
+      Application('peg', [Num(3)])
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -76,7 +76,7 @@ describe('Comments', function() {
                          `);
     var parsed = parser.parse(program, { functionNames: ['box'] });
 
-    var expected = ast.Block([ast.Application('box', [ast.Num(4)], null)]);
+    var expected = Block([Application('box', [Num(4)])]);
 
     assert.deepEqual(parsed, expected);
   });
@@ -96,12 +96,8 @@ describe('Comments', function() {
       inlinableFunctions: ['rotate']
     });
 
-    var expected = ast.Block([
-      ast.Application(
-        'rotate',
-        [],
-        ast.Block([ast.Application('peg', [ast.Num(3)], null)])
-      )
+    var expected = Block([
+      Application('rotate', [], Block([Application('peg', [Num(3)])]))
     ]);
 
     assert.deepEqual(parsed, expected);

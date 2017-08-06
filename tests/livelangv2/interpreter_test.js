@@ -1,16 +1,23 @@
 /* global describe, it */
 
-var Interpreter = require('../../src/js/lcl/interpreter');
-var parser = require('../../src/grammar/lcl');
-var ast = require('../../src/js/lcl/ast').Node;
+import { run } from '../../src/js/lcl/interpreter';
+import parser from '../../src/grammar/lcl';
+import {
+  Application,
+  Assignment,
+  BinaryOp,
+  Block,
+  Closure,
+  Num,
+  Variable
+} from '../../src/js/lcl/ast';
 
-var dedent = require('dentist').dedent;
+import { dedent } from 'dentist';
 
-var assert = require('assert');
+import assert from 'assert';
 
 describe('Interpreter', function() {
   it('evaluate simple expression', function() {
-    var i = Interpreter;
     var output;
     var scope = {
       result: {
@@ -23,13 +30,12 @@ describe('Interpreter', function() {
     var program = parser.parse('result 3 + 4 * 2', {
       functionNames: ['result']
     });
-    i.run(program, scope);
+    run(program, scope);
 
     assert.equal(output, 11, 'should return 11');
   });
 
   it('evaluate expression with variable', function() {
-    var i = Interpreter;
     var output;
     var scope = {
       result: {
@@ -46,13 +52,12 @@ describe('Interpreter', function() {
              result((a + 4) * foo)`),
       { functionNames: ['result'] }
     );
-    i.run(program, scope);
+    run(program, scope);
 
     assert.equal(output, 36, 'output should be 36');
   });
 
   it('times loop', function() {
-    var i = Interpreter;
     var output;
     var scope = {
       result: {
@@ -73,13 +78,12 @@ describe('Interpreter', function() {
       { functionNames: ['result'] }
     );
 
-    i.run(program, scope);
+    run(program, scope);
 
     assert.equal(output, 4, `output should be 4 not ${output}`);
   });
 
   it('function definition and usage', function() {
-    var i = Interpreter;
     var output;
     var scope = {
       result: {
@@ -101,38 +105,24 @@ describe('Interpreter', function() {
       { functionNames: ['result'] }
     );
 
-    var expected = ast.Block([
-      ast.Assignment(
-        'a',
-        ast.Closure(['x'], ast.BinaryOp('*', ast.Variable('x'), ast.Num(2)))
-      ),
-      ast.Assignment(
+    var expected = Block([
+      Assignment('a', Closure(['x'], BinaryOp('*', Variable('x'), Num(2)))),
+      Assignment(
         'b',
-        ast.Closure(
-          ['x', 'y'],
-          ast.BinaryOp('+', ast.Variable('x'), ast.Variable('y'))
-        )
+        Closure(['x', 'y'], BinaryOp('+', Variable('x'), Variable('y')))
       ),
-      ast.Application(
-        'result',
-        [
-          ast.BinaryOp(
-            '+',
-            ast.Application(
-              'b',
-              [ast.Application('a', [ast.Num(2)], null), ast.Num(3)],
-              null
-            ),
-            ast.Application('a', [ast.Num(1)], null)
-          )
-        ],
-        null
-      )
+      Application('result', [
+        BinaryOp(
+          '+',
+          Application('b', [Application('a', [Num(2)]), Num(3)]),
+          Application('a', [Num(1)])
+        )
+      ])
     ]);
 
     assert.deepEqual(program, expected);
 
-    i.run(program, scope);
+    run(program, scope);
 
     assert.equal(output, 9, `output should be 9 not ${output}`);
   });

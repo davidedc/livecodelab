@@ -1,7 +1,7 @@
 /* global describe, it */
 
 var parser = require('../../src/grammar/lcl');
-var ast = require('../../src/js/lcl/ast').Node;
+var ast = require('../../src/js/lcl/ast');
 
 var dedent = require('dentist').dedent;
 
@@ -24,8 +24,7 @@ describe('If', function() {
       ast.Assignment('a', ast.Num(3)),
       ast.If(
         ast.BinaryOp('==', ast.Variable('a'), ast.Num(3)),
-        ast.Block([ast.Application('box', [], null)]),
-        null
+        ast.Block([ast.Application('box', [])])
       )
     ]);
 
@@ -48,8 +47,7 @@ describe('If', function() {
       ast.Assignment('a', ast.Num(3)),
       ast.If(
         ast.BinaryOp('==', ast.Variable('a'), ast.Num(3)),
-        ast.Block([ast.Application('box', [], null)]),
-        null
+        ast.Block([ast.Application('box', [])])
       )
     ]);
 
@@ -73,8 +71,8 @@ describe('If', function() {
       ast.Assignment('a', ast.Num(3)),
       ast.If(
         ast.BinaryOp('==', ast.Variable('a'), ast.Num(3)),
-        ast.Block([ast.Application('box', [], null)]),
-        ast.If(ast.Num(1), ast.Block([ast.Application('peg', [], null)]))
+        ast.Block([ast.Application('box', [])]),
+        ast.If(ast.Num(1), ast.Block([ast.Application('peg', [])]))
       )
     ]);
 
@@ -96,10 +94,10 @@ describe('If', function() {
       ast.Assignment('a', ast.Num(3)),
       ast.If(
         ast.BinaryOp('==', ast.Variable('a'), ast.Num(3)),
-        ast.Block([ast.Application('box', [], null)]),
-        ast.Block([ast.Application('peg', [ast.Num(1)], null)])
+        ast.Block([ast.Application('box', [])]),
+        ast.Block([ast.Application('peg', [ast.Num(1)])])
       ),
-      ast.Application('box', [], null)
+      ast.Application('box', [])
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -123,11 +121,11 @@ describe('If', function() {
       ast.Assignment('a', ast.Num(3)),
       ast.If(
         ast.BinaryOp('==', ast.Variable('a'), ast.Num(1)),
-        ast.Block([ast.Application('box', [], null)]),
+        ast.Block([ast.Application('box', [])]),
         ast.If(
           ast.BinaryOp('==', ast.Variable('a'), ast.Num(2)),
-          ast.Block([ast.Application('ball', [], null)]),
-          ast.If(ast.Num(1), ast.Block([ast.Application('peg', [], null)]))
+          ast.Block([ast.Application('ball', [])]),
+          ast.If(ast.Num(1), ast.Block([ast.Application('peg', [])]))
         )
       )
     ]);
@@ -154,8 +152,8 @@ describe('If', function() {
         ast.Block([
           ast.If(
             ast.Num(1),
-            ast.Block([ast.Application('box', [], null)]),
-            ast.If(ast.Num(1), ast.Block([ast.Application('peg', [], null)]))
+            ast.Block([ast.Application('box', [])]),
+            ast.If(ast.Num(1), ast.Block([ast.Application('peg', [])]))
           )
         ])
       )
@@ -183,18 +181,14 @@ describe('If', function() {
           ast.Num(5)
         ),
         ast.Block([
-          ast.Application(
-            'ambientLight',
-            [ast.Num(255), ast.Num(255), ast.Num(255)],
-            null
-          )
+          ast.Application('ambientLight', [
+            ast.Num(255),
+            ast.Num(255),
+            ast.Num(255)
+          ])
         ])
       ),
-      ast.Application(
-        'rotate',
-        [],
-        ast.Block([ast.Application('box', [], null)])
-      )
+      ast.Application('rotate', [], ast.Block([ast.Application('box', [])]))
     ]);
 
     assert.deepEqual(parsed, expected);

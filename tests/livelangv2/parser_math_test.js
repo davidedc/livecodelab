@@ -1,20 +1,25 @@
 /* global describe, it */
 
-var parser = require('../../src/grammar/lcl');
-var ast = require('../../src/js/lcl/ast').Node;
+import parser from '../../src/grammar/lcl';
+import {
+  Assignment,
+  BinaryOp,
+  Block,
+  Num,
+  UnaryOp,
+  Variable
+} from '../../src/js/lcl/ast';
 
-var dedent = require('dentist').dedent;
+import { dedent } from 'dentist';
 
-var assert = require('assert');
+import assert from 'assert';
 
 describe('Math', function() {
   it('negative number', function() {
     var program = 'a = -3';
     var parsed = parser.parse(program);
 
-    var expected = ast.Block([
-      ast.Assignment('a', ast.UnaryOp('-', ast.Num(3)))
-    ]);
+    var expected = Block([Assignment('a', UnaryOp('-', Num(3)))]);
 
     assert.deepEqual(parsed, expected);
   });
@@ -26,9 +31,9 @@ describe('Math', function() {
                          `);
     var parsed = parser.parse(program);
 
-    var expected = ast.Block([
-      ast.Assignment('a', ast.Num(3)),
-      ast.Assignment('b', ast.UnaryOp('-', ast.Variable('a')))
+    var expected = Block([
+      Assignment('a', Num(3)),
+      Assignment('b', UnaryOp('-', Variable('a')))
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -38,11 +43,8 @@ describe('Math', function() {
     var program = 'a = -(3 + 4)';
     var parsed = parser.parse(program);
 
-    var expected = ast.Block([
-      ast.Assignment(
-        'a',
-        ast.UnaryOp('-', ast.BinaryOp('+', ast.Num(3), ast.Num(4)))
-      )
+    var expected = Block([
+      Assignment('a', UnaryOp('-', BinaryOp('+', Num(3), Num(4))))
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -52,11 +54,8 @@ describe('Math', function() {
     var program = 'a = (3 + 4) + 4';
     var parsed = parser.parse(program);
 
-    var expected = ast.Block([
-      ast.Assignment(
-        'a',
-        ast.BinaryOp('+', ast.BinaryOp('+', ast.Num(3), ast.Num(4)), ast.Num(4))
-      )
+    var expected = Block([
+      Assignment('a', BinaryOp('+', BinaryOp('+', Num(3), Num(4)), Num(4)))
     ]);
 
     assert.deepEqual(parsed, expected);
