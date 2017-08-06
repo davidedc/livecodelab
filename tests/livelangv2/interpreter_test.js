@@ -20,12 +20,12 @@ describe('Interpreter', function() {
         }
       }
     };
-    var program = parser.parse('result (3 + 4) * 2', {
+    var program = parser.parse('result 3 + 4 * 2', {
       functionNames: ['result']
     });
     i.run(program, scope);
 
-    assert.equal(output, 14, 'should return 14');
+    assert.equal(output, 11, 'should return 11');
   });
 
   it('evaluate expression with variable', function() {
@@ -43,7 +43,7 @@ describe('Interpreter', function() {
     var program = parser.parse(
       dedent(`
              a = foo + 1
-             result (a + 4) * foo`),
+             result((a + 4) * foo)`),
       { functionNames: ['result'] }
     );
     i.run(program, scope);
@@ -96,7 +96,7 @@ describe('Interpreter', function() {
              a = (x) -> x * 2
              //another function
              b = (x, y) -> x + y
-             result (b (a 2), 3) + a 1
+             result b(a(2), 3) +  a 1
              `),
       { functionNames: ['result'] }
     );

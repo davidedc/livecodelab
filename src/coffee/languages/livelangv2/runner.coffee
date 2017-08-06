@@ -13,6 +13,7 @@ class V2ProgramRunner
 
   constructor: (@eventRouter, @compiler, @globalscope) ->
 
+    console.log('v2')
     # contains the program AST
     @programAST = []
     @programText = ''
