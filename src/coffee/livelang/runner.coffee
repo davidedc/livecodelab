@@ -1,103 +1,63 @@
 ###
-## V2ProgramRunner manages interpretation of the AST. E.g. this is not a
-## translation step, this is managing things such as the actually running of the
-## latest "stable" program, keeping track of when a program appears
-## to be stable, and reinstating the last stable program if the current one
-## throws a runtime error.
+## LiveLangRunner manages the running program.
+## This primarily involves:
+## * keeping track of when a function appears to be stable
+## * reinstating the last stable function if the current one throws an error.
 ###
 
-Interpreter = require '../../js/lcl/interpreter'
-_           = require 'underscore'
+_ = require 'underscore'
 
-class V2ProgramRunner
+class LiveLangRunner
 
-  constructor: (@eventRouter, @compiler, @globalscope) ->
-
-    console.log('v2')
-    # contains the program AST
-    @programAST = []
-    @programText = ''
-    # contains the last stable program AST
-    @lastStableProgram = []
-    @lastStableText = ''
-
+  constructor: (@eventRouter, @codeCompiler, @globalScope) ->
+    @drawFunction = () -> {}
+    @lastStableProgram = () -> {}
     @consecutiveFramesWithoutRunTimeError = 0
-
 
   addToScope: (scope) ->
 
+    scope.addFunction('addDoOnce', (a) => @addDoOnce(a))
     scope.addFunction('run', (a,b) => @run(a,b))
 
-  # the run function is used so one can write
-  #   a = <box>
-  #   run a
-  # instead of
-  #   a = <box>
-  #   a()
-  # Note that the pre-processor appends an arrow
-  # after "run", so that
-  #   run <box> 2
-  # becomes
-  #
   run: (functionToBeRun, chainedFunction) ->
-    # in the case "run <box> 2" the box is
-    # already painted here.
+    if _.isFunction functionToBeRun
+      functionToBeRun()
 
-    # in the case "run <box>"
-    # we have to paint it now
-    functionToBeRun.func()
-    if chainedFunction
-      chainedFunction.func()
+    if _.isFunction chainedFunction
+      chainedFunction()
+
+  # This is the function called from the compiled code to add the doOnce line
+  addDoOnce: (lineNum) ->
+    @doOnceOccurrencesLineNumbers.push lineNum
 
   reset: () ->
     @consecutiveFramesWithoutRunTimeError = 0
-    @programAST = []
-    @programText = ''
-    @lastStableProgram = []
+    @drawFunction = () -> {}
+    @lastStableProgram = () -> {}
 
-  setProgram: (programAST, programText) ->
+  setProgram: (newDrawFunction) ->
     @consecutiveFramesWithoutRunTimeError = 0
-    @programAST = programAST
-    @programText = programText
+    @drawFunction = newDrawFunction
 
+  resetTrackingOfDoOnceOccurrences: ->
+    @doOnceOccurrencesLineNumbers = []
+
+  putTicksNextToDoOnceBlocksThatHaveBeenRun: ->
+    # TODO
 
   runProgram: ->
-    # this invokation below could be throwing an error,
-    # in which case the lines afterwards are not executed
-    # and the exception is propagated to the callee of this function,
-    # which is the main animation loop.
-    scope = @globalscope.getScope()
-    interpreterState = Interpreter.run(@programAST, scope)
+    # Errors thrown by the drawFunction are handled by the main animation loop
+    @drawFunction()
 
-    # if we are here it means that the interpreter didn't throw
-    # any runtime errors, so we increment a counter that tracks how long
-    # this program has been stable for.
-    # Beyond 5 frames, we consider this program as "stable" and we save
-    # it in a special variable.
-    # This "stability" counter is obviously reset anytime the program is
-    # changed so the new version too gets an opportunity to be
-    # tested and saved.
+    # Beyond 5 frames, we consider this program as "stable" and we save it
     @consecutiveFramesWithoutRunTimeError += 1
     if @consecutiveFramesWithoutRunTimeError is 5
-      @lastStableProgram = @programAST
-      @lastStableText = @programText
+      @lastStableProgram = @drawFunction
       @eventRouter.emit("livecodelab-running-stably")
 
-    if (interpreterState.doOnceTriggered)
-
-      rewrittenSource = @programText.replace(/^(\s*)doOnce/gm, "$1✓doOnce")
-
-      @eventRouter.emit("code-updated-by-livecodelab", rewrittenSource)
-
   runLastWorkingProgram: ->
-    # mark the program as flawed and register the previous stable one.
+    # Load the previous stable program
     @consecutiveFramesWithoutRunTimeError = 0
-    @programAST = @lastStableProgram
-    @programText = @lastStableText
+    @drawFunction = @lastStableProgram
 
-  putTicksNextToDoOnceBlocksThatHaveBeenRun: -> false
-
-  resetTrackingOfDoOnceOccurrences: -> false
-
-module.exports = V2ProgramRunner
-
+module.exports = LiveLangRunner

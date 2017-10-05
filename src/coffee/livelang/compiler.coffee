@@ -1,16 +1,12 @@
 ###
-## V2CodeCompiler takes the user sketch and turns it into an AST.
-## This is then run by the ProgramRunner.
+## CodeCompiler takes the user sketch and turns it into an AST which
+## is then turned into javascript
 ###
 
 Parser = require '../../grammar/lcl'
+JsCompiler = require '../../js/lcl/compiler'
 
-class V2CodeCompiler
-
-  constructor: () ->
-    # the code compiler needs the CodePreprocessor
-
-    @parser = Parser
+class LiveLangCompiler
 
   # returns an object
   # {
@@ -23,13 +19,14 @@ class V2CodeCompiler
     output = {}
 
     try
-      programAST = @parser.parse(
+      programAST = Parser.parse(
         code,
         {
           functionNames: globalscope.getFunctions(),
           inlinableFunctions: globalscope.getInlinables()
         }
       )
+      jsProgram = JsCompiler.compile(programAST)
     catch e
       # parser has caught a syntax error.
       # we are going to display the error and we WON'T register the new code
@@ -41,8 +38,8 @@ class V2CodeCompiler
       output.status = 'empty'
     else
       output.status = 'parsed'
-      output.program = programAST
+      output.program = jsProgram.program
     return output
 
-module.exports = V2CodeCompiler
+module.exports = LiveLangCompiler
 
