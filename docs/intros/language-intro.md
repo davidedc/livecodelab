@@ -135,7 +135,7 @@ either <box>, <peg>
 either <box 2>, <peg 2>
 ```
 
-In this case, the *box* and *peg* functions 
+In this case, the *box* and *peg* functions are not evaluated. They are passed as arguments to the either function.
 
 
 "Scoped" matrix transformations
