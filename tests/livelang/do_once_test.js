@@ -19,6 +19,23 @@ describe('Do Once', function() {
     assert.deepEqual(parsed, expected);
   });
 
+  it('should be parsed with an empty block if on its own', function() {
+    var program = dedent(`
+                         doOnce
+                         box 4
+                         `);
+    var parsed = parser.parse(program, {
+      functionNames: ['box'],
+      inlinableFunctions: ['box']
+    });
+
+    var expected = Block([
+      DoOnce(false, Block([])),
+      Application('box', [Num(4)])
+    ]);
+    assert.deepEqual(parsed, expected);
+  });
+
   it('should be parsed when marked as run', function() {
     var program = '✓doOnce box';
     var parsed = parser.parse(program, {

@@ -251,6 +251,12 @@ ActiveDoOnce "active do once"
   / "doOnce" _ expr:Expression {
       return Ast.DoOnce(true, Ast.Block([expr]));
   }
+  / EmptyDoOnce
+
+EmptyDoOnce "empty do once"
+  = "doOnce" {
+      return Ast.DoOnce(false);
+  }
 
 /** Expression Rules
  *
