@@ -38,7 +38,7 @@ class LiveLangCompiler
       output.status = 'empty'
     else
       output.status = 'parsed'
-      output.program = jsProgram.program
+      output.program = jsProgram
     return output
 
 module.exports = LiveLangCompiler

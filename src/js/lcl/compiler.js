@@ -22,22 +22,9 @@ function exists(node) {
   return node.type !== NULL;
 }
 
-export function compile(programBlock) {
-  const state = {
-    exitCode: 0,
-    program: ''
-  };
-
-  if (programBlock.type !== BLOCK) {
-    state.exitCode = 1;
-    return state;
-  }
-
-  const jsProgram = compileNode(programBlock);
-  return {
-    exitCode: 0,
-    program: new Function(jsProgram)
-  };
+export function compile(astNode) {
+  const jsProgram = compileNode(astNode);
+  return new Function(jsProgram);
 }
 
 function compileNode(node) {
