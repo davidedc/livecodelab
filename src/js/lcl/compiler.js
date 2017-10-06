@@ -120,7 +120,7 @@ function compileAssignment(assignment) {
 function compileApplication(application) {
   const args = application.args.map(compileNode);
   if (exists(application.block)) {
-    const blockFunc = 'function () {\n' + compileBlock(application.block) + '}';
+    const blockFunc = 'function () {\n' + compileNode(application.block) + '}';
     args.push(blockFunc);
   }
   return [application.identifier, '(', args, ')'].join(' ');
@@ -146,22 +146,23 @@ function compileIf(ifStatement) {
 }
 
 function compileClosure(closure) {
+  const body = compileNode(closure.body);
   return [
     'function (',
-    closure.argnames.join(', '),
+    closure.argNames.join(', '),
     ') {\n',
-    compileBlock(closure.body),
+    closure.body.type === 'BLOCK' ? body : `return ${body}`,
     '}'
   ].join('');
 }
 
 function compileTimes(times) {
   const numberExpr = compileNode(times.number);
-  const loopVar = exists(times.loopVar) ? times.loopVar : 'i';
+  const loopVar = exists(times.loopVar) ? times.loopVar : '';
   return [
-    `for (var ${loopVar} = 0; ${loopVar} < ${numberExpr}; ${loopVar} += 1) {\n`,
+    `loop(${numberExpr}, function (${loopVar}) {`,
     compileBlock(times.block),
-    '}\n'
+    '})\n'
   ].join('');
 }
 
@@ -189,7 +190,7 @@ function compileBinaryOp(binaryOp) {
       break;
 
     default:
-      output = `${val1} ${binaryOp.operator} ${val2}`;
+      output = `(${val1} ${binaryOp.operator} ${val2})`;
       break;
   }
 

@@ -16,6 +16,7 @@ class LiveLangRunner
 
     scope.addFunction('doOnce', (a) => @doOnce(a))
     scope.addFunction('run', (a,b) => @run(a,b))
+    scope.addFunction('loop', (a,b) => @loop(a,b))
 
   doOnce: (block) ->
     @doOnceTriggered = true
@@ -27,6 +28,9 @@ class LiveLangRunner
 
     if _.isFunction chainedFunction
       chainedFunction()
+
+  loop: (times, func) ->
+    func(i) for i in [0..times]
 
   reset: () ->
     @programFunc = () -> {}
