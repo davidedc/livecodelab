@@ -166,7 +166,12 @@ function compileTimes(times) {
 }
 
 function compileDoOnce(doOnce) {
-  return ['(function () {\n', compileBlock(doOnce), '})();\n'].join('');
+  if (!doOnce.active) {
+    return '';
+  }
+  return ['doOnce(function () {\n', compileBlock(doOnce.block), '});\n'].join(
+    ''
+  );
 }
 
 function compileUnaryOp(operation) {
