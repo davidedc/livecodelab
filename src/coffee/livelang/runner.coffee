@@ -10,14 +10,16 @@ _ = require 'underscore'
 class LiveLangRunner
 
   constructor: (@eventRouter, @codeCompiler, @globalScope) ->
-    @drawFunction = () -> {}
-    @lastStableProgram = () -> {}
-    @consecutiveFramesWithoutRunTimeError = 0
+    @reset()
 
   addToScope: (scope) ->
 
-    scope.addFunction('addDoOnce', (a) => @addDoOnce(a))
+    scope.addFunction('doOnce', (a) => @doOnce(a))
     scope.addFunction('run', (a,b) => @run(a,b))
+
+  doOnce: (block) ->
+    @doOnceTriggered = true
+    block()
 
   run: (functionToBeRun, chainedFunction) ->
     if _.isFunction functionToBeRun
@@ -26,38 +28,40 @@ class LiveLangRunner
     if _.isFunction chainedFunction
       chainedFunction()
 
-  # This is the function called from the compiled code to add the doOnce line
-  addDoOnce: (lineNum) ->
-    @doOnceOccurrencesLineNumbers.push lineNum
-
   reset: () ->
+    @programFunc = () -> {}
+    @programText = ''
+    @lastStableFunc = () -> {}
+    @lastStableText = ''
     @consecutiveFramesWithoutRunTimeError = 0
-    @drawFunction = () -> {}
-    @lastStableProgram = () -> {}
+    @doOnceTriggered = false
 
-  setProgram: (newDrawFunction) ->
+  setProgram: (newProgramFunc, newProgramText) ->
     @consecutiveFramesWithoutRunTimeError = 0
-    @drawFunction = newDrawFunction
-
-  resetTrackingOfDoOnceOccurrences: ->
-    @doOnceOccurrencesLineNumbers = []
-
-  putTicksNextToDoOnceBlocksThatHaveBeenRun: ->
-    # TODO
+    @programFunc = newProgramFunc
+    @programText = newProgramText
 
   runProgram: ->
     # Errors thrown by the drawFunction are handled by the main animation loop
-    @drawFunction()
+    @programFunc()
 
     # Beyond 5 frames, we consider this program as "stable" and we save it
     @consecutiveFramesWithoutRunTimeError += 1
     if @consecutiveFramesWithoutRunTimeError is 5
-      @lastStableProgram = @drawFunction
+      @lastStableFunc = @programFunc
+      @lastStableText = @programText
       @eventRouter.emit("livecodelab-running-stably")
+
+    if (@doOnceTriggered)
+      @doOnceTriggered = false
+      rewrittenSource = @programText.replace(/^(\s*)doOnce/gm, "$1✓doOnce")
+
+      @eventRouter.emit("code-updated-by-livecodelab", rewrittenSource)
 
   runLastWorkingProgram: ->
     # Load the previous stable program
     @consecutiveFramesWithoutRunTimeError = 0
-    @drawFunction = @lastStableProgram
+    @programFunc = @lastStableFunc
+    @programText = @lastStableText
 
 module.exports = LiveLangRunner
