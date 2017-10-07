@@ -58,7 +58,7 @@ SourceElements "elements"
       return _.filter(elements, function (e) { return e.type !== types.NULL; });
   }
 
-SourceElement "elements"
+SourceElement "element"
   = Samedent statement:Statement _ Comment? {
       return statement;
   }
@@ -101,7 +101,7 @@ Application "application"
   = FullApplication
   / SimpleApplication
 
-SimpleApplication "simple application"
+SimpleApplication "application"
   = name:FunctionName "(" _ args:ArgumentList? _ ")" {
       var argList =  optionalList(args, 0);
       return Ast.Application(name, argList);
@@ -111,7 +111,7 @@ SimpleApplication "simple application"
       return Ast.Application(name, argList);
   }
 
-FullApplication
+FullApplication "appliation"
   = name:InlinableFunction _ body:ApplicationBody? {
       var argList = [];
       var block = Ast.Null();
@@ -122,7 +122,7 @@ FullApplication
       return Ast.Application(name, argList, block);
   }
 
-ApplicationBody
+ApplicationBody "application body"
   = block:ApplicationBlock {
       return {
         argList: [],
@@ -136,7 +136,7 @@ ApplicationBody
       };
   }
 
-ApplicationBlock
+ApplicationBlock "application body"
   = NewLine block:Block {
       return block;
   }
@@ -148,12 +148,12 @@ Inlinable
   = TimesLoop
   / InlinedApplication
 
-InlinedApplication
+InlinedApplication "inlined appliation"
   = name:InlinableFunction _ body:ApplicationBody {
       return Ast.Application(name, body.argList, body.block);
   }
 
-ArgumentList
+ArgumentList "argument list"
   = head:Expression tail:(_ "," _ Expression)* {
       return buildList(head, tail, 3);
   }
@@ -263,7 +263,8 @@ EmptyDoOnce "empty do once"
  */
 
 Expression
-  = LogicCombi
+  = Lambda
+  / LogicCombi
 
 LogicCombi "logicCombinator"
   = head:LogicExpr tail:( _ ("&&" / "||") _ LogicExpr)* {
@@ -296,13 +297,12 @@ Exponent "exponent"
   }
 
 Primary
-  = Lambda
-  / DeIndex
+  = DeIndex
   / Base
   / String
   / NegativeExpr
 
-NegativeExpr
+NegativeExpr "negative expression"
   = "-" _ base:Base {
       return Ast.UnaryOp('-', base);
   }
@@ -345,7 +345,7 @@ String "string"
   = "'" chars:([^\n\r\f'])* "'" {
       return Ast.Str(chars.join(''));
   }
-  / "\"" chars:([^\n\r\f\"])* "\"" {
+  / '"' chars:([^\n\r\f\"])* '"' {
       return Ast.Str(chars.join(''));
   }
 
@@ -361,13 +361,13 @@ Lambda "lambda"
       return Ast.Closure(optionalList(params), body, false);
   }
 
-LambdaBody
+LambdaBody "lambda body"
   = Expression
   / NewLine block:Block {
       return block;
   }
 
-LazyLambda "lazy"
+LazyLambda "lazy lambda"
   = "<" _ lazy:Application _ ">" {
       return Ast.Closure([], Ast.Block([lazy]), true);
   }
@@ -381,7 +381,7 @@ ParamList "param list"
  *
  */
 
-Indent
+Indent "indent"
   = &(
         i:[\t]+ &{
             return i.length === (indent.length + 1);
@@ -392,12 +392,12 @@ Indent
         }
     )
 
-Samedent
+Samedent "same indentation"
   = i:[\t]* &{
       return i.join("") === indent;
   }
 
-Dedent
+Dedent "dedent"
   = &(
         i:[\t]* &{
             return i.length <= (indent.length - 1);
@@ -411,12 +411,13 @@ Dedent
  *
  */
 
-Comment = "//" [^\n]*
+Comment "comment"
+  = "//" [^\n]*
 
-NewLine
+NewLine "newline"
   = "\n"+
 
-EOF
+EOF "end of input"
   = !.
 
 _ "whitespace"
