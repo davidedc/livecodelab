@@ -92,6 +92,9 @@ Assignment "assignment"
       }
       return Ast.Assignment(id, expr);
   }
+  / Identifier _ "=" {
+    expected("an assignment statement")
+  }
 
 /** Application Rules
  *
@@ -196,6 +199,9 @@ If "if"
   / "if" _ predicate:Expression _ "then" _ ifAction:Statement {
       return Ast.If(predicate, Ast.Block([ifAction]));
   }
+  / "if" {
+    expected("complete if statement")
+  }
 
 Else "else"
   = NewLine Samedent "else" _ ifBlock:If {
@@ -213,6 +219,9 @@ TimesLoop "times"
   = expr:Expression _ "times" loopVar:LoopVar? _ block:TimesLoopBlock {
       return Ast.Times(expr, block, loopVar || Ast.Null());
   }
+  / Expression _ "times" {
+    expected("a complete times loop");
+  }
 
 TimesLoopBlock
   = NewLine block:Block {
@@ -225,6 +234,9 @@ TimesLoopBlock
 LoopVar
   = _ "with" _ loopVar:Identifier {
       return loopVar;
+  }
+  / _ "with" _ {
+      expected("a loop variable");
   }
 
 /** DoOnce Rules
@@ -310,6 +322,9 @@ NegativeExpr "negative expression"
   = "-" _ base:Base {
       return Ast.UnaryOp('-', base);
   }
+  / "-" {
+    expected("rest of negative expression")
+  }
 
 Base
   = Num
@@ -317,6 +332,12 @@ Base
   / Variable
   / List
   / "(" _ expr:Expression _ ")" { return expr; }
+  / "(" _ Expression {
+    expected("closing expression bracket")
+  }
+  / "(" {
+    expected("expression")
+  }
 
 Variable "variable"
   = id:Identifier &{
@@ -330,6 +351,15 @@ Variable "variable"
 DeIndex "deindex"
   = collection:Base "[" index:Expression "]" {
     return Ast.DeIndex(collection, index);
+  }
+  / Base "[" _ expr:Expression {
+    expected("closing deindex bracket")
+  }
+  / Base "[" _ "]" {
+    expected("deindex expression")
+  }
+  / Base "[" {
+    expected("deindex expression")
   }
 
 Identifier
@@ -352,17 +382,29 @@ String "string"
   / '"' chars:([^\n\r\f\"])* '"' {
       return Ast.Str(chars.join(''));
   }
+  / "'" ([^\n\r\f'])* {
+    expected("closing string quote (')")
+  }
+  / '"' ([^\n\r\f"])* {
+    expected('closing string quote (")')
+  }
 
 List "list"
   = "[" valList:ArgumentList? "]" {
       var values =  optionalList(valList, 0);
       return Ast.List(values);
   }
+  / "[" ArgumentList? {
+    expected("closing list bracket")
+  }
 
 Lambda "lambda"
   = LazyLambda
   / "(" _ params:ParamList? _ ")" _ ("->" / "=>") _ body:LambdaBody {
       return Ast.Closure(optionalList(params), body, false);
+  }
+  / "(" _ ParamList? _ ")" _ ("->" / "=>") {
+    expected("function body")
   }
 
 LambdaBody "lambda body"
