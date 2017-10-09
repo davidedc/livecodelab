@@ -264,7 +264,16 @@ EmptyDoOnce "empty do once"
 
 Expression
   = Lambda
+  / UnaryLogicExpr
   / LogicCombi
+
+UnaryLogicExpr "unaryLogicExpr"
+  = "!" _ expr:LogicCombi {
+      return Ast.UnaryOp("!", expr);
+  }
+  / "!" {
+    expected("rest of logic expression")
+  }
 
 LogicCombi "logicCombinator"
   = head:LogicExpr tail:( _ ("&&" / "||") _ LogicExpr)* {
@@ -274,11 +283,6 @@ LogicCombi "logicCombinator"
 LogicExpr "logicExpr"
   = head:AddSub tail:( _ (">=" / "<=" / "==" / ">" / "<") _ AddSub)* {
       return collapseTail(head, tail, Ast.BinaryOp);
-  }
-
-UnaryLogicExpr "unaryLogicExpr"
-  = "!" _ expr:AddSub {
-      return Ast.UnaryOp("!", expr);
   }
 
 AddSub "addsub"

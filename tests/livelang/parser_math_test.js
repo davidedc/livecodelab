@@ -60,4 +60,15 @@ describe('Math', function() {
 
     assert.deepEqual(parsed, expected);
   });
+
+  it('parses a unary logic expression', function() {
+    var program = 'a = !(3 == 4)';
+    var parsed = parser.parse(program);
+
+    var expected = Block([
+      Assignment('a', UnaryOp('!', BinaryOp('==', Num(3), Num(4))))
+    ]);
+
+    assert.deepEqual(parsed, expected);
+  });
 });
