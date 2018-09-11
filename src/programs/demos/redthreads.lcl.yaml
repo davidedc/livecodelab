@@ -5,7 +5,6 @@ code: |
   background black
   stroke red
   noFill
-  strokeSize 7
   2 times
   	rotate time / 20
   	ball

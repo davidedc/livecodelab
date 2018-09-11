@@ -7,7 +7,6 @@ code: |
   background black
   stroke absin(1), absin(2), absin(3)
   noFill
-  strokeSize 7
   2 times
   	rotate time / 20
   	box

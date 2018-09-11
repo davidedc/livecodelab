@@ -143,6 +143,8 @@ class GraphicsCommands
   currentFillColor: undefined
   objectPools: []
   ballDetLevel: 8
+  # TODO stroke size doesn't work on most GPUs
+  # should eliminate and have something like wireframe on/off instead?
   currentStrokeSize: 1
   # For each pool we have a count of how many of those entries
   # are actually used in the current frame.
@@ -318,6 +320,8 @@ class GraphicsCommands
     scope.addInlinable('noFill',     (a) => @noFill(a))
     scope.addInlinable('stroke',     (a,b,c,d,e) => @stroke(a,b,c,d,e))
     scope.addInlinable('noStroke',   (a) => @noStroke(a))
+    # TODO stroke size doesn't work on most GPUs
+    # should eliminate and have something like wireframe on/off instead?
     scope.addFunction('strokeSize',  (a) => @strokeSize(a))
 
   createObjectIfNeededAndDressWithCorrectMaterial: (
@@ -409,6 +413,8 @@ class GraphicsCommands
         pooledObjectWithMaterials.lineMaterial.color.setHex(
           @currentStrokeColor
         )
+      # TODO stroke size doesn't work on most GPUs
+      # should eliminate and have something like wireframe on/off instead?
       pooledObjectWithMaterials.lineMaterial.linewidth =
         @currentStrokeSize
       pooledObjectWithMaterials.threejsObject3D.material =
@@ -459,6 +465,8 @@ class GraphicsCommands
     if alphaToBeUsed < 1
       pooledObjectWithMaterials.threejsObject3D.material.transparent = true
     pooledObjectWithMaterials.threejsObject3D.material.wireframe = strokeTime
+    # TODO stroke size doesn't work on most GPUs
+    # should eliminate and have something like wireframe on/off instead?
     pooledObjectWithMaterials.threejsObject3D.material.wireframeLinewidth =
       @currentStrokeSize
     pooledObjectWithMaterials.threejsObject3D.material.reflectivity = @reflectValue
@@ -619,6 +627,8 @@ class GraphicsCommands
     # fill then don't draw the stroke, only draw the fill
     if (
       primitiveProperties.canFill and @doFill and
+      # TODO stroke size doesn't work on most GPUs
+      # should eliminate and have something like wireframe on/off instead?
       (@currentStrokeSize is 0 or not @doStroke or
         (@currentStrokeSize <= 1 and
          not @defaultNormalFill and
@@ -627,6 +637,8 @@ class GraphicsCommands
          @currentFillAlpha is 1 and @currentStrokeAlpha is 1)
       )
     ) or (
+      # TODO stroke size doesn't work on most GPUs
+      # should eliminate and have something like wireframe on/off instead?
       @currentStrokeSize <= 1 and @defaultNormalFill and @defaultNormalStroke
     )
       @createObjectIfNeededAndDressWithCorrectMaterial(
@@ -664,6 +676,8 @@ class GraphicsCommands
     @resetFillStack()
     @resetStrokeStack()
 
+    # TODO stroke size doesn't work on most GPUs
+    # should eliminate and have something like wireframe on/off instead?
     @currentStrokeSize = 1
     @ballDetLevel = @defaultBallDetail
     @objectsUsedInFrameCounts[@primitiveTypes.ambientLight] = 0
@@ -697,11 +711,15 @@ class GraphicsCommands
     # put it back to whichever value it was.
     if @liveCodeLabCoreInstance.lightSystem.lightsAreOn
       rememberIfThereWasAFill = @doFill
+      # TODO stroke size doesn't work on most GPUs
+      # should eliminate and have something like wireframe on/off instead?
       rememberPreviousStrokeSize = @currentStrokeSize
       @currentStrokeSize = 2  if @currentStrokeSize < 2
       a = 1 if not a?
       @rect 0, a, 0, d
       @doFill = rememberIfThereWasAFill
+      # TODO stroke size doesn't work on most GPUs
+      # should eliminate and have something like wireframe on/off instead?
       @currentStrokeSize = rememberPreviousStrokeSize
       return
 
@@ -996,6 +1014,8 @@ class GraphicsCommands
       appendedFunction()
       @popStroke()
 
+  # TODO stroke size doesn't work on most GPUs
+  # should eliminate and have something like wireframe on/off instead?
   strokeSize: (a) ->
     # note that either Three.js or the graphic card limit the size
     # of the stroke. This is because openGL strokes are VERY crude
@@ -1004,6 +1024,7 @@ class GraphicsCommands
     # So it's limited to 10. In some graphic cards this doesn't even have
     # any effect. In windows there is no thickness beyond "1" cause
     # ANGLE doesn't doesn't translate that properly to DirectX.
+    # In fact, it doesn't even work on Edge.
     if not a?
       a = 1
     else a = 0  if a < 0
