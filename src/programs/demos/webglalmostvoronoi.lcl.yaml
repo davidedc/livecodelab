@@ -1,7 +1,0 @@
-submenu: WebGL
-title: "WebGL: Almost Voronoi"
-code: |
-  scale 10
-  2 times
-  	rotate 0, 1, time / 10
-  	ball -1

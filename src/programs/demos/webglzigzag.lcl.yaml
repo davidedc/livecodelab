@@ -1,0 +1,11 @@
+submenu: WebGL
+title: "WebGL: Zigzag"
+code: |
+  scale 10
+  noStroke
+  fill 0,246,254
+  rotate 0, 1, time / 10
+  ball -1
+  fill 255,0,99
+  rotate 1, 0, time / 10
+  ball -1

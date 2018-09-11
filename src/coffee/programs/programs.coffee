@@ -32,7 +32,7 @@ programs.demos.webglturbine = require('../../programs/demos/webglturbine')
 programs.demos.webgllava = require('../../programs/demos/webgllava')
 programs.demos.webglzfight = require('../../programs/demos/webglzfight')
 programs.demos.webglaknot = require('../../programs/demos/webglaknot')
-programs.demos.webglalmostvoronoi = require('../../programs/demos/webglalmostvoronoi')
+programs.demos.webglzigzag = require('../../programs/demos/webglzigzag')
 programs.demos.webglshards = require('../../programs/demos/webglshards')
 
 
