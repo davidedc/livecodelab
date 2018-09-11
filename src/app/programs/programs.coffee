@@ -40,6 +40,8 @@ programs.demos.industrial = require('./demos/soundindustrial')
 programs.demos.overscratch = require('./demos/soundoverscratch')
 programs.demos.trythemall = require('./demos/soundtrythemall')
 programs.demos.djcastro = require('./demos/sounddjcastro')
+programs.demos.fftmic = require('../../programs/demos/soundmicdemo')
+programs.demos.fftwave = require('../../programs/demos/soundwaveformdemo')
 
 
 
