@@ -57,6 +57,7 @@ For a more fine-grained look at ideas and bugs, take a look at <a href="https://
  * Thomas van den Berg aka noio: support for midi input, refactoring of event system, tweaking of several bpm-related functions.
  * Matthew Lawrence: replaced the old "plasters and regexes" autocoder hack with a much more proper lexer-based solution.
  * Julien Dorra: contributed to french version, refactoring and great UX/UI feedback.
+ * Eduardo Moriana: contributed the audio input and FFT analysis code.
 
 #### Documentation ####
 Please check the docs-overview file in the docs directory for an
