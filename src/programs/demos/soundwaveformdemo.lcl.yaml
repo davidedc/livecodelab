@@ -4,7 +4,7 @@ code: |
   // draw lines like this
   audioRaw = (getWaveForm 0)
   setSmoothingTimeConstant 0.8
-  etNumVars 19  
+  setNumVars 19  
   move -0.5, -2, 0
   for i in [0...audioRaw.length]
   	move 0.005*i, audioRaw[i] * 0.02, 0

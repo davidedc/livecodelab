@@ -20,7 +20,7 @@ class SoundSystem
     scope.addFunction('play', (soundName, pattern) => @play(soundName, pattern))
     scope.addFunction('getFFT', () => @getFFT())
     scope.addFunction('getWaveForm', () => @getWaveForm())
-    scope.addFunction('setSmoothingTimeConstant', (value) => @setSmoothingTimeConstant(valuehola))
+    scope.addFunction('setSmoothingTimeConstant', (value) => @setSmoothingTimeConstant(value))
     scope.addFunction('setNumVars', (value) => @setNumVars(value))
     scope.addFunction('getFFTvalue', (value) => @getFFT()[0][value])#TODO this not working
 
