@@ -4,9 +4,9 @@
 ## with the other parts of LiveCodeLab.
 ###
 
-CodeMirror = require '../../js/codemirror/lib/codemirror'
+CodeMirror = require 'codemirror/lib/codemirror'
 require '../../js/codemirror/livecodelang'
-require '../../js/codemirror/addons/selection/mark-selection'
+require 'codemirror/addon/selection/mark-selection'
 
 class Editor
 
