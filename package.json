@@ -48,6 +48,7 @@
     "webpack-dev-server": "^2.5.1"
   },
   "dependencies": {
+    "buzz": "^1.2.1",
     "codemirror": "5.38.0"
   }
 }
