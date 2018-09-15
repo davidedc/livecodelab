@@ -7,7 +7,7 @@ module.exports = {
   entry: ['babel-polyfill', './src/coffee/lcl-init.coffee'],
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: './app.js'
+    filename: './app.js',
   },
   module: {
     rules: [
@@ -17,9 +17,9 @@ module.exports = {
           /node_modules/,
           /jquery.*\.js/,
           /coffee-script\.js/,
-          /codemirror/
+          /codemirror/,
         ],
-        loader: 'babel-loader'
+        loader: 'babel-loader',
       },
       { test: /\.coffee$/, loader: 'coffee-loader' },
       { test: /\.css$/, loader: ['style-loader', 'css-loader'] },
@@ -27,27 +27,27 @@ module.exports = {
         test: /\.html$/,
         loader: 'file-loader',
         query: {
-          name: '[name].[ext]'
-        }
+          name: '[name].[ext]',
+        },
       },
       {
         test: /\.ttf$|\.eot$/,
         loader: 'file-loader',
         query: {
-          name: 'font/[hash].[ext]'
-        }
+          name: 'font/[hash].[ext]',
+        },
       },
       {
         test: /\.(mp3|ogg)$/,
         loader: 'file-loader',
         query: {
-          name: 'sound/[hash][name].[ext]'
-        }
+          name: 'sound/[hash][name].[ext]',
+        },
       },
       { test: /\.(png|jpg|svg)$/, loader: 'url-loader?limit=8192' },
       { test: /\.pegjs$/, loader: 'pegjs-loader' },
-      { test: /\.lcl\.yaml$/, loader: 'lcl-program-loader' }
-    ]
+      { test: /\.lcl\.yaml$/, loader: 'lcl-program-loader' },
+    ],
   },
   resolve: {
     extensions: [
@@ -57,20 +57,20 @@ module.exports = {
       '.pegjs',
       '.mp3',
       '.ogg',
-      '.lcl.yaml'
+      '.lcl.yaml',
     ],
     alias: {
-      jquery: './jquery'
-    }
+      jquery: './jquery',
+    },
   },
   resolveLoader: {
-    modules: ['./webpack', './node_modules']
+    modules: ['./webpack', './node_modules'],
   },
   plugins: [
     new webpack.DefinePlugin({
       LANGUAGE: JSON.stringify(
         process.env.LCLANG === 'v2' ? 'livelangv2' : 'livelangv1'
-      )
-    })
-  ]
+      ),
+    }),
+  ],
 };
