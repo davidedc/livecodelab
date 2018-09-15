@@ -235,7 +235,7 @@ class GraphicsCommands
       new THREE.Vector3(0, -0.5 * lineProportion, 0)
     @geometriesBank[@primitiveTypes.line].vertices.push \
       new THREE.Vector3(0, 0.5 * lineProportion, 0)
-      @geometriesBank[@primitiveTypes.line].mergeVertices()
+    @geometriesBank[@primitiveTypes.line].mergeVertices()
     @geometriesBank[@primitiveTypes.rect] = new THREE.PlaneGeometry(
       1 * rectProportion, 1 * rectProportion
     )
