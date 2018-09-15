@@ -59,9 +59,6 @@ module.exports = {
       '.ogg',
       '.lcl.yaml',
     ],
-    alias: {
-      jquery: './jquery',
-    },
   },
   resolveLoader: {
     modules: ['./webpack', './node_modules'],

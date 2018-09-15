@@ -2,53 +2,51 @@
  * CoedeMirror Live Code Lab mode
  */
 
-var CodeMirror = require('../../js/codemirror/lib/codemirror');
+var CodeMirror = require("codemirror/lib/codemirror");
 
-CodeMirror.defineMode('livecodelab', function(conf) {
-  var ERRORCLASS = 'error';
+CodeMirror.defineMode("livecodelab", function(conf) {
+  var ERRORCLASS = "error";
 
   function wordRegexp(words) {
-    return new RegExp('^((' + words.join(')|(') + '))\\b');
+    return new RegExp("^((" + words.join(")|(") + "))\\b");
   }
 
   var tutorialLink = /\/\/\s*(next-tutorial:([^\s]+))\b/;
 
-  var singleOperators = new RegExp('^[\\+\\-\\*/%&|\\^~<>!\?]');
-  var singleDelimiters = new RegExp('^[\\(\\)\\[\\]\\{\\}@,:`=;\\.]');
-  var doubleOperators = new RegExp('^((\->)|(\=>)|(\\+\\+)|(\\+\\=)|(\\-\\-)|(\\-\\=)|(\\*\\*)|(\\*\\=)|(\\/\\/)|(\\/\\=)|(==)|(!=)|(<=)|(>=)|(<>)|(<<)|(>>)|(//))');
-  var identifiers = new RegExp('^[_A-Za-z][_A-Za-z0-9]*');
+  var singleOperators = new RegExp("^[\\+\\-\\*/%&|\\^~<>!?]");
+  var singleDelimiters = new RegExp("^[\\(\\)\\[\\]\\{\\}@,:`=;\\.]");
+  var doubleOperators = new RegExp(
+    "^((->)|(=>)|(\\+\\+)|(\\+\\=)|(\\-\\-)|(\\-\\=)|(\\*\\*)|(\\*\\=)|(\\/\\/)|(\\/\\=)|(==)|(!=)|(<=)|(>=)|(<>)|(<<)|(>>)|(//))"
+  );
+  var identifiers = new RegExp("^[_A-Za-z][_A-Za-z0-9]*");
 
-  var wordOperators = wordRegexp(['and', 'or', 'not']);
-  var indentKeywords = ['times', 'if', 'else'];
-  var commonKeywords = [
-    'move', 'rotate', 'scale',
-    'with'
-  ];
+  var wordOperators = wordRegexp(["and", "or", "not"]);
+  var indentKeywords = ["times", "if", "else"];
+  var commonKeywords = ["move", "rotate", "scale", "with"];
 
   var keywords = wordRegexp(indentKeywords.concat(commonKeywords));
   var indentKeywordsCheck = wordRegexp(indentKeywords);
 
-  var commonConstants = ['true', 'false'];
+  var commonConstants = ["true", "false"];
   var constants = wordRegexp(commonConstants);
 
-  var lambdaOps = ['->', '=>'];
+  var lambdaOps = ["->", "=>"];
 
   var lambdaOpsCheck = wordRegexp(lambdaOps);
 
   function tokenBase(stream, state) {
-
     if (stream.sol()) {
       if (stream.eatSpace()) {
         var lineOffset = stream.indentation();
         if (lineOffset > state.indentation) {
-          return 'indent';
+          return "indent";
         } else if (lineOffset < state.indentation) {
-          return 'dedent';
+          return "dedent";
         }
         return null;
       } else {
         if (state.indentation > 0) {
-          return 'undent';
+          return "undent";
         }
       }
     }
@@ -59,14 +57,14 @@ CodeMirror.defineMode('livecodelab', function(conf) {
 
     var ch = stream.peek();
 
-    if (ch === '/') {
+    if (ch === "/") {
       if (stream.match(tutorialLink)) {
         stream.skipToEnd();
-        return 'link';
+        return "link";
       }
       if (stream.match(/\/\//)) {
         stream.skipToEnd();
-        return 'comment';
+        return "comment";
       }
     }
 
@@ -74,55 +72,57 @@ CodeMirror.defineMode('livecodelab', function(conf) {
     if (stream.match(/^-?[0-9\.]/, false)) {
       // Floats
       if (stream.match(/^-?\d*\.\d+(e[\+\-]?\d+)?/i)) {
-        return 'number';
+        return "number";
       }
       if (stream.match(/^-?\d+\.\d*/)) {
-        return 'number';
+        return "number";
       }
       if (stream.match(/^-?\.\d+/)) {
-        return 'number';
+        return "number";
       }
       // Integers
       // Hex
       if (stream.match(/^-?0x[0-9a-f]+/i)) {
-        return 'number';
+        return "number";
       }
       // Decimal
       if (stream.match(/^-?[1-9]\d*(e[\+\-]?\d+)?/)) {
-        return 'number';
+        return "number";
       }
       // Zero by itself with no other piece of number.
       if (stream.match(/^-?0(?![\dx])/i)) {
-        return 'number';
+        return "number";
       }
     }
 
     // Handle strings
-    if (ch === '"' || ch === '\'') {
+    if (ch === '"' || ch === "'") {
       state.tokenize = tokenString(ch);
       return state.tokenize(stream, state);
     }
 
     // Handle operators and delimiters
-    if (stream.match(doubleOperators)
-        || stream.match(singleOperators)
-        || stream.match(wordOperators)) {
-      return 'operator';
+    if (
+      stream.match(doubleOperators) ||
+      stream.match(singleOperators) ||
+      stream.match(wordOperators)
+    ) {
+      return "operator";
     }
     if (stream.match(singleDelimiters)) {
-      return 'punctuation';
+      return "punctuation";
     }
 
     if (stream.match(constants)) {
-      return 'atom';
+      return "atom";
     }
 
     if (stream.match(keywords)) {
-      return 'keyword';
+      return "keyword";
     }
 
     if (stream.match(identifiers)) {
-      return 'variable';
+      return "variable";
     }
 
     // Handle non-detected items
@@ -131,14 +131,14 @@ CodeMirror.defineMode('livecodelab', function(conf) {
   }
 
   function tokenString(quote) {
-    return function (stream, state) {
+    return function(stream, state) {
       // consume the first quote
       stream.eat(quote);
       while (!stream.eol()) {
         stream.eatWhile(/[^'"]/);
         if (stream.match(quote)) {
           state.tokenize = tokenBase;
-          return 'string';
+          return "string";
         }
       }
       state.tokenize = tokenBase;
@@ -167,21 +167,21 @@ CodeMirror.defineMode('livecodelab', function(conf) {
       indent(state);
     }
 
-    if (style === 'indent') {
+    if (style === "indent") {
       indent(state);
     }
 
-    if (style === 'dedent') {
+    if (style === "dedent") {
       if (dedent(state)) {
         return ERRORCLASS;
       }
     }
 
-    if (style === 'undent') {
+    if (style === "undent") {
       undent(state);
     }
 
-    if (indentKeywordsCheck.exec(current)){
+    if (indentKeywordsCheck.exec(current)) {
       indent(state);
     }
 
@@ -189,7 +189,7 @@ CodeMirror.defineMode('livecodelab', function(conf) {
   }
 
   var external = {
-    startState: function () {
+    startState: function() {
       return {
         tokenize: tokenBase,
         indentation: 0
@@ -198,16 +198,15 @@ CodeMirror.defineMode('livecodelab', function(conf) {
 
     token: tokenLexer,
 
-    blankLine: function (state) {
+    blankLine: function(state) {
       undent(state);
     },
 
-    indent: function (state) {
+    indent: function(state) {
       return state.indentation;
     }
-
   };
   return external;
 });
 
-CodeMirror.defineMIME('text/x-livecodelang', 'livecodelang');
+CodeMirror.defineMIME("text/x-livecodelang", "livecodelang");

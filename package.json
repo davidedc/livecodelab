@@ -46,5 +46,10 @@
     "url-loader": "^0.5.7",
     "webpack": "^2.7.0",
     "webpack-dev-server": "^2.5.1"
+  },
+  "dependencies": {
+    "buzz": "^1.2.1",
+    "codemirror": "5.38.0",
+    "jquery": "^3.3.1"
   }
 }

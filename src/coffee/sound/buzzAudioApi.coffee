@@ -3,7 +3,7 @@
 ## It only supports sample playback and uses a less accurate clock
 ###
 
-buzz = require '../../js/buzz'
+buzz = require 'buzz'
 
 class BuzzAudioApi
 
