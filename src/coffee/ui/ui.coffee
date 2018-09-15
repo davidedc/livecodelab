@@ -3,7 +3,7 @@
 ## the editor panel, the big flashing cursor, the stats widget...
 ###
 
-$ = require '../../js/jquery'
+$ = require 'jquery'
 window.$ = $
 window.jQuery = $
 require '../../js/jquery.sooperfish'

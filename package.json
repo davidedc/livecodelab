@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "buzz": "^1.2.1",
-    "codemirror": "5.38.0"
+    "codemirror": "5.38.0",
+    "jquery": "^3.3.1"
   }
 }
