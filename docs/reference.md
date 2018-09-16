@@ -189,7 +189,8 @@ This is a reference of all the functions and variables available in LiveCodeLab.
 ### Play
 
 ### BPM
-
+    bpm: Number
+    bpmShift: Number
 
 ## Colour
 

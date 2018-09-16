@@ -8,10 +8,10 @@ EventEmitter = require '../core/event-emitter'
 
 class TimeKeeper extends EventEmitter
 
-  constructor: (@syncClient, @audioApi) ->
+  constructor: (@syncClient, @_audioApi) ->
     super()                       # call EventEmitter constructor
 
-    now = @audioApi.getTime()
+    now = @getCurrentTime()
 
     @beatCount       = 1            # last whole beat number
     @beatFraction    = 0            # fraction of the beat we're at
@@ -39,6 +39,15 @@ class TimeKeeper extends EventEmitter
     scope.addFunction('wave',  (frequency) => @wave(frequency))
     scope.addVariable('time',  @time)
 
+  ###
+  From now on, call @getCurrentTime instead of @_audioApi.getTime()
+  ###
+  getCurrentTime: () =>
+    currentTime = @_audioApi.getTime()
+    if @bpmShift
+      currentTime += @bpmShift
+    return currentTime
+
   setTime: (value) =>
     @time = value
     if @scope
@@ -55,7 +64,7 @@ class TimeKeeper extends EventEmitter
   ###
   beatLoop: (aimedForTime) =>
 
-    now = @audioApi.getTime()
+    now = @getCurrentTime()
 
     @emit('beat', @beatCount + @beatFraction)
 
@@ -95,11 +104,11 @@ class TimeKeeper extends EventEmitter
     setTimeout((() => @beatLoop(newAimedForTime)), timeout)
 
   resetTime: =>
-    @lastBeat = @millisAtStart = @audioApi.getTime()
+    @lastBeat = @millisAtStart = @getCurrentTime()
     @updateTime()
 
   updateTime: =>
-    @setTime((@audioApi.getTime() - @millisAtStart) / 1000)
+    @setTime((@getCurrentTime() - @millisAtStart) / 1000)
 
   setBpm: (bpm) ->
     if !(bpm?)
@@ -127,7 +136,7 @@ class TimeKeeper extends EventEmitter
       @syncClient.connect(address)
 
   beat: ->
-    now = @audioApi.getTime()
+    now = @getCurrentTime()
     msSinceLastQuarter = now - @lastBeatLoopMs
     msFrac = (msSinceLastQuarter / @mspb)
     beatValue = @beatCount + @beatFraction + msFrac
