@@ -13,17 +13,18 @@ class TimeKeeper extends EventEmitter
 
     now = @audioApi.getTime()
 
-    @beatCount      = 1            # last whole beat number
-    @beatFraction   = 0            # fraction of the beat we're at
+    @beatCount       = 1            # last whole beat number
+    @beatFraction    = 0            # fraction of the beat we're at
 
-    @defaultBpm     = 100
-    @bpm            = 100
-    @newBpm         = 100
-    @mspb           = 60000 / @bpm # milliseconds per beat
+    @defaultBpm      = 100
+    @defaultBpmShift = 0
+    @bpm             = 100
+    @newBpm          = 100
+    @mspb            = 60000 / @bpm # milliseconds per beat
 
-    @lastBeatLoopMs = now          # milliseconds at last beat loop
-    @timeAtStart    = now          # milliseconds at loop start
-    @time           = now / 1000   # current time in SECONDS
+    @lastBeatLoopMs  = now          # milliseconds at last beat loop
+    @timeAtStart     = now          # milliseconds at loop start
+    @time            = now / 1000   # current time in SECONDS
 
     @resetTime()
     @beatLoop(now)
@@ -32,6 +33,7 @@ class TimeKeeper extends EventEmitter
 
     @scope = scope
     scope.addFunction('bpm',   (bpm) => @setBpm(bpm))
+    scope.addFunction('bpmShift', (bpmShift) => @setBpmShift(bpmShift))
     scope.addFunction('beat',  () => @beat())
     scope.addFunction('pulse', (frequency) => @pulse(frequency))
     scope.addFunction('wave',  (frequency) => @wave(frequency))
@@ -105,6 +107,12 @@ class TimeKeeper extends EventEmitter
     if (@bpm != bpm)
       @bpm = Math.max(20, Math.min(bpm, 250))
       @mspb = 60000 / @bpm
+
+  setBpmShift: (bpmShift) ->
+    if !(bpmShift?)
+      bpmShift = @defaultBpmShift
+    if (typeof bpmShift is 'number' and isFinite bpmShift and @bpmShift != bpmShift)
+      @bpmShift = bpmShift
 
   ###
   Connects to a sync server, and read the bpm/beat from there.
