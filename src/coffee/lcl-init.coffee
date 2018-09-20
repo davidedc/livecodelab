@@ -318,7 +318,7 @@ $(document).ready ->
       () -> liveCodeLabCore.playStartupSound(),
       650
     )
-    bigCursor.toggleBlink true
+    bigCursor.turnBlinkingOn()
 
   setTimeout(
     () -> programLoader.kickOff(),

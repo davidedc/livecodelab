@@ -1,18 +1,17 @@
 ###
 ## The big cursor that flashes when the environment is first opened.
-## It's a special div which is actually not meant to contain text.
+## It's a special div "just for show", it's not actually a functioning
+## cursor and it won't contain any text.
 ## It just shrinks/expands depending on whether the user types something
 ## (shrinks) or whether the program turns empty (expands).
 ###
 
 class BigCursor
 
+  fakeCursorInterval: null
+  isShowing: null
+
   constructor: (eventRouter) ->
-    @fakeCursorInterval = undefined
-    
-    # Do we show the big cursor or not
-    # If there's any text in the editor
-    # then we shouldn't be showing it
     @isShowing = true
 
   startBigCursorBlinkingAnimation: ->
@@ -25,16 +24,17 @@ class BigCursor
       "fast",
       "swing"
 
-  toggleBlink: (active) ->
-    if active
-      #avoid setting the animation twice, which causes
-      # the cursor to start blinking twice as fast.
+  turnBlinkingOff: ->
+    clearTimeout @fakeCursorInterval
+    @fakeCursorInterval = null
+
+  turnBlinkingOn: ->
+    #avoid setting the animation twice, which causes
+    # the cursor to start blinking twice as fast.
+    if !@fakeCursorInterval?
       @fakeCursorInterval = setInterval(
         @startBigCursorBlinkingAnimation, 800
-      ) unless @fakeCursorInterval
-    else
-      clearTimeout @fakeCursorInterval
-      @fakeCursorInterval = null
+      )
 
   shrinkBigCursor: ->
     currentCaption = undefined
@@ -54,7 +54,7 @@ class BigCursor
       setTimeout (() -> $("#justForFakeCursor").hide()), 200
       setTimeout (() -> $("#toMove").hide()), 200
       @isShowing = false
-      @toggleBlink false
+      @turnBlinkingOff()
 
   unshrinkBigCursor: ->
     unless @isShowing
@@ -74,7 +74,7 @@ class BigCursor
         $("#fakeStartingBlinkingCursor").html "|"
       
       @isShowing = true
-      @toggleBlink true
+      @turnBlinkingOn()
 
 module.exports = BigCursor
 
