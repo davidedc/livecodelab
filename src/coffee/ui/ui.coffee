@@ -99,7 +99,6 @@ class Ui
     $('#logo span').click(
       () ->
         $("#aboutWindow").modal()
-        $("#simplemodal-container").height 250
         false
     )
 
