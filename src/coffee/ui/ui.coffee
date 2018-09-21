@@ -130,7 +130,6 @@ class Ui
     )
 
     $("#startingCurtainScreen").fadeOut()
-    $("#formCode").css "opacity", 0
 
 
   checkErrorAndReport: (e) ->

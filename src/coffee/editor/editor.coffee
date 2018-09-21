@@ -9,17 +9,6 @@ require '../../js/codemirror/livecodelang'
 class Editor
 
   constructor: (@eventRouter, @codeTextArea) ->
-    # Setup Event Listeners
-    @eventRouter.addListener("reset", => @codemirrorInstance.setValue "")
-
-    @eventRouter.addListener(
-      "code-updated-by-livecodelab",
-      (elaboratedSource) =>
-        cursorPosBeforeCheck = @codemirrorInstance.getCursor()
-        cursorPosBeforeCheck.ch = cursorPosBeforeCheck.ch + 1
-        @setValue elaboratedSource
-        @setCursor cursorPosBeforeCheck
-    )
 
     @codemirrorInstance = CodeMirror.fromTextArea(
       @codeTextArea,
@@ -33,9 +22,24 @@ class Editor
         indentUnit: 3
         lineWrapping: true
         styleSelectedText: true
+        autofocus: true
       }
     )
 
+
+    # Setup Event Listeners
+    @eventRouter.addListener("reset", => @codemirrorInstance.setValue "")
+
+    @eventRouter.addListener(
+      "code-updated-by-livecodelab",
+      (elaboratedSource) =>
+        cursorPosBeforeCheck = @codemirrorInstance.getCursor()
+        cursorPosBeforeCheck.ch = cursorPosBeforeCheck.ch + 1
+        @setValue elaboratedSource
+        @setCursor cursorPosBeforeCheck
+    )
+
+    @hideAndUnfocus()
 
     @codemirrorInstance.on(
       'change',
@@ -43,17 +47,16 @@ class Editor
     )
 
     @codemirrorInstance.on(
-      'cursorActivity',
-      (editor) => @eventRouter.emit("editor-undim")
-    )
-
-    @codemirrorInstance.on(
       'mousedown',
       (editor, event) => @checkIfLink(editor, event)
     )
 
-  focus: ->
+  showAndFocus: ->
+    @codemirrorInstance.getWrapperElement().style.opacity = "1";
     @codemirrorInstance.focus()
+
+  hideAndUnfocus: ->
+    @codemirrorInstance.getWrapperElement().style.opacity = "0";
 
   getValue: ->
     @codemirrorInstance.getValue()

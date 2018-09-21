@@ -15,16 +15,18 @@ class EditorDimmer
   # Note that lcl-init forces an initial
   # value anyways, si this is ignored.
   dimCodeOn: false
+  editor: null
   
-  constructor: (@eventRouter, @bigCursor) ->
+  constructor: (@eventRouter, @bigCursor, @editor) ->
   
   undimEditor: ->
     unless @bigCursor.isShowing
-      if $("#formCode").css("opacity") < 1
-        $("#formCode").clearQueue()
-        $("#formCode").animate
+      if parseFloat(@editor.codemirrorInstance.getWrapperElement().style.opacity) < 1
+        $(@editor.codemirrorInstance.getWrapperElement()).clearQueue()
+        $(@editor.codemirrorInstance.getWrapperElement()).animate
           opacity: 1
           duration: 'fast'
+        @editor.codemirrorInstance.focus()
 
   
   # Now that there is a manual switch to toggle it off and on
@@ -32,9 +34,10 @@ class EditorDimmer
   # see toggleDimCode()
   # not sure about that, want to try it on people -- julien
   dimEditor: ->
-    if $("#formCode").css("opacity") > 0
-      $("#formCode").clearQueue()
-      $("#formCode").animate
+    console.log "editor element: " + @editor.codemirrorInstance.getWrapperElement()
+    if parseFloat(@editor.codemirrorInstance.getWrapperElement().style.opacity) > 0
+      $(@editor.codemirrorInstance.getWrapperElement()).clearQueue()
+      $(@editor.codemirrorInstance.getWrapperElement()).animate
         opacity: 0
         duration: 'fast'
 

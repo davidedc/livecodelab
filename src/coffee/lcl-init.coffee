@@ -114,7 +114,26 @@ $(document).ready ->
   #/////////////////////////////////////////////////////
   urlRouter = new UrlRouter(eventRouter, window.location)
 
-  bigCursor = new BigCursor eventRouter # $
+
+  codeTextArea = document.getElementById('code')
+
+  editor = new Editor(eventRouter, codeTextArea)
+
+  setTimeout(
+    () -> editor.codemirrorInstance.getWrapperElement().style.opacity = "0",
+    30
+  )
+
+  eventRouter.addListener(
+    'editor-showAndFocus',
+    () -> editor.showAndFocus()
+  )
+  eventRouter.addListener(
+    'editor-hideAndUnfocus',
+    () -> editor.hideAndUnfocus()
+  )
+
+  bigCursor = new BigCursor eventRouter, editor # $
 
   eventRouter.addListener(
     'big-cursor-show',
@@ -124,10 +143,6 @@ $(document).ready ->
     'big-cursor-hide',
     () -> bigCursor.shrinkBigCursor()
   )
-
-  codeTextArea = document.getElementById('code')
-
-  editor = new Editor(eventRouter, codeTextArea)
 
   # requires threeJsSystem, blendControls, graphicsCommands
   programLoader = new ProgramLoader(
@@ -149,7 +164,7 @@ $(document).ready ->
   # EditorDimmer functions should probablly be rolled into the editor itself
   # note that the editorDimmer variable below is never used. Leaving it
   # in for consistency.
-  editorDimmer = new EditorDimmer(eventRouter, bigCursor) # $
+  editorDimmer = new EditorDimmer(eventRouter, bigCursor, editor) # $
   # Setup Event Listeners
   eventRouter.addListener(
     "editor-dim",
@@ -169,6 +184,10 @@ $(document).ready ->
   )
   window.addEventListener(
     'wheel',
+    () -> editorDimmer.undimEditor()
+  )
+  window.addEventListener(
+    'keydown', # keypress would ignore arrows
     () -> editorDimmer.undimEditor()
   )
 
@@ -195,6 +214,7 @@ $(document).ready ->
     (updatedCodeAsString) ->
       if updatedCodeAsString isnt ""
         eventRouter.emit('big-cursor-hide')
+        eventRouter.emit('editor-showAndFocus')
       else
         # clearing history, otherwise the user can undo her way
         # into a previous example but the hash in the URL would be misaligned.
@@ -204,6 +224,7 @@ $(document).ready ->
         )
         eventRouter.emit("set-url-hash", "")
         eventRouter.emit("big-cursor-show")
+        eventRouter.emit("editor-hideAndUnfocus")
       liveCodeLabCore.updateCode updatedCodeAsString
   )
 
@@ -306,7 +327,7 @@ $(document).ready ->
   #/////////////////////////////////////////////////////
   liveCodeLabCore.paintARandomBackground()
   liveCodeLabCore.startAnimationLoop()
-  editor.focus()
+  editor.showAndFocus()
 
   # check if the url points to a particular demo,
   # in which case we load the demo directly.

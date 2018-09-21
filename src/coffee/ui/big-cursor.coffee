@@ -10,8 +10,9 @@ class BigCursor
 
   fakeCursorInterval: null
   isShowing: null
+  editor: null
 
-  constructor: (eventRouter) ->
+  constructor: (eventRouter, @editor) ->
     @isShowing = true
 
   startBigCursorBlinkingAnimation: ->
@@ -50,7 +51,7 @@ class BigCursor
         fontSize: 300
         left: 0
       , "fast"
-      setTimeout (() -> $("#formCode").animate({opacity: 1}, "fast")), 120
+      setTimeout (() => $(@editor.codemirrorInstance.getWrapperElement()).animate({opacity: 1}, "fast")), 120
       setTimeout (() -> $("#justForFakeCursor").hide()), 200
       setTimeout (() -> $("#toMove").hide()), 200
       @isShowing = false
@@ -58,7 +59,8 @@ class BigCursor
 
   unshrinkBigCursor: ->
     unless @isShowing
-      $("#formCode").animate
+      #$("#formCode").animate
+      $(@editor.codemirrorInstance.getWrapperElement()).animate
         opacity: 0
       , "fast"
       $("#justForFakeCursor").show()
