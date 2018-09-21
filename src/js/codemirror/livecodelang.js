@@ -2,8 +2,6 @@
  * CoedeMirror Live Code Lab mode
  */
 
-var CodeMirror = require('../../js/codemirror/lib/codemirror');
-
 CodeMirror.defineMode('livecodelab', function(conf) {
   var ERRORCLASS = 'error';
 

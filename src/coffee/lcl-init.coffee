@@ -27,9 +27,7 @@ Stats           = require './ui/stats'
 Canvas          = require './ui/canvas'
 Editor          = require './editor/editor'
 Autocoder       = require './autocoder/autocoder'
-$               = require '../js/jquery'
 window.$ = $
-window.jQuery = $
 Detector        = require '../js/threejs/Detector'
 
 require './globals/numbertimes'

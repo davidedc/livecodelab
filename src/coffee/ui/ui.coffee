@@ -3,9 +3,7 @@
 ## the editor panel, the big flashing cursor, the stats widget...
 ###
 
-$ = require '../../js/jquery'
 window.$ = $
-window.jQuery = $
 require '../../js/jquery.sooperfish'
 require '../../js/jquery.easing-sooper'
 require '../../js/jquery.simplemodal'
