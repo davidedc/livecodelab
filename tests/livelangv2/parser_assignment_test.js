@@ -1,14 +1,14 @@
 /* global describe, it */
 
-import parser from '../../src/grammar/lcl';
+import parser from '../../src/app/languages/livelangv2/grammar';
 import {
   Assignment,
   BinaryOp,
   Block,
   Num,
   UnaryOp,
-  Variable
-} from '../../src/js/lcl/ast';
+  Variable,
+} from '../../src/app/languages/livelangv2/ast';
 
 import { dedent } from 'dentist';
 
@@ -80,7 +80,7 @@ describe('Assignment', function() {
       Assignment(
         'number',
         BinaryOp('*', BinaryOp('+', Num(456), Num(33)), Num(2))
-      )
+      ),
     ]);
 
     assert.deepEqual(parsed, expected);

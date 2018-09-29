@@ -1,11 +1,11 @@
 /* global describe, it */
 
-import parser from '../../src/grammar/lcl';
-import { Assignment, Block, Str } from '../../src/js/lcl/ast';
+import parser from '../../src/app/languages/livelangv2/grammar';
+import { Assignment, Block, Str } from '../../src/app/languages/livelangv2/ast';
 
 import assert from 'assert';
 
-describe('Do Once', function() {
+describe('Parser - strings', function() {
   it('simple string assignment passes', function() {
     var program = 'a = "string"';
     var parsed = parser.parse(program);

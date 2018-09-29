@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
-  entry: path.resolve(__dirname, 'src/coffee/lcl-init.coffee'),
+  entry: path.resolve(__dirname, 'src/lcl.coffee'),
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'app.js',

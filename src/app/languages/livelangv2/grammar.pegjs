@@ -1,8 +1,8 @@
 
 {
 
-    var Ast = require('../js/lcl/ast');
-    var types = require('../js/lcl/ast/types');
+    var Ast = require('./ast');
+    var types = require('./ast/types');
     var _ = require('underscore');
 
     var indentStack = [], indent = "";

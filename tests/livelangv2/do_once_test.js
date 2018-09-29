@@ -1,7 +1,12 @@
 /* global describe, it */
 
-import parser from '../../src/grammar/lcl';
-import { Application, Block, DoOnce, Num } from '../../src/js/lcl/ast';
+import parser from '../../src/app/languages/livelangv2/grammar';
+import {
+  Application,
+  Block,
+  DoOnce,
+  Num,
+} from '../../src/app/languages/livelangv2/ast';
 
 import { dedent } from 'dentist';
 
@@ -12,7 +17,7 @@ describe('Do Once', function() {
     var program = 'doOnce box';
     var parsed = parser.parse(program, {
       functionNames: ['box'],
-      inlinableFunctions: ['box']
+      inlinableFunctions: ['box'],
     });
 
     var expected = Block([DoOnce(true, Block([Application('box', [])]))]);
@@ -23,7 +28,7 @@ describe('Do Once', function() {
     var program = '✓doOnce box';
     var parsed = parser.parse(program, {
       functionNames: ['box'],
-      inlinableFunctions: ['box']
+      inlinableFunctions: ['box'],
     });
 
     var expected = Block([DoOnce(false, Block([Application('box', [])]))]);
@@ -39,16 +44,16 @@ describe('Do Once', function() {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['rotate', 'box'],
-      inlinableFunctions: ['rotate', 'box']
+      inlinableFunctions: ['rotate', 'box'],
     });
 
     var expected = Block([
       DoOnce(
         true,
         Block([
-          Application('rotate', [], Block([Application('box', [Num(4)])]))
+          Application('rotate', [], Block([Application('box', [Num(4)])])),
         ])
-      )
+      ),
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -62,16 +67,16 @@ describe('Do Once', function() {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['rotate', 'box'],
-      inlinableFunctions: ['rotate', 'box']
+      inlinableFunctions: ['rotate', 'box'],
     });
 
     var expected = Block([
       DoOnce(
         false,
         Block([
-          Application('rotate', [], Block([Application('box', [Num(4)])]))
+          Application('rotate', [], Block([Application('box', [Num(4)])])),
         ])
-      )
+      ),
     ]);
 
     assert.deepEqual(parsed, expected);

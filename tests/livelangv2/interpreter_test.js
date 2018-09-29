@@ -1,7 +1,7 @@
 /* global describe, it */
 
-import { run } from '../../src/js/lcl/interpreter';
-import parser from '../../src/grammar/lcl';
+import { run } from '../../src/app/languages/livelangv2/interpreter';
+import parser from '../../src/app/languages/livelangv2/grammar';
 import {
   Application,
   Assignment,
@@ -9,8 +9,8 @@ import {
   Block,
   Closure,
   Num,
-  Variable
-} from '../../src/js/lcl/ast';
+  Variable,
+} from '../../src/app/languages/livelangv2/ast';
 
 import { dedent } from 'dentist';
 
@@ -24,11 +24,11 @@ describe('Interpreter', function() {
         type: 'builtin',
         func: function(v) {
           output = v;
-        }
-      }
+        },
+      },
     };
     var program = parser.parse('result 3 + 4 * 2', {
-      functionNames: ['result']
+      functionNames: ['result'],
     });
     run(program, scope);
 
@@ -42,9 +42,9 @@ describe('Interpreter', function() {
         type: 'builtin',
         func: function(v) {
           output = v;
-        }
+        },
       },
-      foo: 4
+      foo: 4,
     };
     var program = parser.parse(
       dedent(`
@@ -64,8 +64,8 @@ describe('Interpreter', function() {
         type: 'builtin',
         func: function(v) {
           output = v;
-        }
-      }
+        },
+      },
     };
 
     var program = parser.parse(
@@ -90,8 +90,8 @@ describe('Interpreter', function() {
         type: 'builtin',
         func: function(v) {
           output = v;
-        }
-      }
+        },
+      },
     };
 
     var program = parser.parse(
@@ -116,8 +116,8 @@ describe('Interpreter', function() {
           '+',
           Application('b', [Application('a', [Num(2)]), Num(3)]),
           Application('a', [Num(1)])
-        )
-      ])
+        ),
+      ]),
     ]);
 
     assert.deepEqual(program, expected);

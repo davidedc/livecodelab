@@ -3,34 +3,34 @@
 ## cruise speed
 ###
 
-require '../style/codemirror.css'
-require '../style/stats.css'
-require '../style/night.css'
-require '../style/simpleModal.css'
-require '../style/sooperfish.css'
-require '../style/sooperfish-theme-glass.css'
-require '../style/main.css'
+require './style/codemirror.css'
+require './style/stats.css'
+require './style/night.css'
+require './style/simpleModal.css'
+require './style/sooperfish.css'
+require './style/sooperfish-theme-glass.css'
+require './style/main.css'
 
-require '../index.html'
+require './index.html'
 
-EventEmitter    = require './core/event-emitter'
-LiveCodeLabCore = require './core/livecodelab-core'
-ProgramLoader   = require './programs/program-loader'
-Pulse           = require '../js/pulse'
-WebAudioAPI     = require './sound/webAudioApi'
-BuzzAudioAPI    = require './sound/buzzAudioApi'
-Ui              = require './ui/ui'
-UrlRouter       = require './ui/url-router'
-BigCursor       = require './ui/big-cursor'
-EditorDimmer    = require './ui/text-dimming'
-Stats           = require './ui/stats'
-Canvas          = require './ui/canvas'
-Editor          = require './editor/editor'
-Autocoder       = require './autocoder/autocoder'
+EventEmitter    = require './app/core/event-emitter'
+LiveCodeLabCore = require './app/core/livecodelab-core'
+ProgramLoader   = require './app/programs/program-loader'
+Pulse           = require './app/lib/pulse'
+WebAudioAPI     = require './app/sound/webAudioApi'
+BuzzAudioAPI    = require './app/sound/buzzAudioApi'
+Ui              = require './app/ui/ui'
+UrlRouter       = require './app/ui/url-router'
+BigCursor       = require './app/ui/big-cursor'
+EditorDimmer    = require './app/ui/text-dimming'
+Stats           = require './app/ui/stats'
+Canvas          = require './app/ui/canvas'
+Editor          = require './app/editor/editor'
+Autocoder       = require './app/autocoder/autocoder'
 window.$ = $
-Detector        = require '../js/threejs/Detector'
+Detector        = require './app/lib/threejs/Detector'
 
-require './globals/numbertimes'
+require './app/globals/numbertimes'
 
 
 $(document).ready ->

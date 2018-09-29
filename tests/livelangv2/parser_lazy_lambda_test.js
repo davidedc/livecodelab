@@ -1,13 +1,13 @@
 /* global describe, it */
 
-import parser from '../../src/grammar/lcl';
+import parser from '../../src/app/languages/livelangv2/grammar';
 import {
   Application,
   Assignment,
   Block,
   Closure,
-  Num
-} from '../../src/js/lcl/ast';
+  Num,
+} from '../../src/app/languages/livelangv2/ast';
 
 import { dedent } from 'dentist';
 
@@ -18,14 +18,14 @@ describe('Lazy Lambda', function() {
     var program = 'foo = <box 3, 4>';
     var parsed = parser.parse(program, {
       functionNames: ['box'],
-      inlinableFunctions: ['box']
+      inlinableFunctions: ['box'],
     });
 
     var expected = Block([
       Assignment(
         'foo',
         Closure([], Block([Application('box', [Num(3), Num(4)])]), true)
-      )
+      ),
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -39,7 +39,7 @@ describe('Lazy Lambda', function() {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['rotate', 'box'],
-      inlinableFunctions: ['rotate', 'box']
+      inlinableFunctions: ['rotate', 'box'],
     });
 
     var expected = Block([
@@ -47,7 +47,7 @@ describe('Lazy Lambda', function() {
         'foo',
         Closure([], Block([Application('box', [Num(3), Num(4)])]), true)
       ),
-      Application('rotate', [], Block([Application('foo', [])]))
+      Application('rotate', [], Block([Application('foo', [])])),
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -60,7 +60,7 @@ describe('Lazy Lambda', function() {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['rotate', 'box', 'scale'],
-      inlinableFunctions: ['rotate', 'box', 'scale']
+      inlinableFunctions: ['rotate', 'box', 'scale'],
     });
 
     var expected = Block([
@@ -73,7 +73,7 @@ describe('Lazy Lambda', function() {
         'rotate',
         [],
         Block([Application('bigger', [], Block([Application('box', [])]))])
-      )
+      ),
     ]);
 
     assert.deepEqual(parsed, expected);
