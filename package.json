@@ -35,7 +35,7 @@
     "file-loader": "2.0.0",
     "loglevel": "1.4.1",
     "mocha": "5.2.0",
-    "mocha-webpack": "1.1.0",
+    "mocha-webpack": "2.0.0-beta.0",
     "pegjs": "0.10.0",
     "pegjs-loader": "0.5.4",
     "prettier": "1.10.2",
