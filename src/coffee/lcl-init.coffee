@@ -30,8 +30,6 @@ Autocoder       = require './autocoder/autocoder'
 window.$ = $
 Detector        = require '../js/threejs/Detector'
 
-require './globals/numbertimes'
-
 
 $(document).ready ->
 

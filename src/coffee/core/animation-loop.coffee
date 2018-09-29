@@ -144,9 +144,6 @@ class AnimationLoop
         # then got an error, now you are re-running an old draw function.
         @eventRouter.emit("runtime-error-thrown", e)
         return
-      @programRunner.putTicksNextToDoOnceBlocksThatHaveBeenRun(
-        @codeCompiler
-      )
       @setFrame(@frame + 1)
       @eventRouter.emit('frame-animated')
     else
@@ -167,8 +164,6 @@ class AnimationLoop
     # the sound list needs to be cleaned
     # so that the user program can create its own from scratch
     @soundSystem.clearPatterns()
-
-    @programRunner.resetTrackingOfDoOnceOccurrences()
 
     @lightSystem.noLights()
     @graphicsCommands.reset()

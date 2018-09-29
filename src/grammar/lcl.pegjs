@@ -58,7 +58,7 @@ SourceElements "elements"
       return _.filter(elements, function (e) { return e.type !== types.NULL; });
   }
 
-SourceElement "elements"
+SourceElement "element"
   = Samedent statement:Statement _ Comment? {
       return statement;
   }
@@ -92,6 +92,9 @@ Assignment "assignment"
       }
       return Ast.Assignment(id, expr);
   }
+  / Identifier _ "=" {
+    expected("an assignment statement")
+  }
 
 /** Application Rules
  *
@@ -101,7 +104,7 @@ Application "application"
   = FullApplication
   / SimpleApplication
 
-SimpleApplication "simple application"
+SimpleApplication "application"
   = name:FunctionName "(" _ args:ArgumentList? _ ")" {
       var argList =  optionalList(args, 0);
       return Ast.Application(name, argList);
@@ -111,7 +114,7 @@ SimpleApplication "simple application"
       return Ast.Application(name, argList);
   }
 
-FullApplication
+FullApplication "appliation"
   = name:InlinableFunction _ body:ApplicationBody? {
       var argList = [];
       var block = Ast.Null();
@@ -122,7 +125,7 @@ FullApplication
       return Ast.Application(name, argList, block);
   }
 
-ApplicationBody
+ApplicationBody "application body"
   = block:ApplicationBlock {
       return {
         argList: [],
@@ -136,7 +139,7 @@ ApplicationBody
       };
   }
 
-ApplicationBlock
+ApplicationBlock "application body"
   = NewLine block:Block {
       return block;
   }
@@ -148,12 +151,12 @@ Inlinable
   = TimesLoop
   / InlinedApplication
 
-InlinedApplication
+InlinedApplication "inlined appliation"
   = name:InlinableFunction _ body:ApplicationBody {
       return Ast.Application(name, body.argList, body.block);
   }
 
-ArgumentList
+ArgumentList "argument list"
   = head:Expression tail:(_ "," _ Expression)* {
       return buildList(head, tail, 3);
   }
@@ -196,6 +199,9 @@ If "if"
   / "if" _ predicate:Expression _ "then" _ ifAction:Statement {
       return Ast.If(predicate, Ast.Block([ifAction]));
   }
+  / "if" {
+    expected("complete if statement")
+  }
 
 Else "else"
   = NewLine Samedent "else" _ ifBlock:If {
@@ -213,6 +219,9 @@ TimesLoop "times"
   = expr:Expression _ "times" loopVar:LoopVar? _ block:TimesLoopBlock {
       return Ast.Times(expr, block, loopVar || Ast.Null());
   }
+  / Expression _ "times" {
+    expected("a complete times loop");
+  }
 
 TimesLoopBlock
   = NewLine block:Block {
@@ -225,6 +234,9 @@ TimesLoopBlock
 LoopVar
   = _ "with" _ loopVar:Identifier {
       return loopVar;
+  }
+  / _ "with" _ {
+      expected("a loop variable");
   }
 
 /** DoOnce Rules
@@ -251,13 +263,29 @@ ActiveDoOnce "active do once"
   / "doOnce" _ expr:Expression {
       return Ast.DoOnce(true, Ast.Block([expr]));
   }
+  / EmptyDoOnce
+
+EmptyDoOnce "empty do once"
+  = "doOnce" {
+      return Ast.DoOnce(false);
+  }
 
 /** Expression Rules
  *
  */
 
 Expression
-  = LogicCombi
+  = Lambda
+  / UnaryLogicExpr
+  / LogicCombi
+
+UnaryLogicExpr "unaryLogicExpr"
+  = "!" _ expr:LogicCombi {
+      return Ast.UnaryOp("!", expr);
+  }
+  / "!" {
+    expected("rest of logic expression")
+  }
 
 LogicCombi "logicCombinator"
   = head:LogicExpr tail:( _ ("&&" / "||") _ LogicExpr)* {
@@ -267,11 +295,6 @@ LogicCombi "logicCombinator"
 LogicExpr "logicExpr"
   = head:AddSub tail:( _ (">=" / "<=" / "==" / ">" / "<") _ AddSub)* {
       return collapseTail(head, tail, Ast.BinaryOp);
-  }
-
-UnaryLogicExpr "unaryLogicExpr"
-  = "!" _ expr:AddSub {
-      return Ast.UnaryOp("!", expr);
   }
 
 AddSub "addsub"
@@ -290,15 +313,17 @@ Exponent "exponent"
   }
 
 Primary
-  = Lambda
-  / DeIndex
+  = DeIndex
   / Base
   / String
   / NegativeExpr
 
-NegativeExpr
+NegativeExpr "negative expression"
   = "-" _ base:Base {
       return Ast.UnaryOp('-', base);
+  }
+  / "-" {
+    expected("rest of negative expression")
   }
 
 Base
@@ -307,6 +332,12 @@ Base
   / Variable
   / List
   / "(" _ expr:Expression _ ")" { return expr; }
+  / "(" _ Expression {
+    expected("closing expression bracket")
+  }
+  / "(" {
+    expected("expression")
+  }
 
 Variable "variable"
   = id:Identifier &{
@@ -320,6 +351,15 @@ Variable "variable"
 DeIndex "deindex"
   = collection:Base "[" index:Expression "]" {
     return Ast.DeIndex(collection, index);
+  }
+  / Base "[" _ expr:Expression {
+    expected("closing deindex bracket")
+  }
+  / Base "[" _ "]" {
+    expected("deindex expression")
+  }
+  / Base "[" {
+    expected("deindex expression")
   }
 
 Identifier
@@ -339,8 +379,14 @@ String "string"
   = "'" chars:([^\n\r\f'])* "'" {
       return Ast.Str(chars.join(''));
   }
-  / "\"" chars:([^\n\r\f\"])* "\"" {
+  / '"' chars:([^\n\r\f\"])* '"' {
       return Ast.Str(chars.join(''));
+  }
+  / "'" ([^\n\r\f'])* {
+    expected("closing string quote (')")
+  }
+  / '"' ([^\n\r\f"])* {
+    expected('closing string quote (")')
   }
 
 List "list"
@@ -348,20 +394,26 @@ List "list"
       var values =  optionalList(valList, 0);
       return Ast.List(values);
   }
+  / "[" ArgumentList? {
+    expected("closing list bracket")
+  }
 
 Lambda "lambda"
   = LazyLambda
   / "(" _ params:ParamList? _ ")" _ ("->" / "=>") _ body:LambdaBody {
       return Ast.Closure(optionalList(params), body, false);
   }
+  / "(" _ ParamList? _ ")" _ ("->" / "=>") {
+    expected("function body")
+  }
 
-LambdaBody
+LambdaBody "lambda body"
   = Expression
   / NewLine block:Block {
       return block;
   }
 
-LazyLambda "lazy"
+LazyLambda "lazy lambda"
   = "<" _ lazy:Application _ ">" {
       return Ast.Closure([], Ast.Block([lazy]), true);
   }
@@ -375,7 +427,7 @@ ParamList "param list"
  *
  */
 
-Indent
+Indent "indent"
   = &(
         i:[\t]+ &{
             return i.length === (indent.length + 1);
@@ -386,12 +438,12 @@ Indent
         }
     )
 
-Samedent
+Samedent "same indentation"
   = i:[\t]* &{
       return i.join("") === indent;
   }
 
-Dedent
+Dedent "dedent"
   = &(
         i:[\t]* &{
             return i.length <= (indent.length - 1);
@@ -405,12 +457,13 @@ Dedent
  *
  */
 
-Comment = "//" [^\n]*
+Comment "comment"
+  = "//" [^\n]*
 
-NewLine
+NewLine "newline"
   = "\n"+
 
-EOF
+EOF "end of input"
   = !.
 
 _ "whitespace"

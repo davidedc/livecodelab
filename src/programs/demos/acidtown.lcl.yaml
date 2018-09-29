@@ -5,7 +5,7 @@ code: |
   animationStyle paintOver
   scale 3.5
   background black
-  stroke absin(1), absin(2), absin(3)
+  stroke (absin 1), (absin 2), (absin 3)
   noFill
   2 times
   	rotate time / 30

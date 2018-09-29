@@ -104,7 +104,7 @@ export function Times(number, block, loopVar = Null()) {
 /**
  *  block: Block
  */
-export function DoOnce(active, block = Null()) {
+export function DoOnce(active, block = Block([])) {
   return {
     type: DOONCE,
     active,
