@@ -1,5 +1,5 @@
-submenu: WebGL
-title: "WebGL: Shards"
+submenu: Basic
+title: "Shards"
 code: |
   scale 10
   fill 0

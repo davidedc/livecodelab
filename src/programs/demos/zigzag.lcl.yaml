@@ -1,5 +1,5 @@
-submenu: WebGL
-title: "WebGL: Zigzag"
+submenu: Basic
+title: "Zigzag"
 code: |
   scale 10
   noStroke

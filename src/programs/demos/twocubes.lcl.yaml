@@ -1,5 +1,5 @@
-submenu: WebGL
-title: "WebGL: Two cubes"
+submenu: Basic
+title: "Two cubes"
 code: |
   background 155, 255, 255
   2 times

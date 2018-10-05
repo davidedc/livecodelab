@@ -1,5 +1,5 @@
-submenu: WebGL
-title: "WebGL: Lava"
+submenu: Basic
+title: "Lava"
 code: |
   scale 4.5
   noStroke

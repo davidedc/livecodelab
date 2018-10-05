@@ -1,5 +1,5 @@
-submenu: WebGL
-title: "WebGL: A Knot"
+submenu: Complex
+title: "A Knot"
 code: |
   turns = 2
   detail = 400

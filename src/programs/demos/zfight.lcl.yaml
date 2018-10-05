@@ -1,5 +1,5 @@
-submenu: WebGL
-title: "WebGL: Z Fight"
+submenu: Complex
+title: "Z Fight"
 code: |
   // Explore the artifacts
   // of your GPU!
