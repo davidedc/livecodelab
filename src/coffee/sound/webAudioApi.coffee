@@ -30,7 +30,7 @@ class WebAudioApi
 
   play: (name) =>
     if (@samples[name])
-      console.log('play: ', name)
+      #console.log('play: ', name)
       buffer = @samples[name]
       source = @context.createBufferSource()
       source.buffer = buffer
