@@ -5,7 +5,7 @@
 
 class WebAudioApi
 
-  constructor: () ->
+  constructor: (AudioContext) ->
     @context = new AudioContext()
     @soundout = @context.destination
     @samples = {}

@@ -79,8 +79,13 @@ $(document).ready ->
 
   # If the WebAudioApi AudioContext class is available then we
   # can use that API. Otherwise we fall back to Buzz
+
+  AudioContext = window.AudioContext or # default
+    window.webkitAudioContext or # Safari and old versions of Chrome
+    false # we'll try "Buzz" for you
+
   if (AudioContext)
-    audioAPI = new WebAudioAPI()
+    audioAPI = new WebAudioAPI(AudioContext)
   else
     audioAPI = new BuzzAudioAPI()
 
