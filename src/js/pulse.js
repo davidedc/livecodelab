@@ -9,6 +9,7 @@
 
 /*
  * Further modifications Guy John for Live Code Lab
+ *connect '0.0.0.0:9000'
  */
 
 var Pulse = function (address) {
@@ -43,12 +44,20 @@ Pulse.PING_INTERVAL = 10000;
 Pulse.VALID_IP = /^(http:\/\/)?(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(:[0-9]+)?$/;
 Pulse.VALID_HOSTNAME = /^(http:\/\/)?(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])(:[0-9]+)?$/;
 
+Pulse.prototype.now = function() {
+    return new Date().getTime()
+}
+
+Pulse.prototype.setNowFunction = function(func) {
+    this.now = func
+}
+
 /**
 * Handles the incoming MIDI clock messages.
 */
 Pulse.prototype.clock = function(){
     if (this.clocks % Pulse.PPQN === 0){
-        var beatTime = new Date().getTime() - this.deviceLatency - this.netLatency;
+        var beatTime = this.now() - this.deviceLatency - this.netLatency;
         this.newBeat(beatTime);
         this.clocks = 0;
     }
@@ -86,7 +95,7 @@ Pulse.prototype.newBeat = function(t){
 * This is fired every "whole" beat, and updates the BPM
 */
 Pulse.prototype.tap = function(){
-    var now = (new Date()).getTime();
+    var now = this.now();
     if (now - this.beats[this.beats.length - 1] > Pulse.TAP_TIMEOUT * this.mspb) {
         this.beats = [];
     }
@@ -97,7 +106,7 @@ Pulse.prototype.tap = function(){
 * Get the current beat
 */
 Pulse.prototype.beat = function(){
-    var passed = (new Date()).getTime() - this.beats[this.beats.length-1];
+    var passed = this.now() - this.beats[this.beats.length-1];
     return this.count + passed / this.mspb;
 };
 
@@ -211,7 +220,7 @@ Pulse.prototype.connectSocket = function(address){
 
     // Handle incoming midi
     this.socket.on('midi', function (data) {
-        if (data === Pulse.MIDI_CLOCK){
+        if (data[0] === Pulse.MIDI_CLOCK){
             _this.clock();
         }
         else if (data === Pulse.MIDI_START || data === Pulse.MIDI_CONTINUE){
@@ -223,7 +232,7 @@ Pulse.prototype.connectSocket = function(address){
     this.socket.on('pong', function(data){
         var latency = Math.min(Pulse.MAX_NET_LATENCY, ((new Date()).getTime() - _this.lastPing) / 2);
         _this.netLatency = _this.netLatency * 0.8 + latency * 0.2;
-        console.log("Pulse Latency: " + _this.netLatency.toFixed(1) + 'ms');
+        console.log("Pulse Latency 4: " + _this.netLatency.toFixed(1) + 'ms');
     });
 
 

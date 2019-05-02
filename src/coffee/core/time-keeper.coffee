@@ -11,6 +11,8 @@ class TimeKeeper extends EventEmitter
   constructor: (@syncClient, @_audioApi) ->
     super()                       # call EventEmitter constructor
 
+    @syncClient.setNowFunction(@getCurrentTime)
+
     now = @getCurrentTime()
 
     @beatCount       = 1            # last whole beat number
@@ -38,6 +40,8 @@ class TimeKeeper extends EventEmitter
     scope.addFunction('pulse', (frequency) => @pulse(frequency))
     scope.addFunction('wave',  (frequency) => @wave(frequency))
     scope.addVariable('time',  @time)
+    scope.addFunction('connect',   (address) => @connect(address))
+    
 
   ###
   From now on, call @getCurrentTime instead of @_audioApi.getTime()
@@ -72,12 +76,11 @@ class TimeKeeper extends EventEmitter
       @beatFraction = 0
 
       @beatCount += 1
-
+  
     if (@syncClient.currentConnection() and @syncClient.beats.length)
-
       @setBpm(@syncClient.bpm)
 
-      c = @syncClient.beats.length -1
+      c = -1 + @syncClient.beats.length 
       syncClientLastBeatLoopMs = @syncClient.beats[c]
       if (@syncClient.count == 1)
         @beatCount = 1
@@ -113,6 +116,7 @@ class TimeKeeper extends EventEmitter
   setBpm: (bpm) ->
     if !(bpm?)
       bpm = @defaultBpm
+    bpm = Math.round(bpm * 10) / 10
     if (@bpm != bpm)
       @bpm = Math.max(20, Math.min(bpm, 250))
       @mspb = 60000 / @bpm
@@ -139,7 +143,11 @@ class TimeKeeper extends EventEmitter
     now = @getCurrentTime()
     msSinceLastQuarter = now - @lastBeatLoopMs
     msFrac = (msSinceLastQuarter / @mspb)
-    beatValue = @beatCount + @beatFraction + msFrac
+    beatValue = @beatCount + @beatFraction
+    # beatValue = @beatCount + @beatFraction + msFrac
+    console.log("msSinceLastQuarter", msSinceLastQuarter)
+    console.log("@mspb", @mspb)
+    console.log("beatValue", beatValue, @beatCount, @beatFraction, msFrac, now, @lastBeatLoopMs)
     return beatValue
 
   pulse: (frequency) ->
