@@ -72,7 +72,7 @@ TimeKeeper        = require './time-keeper'
 Pulse             = require '../lib/pulse'
 Math              = require '../globals/math'
 GlobalScope       = require './global-scope'
-SampleBank        = require '../sound/samplebank'
+SampleBank        = require('../sound/samplebank').default;
 SoundSystem       = require '../sound/sound-system'
 PatternPlayer     = require '../sound/pattern-player'
 ThreeJsSystem     = require './threejs-system'
@@ -98,7 +98,7 @@ class LiveCodeLabCore
     # But often in LiveCodeLab there are direct reference to three
     # fields/methods. So, threeJsSystem provides some abstraction without
     # attempting to be a complete abstraction layer.
-    
+
     @timeKeeper = new TimeKeeper(@syncClient, @audioAPI)
 
     @globalscope = new GlobalScope(true)
@@ -109,14 +109,14 @@ class LiveCodeLabCore
 
     @mathFunctions = new Math()
     @otherCommands = new OtherCommands()
-    
+
     @soundSystem = new SoundSystem(
       @timeKeeper,
       @audioAPI,
       new SampleBank(@audioAPI),
       new PatternPlayer()
     )
-    
+
     @backgroundPainter = new BackgroundPainter(
       @backgroundDiv,
       @colourFunctions,
@@ -220,4 +220,3 @@ class LiveCodeLabCore
       @eventRouter.emit("livecodelab-waking-up")
 
 module.exports = LiveCodeLabCore
-
