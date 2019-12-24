@@ -4,7 +4,7 @@
 ## with the other parts of LiveCodeLab.
 ###
 
-require '../../js/codemirror/livecodelang'
+require '../lib/codemirror/livecodelang'
 
 class Editor
 

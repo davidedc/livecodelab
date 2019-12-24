@@ -4,9 +4,9 @@
 ###
 
 window.$ = $
-require '../../js/jquery.sooperfish'
-require '../../js/jquery.easing-sooper'
-require '../../js/jquery.simplemodal'
+require '../lib/jquery.sooperfish'
+require '../lib/jquery.easing-sooper'
+require '../lib/jquery.simplemodal'
 
 _ = require 'underscore'
 

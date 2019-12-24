@@ -13,14 +13,14 @@ import {
   NUM,
   VARIABLE,
   STRING,
-  LIST
+  LIST,
 } from './types';
 
 /**
  */
 export function Null() {
   return {
-    type: NULL
+    type: NULL,
   };
 }
 
@@ -30,7 +30,7 @@ export function Null() {
 export function Block(elements) {
   return {
     type: BLOCK,
-    elements
+    elements,
   };
 }
 
@@ -42,7 +42,7 @@ export function Assignment(identifier, expression) {
   return {
     type: ASSIGNMENT,
     identifier,
-    expression
+    expression,
   };
 }
 
@@ -55,7 +55,7 @@ export function Application(identifier, args, block = Null()) {
     type: APPLICATION,
     identifier,
     args,
-    block
+    block,
   };
 }
 
@@ -69,7 +69,7 @@ export function If(predicate, ifBlock, elseBlock = Null()) {
     type: IF,
     predicate,
     ifBlock,
-    elseBlock
+    elseBlock,
   };
 }
 
@@ -83,7 +83,7 @@ export function Closure(argNames, body, inlinable = false) {
     type: CLOSURE,
     argNames,
     body,
-    inlinable
+    inlinable,
   };
 }
 
@@ -97,7 +97,7 @@ export function Times(number, block, loopVar = Null()) {
     type: TIMES,
     number,
     block,
-    loopVar
+    loopVar,
   };
 }
 
@@ -108,7 +108,7 @@ export function DoOnce(active, block = Null()) {
   return {
     type: DOONCE,
     active,
-    block
+    block,
   };
 }
 
@@ -120,7 +120,7 @@ export function UnaryOp(operator, expr1) {
   return {
     type: UNARYOP,
     operator,
-    expr1
+    expr1,
   };
 }
 
@@ -134,7 +134,7 @@ export function BinaryOp(operator, expr1, expr2) {
     type: BINARYOP,
     operator,
     expr1,
-    expr2
+    expr2,
   };
 }
 
@@ -146,7 +146,7 @@ export function DeIndex(collection, index) {
   return {
     type: DEINDEX,
     collection,
-    index
+    index,
   };
 }
 
@@ -156,7 +156,7 @@ export function DeIndex(collection, index) {
 export function Num(value) {
   return {
     type: NUM,
-    value
+    value,
   };
 }
 
@@ -166,7 +166,7 @@ export function Num(value) {
 export function Variable(identifier) {
   return {
     type: VARIABLE,
-    identifier
+    identifier,
   };
 }
 
@@ -176,7 +176,7 @@ export function Variable(identifier) {
 export function Str(value) {
   return {
     type: STRING,
-    value
+    value,
   };
 }
 
@@ -186,6 +186,6 @@ export function Str(value) {
 export function List(values) {
   return {
     type: LIST,
-    values
+    values,
   };
 }

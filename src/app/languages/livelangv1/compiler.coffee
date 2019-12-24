@@ -10,7 +10,7 @@
 ###
 
 CodePreprocessor     = require './code-preprocessor'
-CoffeeScriptCompiler = require '../../../js/coffee-script'
+CoffeeScriptCompiler = require '../../lib/coffee-script'
 
 class CodeCompiler
   currentCodeString: null

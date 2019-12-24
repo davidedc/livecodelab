@@ -1,6 +1,6 @@
 /* global describe, it */
 
-import parser from '../../src/grammar/lcl';
+import parser from '../../src/app/languages/livelangv2/grammar';
 
 import { dedent } from 'dentist';
 
@@ -28,9 +28,9 @@ describe('Old Language tests', function() {
         'scale',
         'move',
         'ball',
-        'fill'
+        'fill',
       ],
-      inlinableFunctions: ['scale', 'move', 'ball']
+      inlinableFunctions: ['scale', 'move', 'ball'],
     });
 
     assert.ok(parsed);
@@ -43,7 +43,7 @@ describe('Old Language tests', function() {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['scale', 'wave', 'peg', 'ball', 'rotate'],
-      inlinableFunctions: ['scale', 'peg', 'ball', 'rotate']
+      inlinableFunctions: ['scale', 'peg', 'ball', 'rotate'],
     });
 
     assert.ok(parsed);
@@ -55,7 +55,7 @@ describe('Old Language tests', function() {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['rotate', 'noStroke', 'fill', 'pulse', 'box'],
-      inlinableFunctions: ['rotate', 'noStroke', 'fill', 'box']
+      inlinableFunctions: ['rotate', 'noStroke', 'fill', 'box'],
     });
 
     assert.ok(parsed);
@@ -71,7 +71,7 @@ describe('Old Language tests', function() {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['rotate', 'ball', 'box', 'move'],
-      inlinableFunctions: ['rotate', 'ball', 'box', 'move']
+      inlinableFunctions: ['rotate', 'ball', 'box', 'move'],
     });
 
     assert.ok(parsed);
@@ -85,7 +85,7 @@ describe('Old Language tests', function() {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['rotate', 'ball', 'box', 'move'],
-      inlinableFunctions: ['rotate', 'ball', 'box', 'move']
+      inlinableFunctions: ['rotate', 'ball', 'box', 'move'],
     });
 
     assert.ok(parsed);

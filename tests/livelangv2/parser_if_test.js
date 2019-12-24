@@ -1,11 +1,11 @@
 /* global describe, it */
 
-var parser = require('../../src/grammar/lcl');
-var ast = require('../../src/js/lcl/ast');
+import parser from '../../src/app/languages/livelangv2/grammar';
+import * as ast from '../../src/app/languages/livelangv2/ast';
 
-var dedent = require('dentist').dedent;
+import { dedent } from 'dentist';
 
-var assert = require('assert');
+import assert from 'assert';
 
 describe('If', function() {
   it('simple if statement parses', function() {
@@ -17,7 +17,7 @@ describe('If', function() {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['box'],
-      inlibaleFunctions: ['box']
+      inlibaleFunctions: ['box'],
     });
 
     var expected = ast.Block([
@@ -25,7 +25,7 @@ describe('If', function() {
       ast.If(
         ast.BinaryOp('==', ast.Variable('a'), ast.Num(3)),
         ast.Block([ast.Application('box', [])])
-      )
+      ),
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -40,7 +40,7 @@ describe('If', function() {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['box'],
-      inlibaleFunctions: ['box']
+      inlibaleFunctions: ['box'],
     });
 
     var expected = ast.Block([
@@ -48,7 +48,7 @@ describe('If', function() {
       ast.If(
         ast.BinaryOp('==', ast.Variable('a'), ast.Num(3)),
         ast.Block([ast.Application('box', [])])
-      )
+      ),
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -64,7 +64,7 @@ describe('If', function() {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['box', 'peg'],
-      inlinableFunctions: ['box', 'peg']
+      inlinableFunctions: ['box', 'peg'],
     });
 
     var expected = ast.Block([
@@ -73,7 +73,7 @@ describe('If', function() {
         ast.BinaryOp('==', ast.Variable('a'), ast.Num(3)),
         ast.Block([ast.Application('box', [])]),
         ast.If(ast.Num(1), ast.Block([ast.Application('peg', [])]))
-      )
+      ),
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -87,7 +87,7 @@ describe('If', function() {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['box', 'peg'],
-      inlinableFunctions: ['box', 'peg']
+      inlinableFunctions: ['box', 'peg'],
     });
 
     var expected = ast.Block([
@@ -97,7 +97,7 @@ describe('If', function() {
         ast.Block([ast.Application('box', [])]),
         ast.Block([ast.Application('peg', [ast.Num(1)])])
       ),
-      ast.Application('box', [])
+      ast.Application('box', []),
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -114,7 +114,7 @@ describe('If', function() {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['box', 'peg', 'ball'],
-      inlinableFunctions: ['box', 'peg', 'ball']
+      inlinableFunctions: ['box', 'peg', 'ball'],
     });
 
     var expected = ast.Block([
@@ -127,7 +127,7 @@ describe('If', function() {
           ast.Block([ast.Application('ball', [])]),
           ast.If(ast.Num(1), ast.Block([ast.Application('peg', [])]))
         )
-      )
+      ),
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -142,7 +142,7 @@ describe('If', function() {
                          \t\tpeg`);
     var parsed = parser.parse(program, {
       functionNames: ['box', 'peg', 'rotate'],
-      inlinableFunctions: ['box', 'peg', 'rotate']
+      inlinableFunctions: ['box', 'peg', 'rotate'],
     });
 
     var expected = ast.Block([
@@ -154,9 +154,9 @@ describe('If', function() {
             ast.Num(1),
             ast.Block([ast.Application('box', [])]),
             ast.If(ast.Num(1), ast.Block([ast.Application('peg', [])]))
-          )
+          ),
         ])
-      )
+      ),
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -170,7 +170,7 @@ describe('If', function() {
                          \tbox`);
     var parsed = parser.parse(program, {
       functionNames: ['ambientLight', 'box', 'rotate'],
-      inlinableFunctions: ['box', 'rotate']
+      inlinableFunctions: ['box', 'rotate'],
     });
 
     var expected = ast.Block([
@@ -184,11 +184,11 @@ describe('If', function() {
           ast.Application('ambientLight', [
             ast.Num(255),
             ast.Num(255),
-            ast.Num(255)
-          ])
+            ast.Num(255),
+          ]),
         ])
       ),
-      ast.Application('rotate', [], ast.Block([ast.Application('box', [])]))
+      ast.Application('rotate', [], ast.Block([ast.Application('box', [])])),
     ]);
 
     assert.deepEqual(parsed, expected);

@@ -1,14 +1,14 @@
 /* global describe, it */
 
-import parser from '../../src/grammar/lcl';
+import parser from '../../src/app/languages/livelangv2/grammar';
 import {
   Assignment,
   BinaryOp,
   Block,
   Num,
   UnaryOp,
-  Variable
-} from '../../src/js/lcl/ast';
+  Variable,
+} from '../../src/app/languages/livelangv2/ast';
 
 import { dedent } from 'dentist';
 
@@ -33,7 +33,7 @@ describe('Math', function() {
 
     var expected = Block([
       Assignment('a', Num(3)),
-      Assignment('b', UnaryOp('-', Variable('a')))
+      Assignment('b', UnaryOp('-', Variable('a'))),
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -44,7 +44,7 @@ describe('Math', function() {
     var parsed = parser.parse(program);
 
     var expected = Block([
-      Assignment('a', UnaryOp('-', BinaryOp('+', Num(3), Num(4))))
+      Assignment('a', UnaryOp('-', BinaryOp('+', Num(3), Num(4)))),
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -55,7 +55,7 @@ describe('Math', function() {
     var parsed = parser.parse(program);
 
     var expected = Block([
-      Assignment('a', BinaryOp('+', BinaryOp('+', Num(3), Num(4)), Num(4)))
+      Assignment('a', BinaryOp('+', BinaryOp('+', Num(3), Num(4)), Num(4))),
     ]);
 
     assert.deepEqual(parsed, expected);

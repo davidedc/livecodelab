@@ -1,14 +1,12 @@
 /* global describe, it */
 
-var assert = require('assert');
+import assert from 'assert';
 
-var Compiler = require('../../src/coffee/languages/livelangv1/compiler');
-var GlobalScope = require('../../src/coffee/core/global-scope');
+var Compiler = require('../../src/app/languages/livelangv1/compiler');
+var GlobalScope = require('../../src/app/core/global-scope');
 
 describe('V1 Compiler', function() {
-
-  it('should identify sketches of just comments as empty', function () {
-
+  it('should identify sketches of just comments as empty', function() {
     var scope = new GlobalScope();
     var compiler = new Compiler({});
 
@@ -16,7 +14,5 @@ describe('V1 Compiler', function() {
     var output = compiler.compileCode(program, scope);
 
     assert.equal(output.status, 'empty');
-
   });
-
 });

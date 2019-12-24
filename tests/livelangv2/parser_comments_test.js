@@ -1,7 +1,11 @@
 /* global describe, it */
 
-import parser from '../../src/grammar/lcl';
-import { Application, Block, Num } from '../../src/js/lcl/ast';
+import parser from '../../src/app/languages/livelangv2/grammar';
+import {
+  Application,
+  Block,
+  Num,
+} from '../../src/app/languages/livelangv2/ast';
 
 import { dedent } from 'dentist';
 
@@ -62,7 +66,7 @@ describe('Comments', function() {
 
     var expected = Block([
       Application('box', [Num(4)]),
-      Application('peg', [Num(3)])
+      Application('peg', [Num(3)]),
     ]);
 
     assert.deepEqual(parsed, expected);
@@ -93,11 +97,11 @@ describe('Comments', function() {
                          `);
     var parsed = parser.parse(program, {
       functionNames: ['rotate', 'peg'],
-      inlinableFunctions: ['rotate']
+      inlinableFunctions: ['rotate'],
     });
 
     var expected = Block([
-      Application('rotate', [], Block([Application('peg', [Num(3)])]))
+      Application('rotate', [], Block([Application('peg', [Num(3)])])),
     ]);
 
     assert.deepEqual(parsed, expected);
