@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://livecodelab.net/images/headerLogoAndTitle.png" width="40%" height="40%">
+  <img src="images/readme/headerLogoAndTitle.png" width="40%" height="40%">
 </p>
 
 
