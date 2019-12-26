@@ -1,17 +1,17 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/davidedc/Livecodelab-website/gh-pages/images/headerLogoAndTitle.png" width="40%" height="40%">
+  <img src="https://livecodelab.net/images/headerLogoAndTitle.png" width="40%" height="40%">
 </p>
 
 
-#### Online toy live coding environment ####
+## Online live coding environment ####
 
 Livecodelab is a special secret place where you can make fancy "on-the-fly" 3d visuals and play awesomely offbeat (literally) sounds.
 
 "On-the-fly" meaning: as you type. Type just three letters: "box", and boom! a box appears. No clicking play, no waiting, no nothing.
 
-Play! http://livecodelab.net/play/
+Play! [http://livecodelab.net/play/](http://livecodelab.net/play/)
 
-#### Live coding in the browser ####
+## Live coding in the browser ####
 
 LiveCodeLab has been used by several groups/people for:
 
@@ -28,19 +28,19 @@ it's a live coding tool that artists can use, misuse and tweak. Go fullscreen, h
 automatic coding in the browser is still quite a virgin territory. It's been done a lot with lisp-y languages, but not quite in the context of things like LiveCodeLab, so there is an opportunity to do quite some original work there.
 
 
-### Roadmap ###
+## Roadmap
 
 Roadmap? Where we are going there are no roadmaps.
 If you insist, here is what's currently in our mind:
 
-* Make the code nicer (always the case, isn't it?)
+ * Make the code nicer (always the case, isn't it?)
 
-* Ways to share programs with others.
+ * Ways to share programs with others.
 
-For a more fine-grained look at ideas and bugs, take a look at <a href="https://github.com/davidedc/livecodelab/issues">the tracker</a>.
+For a more fine-grained look at ideas and bugs, take a look at [the tracker](https://github.com/davidedc/livecodelab/issues)
 
 
-#### Libraries used ###
+## Libraries used
 
  * Three.js by Ricardo Cabello aka Mr.doob.
  * Coffeescript by Jeremy Ashkenas.
@@ -50,7 +50,7 @@ For a more fine-grained look at ideas and bugs, take a look at <a href="https://
  * Scrollwheel handler by Brandon Aaron.
  * McLexer by Matthew Might.
 
-#### Main contributors ###
+## Main contributors
 
  * Davide Della Casa. Made the first version.
  * Guy John aka @rumblesan. Massive, massive contributions: refactored the code big times, set-up a proper build system, undoes the entropy done by others, working on new parser.
@@ -58,11 +58,11 @@ For a more fine-grained look at ideas and bugs, take a look at <a href="https://
  * Matthew Lawrence: replaced the old "plasters and regexes" autocoder hack with a much more proper lexer-based solution.
  * Julien Dorra: contributed to french version, refactoring and great UX/UI feedback.
 
-#### Documentation ####
-Please check the docs-overview file in the docs directory for an
-overview of the available documentation.
- 
-#### Glamour shots ####
+## Documentation ####
+
+Please check the docs-overview file in the docs directory for an overview of the available documentation.
+
+## Glamour shots ####
 
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/LiveCodeLab-BannerForGithub.png" width="800" height="236">
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/Thumb35.png" width="200" height="115">
