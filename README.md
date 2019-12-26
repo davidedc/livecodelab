@@ -3,35 +3,35 @@
 </p>
 
 
-## Online live coding environment ####
+## On-line live coding environment
 
-Livecodelab is a special secret place where you can make fancy "on-the-fly" 3d visuals and play awesomely offbeat (literally) sounds.
+LiveCodeLab is a special secret place where you can make fancy "on-the-fly" 3D visuals and play awesomely offbeat (literally) sounds.
 
-"On-the-fly" meaning: as you type. Type just three letters: "box", and boom! a box appears. No clicking play, no waiting, no nothing.
+"On-the-fly" meaning: as you type. Type just three letters: "box", and boom! A box appears. No clicking play, no waiting, no nothing.
 
 Play! [http://livecodelab.net/play/](http://livecodelab.net/play/)
 
-## Live coding in the browser ####
+
+## Live coding in the browser
 
 LiveCodeLab has been used by several groups/people for:
 
-*Education*:
+### Education
 it's a great way to get kids and adults interested in code, as it allows for instant feedback and easy pair programming. It helps introduce simple concept like loops, and much more complex like transform matrices!
 
-*Showcasing modern browser features*:
-it's a nice showcase of what browsers can do with the latest 3D and javascript implementations.
+### Showcasing modern browser features
+it's a nice showcase of what browsers can do with the latest 3D and JavaScript implementations.
 
-*Creative coding*:
-it's a live coding tool that artists can use, misuse and tweak. Go fullscreen, hide the code and you can make incredible screen recordings with just a few lines of code!
+### Creative coding
+It's a live coding tool that artists can use, misuse and tweak. Go full screen, hide the code and you can make incredible screen recordings with just a few lines of code!
 
-*Auto-coding*:
-automatic coding in the browser is still quite a virgin territory. It's been done a lot with lisp-y languages, but not quite in the context of things like LiveCodeLab, so there is an opportunity to do quite some original work there.
+### Auto-coding
+Automatic coding in the browser is still quite a virgin territory. It's been done a lot with lisp-y languages, but not quite in the context of things like LiveCodeLab, so there is an opportunity to do quite some original work there.
 
 
 ## Roadmap
 
-Roadmap? Where we are going there are no roadmaps.
-If you insist, here is what's currently in our mind:
+Roadmap? Where we are going there are no roadmaps. If you insist, here is what's currently in our mind:
 
  * Make the code nicer (always the case, isn't it?)
 
@@ -43,12 +43,13 @@ For a more fine-grained look at ideas and bugs, take a look at [the tracker](htt
 ## Libraries used
 
  * Three.js by Ricardo Cabello aka Mr.doob.
- * Coffeescript by Jeremy Ashkenas.
+ * CoffeeScript by Jeremy Ashkenas.
  * LowLag.js by kirkjerk
  * Processing.js library by J. Resig.
  * Code Mirror by Marijn Haverbeke.
  * Scrollwheel handler by Brandon Aaron.
  * McLexer by Matthew Might.
+
 
 ## Main contributors
 
@@ -58,11 +59,12 @@ For a more fine-grained look at ideas and bugs, take a look at [the tracker](htt
  * Matthew Lawrence: replaced the old "plasters and regexes" autocoder hack with a much more proper lexer-based solution.
  * Julien Dorra: contributed to french version, refactoring and great UX/UI feedback.
 
-## Documentation ####
+## Documentation
 
 Please check the docs-overview file in the docs directory for an overview of the available documentation.
 
-## Glamour shots ####
+
+## Glamour shots
 
 <img src="images/readme/LiveCodeLab-BannerForGithub.png" width="800" height="236">
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/Thumb35.png" width="200" height="115">
