@@ -64,7 +64,7 @@ Please check the docs-overview file in the docs directory for an overview of the
 
 ## Glamour shots ####
 
-<img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/LiveCodeLab-BannerForGithub.png" width="800" height="236">
+<img src="images/readme/LiveCodeLab-BannerForGithub.png" width="800" height="236">
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/Thumb35.png" width="200" height="115">
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/Thumb34.png" width="200" height="115">
 <img src="http://www.sketchpatch.net/labs/screenshots/thumbnails/Thumb33.png" width="200" height="115">
