@@ -12,13 +12,16 @@
     "start": "webpack-dev-server --mode development",
     "docs": "docco docs/**/*.md -o dist/docs",
     "docs:src": "docco src/coffee/**/*.coffee -o dist/docs/src",
+    "build:site": "npx @11ty/eleventy",
     "test": "mochapack --webpack-config webpack.config.js \"tests/**/*.js\"",
     "testone": "mochapack --webpack-config webpack.config.js",
     "prettier": "prettier --single-quote",
     "servewiki": "tiddlywiki docs/wiki --server",
-    "buildwiki": "tiddlywiki docs/wiki --output ./dist/wiki --build index"
+    "buildwiki": "tiddlywiki docs/wiki --output ./dist/wiki --build index",
+    "start:site": "npx @11ty/eleventy --serve --port 8081"
   },
   "devDependencies": {
+    "@11ty/eleventy": "0.10.0",
     "@babel/core": "7.7.7",
     "@babel/polyfill": "7.7.0",
     "@babel/preset-env": "7.7.7",
