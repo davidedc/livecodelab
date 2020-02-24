@@ -12,34 +12,6 @@ module.exports = {
   mode: 'production',
   module: {
     rules: [
-      {
-        test: /\.js$/,
-        exclude: [
-          /node_modules/,
-          /jquery.*\.js/,
-          /coffee-script\.js/,
-          /codemirror/,
-        ],
-        loader: 'babel-loader',
-        options: {
-          presets: [
-            [
-              '@babel/preset-env',
-              {
-                targets: {
-                  browsers: [
-                    'safari >= 8',
-                    'chrome >= 49',
-                    'firefox >= 50',
-                    'ie >= 11',
-                    'last 1 edge version',
-                  ],
-                },
-              },
-            ],
-          ],
-        },
-      },
       { test: /\.coffee$/, loader: 'coffee-loader' },
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       {
