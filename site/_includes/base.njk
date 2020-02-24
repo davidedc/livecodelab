@@ -13,5 +13,14 @@ bodyclass: light
   </head>
   <body class="{{ bodyclass }}">
     {{ content | safe }}
+
+    <script src="https://cdn.jsdelivr.net/npm/intersection-observer@0.7.0/intersection-observer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.4.0/dist/lazyload.min.js"></script>
+
+    <script>
+      var lazyLoadInstance = new LazyLoad({
+          elements_selector: ".lazy"
+      });
+    </script>
   </body>
 </html>
