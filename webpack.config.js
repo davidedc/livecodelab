@@ -6,7 +6,7 @@ const path = require('path');
 module.exports = {
   entry: path.resolve(__dirname, 'src/lcl.js'),
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'dist/play'),
     filename: 'app.js',
   },
   mode: 'production',
