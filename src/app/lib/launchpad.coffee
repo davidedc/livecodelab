@@ -14,6 +14,8 @@ class Launchpad
     @state = []
     for i in [0..ROWS]
       @state[i] = new Array(ROWS)
+      for j in [0..ROWS]
+        @state[i][j] = 0
 
   setPad: (pad) ->
     @pad = pad
