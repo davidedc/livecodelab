@@ -70,6 +70,7 @@ LightsCommands    = require './lights-commands'
 MatrixCommands    = require './matrix-commands'
 TimeKeeper        = require './time-keeper'
 Pulse             = require '../lib/pulse'
+Launchpad         = require '../lib/launchpad'
 Math              = require '../globals/math'
 GlobalScope       = require './global-scope'
 SampleBank        = require('../sound/samplebank').default;
@@ -135,6 +136,8 @@ class LiveCodeLabCore
       @timeKeeper
     )
 
+    @launchpadCommands = new Launchpad()
+
     @graphicsCommands = new GraphicsCommands(
       @threeJsSystem,
       @colourFunctions,
@@ -177,6 +180,7 @@ class LiveCodeLabCore
     @programRunner.addToScope(@globalscope)
     @mathFunctions.addToScope(@globalscope)
     @otherCommands.addToScope(@globalscope)
+    @launchpadCommands.addToScope(@globalscope)
 
   paintARandomBackground: ->
     @backgroundPainter.paintARandomBackground()
