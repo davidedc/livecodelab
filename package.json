@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "buzz": "1.2.1",
-    "underscore": "1.9.1"
+    "underscore": "1.9.1",
+    "launchpad-webmidi": "1.0.0"
   }
 }
