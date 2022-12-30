@@ -34,7 +34,7 @@
     "eslint-config-prettier": "6.7.0",
     "eslint-plugin-prettier": "3.1.2",
     "file-loader": "5.0.2",
-    "mocha": "6.2.2",
+    "mocha": "10.2.0",
     "mochapack": "^1.1.13",
     "pegjs": "0.10.0",
     "pegjs-loader": "0.5.5",
